@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { PNG } from 'pngjs';
+import { readFileSync } from 'node:fs';
 
 // Freeze tolerances before evaluating the Rust output. Small rasterization edge
 // differences are allowed; material, transform or missing-object errors are not.
-const CHANNEL_TOLERANCE=6;
-const MAX_DIFFERENT_PIXEL_FRACTION=0.005;
+const manifest=JSON.parse(readFileSync(new URL('../../migration/manifest.json',import.meta.url),'utf8'));
+const CHANNEL_TOLERANCE=manifest.comparison.channel_tolerance;
+const MAX_DIFFERENT_PIXEL_FRACTION=manifest.comparison.maximum_different_pixel_fraction;
 for(const [id,name] of [[0,'basic cube'],[1,'hierarchy, textures, lights, lines and points']]) {
   test(`Three.js migration: ${name}`,async({page},testInfo)=>{
     await page.goto(`/reference/three-js/?example=${id}`);

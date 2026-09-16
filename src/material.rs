@@ -1,28 +1,28 @@
 use crate::{Error, Result, math::*};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::Arc;
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub enum Side {
     #[default]
     Front,
     Back,
     Double,
 }
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub enum Wrapping {
     #[default]
     Clamp,
     Repeat,
     Mirror,
 }
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub enum Filter {
     Nearest,
     #[default]
     Linear,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Texture {
     pub width: u32,
     pub height: u32,
@@ -90,7 +90,7 @@ impl Texture {
         Self::from_image(&js_sys::Uint8Array::new(&buffer).to_vec())
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct MaterialProperties {
     pub color: Color,
     pub opacity: f64,
@@ -117,11 +117,11 @@ impl Default for MaterialProperties {
         }
     }
 }
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct MeshBasicMaterial {
     pub properties: MaterialProperties,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct MeshStandardMaterial {
     pub properties: MaterialProperties,
     pub roughness: f64,
@@ -138,7 +138,7 @@ impl Default for MeshStandardMaterial {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct LineBasicMaterial {
     pub properties: MaterialProperties,
     pub linewidth: f64,
@@ -151,7 +151,7 @@ impl Default for LineBasicMaterial {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct PointsMaterial {
     pub properties: MaterialProperties,
     pub size: f64,
@@ -166,7 +166,7 @@ impl Default for PointsMaterial {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub enum Material {
     Basic(MeshBasicMaterial),
     Standard(MeshStandardMaterial),

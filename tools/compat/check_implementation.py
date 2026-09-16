@@ -21,6 +21,10 @@ for name, entry in evidence.items():
         value=entry.get(field,'')
         if not value or not (ROOT/value.split('#')[0]).is_file():
             errors.append(f'{name}: missing {field} evidence')
+        elif '#' in value:
+            file,anchor=value.split('#',1)
+            if anchor not in (ROOT/file).read_text():
+                errors.append(f'{name}: unresolved {field} anchor {anchor}')
     if not entry.get('mapping'):
         errors.append(f'{name}: missing capability mapping explanation')
 if missing or errors:

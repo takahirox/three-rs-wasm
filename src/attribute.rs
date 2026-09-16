@@ -1,6 +1,6 @@
 //! Typed attribute storage with explicit upload versions and shared interleaving.
 use crate::{Error, Result, math::*};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::{Arc, RwLock};
 
 #[derive(Default)]
@@ -64,10 +64,19 @@ impl Component for f64 {
     }
 }
 impl Component for half::f16 {
-    fn decode(self, _: bool) -> f64 {
-        self.to_f64()
+    fn decode(self, normalized: bool) -> f64 {
+        if normalized {
+            self.to_f64() / 65535.0
+        } else {
+            self.to_f64()
+        }
     }
-    fn encode(v: f64, _: bool) -> Self {
+    fn encode(v: f64, normalized: bool) -> Self {
+        let v = if normalized {
+            (v * 65535.0 + 0.5).floor()
+        } else {
+            v
+        };
         // r186 DataUtils truncates the float32 mantissa and clamps overflow.
         // IEEE round-to-nearest conversion alone would change observable values.
         let bits = (v.clamp(-65504.0, 65504.0) as f32).to_bits();
@@ -89,7 +98,7 @@ impl Component for half::f16 {
     }
 }
 
-#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, Serialize)]
 #[serde(transparent)]
 pub struct ClampedU8(pub u8);
 impl Component for ClampedU8 {
@@ -107,26 +116,26 @@ impl Component for ClampedU8 {
     }
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub enum Usage {
     #[default]
     Static,
     Dynamic,
     Stream,
 }
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub enum GpuType {
     #[default]
     Float,
     Int,
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct UpdateRange {
     pub start: usize,
     pub count: usize,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct BufferAttribute<T> {
     pub identity: crate::identity::Identity,
     #[serde(skip)]
@@ -314,7 +323,7 @@ pub type Uint32BufferAttribute = BufferAttribute<u32>;
 pub type Float16BufferAttribute = BufferAttribute<half::f16>;
 pub type Float32BufferAttribute = BufferAttribute<f32>;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct InstancedBufferAttribute<T> {
     pub attribute: BufferAttribute<T>,
     pub mesh_per_attribute: std::num::NonZeroU32,
@@ -322,7 +331,7 @@ pub struct InstancedBufferAttribute<T> {
 
 /// Interleaved views share one allocation, version and upload ranges. Cloning this
 /// buffer copies its storage; cloning a view retains its shared backing buffer.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct InterleavedBuffer<T> {
     pub storage: BufferAttribute<T>,
 }
@@ -339,13 +348,13 @@ impl<T: Component> InterleavedBuffer<T> {
         self.storage.count()
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct InstancedInterleavedBuffer<T> {
     pub buffer: InterleavedBuffer<T>,
     pub mesh_per_attribute: std::num::NonZeroU32,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct InterleavedBufferAttribute<T> {
     pub data: Arc<RwLock<InterleavedBuffer<T>>>,
     item_size: usize,
@@ -385,11 +394,17 @@ impl<T: Component> InterleavedBufferAttribute<T> {
         ))
     }
     pub fn notify_uploaded(&self) {
-        self.data
+        let callback = self
+            .data
             .read()
             .expect("interleaved buffer lock poisoned")
             .storage
-            .notify_uploaded();
+            .upload_hook
+            .0
+            .clone();
+        if let Some(callback) = callback {
+            callback();
+        }
     }
 
     pub fn new(

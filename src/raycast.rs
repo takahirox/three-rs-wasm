@@ -120,6 +120,9 @@ impl Raycast for Node {
         let Some(geometry) = self.geometry() else {
             return Ok(());
         };
+        if geometry.vertex_count() == 0 {
+            return Ok(());
+        }
         if self.matrix_world.determinant() == 0.0 {
             return Ok(());
         }

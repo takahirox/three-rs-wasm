@@ -12,8 +12,9 @@ backend in the browser; there is no JavaScript scene mirror or WebGL fallback.
 
 Install Rust with rustup, the `wasm32-unknown-unknown` target, Node.js, Python 3,
 wasm-pack and Chrome. Ensure `cargo` and `rustc` resolve to the same toolchain.
-On machines that also have Homebrew Rust, prepend the rustup toolchain's `bin`
-directory to `PATH` when building the browser package.
+On machines that also have Homebrew Rust, the acceptance script selects the
+active rustup toolchain for all tools. For individual browser commands, prepend
+that toolchain's `bin` directory to `PATH` as well.
 
 ```sh
 python3 tools/compat/prepare_reference.py

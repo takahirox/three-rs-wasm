@@ -32,10 +32,10 @@ impl Clock {
         self.running = true;
     }
     pub fn start_time(&self) -> f64 {
-        self.start_time
+        self.start_time * 1000.0
     }
     pub fn old_time(&self) -> f64 {
-        self.old_time
+        self.old_time * 1000.0
     }
     pub fn get_delta(&mut self) -> f64 {
         self.delta_at(self.origin.elapsed().as_secs_f64())

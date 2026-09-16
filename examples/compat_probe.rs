@@ -1,4 +1,20 @@
 use three_rs_wasm::{attribute::*, camera::*, geometry::*, math::*, scene::*};
+fn typed_probe<T: Component>() -> three_rs_wasm::Result<Vec<Vec<f64>>> {
+    let values = [-300.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.0009, 300.5, 65504.0];
+    let mut result = Vec::new();
+    for normalized in [false, true] {
+        let mut a = BufferAttribute::<T>::new(vec![T::default(); values.len()], 1, normalized)?;
+        for (i, v) in values.into_iter().enumerate() {
+            a.set_component(i, 0, v)?;
+        }
+        result.push(
+            (0..values.len())
+                .map(|i| a.get_component(i, 0))
+                .collect::<three_rs_wasm::Result<Vec<_>>>()?,
+        );
+    }
+    Ok(result)
+}
 fn main() -> three_rs_wasm::Result<()> {
     let mut scene = Scene::new();
     let parent = scene.insert(NodeKind::Group);
@@ -55,7 +71,11 @@ fn main() -> three_rs_wasm::Result<()> {
         "plane_positions":plane.positions()?.iter().map(|p|p.to_array()).collect::<Vec<_>>(),"plane_index":plane.index,
         "sphere_positions":sphere_geometry.positions()?.iter().map(|p|p.to_array()).collect::<Vec<_>>(),"sphere_index":sphere_geometry.index,
         "perspective":perspective.projection_matrix()?.to_cols_array(),"orthographic":orthographic.projection_matrix()?.to_cols_array(),
-        "color":Color::from_hex(0x348ac1).0.to_array()
+        "color":Color::from_hex(0x348ac1).0.to_array(),
+        "euler_orders":([EulerOrder::XYZ,EulerOrder::YXZ,EulerOrder::ZXY,EulerOrder::ZYX,EulerOrder::YZX,EulerOrder::XZY].map(|order|Euler {angles:Vector3::new(0.2,-0.4,0.7),order}.quaternion().to_array())),
+        "typed_attributes":[typed_probe::<i8>()?,typed_probe::<u8>()?,typed_probe::<ClampedU8>()?,typed_probe::<i16>()?,typed_probe::<u16>()?,typed_probe::<i32>()?,typed_probe::<u32>()?,typed_probe::<half::f16>()?,typed_probe::<f32>()?],
+        "ray_sphere":Ray {origin:Vector3::new(0.2,0.3,5.0),direction:Vector3::NEG_Z}.intersect_sphere(Sphere {center:Vector3::ZERO,radius:1.0}).map(|p|p.to_array()),
+        "ray_box":Ray {origin:Vector3::new(0.2,0.3,5.0),direction:Vector3::NEG_Z}.intersect_box(Box3 {min:Vector3::splat(-1.0),max:Vector3::ONE}).map(|p|p.to_array())
     });
     println!("{output}");
     Ok(())

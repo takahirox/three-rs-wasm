@@ -7,6 +7,7 @@ use wasm_bindgen::{JsCast, prelude::*};
 
 type AnimationCallback = Closure<dyn FnMut(f64)>;
 struct State {
+    timer: crate::time::Timer,
     renderer: Renderer,
     surface: wgpu::Surface<'static>,
     configuration: wgpu::SurfaceConfiguration,
@@ -23,6 +24,10 @@ struct State {
 }
 impl State {
     fn render(&mut self, time: f64) -> Result<()> {
+        self.timer.update();
+        let _ = self
+            .canvas
+            .set_attribute("data-delta", &self.timer.get_delta().to_string());
         let width = self.canvas.width();
         let height = self.canvas.height();
         if width != self.target.width || height != self.target.height {
@@ -76,7 +81,14 @@ impl BrowserApp {
             geometry.add_group(0, 3, 0);
             geometry.add_group(3, 3, 1);
             state.rebuilds += 1;
-            geometry.set_draw_range(0, Some(if state.rebuilds % 2 == 0 { 6 } else { 3 }));
+            geometry.set_draw_range(
+                0,
+                Some(if state.rebuilds.is_multiple_of(2) {
+                    6
+                } else {
+                    3
+                }),
+            );
             if let Some(position) = geometry.attributes.get_mut("position") {
                 position.set_component(0, 0, -0.8)?;
             }
@@ -214,7 +226,14 @@ impl BrowserApp {
             } else if example != 0 {
                 return Err(Error::Invalid("example id"));
             }
+            let mut timer = crate::time::Timer::default();
+            timer.connect(
+                web_sys::window()
+                    .and_then(|w| w.document())
+                    .ok_or(Error::Asset("document unavailable".into()))?,
+            )?;
             let state = Rc::new(RefCell::new(State {
+                timer,
                 renderer,
                 surface,
                 configuration,
@@ -305,10 +324,10 @@ impl BrowserApp {
 impl Drop for BrowserApp {
     fn drop(&mut self) {
         let mut s = self.state.borrow_mut();
-        if let Some(id) = s.request.take() {
-            if let Some(window) = web_sys::window() {
-                let _ = window.cancel_animation_frame(id);
-            }
+        if let Some(id) = s.request.take()
+            && let Some(window) = web_sys::window()
+        {
+            let _ = window.cancel_animation_frame(id);
         }
         let _ = s.canvas.remove_event_listener_with_callback(
             "pointerdown",

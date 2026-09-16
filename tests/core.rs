@@ -40,6 +40,10 @@ fn event_removal_during_dispatch_uses_a_snapshot() {
     events.dispatch_event(&3);
     events.dispatch_event(&7);
     assert_eq!(*sum.borrow(), 3);
+    assert!(!events.has_event_listener(second.borrow().unwrap()));
+    let other = EventDispatcher::<i32>::default();
+    let foreign = other.add_event_listener(|_, _| {});
+    assert!(!events.has_event_listener(foreign));
 }
 
 #[test]
@@ -104,6 +108,55 @@ fn manual_world_matrix_update_respects_r186_dirty_and_force_flags() {
         .unwrap();
     assert_eq!(scene.get(h).unwrap().world_position(), Vector3::X);
     assert!(!scene.get(h).unwrap().matrix_world_needs_update);
+}
+
+#[test]
+fn deep_scene_update_and_dispose_do_not_use_the_call_stack() {
+    let mut scene = Scene::new();
+    let root = scene.insert(NodeKind::Group);
+    let mut parent = root;
+    for _ in 0..2000 {
+        let child = scene.insert(NodeKind::Group);
+        scene.get_mut(child).unwrap().position.x = 1.0;
+        scene.add(parent, child).unwrap();
+        parent = child;
+    }
+    scene.update().unwrap();
+    assert_eq!(scene.get(parent).unwrap().world_position().x, 2000.0);
+    scene.dispose(root).unwrap();
+    assert!(scene.is_empty());
+}
+
+#[test]
+fn invalid_camera_inputs_fail_without_nan_projection() {
+    let bad = PerspectiveCamera {
+        aspect: f64::NAN,
+        ..Default::default()
+    };
+    assert!(bad.projection_matrix().is_err());
+    let infinite = PerspectiveCamera {
+        far: f64::INFINITY,
+        ..Default::default()
+    };
+    assert!(infinite.projection_matrix().unwrap().is_finite());
+}
+
+#[test]
+fn empty_geometry_bounds_and_existing_points_follow_three() {
+    let mut geometry = BufferGeometry::default();
+    assert!(geometry.compute_bounding_box().unwrap().is_empty());
+    assert_eq!(geometry.compute_bounding_sphere().unwrap().radius, -1.0);
+    geometry.set_from_points(&[Vector3::X, Vector3::Y]).unwrap();
+    geometry.set_from_points(&[Vector3::Z]).unwrap();
+    assert_eq!(geometry.positions().unwrap(), vec![Vector3::Z, Vector3::Y]);
+    let mut indexed = PlaneGeometry::build(1.0, 1.0, 1, 1).unwrap();
+    indexed.name = "source".into();
+    indexed.set_draw_range(3, Some(3));
+    indexed.compute_bounding_box().unwrap();
+    let expanded = indexed.to_non_indexed().unwrap();
+    assert!(expanded.name.is_empty());
+    assert_eq!(expanded.draw_range, DrawRange::default());
+    assert!(expanded.bounding_box.is_none());
 }
 
 #[test]

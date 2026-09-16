@@ -1,7 +1,7 @@
 //! Nodes belong to exactly one scene. Handles cannot revive after removal, nor
 //! accidentally address a node in another scene.
 use crate::{Error, Result, camera::Camera, geometry::BufferGeometry, material::Material, math::*};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::{
     Arc,
     atomic::{AtomicU32, Ordering},
@@ -21,7 +21,7 @@ pub struct Object3D {
     generation: u64,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct Layers {
     pub mask: u32,
 }
@@ -57,7 +57,7 @@ impl Layers {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Mesh {
     pub geometry: Arc<BufferGeometry>,
     pub materials: Vec<Arc<Material>>,
@@ -70,18 +70,18 @@ impl Mesh {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Line {
     pub geometry: Arc<BufferGeometry>,
     pub material: Arc<Material>,
     pub segments: bool,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Points {
     pub geometry: Arc<BufferGeometry>,
     pub material: Arc<Material>,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub enum Light {
     Ambient {
         color: Color,
@@ -99,7 +99,7 @@ pub enum Light {
         decay: f64,
     },
 }
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub enum NodeKind {
     #[default]
     Group,
@@ -129,7 +129,7 @@ impl std::fmt::Debug for RenderHooks {
             .finish()
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Node {
     pub identity: crate::identity::Identity,
     #[serde(skip)]
@@ -430,40 +430,44 @@ impl Scene {
     }
     /// Drop an entire subtree and release its resource references.
     pub fn dispose(&mut self, root: Object3D) -> Result<()> {
-        let children = self.get(root)?.children.clone();
-        for child in children {
-            self.dispose(child)?;
-        }
+        let handles = self.traverse(root, false)?;
         self.remove_from_parent(root)?;
-        let slot = &mut self.slots[root.index];
-        slot.node = None;
-        slot.generation = slot
-            .generation
-            .checked_add(1)
-            .expect("node generation exhausted");
-        self.free.push(root.index);
+        for h in handles.into_iter().rev() {
+            let slot = &mut self.slots[h.index];
+            slot.node = None;
+            slot.generation = slot
+                .generation
+                .checked_add(1)
+                .expect("node generation exhausted");
+            self.free.push(h.index);
+        }
         Ok(())
     }
-    pub fn update_matrix_world(&mut self, root: Object3D, force: bool) -> Result<()> {
+    fn update_node_world(&mut self, h: Object3D, force: bool) -> Result<bool> {
         let parent_world = self
-            .get(root)?
+            .get(h)?
             .parent
-            .map(|h| self.get(h).map(|n| n.matrix_world))
-            .transpose()?;
-        let node = self.get_mut(root)?;
+            .map(|p| self.get(p).map(|n| n.matrix_world))
+            .transpose()?
+            .unwrap_or(Matrix4::IDENTITY);
+        let node = self.get_mut(h)?;
         if node.matrix_auto_update {
             node.update_matrix();
         }
-        let update = force || node.matrix_world_needs_update;
+        let update = node.matrix_world_needs_update || force;
         if update {
             if node.matrix_world_auto_update {
-                node.matrix_world = parent_world.unwrap_or(Matrix4::IDENTITY) * node.matrix;
+                node.matrix_world = parent_world * node.matrix;
             }
             node.matrix_world_needs_update = false;
         }
-        let children = node.children.clone();
-        for child in children {
-            self.update_matrix_world(child, update)?;
+        Ok(update)
+    }
+    pub fn update_matrix_world(&mut self, root: Object3D, force: bool) -> Result<()> {
+        let mut stack = vec![(root, force)];
+        while let Some((h, force)) = stack.pop() {
+            let update = self.update_node_world(h, force)?;
+            stack.extend(self.get(h)?.children.iter().rev().map(|h| (*h, update)));
         }
         Ok(())
     }
@@ -482,35 +486,17 @@ impl Scene {
         children: bool,
         force: bool,
     ) -> Result<()> {
-        if parents && let Some(parent) = self.get(h)?.parent {
-            self.update_world_matrix(parent, true, false)?;
-        }
-        let parent_world = self
-            .get(h)?
-            .parent
-            .map(|p| self.get(p).map(|n| n.matrix_world))
-            .transpose()?
-            .unwrap_or(Matrix4::IDENTITY);
-        let node = self.get_mut(h)?;
-        if node.matrix_auto_update {
-            node.update_matrix();
-        }
-        let update = node.matrix_world_needs_update || force;
-        if update {
-            if node.matrix_world_auto_update {
-                node.matrix_world = parent_world * node.matrix;
+        if parents {
+            for parent in self.ancestors(h)?.into_iter().rev() {
+                self.update_node_world(parent, false)?;
             }
-            node.matrix_world_needs_update = false;
         }
-        let descendants = if children {
-            node.children.clone()
+        if children {
+            self.update_matrix_world(h, force)
         } else {
-            Vec::new()
-        };
-        for child in descendants {
-            self.update_world_matrix_force(child, false, true, update)?;
+            self.update_node_world(h, force)?;
+            Ok(())
         }
-        Ok(())
     }
     pub fn update(&mut self) -> Result<()> {
         for root in self.roots() {

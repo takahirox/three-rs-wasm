@@ -2,6 +2,12 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+# wasm-pack resolves rustc from PATH independently of Cargo's RUSTC override.
+# Keep cargo, rustc, rustdoc and clippy on the same installed rustup toolchain.
+if command -v rustup >/dev/null 2>&1; then
+  MVP_RUSTC="$(rustup which rustc)" || exit 1
+  export PATH="$(dirname "$MVP_RUSTC"):$PATH"
+fi
 CHECK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/three-rs-wasm-check.XXXXXX")"
 trap 'rm -rf "$CHECK_DIR"' EXIT
 PASS=0
@@ -29,6 +35,7 @@ run "cargo clippy" cargo clippy --locked --workspace --all-targets --all-feature
 run "cargo test / lifecycle / types" cargo test --locked --workspace --all-features
 run "Behavior compatibility tests" python3 tests/compat/compare.py
 run "Wasm build" cargo build --locked --target wasm32-unknown-unknown
+run "Wasm clippy" cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
 run "Browser package" wasm-pack build --target web --out-dir web/pkg --dev --no-typescript
 run "Browser dependencies" npm ci --ignore-scripts
 run "Rust web application suite" npm run test:browser -- app.spec.js

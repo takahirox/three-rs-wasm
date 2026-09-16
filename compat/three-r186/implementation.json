@@ -492,7 +492,7 @@
   "Clock.oldTime": {
     "rust": "src/time.rs",
     "test": "tests/core.rs#timers_use_repeatable_delta_queries",
-    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+    "mapping": "Clock timestamp getters return milliseconds since a platform-local monotonic origin; delta and elapsed time remain seconds."
   },
   "Clock.running": {
     "rust": "src/time.rs",
@@ -507,7 +507,7 @@
   "Clock.startTime": {
     "rust": "src/time.rs",
     "test": "tests/core.rs#timers_use_repeatable_delta_queries",
-    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+    "mapping": "Clock timestamp getters return milliseconds since a platform-local monotonic origin; delta and elapsed time remain seconds."
   },
   "Clock.stop": {
     "rust": "src/time.rs",
@@ -1180,9 +1180,9 @@
     "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
   },
   "Object3D.intersectsFrustum": {
-    "rust": "src/scene.rs",
-    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
-    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycast and FrustumIntersect traits implement built-in object intersections and world-space frustum tests."
   },
   "Object3D.isObject3D": {
     "rust": "src/scene.rs",
@@ -1275,9 +1275,9 @@
     "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
   },
   "Object3D.raycast": {
-    "rust": "src/scene.rs",
-    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
-    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycast and FrustumIntersect traits implement built-in object intersections and world-space frustum tests."
   },
   "Object3D.receiveShadow": {
     "rust": "src/scene.rs",
@@ -1661,7 +1661,7 @@
   },
   "Timer.connect": {
     "rust": "src/time.rs",
-    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "test": "tests/browser/app.spec.js",
     "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
   },
   "Timer.constructor": {
@@ -1671,12 +1671,12 @@
   },
   "Timer.disconnect": {
     "rust": "src/time.rs",
-    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "test": "tests/browser/app.spec.js",
     "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
   },
   "Timer.dispose": {
     "rust": "src/time.rs",
-    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "test": "tests/browser/app.spec.js",
     "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
   },
   "Timer.getDelta": {

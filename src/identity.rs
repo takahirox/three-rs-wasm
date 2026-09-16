@@ -1,10 +1,10 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::atomic::{AtomicU32, Ordering};
 static NEXT_ID: AtomicU32 = AtomicU32::new(0);
 
 /// Copying an object creates a new identity; copying fields into an existing
 /// object can preserve its identity explicitly with `copy_from`.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct Identity {
     pub id: u32,
     pub uuid: uuid::Uuid,

@@ -1,5 +1,5 @@
 use crate::{Error, Result, attribute::*, math::*};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::{
     any::{Any, TypeId},
     collections::{BTreeMap, HashMap},
@@ -7,7 +7,7 @@ use std::{
 };
 type CloneBuffers = HashMap<(TypeId, usize), Arc<dyn Any + Send + Sync>>;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub enum Attribute {
     I8(BufferAttribute<i8>),
     U8(BufferAttribute<u8>),
@@ -164,19 +164,19 @@ impl Attribute {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct Group {
     pub start: usize,
     pub count: usize,
     pub material_index: usize,
 }
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct DrawRange {
     pub start: usize,
     pub count: Option<usize>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct BufferGeometry {
     pub identity: crate::identity::Identity,
     pub name: String,
@@ -282,6 +282,14 @@ impl BufferGeometry {
         self.draw_range = DrawRange { start, count };
     }
     pub fn set_from_points(&mut self, points: &[Vector3]) -> Result<()> {
+        if let Some(position) = self.attributes.get_mut("position") {
+            for (i, p) in points.iter().take(position.count()).enumerate() {
+                for c in 0..3 {
+                    position.set_component(i, c, p[c])?;
+                }
+            }
+            return Ok(());
+        }
         let values = points
             .iter()
             .flat_map(|v| [v.x as f32, v.y as f32, v.z as f32])
@@ -316,6 +324,11 @@ impl BufferGeometry {
         Ok(index)
     }
     pub fn compute_bounding_box(&mut self) -> Result<Box3> {
+        if !self.has_attribute("position") {
+            let bounds = Box3::default();
+            self.bounding_box = Some(bounds);
+            return Ok(bounds);
+        }
         let base = Box3::from_points(self.positions()?);
         let mut bounds = base;
         if let Some(morphs) = self.morph_attributes.get("position") {
@@ -334,6 +347,11 @@ impl BufferGeometry {
         Ok(bounds)
     }
     pub fn compute_bounding_sphere(&mut self) -> Result<Sphere> {
+        if !self.has_attribute("position") {
+            let sphere = self.bounding_sphere.unwrap_or_default();
+            self.bounding_sphere = Some(sphere);
+            return Ok(sphere);
+        }
         let old_box = self.bounding_box;
         let center = self.compute_bounding_box()?.center();
         self.bounding_box = old_box;
@@ -542,7 +560,7 @@ impl BufferGeometry {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct InstancedBufferGeometry {
     pub geometry: BufferGeometry,
     pub instance_count: u32,

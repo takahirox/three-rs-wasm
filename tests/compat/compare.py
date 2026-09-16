@@ -17,7 +17,7 @@ def compare(actual, expected, path=""):
         assert actual==expected,(path,actual,expected)
     elif isinstance(expected,(int,float)) and not isinstance(expected,bool):
         # Float32 geometry storage rounds at each transform; math uses Float64.
-        tolerance = 2e-6 if any(k in path for k in ('bounds', 'sphere', 'positions')) else 1e-10
+        tolerance = 2e-6 if path.startswith(('.bounds[','.sphere[','.plane_positions[','.sphere_positions[')) else 1e-10
         assert math.isfinite(actual) and math.isclose(actual, expected, rel_tol=tolerance, abs_tol=tolerance), (path, actual, expected)
     else:
         assert actual == expected, (path, actual, expected)

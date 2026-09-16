@@ -10,6 +10,24 @@ pub struct ViewOffset {
     pub width: f64,
     pub height: f64,
 }
+impl ViewOffset {
+    fn valid(self) -> bool {
+        [
+            self.full_width,
+            self.full_height,
+            self.offset_x,
+            self.offset_y,
+            self.width,
+            self.height,
+        ]
+        .iter()
+        .all(|v| v.is_finite())
+            && self.full_width > 0.0
+            && self.full_height > 0.0
+            && self.width > 0.0
+            && self.height > 0.0
+    }
+}
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PerspectiveCamera {
     pub fov: f64,
@@ -37,7 +55,19 @@ impl Default for PerspectiveCamera {
 }
 impl PerspectiveCamera {
     pub fn projection_matrix(&self) -> Result<Matrix4> {
-        if !self.fov.is_finite()
+        if ![
+            self.fov,
+            self.aspect,
+            self.near,
+            self.zoom,
+            self.film_gauge,
+            self.film_offset,
+        ]
+        .iter()
+        .all(|v| v.is_finite())
+            || self.far.is_nan()
+            || self.film_gauge <= 0.0
+            || self.view.is_some_and(|v| !v.valid())
             || self.fov <= 0.0
             || self.fov >= 180.0
             || self.aspect <= 0.0
@@ -73,11 +103,15 @@ impl PerspectiveCamera {
             0.0,
             (right + left) / (right - left),
             (top + bottom) / (top - bottom),
-            -f / (f - n),
+            if f.is_infinite() { -1.0 } else { -f / (f - n) },
             -1.0,
             0.0,
             0.0,
-            -f * n / (f - n),
+            if f.is_infinite() {
+                -n
+            } else {
+                -f * n / (f - n)
+            },
             0.0,
         ]))
     }
@@ -118,7 +152,19 @@ impl Default for OrthographicCamera {
 }
 impl OrthographicCamera {
     pub fn projection_matrix(&self) -> Result<Matrix4> {
-        if self.left == self.right
+        if ![
+            self.left,
+            self.right,
+            self.top,
+            self.bottom,
+            self.near,
+            self.far,
+            self.zoom,
+        ]
+        .iter()
+        .all(|v| v.is_finite())
+            || self.view.is_some_and(|v| !v.valid())
+            || self.left == self.right
             || self.top == self.bottom
             || self.near < 0.0
             || self.far <= self.near

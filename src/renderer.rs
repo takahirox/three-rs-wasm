@@ -61,6 +61,10 @@ struct Draw {
     indices: Option<wgpu::Buffer>,
     indirect: Option<wgpu::Buffer>,
     indirect_offsets: Vec<u64>,
+    transparent: bool,
+    render_order: i32,
+    group_order: i32,
+    depth: f64,
 }
 impl Renderer {
     pub async fn new() -> Result<Self> {
@@ -222,8 +226,21 @@ impl Renderer {
         self.queue.submit([encoder.finish()]);
     }
     pub fn render(&self, scene: &mut Scene, camera: Object3D, target: &RenderTarget) -> Result<()> {
+        let valid_rectangle = |r: [u32; 4]| {
+            r[2] > 0
+                && r[3] > 0
+                && r[0].checked_add(r[2]).is_some_and(|x| x <= target.width)
+                && r[1].checked_add(r[3]).is_some_and(|y| y <= target.height)
+        };
+        if !valid_rectangle(target.viewport) || target.scissor.is_some_and(|r| !valid_rectangle(r))
+        {
+            return Err(Error::Invalid("viewport or scissor"));
+        }
         scene.update()?;
         let (camera_data, camera_world) = scene.camera(camera)?;
+        if camera_world.determinant() == 0.0 {
+            return Err(Error::Invalid("singular camera transform"));
+        }
         let perspective = matches!(camera_data, crate::camera::Camera::Perspective(_));
         let view_projection = camera_data.projection_matrix()? * camera_world.inverse();
         let camera_layers = scene.get(camera)?.layers;
@@ -490,6 +507,19 @@ impl Renderer {
                     target,
                 )?;
                 let factor = if is_points { 6 } else { 1 };
+                draw.render_order = n.render_order;
+                draw.group_order = scene
+                    .ancestors(h)?
+                    .into_iter()
+                    .find_map(|a| {
+                        scene
+                            .get(a)
+                            .ok()
+                            .filter(|n| matches!(n.kind, NodeKind::Group))
+                            .map(|n| n.render_order)
+                    })
+                    .unwrap_or(0);
+                draw.depth = view_projection.project_point3(n.world_position()).z;
                 draw.range = (start as u32) * factor..(end as u32) * factor;
                 draw.instances = geometry.instance_count.unwrap_or(1);
                 if let Some(indices) = &geometry.index {
@@ -573,6 +603,19 @@ impl Renderer {
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
                 label: Some("scene render"),
             });
+        draws.sort_by(|a, b| {
+            a.transparent
+                .cmp(&b.transparent)
+                .then(a.group_order.cmp(&b.group_order))
+                .then(a.render_order.cmp(&b.render_order))
+                .then_with(|| {
+                    if a.transparent {
+                        b.depth.total_cmp(&a.depth)
+                    } else {
+                        a.depth.total_cmp(&b.depth)
+                    }
+                })
+        });
         {
             let c = scene.background.0;
             let attachments: Vec<_> = target
@@ -700,6 +743,17 @@ impl Renderer {
             });
         let white = Texture::from_rgba(1, 1, vec![255; 4], false)?;
         let image = properties.map.as_deref().unwrap_or(&white);
+        if image.width == 0
+            || image.height == 0
+            || image.width > self.device.limits().max_texture_dimension_2d
+            || image.height > self.device.limits().max_texture_dimension_2d
+            || (image.width as usize)
+                .checked_mul(image.height as usize)
+                .and_then(|v| v.checked_mul(4))
+                != Some(image.rgba.len())
+        {
+            return Err(Error::Invalid("texture dimensions or data"));
+        }
         let texture = self.device.create_texture(&wgpu::TextureDescriptor {
             label: Some("material map"),
             size: wgpu::Extent3d {
@@ -805,6 +859,10 @@ impl Renderer {
             indices: None,
             indirect: None,
             indirect_offsets: Vec::new(),
+            transparent: properties.transparent,
+            render_order: 0,
+            group_order: 0,
+            depth: 0.0,
         })
     }
     #[cfg(not(target_arch = "wasm32"))]
