@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>r186 Point Lights — comparison</title>
+<style>body{margin:0;background:black}canvas{display:block;width:720px;height:720px}</style>
+<canvas width="720" height="720"></canvas>
+<script type="module">
+import * as T from '/.cache/three-r186/src/Three.WebGPU.js';
+const canvas=document.querySelector('canvas');
+try {
+  const renderer=new T.WebGPURenderer({canvas,antialias:false});await renderer.init();renderer.setSize(720,720,false);
+  const scene=new T.Scene();scene.background=new T.Color(0);
+  const camera=new T.PerspectiveCamera(50,1,1,1000);camera.position.z=100;
+  const source=await (await fetch('/web/models/WaltHead.obj')).text();
+  const vertices=[],base=[],normals=[],phases=[];let seed=186;
+  const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+  for(const line of source.split('\n')){
+    const f=line.trim().split(/\s+/);
+    if(f[0]==='v')vertices.push(new T.Vector3(...f.slice(1).map(Number)));
+    if(f[0]==='f'){
+      const [a,b,c]=f.slice(1).map(v=>vertices[Number(v.split('/')[0])-1]);
+      const normal=new T.Vector3().subVectors(b,a).cross(new T.Vector3().subVectors(c,a)).normalize();
+      const center=a.clone().add(b).add(c).divideScalar(3).sub(normal);
+      base.push(a,b,c,center,b,a,center,c,b,center,a,c);normals.push(normal);phases.push([random(),random()]);
+    }
+  }
+  const geometry=new T.BufferGeometry();
+  geometry.setAttribute('position',new T.Float32BufferAttribute(base.flatMap(v=>v.toArray()),3));geometry.computeVertexNormals();
+  const mesh=new T.Mesh(geometry,new T.MeshStandardMaterial({roughness:.4}));mesh.scale.setScalar(.8);mesh.position.y=-30;scene.add(mesh);
+  scene.add(new T.AmbientLight(0xaaaaaa,.1));
+  const lights=[0xff0040,0x0040ff].map(color=>{
+    const light=new T.PointLight(color,2000);
+    light.add(new T.Mesh(new T.SphereGeometry(.5,16,8),new T.MeshBasicMaterial({color})));scene.add(light);return light;
+  });
+  const time=6,t=time*.5;
+  lights[0].position.set(Math.sin(t)*20,Math.cos(t*.75)*-30,Math.cos(t*.5)*20);
+  lights[1].position.set(Math.cos(t*.5)*20,Math.sin(t*.75)*-30,Math.sin(t)*20);
+  const effectors=lights.map(light=>light.position.clone().add(new T.Vector3(0,30,0)).divideScalar(.8));
+  const attr=geometry.getAttribute('position');
+  for(let i=0;i<base.length;i++){
+    const face=Math.floor(i/12),[phase,seed]=phases[face],p=base[i];
+    const displacement=Math.abs(Math.sin((phase+time)*2+seed)*.5)+effectors.reduce((v,l)=>v+Math.max(0,20-p.distanceTo(l))/2,0);
+    const moved=p.clone().addScaledVector(normals[face],displacement);attr.setXYZ(i,moved.x,moved.y,moved.z);
+  }
+  attr.needsUpdate=true;renderer.render(scene,camera);await renderer.backend.device.queue.onSubmittedWorkDone();
+  canvas.dataset.ready='true';
+}catch(error){canvas.dataset.error=String(error);}
+</script></html>

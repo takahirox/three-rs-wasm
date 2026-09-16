@@ -1,0 +1,22 @@
+import {test,expect} from '@playwright/test';
+import {PNG} from 'pngjs';
+import {readFileSync,writeFileSync} from 'node:fs';
+const tolerance=JSON.parse(readFileSync(new URL('../../migration/manifest.json',import.meta.url))).comparison;
+for(const id of [4,5])test(`glTF asset ${id}: Rust import matches Three.js and can orbit`,async({page},testInfo)=>{
+ test.setTimeout(90000);
+ await page.goto(`/reference/three-js/gltf.html?example=${id}`);
+ await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:30000});
+ const reference=await page.locator('canvas').screenshot();
+ await page.goto(`/web/?example=${id}`);const canvas=page.locator('canvas');
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:30000}).toBeGreaterThan(2);
+ expect(await canvas.getAttribute('data-error')).toBeNull();
+ expect(Number(await canvas.getAttribute('data-triangles'))).toBeGreaterThan(1000);
+ const actual=await canvas.screenshot();
+ writeFileSync(testInfo.outputPath('reference.png'),reference);writeFileSync(testInfo.outputPath('rust.png'),actual);
+ const a=PNG.sync.read(actual),b=PNG.sync.read(reference);expect([a.width,a.height]).toEqual([b.width,b.height]);
+ let different=0;for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>tolerance.channel_tolerance))different++;
+ expect(different/(a.width*a.height),`${different} pixels differ`).toBeLessThanOrEqual(tolerance.maximum_different_pixel_fraction);
+ const bounds=await canvas.boundingBox();await page.mouse.move(bounds.x+360,bounds.y+360);await page.mouse.down();await page.mouse.move(bounds.x+460,bounds.y+390,{steps:5});await page.mouse.up();
+ await page.waitForTimeout(100);expect((await canvas.screenshot()).equals(actual)).toBe(false);
+ expect(await canvas.getAttribute('data-error')).toBeNull();
+});

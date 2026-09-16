@@ -1,0 +1,78 @@
+{
+  "gltf": [
+    "tests/browser/gltf.spec.js",
+    "Rust import matches Three.js and can orbit"
+  ],
+  "glb": [
+    "tests/browser/gltf.spec.js",
+    "Rust import matches Three.js and can orbit"
+  ],
+  "material_factors": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "base_color": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "metallic_roughness": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "normal_map": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "occlusion": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "emissive": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "hdr_gainmap": [
+    "tests/browser/hdr-equivalence.spec.js",
+    "preserves official UltraHDR reconstruction"
+  ],
+  "ibl": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "roughness_prefilter": [
+    "tests/pbr.rs",
+    "pbr_features_have_independent_visible_effects"
+  ],
+  "aces": [
+    "tests/browser/gltf-pbr.spec.js",
+    "M2 PBR parity:"
+  ],
+  "srgb": [
+    "tests/browser/gltf-pbr.spec.js",
+    "M2 PBR parity:"
+  ],
+  "msaa": [
+    "tests/browser/gltf-pbr.spec.js",
+    "M2 PBR parity:"
+  ],
+  "orbit": [
+    "tests/browser/gltf.spec.js",
+    "Rust import matches Three.js and can orbit"
+  ],
+  "resize": [
+    "tests/browser/gltf-lifecycle.spec.js",
+    "20 overlapping replacement cycles"
+  ],
+  "asset_replacement": [
+    "tests/browser/gltf-lifecycle.spec.js",
+    "20 overlapping replacement cycles"
+  ],
+  "errors": [
+    "tests/browser/gltf-lifecycle.spec.js",
+    "20 overlapping replacement cycles"
+  ],
+  "lifecycle": [
+    "tests/browser/gltf-lifecycle.spec.js",
+    "20 overlapping replacement cycles"
+  ]
+}

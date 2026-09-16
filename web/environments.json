@@ -1,0 +1,11 @@
+{
+  "source": "web/environments/royal_esplanade_2k.hdr.jpg",
+  "source_sha256": "b05a664c5fb022ddc6104f253a6684570e99876d30b41a220c8dea4482df6d64",
+  "derived": "web/environments/royal_esplanade_2k.hdr",
+  "derived_sha256": "97f17ec39d094191a71b1fd6f342538a070e31e1d85652907655b6608bf9481c",
+  "reference": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "conversion": "tools/convert-environment.mjs",
+  "format": "Radiance RGBE",
+  "maximum_relative_error_per_pixel_peak": 0.0077137998056365405,
+  "error_bound": 0.0078125
+}

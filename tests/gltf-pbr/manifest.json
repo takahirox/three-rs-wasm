@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "frozen": true,
+  "three_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "viewport": [
+    256,
+    256
+  ],
+  "output": "sRGB",
+  "tone_mapping": "ACESFilmic",
+  "samples": 4,
+  "comparison": {
+    "channel_tolerance": 6,
+    "maximum_different_pixel_fraction": 0.005
+  },
+  "models": [
+    {
+      "id": 4,
+      "name": "DamagedHelmet",
+      "url": "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf"
+    },
+    {
+      "id": 5,
+      "name": "BoomBox",
+      "url": "/web/models/BoomBox.glb"
+    }
+  ],
+  "environment": "/web/environments/royal_esplanade_2k.hdr.jpg",
+  "views": [
+    {
+      "name": "front",
+      "yaw": 0,
+      "pitch": 0.1,
+      "distance_factor": 1.8,
+      "exposure": 1,
+      "rotation": 0,
+      "blur": 0
+    },
+    {
+      "name": "rear",
+      "yaw": 3.141592653589793,
+      "pitch": 0.1,
+      "distance_factor": 1.8,
+      "exposure": 1,
+      "rotation": 0,
+      "blur": 0
+    },
+    {
+      "name": "close",
+      "yaw": -0.55,
+      "pitch": 0.18,
+      "distance_factor": 1.25,
+      "exposure": 1,
+      "rotation": 0,
+      "blur": 0
+    },
+    {
+      "name": "exposure_rotation",
+      "yaw": 0.5,
+      "pitch": 0.1,
+      "distance_factor": 1.8,
+      "exposure": 1.6,
+      "rotation": 1,
+      "blur": 0.25
+    }
+  ],
+  "sha256": {
+    "web/models/DamagedHelmet/glTF/Default_normal.jpg": "f253ba09a90a86ffd8a807dc45d7953111f8b3421e15d7a21d1e915b01dd33c1",
+    "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf": "efe99dfac198094a30c71dc02a4d3421f0eef6bf335aeb695daa4d62134cd93f",
+    "web/models/DamagedHelmet/glTF/Default_albedo.jpg": "2dc95e87aeb0cd7c8a65ef0eb8b23212388da0534ca379811427a9a8780511f5",
+    "web/models/DamagedHelmet/glTF/DamagedHelmet.bin": "61b33ead6aa3de23f39f02aaf0965bc3988575716a768f45b15d5ea3fb783fdf",
+    "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg": "0f05e7ffbeaa974f7d2c83436b04109969966d64ab188cbc3a19a265a0a69ae0",
+    "web/models/DamagedHelmet/glTF/Default_AO.jpg": "7024051b65ed2ead8d24ebc9bd5ea61d4c21639a57b15dab29870668bcc6b90f",
+    "web/models/DamagedHelmet/glTF/Default_emissive.jpg": "dd0057989f22f93a4ab796d06ebf85a7c12fbfae1d59a86ae8b0c54770dc1159",
+    "web/models/BoomBox.glb": "f8b918445ebdd006768232205a62f5182d2208ca57f84c6ccc084943c0bc8f15",
+    "web/environments/royal_esplanade_2k.hdr.jpg": "b05a664c5fb022ddc6104f253a6684570e99876d30b41a220c8dea4482df6d64"
+  },
+  "environments": [
+    "macOS Chrome / Metal",
+    "Ubuntu 24.04 Playwright Chromium / SwiftShader Vulkan"
+  ],
+  "features": [
+    "gltf",
+    "glb",
+    "material_factors",
+    "base_color",
+    "metallic_roughness",
+    "normal_map",
+    "occlusion",
+    "emissive",
+    "hdr_gainmap",
+    "ibl",
+    "roughness_prefilter",
+    "aces",
+    "srgb",
+    "msaa",
+    "orbit",
+    "resize",
+    "asset_replacement",
+    "errors",
+    "lifecycle"
+  ]
+}

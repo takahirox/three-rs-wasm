@@ -298,6 +298,13 @@ pub struct Scene {
     slots: Vec<Slot>,
     free: Vec<usize>,
     pub background: Color,
+    pub environment: Option<Arc<crate::environment::EnvironmentMap>>,
+    pub environment_intensity: f64,
+    pub environment_rotation: f64,
+    pub background_environment: bool,
+    pub background_blur: f64,
+    pub exposure: f64,
+    pub aces_tone_mapping: bool,
 }
 impl Default for Scene {
     fn default() -> Self {
@@ -307,6 +314,13 @@ impl Default for Scene {
             slots: Vec::new(),
             free: Vec::new(),
             background: Color::BLACK,
+            environment: None,
+            environment_intensity: 1.0,
+            environment_rotation: 0.0,
+            background_environment: false,
+            background_blur: 0.0,
+            exposure: 1.0,
+            aces_tone_mapping: false,
         }
     }
 }

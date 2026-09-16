@@ -1,8 +1,8 @@
 # three-rs-wasm
 
 A Rust-first WebGPU 3D library using Three.js r186 as its behavioral reference.
-The MVP is under implementation; the frozen compatibility manifest describes the
-target, not a claim that all listed capabilities have been implemented.
+The frozen compatibility manifest defines the MVP target; the acceptance scripts
+verify its implementation and the separate glTF PBR milestone.
 
 Engine state, transforms, geometry, materials, raycasting and rendering live in
 Rust. Browser bindings provide DOM access and input. Rendering uses wgpu's WebGPU
@@ -20,7 +20,7 @@ that toolchain's `bin` directory to `PATH` as well.
 python3 tools/compat/prepare_reference.py
 cargo test --test core
 python3 tests/compat/compare.py
-cargo test --test gpu
+cargo test --test gpu --test pbr
 wasm-pack build --target web --out-dir web/pkg --dev --no-typescript
 npm ci
 npm run test:browser
@@ -60,3 +60,27 @@ matching the useful Three.js scene-copy behavior.
 Behavioral comparisons run the pinned JavaScript implementation, not generated
 Rust golden files. Geometry storage is float32 (absolute/relative tolerance
 `2e-6`); double-precision math uses `1e-10`. Integer/index results should be exact.
+
+## Interactive demos
+
+Build an optimized browser package for the deforming model, then start the local
+server from the repository root:
+
+```sh
+PATH="$(dirname "$(rustup which rustc)"):$PATH" wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+python3 tools/serve.py
+```
+
+Open <http://127.0.0.1:8173/web/?example=3> for the official Point Lights port:
+16,160 model triangles expanded into 64,640 animated tetrahedron faces, two moving
+colored lights, orbit/zoom, pause, speed and deformation controls. Other tabs show
+the introductory scenes and official textured cube. Rendering and deformation
+remain in Rust; the DOM controls forward user input to the app. See
+[asset credits and differences from the official examples](web/THIRD_PARTY.md).
+
+The glTF tabs show DamagedHelmet (`?example=4`, external .gltf/.bin/JPEG) and
+BoomBox (`?example=5`, embedded GLB). Both load in Rust/Wasm and support drag
+and zoom, with original PBR maps, HDR reflections, exposure and background controls.
+Run `./scripts/check-gltf-pbr` for the complete MVP + M2 acceptance gate.
+See [M2 API, validation and limitations](docs/gltf-pbr.md) and
+[asset credits](web/THIRD_PARTY.md).
