@@ -15,7 +15,7 @@
     "unsupported-js-specific": "Exclude only when the API expresses JavaScript runtime semantics with no useful Rust engine capability.",
     "deferred": "Known useful capability intentionally outside this MVP; must have an explicit frozen rationale."
   },
-  "member_policy": "All generated public/protected-like members inherit the containing exported type's default_status unless listed in member_overrides.",
+  "member_policy": "All generated public/protected-like members inherit the containing exported type's default_status unless listed in member_overrides. member_adaptations further constrain the Rust-side shape of known JavaScript-specific APIs.",
   "types": [
     {"three_type":"BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"BufferAttribute<T>","notes":"Rust uses typed owned/shared storage instead of JavaScript TypedArray objects; numeric normalization and observable attribute behavior must match r186."},
     {"three_type":"Int8BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Int8BufferAttribute = BufferAttribute<i8>"},
@@ -54,6 +54,23 @@
     {"api":"Object3D.onBeforeShadow","status":"deferred","reason":"Shadow rendering hooks depend on the advanced shadow subsystem, which is outside the MVP."},
     {"api":"Object3D.onAfterShadow","status":"deferred","reason":"Shadow rendering hooks depend on the advanced shadow subsystem, which is outside the MVP."},
     {"api":"Raycaster.setFromXRController","status":"deferred","reason":"Depends on WebXR controller integration, which is outside the MVP browser integration scope."}
+  ],
+  "member_adaptations": [
+    {"api":"BufferAttribute.array","rust_mapping":"typed Rust storage such as Vec<T>, Box<[T]>, or an internal shared buffer abstraction","requirement":"Preserve element type, length, normalized interpretation, mutation results, and upload behavior; JavaScript TypedArray object identity is not required."},
+    {"api":"BufferAttribute.needsUpdate","rust_mapping":"mark_dirty()/version bump semantics","requirement":"A mutation notification must invalidate/upload GPU data equivalently; a JavaScript setter is not required."},
+    {"api":"BufferAttribute.onUpload/onUploadCallback","rust_mapping":"optional Rust closure or typed upload-completion hook","requirement":"Preserve the useful post-upload lifecycle hook without JavaScript Function identity semantics."},
+    {"api":"InterleavedBuffer.array","rust_mapping":"shared typed Rust storage","requirement":"Preserve stride/offset aliasing semantics safely; JavaScript ArrayBuffer identity is not required."},
+    {"api":"EventDispatcher.*","rust_mapping":"typed events plus listener tokens/handles","requirement":"Support add/has/remove/dispatch capability and safe removal during dispatch; JavaScript this-binding and arbitrary mutable JS event objects are not required."},
+    {"api":"Object3D.parent/children","rust_mapping":"scene-node handles managed by the scene graph","requirement":"Preserve one-parent invariant, child ordering, add/remove/attach behavior, traversal, and world-transform semantics without exposing self-referential Rust references."},
+    {"api":"Object3D.userData","rust_mapping":"serializable metadata map/value, e.g. serde_json::Map<String, Value>","requirement":"Support arbitrary serializable application metadata; JavaScript functions/prototypes/object identity are not required."},
+    {"api":"Object3D.getObjectByProperty/getObjectsByProperty","rust_mapping":"typed query APIs plus direct id/name queries","requirement":"Preserve practical scene lookup capability; arbitrary string-based reflection over every Rust field is not required."},
+    {"api":"Object3D.onBeforeRender/onAfterRender","rust_mapping":"Rust render hooks/closures or trait hooks","requirement":"Preserve per-object pre/post render extension capability without JavaScript callback identity semantics."},
+    {"api":"Object3D.raycast","rust_mapping":"Raycast trait/capability","requirement":"Built-in renderable object types must provide behavior compatible with r186 raycasting; arbitrary JavaScript method overrides are not required."},
+    {"api":"Object3D.intersectsFrustum","rust_mapping":"FrustumIntersect trait/capability","requirement":"Renderable object types must expose the equivalent culling capability without JavaScript subclass dispatch."},
+    {"api":"Object3D.toJSON","rust_mapping":"Rust serialization for supported scene data","requirement":"Serialize the supported MVP scene/resource model deterministically; fields belonging exclusively to deferred subsystems may remain absent until those subsystems are implemented."},
+    {"api":"Raycaster.params","rust_mapping":"typed RaycasterParams structure","requirement":"Preserve thresholds and per-object-type raycasting configuration without an untyped JavaScript dictionary."},
+    {"api":"Timer.connect/disconnect","rust_mapping":"browser visibility integration through web-sys or an equivalent Rust browser adapter","requirement":"Preserve Page Visibility behavior without requiring callers to pass a raw JavaScript Document object."},
+    {"api":"RenderTarget.dispose","rust_mapping":"explicit release plus Rust Drop/RAII where practical","requirement":"Resource reclamation must be deterministic/observable enough for lifecycle tests; GC-style event-driven cleanup is not required."}
   ],
   "must_support": [
     {"api":"Object3D.static","reason":"r186 marks it WebGPURenderer-only; it is specifically relevant to this WebGPU-first project."},
