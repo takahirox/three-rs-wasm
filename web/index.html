@@ -84,10 +84,15 @@ if(example===3){
   document.querySelector('#sculpture-controls').hidden=false;
   status.textContent='3Dモデルを読み込んでいます…';
 }
+function showGltfModel(model){
+  document.querySelector('#title').textContent=model===4?'glTF · Damaged Helmet':'GLB · BoomBox';
+  document.querySelector('#description').textContent=model===4?'公式glTF Loaderのヘルメットモデル。glTF・外部バッファー・JPEGをRustで読み込んで表示します。':'モデルと画像を1ファイルにまとめたGLBをRustで読み込んで表示します。';
+  canvas.setAttribute('aria-label',model===4?'Damaged Helmet · ドラッグで回転、ホイールで拡大':'BoomBox · ドラッグで回転、ホイールで拡大');
+  document.querySelector('#reset').href=`?example=${model}`;
+}
 if(example===4||example===5){
   document.body.classList.add('sculpture');canvas.width=720;canvas.height=720;
-  document.querySelector('#title').textContent=example===4?'glTF · Damaged Helmet':'GLB · BoomBox';
-  document.querySelector('#description').textContent=example===4?'公式glTF Loaderのヘルメットモデル。glTF・外部バッファー・JPEGをRustで読み込んで表示します。':'モデルと画像を1ファイルにまとめたGLBをRustで読み込んで表示します。';
+  showGltfModel(example);
   document.querySelector('.hint').textContent='ドラッグで視点を回転、ホイールで拡大・縮小できます。';
   document.querySelector('.detail').innerHTML='HDR環境反射、金属・粗さ・法線・発光マップをRust / WebGPUで描画します。<br><br><a href="https://threejs.org/examples/webgpu_loader_gltf.html" target="_blank" rel="noreferrer">公式 glTF Loader ↗</a>';
   const controls=document.createElement('div');controls.id='gltf-controls';controls.innerHTML=`
@@ -125,8 +130,9 @@ try{
     const apply=()=>{const value=id=>Number(document.querySelector(id).value);const enabled=document.querySelector('#gltf-environment').value==='royal';window.app.gltf_controls(value('#gltf-exposure'),enabled?value('#gltf-intensity'):0,value('#gltf-rotation'),value('#gltf-blur'),enabled&&document.querySelector('#gltf-background').checked);};
     controls.addEventListener('input',apply);
     document.querySelector('#gltf-model').addEventListener('change',async event=>{
+      const model=Number(event.target.value);
       status.textContent='モデルを読み込んでいます…';
-      try{if(await window.app.load_model(Number(event.target.value))) {apply();delete canvas.dataset.error;status.textContent='表示中 · ドラッグで視点を変更';}}
+      try{if(await window.app.load_model(model)) {showGltfModel(model);apply();delete canvas.dataset.error;status.textContent='表示中 · ドラッグで視点を変更';}}
       catch(error){status.textContent=`モデルの読み込みに失敗しました: ${error}`;}
     });
     if(!params.has('fixture'))new ResizeObserver(([entry])=>{const size=Math.max(1,Math.round(entry.contentRect.width));canvas.width=size;canvas.height=size;}).observe(canvas);

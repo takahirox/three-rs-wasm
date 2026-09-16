@@ -13,7 +13,7 @@ test('glTF controls, resize, recoverable failures and 20 overlapping replacement
  await page.route('**/BoomBox.glb',route=>route.fulfill({status:503,body:'temporary fixture failure'}));
  await page.locator('#gltf-model').selectOption('5');await expect(page.locator('#status')).toContainText('503');await nextFrame();
  await page.unroute('**/BoomBox.glb');await page.locator('#gltf-model').selectOption('4');await expect(page.locator('#status')).toContainText('表示中');
- await page.locator('#gltf-model').selectOption('5');await expect(page.locator('#status')).toContainText('表示中',{timeout:60000});await nextFrame();
+ await page.locator('#gltf-model').selectOption('5');await expect(page.locator('#status')).toContainText('表示中',{timeout:60000});await nextFrame();await expect(page.locator('#title')).toContainText('BoomBox');
  // Delay an older environment load and allow the newer model load to win.
  let release;const delayed=new Promise(resolve=>release=resolve);
  await page.route('**/royal_esplanade_2k.hdr?stale',async route=>{await delayed;await route.continue();});
