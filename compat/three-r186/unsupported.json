@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "baseline": {
+    "release": "r186",
+    "npm": "three@0.186.0",
+    "git_tag": "r186",
+    "upstream_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+    "core_path": "src/core"
+  },
+  "rules": {
+    "autonomous_agent_may_add_entries": false,
+    "difficulty_is_never_a_valid_reason": true,
+    "allowed_categories": [
+      "unsupported-webgl-specific",
+      "unsupported-js-specific",
+      "deferred"
+    ]
+  },
+  "entries": [
+    {"api":"GLBufferAttribute","category":"unsupported-webgl-specific","reason":"Wraps a native WebGLBuffer and r186 explicitly says the class can only be used with WebGLRenderer.","source":"src/core/GLBufferAttribute.js"},
+    {"api":"Uniform","category":"unsupported-webgl-specific","reason":"r186 documents this ShaderMaterial uniform wrapper as supported only in WebGLRenderer.","source":"src/core/Uniform.js"},
+    {"api":"UniformsGroup","category":"unsupported-webgl-specific","reason":"r186 documents this ShaderMaterial/UBO abstraction as supported only in WebGLRenderer.","source":"src/core/UniformsGroup.js"},
+    {"api":"Object3D.customDepthMaterial","category":"unsupported-webgl-specific","reason":"r186 explicitly marks the property as only relevant in WebGLRenderer.","source":"src/core/Object3D.js"},
+    {"api":"Object3D.customDistanceMaterial","category":"unsupported-webgl-specific","reason":"r186 explicitly marks the property as only relevant in WebGLRenderer.","source":"src/core/Object3D.js"},
+    {"api":"RenderTarget.multiview","category":"unsupported-webgl-specific","reason":"r186 defines this as the WebGL OVR_multiview2 extension path.","source":"src/core/RenderTarget.js"},
+    {"api":"RenderTarget.constructor.options.multiview","category":"unsupported-webgl-specific","reason":"Constructor option for the WebGL OVR_multiview2 extension path.","source":"src/core/RenderTarget.js"},
+    {"api":"Object3D.animations","category":"deferred","reason":"AnimationClip and the animation subsystem are outside the MVP. This is deferred as a subsystem dependency, not because the property is difficult.","source":"src/core/Object3D.js"},
+    {"api":"Object3D.onBeforeShadow","category":"deferred","reason":"Depends on the shadow rendering subsystem, which is outside the MVP.","source":"src/core/Object3D.js"},
+    {"api":"Object3D.onAfterShadow","category":"deferred","reason":"Depends on the shadow rendering subsystem, which is outside the MVP.","source":"src/core/Object3D.js"},
+    {"api":"Raycaster.setFromXRController","category":"deferred","reason":"Depends on WebXR controller integration, which is outside the MVP browser integration scope.","source":"src/core/Raycaster.js"}
+  ]
+}
