@@ -1,0 +1,1752 @@
+{
+  "BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferAttribute.addUpdateRange": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.applyMatrix3": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.applyMatrix4": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.applyNormalMatrix": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.array": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.clearUpdateRanges": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.clone": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferAttribute.copy": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.copyArray": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.copyAt": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.count": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.dispose": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.getComponent": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "BufferAttribute.getW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "BufferAttribute.getX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "BufferAttribute.getY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "BufferAttribute.getZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "BufferAttribute.gpuType": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.id": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "BufferAttribute.isBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferAttribute.itemSize": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.name": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.needsUpdate": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.normalized": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.onUpload": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.onUploadCallback": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.set": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.setComponent": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "BufferAttribute.setUsage": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.setW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "BufferAttribute.setX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "BufferAttribute.setXY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "BufferAttribute.setXYZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "BufferAttribute.setXYZW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "BufferAttribute.setY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "BufferAttribute.setZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "BufferAttribute.toJSON": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.transformDirection": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.updateRanges": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.usage": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferAttribute.version": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "BufferGeometry": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferGeometry.addGroup": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.applyMatrix4": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.applyQuaternion": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.attributes": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.boundingBox": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.boundingSphere": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.center": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.clearGroups": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.clone": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.computeBoundingBox": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.computeBoundingSphere": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.computeTangents": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.computeVertexNormals": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.constructor": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferGeometry.copy": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.deleteAttribute": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.dispose": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.drawRange": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.getAttribute": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.getIndex": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.getIndirect": {
+    "rust": "src/geometry.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "BufferGeometry indirect commands and byte offsets are uploaded to INDIRECT buffers and issued with wgpu draw_indirect/draw_indexed_indirect; indirect_offsets supports multiple offsets."
+  },
+  "BufferGeometry.groups": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.hasAttribute": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.id": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "BufferGeometry.index": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.indirect": {
+    "rust": "src/geometry.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "BufferGeometry indirect commands and byte offsets are uploaded to INDIRECT buffers and issued with wgpu draw_indirect/draw_indexed_indirect; indirect_offsets supports multiple offsets."
+  },
+  "BufferGeometry.indirectOffset": {
+    "rust": "src/geometry.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "BufferGeometry indirect commands and byte offsets are uploaded to INDIRECT buffers and issued with wgpu draw_indirect/draw_indexed_indirect; indirect_offsets supports multiple offsets."
+  },
+  "BufferGeometry.isBufferGeometry": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferGeometry.lookAt": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.morphAttributes": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.morphTargetsRelative": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.name": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.normalizeNormals": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.rotateX": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "BufferGeometry.rotateY": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "BufferGeometry.rotateZ": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "BufferGeometry.scale": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.setAttribute": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.setDrawRange": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.setFromPoints": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.setIndex": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.setIndirect": {
+    "rust": "src/geometry.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "BufferGeometry indirect commands and byte offsets are uploaded to INDIRECT buffers and issued with wgpu draw_indirect/draw_indexed_indirect; indirect_offsets supports multiple offsets."
+  },
+  "BufferGeometry.toJSON": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.toNonIndexed": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.translate": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.type": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "BufferGeometry.userData": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "BufferGeometry.uuid": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "Clock": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Clock.autoStart": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.constructor": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Clock.elapsedTime": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.getDelta": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.getElapsedTime": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.oldTime": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.running": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.start": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.startTime": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Clock.stop": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Clock: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "EventDispatcher": {
+    "rust": "src/event.rs",
+    "test": "tests/core.rs#event_removal_during_dispatch_uses_a_snapshot",
+    "mapping": "EventDispatcher<E>: typed events and listener tokens replace JS Function identity; snapshot dispatch permits removal without borrowing conflicts or a self-owning callback. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "EventDispatcher.addEventListener": {
+    "rust": "src/event.rs",
+    "test": "tests/core.rs#event_removal_during_dispatch_uses_a_snapshot",
+    "mapping": "EventDispatcher<E>: typed events and listener tokens replace JS Function identity; snapshot dispatch permits removal without borrowing conflicts or a self-owning callback."
+  },
+  "EventDispatcher.dispatchEvent": {
+    "rust": "src/event.rs",
+    "test": "tests/core.rs#event_removal_during_dispatch_uses_a_snapshot",
+    "mapping": "EventDispatcher<E>: typed events and listener tokens replace JS Function identity; snapshot dispatch permits removal without borrowing conflicts or a self-owning callback."
+  },
+  "EventDispatcher.hasEventListener": {
+    "rust": "src/event.rs",
+    "test": "tests/core.rs#event_removal_during_dispatch_uses_a_snapshot",
+    "mapping": "EventDispatcher<E>: typed events and listener tokens replace JS Function identity; snapshot dispatch permits removal without borrowing conflicts or a self-owning callback."
+  },
+  "EventDispatcher.removeEventListener": {
+    "rust": "src/event.rs",
+    "test": "tests/core.rs#event_removal_during_dispatch_uses_a_snapshot",
+    "mapping": "EventDispatcher<E>: typed events and listener tokens replace JS Function identity; snapshot dispatch permits removal without borrowing conflicts or a self-owning callback."
+  },
+  "Float16BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Float16BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Float16BufferAttribute.getW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "Float16BufferAttribute.getX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "Float16BufferAttribute.getY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "Float16BufferAttribute.getZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "Float16BufferAttribute.isFloat16BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Float16BufferAttribute.setW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "Float16BufferAttribute.setX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "Float16BufferAttribute.setXY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "Float16BufferAttribute.setXYZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "Float16BufferAttribute.setXYZW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "Float16BufferAttribute.setY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "Float16BufferAttribute.setZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "Float32BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Float32BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferAttribute.copy": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedBufferAttribute.isInstancedBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferAttribute.meshPerAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedBufferAttribute.toJSON": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedBufferGeometry": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferGeometry.constructor": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferGeometry.copy": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "InstancedBufferGeometry.instanceCount": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "InstancedBufferGeometry.isInstancedBufferGeometry": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedBufferGeometry.toJSON": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities."
+  },
+  "InstancedBufferGeometry.type": {
+    "rust": "src/geometry.rs",
+    "test": "tests/core.rs#geometry_normals_tangents_groups_and_bounds",
+    "mapping": "BufferGeometry/InstancedBufferGeometry: typed attributes, index/indirect buffers, groups, draw ranges, bounds and morph data; Rust Clone/serde encode value-copy/serialization capabilities. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedInterleavedBuffer": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedInterleavedBuffer.clone": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedInterleavedBuffer.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedInterleavedBuffer.copy": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedInterleavedBuffer.isInstancedInterleavedBuffer": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InstancedInterleavedBuffer.meshPerAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InstancedInterleavedBuffer.toJSON": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "Int16BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Int16BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Int32BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Int32BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Int8BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Int8BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBuffer": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBuffer.addUpdateRange": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.array": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.clearUpdateRanges": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.clone": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBuffer.copy": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.copyAt": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.count": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.isInterleavedBuffer": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBuffer.needsUpdate": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.onUpload": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.onUploadCallback": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.set": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.setUsage": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.stride": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.toJSON": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.updateRanges": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.usage": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBuffer.uuid": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "InterleavedBuffer.version": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBufferAttribute.applyMatrix4": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.applyNormalMatrix": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.array": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.clone": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBufferAttribute.count": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.data": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.getComponent": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "InterleavedBufferAttribute.getW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "InterleavedBufferAttribute.getX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "InterleavedBufferAttribute.getY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "InterleavedBufferAttribute.getZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate getters map to get_component(index, component)."
+  },
+  "InterleavedBufferAttribute.isInterleavedBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "InterleavedBufferAttribute.itemSize": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.name": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.needsUpdate": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.normalized": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.offset": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.setComponent": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "InterleavedBufferAttribute.setW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "InterleavedBufferAttribute.setX": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "InterleavedBufferAttribute.setXY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "InterleavedBufferAttribute.setXYZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "InterleavedBufferAttribute.setXYZW": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Tuple setters map to set_tuple(index, values)."
+  },
+  "InterleavedBufferAttribute.setY": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "InterleavedBufferAttribute.setZ": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Coordinate setters map to set_component(index, component, value)."
+  },
+  "InterleavedBufferAttribute.toJSON": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "InterleavedBufferAttribute.transformDirection": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage."
+  },
+  "Layers": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Layers.constructor": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Layers.disable": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.disableAll": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.enable": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.enableAll": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.isEnabled": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Layers.mask": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.set": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.test": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Layers.toggle": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Layers: 32-bit mask operations; channel indices use the same modulo-32 bit shifts."
+  },
+  "Object3D": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Object3D.DEFAULT_MATRIX_AUTO_UPDATE": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene.defaults (NodeDefaults) replaces mutable JS class globals with scene-local construction defaults."
+  },
+  "Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene.defaults (NodeDefaults) replaces mutable JS class globals with scene-local construction defaults."
+  },
+  "Object3D.DEFAULT_UP": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene.defaults (NodeDefaults) replaces mutable JS class globals with scene-local construction defaults."
+  },
+  "Object3D.add": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.applyMatrix4": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.applyQuaternion": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.attach": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.castShadow": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node retains shadow flags as scene data; advanced shadow rendering is outside the frozen MVP scope."
+  },
+  "Object3D.children": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.clear": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.clone": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.constructor": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Object3D.copy": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.dispose": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.frustumCulled": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getObjectById": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getObjectByName": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getObjectByProperty": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene::find accepts a typed predicate, preserving practical lookup without string reflection."
+  },
+  "Object3D.getObjectsByProperty": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene::find accepts a typed predicate, preserving practical lookup without string reflection."
+  },
+  "Object3D.getWorldDirection": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getWorldPosition": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getWorldQuaternion": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.getWorldScale": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.id": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "Object3D.intersectsFrustum": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.isObject3D": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Object3D.layers": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.localToWorld": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.lookAt": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.matrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.matrixAutoUpdate": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.matrixWorld": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.matrixWorldAutoUpdate": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.matrixWorldNeedsUpdate": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.modelViewMatrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::model_view_matrix(camera_world) and Node::normal_matrix(camera_world) expose the derived matrices without storing redundant mutable state."
+  },
+  "Object3D.name": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.normalMatrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::model_view_matrix(camera_world) and Node::normal_matrix(camera_world) expose the derived matrices without storing redundant mutable state."
+  },
+  "Object3D.onAfterRender": {
+    "rust": "src/scene.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "Node.render_hooks registers Rust before/after callbacks invoked by Renderer for rendered nodes; cloning does not copy callbacks."
+  },
+  "Object3D.onBeforeRender": {
+    "rust": "src/scene.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "Node.render_hooks registers Rust before/after callbacks invoked by Renderer for rendered nodes; cloning does not copy callbacks."
+  },
+  "Object3D.parent": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.pivot": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.position": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.quaternion": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.raycast": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.receiveShadow": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node retains shadow flags as scene data; advanced shadow rendering is outside the frozen MVP scope."
+  },
+  "Object3D.remove": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.removeFromParent": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.renderOrder": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.rotateOnAxis": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.rotateOnWorldAxis": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.rotateX": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.rotateY": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.rotateZ": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.rotation": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.scale": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.setRotationFromAxisAngle": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node.quaternion accepts Quaternion::from_axis_angle, Euler::quaternion, Quaternion::from_mat3 or a Quaternion value; set_rotation_from_euler is provided."
+  },
+  "Object3D.setRotationFromEuler": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node.quaternion accepts Quaternion::from_axis_angle, Euler::quaternion, Quaternion::from_mat3 or a Quaternion value; set_rotation_from_euler is provided."
+  },
+  "Object3D.setRotationFromMatrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node.quaternion accepts Quaternion::from_axis_angle, Euler::quaternion, Quaternion::from_mat3 or a Quaternion value; set_rotation_from_euler is provided."
+  },
+  "Object3D.setRotationFromQuaternion": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node.quaternion accepts Quaternion::from_axis_angle, Euler::quaternion, Quaternion::from_mat3 or a Quaternion value; set_rotation_from_euler is provided."
+  },
+  "Object3D.static": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node.is_static retains the optimization hint; observable render results remain identical. The renderer caches pipelines for both static and dynamic nodes."
+  },
+  "Object3D.toJSON": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.translateOnAxis": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.translateX": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.translateY": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.translateZ": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Node::rotate_on_axis/translate_on_axis with Vector3::X/Y/Z maps axis convenience methods without redundant wrappers."
+  },
+  "Object3D.traverse": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.traverseAncestors": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.traverseVisible": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.type": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Object3D.up": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.updateMatrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.updateMatrixWorld": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.updateWorldMatrix": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.userData": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.uuid": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order. Identity holds a process-local numeric id and UUID; cloning creates a fresh identity."
+  },
+  "Object3D.visible": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Object3D.worldToLocal": {
+    "rust": "src/scene.rs",
+    "test": "tests/core.rs#graph_reparent_cycles_stale_and_cross_scene_handles",
+    "mapping": "Scene/Object3D/Node: scene-owned handles and typed fields replace mutable JS objects. World queries follow explicit scene update; graph operations preserve parent ownership and traversal order."
+  },
+  "Raycaster": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Raycaster.camera": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.constructor": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Raycaster.far": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.intersectObject": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.intersectObjects": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.layers": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.near": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.params": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.ray": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.set": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "Raycaster.setFromCamera": {
+    "rust": "src/raycast.rs",
+    "test": "tests/core.rs#raycasting_mesh_line_points_and_layers",
+    "mapping": "Raycaster and Raycast: typed camera/ray/threshold/layer configuration and sorted mesh, line and point intersections."
+  },
+  "RenderTarget": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "RenderTarget.clone": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.constructor": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "RenderTarget.copy": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.depth": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.depthBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.depthTexture": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.dispose": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.height": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.isRenderTarget": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "RenderTarget.resolveColorBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.resolveDepthBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r186 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
+  },
+  "RenderTarget.resolveStencilBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r186 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
+  },
+  "RenderTarget.samples": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.scissor": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.scissorTest": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.setSize": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.stencilBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.storeMultisampledColorBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.storeMultisampledDepthBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.storeMultisampledStencilBuffer": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.texture": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.textures": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.useArrayDepthTexture": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.viewport": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget.width": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget3D": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "RenderTarget3D.constructor": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "RenderTarget3D.depth": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice."
+  },
+  "RenderTarget3D.isRenderTarget3D": {
+    "rust": "src/render_target.rs",
+    "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
+    "mapping": "RenderTarget/RenderTargetOptions: owned WebGPU attachments, configurable samples/depth/stencil/resolve/store, explicit allocation/copy/resize, and drop or consuming dispose. RenderTarget3D selects a 3D depth slice. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Timer": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Timer.connect": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.constructor": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Timer.disconnect": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.dispose": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.getDelta": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.getElapsed": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.getTimescale": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.reset": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.setTimescale": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Timer.update": {
+    "rust": "src/time.rs",
+    "test": "tests/core.rs#timers_use_repeatable_delta_queries",
+    "mapping": "Timer: monotonic seconds and repeatable explicit time updates; browser Timer connect/disconnect owns a visibility listener."
+  },
+  "Uint16BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint16BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint32BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint32BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint8BufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint8BufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint8ClampedBufferAttribute": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  },
+  "Uint8ClampedBufferAttribute.constructor": {
+    "rust": "src/attribute.rs",
+    "test": "tests/core.rs#attribute_validation_normalization_interleaving_and_versions",
+    "mapping": "BufferAttribute<T>/interleaved typed views: typed storage, component/tuple access, matrix operations, versioned updates, upload hooks and Rust Clone/serde serialization. InterleavedBuffer exposes common buffer operations through storage. Rust types, enum variants, constructors and defaults replace runtime type flags."
+  }
+}

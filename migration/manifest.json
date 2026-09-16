@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "baseline": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "comparison": { "channel_tolerance": 6, "maximum_different_pixel_fraction": 0.005, "width": 512, "height": 512 },
+  "pairs": [
+    { "id": 0, "name": "basic-cube", "reference": "reference/three-js/index.html", "rust": "src/browser.rs", "test": "tests/browser/migration.spec.js" },
+    { "id": 1, "name": "lit-textured-hierarchy", "reference": "reference/three-js/index.html", "rust": "src/browser.rs", "test": "tests/browser/migration.spec.js" }
+  ]
+}

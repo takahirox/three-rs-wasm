@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>three-rs-wasm — Rust WebGPU example</title>
+<style>body{margin:0;background:#102030;color:white;font:16px system-ui}canvas{display:block;width:512px;height:512px}p{margin:1rem}</style>
+<canvas id="scene" width="512" height="512"></canvas><p>Click the cube to select and pause it. Click outside to resume.</p>
+<script type="module">
+import init, { BrowserApp } from './pkg/three_rs_wasm.js';
+const params=new URLSearchParams(location.search);
+try { await init(); window.app = await BrowserApp.create(document.querySelector('canvas'),Number(params.get('example')||0),!params.has('static')); }
+catch(error) { document.querySelector('canvas').setAttribute('data-error', String(error)); }
+</script></html>
