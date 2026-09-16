@@ -1,4 +1,4 @@
-name: MVP acceptance
+name: MVP and glTF PBR acceptance
 on:
   push:
   pull_request:
@@ -27,8 +27,8 @@ jobs:
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium
           cargo install wasm-pack --locked --version 0.14.0
-      - name: Evaluate the complete MVP
-        run: ./scripts/check-mvp
+      - name: Evaluate MVP and glTF PBR
+        run: ./scripts/check-gltf-pbr
       - uses: actions/upload-artifact@v4
         if: always()
         with:

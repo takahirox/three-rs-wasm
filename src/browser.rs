@@ -27,6 +27,7 @@ struct State {
     rotation: Vector3,
     point_lights: Option<point_lights::PointLights>,
     gltf: Option<gltf_viewer::GltfViewer>,
+    load_generation: u64,
 }
 impl State {
     fn render(&mut self, time: f64) -> Result<()> {
@@ -38,6 +39,11 @@ impl State {
         let height = self.canvas.height();
         if width != self.target.width || height != self.target.height {
             self.target.set_size(&self.renderer.device, width, height)?;
+            if let NodeKind::Camera(Camera::Perspective(camera)) =
+                &mut self.scene.get_mut(self.camera)?.kind
+            {
+                camera.aspect = width as f64 / height as f64;
+            }
             self.configuration.width = width;
             self.configuration.height = height;
             self.surface
@@ -77,7 +83,13 @@ impl State {
             format: Some(format),
             ..Default::default()
         });
-        self.renderer.blit(&self.target, &view, format);
+        self.renderer.blit_tone_mapped(
+            &self.target,
+            &view,
+            format,
+            self.scene.exposure,
+            self.scene.aces_tone_mapping,
+        );
         frame.present();
         self.frame += 1;
         let _ = self
@@ -97,7 +109,7 @@ pub struct BrowserApp {
 #[wasm_bindgen]
 impl BrowserApp {
     /// Presentation controls; all scene and deformation state remains in Rust.
-    pub fn point_lights_controls(&mut self, paused: bool, amount: f64, speed: f64) {
+    pub fn point_lights_controls(&self, paused: bool, amount: f64, speed: f64) {
         let mut state = self.state.borrow_mut();
         state.paused = paused;
         if let Some(demo) = &mut state.point_lights {
@@ -109,7 +121,117 @@ impl BrowserApp {
             }
         }
     }
-    pub fn orbit(&mut self, dx: f64, dy: f64, zoom: f64) {
+    pub async fn load_model(&self, example: u32) -> std::result::Result<bool, JsValue> {
+        if ![4, 5].contains(&example) {
+            return Err(JsValue::from_str("unknown glTF example"));
+        }
+        let (generation, environment) = {
+            let mut state = self.state.borrow_mut();
+            state.load_generation += 1;
+            (state.load_generation, state.scene.environment.clone())
+        };
+        let mut scene = Scene::new();
+        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
+            PerspectiveCamera::default(),
+        )));
+        let placeholder = scene.insert(NodeKind::Group);
+        let viewer =
+            gltf_viewer::GltfViewer::create(&mut scene, camera, placeholder, example, environment)
+                .await;
+        let mut state = self.state.borrow_mut();
+        if state.load_generation != generation {
+            return Ok(false);
+        }
+        let viewer = viewer.map_err(|e| JsValue::from_str(&e.to_string()))?;
+        if let NodeKind::Camera(Camera::Perspective(c)) = &mut scene
+            .get_mut(camera)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?
+            .kind
+        {
+            c.aspect = state.canvas.width() as f64 / state.canvas.height() as f64;
+        }
+        scene.environment_intensity = state.scene.environment_intensity;
+        scene.background_environment = state.scene.background_environment;
+        scene.exposure = state.scene.exposure;
+        scene.background_blur = state.scene.background_blur;
+        scene.environment_rotation = state.scene.environment_rotation;
+        state.scene = scene;
+        state.camera = camera;
+        state.gltf = Some(viewer);
+        state.example = example;
+        state.renderer.collect_resources();
+        Ok(true)
+    }
+    pub async fn load_environment(&self, url: String) -> std::result::Result<bool, JsValue> {
+        let generation = {
+            let mut state = self.state.borrow_mut();
+            state.load_generation += 1;
+            state.load_generation
+        };
+        let image = async {
+            let bytes = gltf_viewer::fetch(&url).await?;
+            crate::environment::EnvironmentMap::from_hdr(&bytes)
+        }
+        .await;
+        let mut state = self.state.borrow_mut();
+        if state.load_generation != generation {
+            return Ok(false);
+        }
+        let image = image.map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.scene.environment = Some(Arc::new(image));
+        state.renderer.collect_resources();
+        Ok(true)
+    }
+    pub fn gltf_controls(
+        &self,
+        exposure: f64,
+        intensity: f64,
+        rotation: f64,
+        blur: f64,
+        background: bool,
+    ) {
+        if ![exposure, intensity, rotation, blur]
+            .iter()
+            .all(|v| v.is_finite())
+        {
+            return;
+        }
+        let mut state = self.state.borrow_mut();
+        state.scene.exposure = exposure.max(0.0);
+        state.scene.environment_intensity = intensity.max(0.0);
+        state.scene.environment_rotation = rotation;
+        state.scene.background_blur = blur.clamp(0.0, 1.0);
+        state.scene.background_environment = background;
+    }
+    pub fn resource_counts(&self) -> Vec<f64> {
+        let (resident, uploads, filters) = self.state.borrow().renderer.resource_counts();
+        vec![resident as f64, uploads as f64, filters as f64]
+    }
+    pub fn gltf_view(
+        &self,
+        yaw: f64,
+        pitch: f64,
+        distance: f64,
+        exposure: f64,
+        rotation: f64,
+        blur: f64,
+    ) {
+        if ![yaw, pitch, distance, exposure, rotation, blur]
+            .iter()
+            .all(|v| v.is_finite())
+            || distance <= 0.0
+        {
+            return;
+        }
+        let mut state = self.state.borrow_mut();
+        if let Some(viewer) = &mut state.gltf {
+            viewer.fixture(yaw, pitch, distance);
+        }
+        state.scene.exposure = exposure.max(0.0);
+        state.scene.environment_rotation = rotation;
+        state.scene.background_blur = blur.clamp(0.0, 1.0);
+    }
+    pub fn orbit(&self, dx: f64, dy: f64, zoom: f64) {
         if dx.is_finite()
             && dy.is_finite()
             && zoom.is_finite()
@@ -127,7 +249,7 @@ impl BrowserApp {
     }
     /// Rebuild a small scene fragment, exercising owned geometry replacement,
     /// groups/draw ranges, attribute edits and stale-handle protection.
-    pub fn rebuild(&mut self) -> std::result::Result<(), JsValue> {
+    pub fn rebuild(&self) -> std::result::Result<(), JsValue> {
         let result = (|| -> Result<()> {
             let mut state = self.state.borrow_mut();
             let original = state.mesh;
@@ -205,7 +327,20 @@ impl BrowserApp {
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
             surface.configure(&renderer.device, &configuration);
-            let target = RenderTarget::new(&renderer.device, canvas.width(), canvas.height())?;
+            let target = RenderTarget::with_options(
+                &renderer.device,
+                canvas.width(),
+                canvas.height(),
+                if example >= 4 {
+                    RenderTargetOptions {
+                        samples: 4,
+                        format: wgpu::TextureFormat::Rgba16Float,
+                        ..Default::default()
+                    }
+                } else {
+                    Default::default()
+                },
+            )?;
             let mut scene = Scene::new();
             scene.background = Color::from_hex(0x102030);
             let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
@@ -223,7 +358,8 @@ impl BrowserApp {
             let mut gltf = None;
             if example == 4 || example == 5 {
                 let viewer =
-                    gltf_viewer::GltfViewer::create(&mut scene, camera, mesh, example).await?;
+                    gltf_viewer::GltfViewer::create(&mut scene, camera, mesh, example, None)
+                        .await?;
                 let _ = canvas.set_attribute("data-triangles", &viewer.triangles.to_string());
                 let _ = canvas.set_attribute("data-meshes", &viewer.meshes.to_string());
                 gltf = Some(viewer);
@@ -352,6 +488,7 @@ impl BrowserApp {
                 rotation: Vector3::ZERO,
                 point_lights,
                 gltf,
+                load_generation: 0,
             }));
             let weak = Rc::downgrade(&state);
             let animation = Closure::wrap(Box::new(move |time: f64| {

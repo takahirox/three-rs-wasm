@@ -1,13 +1,10 @@
-//! Static glTF/GLB base-color viewer. gltf-rs parses accessors; rendering stays in Rust.
-use crate::{
-    Error, Result, attribute::BufferAttribute, camera::*, geometry::*, material::*, math::*,
-    scene::*,
-};
+//! Browser resource loading and camera controls for the reusable static glTF importer.
+use crate::{Error, Result, camera::*, math::*, scene::*};
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 
-async fn fetch(url: &str) -> Result<Vec<u8>> {
+pub(super) async fn fetch(url: &str) -> Result<Vec<u8>> {
     let response = JsFuture::from(
         web_sys::window()
             .ok_or(Error::Invalid("window"))?
@@ -31,7 +28,7 @@ async fn fetch(url: &str) -> Result<Vec<u8>> {
 }
 fn external(base: &str, uri: &str) -> Result<String> {
     if uri.starts_with("data:") {
-        return Err(Error::Invalid("data URI (use external files or GLB)"));
+        return Ok(uri.to_owned());
     }
     Ok(format!("{base}/{uri}"))
 }
@@ -50,6 +47,7 @@ impl GltfViewer {
         camera: Object3D,
         placeholder: Object3D,
         example: u32,
+        environment: Option<Arc<crate::environment::EnvironmentMap>>,
     ) -> Result<Self> {
         let url = if example == 4 {
             "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf"
@@ -59,9 +57,6 @@ impl GltfViewer {
         let base = url.rsplit_once('/').ok_or(Error::Invalid("asset URL"))?.0;
         let bytes = fetch(url).await?;
         let asset = gltf::Gltf::from_slice(&bytes).map_err(|e| Error::Asset(e.to_string()))?;
-        if asset.extensions_required().next().is_some() || asset.skins().next().is_some() {
-            return Err(Error::Invalid("required glTF extension or skin"));
-        }
         let mut buffers = Vec::new();
         for buffer in asset.buffers() {
             let data = match buffer.source() {
@@ -93,159 +88,23 @@ impl GltfViewer {
                         .to_vec()
                 }
             };
-            images.push(Texture::from_image(&data)?);
+            images.push(decode_image(&data).await?);
         }
-        let mut textures = Vec::new();
-        for texture in asset.textures() {
-            let mut image = images
-                .get(texture.source().index())
-                .ok_or(Error::Invalid("image index"))?
-                .clone();
-            image.flip_y = false;
-            let wrap = |w| match w {
-                gltf::texture::WrappingMode::ClampToEdge => Wrapping::Clamp,
-                gltf::texture::WrappingMode::MirroredRepeat => Wrapping::Mirror,
-                _ => Wrapping::Repeat,
-            };
-            image.wrap_s = wrap(texture.sampler().wrap_s());
-            image.wrap_t = wrap(texture.sampler().wrap_t());
-            image.filter =
-                if texture.sampler().mag_filter() == Some(gltf::texture::MagFilter::Nearest) {
-                    Filter::Nearest
-                } else {
-                    Filter::Linear
-                };
-            textures.push(Arc::new(image));
-        }
+        let imported = crate::gltf::import_decoded(&asset, &buffers, &images)?;
+        let bounds = imported.bounds;
+        let triangles = imported.triangles;
+        let meshes = imported.mesh_count();
+        let environment = match environment {
+            Some(image) => image,
+            None => Arc::new(crate::environment::EnvironmentMap::from_hdr(
+                &fetch("/web/environments/royal_esplanade_2k.hdr").await?,
+            )?),
+        };
+        imported.instantiate(scene)?;
         scene.dispose(placeholder)?;
-        let selected = asset
-            .default_scene()
-            .or_else(|| asset.scenes().next())
-            .ok_or(Error::Invalid("glTF scene"))?;
-        let mut stack: Vec<_> = selected.nodes().map(|n| (n, Matrix4::IDENTITY)).collect();
-        let mut bounds = Box3::default();
-        let mut triangles = 0;
-        let mut meshes = 0;
-        while let Some((node, parent)) = stack.pop() {
-            let local = Matrix4::from_cols_array_2d(
-                &node
-                    .transform()
-                    .matrix()
-                    .map(|column| column.map(f64::from)),
-            );
-            let world = parent * local;
-            for child in node.children() {
-                stack.push((child, world));
-            }
-            if let Some(mesh) = node.mesh() {
-                for primitive in mesh.primitives() {
-                    if primitive.mode() != gltf::mesh::Mode::Triangles
-                        || primitive.morph_targets().next().is_some()
-                    {
-                        return Err(Error::Invalid("non-triangle or morph glTF primitive"));
-                    }
-                    let reader =
-                        primitive.reader(|buffer| buffers.get(buffer.index()).map(Vec::as_slice));
-                    let positions: Vec<_> = reader
-                        .read_positions()
-                        .ok_or(Error::Invalid("glTF positions"))?
-                        .collect();
-                    for p in &positions {
-                        bounds.expand_by_point(
-                            world.transform_point3(Vector3::from_array(p.map(f64::from))),
-                        );
-                    }
-                    let mut geometry = BufferGeometry::default();
-                    geometry.set_attribute(
-                        "position",
-                        Attribute::F32(BufferAttribute::new(
-                            positions.into_iter().flatten().collect(),
-                            3,
-                            false,
-                        )?),
-                    );
-                    if let Some(indices) = reader.read_indices() {
-                        geometry.set_index(Some(indices.into_u32().collect()));
-                    }
-                    if let Some(normals) = reader.read_normals() {
-                        geometry.set_attribute(
-                            "normal",
-                            Attribute::F32(BufferAttribute::new(
-                                normals.flatten().collect(),
-                                3,
-                                false,
-                            )?),
-                        );
-                    }
-                    if let Some(uv) = reader.read_tex_coords(0) {
-                        geometry.set_attribute(
-                            "uv",
-                            Attribute::F32(BufferAttribute::new(
-                                uv.into_f32().flatten().collect(),
-                                2,
-                                false,
-                            )?),
-                        );
-                    }
-                    let source = primitive.material();
-                    if source.alpha_mode() == gltf::material::AlphaMode::Mask {
-                        return Err(Error::Invalid("glTF alpha mask"));
-                    }
-                    let pbr = source.pbr_metallic_roughness();
-                    let factor = pbr.base_color_factor();
-                    let mut material = Material::default();
-                    let p = material.properties_mut();
-                    p.color = Color(Vector3::new(
-                        factor[0] as f64,
-                        factor[1] as f64,
-                        factor[2] as f64,
-                    ));
-                    p.opacity = factor[3] as f64;
-                    p.transparent = source.alpha_mode() == gltf::material::AlphaMode::Blend;
-                    p.side = if source.double_sided() {
-                        Side::Double
-                    } else {
-                        Side::Front
-                    };
-                    if let Some(info) = pbr.base_color_texture() {
-                        if info.tex_coord() != 0 {
-                            return Err(Error::Invalid("glTF UV set"));
-                        }
-                        p.map = Some(
-                            textures
-                                .get(info.texture().index())
-                                .ok_or(Error::Invalid("glTF texture"))?
-                                .clone(),
-                        );
-                    }
-                    if let Some(colors) = reader.read_colors(0) {
-                        geometry.set_attribute(
-                            "color",
-                            Attribute::F32(BufferAttribute::new(
-                                colors.into_rgba_f32().flatten().collect(),
-                                4,
-                                false,
-                            )?),
-                        );
-                        p.vertex_colors = true;
-                    }
-                    triangles += geometry.draw_count() / 3;
-                    meshes += 1;
-                    let handle = scene.insert(NodeKind::Mesh(Mesh::new(
-                        Arc::new(geometry),
-                        Arc::new(material),
-                    )));
-                    let target = scene.get_mut(handle)?;
-                    target.name = node.name().unwrap_or("glTF mesh").into();
-                    target.matrix = world;
-                    target.matrix_auto_update = false;
-                    target.matrix_world_needs_update = true;
-                }
-            }
-        }
-        if meshes == 0 || bounds.is_empty() {
-            return Err(Error::Invalid("empty glTF scene"));
-        }
+        scene.environment = Some(environment);
+        scene.background_environment = true;
+        scene.aces_tone_mapping = true;
         let radius = bounds.size().max_element() * 1.8;
         scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
             fov: 45.0,
@@ -267,6 +126,11 @@ impl GltfViewer {
         viewer.update(scene, camera)?;
         Ok(viewer)
     }
+    pub fn fixture(&mut self, yaw: f64, pitch: f64, distance: f64) {
+        self.yaw = yaw;
+        self.pitch = pitch;
+        self.radius = self.initial_radius / 1.8 * distance;
+    }
     pub fn orbit(&mut self, dx: f64, dy: f64, zoom: f64) {
         self.yaw -= dx * 0.008;
         self.pitch = (self.pitch + dy * 0.008).clamp(-1.4, 1.4);
@@ -274,6 +138,11 @@ impl GltfViewer {
             .clamp(self.initial_radius * 0.3, self.initial_radius * 3.0);
     }
     pub fn update(&self, scene: &mut Scene, camera: Object3D) -> Result<()> {
+        if let NodeKind::Camera(Camera::Perspective(perspective)) = &mut scene.get_mut(camera)?.kind
+        {
+            perspective.near = self.radius / 100.0;
+            perspective.far = self.radius * 100.0;
+        }
         scene.get_mut(camera)?.position = self.center
             + Vector3::new(
                 self.yaw.sin() * self.pitch.cos(),
@@ -282,4 +151,50 @@ impl GltfViewer {
             ) * self.radius;
         scene.look_at(camera, self.center)
     }
+}
+
+// JPEG IDCT rounding differs between native codecs. Use the browser codec, as
+// GLTFLoader does, for JPEG normal maps; keep lossless images on the Rust path
+// to preserve RGB under transparent pixels without a canvas premultiply roundtrip.
+async fn decode_image(bytes: &[u8]) -> Result<crate::material::Texture> {
+    use crate::material::Texture;
+    if !bytes.starts_with(&[0xff, 0xd8]) {
+        return Texture::from_image(bytes);
+    }
+    let fail = |e| Error::Asset(format!("JPEG decode: {e:?}"));
+    let parts = js_sys::Array::new();
+    parts.push(&js_sys::Uint8Array::from(bytes));
+    let blob = web_sys::Blob::new_with_u8_array_sequence(&parts).map_err(fail)?;
+    let options = web_sys::ImageBitmapOptions::new();
+    options.set_color_space_conversion(web_sys::ColorSpaceConversion::None);
+    options.set_premultiply_alpha(web_sys::PremultiplyAlpha::None);
+    let bitmap: web_sys::ImageBitmap = JsFuture::from(
+        web_sys::window()
+            .ok_or(Error::Invalid("window"))?
+            .create_image_bitmap_with_blob_and_image_bitmap_options(&blob, &options)
+            .map_err(fail)?,
+    )
+    .await
+    .map_err(fail)?
+    .dyn_into()
+    .map_err(fail)?;
+    let result = (|| {
+        let canvas =
+            web_sys::OffscreenCanvas::new(bitmap.width(), bitmap.height()).map_err(fail)?;
+        let context: web_sys::OffscreenCanvasRenderingContext2d = canvas
+            .get_context("2d")
+            .map_err(fail)?
+            .ok_or(Error::Invalid("JPEG decode context"))?
+            .dyn_into()
+            .map_err(|e: js_sys::Object| fail(e.into()))?;
+        context
+            .draw_image_with_image_bitmap(&bitmap, 0.0, 0.0)
+            .map_err(fail)?;
+        let image = context
+            .get_image_data(0.0, 0.0, bitmap.width() as f64, bitmap.height() as f64)
+            .map_err(fail)?;
+        Texture::from_rgba(bitmap.width(), bitmap.height(), image.data().0, true)
+    })();
+    bitmap.close();
+    result
 }

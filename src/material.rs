@@ -31,6 +31,8 @@ pub struct Texture {
     pub wrap_s: Wrapping,
     pub wrap_t: Wrapping,
     pub filter: Filter,
+    pub min_filter: Option<Filter>,
+    pub mipmap_filter: Option<Filter>,
     pub flip_y: bool,
     pub offset: Vector2,
     pub repeat: Vector2,
@@ -53,6 +55,8 @@ impl Texture {
             wrap_s: Wrapping::Clamp,
             wrap_t: Wrapping::Clamp,
             filter: Filter::Linear,
+            min_filter: None,
+            mipmap_filter: None,
             flip_y: true,
             offset: Vector2::ZERO,
             repeat: Vector2::ONE,
@@ -94,6 +98,7 @@ impl Texture {
 pub struct MaterialProperties {
     pub color: Color,
     pub opacity: f64,
+    pub alpha_test: f64,
     pub transparent: bool,
     pub side: Side,
     pub depth_test: bool,
@@ -107,6 +112,7 @@ impl Default for MaterialProperties {
         Self {
             color: Color::WHITE,
             opacity: 1.0,
+            alpha_test: 0.0,
             transparent: false,
             side: Side::Front,
             depth_test: true,
@@ -127,6 +133,12 @@ pub struct MeshStandardMaterial {
     pub roughness: f64,
     pub metalness: f64,
     pub emissive: Color,
+    pub metallic_roughness_map: Option<Arc<Texture>>,
+    pub normal_map: Option<Arc<Texture>>,
+    pub normal_scale: Vector2,
+    pub occlusion_map: Option<Arc<Texture>>,
+    pub occlusion_strength: f64,
+    pub emissive_map: Option<Arc<Texture>>,
 }
 impl Default for MeshStandardMaterial {
     fn default() -> Self {
@@ -135,6 +147,12 @@ impl Default for MeshStandardMaterial {
             roughness: 1.0,
             metalness: 0.0,
             emissive: Color::BLACK,
+            metallic_roughness_map: None,
+            normal_map: None,
+            normal_scale: Vector2::ONE,
+            occlusion_map: None,
+            occlusion_strength: 1.0,
+            emissive_map: None,
         }
     }
 }

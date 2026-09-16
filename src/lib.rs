@@ -6,6 +6,8 @@ pub mod attribute;
 #[cfg(target_arch = "wasm32")]
 pub mod browser;
 pub mod camera;
+pub mod environment;
+mod environment_gpu;
 pub mod event;
 pub mod geometry;
 pub mod identity;
@@ -15,6 +17,7 @@ pub mod raycast;
 pub mod render_target;
 pub mod renderer;
 pub mod scene;
+mod texture_gpu;
 pub mod time;
 
 #[derive(Debug, thiserror::Error)]
@@ -31,3 +34,7 @@ pub enum Error {
     Asset(String),
 }
 pub type Result<T> = std::result::Result<T, Error>;
+
+pub mod gltf;
+
+mod background;

@@ -55,14 +55,24 @@ See `models/BoomBox-LICENSE.md` for the upstream notice.
 
 `?example=4` reads glTF JSON, its external BIN and JPEGs; `?example=5` reads
 GLB binary data and embedded PNGs. gltf-rs parses the files in Rust/Wasm.
-The viewer imports triangle primitives, indices, normals, UV0, vertex colors,
-base-color factors/textures, sampler wrapping and static node transforms.
-It uses a base-color material: HDR environment lighting, metallic/roughness,
-normal, emissive and occlusion maps are not applied. It is not a reproduction
-of the official loader example's PBR lighting. Animation, skins, morphs, data
-URIs and required extensions are outside this static demo loader's scope.
+The library importer preserves static transforms, triangle primitives, indices,
+normals, tangents, UV0 and vertex colors. It imports original metallic-roughness
+PBR materials, including normal/AO/emissive maps and texture sampling state.
+HDR lighting, ACES exposure and four-sample HDR rendering are enabled.
+The comparison pages retain the original Three.js PBR materials and UltraHDR.
+Runtime parsing, image decoding, scene state, material setup and WebGPU rendering
+remain in Rust/Wasm. See `../docs/gltf-pbr.md` for the supported subset.
 
-The comparison page uses the actual pinned Three.js GLTFLoader and converts
-materials to the same base-color mode. Both models must meet the existing image
-tolerance and pass orbit interaction checks. The demo itself never invokes the
-JavaScript GLTFLoader.
+# M2 HDR environment and shading
+
+Royal Esplanade is by Greg Zaal, [Poly Haven, CC0](https://polyhaven.com/a/royal_esplanade).
+The original UltraHDR file is copied from the pinned Three.js archive:
+`examples/textures/equirectangular/royal_esplanade_2k.hdr.jpg`.
+`royal_esplanade_2k.hdr` is a Radiance RGBE conversion of the **official r186
+UltraHDRLoader's HDR reconstruction**, not the SDR base JPEG or a separately
+exposed download. Run `node tools/convert-environment.mjs` with `tools/serve.py`
+running to reproduce it. Source and output hashes are recorded in
+`environments.json`; tests verify HDR equivalence against the original decoder.
+
+Cube-UV sampling, GGX filtering, DFG lookup data and ACES matrices are ported from
+Three.js r186 under the MIT terms in `../LICENSE-THREE`.

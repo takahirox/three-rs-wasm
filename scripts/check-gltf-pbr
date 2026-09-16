@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -uo pipefail
+cd "$(dirname "$0")/.."
+EVIDENCE="$(mktemp -d "${TMPDIR:-/tmp}/three-rs-wasm-m2.XXXXXX")"
+trap 'rm -rf "$EVIDENCE"' EXIT
+FAIL=0
+./scripts/check-mvp || FAIL=1
+if [[ -d test-results ]]; then cp -R test-results "$EVIDENCE/mvp"; fi
+python3 tests/gltf-pbr/check_assets.py || FAIL=1
+python3 tests/gltf-pbr/check_coverage.py || FAIL=1
+npx playwright test m2-reference.spec.js gltf-pbr.spec.js hdr-equivalence.spec.js gltf-lifecycle.spec.js || FAIL=1
+if [[ -d "$EVIDENCE/mvp" ]]; then mkdir -p test-results; cp -R "$EVIDENCE/mvp" test-results/mvp; fi
+if ((FAIL==0)); then echo 'GLTF PBR: PASS'; else echo 'GLTF PBR: FAIL'; exit 1; fi
