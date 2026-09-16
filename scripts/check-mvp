@@ -6,6 +6,7 @@ cd "$ROOT"
 
 PASS=0
 FAIL=0
+MEMBERS_JSON="${TMPDIR:-/tmp}/three-rs-wasm-members.json"
 
 run() {
   local name="$1"
@@ -27,8 +28,8 @@ require_file() {
 }
 
 run "Frozen manifest files" bash -c 'test -f compat/three-r186/api.json && test -f compat/three-r186/capabilities.json && test -f compat/three-r186/unsupported.json'
-run "Generated Core inventory" python3 tools/compat/generate_core_inventory.py --check
-run "Core capability accounting" python3 tools/compat/check_manifest.py
+run "Generate Core inventory" python3 tools/compat/generate_core_inventory.py --output "$MEMBERS_JSON"
+run "Core capability accounting" python3 tools/compat/check_manifest.py --members "$MEMBERS_JSON"
 run "Rust workspace" require_file Cargo.toml
 
 if [[ -f Cargo.toml ]]; then
