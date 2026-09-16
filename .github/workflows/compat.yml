@@ -1,0 +1,27 @@
+name: compatibility-baseline
+
+on:
+  push:
+    paths:
+      - 'compat/**'
+      - 'tools/compat/**'
+      - '.github/workflows/compat.yml'
+  pull_request:
+    paths:
+      - 'compat/**'
+      - 'tools/compat/**'
+      - '.github/workflows/compat.yml'
+  workflow_dispatch:
+
+jobs:
+  compat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate Core API inventory
+        run: python3 tools/compat/generate_core_inventory.py --output /tmp/three-rs-wasm-members.json
+      - name: Validate compatibility accounting
+        run: python3 tools/compat/check_manifest.py --members /tmp/three-rs-wasm-members.json
