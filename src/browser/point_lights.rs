@@ -204,7 +204,7 @@ impl PointLights {
             return Err(Error::Invalid("head positions"));
         };
         let array = attribute.array_mut();
-        for (face, base) in self.base.chunks_exact(12).enumerate() {
+        for (face, base) in self.base.as_chunks::<12>().0.iter().enumerate() {
             let (phase, seed) = self.phases[face];
             let wave = (((phase + self.time) * 2.0 + seed).sin() * 0.5).abs();
             for (corner, p) in base.iter().enumerate() {

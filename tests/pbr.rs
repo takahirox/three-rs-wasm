@@ -49,7 +49,7 @@ fn hdr_is_linear_and_lights_a_metal() {
         true,
     );
     let pixels = renderer.read_rgba(&output).unwrap();
-    assert!(pixels.chunks_exact(4).any(|p| p[0] > 30));
+    assert!(pixels.as_chunks::<4>().0.iter().any(|p| p[0] > 30));
 }
 
 #[test]
@@ -352,9 +352,14 @@ fn alpha_mask_and_double_sided_materials_preserve_coverage() {
         scene.get_mut(mesh).unwrap().quaternion = Quaternion::from_rotation_y(rotation);
         renderer.render(&mut scene, camera, &target).unwrap();
         let pixels = renderer.read_rgba(&target).unwrap();
-        let red = pixels.chunks_exact(4).filter(|p| p[0] > 200).count();
+        let red = pixels
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .filter(|p| p[0] > 200)
+            .count();
         assert_eq!(red, 512);
-        assert!(pixels.chunks_exact(4).all(|p| p[3] == 255));
+        assert!(pixels.as_chunks::<4>().0.iter().all(|p| p[3] == 255));
     }
 }
 
