@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "baseline": {
+    "release": "r186",
+    "npm": "three@0.186.0",
+    "git_tag": "r186",
+    "upstream_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+    "core_path": "src/core"
+  },
+  "statuses": {
+    "implemented-equivalent": "Expose a Rust API with substantially equivalent capability and observable behavior.",
+    "implemented-adapted": "Preserve the capability/behavior but intentionally use a Rust-native API or ownership/type model.",
+    "unsupported-webgl-specific": "Exclude because the API exists specifically for WebGL and has no meaningful WebGPU role.",
+    "unsupported-js-specific": "Exclude only when the API expresses JavaScript runtime semantics with no useful Rust engine capability.",
+    "deferred": "Known useful capability intentionally outside this MVP; must have an explicit frozen rationale."
+  },
+  "member_policy": "All generated public/protected-like members inherit the containing exported type's default_status unless listed in member_overrides.",
+  "types": [
+    {"three_type":"BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"BufferAttribute<T>","notes":"Rust uses typed owned/shared storage instead of JavaScript TypedArray objects; numeric normalization and observable attribute behavior must match r186."},
+    {"three_type":"Int8BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Int8BufferAttribute = BufferAttribute<i8>"},
+    {"three_type":"Uint8BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Uint8BufferAttribute = BufferAttribute<u8>"},
+    {"three_type":"Uint8ClampedBufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"Uint8ClampedBufferAttribute","notes":"Preserve clamped-write behavior explicitly; do not assume plain u8 assignment is equivalent."},
+    {"three_type":"Int16BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Int16BufferAttribute = BufferAttribute<i16>"},
+    {"three_type":"Uint16BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Uint16BufferAttribute = BufferAttribute<u16>"},
+    {"three_type":"Int32BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Int32BufferAttribute = BufferAttribute<i32>"},
+    {"three_type":"Uint32BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Uint32BufferAttribute = BufferAttribute<u32>"},
+    {"three_type":"Float16BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"Float16BufferAttribute","notes":"Preserve r186 half-float conversion behavior."},
+    {"three_type":"Float32BufferAttribute","source":"src/core/BufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"type Float32BufferAttribute = BufferAttribute<f32>"},
+    {"three_type":"BufferGeometry","source":"src/core/BufferGeometry.js","default_status":"implemented-adapted","rust_mapping":"BufferGeometry","notes":"String-named attributes/groups/bounds/indirect draw state are retained; ownership and storage use Rust-native handles/containers."},
+    {"three_type":"Clock","source":"src/core/Clock.js","default_status":"implemented-equivalent","rust_mapping":"Clock","notes":"Deprecated in r186 but retained for compatibility; use a browser/Wasm-compatible monotonic clock."},
+    {"three_type":"EventDispatcher","source":"src/core/EventDispatcher.js","default_status":"implemented-adapted","rust_mapping":"typed event dispatcher / listener tokens","notes":"Preserve event notification capability, but use typed Rust events/listener handles instead of JavaScript Function identity, this-binding, and arbitrary mutable event objects."},
+    {"three_type":"GLBufferAttribute","source":"src/core/GLBufferAttribute.js","default_status":"unsupported-webgl-specific","rust_mapping":null,"notes":"Directly wraps native WebGLBuffer and is documented by r186 as WebGLRenderer-only."},
+    {"three_type":"InstancedBufferAttribute","source":"src/core/InstancedBufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"InstancedBufferAttribute<T>","notes":"Typed Rust storage replaces TypedArray; meshPerAttribute semantics must match."},
+    {"three_type":"InstancedBufferGeometry","source":"src/core/InstancedBufferGeometry.js","default_status":"implemented-adapted","rust_mapping":"InstancedBufferGeometry","notes":"Rust composition may replace JavaScript inheritance; instanceCount behavior must match."},
+    {"three_type":"InstancedInterleavedBuffer","source":"src/core/InstancedInterleavedBuffer.js","default_status":"implemented-adapted","rust_mapping":"InstancedInterleavedBuffer<T>","notes":"Shared/interleaved storage is represented with Rust ownership/handles."},
+    {"three_type":"InterleavedBuffer","source":"src/core/InterleavedBuffer.js","default_status":"implemented-adapted","rust_mapping":"InterleavedBuffer<T>","notes":"Shared/interleaved storage is represented with Rust ownership/handles rather than TypedArray/ArrayBuffer identity."},
+    {"three_type":"InterleavedBufferAttribute","source":"src/core/InterleavedBufferAttribute.js","default_status":"implemented-adapted","rust_mapping":"InterleavedBufferAttribute<T>","notes":"Stride/offset/normalized behavior must match; storage aliasing uses a safe Rust representation."},
+    {"three_type":"Layers","source":"src/core/Layers.js","default_status":"implemented-equivalent","rust_mapping":"Layers","notes":"32-bit mask semantics should match r186."},
+    {"three_type":"Object3D","source":"src/core/Object3D.js","default_status":"implemented-adapted","rust_mapping":"Object3D / scene-node handle","notes":"Scene-graph ownership, parent/child references, callbacks, dynamic queries, and subclass hooks use Rust-native handles/traits/closures while transform behavior matches r186."},
+    {"three_type":"Raycaster","source":"src/core/Raycaster.js","default_status":"implemented-adapted","rust_mapping":"Raycaster + Raycast trait","notes":"Dynamic object.raycast override dispatch is represented by a Rust trait/capability; standard intersection behavior must match r186."},
+    {"three_type":"RenderTarget","source":"src/core/RenderTarget.js","default_status":"implemented-adapted","rust_mapping":"RenderTarget","notes":"WebGPU-meaningful attachments, MSAA, resolve/store, depth/stencil, viewport/scissor, and lifecycle are supported with Rust resource ownership."},
+    {"three_type":"RenderTarget3D","source":"src/core/RenderTarget3D.js","default_status":"implemented-adapted","rust_mapping":"RenderTarget3D","notes":"Backed by WebGPU 3D texture resources."},
+    {"three_type":"Timer","source":"src/core/Timer.js","default_status":"implemented-adapted","rust_mapping":"Timer","notes":"Timing behavior must match; Page Visibility integration uses web-sys/browser bindings rather than a raw JavaScript Document object."},
+    {"three_type":"Uniform","source":"src/core/Uniform.js","default_status":"unsupported-webgl-specific","rust_mapping":null,"notes":"r186 documents this ShaderMaterial uniform wrapper as WebGLRenderer-only."},
+    {"three_type":"UniformsGroup","source":"src/core/UniformsGroup.js","default_status":"unsupported-webgl-specific","rust_mapping":null,"notes":"r186 documents this UBO/ShaderMaterial abstraction as WebGLRenderer-only."}
+  ],
+  "member_overrides": [
+    {"api":"Object3D.customDepthMaterial","status":"unsupported-webgl-specific","reason":"r186 explicitly documents this property as only relevant to WebGLRenderer."},
+    {"api":"Object3D.customDistanceMaterial","status":"unsupported-webgl-specific","reason":"r186 explicitly documents this property as only relevant to WebGLRenderer."},
+    {"api":"RenderTarget.multiview","status":"unsupported-webgl-specific","reason":"r186 defines this as WebGL OVR_multiview2 extension state."},
+    {"api":"RenderTarget.constructor.options.multiview","status":"unsupported-webgl-specific","reason":"Constructor option for the WebGL OVR_multiview2 path."},
+    {"api":"Object3D.animations","status":"deferred","reason":"Depends on the animation subsystem, which is outside the MVP; scene-node animation attachment will be added with animation support."},
+    {"api":"Object3D.onBeforeShadow","status":"deferred","reason":"Shadow rendering hooks depend on the advanced shadow subsystem, which is outside the MVP."},
+    {"api":"Object3D.onAfterShadow","status":"deferred","reason":"Shadow rendering hooks depend on the advanced shadow subsystem, which is outside the MVP."},
+    {"api":"Raycaster.setFromXRController","status":"deferred","reason":"Depends on WebXR controller integration, which is outside the MVP browser integration scope."}
+  ],
+  "must_support": [
+    {"api":"Object3D.static","reason":"r186 marks it WebGPURenderer-only; it is specifically relevant to this WebGPU-first project."},
+    {"api":"BufferGeometry.indirect","reason":"r186 marks it WebGPURenderer/WebGPU-only; indirect drawing is in scope."},
+    {"api":"BufferGeometry.indirectOffset","reason":"r186 marks it WebGPURenderer/WebGPU-only; indirect drawing is in scope."},
+    {"api":"BufferGeometry.setIndirect","reason":"WebGPU indirect draw API; must be supported."},
+    {"api":"BufferGeometry.getIndirect","reason":"WebGPU indirect draw API; must be supported."},
+    {"api":"BufferAttribute.dispose","reason":"r186 exposes this only for WebGPURenderer; resource lifecycle is a core project goal."},
+    {"api":"BufferGeometry.morphAttributes","reason":"Core data-model compatibility is required even though full morph-target rendering is deferred."},
+    {"api":"BufferGeometry.morphTargetsRelative","reason":"Core data-model compatibility is required even though full morph-target rendering is deferred."},
+    {"api":"RenderTarget.storeMultisampledDepthBuffer","reason":"r186 documents WebGPU-specific depth behavior; must be modeled correctly."}
+  ],
+  "semantic_rules": {
+    "difficulty_is_not_exclusion_reason": true,
+    "javascript_inheritance_not_required": true,
+    "javascript_function_identity_not_required": true,
+    "typed_array_object_identity_not_required": true,
+    "behavioral_results_should_match_three_r186": true,
+    "rust_type_safety_may_change_signatures": true,
+    "webgpu_specific_three_apis_are_in_scope": true,
+    "morph_core_data_model_in_scope_full_morph_rendering_out_of_scope": true
+  }
+}
