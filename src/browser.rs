@@ -4,6 +4,8 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod gltf_viewer;
+mod point_lights;
 
 type AnimationCallback = Closure<dyn FnMut(f64)>;
 struct State {
@@ -21,6 +23,10 @@ struct State {
     request: Option<i32>,
     paused: bool,
     rebuilds: u32,
+    example: u32,
+    rotation: Vector3,
+    point_lights: Option<point_lights::PointLights>,
+    gltf: Option<gltf_viewer::GltfViewer>,
 }
 impl State {
     fn render(&mut self, time: f64) -> Result<()> {
@@ -37,8 +43,28 @@ impl State {
             self.surface
                 .configure(&self.renderer.device, &self.configuration);
         }
-        if !self.paused {
-            self.scene.get_mut(self.mesh)?.quaternion = Quaternion::from_rotation_y(time * 0.0003);
+        if let Some(viewer) = &self.gltf {
+            viewer.update(&mut self.scene, self.camera)?;
+        } else if let Some(demo) = &mut self.point_lights {
+            if !self.paused {
+                demo.time += self.timer.get_delta().min(0.1) * demo.speed;
+            }
+            demo.update(&mut self.scene, self.camera, self.mesh)?;
+            let _ = self
+                .canvas
+                .set_attribute("data-demo-time", &demo.time.to_string());
+        } else if !self.paused {
+            self.scene.get_mut(self.mesh)?.quaternion = if self.example == 2 {
+                self.rotation.x += 0.005;
+                self.rotation.y += 0.01;
+                Euler {
+                    angles: self.rotation,
+                    order: EulerOrder::XYZ,
+                }
+                .quaternion()
+            } else {
+                Quaternion::from_rotation_y(time * 0.0003)
+            };
         }
         self.renderer
             .render(&mut self.scene, self.camera, &self.target)?;
@@ -70,6 +96,35 @@ pub struct BrowserApp {
 }
 #[wasm_bindgen]
 impl BrowserApp {
+    /// Presentation controls; all scene and deformation state remains in Rust.
+    pub fn point_lights_controls(&mut self, paused: bool, amount: f64, speed: f64) {
+        let mut state = self.state.borrow_mut();
+        state.paused = paused;
+        if let Some(demo) = &mut state.point_lights {
+            if amount.is_finite() {
+                demo.amount = amount.clamp(0.0, 3.0);
+            }
+            if speed.is_finite() {
+                demo.speed = speed.clamp(0.0, 2.0);
+            }
+        }
+    }
+    pub fn orbit(&mut self, dx: f64, dy: f64, zoom: f64) {
+        if dx.is_finite()
+            && dy.is_finite()
+            && zoom.is_finite()
+            && let Some(viewer) = &mut self.state.borrow_mut().gltf
+        {
+            viewer.orbit(dx, dy, zoom);
+        }
+        if dx.is_finite()
+            && dy.is_finite()
+            && zoom.is_finite()
+            && let Some(demo) = &mut self.state.borrow_mut().point_lights
+        {
+            demo.orbit(dx, dy, zoom);
+        }
+    }
     /// Rebuild a small scene fragment, exercising owned geometry replacement,
     /// groups/draw ranges, attribute edits and stale-handle protection.
     pub fn rebuild(&mut self) -> std::result::Result<(), JsValue> {
@@ -164,7 +219,27 @@ impl BrowserApp {
                 Arc::new(BoxGeometry::build(1.5, 1.5, 1.5)?),
                 Arc::new(material),
             )));
-            if example == 1 {
+            let mut point_lights = None;
+            let mut gltf = None;
+            if example == 4 || example == 5 {
+                let viewer =
+                    gltf_viewer::GltfViewer::create(&mut scene, camera, mesh, example).await?;
+                let _ = canvas.set_attribute("data-triangles", &viewer.triangles.to_string());
+                let _ = canvas.set_attribute("data-meshes", &viewer.meshes.to_string());
+                gltf = Some(viewer);
+            } else if example == 3 {
+                let mut demo = point_lights::PointLights::create(
+                    &mut scene,
+                    camera,
+                    mesh,
+                    canvas.width() as f64 / canvas.height() as f64,
+                )
+                .await?;
+                if !animate {
+                    demo.time = 6.0;
+                }
+                point_lights = Some(demo);
+            } else if example == 1 {
                 scene.get_mut(camera)?.kind =
                     NodeKind::Camera(Camera::Orthographic(OrthographicCamera {
                         left: -3.0,
@@ -223,6 +298,32 @@ impl BrowserApp {
                     material: Arc::new(Material::Points(points_material)),
                 }));
                 scene.get_mut(points)?.position.y = -0.4;
+            } else if example == 2 {
+                // Three.js r186 examples/webgl_geometry_cube.html, ported to WebGPU.
+                scene.background = Color::BLACK;
+                scene.get_mut(camera)?.kind =
+                    NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+                        fov: 70.0,
+                        aspect: canvas.width() as f64 / canvas.height() as f64,
+                        near: 0.1,
+                        far: 100.0,
+                        ..Default::default()
+                    }));
+                scene.get_mut(camera)?.position.z = 2.0;
+                let mut material = Material::default();
+                material.properties_mut().map =
+                    Some(Arc::new(Texture::load("/web/crate.gif").await?));
+                scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
+                    Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
+                    Arc::new(material),
+                ));
+                if !animate {
+                    scene.get_mut(mesh)?.quaternion = Euler {
+                        angles: Vector3::new(0.4, 0.7, 0.0),
+                        order: EulerOrder::XYZ,
+                    }
+                    .quaternion();
+                }
             } else if example != 0 {
                 return Err(Error::Invalid("example id"));
             }
@@ -247,6 +348,10 @@ impl BrowserApp {
                 request: None,
                 paused: !animate,
                 rebuilds: 0,
+                example,
+                rotation: Vector3::ZERO,
+                point_lights,
+                gltf,
             }));
             let weak = Rc::downgrade(&state);
             let animation = Closure::wrap(Box::new(move |time: f64| {
@@ -269,6 +374,9 @@ impl BrowserApp {
             let pointer = Closure::wrap(Box::new(move |event: web_sys::PointerEvent| {
                 if let Some(state) = weak.upgrade() {
                     let mut state = state.borrow_mut();
+                    if state.point_lights.is_some() || state.gltf.is_some() {
+                        return;
+                    }
                     let ndc = Vector2::new(
                         event.offset_x() as f64 / state.canvas.client_width() as f64 * 2.0 - 1.0,
                         1.0 - event.offset_y() as f64 / state.canvas.client_height() as f64 * 2.0,

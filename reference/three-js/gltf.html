@@ -1,0 +1,26 @@
+<!doctype html><html><meta charset="utf-8"><title>Three.js glTF base-color comparison</title>
+<style>body{margin:0}canvas{display:block;width:720px;height:720px}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js"}}</script>
+<canvas width="720" height="720"></canvas>
+<script type="module">
+import * as T from 'three';
+import {GLTFLoader} from '/.cache/three-r186/examples/jsm/loaders/GLTFLoader.js';
+const canvas=document.querySelector('canvas');
+try{
+ const id=Number(new URLSearchParams(location.search).get('example')||4);
+ const url=id===4?'/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf':'/web/models/BoomBox.glb';
+ const asset=await new GLTFLoader().loadAsync(url);
+ asset.scene.traverse(node=>{if(!node.isMesh)return;
+   const old=node.material,map=old.map;
+   if(map){map.minFilter=T.LinearFilter;map.magFilter=T.LinearFilter;map.generateMipmaps=false;}
+   node.material=new T.MeshBasicMaterial({color:old.color,map,side:old.side,opacity:old.opacity,transparent:old.transparent,vertexColors:old.vertexColors});
+ });
+ const box=new T.Box3().setFromObject(asset.scene,true),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
+ const radius=Math.max(size.x,size.y,size.z)*1.8,yaw=-.55,pitch=.18;
+ const camera=new T.PerspectiveCamera(45,1,radius/100,radius*100);
+ camera.position.copy(center).add(new T.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)).multiplyScalar(radius));camera.lookAt(center);
+ const scene=new T.Scene();scene.background=new T.Color(0x101820);scene.add(asset.scene);
+ const renderer=new T.WebGPURenderer({canvas,antialias:false});await renderer.init();renderer.setSize(720,720,false);
+ renderer.render(scene,camera);await renderer.backend.device.queue.onSubmittedWorkDone();canvas.dataset.ready='true';
+}catch(e){canvas.dataset.error=String(e);}
+</script></html>

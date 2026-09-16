@@ -1,0 +1,30 @@
+<!doctype html><html><meta charset="utf-8"><title>Three.js r186 PBR reference</title>
+<style>body{margin:0}canvas{display:block;width:256px;height:256px}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js"}}</script>
+<canvas width="256" height="256"></canvas>
+<script type="module">
+import * as T from 'three';
+import {GLTFLoader} from '/.cache/three-r186/examples/jsm/loaders/GLTFLoader.js';
+import {UltraHDRLoader} from '/.cache/three-r186/examples/jsm/loaders/UltraHDRLoader.js';
+const canvas=document.querySelector('canvas');
+try{
+ const manifest=await(await fetch('/tests/gltf-pbr/manifest.json')).json();
+ const renderer=new T.WebGPURenderer({canvas,antialias:true});await renderer.init();renderer.setSize(256,256,false);renderer.toneMapping=T.ACESFilmicToneMapping;
+ const scene=new T.Scene(),camera=new T.PerspectiveCamera(45,1,.01,1000);
+ const environment=await new UltraHDRLoader().loadAsync(manifest.environment);environment.mapping=T.EquirectangularReflectionMapping;
+ scene.environment=environment;scene.background=environment;
+ const models=await Promise.all(manifest.models.map(async m=>(await new GLTFLoader().loadAsync(m.url)).scene));
+ window.renderFixture=async(modelIndex,viewIndex)=>{
+   for(const model of models)scene.remove(model);
+   const model=models[modelIndex];scene.add(model);
+   const box=new T.Box3().setFromObject(model,true),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
+   const v=manifest.views[viewIndex],radius=Math.max(size.x,size.y,size.z)*v.distance_factor;
+   camera.near=radius/100;camera.far=radius*100;camera.updateProjectionMatrix();
+   camera.position.copy(center).add(new T.Vector3(Math.sin(v.yaw)*Math.cos(v.pitch),Math.sin(v.pitch),Math.cos(v.yaw)*Math.cos(v.pitch)).multiplyScalar(radius));camera.lookAt(center);
+   renderer.toneMappingExposure=v.exposure;scene.environmentRotation.y=v.rotation;scene.backgroundRotation.y=v.rotation;scene.backgroundBlurriness=v.blur;
+   await renderer.renderAsync(scene,camera);await renderer.backend.device.queue.onSubmittedWorkDone();
+ };
+ window.reference={renderer,scene,camera,environment,models};
+ await window.renderFixture(0,0);canvas.dataset.ready='true';
+}catch(e){canvas.dataset.error=String(e);console.error(e);}
+</script></html>

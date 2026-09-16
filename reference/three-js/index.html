@@ -22,6 +22,15 @@ try {
     scene.add(new T.Line(geometry,new T.LineBasicMaterial({color:0x44ff88})));
     const points=new T.Points(geometry,new T.PointsMaterial({color:0xffffff,size:1,sizeAttenuation:false}));points.position.y=-.4;scene.add(points);
   }
+  if(example===2) {
+    scene.background=new T.Color(0x000000);
+    camera.fov=70;camera.near=.1;camera.far=100;camera.position.z=2;camera.updateProjectionMatrix();
+    cube.geometry.dispose();cube.geometry=new T.BoxGeometry();
+    const texture=await new T.TextureLoader().loadAsync('/web/crate.gif');
+    texture.colorSpace=T.SRGBColorSpace;texture.minFilter=T.LinearFilter;texture.generateMipmaps=false;
+    cube.material.dispose();cube.material=new T.MeshBasicMaterial({map:texture});
+    cube.rotation.set(.4,.7,0);
+  }
   renderer.render(scene,camera);canvas.setAttribute('data-ready','true');window.renderer=renderer;
 } catch(error) {canvas.setAttribute('data-error',String(error));}
 </script></html>

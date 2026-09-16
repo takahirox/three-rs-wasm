@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const manifest=JSON.parse(readFileSync(new URL('../../migration/manifest.json',import.meta.url),'utf8'));
 const CHANNEL_TOLERANCE=manifest.comparison.channel_tolerance;
 const MAX_DIFFERENT_PIXEL_FRACTION=manifest.comparison.maximum_different_pixel_fraction;
-for(const [id,name] of [[0,'basic cube'],[1,'hierarchy, textures, lights, lines and points']]) {
+for(const [id,name] of [[0,'basic cube'],[1,'hierarchy, textures, lights, lines and points'],[2,'official geometry cube']]) {
   test(`Three.js migration: ${name}`,async({page},testInfo)=>{
     await page.goto(`/reference/three-js/?example=${id}`);
     let canvas=page.locator('canvas');

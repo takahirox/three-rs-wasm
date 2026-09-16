@@ -60,3 +60,25 @@ matching the useful Three.js scene-copy behavior.
 Behavioral comparisons run the pinned JavaScript implementation, not generated
 Rust golden files. Geometry storage is float32 (absolute/relative tolerance
 `2e-6`); double-precision math uses `1e-10`. Integer/index results should be exact.
+
+## Interactive demos
+
+Build an optimized browser package for the deforming model, then start the local
+server from the repository root:
+
+```sh
+PATH="$(dirname "$(rustup which rustc)"):$PATH" wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+python3 tools/serve.py
+```
+
+Open <http://127.0.0.1:8173/web/?example=3> for the official Point Lights port:
+16,160 model triangles expanded into 64,640 animated tetrahedron faces, two moving
+colored lights, orbit/zoom, pause, speed and deformation controls. Other tabs show
+the introductory scenes and official textured cube. Rendering and deformation
+remain in Rust; the DOM controls forward user input to the app. See
+[asset credits and differences from the official examples](web/THIRD_PARTY.md).
+
+The glTF tabs show DamagedHelmet (`?example=4`, external .gltf/.bin/JPEG) and
+BoomBox (`?example=5`, embedded GLB). Both load in Rust/Wasm and support drag
+and zoom. This is a base-color preview, not the official example's HDR/PBR
+lighting. Asset credits and supported loader scope are in `web/THIRD_PARTY.md`.

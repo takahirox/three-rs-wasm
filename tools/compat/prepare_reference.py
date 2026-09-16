@@ -11,7 +11,8 @@ baseline=json.loads((ROOT/'compat/three-r186/api.json').read_text())['baseline']
 commit=baseline['upstream_commit']
 destination=ROOT/'.cache/three-r186'
 stamp=destination/'.revision'
-if stamp.exists() and stamp.read_text().strip()==commit:
+extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js')
+if stamp.exists() and stamp.read_text().strip()==commit and all((destination/p).exists() for p in extras):
     print('Three.js reference ready:',commit)
 else:
     archive=ROOT/'.cache'/f'three-{commit}.tar.gz'
@@ -29,7 +30,7 @@ else:
             relative=PurePosixPath(*parts[1:])
             if '..' in relative.parts or relative.is_absolute():
                 raise RuntimeError('unsafe archive path')
-            if relative.parts[0]!='src' and str(relative) not in ('LICENSE','package.json'):
+            if relative.parts[0]!='src' and str(relative) not in ('LICENSE','package.json',*extras):
                 continue
             target=destination/str(relative)
             target.parent.mkdir(parents=True,exist_ok=True)

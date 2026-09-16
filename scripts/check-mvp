@@ -38,7 +38,7 @@ run "Wasm build" cargo build --locked --target wasm32-unknown-unknown
 run "Wasm clippy" cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
 run "Browser package" wasm-pack build --target web --out-dir web/pkg --dev --no-typescript
 run "Browser dependencies" npm ci --ignore-scripts
-run "Rust web application suite" npm run test:browser -- app.spec.js
+run "Rust web application suite" npm run test:browser -- app.spec.js point-lights.spec.js gltf.spec.js
 run "Frozen application coverage" python3 tools/compat/check_examples.py
 run "Migration suite" python3 tests/migration/check.py
 printf '\nChecks passed: %d\nChecks failed: %d\n' "$PASS" "$FAIL"
