@@ -1,0 +1,6 @@
+/target/
+/node_modules/
+/.cache/
+__pycache__/
+/web/pkg/
+/test-results/

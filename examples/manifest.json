@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "frozen": true,
+  "applications": [
+    {
+      "id": "interactive-cube",
+      "rust": "src/browser.rs",
+      "page": "/web/",
+      "test": "tests/browser/app.spec.js",
+      "covers": ["object-transforms", "animation", "input", "perspective-camera", "box-geometry", "basic-material", "raycasting", "repeated-render"]
+    },
+    {
+      "id": "lit-textured-hierarchy",
+      "rust": "src/browser.rs",
+      "page": "/web/?example=1",
+      "test": "tests/browser/migration.spec.js",
+      "covers": ["scene-hierarchy", "multiple-meshes", "orthographic-camera", "sphere-geometry", "standard-material", "image-texture", "ambient-light", "directional-light", "point-light", "lines", "points"]
+    },
+    {
+      "id": "geometry-resource-rebuild",
+      "rust": "src/browser.rs",
+      "page": "/web/?static=1",
+      "test": "tests/browser/app.spec.js",
+      "covers": ["buffer-geometry", "attribute-updates", "indexed-geometry", "groups", "draw-ranges", "plane-geometry", "object-add-remove", "resource-recreate"]
+    }
+  ]
+}

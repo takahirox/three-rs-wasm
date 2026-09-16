@@ -83,6 +83,23 @@ def main() -> int:
         errors.append("unsupported allowlist must reject difficulty as a reason")
 
     items = members.get("items", [])
+    specifications = {spec['three_type']: spec for spec in caps['types']}
+    keys = set()
+    for item in items:
+        key = (item.get('api'), item.get('kind'))
+        if key in keys:
+            errors.append(f'duplicate inventory item: {key}')
+        keys.add(key)
+        owner = specifications.get(item.get('owner'))
+        if owner is None:
+            errors.append(f'unknown inventory owner: {item.get("owner")}')
+            continue
+        expected = overrides.get(item.get('api'), {}).get('status', owner['default_status'])
+        if item.get('status') != expected:
+            errors.append(f'inventory classification differs from frozen manifest: {item.get("api")}')
+    for name in api_types:
+        if (name, 'type') not in keys:
+            errors.append(f'exported type missing from inventory: {name}')
     item_apis = {item["api"] for item in items}
     for item in items:
         if item.get("status") not in ALLOWED:

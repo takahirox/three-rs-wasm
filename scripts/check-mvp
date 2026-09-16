@@ -1,60 +1,45 @@
 #!/usr/bin/env bash
 set -uo pipefail
-
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-
+# wasm-pack resolves rustc from PATH independently of Cargo's RUSTC override.
+# Keep cargo, rustc, rustdoc and clippy on the same installed rustup toolchain.
+if command -v rustup >/dev/null 2>&1; then
+  MVP_RUSTC="$(rustup which rustc)" || exit 1
+  export PATH="$(dirname "$MVP_RUSTC"):$PATH"
+fi
+CHECK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/three-rs-wasm-check.XXXXXX")"
+trap 'rm -rf "$CHECK_DIR"' EXIT
 PASS=0
 FAIL=0
-MEMBERS_JSON="${TMPDIR:-/tmp}/three-rs-wasm-members.json"
-
 run() {
   local name="$1"
   shift
   printf '%-36s' "$name"
-  if "$@" >/tmp/three-rs-wasm-check.out 2>/tmp/three-rs-wasm-check.err; then
-    echo "PASS"
-    PASS=$((PASS + 1))
+  if "$@" >"$CHECK_DIR/output" 2>&1; then
+    echo PASS
+    PASS=$((PASS+1))
   else
-    echo "FAIL"
-    FAIL=$((FAIL + 1))
-    sed 's/^/    /' /tmp/three-rs-wasm-check.out || true
-    sed 's/^/    /' /tmp/three-rs-wasm-check.err || true
+    echo FAIL
+    FAIL=$((FAIL+1))
+    tail -60 "$CHECK_DIR/output" | sed 's/^/    /'
   fi
 }
-
-require_file() {
-  test -f "$1" || { echo "missing required file: $1" >&2; return 1; }
-}
-
-run "Frozen manifest files" bash -c 'test -f compat/three-r186/api.json && test -f compat/three-r186/capabilities.json && test -f compat/three-r186/unsupported.json'
-run "Generate Core inventory" python3 tools/compat/generate_core_inventory.py --output "$MEMBERS_JSON"
-run "Core capability accounting" python3 tools/compat/check_manifest.py --members "$MEMBERS_JSON"
-run "Rust workspace" require_file Cargo.toml
-
-if [[ -f Cargo.toml ]]; then
-  run "cargo fmt --check" cargo fmt --all -- --check
-  run "cargo clippy" cargo clippy --workspace --all-targets --all-features -- -D warnings
-  run "cargo test" cargo test --workspace --all-features
-  run "Wasm build" cargo build --workspace --target wasm32-unknown-unknown
-else
-  echo "cargo fmt --check                    FAIL (Cargo.toml missing)"; FAIL=$((FAIL + 1))
-  echo "cargo clippy                         FAIL (Cargo.toml missing)"; FAIL=$((FAIL + 1))
-  echo "cargo test                           FAIL (Cargo.toml missing)"; FAIL=$((FAIL + 1))
-  echo "Wasm build                           FAIL (Cargo.toml missing)"; FAIL=$((FAIL + 1))
-fi
-
-run "Behavior compatibility tests" require_file tests/compat/README.md
-run "Rust web application suite" require_file examples/manifest.json
-run "Migration suite" require_file migration/manifest.json
-run "Resource lifecycle tests" require_file tests/resource_lifecycle/README.md
-run "Type-safety compile-fail tests" require_file tests/compile_fail/README.md
-
+run "Pinned Three.js reference" python3 tools/compat/prepare_reference.py
+run "Inventory regression tests" python3 -m unittest discover -s tools/compat -p 'test_*.py'
+run "Generate Core inventory" python3 tools/compat/generate_core_inventory.py --source-root .cache/three-r186 --output "$CHECK_DIR/members.json"
+run "Core capability accounting" python3 tools/compat/check_manifest.py --members "$CHECK_DIR/members.json"
+run "Implementation evidence" python3 tools/compat/check_implementation.py --members "$CHECK_DIR/members.json"
+run "cargo fmt --check" cargo fmt --all -- --check
+run "cargo clippy" cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
+run "cargo test / lifecycle / types" cargo test --locked --workspace --all-features
+run "Behavior compatibility tests" python3 tests/compat/compare.py
+run "Wasm build" cargo build --locked --target wasm32-unknown-unknown
+run "Wasm clippy" cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
+run "Browser package" wasm-pack build --target web --out-dir web/pkg --dev --no-typescript
+run "Browser dependencies" npm ci --ignore-scripts
+run "Rust web application suite" npm run test:browser -- app.spec.js
+run "Frozen application coverage" python3 tools/compat/check_examples.py
+run "Migration suite" python3 tests/migration/check.py
 printf '\nChecks passed: %d\nChecks failed: %d\n' "$PASS" "$FAIL"
-if (( FAIL == 0 )); then
-  echo "MVP: PASS"
-  exit 0
-else
-  echo "MVP: FAIL"
-  exit 1
-fi
+if ((FAIL==0)); then echo 'MVP: PASS'; else echo 'MVP: FAIL'; exit 1; fi

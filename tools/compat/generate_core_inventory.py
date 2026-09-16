@@ -110,7 +110,9 @@ def top_level_methods(body: str) -> list[Method]:
                 m = sig.match(body, i)
                 if m:
                     prefix, name = m.group(1), m.group(2)
-                    start = body.find("{", m.start(), m.end())
+                    # The signature may contain an object literal default (options = {}).
+                    # The final brace matched by sig starts the method body.
+                    start = m.end() - 1
                     end = find_matching_brace(body, start)
                     kind = "constructor" if name == "constructor" else "method"
                     if prefix == "get": kind = "getter"
@@ -190,6 +192,8 @@ def generate(source_root: Path | None) -> dict:
             add(make_item(class_name, class_name, "type", source_path, spec, overrides, extends=extends))
             methods = top_level_methods(body)
             for method in methods:
+                if method.name.startswith('_'):
+                    continue  # private implementation methods are outside the frozen inventory rule
                 add(make_item(f"{class_name}.{method.name}", class_name, method.kind, source_path, spec, overrides, member=method.name))
             for prop in sorted(constructor_properties(class_name, text, methods)):
                 add(make_item(f"{class_name}.{prop}", class_name, "property", source_path, spec, overrides, member=prop))

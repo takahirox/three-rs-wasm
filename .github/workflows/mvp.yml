@@ -1,0 +1,36 @@
+name: MVP acceptance
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  mvp:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install software Vulkan and browser dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium
+          cargo install wasm-pack --locked --version 0.14.0
+      - name: Evaluate the complete MVP
+        run: ./scripts/check-mvp
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-comparison-evidence
+          path: test-results/
