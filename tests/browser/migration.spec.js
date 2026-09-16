@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PNG } from 'pngjs';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 // Freeze tolerances before evaluating the Rust output. Small rasterization edge
 // differences are allowed; material, transform or missing-object errors are not.
@@ -26,6 +26,8 @@ for(const [id,name] of [[0,'basic cube'],[1,'hierarchy, textures, lights, lines 
     }
     await testInfo.attach('reference',{body:reference,contentType:'image/png'});
     await testInfo.attach('rust',{body:actual,contentType:'image/png'});
+    writeFileSync(testInfo.outputPath('reference.png'), reference);
+    writeFileSync(testInfo.outputPath('rust.png'), actual);
     expect(different/(a.width*a.height),`${different} pixels differ`).toBeLessThanOrEqual(MAX_DIFFERENT_PIXEL_FRACTION);
   });
 }

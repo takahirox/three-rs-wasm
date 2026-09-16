@@ -26,9 +26,10 @@ npm ci
 npm run test:browser
 ```
 
-GPU tests require a real graphics adapter; lack of an adapter fails the test.
+GPU tests require an available hardware or software graphics adapter; lack of an adapter fails the test.
 The browser tests use installed Chrome on macOS and Playwright Chromium on other
-platforms (`npx playwright install chromium`). The local server binds loopback.
+platforms (`npx playwright install chromium`). Linux CI uses software Vulkan for
+native tests and Chromium's SwiftShader Vulkan driver for browser tests. The local server binds loopback.
 
 The browser example is at `/web/` when serving the repository. Click the cube to
 select and pause it; click outside to resume. All animation, input and raycasting

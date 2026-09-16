@@ -104,6 +104,9 @@ fn webgpu_renders_basic_mesh_and_recreates_targets() {
     scene.dispose(mesh).unwrap();
     let mut geometry = BufferGeometry::default();
     geometry.set_from_points(&[Vector3::ZERO]).unwrap();
+    geometry.set_indirect(Some(vec![1, 1, 0, 0]));
+    // Reusing a command must not apply point-to-quad expansion twice.
+    geometry.indirect_offsets = vec![0, 0];
     let point_material = PointsMaterial {
         size: 8.0,
         size_attenuation: false,
@@ -115,7 +118,15 @@ fn webgpu_renders_basic_mesh_and_recreates_targets() {
     }));
     renderer.render(&mut scene, camera, &target).unwrap();
     let pixels = renderer.read_rgba(&target).unwrap();
-    assert_eq!(pixels.chunks_exact(4).filter(|p| p[0] > 200).count(), 64);
+    assert_eq!(
+        pixels
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .filter(|p| p[0] > 200)
+            .count(),
+        64
+    );
 
     // Complete each submission before inspecting native resource counts. The
     // pipeline cache may retain bounded entries; per-frame resources must settle.

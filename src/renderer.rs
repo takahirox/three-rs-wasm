@@ -552,7 +552,8 @@ impl Renderer {
                     } else {
                         geometry.indirect_offsets.clone()
                     };
-                    let mut commands = commands.clone();
+                    let source_commands = commands;
+                    let mut commands = source_commands.clone();
                     for offset in offsets {
                         if offset % 4 != 0 || offset / 4 + command_size > commands.len() {
                             return Err(Error::Invalid("indirect command offset"));
@@ -569,14 +570,14 @@ impl Renderer {
                         }
                         if is_points {
                             let i = offset / 4;
-                            commands[i] = commands[i]
+                            commands[i] = source_commands[i]
                                 .checked_mul(6)
                                 .ok_or(Error::Invalid("point indirect count"))?;
-                            commands[i + 2] = commands[i + 2]
+                            commands[i + 2] = source_commands[i + 2]
                                 .checked_mul(6)
                                 .ok_or(Error::Invalid("point indirect offset"))?;
                             if command_size == 5 {
-                                commands[i + 3] = ((commands[i + 3] as i32)
+                                commands[i + 3] = ((source_commands[i + 3] as i32)
                                     .checked_mul(6)
                                     .ok_or(Error::Invalid("point base vertex"))?)
                                     as u32;
