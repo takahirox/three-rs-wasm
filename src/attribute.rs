@@ -443,8 +443,19 @@ impl<T: Component> InterleavedBufferAttribute<T> {
     pub fn offset(&self) -> usize {
         self.offset
     }
+    fn validate_layout(&self, stride: usize) -> Result<()> {
+        if self
+            .offset
+            .checked_add(self.item_size)
+            .is_none_or(|end| end > stride)
+        {
+            return Err(Error::Invalid("interleaved layout"));
+        }
+        Ok(())
+    }
     pub fn get_component(&self, index: usize, component: usize) -> Result<f64> {
         let data = self.data.read().expect("interleaved buffer lock poisoned");
+        self.validate_layout(data.stride())?;
         if index >= data.count() || component >= self.item_size {
             return Err(Error::Invalid("interleaved index"));
         }
@@ -456,6 +467,7 @@ impl<T: Component> InterleavedBufferAttribute<T> {
     pub fn set_component(&mut self, index: usize, component: usize, value: f64) -> Result<()> {
         let mut data = self.data.write().expect("interleaved buffer lock poisoned");
         let stride = data.stride();
+        self.validate_layout(stride)?;
         if index >= data.count() || component >= self.item_size {
             return Err(Error::Invalid("interleaved index"));
         }
@@ -466,6 +478,7 @@ impl<T: Component> InterleavedBufferAttribute<T> {
     }
     pub fn to_attribute(&self) -> Result<BufferAttribute<T>> {
         let data = self.data.read().expect("interleaved buffer lock poisoned");
+        self.validate_layout(data.stride())?;
         let mut array = Vec::with_capacity(data.count() * self.item_size);
         for row in data.storage.array.chunks_exact(data.stride()) {
             array.extend_from_slice(&row[self.offset..self.offset + self.item_size]);

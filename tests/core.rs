@@ -4,6 +4,22 @@ use three_rs_wasm::{
 };
 
 #[test]
+fn interleaved_views_reject_replaced_incompatible_layouts() {
+    use std::sync::RwLock;
+    let data = Arc::new(RwLock::new(
+        InterleavedBuffer::new(vec![1.0_f32, 2.0, 3.0, 4.0], 4).unwrap(),
+    ));
+    let mut view = InterleavedBufferAttribute::new(data.clone(), 1, 3, false).unwrap();
+    data.write()
+        .unwrap()
+        .storage
+        .copy_from(&BufferAttribute::new(vec![5.0, 6.0], 1, false).unwrap());
+    assert!(view.get_component(0, 0).is_err());
+    assert!(view.set_component(0, 0, 7.0).is_err());
+    assert!(view.to_attribute().is_err());
+}
+
+#[test]
 fn typed_array_wrapping_half_float_and_euler_orders() {
     assert_eq!(i8::encode(128.0, false), -128);
     assert_eq!(u8::encode(-1.0, false), 255);
