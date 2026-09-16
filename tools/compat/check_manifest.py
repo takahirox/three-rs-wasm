@@ -2,6 +2,7 @@
 """Validate the frozen r186 compatibility manifest and generated inventory."""
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -17,20 +18,24 @@ ALLOWED = {
 }
 
 
-def load(name: str) -> dict:
-    path = BASE / name
+def load(path: Path) -> dict:
     if not path.is_file():
         raise RuntimeError(f"missing {path}")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--members", type=Path, default=BASE / "members.json")
+    args = parser.parse_args()
+
+    members_path = args.members if args.members.is_absolute() else ROOT / args.members
     errors: list[str] = []
     try:
-        api = load("api.json")
-        caps = load("capabilities.json")
-        unsupported = load("unsupported.json")
-        members = load("members.json")
+        api = load(BASE / "api.json")
+        caps = load(BASE / "capabilities.json")
+        unsupported = load(BASE / "unsupported.json")
+        members = load(members_path)
     except Exception as exc:
         print(f"Compatibility manifest: FAIL: {exc}", file=sys.stderr)
         return 1
@@ -96,9 +101,9 @@ def main() -> int:
             errors.append(f"unsupported entry does not resolve to inventory: {name}")
 
     if members.get("item_count") != len(items):
-        errors.append("members.json item_count is inconsistent")
+        errors.append("generated inventory item_count is inconsistent")
     if members.get("generated_from", {}).get("upstream_commit") != api["baseline"]["upstream_commit"]:
-        errors.append("members.json was generated from a different upstream commit")
+        errors.append("generated inventory was created from a different upstream commit")
 
     if errors:
         print("Compatibility manifest: FAIL", file=sys.stderr)
