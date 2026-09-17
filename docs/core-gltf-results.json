@@ -1,0 +1,449 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "method": "Prepared compressed buffers, decoded images, imported animated glTF, instantiated hierarchy and evaluated bind pose and each clip at 0.25 seconds in native Rust. This is not rendered-image fidelity or completed examples. Native AVIF and non-triangle glTF reject.",
+  "counts": {
+    "rejected": 2,
+    "imported-and-evaluated": 47
+  },
+  "examples": [
+    {
+      "asset": "AVIFTest/forest_house.glb",
+      "result": {
+        "error": "asset error: The image format Avif is not supported",
+        "status": "rejected"
+      },
+      "sha256": "d7e567c978c1b266744e20f8418f29e90591e38a2bd6fdb5220c3b9eed91a137"
+    },
+    {
+      "asset": "AnimatedMorphSphere/glTF/AnimatedMorphSphere.gltf",
+      "result": {
+        "clips": 1,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "3513fe07ad24f9a8bbb47a961d2d7474b5ff22dbbf87f9273e5982562ced2aee"
+    },
+    {
+      "asset": "AnisotropyBarnLamp.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "3068f5b617a63816aefb76a0154f22fde7a664ecd4bb29e7a530bd2dc77a0099"
+    },
+    {
+      "asset": "BoomBox.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "3f14d6608669b1ae77485a53686925e987b8d86c8fc81095f69c028c3e3ae81e"
+    },
+    {
+      "asset": "CarbonFrameBike.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 316,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "df83e23ad16d5bf947a00bf3660fbbeb0fd1176af3b1e29d2e9658ebf5be5328"
+    },
+    {
+      "asset": "ClearcoatTest/ClearcoatTest.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 27,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "4b097bcae9c29999840c3915a9f3c31e17bb7fd221e6a60331a19e7424d92dec"
+    },
+    {
+      "asset": "DamagedHelmet/glTF/DamagedHelmet.gltf",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "efe99dfac198094a30c71dc02a4d3421f0eef6bf335aeb695daa4d62134cd93f"
+    },
+    {
+      "asset": "DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "09ccbc68473fe7f32fd65a78f506edf79a4b8306f5cba7097d8d9ef00f5aa070"
+    },
+    {
+      "asset": "DispersionTest.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 27,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "bb7710e6eaeb1c81fc5f62000ed014689e4bd8ef300c3f9e3a08b2a6db821be7"
+    },
+    {
+      "asset": "DragonAttenuation.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "dbac78de3fefb33ba744cfa703936892b6e2fc47b58d88acc52f4be39e5464be"
+    },
+    {
+      "asset": "Flamingo.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "9eabeb58587e4e0d11d5e23b30a26b73e4b8e6e8c83f2c36b3c5c3fe04dcf19f"
+    },
+    {
+      "asset": "Flower/Flower.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "ae6dccf9c7af26ccbd5fdddac9e7209239e67663f4bba6a5aa0339abd19fc163"
+    },
+    {
+      "asset": "Horse.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "bebaa4a60ba373317e25bf20f049f26ad0f5c86d4731ab67d46eb8c93c920947"
+    },
+    {
+      "asset": "IridescenceLamp.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "60e991ad33985c7b2b3af1d8a0d0f62e1e2d1f3c05f5d8f0aabfb8db6b70be30"
+    },
+    {
+      "asset": "IridescentDishWithOlives.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 4,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "98a6db7fbc0b90b9807fd57189e8cf71642672ee0301609b0aabcc28c698f29f"
+    },
+    {
+      "asset": "LeePerrySmith/LeePerrySmith.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "402b8a8ac9f03232e6d64b5962929703a069daf99d3c49ac8eb0e48bedc9c576"
+    },
+    {
+      "asset": "LittlestTokyo.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 71,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "8375c2aa6808e28ad1cb9c0d43e1513f57ffd7865244bf66bbbd5bb0e907e06d"
+    },
+    {
+      "asset": "MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "80f0a8feff5494ad1cfb978578502cc980fe75d8f585a5346033c3108d90906f"
+    },
+    {
+      "asset": "Michelle.glb",
+      "result": {
+        "clips": 2,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "7a87e15a99ccbc5e5877be66e1e4ecae0a581adcafa0cce1a5569f49909e968e"
+    },
+    {
+      "asset": "Nefertiti/Nefertiti.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "d8c00c742b59137695245eefeef0e217d6e33c64eeaeb1904ff39f6b31542639"
+    },
+    {
+      "asset": "Parrot.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "adcc5dae04d0b16957ce20b7bebb84d41c3bff1c01bf5ab1cf56d06345bc5170"
+    },
+    {
+      "asset": "PrimaryIonDrive.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 6,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "4da2bc76db5a1f639866f05219426c9fde0ece3239c3cb054b5675a8dc1cde21"
+    },
+    {
+      "asset": "RobotExpressive/RobotExpressive.glb",
+      "result": {
+        "clips": 14,
+        "meshes": 19,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319"
+    },
+    {
+      "asset": "ShaderBall.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "0f99ab2ffc65b6f1972fca3958ad4cbcea90f1a6a3db6c35b20ae947f3b573d2"
+    },
+    {
+      "asset": "ShaderBall2.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "cf87e3a52cb8c9659935fa53541fd4e5f5302a9221420a9b8911a8f307b5efd2"
+    },
+    {
+      "asset": "ShadowmappableMesh.glb",
+      "result": {
+        "error": "invalid non-triangle or morph glTF primitive",
+        "status": "rejected"
+      },
+      "sha256": "1a5d49c27bf0b884b5cf70562c9023a3b931a90e05944eed02f3c5c226ff1c5d"
+    },
+    {
+      "asset": "SheenChair.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 4,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "07c80216eb5d57fc9d4148e1e14a69e19d3436eca1af33590d8d36c04957ffd4"
+    },
+    {
+      "asset": "Soldier.glb",
+      "result": {
+        "clips": 4,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "dfb230fc1f942f259dd00281a1186953ad602fc5d69067ce63e24b2aa439736b"
+    },
+    {
+      "asset": "Stork.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "60ca9355daaddeab33d93d6856d99c12b7ed086f989bf1a1ba288f7e96e1559b"
+    },
+    {
+      "asset": "Xbot.glb",
+      "result": {
+        "clips": 7,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "002f8d269de68e5dce3d25195caf390d1aa359bbfaae3fcf4c8dc78ec36c3ba5"
+    },
+    {
+      "asset": "bath_day.glb",
+      "result": {
+        "clips": 1,
+        "meshes": 25,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "94966c9edee8cffd0cbc81927eb9e0e399aa04ae8c29e5f4c76bc31207f10d08"
+    },
+    {
+      "asset": "coffeeMug.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "e2e396ef7de65cbe42a949d00b4d5e1bde4ad539d717c96ab948e975ae6405ed"
+    },
+    {
+      "asset": "coffeemat.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "2cf091a8a32da5fc495f64beb02b1155fc57c0c9d3ef871ebce67981dedddf69"
+    },
+    {
+      "asset": "collision-world.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "07524c7fd5829c6dc354d0b129f78943c47a8737d141496c6d611f5ee2d00864"
+    },
+    {
+      "asset": "duck.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "76c62e63a0aec09cd66f2e2c9452a6dcee428f2464dd2c6d845958a8f7f7cdd1"
+    },
+    {
+      "asset": "dungeon_warkarma.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 798,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "cac0fc8c16d107e7ac4e69efde89c2cb6ef4bc66c34456a4dd0923218e5aafb1"
+    },
+    {
+      "asset": "facecap.glb",
+      "result": {
+        "clips": 4,
+        "meshes": 4,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "6bfce6d0fcbb5839f5102b79733007859fef7c5df6d9eb49e2264542810b5f64"
+    },
+    {
+      "asset": "ferrari.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 51,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "cafe3f48da6797aa9bde75ca768bc5b57db366575fd233e90df186ae988a876e"
+    },
+    {
+      "asset": "gears.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "059c442459e127e0f79b8337a5b0ea26a6cab3e609723c93ce60cac52d8430af"
+    },
+    {
+      "asset": "godrays_demo.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "d257de1a31199c86e1ffec20f7d0de691a8fa3d05813e77f969a7bc68ed6653b"
+    },
+    {
+      "asset": "kira.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 43,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "22bc87b9ee12aa7daa5b8c8c91bda245bae9f7e2c6a3ad8c4496ae7fa18910cf"
+    },
+    {
+      "asset": "nemetona.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "09a0740838bfed0cebccce99d159b0ce1f27441f788d732bb3412f82bf3797b2"
+    },
+    {
+      "asset": "pool.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 2,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "bf194fe1d36575da37ee015c307750afd7f7c6ae8254609dbbd7d05dcb1989a9"
+    },
+    {
+      "asset": "readyplayer.me.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 10,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "b69cec7a5cc7dc7e1c1f19c324024d090ae06e1315441a7bce4bf236112addc1"
+    },
+    {
+      "asset": "rolex.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 34,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "48d6b6f427be44b7beb33ce4845cd6886a24db732c7ebefda37b9f70fa0922f4"
+    },
+    {
+      "asset": "space_ship_hallway.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 8,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "051c58dea01930b04d9d23d15f6a9a6a0628358d17954feb47dfa06e075f3bfe"
+    },
+    {
+      "asset": "steampunk_camera.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "b3d3bfe585a6c3c538053878d03561d4070881229ff97b3528903126a1b487e2"
+    },
+    {
+      "asset": "tennyson-bust.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "1329f683b91864797dfbb20385c4eae2b582de7dcb8ca28ab9e6fc7bc5967d35"
+    },
+    {
+      "asset": "venice_mask.glb",
+      "result": {
+        "clips": 0,
+        "meshes": 5,
+        "status": "imported-and-evaluated"
+      },
+      "sha256": "b9003245b0b73e31673600b53dd7050bb16af8220cf7cf5643347b4dc9bf4d34"
+    }
+  ]
+}

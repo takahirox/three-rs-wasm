@@ -1,0 +1,385 @@
+{
+  "target_additional": 10,
+  "baseline_ports": [
+    "webgl_animation_skinning_morph",
+    "webgl_geometry_cube",
+    "webgl_interactive_lines",
+    "webgl_interactive_raycasting_points",
+    "webgl_loader_gltf",
+    "webgl_materials_texture_rotation",
+    "webgl_pmrem_equirectangular",
+    "webgl_pmrem_test",
+    "webgl_panorama_equirectangular",
+    "webgl_buffergeometry_lines",
+    "webgl_buffergeometry_lines_indexed",
+    "webgpu_equirectangular",
+    "webgpu_lights_pointlights",
+    "webgpu_loader_gltf",
+    "webgpu_pmrem_equirectangular",
+    "webgpu_pmrem_test"
+  ],
+  "acceptance": "Independent scene/behavior implementation; original comparison and steady-state resource/performance checks. Pending or blocked items do not count as additions.",
+  "examples": [
+    {
+      "id": "webgl_geometries",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometries.html",
+      "runtime_example": 17,
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0.00029754638671875
+          },
+          {
+            "time": 3,
+            "fraction": 0.000270843505859375
+          },
+          {
+            "time": 11,
+            "fraction": 0.00019073486328125
+          }
+        ]
+      },
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_geometries-performance.json",
+        "docs/webgl_geometries-gpu-performance.json"
+      ],
+      "limitations": [
+        "Stats overlay not ported; gallery retains partial classification."
+      ]
+    },
+    {
+      "id": "webgl_morphtargets",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html",
+      "runtime_example": 18,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgpu_morphtargets-performance.json",
+        "docs/webgpu_morphtargets-gpu-performance.json"
+      ],
+      "limitations": [
+        "\u516c\u5f0f\u306e\u7403\u5316\u30fb\u306d\u3058\u308a\u30fb\u6df7\u5408\u30e2\u30fc\u30d5\u3092GPU\u3067\u51e6\u7406\u3002\u30b9\u30e9\u30a4\u30c0\u30fc\u3001\u56de\u8ee2\u30fb\u30d1\u30f3\u30fb\u30ba\u30fc\u30e0\u7121\u52b9\u5316\u3092\u6bd4\u8f03\u6e08\u307f\u3002GUI\u306e\u5916\u89b3\u306f\u672a\u4e00\u81f4\u3002"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "weights": [
+              0,
+              0
+            ],
+            "fraction": 0
+          },
+          {
+            "time": 0,
+            "weights": [
+              1,
+              0
+            ],
+            "fraction": 7.62939453125e-06
+          },
+          {
+            "time": 0,
+            "weights": [
+              0,
+              1
+            ],
+            "fraction": 9.5367431640625e-05
+          },
+          {
+            "time": 0,
+            "weights": [
+              0.4,
+              0.7
+            ],
+            "fraction": 9.5367431640625e-05
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgpu_morphtargets",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_morphtargets.html",
+      "runtime_example": 18,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgpu_morphtargets-performance.json",
+        "docs/webgpu_morphtargets-gpu-performance.json"
+      ],
+      "limitations": [
+        "WebGL\u7248\u3068\u540c\u3058GPU\u30e2\u30fc\u30d5\u30b7\u30fc\u30f3\u3068\u64cd\u4f5c\u3092\u5171\u6709\u3002Inspector\u5168\u4f53\u306eUI\u306f\u672a\u79fb\u690d\u3002"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "weights": [
+              0,
+              0
+            ],
+            "fraction": 0
+          },
+          {
+            "time": 0,
+            "weights": [
+              1,
+              0
+            ],
+            "fraction": 7.62939453125e-06
+          },
+          {
+            "time": 0,
+            "weights": [
+              0,
+              1
+            ],
+            "fraction": 9.5367431640625e-05
+          },
+          {
+            "time": 0,
+            "weights": [
+              0.4,
+              0.7
+            ],
+            "fraction": 9.5367431640625e-05
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_lines_dashed",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_dashed.html",
+      "runtime_example": 19,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_lines_dashed-performance.json",
+        "docs/webgl_lines_dashed-gpu-performance.json"
+      ],
+      "limitations": [
+        "\u516c\u5f0fHilbert\u66f2\u7dda\u30fbCatmull-Rom\u88dc\u9593\u30fb\u7834\u7dda\u30fb\u9727\u30fb\u56de\u8ee2\u3092\u79fb\u690d\u30021\u30d4\u30af\u30bb\u30eb\u7dda\u306fGPU\u7dda\u30d7\u30ea\u30df\u30c6\u30a3\u30d6\u3002Stats\u8868\u793a\u306f\u672a\u79fb\u690d\u3002"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0
+          },
+          {
+            "time": 3,
+            "fraction": 0
+          },
+          {
+            "time": 11,
+            "fraction": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_lights_rectarealight",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html",
+      "runtime_example": 20,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_lights_rectarealight-performance.json",
+        "docs/webgl_lights_rectarealight-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0.00307464599609375
+          },
+          {
+            "time": 1,
+            "fraction": 0.0029144287109375
+          },
+          {
+            "time": 3,
+            "fraction": 0.0005340576171875
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_geometry_colors",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_colors.html",
+      "runtime_example": 21,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_geometry_colors-performance.json",
+        "docs/webgl_geometry_colors-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_buffergeometry_indexed",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_indexed.html",
+      "runtime_example": 22,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_buffergeometry_indexed-performance.json",
+        "docs/webgl_buffergeometry_indexed-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0
+          },
+          {
+            "time": 3,
+            "fraction": 0
+          },
+          {
+            "time": 11,
+            "fraction": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_lines_colors",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_colors.html",
+      "runtime_example": 23,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_lines_colors-performance.json",
+        "docs/webgl_lines_colors-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0
+          },
+          {
+            "time": 3,
+            "fraction": 0
+          },
+          {
+            "time": 11,
+            "fraction": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_morphtargets_horse",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_horse.html",
+      "runtime_example": 24,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_morphtargets_horse-performance.json",
+        "docs/webgl_morphtargets_horse-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 0.00209808349609375
+          },
+          {
+            "time": 0.25,
+            "fraction": 0.0025787353515625
+          },
+          {
+            "time": 0.7,
+            "fraction": 0.00144195556640625
+          },
+          {
+            "time": 2.4,
+            "fraction": 0.00113677978515625
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgl_morphtargets_sphere",
+      "status": "validated-scene",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_sphere.html",
+      "runtime_example": 25,
+      "evidence": [
+        "tests/browser/expanded.spec.js",
+        "docs/webgl_morphtargets_sphere-performance.json",
+        "docs/webgl_morphtargets_sphere-gpu-performance.json"
+      ],
+      "comparison": {
+        "channel_tolerance": 6,
+        "maximum_different_pixel_fraction": 0.005,
+        "samples": [
+          {
+            "time": 0,
+            "fraction": 7.62939453125e-06
+          },
+          {
+            "time": 1,
+            "fraction": 1.52587890625e-05
+          },
+          {
+            "time": 2,
+            "fraction": 1.52587890625e-05
+          },
+          {
+            "time": 3.5,
+            "fraction": 7.2479248046875e-05
+          }
+        ]
+      }
+    }
+  ],
+  "deferred_attempts": [
+    {
+      "id": "webgl_loader_gltf_instancing",
+      "status": "in-progress",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html",
+      "reason": "Full PBR image difference remains above acceptance threshold. Not listed and not counted toward the requested ten."
+    }
+  ],
+  "validation_note": "Scene comparisons keep the original 6/255 channel and 0.5% differing-pixel limits. Published as runnable partial ports; GUI limitations and measured performance differences are retained in the worklog.",
+  "validation": {
+    "gallery_browser_tests": 58,
+    "core_browser_tests": 23,
+    "additional_orbit_browser_tests": 2,
+    "native_integration_tests": 39,
+    "native_library_tests": 1,
+    "native_and_wasm_clippy": "passed",
+    "catalog_and_reports": "passed",
+    "exact_additions_beyond_baseline": 10
+  }
+}

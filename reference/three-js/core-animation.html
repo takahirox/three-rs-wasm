@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>Core animation reference</title>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const asset=await new GLTFLoader().loadAsync('/web/models/RobotExpressive/RobotExpressive.glb');
+const records=[];
+for(const clip of asset.animations){
+ const mixer=new THREE.AnimationMixer(asset.scene),action=mixer.clipAction(clip);
+ action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.play();
+ for(const time of [0,0.25]){
+  mixer.setTime(time);asset.scene.updateMatrixWorld(true);
+  const meshes=[];
+  asset.scene.traverse(mesh=>{
+   if(!mesh.isMesh)return;mesh.skeleton?.update();
+   let node=mesh;while(node&&asset.parser.associations.get(node)?.nodes===undefined)node=node.parent;
+   const nodeIndex=asset.parser.associations.get(node)?.nodes;
+   const name=asset.parser.json.nodes[nodeIndex]?.name||mesh.name;
+   const count=mesh.geometry.attributes.position.count,points=[];
+   for(let i=0;i<count;i+=Math.max(1,Math.floor(count/64)))points.push(mesh.getVertexPosition(i,new THREE.Vector3()).applyMatrix4(mesh.matrixWorld).toArray());
+   meshes.push({name,vertices:count,points});
+  });
+  records.push({clip:clip.name,time,meshes});
+ }
+ mixer.stopAllAction();
+}
+window.samples=records;
+</script>

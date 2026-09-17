@@ -26,3 +26,31 @@ for(let m=0;m<2;m++)test(`M2 PBR parity: ${manifest.models[m].name}`,async({page
  writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));expect(errors).toEqual([]);
  for(const result of results)expect(result.fraction,JSON.stringify(result)).toBeLessThanOrEqual(manifest.comparison.maximum_different_pixel_fraction);
 });
+
+for(const size of [{width:640,height:360},{width:360,height:640}])test(`gallery glTF keeps proportions on initial load: ${size.width}x${size.height}`,async({page},info)=>{
+ test.setTimeout(120000);
+ await page.setViewportSize(size);
+ await page.goto('/reference/three-js/gltf-pbr.html');
+ const canvas=page.locator('canvas');
+ await expect(canvas).toHaveAttribute('data-ready','true',{timeout:90000});
+ await page.evaluate(async size=>{
+  const {renderer,camera}=window.reference;
+  renderer.setSize(size.width,size.height);
+  camera.aspect=size.width/size.height;
+  await window.renderFixture(0,0);
+ },size);
+ const reference=PNG.sync.read(await canvas.screenshot());
+ await page.goto('/web/gallery/example.html?id=webgl_loader_gltf');
+ await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(2);
+ await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
+ await page.evaluate(v=>window.app.gltf_view(v.yaw,v.pitch,v.distance_factor,v.exposure,v.rotation,v.blur),manifest.views[0]);
+ const frame=Number(await canvas.getAttribute('data-frames'));
+ await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(frame+2);
+ const actual=PNG.sync.read(await canvas.screenshot());
+ expect([actual.width,actual.height]).toEqual([reference.width,reference.height]);
+ let different=0;
+ for(let i=0;i<actual.data.length;i+=4)if([0,1,2].some(c=>Math.abs(actual.data[i+c]-reference.data[i+c])>manifest.comparison.channel_tolerance))different++;
+ writeFileSync(info.outputPath('actual.png'),PNG.sync.write(actual));
+ writeFileSync(info.outputPath('reference.png'),PNG.sync.write(reference));
+ expect(different/(actual.width*actual.height)).toBeLessThanOrEqual(manifest.comparison.maximum_different_pixel_fraction);
+});

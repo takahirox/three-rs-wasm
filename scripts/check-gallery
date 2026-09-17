@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if command -v rustup >/dev/null 2>&1; then
+  GALLERY_RUSTC="$(rustup which rustc)"
+  export PATH="$(dirname "$GALLERY_RUSTC"):$PATH"
+fi
+python3 tools/compat/prepare_reference.py
+# Prepare the original gallery reference on a clean checkout too.
+python3 tools/gallery/build.py --check
+python3 tools/gallery/check.py
+python3 tools/gallery/audit.py --check
+python3 tools/gallery/runtime/report.py --check
+cargo fmt --all -- --check
+cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
+wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+npm ci --ignore-scripts
+npx playwright test --config playwright.gallery.config.js
+echo 'Gallery UI, implemented ports and inventory: PASS (not full example coverage)'

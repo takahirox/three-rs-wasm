@@ -62,6 +62,19 @@ pub struct Mesh {
     pub geometry: Arc<BufferGeometry>,
     pub materials: Vec<Arc<Material>>,
 }
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct Instance {
+    pub matrix: Matrix4,
+    pub color: Color,
+}
+impl Default for Instance {
+    fn default() -> Self {
+        Self {
+            matrix: Matrix4::IDENTITY,
+            color: Color::WHITE,
+        }
+    }
+}
 impl Mesh {
     pub fn new(geometry: Arc<BufferGeometry>, material: Arc<Material>) -> Self {
         Self {
@@ -83,6 +96,26 @@ pub struct Points {
 }
 #[derive(Clone, Debug, Serialize)]
 pub enum Light {
+    RectArea {
+        color: Color,
+        intensity: f64,
+        width: f64,
+        height: f64,
+    },
+    Hemisphere {
+        sky: Color,
+        ground: Color,
+        intensity: f64,
+    },
+    Spot {
+        color: Color,
+        intensity: f64,
+        target: Vector3,
+        distance: f64,
+        decay: f64,
+        angle: f64,
+        penumbra: f64,
+    },
     Ambient {
         color: Color,
         intensity: f64,
@@ -153,6 +186,12 @@ pub struct Node {
     pub is_static: bool,
     pub cast_shadow: bool,
     pub receive_shadow: bool,
+    pub shadow: crate::shadow::Shadow,
+    pub morph_weights: Vec<f64>,
+    pub skin: Option<crate::deformation::Skin>,
+    /// Empty uses the ordinary mesh path. Instanced transforms must be invertible
+    /// and have positive determinant (as with Three.js InstancedMesh).
+    pub instances: Vec<Instance>,
     pub user_data: serde_json::Map<String, serde_json::Value>,
     #[serde(skip)]
     parent: Option<Object3D>,
@@ -183,6 +222,10 @@ impl Default for Node {
             is_static: false,
             cast_shadow: false,
             receive_shadow: false,
+            shadow: Default::default(),
+            morph_weights: Vec::new(),
+            skin: None,
+            instances: Vec::new(),
             user_data: Default::default(),
             parent: None,
             children: Vec::new(),
@@ -291,8 +334,15 @@ impl Default for NodeDefaults {
         }
     }
 }
+#[derive(Clone, Copy, Debug, Serialize)]
+pub enum Fog {
+    Linear { color: Color, near: f64, far: f64 },
+    Exp2 { color: Color, density: f64 },
+}
 #[derive(Debug)]
 pub struct Scene {
+    pub clipping_planes: Vec<Plane>,
+    pub shadow_map_size: u32,
     pub defaults: NodeDefaults,
     id: u32,
     slots: Vec<Slot>,
@@ -303,12 +353,18 @@ pub struct Scene {
     pub environment_rotation: f64,
     pub background_environment: bool,
     pub background_blur: f64,
+    pub fog: Option<Fog>,
+    /// Sample the equirectangular source directly instead of cube conversion.
+    pub background_equirectangular: bool,
+    pub background_intensity: f64,
     pub exposure: f64,
     pub aces_tone_mapping: bool,
 }
 impl Default for Scene {
     fn default() -> Self {
         Self {
+            shadow_map_size: 512,
+            clipping_planes: Vec::new(),
             defaults: Default::default(),
             id: NEXT_SCENE.fetch_add(1, Ordering::Relaxed),
             slots: Vec::new(),
@@ -319,6 +375,9 @@ impl Default for Scene {
             environment_rotation: 0.0,
             background_environment: false,
             background_blur: 0.0,
+            fog: None,
+            background_equirectangular: false,
+            background_intensity: 1.0,
             exposure: 1.0,
             aces_tone_mapping: false,
         }

@@ -1,0 +1,134 @@
+{
+  "date": "2026-09-17",
+  "workload": "RobotExpressive Walking, 1280x800 CSS pixels, DPR 2, 4x MSAA, 5s warmup then 5s measurement",
+  "limits": [
+    "Chrome only; the reported severe slowdown has not been reproduced in this configuration.",
+    "No original Three.js timing comparison; no performance parity claim.",
+    "GPU run separately enables timestamp-query and creates diagnostic readback resources. CPU/API comparisons use the runs without GPU instrumentation.",
+    "CPU profiler and API wrappers add measurement overhead; timings are not CI thresholds."
+  ],
+  "runs": {
+    "before": {
+      "adapter": {},
+      "canvas": [
+        2560,
+        1600
+      ],
+      "frames": 300,
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.80000000000109
+      },
+      "cpu": {
+        "p50": 0.6000001430511475,
+        "p95": 0.7999999523162842,
+        "max": 1.2999999523162842
+      },
+      "calls": {
+        "createBuffer": 12900,
+        "createBindGroup": 6600,
+        "writeBuffer": 1200,
+        "submit": 600
+      },
+      "transfers": "[21,629428,425888,6638084]"
+    },
+    "after": {
+      "adapter": {},
+      "canvas": [
+        2560,
+        1600
+      ],
+      "frames": 301,
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "cpu": {
+        "p50": 0.5,
+        "p95": 0.5999999046325684,
+        "max": 1.0999999046325684
+      },
+      "calls": {
+        "writeBuffer": 5719,
+        "submit": 602
+      },
+      "transfers": "[21,629428,425888,6627076]"
+    },
+    "gpu": {
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3",
+        "device": "",
+        "description": ""
+      },
+      "canvas": [
+        2560,
+        1600
+      ],
+      "frames": 300,
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.80000000000109
+      },
+      "cpu": {
+        "p50": 0.5,
+        "p95": 0.6000001430511475,
+        "max": 16.699999809265137
+      },
+      "calls": {
+        "writeBuffer": 5700,
+        "createBuffer": 240,
+        "submit": 600
+      },
+      "transfers": "[21,629428,425888,6627076]",
+      "gpu": {
+        "supported": true,
+        "passes": {
+          "scene": {
+            "p50": 0.409661,
+            "p95": 0.722989,
+            "max": 1.119858
+          },
+          "present": {
+            "p50": 0.036708,
+            "p95": 0.280579,
+            "max": 0.411993
+          }
+        }
+      }
+    },
+    "headed_after": {
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3",
+        "device": "",
+        "description": ""
+      },
+      "canvas": [
+        2560,
+        1600
+      ],
+      "frames": 598,
+      "interval": {
+        "p50": 8.300000000000182,
+        "p95": 9.200000000000728,
+        "max": 16.800000000000182
+      },
+      "cpu": {
+        "p50": 0.40000009536743164,
+        "p95": 0.5999999046325684,
+        "max": 0.8999998569488525
+      },
+      "calls": {
+        "writeBuffer": 11362,
+        "submit": 1196
+      },
+      "transfers": "[21,629428,425888,13209860]"
+    }
+  }
+}

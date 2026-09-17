@@ -33,11 +33,16 @@ pub struct Texture {
     pub filter: Filter,
     pub min_filter: Option<Filter>,
     pub mipmap_filter: Option<Filter>,
+    /// Anisotropic sampling, clamped to 1..=16 when all filters are linear.
+    pub anisotropy: u16,
     pub flip_y: bool,
     pub offset: Vector2,
     pub repeat: Vector2,
     pub rotation: f64,
     pub center: Vector2,
+    pub tex_coord: u32,
+    /// Explicit UV matrix, used by formats whose transform order differs.
+    pub matrix: Option<Matrix3>,
 }
 impl Texture {
     pub fn from_rgba(width: u32, height: u32, rgba: Vec<u8>, srgb: bool) -> Result<Self> {
@@ -57,18 +62,49 @@ impl Texture {
             filter: Filter::Linear,
             min_filter: None,
             mipmap_filter: None,
+            anisotropy: 1,
             flip_y: true,
             offset: Vector2::ZERO,
             repeat: Vector2::ONE,
             rotation: 0.0,
             center: Vector2::ZERO,
+            tex_coord: 0,
+            matrix: None,
         })
     }
     pub fn from_image(bytes: &[u8]) -> Result<Self> {
+        if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
+            return crate::compression::decode_basis(bytes, true);
+        }
         let image = image::load_from_memory(bytes)
             .map_err(|e| Error::Asset(e.to_string()))?
             .to_rgba8();
         Self::from_rgba(image.width(), image.height(), image.into_raw(), true)
+    }
+    pub fn uv_matrix(&self) -> Matrix3 {
+        let matrix = self.matrix.unwrap_or_else(|| {
+            let (s, c) = self.rotation.sin_cos();
+            let tx = self.center.x + self.offset.x
+                - self.repeat.x * (c * self.center.x + s * self.center.y);
+            let ty = self.center.y + self.offset.y
+                - self.repeat.y * (-s * self.center.x + c * self.center.y);
+            Matrix3::from_cols_array(&[
+                c * self.repeat.x,
+                -s * self.repeat.y,
+                0.0,
+                s * self.repeat.x,
+                c * self.repeat.y,
+                0.0,
+                tx,
+                ty,
+                1.0,
+            ])
+        });
+        if self.flip_y {
+            Matrix3::from_cols_array(&[1.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 1.0]) * matrix
+        } else {
+            matrix
+        }
     }
     #[cfg(target_arch = "wasm32")]
     pub async fn load(url: &str) -> Result<Self> {
@@ -105,7 +141,23 @@ pub struct MaterialProperties {
     pub depth_write: bool,
     pub visible: bool,
     pub vertex_colors: bool,
+    pub flat_shading: bool,
+    pub wireframe: bool,
+    pub fog: bool,
+    pub clipping_planes: Vec<Plane>,
+    pub clip_intersection: bool,
+    pub clip_shadows: bool,
+    /// None selects opaque replacement or normal alpha blending according to transparent.
+    #[serde(skip)]
+    pub blending: Option<wgpu::BlendState>,
+    #[serde(skip)]
+    pub stencil: Option<wgpu::StencilState>,
+    pub stencil_reference: u32,
+    pub color_write: bool,
     pub map: Option<Arc<Texture>>,
+    #[serde(skip)]
+    pub vertex_program: Option<Arc<crate::shader::ShaderProgram>>,
+    pub vertex_uniforms: [[f32; 4]; 16],
 }
 impl Default for MaterialProperties {
     fn default() -> Self {
@@ -119,7 +171,19 @@ impl Default for MaterialProperties {
             depth_write: true,
             visible: true,
             vertex_colors: false,
+            flat_shading: false,
+            wireframe: false,
+            fog: true,
+            clipping_planes: Vec::new(),
+            clip_intersection: false,
+            clip_shadows: false,
+            blending: None,
+            stencil: None,
+            stencil_reference: 0,
+            color_write: true,
             map: None,
+            vertex_program: None,
+            vertex_uniforms: [[0.0; 4]; 16],
         }
     }
 }
@@ -156,16 +220,172 @@ impl Default for MeshStandardMaterial {
         }
     }
 }
+/// Classic normalized Blinn-Phong lighting. Specular colors are linear.
+#[derive(Clone, Debug, Serialize)]
+pub struct MeshPhongMaterial {
+    pub properties: MaterialProperties,
+    pub emissive: Color,
+    pub specular: Color,
+    pub shininess: f64,
+    pub normal_map: Option<Arc<Texture>>,
+    pub normal_scale: Vector2,
+    pub specular_map: Option<Arc<Texture>>,
+    pub emissive_map: Option<Arc<Texture>>,
+}
+impl Default for MeshPhongMaterial {
+    fn default() -> Self {
+        Self {
+            properties: Default::default(),
+            emissive: Color::BLACK,
+            specular: Color::from_hex(0x111111),
+            shininess: 30.0,
+            normal_map: None,
+            normal_scale: Vector2::ONE,
+            specular_map: None,
+            emissive_map: None,
+        }
+    }
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct MeshLambertMaterial {
+    pub properties: MaterialProperties,
+    pub emissive: Color,
+    pub normal_map: Option<Arc<Texture>>,
+    pub normal_scale: Vector2,
+    pub emissive_map: Option<Arc<Texture>>,
+}
+impl Default for MeshLambertMaterial {
+    fn default() -> Self {
+        Self {
+            properties: Default::default(),
+            emissive: Color::BLACK,
+            normal_map: None,
+            normal_scale: Vector2::ONE,
+            emissive_map: None,
+        }
+    }
+}
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct MeshNormalMaterial {
+    pub properties: MaterialProperties,
+}
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct MeshToonMaterial {
+    pub base: MeshLambertMaterial,
+    pub gradient_map: Option<Arc<Texture>>,
+}
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct MeshMatcapMaterial {
+    pub base: MeshLambertMaterial,
+    pub matcap: Option<Arc<Texture>>,
+}
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct MeshDepthMaterial {
+    pub properties: MaterialProperties,
+}
+/// Layered PBR with independent base and extension texture maps.
+#[derive(Clone, Debug, Serialize)]
+pub struct MeshPhysicalMaterial {
+    pub base: MeshStandardMaterial,
+    pub ior: f64,
+    pub specular_color: Color,
+    pub specular_intensity: f64,
+    pub clearcoat: f64,
+    pub clearcoat_roughness: f64,
+    pub sheen_color: Color,
+    pub sheen: f64,
+    pub sheen_roughness: f64,
+    pub anisotropy: f64,
+    pub anisotropy_rotation: f64,
+    pub transmission: f64,
+    pub thickness: f64,
+    pub attenuation_color: Color,
+    pub attenuation_distance: f64,
+    pub dispersion: f64,
+    pub iridescence: f64,
+    pub iridescence_ior: f64,
+    pub iridescence_thickness_range: [f64; 2],
+    pub iridescence_map: Option<Arc<Texture>>,
+    pub iridescence_thickness_map: Option<Arc<Texture>>,
+    pub clearcoat_normal_scale: Vector2,
+    pub clearcoat_map: Option<Arc<Texture>>,
+    pub clearcoat_roughness_map: Option<Arc<Texture>>,
+    pub clearcoat_normal_map: Option<Arc<Texture>>,
+    pub sheen_color_map: Option<Arc<Texture>>,
+    pub sheen_roughness_map: Option<Arc<Texture>>,
+    pub anisotropy_map: Option<Arc<Texture>>,
+    pub specular_intensity_map: Option<Arc<Texture>>,
+    pub specular_color_map: Option<Arc<Texture>>,
+    pub transmission_map: Option<Arc<Texture>>,
+    pub thickness_map: Option<Arc<Texture>>,
+}
+impl Default for MeshPhysicalMaterial {
+    fn default() -> Self {
+        Self {
+            base: Default::default(),
+            ior: 1.5,
+            specular_color: Color::WHITE,
+            specular_intensity: 1.0,
+            clearcoat: 0.0,
+            clearcoat_roughness: 0.0,
+            sheen_color: Color::BLACK,
+            sheen: 0.0,
+            sheen_roughness: 1.0,
+            anisotropy: 0.0,
+            anisotropy_rotation: 0.0,
+            transmission: 0.0,
+            thickness: 0.0,
+            attenuation_color: Color::WHITE,
+            attenuation_distance: f64::INFINITY,
+            dispersion: 0.0,
+            iridescence: 0.0,
+            iridescence_ior: 1.3,
+            iridescence_thickness_range: [100.0, 400.0],
+            iridescence_map: None,
+            iridescence_thickness_map: None,
+            clearcoat_normal_scale: Vector2::ONE,
+            clearcoat_map: None,
+            clearcoat_roughness_map: None,
+            clearcoat_normal_map: None,
+            sheen_color_map: None,
+            sheen_roughness_map: None,
+            anisotropy_map: None,
+            specular_intensity_map: None,
+            specular_color_map: None,
+            transmission_map: None,
+            thickness_map: None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct LineDash {
+    pub size: f64,
+    pub gap: f64,
+    pub scale: f64,
+    pub offset: f64,
+}
+impl Default for LineDash {
+    fn default() -> Self {
+        Self {
+            size: 3.0,
+            gap: 1.0,
+            scale: 1.0,
+            offset: 0.0,
+        }
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct LineBasicMaterial {
     pub properties: MaterialProperties,
     pub linewidth: f64,
+    pub dash: Option<LineDash>,
 }
 impl Default for LineBasicMaterial {
     fn default() -> Self {
         Self {
             properties: MaterialProperties::default(),
             linewidth: 1.0,
+            dash: None,
         }
     }
 }
@@ -186,8 +406,16 @@ impl Default for PointsMaterial {
 }
 #[derive(Clone, Debug, Serialize)]
 pub enum Material {
+    Shader(ShaderMaterial),
     Basic(MeshBasicMaterial),
     Standard(MeshStandardMaterial),
+    Physical(MeshPhysicalMaterial),
+    Phong(MeshPhongMaterial),
+    Lambert(MeshLambertMaterial),
+    Normal(MeshNormalMaterial),
+    Toon(MeshToonMaterial),
+    Matcap(MeshMatcapMaterial),
+    Depth(MeshDepthMaterial),
     Line(LineBasicMaterial),
     Points(PointsMaterial),
 }
@@ -197,20 +425,103 @@ impl Default for Material {
     }
 }
 impl Material {
+    pub(crate) fn texture_maps(&self) -> [Option<&Arc<Texture>>; 5] {
+        let mut maps = [self.properties().map.as_ref(), None, None, None, None];
+        match self {
+            Self::Standard(m) | Self::Physical(MeshPhysicalMaterial { base: m, .. }) => {
+                maps[1] = m.metallic_roughness_map.as_ref();
+                maps[2] = m.normal_map.as_ref();
+                maps[3] = m.occlusion_map.as_ref();
+                maps[4] = m.emissive_map.as_ref();
+            }
+            Self::Phong(m) => {
+                maps[1] = m.specular_map.as_ref();
+                maps[2] = m.normal_map.as_ref();
+                maps[4] = m.emissive_map.as_ref();
+            }
+            Self::Toon(m) => {
+                maps[1] = m.gradient_map.as_ref();
+                maps[2] = m.base.normal_map.as_ref();
+                maps[4] = m.base.emissive_map.as_ref();
+            }
+            Self::Matcap(m) => {
+                maps[1] = m.matcap.as_ref();
+                maps[2] = m.base.normal_map.as_ref();
+            }
+            Self::Lambert(m) => {
+                maps[2] = m.normal_map.as_ref();
+                maps[4] = m.emissive_map.as_ref();
+            }
+            _ => {}
+        }
+        maps
+    }
     pub fn properties(&self) -> &MaterialProperties {
         match self {
+            Self::Shader(m) => &m.properties,
             Self::Basic(m) => &m.properties,
             Self::Standard(m) => &m.properties,
+            Self::Physical(m) => &m.base.properties,
+            Self::Phong(m) => &m.properties,
+            Self::Lambert(m) => &m.properties,
+            Self::Normal(m) => &m.properties,
+            Self::Toon(m) => &m.base.properties,
+            Self::Matcap(m) => &m.base.properties,
+            Self::Depth(m) => &m.properties,
             Self::Line(m) => &m.properties,
             Self::Points(m) => &m.properties,
         }
     }
     pub fn properties_mut(&mut self) -> &mut MaterialProperties {
         match self {
+            Self::Shader(m) => &mut m.properties,
             Self::Basic(m) => &mut m.properties,
             Self::Standard(m) => &mut m.properties,
+            Self::Physical(m) => &mut m.base.properties,
+            Self::Phong(m) => &mut m.properties,
+            Self::Lambert(m) => &mut m.properties,
+            Self::Normal(m) => &mut m.properties,
+            Self::Toon(m) => &mut m.base.properties,
+            Self::Matcap(m) => &mut m.base.properties,
+            Self::Depth(m) => &mut m.properties,
             Self::Line(m) => &mut m.properties,
             Self::Points(m) => &mut m.properties,
         }
+    }
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct ShaderMaterial {
+    pub properties: MaterialProperties,
+    #[serde(skip)]
+    pub program: Arc<crate::shader::ShaderProgram>,
+    pub uniforms: [[f32; 4]; 16],
+}
+impl ShaderMaterial {
+    pub fn new(program: Arc<crate::shader::ShaderProgram>) -> Self {
+        Self {
+            properties: Default::default(),
+            program,
+            uniforms: [[0.0; 4]; 16],
+        }
+    }
+}
+
+impl MeshPhysicalMaterial {
+    pub(crate) fn extension_maps(&self) -> [Option<&Arc<Texture>>; 12] {
+        [
+            self.clearcoat_map.as_ref(),
+            self.clearcoat_roughness_map.as_ref(),
+            self.clearcoat_normal_map.as_ref(),
+            self.sheen_color_map.as_ref(),
+            self.sheen_roughness_map.as_ref(),
+            self.anisotropy_map.as_ref(),
+            self.specular_intensity_map.as_ref(),
+            self.specular_color_map.as_ref(),
+            self.transmission_map.as_ref(),
+            self.thickness_map.as_ref(),
+            self.iridescence_map.as_ref(),
+            self.iridescence_thickness_map.as_ref(),
+        ]
     }
 }

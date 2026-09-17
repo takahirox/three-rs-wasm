@@ -1,0 +1,41 @@
+<!doctype html><meta charset="utf-8"><title>Core material reference</title>
+<style>body{margin:0}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.js"}}</script>
+<script type="module">
+import * as T from 'three';
+import {OutputPass} from '/.cache/three-r186/examples/jsm/postprocessing/OutputPass.js';
+import {RectAreaLightUniformsLib} from '/.cache/three-r186/examples/jsm/lights/RectAreaLightUniformsLib.js';
+RectAreaLightUniformsLib.init();
+const name=new URLSearchParams(location.search).get('material');
+let material;
+if(name==='toon')material=new T.MeshToonMaterial();
+else if(name==='matcap')material=new T.MeshMatcapMaterial();
+else if(name==='depth')material=new T.MeshDepthMaterial();
+else if(name==='lambert')material=new T.MeshLambertMaterial();
+else if(name==='phong'||name==='flat')material=new T.MeshPhongMaterial({flatShading:name==='flat'});
+else if(name==='normal')material=new T.MeshNormalMaterial();
+else {
+ material=new T.MeshPhysicalMaterial({roughness:0.35,metalness:0.1});
+ if(name==='iridescence'){material.iridescence=1;material.metalness=0.5;material.iridescenceThicknessRange=[100,300];}
+ if(name==='physical_maps'){
+ const map=rgba=>{const t=new T.DataTexture(new Uint8Array(rgba),1,1);t.needsUpdate=true;return t};
+ Object.assign(material,{clearcoat:0.9,clearcoatRoughness:0.3,sheen:0.5,sheenRoughness:0.7,anisotropy:0.4});
+ material.sheenColor.setRGB(0.3,0.6,0.8);
+ material.clearcoatMap=map([180,255,255,255]);material.clearcoatRoughnessMap=map([255,150,255,255]);material.clearcoatNormalMap=map([150,110,250,255]);
+ material.sheenColorMap=map([180,100,200,255]);material.sheenRoughnessMap=map([255,255,255,180]);
+ material.anisotropyMap=map([220,170,200,255]);material.specularIntensityMap=map([255,255,255,180]);material.specularColorMap=map([180,220,250,255]);
+ }
+ if(name==='transmission'){material.roughness=0;material.metalness=0;material.transmission=1;material.thickness=0.5;material.attenuationColor.setRGB(0.5,0.7,1);material.attenuationDistance=1;}
+ if(name==='clearcoat'){material.clearcoat=1;material.clearcoatRoughness=0.2;}
+ if(name==='sheen'){material.sheen=0.8;material.sheenColor.setRGB(0.1,0.4,0.8);material.sheenRoughness=0.4;}
+ if(name==='anisotropy'){material.anisotropy=0.8;material.anisotropyRotation=0.4;}
+ if(name==='ior'){material.ior=2;material.specularIntensity=0.5;material.specularColor.setRGB(0.2,0.8,1);}
+}
+material.color?.setRGB(0.4,0.12,0.05);
+const scene=new T.Scene(),camera=new T.PerspectiveCamera(40,1,0.1,20);camera.position.z=4;if(name==='transmission')scene.background=new T.Color().setRGB(0.2,0.4,0.6);
+scene.add(new T.Mesh(new T.SphereGeometry(1,64,32),material));scene.add(new T.AmbientLight(0xffffff,0.2));
+const light=name==="area"?new T.RectAreaLight(0xffffff,3,2,2):new T.DirectionalLight(0xffffff,3);light.position.set(2,2,3);if(name==="area")light.lookAt(0,0,0);scene.add(light);
+const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(256,256);document.body.append(renderer.domElement);// Match Rust's linear HDR MSAA target followed by a single sRGB presentation.
+const target=new T.WebGLRenderTarget(256,256,{type:T.HalfFloatType,samples:4});renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);
+const output=new OutputPass();output.renderToScreen=true;output.render(renderer,null,target);window.ready=true;
+</script>

@@ -374,5 +374,21 @@ fn importer_rejects_required_extensions_with_actionable_names() {
         Err(error) => error.to_string(),
     };
     assert!(error.contains("KHR_draco_mesh_compression"));
-    assert!(error.contains("uncompressed static"));
+    assert!(error.contains("compression::prepare_gltf"));
+}
+
+#[test]
+fn ldr_environment_linearizes_rgb_but_preserves_alpha() {
+    let mut texture = Texture::from_rgba(64, 1, [128, 64, 255, 128].repeat(64), true).unwrap();
+    let environment = EnvironmentMap::from_texture(&texture).unwrap();
+    assert!(
+        (environment.rgba[0].to_f64() - three_rs_wasm::math::srgb_to_linear(128.0 / 255.0)).abs()
+            < 0.0001
+    );
+    assert!((environment.rgba[3].to_f64() - 128.0 / 255.0).abs() < 0.0003);
+    texture.srgb = false;
+    let linear = EnvironmentMap::from_texture(&texture).unwrap();
+    assert!((linear.rgba[0].to_f64() - 128.0 / 255.0).abs() < 0.0003);
+    texture.rgba.pop();
+    assert!(EnvironmentMap::from_texture(&texture).is_err());
 }

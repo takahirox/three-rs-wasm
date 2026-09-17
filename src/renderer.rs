@@ -4,10 +4,16 @@ use std::{
     collections::HashMap,
     sync::{Arc, Weak},
 };
-use wgpu::util::DeviceExt;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct PipelineKey {
+    shader_id: u64,
+    instanced: bool,
+    clipping: bool,
+    dashed: bool,
+    blend: Option<wgpu::BlendState>,
+    stencil: Option<wgpu::StencilState>,
+    color_write: bool,
     topology: wgpu::PrimitiveTopology,
     side: u8,
     transparent: bool,
@@ -23,13 +29,29 @@ struct PipelineKey {
 
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
-struct Vertex {
-    position: [f32; 3],
-    normal: [f32; 3],
-    uv: [f32; 2],
-    color: [f32; 4],
-    corner: [f32; 2],
-    tangent: [f32; 4],
+pub(crate) struct Vertex {
+    pub(crate) position: [f32; 3],
+    pub(crate) normal: [f32; 3],
+    pub(crate) uv: [f32; 2],
+    pub(crate) color: [f32; 4],
+    pub(crate) corner: [f32; 2],
+    pub(crate) tangent: [f32; 4],
+    pub(crate) uv1: [f32; 2],
+}
+#[repr(C)]
+#[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
+pub(crate) struct InstanceVertex {
+    pub(crate) matrix: [f32; 16],
+    pub(crate) color: [f32; 4],
+}
+pub(crate) fn instance_layout(instanced: bool) -> wgpu::VertexBufferLayout<'static> {
+    const ATTRIBUTES: [wgpu::VertexAttribute; 5] =
+        wgpu::vertex_attr_array![6=>Float32x4,7=>Float32x4,8=>Float32x4,9=>Float32x4,10=>Float32x4];
+    wgpu::VertexBufferLayout {
+        array_stride: if instanced { 80 } else { 0 },
+        step_mode: wgpu::VertexStepMode::Instance,
+        attributes: &ATTRIBUTES,
+    }
 }
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
@@ -51,6 +73,23 @@ struct Uniforms {
     light_position: [[f32; 4]; 8],
     light_color: [[f32; 4]; 8],
     light_params: [[f32; 4]; 8],
+    light_direction: [[f32; 4]; 8],
+    specular: [f32; 4],
+    flags: [f32; 4],
+    fog_color: [f32; 4],
+    fog_params: [f32; 4],
+    shadow_matrices: [[f32; 16]; 48],
+    shadow_params: [[f32; 4]; 8],
+    shadow_filters: [[f32; 4]; 8],
+    custom: [[f32; 4]; 16],
+    clipping: crate::clipping::Clipping,
+    physical: [[f32; 4]; 4],
+    uv_transforms: [[f32; 4]; 15],
+    transmission: [[f32; 4]; 3],
+    extension_maps: crate::physical_maps::MapUniforms,
+    coat_normal: [f32; 4],
+    iridescence: [f32; 4],
+    line: [[f32; 4]; 2],
 }
 
 pub use crate::render_target::{RenderTarget, RenderTarget3D, RenderTargetOptions};
@@ -61,6 +100,9 @@ pub struct Renderer {
     pub queue: wgpu::Queue,
     layout: wgpu::BindGroupLayout,
     shader: wgpu::ShaderModule,
+    shadows: crate::shadow::ShadowRenderer,
+    geometry: RefCell<crate::geometry_gpu::Cache>,
+    deformation: RefCell<crate::deformation_gpu::Cache>,
     pipelines: RefCell<HashMap<PipelineKey, wgpu::RenderPipeline>>,
     textures: RefCell<crate::texture_gpu::TextureCache>,
     white: Arc<Texture>,
@@ -71,12 +113,27 @@ pub struct Renderer {
         )>,
     >,
     dfg: wgpu::TextureView,
+    ltc: wgpu::TextureView,
+    physical_maps: RefCell<crate::physical_maps::Cache>,
     backgrounds: RefCell<crate::background::PipelineCache>,
     presentations:
         RefCell<HashMap<wgpu::TextureFormat, (wgpu::BindGroupLayout, wgpu::RenderPipeline)>>,
     environment_builds: std::cell::Cell<u64>,
+    transmission_target: RefCell<Option<RenderTarget>>,
+    draw_slots: RefCell<Vec<crate::draw_gpu::Slot>>,
+    draw_cursor: std::cell::Cell<usize>,
+    present_slot: RefCell<crate::draw_gpu::Slot>,
+}
+struct DrawGeometry<'a> {
+    vertices: wgpu::Buffer,
+    deformation: crate::deformation_gpu::Bindings,
+    instances: &'a [Instance],
+    transmission_view: Option<&'a wgpu::TextureView>,
 }
 struct Draw {
+    stencil_reference: u32,
+    custom_bindings: Option<wgpu::BindGroup>,
+    instance_buffer: wgpu::Buffer,
     pipeline: wgpu::RenderPipeline,
     vertices: wgpu::Buffer,
     bind_group: wgpu::BindGroup,
@@ -91,6 +148,27 @@ struct Draw {
     depth: f64,
 }
 impl Renderer {
+    pub(crate) fn validate_shader_program(
+        &self,
+        module: &wgpu::ShaderModule,
+        extra: &wgpu::BindGroupLayout,
+    ) {
+        let layout = self
+            .device
+            .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: None,
+                bind_group_layouts: &[&self.layout, extra],
+                push_constant_ranges: &[],
+            });
+        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&[Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL})]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
+    }
+    /// Cumulative geometry uploads/bytes, static skin/morph bytes, and pose bytes.
+    /// A pose-only frame must not increase the first three counters.
+    pub fn transfer_counts(&self) -> (u64, u64, u64, u64) {
+        let g = self.geometry.borrow();
+        let d = self.deformation.borrow();
+        (g.uploads, g.bytes, d.static_bytes, d.pose_bytes)
+    }
     /// (resident material textures, cumulative uploads, cumulative environment filters).
     pub fn resource_counts(&self) -> (usize, u64, u64) {
         let cache = self.textures.borrow();
@@ -98,7 +176,15 @@ impl Renderer {
     }
     /// Release cached resources whose application-owned inputs have been dropped.
     pub fn collect_resources(&self) {
+        self.draw_slots.borrow_mut().clear();
+        self.shadows.collect_resources();
+        for (_, _, slot) in self.backgrounds.borrow_mut().values_mut() {
+            *slot = Default::default();
+        }
+        *self.present_slot.borrow_mut() = Default::default();
+        self.geometry.borrow_mut().prune();
         self.textures.borrow_mut().prune();
+        self.physical_maps.borrow_mut().prune();
         if self
             .environment
             .borrow()
@@ -157,6 +243,61 @@ impl Renderer {
                 count: None,
             });
         }
+        entries.extend([
+            wgpu::BindGroupLayoutEntry {
+                binding: 15,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Texture {
+                    sample_type: wgpu::TextureSampleType::Depth,
+                    view_dimension: wgpu::TextureViewDimension::D2Array,
+                    multisampled: false,
+                },
+                count: None,
+            },
+            wgpu::BindGroupLayoutEntry {
+                binding: 16,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Comparison),
+                count: None,
+            },
+        ]);
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 17,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture {
+                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                view_dimension: wgpu::TextureViewDimension::D2Array,
+                multisampled: false,
+            },
+            count: None,
+        });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 18,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture {
+                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                view_dimension: wgpu::TextureViewDimension::D2,
+                multisampled: false,
+            },
+            count: None,
+        });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 19,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+            count: None,
+        });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 20,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture {
+                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                view_dimension: wgpu::TextureViewDimension::D2Array,
+                multisampled: false,
+            },
+            count: None,
+        });
+        entries.extend(crate::deformation_gpu::layout_entries());
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("draw layout"),
             entries: &entries,
@@ -190,14 +331,24 @@ impl Renderer {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
                 format!(
-                    "{}\n{}",
+                    "{}\n{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
-                    include_str!("shader.wgsl")
+                    concat!(
+                        include_str!("shaders/deformation.wgsl"),
+                        "\n",
+                        include_str!("shader.wgsl")
+                    ),
+                    crate::shader::DEFAULT_HOOKS
                 )
                 .into(),
             ),
         });
+        let shadows = crate::shadow::ShadowRenderer::new(&device);
+        let ltc = crate::area_light::texture(&device, &queue);
         Ok(Self {
+            shadows,
+            geometry: Default::default(),
+            deformation: Default::default(),
             adapter,
             device,
             queue,
@@ -208,9 +359,15 @@ impl Renderer {
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false)?),
             environment: RefCell::new(None),
             dfg,
+            ltc,
+            physical_maps: Default::default(),
             backgrounds: RefCell::new(Default::default()),
             presentations: RefCell::new(Default::default()),
             environment_builds: std::cell::Cell::new(0),
+            transmission_target: Default::default(),
+            draw_slots: Default::default(),
+            draw_cursor: Default::default(),
+            present_slot: Default::default(),
         })
     }
 
@@ -303,17 +460,12 @@ impl Renderer {
             (layout, pipeline)
         });
         let parameters = [exposure as f32, if aces { 1.0 } else { 0.0 }, 0.0, 0.0];
-        let uniform = self
-            .device
-            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("exposure"),
-                contents: bytemuck::cast_slice(&parameters),
-                usage: wgpu::BufferUsages::UNIFORM,
-            });
-        let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: Some("present"),
+        let mut slot = self.present_slot.borrow_mut();
+        let uniform = slot.uniform(&self.device, &self.queue, bytemuck::cast_slice(&parameters));
+        let bind_group = slot.bindings(
+            &self.device,
             layout,
-            entries: &[
+            &[
                 wgpu::BindGroupEntry {
                     binding: 0,
                     resource: wgpu::BindingResource::TextureView(&target.view),
@@ -323,7 +475,7 @@ impl Renderer {
                     resource: uniform.as_entire_binding(),
                 },
             ],
-        });
+        );
         let mut encoder = self.device.create_command_encoder(&Default::default());
         {
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
@@ -346,6 +498,53 @@ impl Renderer {
         self.queue.submit([encoder.finish()]);
     }
     pub fn render(&self, scene: &mut Scene, camera: Object3D, target: &RenderTarget) -> Result<()> {
+        let mut needs_transmission = false;
+        for root in scene.roots() {
+            for handle in scene.traverse(root, true)? {
+                if let NodeKind::Mesh(mesh) = &scene.get(handle)?.kind {
+                    needs_transmission |= mesh
+                        .materials
+                        .iter()
+                        .any(|m| matches!(m.as_ref(),Material::Physical(p) if p.transmission>0.0));
+                }
+            }
+        }
+        if needs_transmission {
+            let mut cached = self.transmission_target.borrow_mut();
+            if cached.as_ref().is_none_or(|t| {
+                t.width != target.width
+                    || t.height != target.height
+                    || t.options.samples != target.options.samples
+            }) {
+                *cached = Some(RenderTarget::with_options(
+                    &self.device,
+                    target.width,
+                    target.height,
+                    RenderTargetOptions {
+                        format: wgpu::TextureFormat::Rgba16Float,
+                        samples: target.options.samples,
+                        ..Default::default()
+                    },
+                )?);
+            }
+            let background = cached.as_mut().expect("transmission target");
+            background.viewport = target.viewport;
+            background.scissor = target.scissor;
+            self.render_inner(scene, camera, background, true, None)?;
+            self.render_inner(scene, camera, target, false, Some(&background.view))
+        } else {
+            self.render_inner(scene, camera, target, false, None)
+        }
+    }
+    fn render_inner(
+        &self,
+        scene: &mut Scene,
+        camera: Object3D,
+        target: &RenderTarget,
+        opaque_only: bool,
+        transmission_view: Option<&wgpu::TextureView>,
+    ) -> Result<()> {
+        self.draw_cursor.set(0);
         let valid_rectangle = |r: [u32; 4]| {
             r[2] > 0
                 && r[3] > 0
@@ -356,7 +555,9 @@ impl Renderer {
         {
             return Err(Error::Invalid("viewport or scissor"));
         }
+        self.geometry.borrow_mut().prune();
         self.textures.borrow_mut().prune();
+        self.physical_maps.borrow_mut().prune();
         {
             let mut cached = self.environment.borrow_mut();
             if let Some(image) = &scene.environment {
@@ -375,6 +576,7 @@ impl Renderer {
                 *cached = None;
             }
         }
+        self.deformation.borrow_mut().prune(scene);
         scene.update()?;
         let (camera_data, camera_world) = scene.camera(camera)?;
         if camera_world.determinant() == 0.0 {
@@ -383,6 +585,7 @@ impl Renderer {
         let perspective = matches!(camera_data, crate::camera::Camera::Perspective(_));
         let projection = camera_data.projection_matrix()?;
         let view_projection = projection * camera_world.inverse();
+        let frustum = Frustum::from_projection(view_projection);
         let camera_layers = scene.get(camera)?.layers;
         let camera_position = camera_world.w_axis.truncate();
         let background = if scene.background_environment {
@@ -390,11 +593,21 @@ impl Renderer {
                 crate::background::prepare(
                     &mut self.backgrounds.borrow_mut(),
                     &self.device,
+                    &self.queue,
                     target,
                     env,
                     projection,
                     camera_world,
-                    [scene.environment_rotation, scene.background_blur],
+                    [
+                        scene.environment_rotation,
+                        scene.background_blur,
+                        if scene.background_equirectangular {
+                            1.0
+                        } else {
+                            0.0
+                        },
+                        scene.background_intensity,
+                    ],
                 )
             })
         } else {
@@ -404,7 +617,9 @@ impl Renderer {
         let mut light_position = [[0.0; 4]; 8];
         let mut light_color = [[0.0; 4]; 8];
         let mut light_params = [[0.0; 4]; 8];
+        let mut light_direction = [[0.0; 4]; 8];
         let mut light_count = 0;
+        let mut shadow_lights = Vec::new();
         let mut visible = Vec::new();
         for root in scene.roots() {
             visible.extend(scene.traverse(root, true)?);
@@ -415,7 +630,91 @@ impl Renderer {
                 continue;
             }
             if let NodeKind::Light(light) = &n.kind {
+                if !matches!(light, Light::Ambient { .. }) && light_count == 8 {
+                    return Err(Error::Invalid("more than eight nonambient lights"));
+                }
+                if !matches!(light, Light::Ambient { .. }) {
+                    shadow_lights.push(h);
+                }
                 match light {
+                    Light::RectArea {
+                        color,
+                        intensity,
+                        width,
+                        height,
+                    } => {
+                        if !width.is_finite()
+                            || !height.is_finite()
+                            || *width <= 0.0
+                            || *height <= 0.0
+                        {
+                            return Err(Error::Invalid("area light dimensions"));
+                        }
+                        let rotation = n.world_quaternion();
+                        light_position[light_count] =
+                            n.world_position().extend(4.0).as_vec4().to_array();
+                        light_color[light_count] =
+                            (color.0 * *intensity).extend(1.0).as_vec4().to_array();
+                        light_direction[light_count] = (rotation * Vector3::X * *width * 0.5)
+                            .extend(0.0)
+                            .as_vec4()
+                            .to_array();
+                        light_params[light_count] = (rotation * Vector3::Y * *height * 0.5)
+                            .extend(0.0)
+                            .as_vec4()
+                            .to_array();
+                        light_count += 1;
+                    }
+                    Light::Hemisphere {
+                        sky,
+                        ground,
+                        intensity,
+                    } => {
+                        light_position[light_count] = n
+                            .world_position()
+                            .normalize_or_zero()
+                            .extend(3.0)
+                            .as_vec4()
+                            .to_array();
+                        light_color[light_count] =
+                            (sky.0 * *intensity).extend(0.0).as_vec4().to_array();
+                        light_params[light_count] =
+                            (ground.0 * *intensity).extend(0.0).as_vec4().to_array();
+                        light_count += 1;
+                    }
+                    Light::Spot {
+                        color,
+                        intensity,
+                        target,
+                        distance,
+                        decay,
+                        angle,
+                        penumbra,
+                    } => {
+                        if !angle.is_finite()
+                            || *angle <= 0.0
+                            || *angle > std::f64::consts::FRAC_PI_2
+                            || !(0.0..=1.0).contains(penumbra)
+                        {
+                            return Err(Error::Invalid("spot angle or penumbra"));
+                        }
+                        light_position[light_count] =
+                            n.world_position().extend(2.0).as_vec4().to_array();
+                        light_direction[light_count] = (n.world_position() - *target)
+                            .normalize_or_zero()
+                            .extend(0.0)
+                            .as_vec4()
+                            .to_array();
+                        light_color[light_count] =
+                            (color.0 * *intensity).extend(1.0).as_vec4().to_array();
+                        light_params[light_count] = [
+                            *distance as f32,
+                            *decay as f32,
+                            angle.cos() as f32,
+                            (angle * (1.0 - penumbra)).cos() as f32,
+                        ];
+                        light_count += 1;
+                    }
                     Light::Ambient { color, intensity } => ambient += color.0 * *intensity,
                     Light::Directional {
                         color,
@@ -450,6 +749,16 @@ impl Renderer {
                 }
             }
         }
+        let shadows = self.shadows.prepare(
+            &self.device,
+            &self.queue,
+            &mut self.textures.borrow_mut(),
+            scene,
+            &visible,
+            &shadow_lights,
+            &mut self.geometry.borrow_mut(),
+            &mut self.deformation.borrow_mut(),
+        )?;
         visible.sort_by_key(|h| scene.get(*h).expect("valid node").render_order);
         let mut draws = Vec::new();
         let mut after_hooks = Vec::new();
@@ -462,14 +771,23 @@ impl Renderer {
                 continue;
             }
             if n.frustum_culled
-                && !crate::raycast::FrustumIntersect::intersects_frustum(
-                    n,
-                    &Frustum::from_projection(view_projection),
-                )?
+                && n.skin.is_none()
+                && n.morph_weights.is_empty()
+                && n.instances.is_empty()
+                && !frustum.intersects_sphere(
+                    self.geometry
+                        .borrow_mut()
+                        .sphere(n.geometry().unwrap())?
+                        .transformed(n.matrix_world),
+                )
             {
                 continue;
             }
-            let before = n.render_hooks.before.clone();
+            let before = if transmission_view.is_some() {
+                None
+            } else {
+                n.render_hooks.before.clone()
+            };
             if let Some(callback) = before {
                 callback(scene, h);
                 scene.update_world_matrix(h, true, false)?;
@@ -478,7 +796,19 @@ impl Renderer {
             let Some(geometry) = n.geometry() else {
                 continue;
             };
-            if let Some(callback) = n.render_hooks.after.clone() {
+            let wide = if let NodeKind::Line(line) = &n.kind {
+                if let Material::Line(m) = line.material.as_ref() {
+                    (m.linewidth != 1.0
+                        || (m.dash.is_some() && !geometry.has_attribute("lineDistance")))
+                    .then_some(line.segments)
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+            let expanded_line = wide.is_some();
+            if let Some(callback) = n.render_hooks.after.clone().filter(|_| !opaque_only) {
                 after_hooks.push((h, callback));
             }
             let (materials, topology) = match &n.kind {
@@ -488,7 +818,9 @@ impl Renderer {
                 ),
                 NodeKind::Line(l) => (
                     vec![l.material.as_ref()],
-                    if l.segments {
+                    if expanded_line {
+                        wgpu::PrimitiveTopology::TriangleList
+                    } else if l.segments {
                         wgpu::PrimitiveTopology::LineList
                     } else {
                         wgpu::PrimitiveTopology::LineStrip
@@ -514,6 +846,12 @@ impl Renderer {
                     return Err(Error::Invalid("group material index"));
                 };
                 let properties = material.properties();
+                if opaque_only
+                    && (properties.transparent
+                        || matches!(material,Material::Physical(m) if m.transmission>0.0))
+                {
+                    continue;
+                }
                 if !properties.visible {
                     continue;
                 }
@@ -531,90 +869,29 @@ impl Renderer {
                 if end <= start {
                     continue;
                 }
-                let mut vertices = Vec::new();
-                let positions = geometry
-                    .attributes
-                    .get("position")
-                    .ok_or(Error::Invalid("position attribute"))?;
-                for index in 0..geometry.vertex_count() {
-                    let position = positions.vector3(index)?.as_vec3().to_array();
-                    let normal = geometry
-                        .attributes
-                        .get("normal")
-                        .map(|a| a.vector3(index))
-                        .transpose()?
-                        .unwrap_or(Vector3::Z)
-                        .as_vec3()
-                        .to_array();
-                    let mut uv = [0.0; 2];
-                    if let Some(a) = geometry.attributes.get("uv") {
-                        uv = [
-                            a.get_component(index, 0)? as f32,
-                            a.get_component(index, 1)? as f32,
-                        ];
-                    }
-                    if let Some(texture) = &properties.map {
-                        let centered = Vector2::new(uv[0] as f64, uv[1] as f64) - texture.center;
-                        let (s, c) = texture.rotation.sin_cos();
-                        let transformed = Vector2::new(
-                            c * centered.x + s * centered.y,
-                            -s * centered.x + c * centered.y,
-                        ) * texture.repeat
-                            + texture.center
-                            + texture.offset;
-                        uv = [
-                            transformed.x as f32,
-                            if texture.flip_y {
-                                1.0 - transformed.y as f32
-                            } else {
-                                transformed.y as f32
-                            },
-                        ];
-                    }
-                    let mut color = [1.0; 4];
-                    if properties.vertex_colors
-                        && let Some(a) = geometry.attributes.get("color")
-                    {
-                        for (c, value) in color.iter_mut().enumerate().take(a.item_size().min(4)) {
-                            *value = a.get_component(index, c)? as f32;
-                        }
-                    }
-                    let mut tangent = [0.0; 4];
-                    if let Some(a) = geometry.attributes.get("tangent") {
-                        for (c, value) in tangent.iter_mut().enumerate() {
-                            *value = a.get_component(index, c)? as f32;
-                        }
-                    }
-                    vertices.push(Vertex {
-                        position,
-                        normal,
-                        uv,
-                        color,
-                        corner: [0.0, 0.0],
-                        tangent,
-                    });
-                }
                 let is_points = matches!(n.kind, NodeKind::Points(_));
-                if is_points {
-                    let centers = vertices;
-                    vertices = Vec::with_capacity(centers.len() * 6);
-                    for center in centers {
-                        for corner in [
-                            [-1.0, -1.0],
-                            [1.0, -1.0],
-                            [-1.0, 1.0],
-                            [-1.0, 1.0],
-                            [1.0, -1.0],
-                            [1.0, 1.0],
-                        ] {
-                            let mut vertex = center;
-                            vertex.corner = corner;
-                            vertex.uv = [corner[0] * 0.5 + 0.5, 0.5 - corner[1] * 0.5];
-                            vertices.push(vertex);
-                        }
-                    }
+                let wireframe = properties.wireframe && matches!(n.kind, NodeKind::Mesh(_));
+                if wireframe && (geometry.indirect.is_some() || start % 3 != 0 || end % 3 != 0) {
+                    return Err(Error::Invalid(
+                        "wireframe requires direct complete triangles",
+                    ));
                 }
+
+                let gpu_geometry = self.geometry.borrow_mut().get(
+                    &self.device,
+                    geometry,
+                    properties.vertex_colors,
+                    is_points,
+                    wireframe,
+                    wide,
+                )?;
                 let point = match material {
+                    Material::Line(_) if expanded_line => [
+                        target.viewport[2] as f32,
+                        target.viewport[3] as f32,
+                        0.0,
+                        0.0,
+                    ],
                     Material::Points(m) if is_points => [
                         target.width as f32,
                         target.height as f32,
@@ -628,12 +905,103 @@ impl Renderer {
                     _ => [target.width as f32, target.height as f32, 0.0, 0.0],
                 };
                 let (kind, roughness, metalness, emissive) = match material {
-                    Material::Standard(m) => {
+                    Material::Standard(m)
+                    | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => {
                         (1.0, m.roughness as f32, m.metalness as f32, m.emissive.0)
                     }
+                    Material::Toon(m) => (6.0, 1.0, 0.0, m.base.emissive.0),
+                    Material::Matcap(_) => (7.0, 1.0, 0.0, Vector3::ZERO),
+                    Material::Depth(_) => (8.0, 1.0, 0.0, Vector3::ZERO),
+                    Material::Lambert(m) => (2.0, 1.0, 0.0, m.emissive.0),
+                    Material::Phong(m) => (3.0, 1.0, 0.0, m.emissive.0),
+                    Material::Shader(_) => (5.0, 1.0, 0.0, Vector3::ZERO),
+                    Material::Normal(_) => (4.0, 1.0, 0.0, Vector3::ZERO),
                     _ => (0.0, 1.0, 0.0, Vector3::ZERO),
                 };
+                let (fog_color, fog_params) = match scene.fog.filter(|_| properties.fog) {
+                    Some(Fog::Linear { color, near, far }) => {
+                        if !near.is_finite() || !far.is_finite() || far <= near {
+                            return Err(Error::Invalid("fog range"));
+                        }
+                        (
+                            color.0.extend(0.0).as_vec4().to_array(),
+                            [1.0, near as f32, far as f32, 0.0],
+                        )
+                    }
+                    Some(Fog::Exp2 { color, density }) => {
+                        if !density.is_finite() || density < 0.0 {
+                            return Err(Error::Invalid("fog density"));
+                        }
+                        (
+                            color.0.extend(0.0).as_vec4().to_array(),
+                            [2.0, density as f32, 0.0, 0.0],
+                        )
+                    }
+                    None => ([0.0; 4], [0.0; 4]),
+                };
+                let clipping = crate::clipping::prepare(scene, properties, false)?;
+                let mut uv_transforms = [[0.0; 4]; 15];
+                for (i, map) in material.texture_maps().iter().enumerate() {
+                    let columns = if let Some(t) = map {
+                        if t.tex_coord > 1 {
+                            return Err(Error::Invalid("texture coordinate channel"));
+                        }
+                        let mut columns = t.uv_matrix().to_cols_array_2d().map(|column| {
+                            [column[0] as f32, column[1] as f32, column[2] as f32, 0.0]
+                        });
+                        columns[2][3] = t.tex_coord as f32;
+                        columns
+                    } else {
+                        [
+                            [1.0, 0.0, 0.0, 0.0],
+                            [0.0, 1.0, 0.0, 0.0],
+                            [0.0, 0.0, 1.0, 0.0],
+                        ]
+                    };
+                    uv_transforms[i * 3..i * 3 + 3].copy_from_slice(&columns);
+                }
                 let u = Uniforms {
+                    uv_transforms,
+                    clipping,
+                    physical: match material {
+                        Material::Physical(m) => {
+                            if ![
+                                m.ior,
+                                m.specular_intensity,
+                                m.clearcoat,
+                                m.clearcoat_roughness,
+                                m.sheen,
+                                m.sheen_roughness,
+                                m.anisotropy,
+                                m.anisotropy_rotation,
+                            ]
+                            .iter()
+                            .all(|v| v.is_finite())
+                                || m.ior < 1.0
+                            {
+                                return Err(Error::Invalid("physical material factors"));
+                            }
+                            [
+                                [
+                                    m.clearcoat.clamp(0.0, 1.0) as f32,
+                                    m.clearcoat_roughness.clamp(0.0, 1.0) as f32,
+                                    m.sheen_roughness.clamp(0.07, 1.0) as f32,
+                                    m.ior as f32,
+                                ],
+                                (m.sheen_color.0 * m.sheen.clamp(0.0, 1.0))
+                                    .extend(m.anisotropy.clamp(0.0, 1.0))
+                                    .as_vec4()
+                                    .to_array(),
+                                m.specular_color
+                                    .0
+                                    .extend(m.specular_intensity.clamp(0.0, 1.0))
+                                    .as_vec4()
+                                    .to_array(),
+                                [m.anisotropy_rotation as f32, 1.0, 0.0, 0.0],
+                            ]
+                        }
+                        _ => [[0.0; 4]; 4],
+                    },
                     mvp: (view_projection * n.matrix_world).as_mat4().to_cols_array(),
                     model: n.matrix_world.as_mat4().to_cols_array(),
                     normal: n
@@ -656,10 +1024,25 @@ impl Renderer {
                     ambient: ambient.extend(0.0).as_vec4().to_array(),
                     point,
                     pbr: match material {
-                        Material::Standard(m) => [
+                        Material::Standard(m)
+                        | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
                             m.normal_scale.x as f32,
                             m.normal_scale.y as f32,
                             m.occlusion_strength as f32,
+                            properties.alpha_test as f32,
+                        ],
+                        Material::Phong(m) => [
+                            m.normal_scale.x as f32,
+                            m.normal_scale.y as f32,
+                            1.0,
+                            properties.alpha_test as f32,
+                        ],
+                        Material::Lambert(m)
+                        | Material::Toon(MeshToonMaterial { base: m, .. })
+                        | Material::Matcap(MeshMatcapMaterial { base: m, .. }) => [
+                            m.normal_scale.x as f32,
+                            m.normal_scale.y as f32,
+                            1.0,
                             properties.alpha_test as f32,
                         ],
                         _ => [1.0, 1.0, 1.0, properties.alpha_test as f32],
@@ -678,30 +1061,185 @@ impl Renderer {
                         0.0,
                     ],
                     maps: match material {
-                        Material::Standard(m) => [
+                        Material::Standard(m)
+                        | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
                             f32::from(m.normal_map.is_some()),
                             f32::from(properties.transparent),
                             f32::from(m.emissive_map.is_some()),
                             f32::from(m.metallic_roughness_map.is_some()),
+                        ],
+                        Material::Phong(m) => [
+                            f32::from(m.normal_map.is_some()),
+                            f32::from(properties.transparent),
+                            0.0,
+                            0.0,
+                        ],
+                        Material::Lambert(m)
+                        | Material::Toon(MeshToonMaterial { base: m, .. })
+                        | Material::Matcap(MeshMatcapMaterial { base: m, .. }) => [
+                            f32::from(m.normal_map.is_some()),
+                            f32::from(properties.transparent),
+                            0.0,
+                            0.0,
                         ],
                         _ => [0.0, f32::from(properties.transparent), 0.0, 0.0],
                     },
                     light_position,
                     light_color,
                     light_params,
+                    light_direction,
+                    specular: match material {
+                        Material::Phong(m) => m
+                            .specular
+                            .0
+                            .extend(m.shininess.max(1e-4))
+                            .as_vec4()
+                            .to_array(),
+                        _ => [0.0; 4],
+                    },
+                    flags: [
+                        f32::from(properties.flat_shading),
+                        f32::from(n.receive_shadow),
+                        f32::from(properties.vertex_colors),
+                        0.0,
+                    ],
+                    fog_color,
+                    fog_params,
+                    custom: match material {
+                        Material::Shader(m) => m.uniforms,
+                        Material::Toon(m) => {
+                            let mut values = [[0.0; 4]; 16];
+                            values[0][0] = f32::from(m.gradient_map.is_some());
+                            values
+                        }
+                        Material::Matcap(m) => {
+                            let mut values = [[0.0; 4]; 16];
+                            values[0][0] = f32::from(m.matcap.is_some());
+                            values
+                        }
+                        _ => properties.vertex_uniforms,
+                    },
+                    extension_maps: crate::physical_maps::MapUniforms::new(
+                        &if let Material::Physical(m) = material {
+                            m.extension_maps()
+                        } else {
+                            [None; 12]
+                        },
+                    ),
+                    line: if let Material::Line(m) = material {
+                        if !m.linewidth.is_finite() || m.linewidth <= 0.0 {
+                            return Err(Error::Invalid("line width"));
+                        }
+                        let d = m.dash.unwrap_or_default();
+                        if !d.size.is_finite()
+                            || !d.gap.is_finite()
+                            || !d.scale.is_finite()
+                            || !d.offset.is_finite()
+                            || d.size <= 0.0
+                            || d.gap < 0.0
+                            || d.scale <= 0.0
+                        {
+                            return Err(Error::Invalid("line dash parameters"));
+                        }
+                        [
+                            [
+                                if expanded_line {
+                                    m.linewidth as f32
+                                } else {
+                                    0.0
+                                },
+                                d.size as f32,
+                                d.gap as f32,
+                                d.scale as f32,
+                            ],
+                            [d.offset as f32, f32::from(m.dash.is_some()), 0.0, 0.0],
+                        ]
+                    } else {
+                        [[0.0; 4]; 2]
+                    },
+                    iridescence: if let Material::Physical(m) = material {
+                        [
+                            m.iridescence as f32,
+                            m.iridescence_ior as f32,
+                            m.iridescence_thickness_range[0] as f32,
+                            m.iridescence_thickness_range[1] as f32,
+                        ]
+                    } else {
+                        [0.0; 4]
+                    },
+                    coat_normal: if let Material::Physical(m) = material {
+                        [
+                            m.clearcoat_normal_scale.x as f32,
+                            m.clearcoat_normal_scale.y as f32,
+                            0.0,
+                            0.0,
+                        ]
+                    } else {
+                        [1.0, 1.0, 0.0, 0.0]
+                    },
+                    transmission: if let Material::Physical(m) = material {
+                        if !m.transmission.is_finite()
+                            || !(0.0..=1.0).contains(&m.transmission)
+                            || !m.thickness.is_finite()
+                            || m.thickness < 0.0
+                            || m.attenuation_distance <= 0.0
+                            || m.attenuation_distance.is_nan()
+                        {
+                            return Err(Error::Invalid("physical transmission parameters"));
+                        }
+                        [
+                            [
+                                m.transmission as f32,
+                                m.thickness as f32,
+                                m.attenuation_distance as f32,
+                                m.dispersion as f32,
+                            ],
+                            m.attenuation_color.0.extend(0.0).as_vec4().to_array(),
+                            [
+                                target.viewport[0] as f32 / target.width as f32,
+                                target.viewport[1] as f32 / target.height as f32,
+                                target.viewport[2] as f32 / target.width as f32,
+                                target.viewport[3] as f32 / target.height as f32,
+                            ],
+                        ]
+                    } else {
+                        [[0.0; 4]; 3]
+                    },
+                    shadow_matrices: shadows.matrices,
+                    shadow_params: shadows.params,
+                    shadow_filters: shadows.filters,
                 };
                 let mut draw = self.prepare_draw(
-                    &vertices,
+                    DrawGeometry {
+                        vertices: gpu_geometry.vertices,
+                        deformation: self.deformation.borrow_mut().get(
+                            &self.device,
+                            &self.queue,
+                            scene,
+                            h,
+                        )?,
+                        instances: &n.instances,
+                        transmission_view,
+                    },
                     &u,
                     material,
-                    if is_points {
+                    if wireframe {
+                        wgpu::PrimitiveTopology::LineList
+                    } else if is_points {
                         wgpu::PrimitiveTopology::TriangleList
                     } else {
                         topology
                     },
                     target,
+                    &shadows,
                 )?;
-                let factor = if is_points { 6 } else { 1 };
+                let factor = if wireframe {
+                    2
+                } else if is_points {
+                    6
+                } else {
+                    1
+                };
                 draw.render_order = n.render_order;
                 draw.group_order = scene
                     .ancestors(h)?
@@ -716,30 +1254,22 @@ impl Renderer {
                     .unwrap_or(0);
                 draw.depth = view_projection.project_point3(n.world_position()).z;
                 draw.range = (start as u32) * factor..(end as u32) * factor;
-                draw.instances = geometry.instance_count.unwrap_or(1);
-                if let Some(indices) = &geometry.index {
-                    if indices
-                        .iter()
-                        .any(|i| *i as usize >= geometry.vertex_count())
-                    {
-                        return Err(Error::Invalid("geometry index"));
+                if let Some(segments) = wide {
+                    if geometry.indirect.is_some() || (segments && start % 2 != 0) {
+                        return Err(Error::Invalid("wide line direct range"));
                     }
-                    let indices = if is_points {
-                        indices
-                            .iter()
-                            .flat_map(|i| (0..6).map(move |corner| i * 6 + corner))
-                            .collect::<Vec<_>>()
+                    draw.range = if segments {
+                        (start as u32 / 2) * 6..(end as u32 / 2) * 6
                     } else {
-                        indices.clone()
+                        start as u32 * 6..end.saturating_sub(1) as u32 * 6
                     };
-                    draw.indices = Some(self.device.create_buffer_init(
-                        &wgpu::util::BufferInitDescriptor {
-                            label: Some("indices"),
-                            contents: bytemuck::cast_slice(&indices),
-                            usage: wgpu::BufferUsages::INDEX,
-                        },
-                    ));
                 }
+                draw.instances = if n.instances.is_empty() {
+                    geometry.instance_count.unwrap_or(1)
+                } else {
+                    n.instances.len() as u32
+                };
+                draw.indices = gpu_geometry.indices;
                 if let Some(commands) = &geometry.indirect {
                     let command_size = if geometry.index.is_some() { 5 } else { 4 };
                     let offsets = if geometry.indirect_offsets.is_empty() {
@@ -780,18 +1310,15 @@ impl Renderer {
                         }
                         draw.indirect_offsets.push(offset as u64);
                     }
-                    draw.indirect = Some(self.device.create_buffer_init(
-                        &wgpu::util::BufferInitDescriptor {
-                            label: Some("indirect commands"),
-                            contents: bytemuck::cast_slice(&commands),
-                            usage: wgpu::BufferUsages::INDIRECT,
-                        },
-                    ));
+                    draw.indirect = Some(
+                        self.draw_slots.borrow_mut()[self.draw_cursor.get() - 1].indirect(
+                            &self.device,
+                            &self.queue,
+                            bytemuck::cast_slice(&commands),
+                        ),
+                    );
                 }
                 draws.push(draw);
-                for attribute in geometry.attributes.values() {
-                    attribute.notify_uploaded();
-                }
             }
         }
         let mut encoder = self
@@ -894,8 +1421,13 @@ impl Renderer {
             }
             for draw in &draws {
                 pass.set_pipeline(&draw.pipeline);
+                pass.set_stencil_reference(draw.stencil_reference);
                 pass.set_bind_group(0, &draw.bind_group, &[]);
+                if let Some(bindings) = &draw.custom_bindings {
+                    pass.set_bind_group(1, bindings, &[]);
+                }
                 pass.set_vertex_buffer(0, draw.vertices.slice(..));
+                pass.set_vertex_buffer(1, draw.instance_buffer.slice(..));
                 if let Some(indices) = &draw.indices {
                     pass.set_index_buffer(indices.slice(..), wgpu::IndexFormat::Uint32);
                 }
@@ -915,6 +1447,9 @@ impl Renderer {
             }
         }
         self.queue.submit([encoder.finish()]);
+        self.draw_slots
+            .borrow_mut()
+            .truncate(self.draw_cursor.get());
         for (object, callback) in after_hooks {
             callback(scene, object);
         }
@@ -922,38 +1457,39 @@ impl Renderer {
     }
     fn prepare_draw(
         &self,
-        vertices: &[Vertex],
+        geometry: DrawGeometry<'_>,
         uniforms: &Uniforms,
         material: &Material,
         topology: wgpu::PrimitiveTopology,
         target: &RenderTarget,
+        shadows: &crate::shadow::Atlas,
     ) -> Result<Draw> {
+        let DrawGeometry {
+            vertices,
+            deformation,
+            instances,
+            transmission_view,
+        } = geometry;
         let properties = material.properties();
-        let vertex_buffer = self
-            .device
-            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("vertices"),
-                contents: bytemuck::cast_slice(vertices),
-                usage: wgpu::BufferUsages::VERTEX,
-            });
-        let uniform_buffer = self
-            .device
-            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("uniforms"),
-                contents: bytemuck::bytes_of(uniforms),
-                usage: wgpu::BufferUsages::UNIFORM,
-            });
-        let standard = match material {
-            Material::Standard(m) => Some(m),
-            _ => None,
-        };
-        let maps = [
-            properties.map.as_ref(),
-            standard.and_then(|m| m.metallic_roughness_map.as_ref()),
-            standard.and_then(|m| m.normal_map.as_ref()),
-            standard.and_then(|m| m.occlusion_map.as_ref()),
-            standard.and_then(|m| m.emissive_map.as_ref()),
-        ];
+        let vertex_buffer = vertices;
+        let cursor = self.draw_cursor.get();
+        self.draw_cursor.set(cursor + 1);
+        let mut slots = self.draw_slots.borrow_mut();
+        if cursor == slots.len() {
+            slots.push(Default::default());
+        }
+        let slot = &mut slots[cursor];
+        let uniform_buffer = slot.uniform(&self.device, &self.queue, bytemuck::bytes_of(uniforms));
+        let extension_maps = self.physical_maps.borrow_mut().get(
+            &self.device,
+            &self.queue,
+            if let Material::Physical(m) = material {
+                m.extension_maps()
+            } else {
+                [None; 12]
+            },
+        )?;
+        let maps = material.texture_maps();
         let mut cache = self.textures.borrow_mut();
         let images = maps
             .into_iter()
@@ -966,6 +1502,20 @@ impl Renderer {
             binding: 0,
             resource: uniform_buffer.as_entire_binding(),
         }];
+        bindings.extend([
+            wgpu::BindGroupEntry {
+                binding: 21,
+                resource: deformation.data.as_entire_binding(),
+            },
+            wgpu::BindGroupEntry {
+                binding: 22,
+                resource: deformation.pose.as_entire_binding(),
+            },
+            wgpu::BindGroupEntry {
+                binding: 23,
+                resource: deformation.info.as_entire_binding(),
+            },
+        ]);
         for (i, image) in images.iter().enumerate() {
             bindings.push(wgpu::BindGroupEntry {
                 binding: i as u32 * 2 + 1,
@@ -1000,12 +1550,81 @@ impl Renderer {
                 resource: wgpu::BindingResource::TextureView(&self.dfg),
             },
         ]);
-        let bind_group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: Some("draw bindings"),
-            layout: &self.layout,
-            entries: &bindings,
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 20,
+            resource: wgpu::BindingResource::TextureView(&extension_maps),
         });
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 17,
+            resource: wgpu::BindingResource::TextureView(&self.ltc),
+        });
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 18,
+            resource: wgpu::BindingResource::TextureView(
+                transmission_view.unwrap_or(&fallback.view),
+            ),
+        });
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 19,
+            resource: wgpu::BindingResource::Sampler(&fallback.sampler),
+        });
+        bindings.extend([
+            wgpu::BindGroupEntry {
+                binding: 15,
+                resource: wgpu::BindingResource::TextureView(&shadows.view),
+            },
+            wgpu::BindGroupEntry {
+                binding: 16,
+                resource: wgpu::BindingResource::Sampler(&self.shadows.sampler),
+            },
+        ]);
+        let bind_group = slot.bindings(&self.device, &self.layout, &bindings);
+        let custom = if let Material::Shader(m) = material {
+            Some(&m.program)
+        } else {
+            properties.vertex_program.as_ref()
+        };
+        let instance_data = if instances.is_empty() {
+            vec![InstanceVertex {
+                matrix: Matrix4::IDENTITY.as_mat4().to_cols_array(),
+                color: [1.0; 4],
+            }]
+        } else {
+            instances
+                .iter()
+                .map(|instance| {
+                    if !instance.matrix.is_finite() || instance.matrix.determinant() <= 0.0 {
+                        return Err(Error::Invalid("instance transform"));
+                    }
+                    Ok(InstanceVertex {
+                        matrix: instance.matrix.as_mat4().to_cols_array(),
+                        color: instance.color.0.extend(1.0).as_vec4().to_array(),
+                    })
+                })
+                .collect::<Result<Vec<_>>>()?
+        };
+        let instance_buffer = slot.instances(
+            &self.device,
+            &self.queue,
+            bytemuck::cast_slice(&instance_data),
+        );
+        if properties.stencil.is_some() && !target.options.stencil_buffer {
+            return Err(Error::Invalid(
+                "stencil material requires stencil attachment",
+            ));
+        }
         let key = PipelineKey {
+            dashed: uniforms.line[1][1] > 0.5,
+            clipping: uniforms.clipping.params[0] + uniforms.clipping.params[1] > 0.0,
+            blend: properties.blending.or_else(|| {
+                properties
+                    .transparent
+                    .then_some(wgpu::BlendState::ALPHA_BLENDING)
+            }),
+            stencil: properties.stencil.clone(),
+            color_write: properties.color_write,
+            instanced: !instances.is_empty(),
+            shader_id: custom.map_or(0, |p| p.id),
             topology,
             side: match properties.side {
                 Side::Front => 0,
@@ -1024,25 +1643,29 @@ impl Renderer {
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
         };
         let mut pipelines = self.pipelines.borrow_mut();
-        let pipeline=pipelines.entry(key).or_insert_with(|| {
+        let pipeline=pipelines.entry(key.clone()).or_insert_with(|| {
         let layout = self
             .device
             .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                 label: Some("draw pipeline layout"),
-                bind_group_layouts: &[&self.layout],
+                bind_group_layouts: &custom.map_or_else(||vec![&self.layout],|p|vec![&self.layout,&p.layout]),
                 push_constant_ranges: &[],
             });
+        let shader=custom.map_or(&self.shader,|p|&p.module);
         self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
-            vertex:wgpu::VertexState {module:&self.shader,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4]}]},
-            fragment:Some(wgpu::FragmentState {module:&self.shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:properties.transparent.then_some(wgpu::BlendState::ALPHA_BLENDING),write_mask:wgpu::ColorWrites::ALL})).collect::<Vec<_>>()}),
+            vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match properties.side {Side::Front=>Some(wgpu::Face::Back),Side::Back=>Some(wgpu::Face::Front),Side::Double=>None},..Default::default()},
-            depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:Default::default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
+            depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
         }).clone();
         Ok(Draw {
+            stencil_reference: properties.stencil_reference,
+            custom_bindings: custom.map(|p| p.bindings.clone()),
+            instance_buffer,
             pipeline,
             vertices: vertex_buffer,
             bind_group,
-            range: 0..vertices.len() as u32,
+            range: 0..0,
             instances: 1,
             indices: None,
             indirect: None,

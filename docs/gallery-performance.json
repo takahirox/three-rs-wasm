@@ -1,0 +1,2210 @@
+{
+  "conditions": "Chrome 152, Apple Metal-3 adapter, 1280x800 CSS pixels at DPR 2 (2560x1600), unchanged Rust demo sample counts and workloads, sequential cases; 3 seconds warmup, 3 seconds measurement.",
+  "limits": [
+    "Steady-state audit of 16 runnable gallery entries, BoomBox and two initial MVP demos (19 cases); several gallery entries share a Rust implementation. Before/after paired measurements cover the first 17 cases.",
+    "Short local runs, not a large-scene stress test or an original Three.js parity benchmark.",
+    "GPU timestamps use a separate instrumented run; its 240 readback/resolve buffer creations per case are measurement overhead, not renderer allocations.",
+    "CPU/API runs do not enable GPU queries; timings are observations, not portable CI thresholds.",
+    "Shadow/effect/compute paths were additionally reviewed and covered by native regression tests, not by these gallery timing measurements."
+  ],
+  "runs": {
+    "before": {
+      "date": "2026-09-17T06:14:08.998Z",
+      "mode": "CPU/API",
+      "warmupMs": 3000,
+      "sampleMs": 3000,
+      "results": [
+        {
+          "id": "webgl_animation_skinning_morph",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.5,
+            "p95": 0.6000001430511475,
+            "max": 0.7999999523162842
+          },
+          "calls": {
+            "writeBuffer": 3420,
+            "submit": 360
+          },
+          "writeBytes": 18915840,
+          "errors": []
+        },
+        {
+          "id": "webgl_geometry_cube",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.7000000476837158,
+            "p95": 0.8000001907348633,
+            "max": 1
+          },
+          "calls": {
+            "writeBuffer": 8747,
+            "submit": 360,
+            "createBindGroup": 47,
+            "createBuffer": 4
+          },
+          "writeBytes": 54861184,
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_raycasting_points",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 2,
+            "p95": 2.1000001430511475,
+            "max": 2.299999952316284
+          },
+          "calls": {
+            "writeBuffer": 7740,
+            "submit": 360
+          },
+          "writeBytes": 48545280,
+          "errors": []
+        },
+        {
+          "id": "webgl_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.39999985694885254,
+            "p95": 0.5,
+            "max": 0.6000001430511475
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_materials_texture_rotation",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.39999985694885254
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 1.8000001907348633,
+            "p95": 2,
+            "max": 2.200000047683716
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.8999998569488525,
+            "p95": 1,
+            "max": 1.1000001430511475
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_panorama_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 360,
+            "submit": 360
+          },
+          "writeBytes": 1129680,
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines_indexed",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgpu_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgpu_lights_pointlights",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 540,
+            "submit": 360
+          },
+          "writeBytes": 3386880,
+          "errors": []
+        },
+        {
+          "id": "webgpu_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.40000009536743164,
+            "p95": 0.5,
+            "max": 0.7000000476837158
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 1.8000001907348633,
+            "p95": 2,
+            "max": 2.1000001430511475
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.8999998569488525,
+            "p95": 1,
+            "max": 1.0999999046325684
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "BoomBox",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            720,
+            720
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5
+          },
+          "calls": {
+            "createBuffer": 180,
+            "createBindGroup": 180,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        }
+      ]
+    },
+    "after": {
+      "date": "2026-09-17T06:17:56.377Z",
+      "mode": "CPU/API",
+      "warmupMs": 3000,
+      "sampleMs": 3000,
+      "results": [
+        {
+          "id": "webgl_animation_skinning_morph",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.3000001907348633,
+            "p95": 0.5,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "writeBuffer": 3420,
+            "submit": 360
+          },
+          "writeBytes": 18915840,
+          "errors": []
+        },
+        {
+          "id": "webgl_geometry_cube",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.5999999046325684,
+            "p95": 0.7000000476837158,
+            "max": 0.8000001907348633
+          },
+          "calls": {
+            "writeBuffer": 8747,
+            "submit": 360,
+            "createBindGroup": 47,
+            "createBuffer": 4
+          },
+          "writeBytes": 54861184,
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_raycasting_points",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.9000000953674316,
+            "p95": 1,
+            "max": 1.2000000476837158
+          },
+          "calls": {
+            "writeBuffer": 7740,
+            "submit": 360
+          },
+          "writeBytes": 48545280,
+          "errors": []
+        },
+        {
+          "id": "webgl_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_materials_texture_rotation",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.19999980926513672,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 181,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 362
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgl_panorama_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 360,
+            "submit": 360
+          },
+          "writeBytes": 1129680,
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines_indexed",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "errors": []
+        },
+        {
+          "id": "webgpu_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.19999980926513672,
+            "p95": 0.20000004768371582,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 28800,
+          "errors": []
+        },
+        {
+          "id": "webgpu_lights_pointlights",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.39999985694885254,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 540,
+            "submit": 360
+          },
+          "writeBytes": 3386880,
+          "errors": []
+        },
+        {
+          "id": "webgpu_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "BoomBox",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            720,
+            720
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999727,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.19999980926513672,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "errors": []
+        },
+        {
+          "id": "mvp_perspective",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            512,
+            512
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "errors": []
+        },
+        {
+          "id": "mvp_orthographic",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            512,
+            512
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            2,
+            2,
+            0
+          ],
+          "resourceEnd": [
+            2,
+            2,
+            0
+          ],
+          "errors": []
+        }
+      ]
+    },
+    "gpu": {
+      "date": "2026-09-17T06:20:04.983Z",
+      "mode": "GPU timestamps (includes diagnostic allocations)",
+      "warmupMs": 3000,
+      "sampleMs": 3000,
+      "results": [
+        {
+          "id": "webgl_animation_skinning_morph",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.39999985694885254,
+            "p95": 0.5,
+            "max": 0.7000000476837158
+          },
+          "calls": {
+            "writeBuffer": 3420,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 18915840,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            1981440
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.410077,
+              "p95": 0.527075,
+              "max": 0.81353
+            },
+            "present": {
+              "p50": 0.036499,
+              "p95": 0.197414,
+              "max": 0.54395
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_geometry_cube",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            2,
+            2,
+            0
+          ],
+          "resourceEnd": [
+            2,
+            2,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.035583,
+              "p95": 0.253746,
+              "max": 0.413119
+            },
+            "present": {
+              "p50": 0.030583,
+              "p95": 0.584116,
+              "max": 0.667948
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.5999999046325684,
+            "p95": 0.7000000476837158,
+            "max": 0.9000000953674316
+          },
+          "calls": {
+            "writeBuffer": 8747,
+            "createBuffer": 244,
+            "submit": 360,
+            "createBindGroup": 47
+          },
+          "writeBytes": 54861184,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.09929,
+              "p95": 0.454326,
+              "max": 1.594393
+            },
+            "present": {
+              "p50": 0.036457,
+              "p95": 0.068249,
+              "max": 0.224581
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_interactive_raycasting_points",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 1,
+            "p95": 1.0999999046325684,
+            "max": 1.2999999523162842
+          },
+          "calls": {
+            "writeBuffer": 7740,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 48545280,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.267705,
+              "p95": 0.575157,
+              "max": 0.985401
+            },
+            "present": {
+              "p50": 0.035915,
+              "p95": 0.088207,
+              "max": 0.556408
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            6,
+            6,
+            1
+          ],
+          "resourceEnd": [
+            6,
+            6,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.868111,
+              "p95": 1.456937,
+              "max": 1.526935
+            },
+            "present": {
+              "p50": 0.060459,
+              "p95": 0.397036,
+              "max": 1.072483
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_materials_texture_rotation",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            2,
+            2,
+            0
+          ],
+          "resourceEnd": [
+            2,
+            2,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.038,
+              "p95": 0.403827,
+              "max": 0.538742
+            },
+            "present": {
+              "p50": 0.031416,
+              "p95": 0.243579,
+              "max": 0.596825
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.6000001430511475
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            1
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.734613,
+              "p95": 1.1734,
+              "max": 1.208648
+            },
+            "present": {
+              "p50": 0.049292,
+              "p95": 0.14404,
+              "max": 0.398369
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.6000001430511475
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            1
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 1.038069,
+              "p95": 1.592975,
+              "max": 1.845139
+            },
+            "present": {
+              "p50": 0.039374,
+              "p95": 0.129998,
+              "max": 0.394494
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_panorama_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            2,
+            2,
+            0
+          ],
+          "resourceEnd": [
+            2,
+            2,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.062999,
+              "p95": 0.214996,
+              "max": 0.273829
+            },
+            "present": {
+              "p50": 0.041166,
+              "p95": 0.291621,
+              "max": 0.697031
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 360,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1129680,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            720
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.161538,
+              "p95": 0.288829,
+              "max": 0.457826
+            },
+            "present": {
+              "p50": 0.034499,
+              "p95": 0.127081,
+              "max": 0.207372
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgl_buffergeometry_lines_indexed",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.032916,
+              "p95": 0.086249,
+              "max": 0.134331
+            },
+            "present": {
+              "p50": 0.029958,
+              "p95": 0.078999,
+              "max": 0.304453
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgpu_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.40000009536743164
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 28800,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            0,
+            0,
+            1
+          ],
+          "resourceEnd": [
+            0,
+            0,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.122998,
+              "p95": 0.79503,
+              "max": 0.918445
+            },
+            "present": {
+              "p50": 0.059291,
+              "p95": 0.559242,
+              "max": 0.706948
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgpu_lights_pointlights",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.39999985694885254,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "writeBuffer": 540,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 3386880,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.333204,
+              "p95": 0.714739,
+              "max": 1.059193
+            },
+            "present": {
+              "p50": 0.0295,
+              "p95": 0.077207,
+              "max": 0.532742
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgpu_loader_gltf",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            6,
+            6,
+            1
+          ],
+          "resourceEnd": [
+            6,
+            6,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.863861,
+              "p95": 1.571101,
+              "max": 2.239675
+            },
+            "present": {
+              "p50": 0.060458,
+              "p95": 0.221997,
+              "max": 0.566657
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_equirectangular",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 181,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 362
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            1
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.727947,
+              "p95": 1.547976,
+              "max": 1.993219
+            },
+            "present": {
+              "p50": 0.048749,
+              "p95": 0.604033,
+              "max": 0.709489
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "webgpu_pmrem_test",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            2560,
+            1600
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.2999999523162842,
+            "p95": 0.40000009536743164,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            1
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 1.026942,
+              "p95": 1.546393,
+              "max": 2.249841
+            },
+            "present": {
+              "p50": 0.039833,
+              "p95": 0.587282,
+              "max": 0.738989
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "BoomBox",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            720,
+            720
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5999999046325684
+          },
+          "calls": {
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 0,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            5,
+            5,
+            1
+          ],
+          "resourceEnd": [
+            5,
+            5,
+            1
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.148123,
+              "p95": 0.463618,
+              "max": 0.587157
+            },
+            "present": {
+              "p50": 0.0125,
+              "p95": 0.0215,
+              "max": 0.680281
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "mvp_perspective",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            512,
+            512
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.2999999523162842,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            1,
+            1,
+            0
+          ],
+          "resourceEnd": [
+            1,
+            1,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.017542,
+              "p95": 0.075415,
+              "max": 0.095874
+            },
+            "present": {
+              "p50": 0.009625,
+              "p95": 0.243663,
+              "max": 0.329579
+            }
+          },
+          "errors": []
+        },
+        {
+          "id": "mvp_orthographic",
+          "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+          "adapter": {
+            "vendor": "apple",
+            "architecture": "metal-3"
+          },
+          "canvas": [
+            512,
+            512
+          ],
+          "frames": 180,
+          "interval": {
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182
+          },
+          "cpu": {
+            "p50": 0.20000004768371582,
+            "p95": 0.3000001907348633,
+            "max": 0.5
+          },
+          "calls": {
+            "writeBuffer": 180,
+            "createBuffer": 240,
+            "submit": 360
+          },
+          "writeBytes": 1128960,
+          "transferDelta": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "resourceStart": [
+            2,
+            2,
+            0
+          ],
+          "resourceEnd": [
+            2,
+            2,
+            0
+          ],
+          "gpu": {
+            "scene": {
+              "p50": 0.042707,
+              "p95": 0.288954,
+              "max": 0.317287
+            },
+            "present": {
+              "p50": 0.009625,
+              "p95": 0.018625,
+              "max": 0.229205
+            }
+          },
+          "errors": []
+        }
+      ]
+    }
+  }
+}

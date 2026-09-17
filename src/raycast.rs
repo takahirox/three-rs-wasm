@@ -10,6 +10,7 @@ pub struct Intersection {
     pub uv: Option<Vector2>,
     pub normal: Option<Vector3>,
     pub material_index: usize,
+    pub instance_index: Option<usize>,
 }
 #[derive(Clone, Copy, Debug)]
 pub struct RaycasterParams {
@@ -104,7 +105,32 @@ impl Raycaster {
             for h in descendants {
                 let n = scene.get(h)?;
                 if n.layers.test(self.layers) {
-                    n.raycast(self, h, &mut hits)?;
+                    let deformed = crate::deformation::evaluate(scene, h)?;
+                    if deformed.is_some() || !n.instances.is_empty() {
+                        let mut node = n.clone();
+                        if let Some(geometry) = deformed {
+                            match &mut node.kind {
+                                NodeKind::Mesh(m) => m.geometry = geometry,
+                                NodeKind::Line(l) => l.geometry = geometry,
+                                NodeKind::Points(p) => p.geometry = geometry,
+                                _ => {}
+                            }
+                        }
+                        if n.instances.is_empty() {
+                            node.raycast(self, h, &mut hits)?;
+                        } else {
+                            for (index, instance) in n.instances.iter().enumerate() {
+                                node.matrix_world = n.matrix_world * instance.matrix;
+                                let start = hits.len();
+                                node.raycast(self, h, &mut hits)?;
+                                for hit in &mut hits[start..] {
+                                    hit.instance_index = Some(index);
+                                }
+                            }
+                        }
+                    } else {
+                        n.raycast(self, h, &mut hits)?;
+                    }
                 }
             }
         }
@@ -206,6 +232,7 @@ impl Raycast for Node {
                                 None
                             };
                             hits.push(Intersection {
+                                instance_index: None,
                                 distance,
                                 point,
                                 object,
@@ -232,6 +259,7 @@ impl Raycast for Node {
                         let distance = r.ray.origin.distance(point);
                         if r.in_range(distance) {
                             hits.push(Intersection {
+                                instance_index: None,
                                 distance,
                                 point,
                                 object,
@@ -261,6 +289,7 @@ impl Raycast for Node {
                         .distance(self.matrix_world.transform_point3(on_ray));
                     if r.in_range(distance) {
                         hits.push(Intersection {
+                            instance_index: None,
                             distance,
                             point: self.matrix_world.transform_point3(on_segment),
                             object,

@@ -1,4 +1,6 @@
 use crate::{Error, Result, attribute::*, math::*};
+mod primitives;
+pub use primitives::*;
 use serde::Serialize;
 use std::{
     any::{Any, TypeId},
@@ -619,39 +621,59 @@ impl PlaneGeometry {
 pub struct BoxGeometry;
 impl BoxGeometry {
     pub fn build(width: f64, height: f64, depth: f64) -> Result<BufferGeometry> {
+        Self::segmented(width, height, depth, 1, 1, 1)
+    }
+    pub fn segmented(
+        width: f64,
+        height: f64,
+        depth: f64,
+        width_segments: u32,
+        height_segments: u32,
+        depth_segments: u32,
+    ) -> Result<BufferGeometry> {
+        let ws = width_segments.max(1);
+        let hs = height_segments.max(1);
+        let ds = depth_segments.max(1);
         let mut g = BufferGeometry::default();
         let mut p = Vec::new();
         let mut n = Vec::new();
         let mut uv = Vec::new();
         let mut indices = Vec::new();
         // Face order and vertex ordering match Three.js BoxGeometry.
-        for (face, (u, v, w, udir, vdir, fw, fh, fd)) in [
-            (2, 1, 0, -1.0, -1.0, depth, height, width),
-            (2, 1, 0, 1.0, -1.0, depth, height, -width),
-            (0, 2, 1, 1.0, 1.0, width, depth, height),
-            (0, 2, 1, 1.0, -1.0, width, depth, -height),
-            (0, 1, 2, 1.0, -1.0, width, height, depth),
-            (0, 1, 2, -1.0, -1.0, width, height, -depth),
+        for (face, (u, v, w, udir, vdir, fw, fh, fd, sx, sy)) in [
+            (2, 1, 0, -1.0, -1.0, depth, height, width, ds, hs),
+            (2, 1, 0, 1.0, -1.0, depth, height, -width, ds, hs),
+            (0, 2, 1, 1.0, 1.0, width, depth, height, ws, ds),
+            (0, 2, 1, 1.0, -1.0, width, depth, -height, ws, ds),
+            (0, 1, 2, 1.0, -1.0, width, height, depth, ws, hs),
+            (0, 1, 2, -1.0, -1.0, width, height, -depth, ws, hs),
         ]
         .into_iter()
         .enumerate()
         {
-            for y in 0..=1 {
-                for x in 0..=1 {
+            let base = (p.len() / 3) as u32;
+            let begin = indices.len();
+            for y in 0..=sy {
+                for x in 0..=sx {
                     let mut point = [0.0; 3];
                     let mut normal = [0.0; 3];
-                    point[u] = (x as f64 * fw - fw / 2.0) * udir;
-                    point[v] = (y as f64 * fh - fh / 2.0) * vdir;
+                    point[u] = (x as f64 / sx as f64 * fw - fw / 2.0) * udir;
+                    point[v] = (y as f64 / sy as f64 * fh - fh / 2.0) * vdir;
                     point[w] = fd / 2.0;
                     normal[w] = if fd > 0.0 { 1.0 } else { -1.0 };
                     p.extend(point.map(|v| v as f32));
                     n.extend(normal.map(|v| v as f32));
-                    uv.extend([x as f32, 1.0 - y as f32]);
+                    uv.extend([x as f32 / sx as f32, 1.0 - y as f32 / sy as f32]);
                 }
             }
-            let a = (face * 4) as u32;
-            indices.extend([a, a + 2, a + 1, a + 2, a + 3, a + 1]);
-            g.add_group(face * 6, 6, face);
+            for y in 0..sy {
+                for x in 0..sx {
+                    let a = base + y * (sx + 1) + x;
+                    let b = a + sx + 1;
+                    indices.extend([a, b, a + 1, b, b + 1, a + 1]);
+                }
+            }
+            g.add_group(begin, indices.len() - begin, face);
         }
         let mut result = primitive(p, n, uv, indices)?;
         result.groups = g.groups;

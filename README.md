@@ -84,3 +84,53 @@ and zoom, with original PBR maps, HDR reflections, exposure and background contr
 Run `./scripts/check-gltf-pbr` for the complete MVP + M2 acceptance gate.
 See [M2 API, validation and limitations](docs/gltf-pbr.md) and
 [asset credits](web/THIRD_PARTY.md).
+
+## Official-style examples gallery
+
+Open <http://127.0.0.1:8173/web/gallery/> for the pinned r186 examples browser.
+Its original CSS, fonts, thumbnails, category layout, search, minimal view and
+mobile drawer are retained. The tab title identifies this Rust port.
+The iframe launches Rust/Wasm/WebGPU pages; it never loads a Three.js renderer.
+
+The catalog covers all 607 upstream entries. Two examples that explicitly require
+WebGL APIs are excluded. **This is not a completed port of all examples:** 26
+entries have runnable partial Rust ports, including panorama backgrounds, UV
+transforms, animated lines and raycasting. The latest ten additions include
+procedural geometry, GPU morphs, area lighting, colored lines and glTF morph models
+([validation record](docs/examples-10-worklog.md)). Only runnable entries appear in the
+gallery list. The remaining 579 entries still need implementation; their source and feature investigation
+remain in the coverage catalog. Upstream thumbnails are
+labeled as reference previews on the investigation pages.
+
+Run `./scripts/check-gallery` for source/asset accounting, desktop/mobile UI image
+comparisons, runnable examples, PMREM image parity, and existing glTF/point-light
+regressions. It starts a separate test server on port 8174. A passing gallery gate
+does **not** mean all examples are reproduced. See [coverage and missing capabilities](docs/examples-coverage.md).
+`python3 tools/gallery/build.py` reproducibly regenerates the gallery inventory,
+upstream shell/assets and investigation report from the pinned archive.
+
+[Per-example prerequisites and execution evidence](docs/gallery-port-attempts.md)
+distinguish implemented browser ports from source-level blockers. To repeat the
+actual 49-model importer experiment, run `python3 tools/gallery/prepare_gltf_attempts.py`,
+then `cargo run --locked --example gltf_gallery_probe -- .cache/gallery-gltf/manifest.json`.
+Successful static import is not animation or material-extension fidelity.
+`python3 tools/gallery/audit.py` regenerates the per-example review using the
+recorded importer results. The line/point picking ports compare all geometry and
+transforms against upstream, but native WebGL rasterization differences remain.
+
+[All-example runtime attempts](docs/gallery-runtime-results.md) additionally
+record execution of all 605 retained upstream examples in instrumented Chrome,
+followed by native Rust rendering of eligible captured scenes. These single-frame
+probes use upstream geometry construction and asset decoding; they are not full
+Rust ports and are not added to the gallery. The report separates observed
+prerequisites, probe limits, empty frames and actual scene renders, and includes
+commands for repeating the experiment.
+
+Core rendering foundations now include shadows, additional lights/materials, physical
+extensions, WGSL/compute/postprocessing, animation/skin/morph, instancing/batching
+and compressed glTF. See [Core implementation and limits](docs/core-expansion.md).
+Run `./scripts/check-core` for semantic, GPU and original Three.js comparisons.
+
+Performance is part of reproduction: see [acceptance criteria and audit](docs/performance-parity.md).
+GPU skin/morph and vertex displacement retain source geometry on the GPU; CPU
+static merging and RGBA transcoding are not claimed as equivalent GPU features.

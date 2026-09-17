@@ -178,6 +178,14 @@ impl TextureCache {
             mag_filter: filter(image.filter),
             min_filter: filter(image.min_filter.unwrap_or(image.filter)),
             mipmap_filter: filter(image.mipmap_filter.unwrap_or(Filter::Nearest)),
+            anisotropy_clamp: if image.filter == Filter::Linear
+                && image.min_filter.unwrap_or(image.filter) == Filter::Linear
+                && image.mipmap_filter == Some(Filter::Linear)
+            {
+                image.anisotropy.clamp(1, 16)
+            } else {
+                1
+            },
             ..Default::default()
         });
         let gpu = GpuTexture {

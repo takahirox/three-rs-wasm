@@ -86,6 +86,37 @@ impl Color {
             .map(|v| srgb_to_linear(v / 255.0)),
         )
     }
+    pub fn from_srgb(r: f64, g: f64, b: f64) -> Self {
+        Self(Vector3::new(r, g, b).map(srgb_to_linear))
+    }
+    /// HSL in the working linear color space, as with Three's default setHSL.
+    pub fn from_hsl(h: f64, s: f64, l: f64) -> Self {
+        let h = h.rem_euclid(1.0);
+        let s = s.clamp(0.0, 1.0);
+        let l = l.clamp(0.0, 1.0);
+        if s == 0.0 {
+            return Self(Vector3::splat(l));
+        }
+        let p = if l <= 0.5 {
+            l * (1.0 + s)
+        } else {
+            l + s - l * s
+        };
+        let q = 2.0 * l - p;
+        let hue = |t: f64| {
+            let t = t.rem_euclid(1.0);
+            if t < 1.0 / 6.0 {
+                q + (p - q) * 6.0 * t
+            } else if t < 0.5 {
+                p
+            } else if t < 2.0 / 3.0 {
+                q + (p - q) * 6.0 * (2.0 / 3.0 - t)
+            } else {
+                q
+            }
+        };
+        Self::linear(hue(h + 1.0 / 3.0), hue(h), hue(h - 1.0 / 3.0))
+    }
     pub fn to_hex(self) -> u32 {
         let c = self
             .0

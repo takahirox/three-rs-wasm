@@ -1,0 +1,13 @@
+# Reproduction acceptance
+
+- Treat performance and execution architecture as part of Three.js compatibility.
+  Matching appearance or successful import alone does not establish reproduction.
+- Do not replace GPU per-vertex work with CPU/Wasm per-vertex work, stream unchanged
+  geometry every frame, or substitute CPU merging for dynamic GPU batching and call
+  it equivalent. CPU evaluation for explicit queries/test oracles is separate.
+- Keep materially inferior fallbacks/prototypes explicitly unsupported for parity.
+  Do not promote their examples to reproduced status or conceal limitations.
+- Validate appearance/behavior and steady-state resource costs. Enforce geometry
+  residency/upload regressions in tests. Claim timing parity only with comparable
+  original Three.js workloads and recorded measurements, not a display-capped FPS.
+- Follow docs/performance-parity.md when implementing or reviewing example ports.

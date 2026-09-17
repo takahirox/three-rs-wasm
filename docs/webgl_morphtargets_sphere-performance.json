@@ -1,0 +1,196 @@
+{
+  "id": "webgl_morphtargets_sphere",
+  "date": "2026-09-17T08:13:47.681Z",
+  "warmupMs": 3000,
+  "sampleMs": 3000,
+  "gpuInstrumentation": false,
+  "results": [
+    {
+      "runtime": "three",
+      "backend": "WebGL2",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.09999990463256836,
+        "p95": 0.20000004768371582,
+        "max": 0.2999999523162842
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "uniform1fv": 360,
+        "uniformMatrix4fv": 360,
+        "uniformMatrix3fv": 180,
+        "drawElements": 360
+      },
+      "writeBytes": 0,
+      "drawCalls": 360,
+      "triangles": 172800,
+      "logicalBufferBytes": 80800,
+      "textures": [],
+      "before": null,
+      "after": null,
+      "gpu": null,
+      "errors": []
+    },
+    {
+      "runtime": "rust",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.20000004768371582,
+        "p95": 0.3000001907348633,
+        "max": 0.5
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 720,
+        "drawIndexed": 360,
+        "submit": 360,
+        "draw": 180
+      },
+      "writeBytes": 64448,
+      "drawCalls": 540,
+      "triangles": 1209780,
+      "logicalBufferBytes": 1324096,
+      "textures": [
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            64,
+            64,
+            2
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            32,
+            32,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 6
+        }
+      ],
+      "before": {
+        "transfer": [
+          2,
+          1131200,
+          180096,
+          2992
+        ],
+        "resources": [
+          2,
+          2,
+          0
+        ]
+      },
+      "after": {
+        "transfer": [
+          2,
+          1131200,
+          180096,
+          5872
+        ],
+        "resources": [
+          2,
+          2,
+          0
+        ]
+      },
+      "gpu": null,
+      "errors": []
+    }
+  ]
+}

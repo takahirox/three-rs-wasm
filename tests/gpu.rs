@@ -2,6 +2,40 @@ use std::sync::Arc;
 use three_rs_wasm::{camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 
 #[test]
+fn cached_culling_bounds_follow_geometry_and_world_transform_changes() {
+    let renderer = pollster::block_on(Renderer::new()).unwrap();
+    let target = RenderTarget::new(&renderer.device, 16, 16).unwrap();
+    let mut scene = Scene::new();
+    let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
+        PerspectiveCamera::default(),
+    )));
+    scene.get_mut(camera).unwrap().position.z = 2.0;
+    let mut geometry = PlaneGeometry::build(2.0, 2.0, 1, 1).unwrap();
+    geometry.translate(Vector3::X * 100.0).unwrap();
+    let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+        Arc::new(geometry),
+        Arc::new(Material::default()),
+    )));
+    let center = |scene: &mut Scene| {
+        renderer.render(scene, camera, &target).unwrap();
+        renderer.read_rgba(&target).unwrap()[(8 * 16 + 8) * 4]
+    };
+    assert_eq!(center(&mut scene), 0);
+    if let NodeKind::Mesh(m) = &mut scene.get_mut(mesh).unwrap().kind {
+        Arc::make_mut(&mut m.geometry)
+            .translate(-Vector3::X * 100.0)
+            .unwrap();
+    }
+    assert_eq!(center(&mut scene), 255);
+    let resident = renderer.transfer_counts();
+    scene.get_mut(mesh).unwrap().position.x = 100.0;
+    assert_eq!(center(&mut scene), 0);
+    scene.get_mut(mesh).unwrap().position.x = 0.0;
+    assert_eq!(center(&mut scene), 255);
+    assert_eq!(renderer.transfer_counts(), resident);
+}
+
+#[test]
 fn webgpu_renders_basic_mesh_and_recreates_targets() {
     let renderer =
         pollster::block_on(Renderer::new()).expect("WebGPU adapter is required for GPU tests");
@@ -49,7 +83,11 @@ fn webgpu_renders_basic_mesh_and_recreates_targets() {
             &[255, 0, 0, 255]
         );
         assert_eq!(&pixels[0..4], &[0, 0, 0, 255]);
-        assert_eq!(uploads.load(Ordering::Relaxed), iteration + 1);
+        assert_eq!(
+            uploads.load(Ordering::Relaxed),
+            1,
+            "unchanged geometry stays resident"
+        );
         assert_eq!(before.load(Ordering::Relaxed), iteration + 1);
         assert_eq!(after.load(Ordering::Relaxed), iteration + 1);
         target.dispose();
@@ -173,4 +211,57 @@ fn webgpu_renders_basic_mesh_and_recreates_targets() {
         (pixel[0] as i32 - 188).abs() <= 1 && pixel[1] == 0 && (pixel[2] as i32 - 137).abs() <= 1,
         "unexpected alpha blend {pixel:?}"
     );
+}
+
+#[test]
+fn point_texture_orientation_and_authored_uvs_match_three() {
+    use three_rs_wasm::attribute::BufferAttribute;
+    let renderer = pollster::block_on(Renderer::new()).unwrap();
+    let target = RenderTarget::new(&renderer.device, 32, 32).unwrap();
+    let mut scene = Scene::new();
+    let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
+        PerspectiveCamera::default(),
+    )));
+    scene.get_mut(camera).unwrap().position.z = 5.0;
+    let mut geometry = BufferGeometry::default();
+    geometry.set_from_points(&[Vector3::ZERO]).unwrap();
+    let mut texture =
+        Texture::from_rgba(1, 2, vec![255, 0, 0, 255, 0, 255, 0, 255], false).unwrap();
+    texture.filter = Filter::Nearest;
+    let mut material = PointsMaterial {
+        size: 16.0,
+        size_attenuation: false,
+        ..Default::default()
+    };
+    material.properties.map = Some(Arc::new(texture));
+    let point = scene.insert(NodeKind::Points(Points {
+        geometry: Arc::new(geometry),
+        material: Arc::new(Material::Points(material)),
+    }));
+    for authored_uv in [false, true] {
+        if authored_uv {
+            let NodeKind::Points(points) = &mut scene.get_mut(point).unwrap().kind else {
+                panic!("point")
+            };
+            Arc::make_mut(&mut points.geometry).set_attribute(
+                "uv",
+                Attribute::F32(BufferAttribute::new(vec![0.5, 0.75], 2, false).unwrap()),
+            );
+        }
+        renderer.render(&mut scene, camera, &target).unwrap();
+        let image = renderer.read_rgba(&target).unwrap();
+        let pixel = |y: usize| &image[(y * 32 + 16) * 4..(y * 32 + 16) * 4 + 4];
+        assert_eq!(pixel(10), &[255, 0, 0, 255]);
+        assert_eq!(
+            pixel(21),
+            if authored_uv {
+                &[255, 0, 0, 255]
+            } else {
+                &[0, 255, 0, 255]
+            }
+        );
+        let resident = renderer.transfer_counts();
+        renderer.render(&mut scene, camera, &target).unwrap();
+        assert_eq!(renderer.transfer_counts(), resident);
+    }
 }

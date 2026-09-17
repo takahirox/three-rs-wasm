@@ -1,4 +1,4 @@
-struct Background { inverse_projection:mat4x4<f32>, camera:mat4x4<f32>, options:vec4<f32> };
+struct Background { inverse_projection:mat4x4<f32>, camera:mat4x4<f32>, options:vec4<f32>, intensity:vec4<f32> };
 @group(0) @binding(0) var<uniform> u:Background;
 @group(0) @binding(1) var source:texture_2d<f32>;
 @group(0) @binding(2) var atlas:texture_2d<f32>;
@@ -22,8 +22,9 @@ fn sharp_background(d:vec3<f32>)->vec3<f32> {
  let view=u.inverse_projection*vec4(in.ndc,1.0,1.0);
  let direction=normalize((u.camera*vec4(view.xyz/view.w,0.0)).xyz);
  let c=cos(u.options.x);let s=sin(u.options.x);let d=vec3(c*direction.x-s*direction.z,direction.y,s*direction.x+c*direction.z);
- if u.options.y==0.0 {return vec4(sharp_background(d),1.0);}
+ if u.options.w>0.5 {return vec4(textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x,1.0);}
+ if u.options.y==0.0 {return vec4(sharp_background(d)*u.intensity.x,1.0);}
  let filtered=vec3(d.x,-d.y,d.z);
  let mip=clamp(roughness_mip(u.options.y),-2.0,u.options.z);let lo=floor(mip);
- return vec4(mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip)),1.0);
+ return vec4(mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip))*u.intensity.x,1.0);
 }

@@ -4,8 +4,17 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod expanded;
+mod expanded_geometry_colors;
+mod expanded_indexed;
+mod expanded_lights;
+mod expanded_lines;
+mod expanded_morph_models;
+mod gallery;
+mod gallery_scenes;
 mod gltf_viewer;
 mod point_lights;
+mod robot;
 
 type AnimationCallback = Closure<dyn FnMut(f64)>;
 struct State {
@@ -26,8 +35,9 @@ struct State {
     example: u32,
     rotation: Vector3,
     point_lights: Option<point_lights::PointLights>,
-    gltf: Option<gltf_viewer::GltfViewer>,
+    gltf: Option<gltf_viewer::OrbitViewer>,
     load_generation: u64,
+    gallery_scene: Option<gallery_scenes::GalleryScene>,
 }
 impl State {
     fn render(&mut self, time: f64) -> Result<()> {
@@ -37,19 +47,28 @@ impl State {
             .set_attribute("data-delta", &self.timer.get_delta().to_string());
         let width = self.canvas.width();
         let height = self.canvas.height();
+        // Scene loaders can replace the camera without resizing the render target.
+        // Synchronize its projection on the first frame as well as after resizes.
+        if let NodeKind::Camera(Camera::Perspective(camera)) =
+            &mut self.scene.get_mut(self.camera)?.kind
+        {
+            camera.aspect = width as f64 / height as f64;
+        }
         if width != self.target.width || height != self.target.height {
             self.target.set_size(&self.renderer.device, width, height)?;
-            if let NodeKind::Camera(Camera::Perspective(camera)) =
-                &mut self.scene.get_mut(self.camera)?.kind
-            {
-                camera.aspect = width as f64 / height as f64;
-            }
             self.configuration.width = width;
             self.configuration.height = height;
             self.surface
                 .configure(&self.renderer.device, &self.configuration);
         }
-        if let Some(viewer) = &self.gltf {
+        if let Some(demo) = &mut self.gallery_scene {
+            demo.update(
+                &mut self.scene,
+                self.camera,
+                self.timer.get_delta().min(0.1),
+                !self.paused,
+            )?;
+        } else if let Some(viewer) = &self.gltf {
             viewer.update(&mut self.scene, self.camera)?;
         } else if let Some(demo) = &mut self.point_lights {
             if !self.paused {
@@ -136,7 +155,7 @@ impl BrowserApp {
         )));
         let placeholder = scene.insert(NodeKind::Group);
         let viewer =
-            gltf_viewer::GltfViewer::create(&mut scene, camera, placeholder, example, environment)
+            gltf_viewer::OrbitViewer::create(&mut scene, camera, placeholder, example, environment)
                 .await;
         let mut state = self.state.borrow_mut();
         if state.load_generation != generation {
@@ -202,6 +221,210 @@ impl BrowserApp {
         state.scene.environment_rotation = rotation;
         state.scene.background_blur = blur.clamp(0.0, 1.0);
         state.scene.background_environment = background;
+    }
+    pub fn gallery_input(
+        &self,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        dragging: bool,
+    ) -> std::result::Result<(), JsValue> {
+        if ![dx, dy, wheel].iter().all(|v| v.is_finite()) {
+            return Ok(());
+        }
+        let mut state = self.state.borrow_mut();
+        let height = state.canvas.client_height().max(1) as f64;
+        let State {
+            scene,
+            camera,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            return demo
+                .input(scene, *camera, dx, dy, wheel, false, height)
+                .map_err(|e| JsValue::from_str(&e.to_string()));
+        }
+        if let Some(demo) = gallery_scene {
+            demo.input(scene, *camera, dx, dy, wheel, dragging)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
+    }
+    pub fn gallery_pan(&self, dx: f64, dy: f64) -> std::result::Result<(), JsValue> {
+        if !dx.is_finite() || !dy.is_finite() {
+            return Err(JsValue::from_str("invalid pan"));
+        }
+        let mut state = self.state.borrow_mut();
+        let height = state.canvas.client_height().max(1) as f64;
+        let State {
+            scene,
+            camera,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            demo.input(scene, *camera, dx, dy, 0.0, true, height)
+                .map_err(|e| JsValue::from_str(&e.to_string()))
+        } else {
+            Ok(())
+        }
+    }
+    pub fn gallery_pointer(&self, x: f64, y: f64) {
+        if !x.is_finite() || !y.is_finite() {
+            return;
+        }
+        let mut state = self.state.borrow_mut();
+        let width = state.canvas.client_width() as f64;
+        let height = state.canvas.client_height() as f64;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.pointer(x * width / 2.0, -y * height / 2.0);
+        } else if let Some(demo) = &mut state.gallery_scene {
+            demo.pointer(x, y);
+        }
+    }
+    /// Animation clips available in the active gallery scene.
+    pub fn animation_names(&self) -> String {
+        if let Some(gallery_scenes::GalleryScene::Robot(robot)) = &self.state.borrow().gallery_scene
+        {
+            serde_json::to_string(
+                &robot
+                    .mixer
+                    .actions
+                    .iter()
+                    .map(|a| &a.clip.name)
+                    .collect::<Vec<_>>(),
+            )
+            .unwrap_or_else(|_| "[]".into())
+        } else {
+            "[]".into()
+        }
+    }
+    pub fn select_animation(&self, index: usize) -> std::result::Result<(), JsValue> {
+        if let Some(gallery_scenes::GalleryScene::Robot(robot)) =
+            &mut self.state.borrow_mut().gallery_scene
+        {
+            robot
+                .select(index)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
+    }
+    /// Freeze a selected clip for deterministic browser/reference comparisons.
+    pub fn animation_time(&self, index: usize, time: f64) -> std::result::Result<(), JsValue> {
+        if !time.is_finite() || time < 0.0 {
+            return Err(JsValue::from_str("invalid animation time"));
+        }
+        let mut state = self.state.borrow_mut();
+        state.paused = true;
+        if let Some(gallery_scenes::GalleryScene::Robot(robot)) = &mut state.gallery_scene {
+            if index >= robot.mixer.actions.len() {
+                return Err(JsValue::from_str("invalid animation index"));
+            }
+            for (i, action) in robot.mixer.actions.iter_mut().enumerate() {
+                action
+                    .fade_to(if i == index { 1.0 } else { 0.0 }, 0.0)
+                    .map_err(|e| JsValue::from_str(&e.to_string()))?;
+                action.time = time;
+                action.looping = crate::animation::LoopMode::Once;
+            }
+            robot.selected = index;
+        }
+        Ok(())
+    }
+    /// Serialize the live scene for debugging and upstream behavioral comparisons.
+    pub fn transfer_counts(&self) -> String {
+        serde_json::to_string(&self.state.borrow().renderer.transfer_counts())
+            .expect("transfer counts")
+    }
+    pub fn gallery_wireframe(&self, enabled: bool) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let State {
+            scene,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            demo.wireframe(scene, enabled)
+                .map_err(|e| JsValue::from_str(&e.to_string()))
+        } else {
+            Err(JsValue::from_str("indexed example required"))
+        }
+    }
+    pub fn gallery_morph(&self, spherify: f64, twist: f64) -> std::result::Result<(), JsValue> {
+        if ![spherify, twist]
+            .iter()
+            .all(|v| v.is_finite() && (0.0..=1.0).contains(v))
+        {
+            return Err(JsValue::from_str("invalid morph weights"));
+        }
+        let mut state = self.state.borrow_mut();
+        let State {
+            scene,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            demo.morph(scene, [spherify, twist])
+                .map_err(|e| JsValue::from_str(&e.to_string()))
+        } else {
+            Err(JsValue::from_str("morph example required"))
+        }
+    }
+    /// Freeze a procedural gallery scene at a reproducible elapsed time.
+    pub fn gallery_time(&self, seconds: f64) -> std::result::Result<(), JsValue> {
+        if !seconds.is_finite() || seconds < 0.0 {
+            return Err(JsValue::from_str("invalid gallery time"));
+        }
+        let mut state = self.state.borrow_mut();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.seek(seconds);
+            state.paused = true;
+            Ok(())
+        } else {
+            Err(JsValue::from_str(
+                "scene does not support procedural seeking",
+            ))
+        }
+    }
+    pub fn scene_json(&self) -> std::result::Result<String, JsValue> {
+        self.state
+            .borrow()
+            .scene
+            .to_json()
+            .map(|v| v.to_string())
+            .map_err(|e| JsValue::from_str(&e.to_string()))
+    }
+    pub fn texture_transform(&self, values: Vec<f64>) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let State {
+            scene,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(demo) = gallery_scene {
+            demo.texture_transform(scene, &values)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
+    }
+    pub fn background_intensity(&self, value: f64) {
+        if value.is_finite() {
+            self.state.borrow_mut().scene.background_intensity = value.max(0.0);
+        }
+    }
+    pub fn gallery_pmrem(&self, enabled: bool) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let State {
+            scene,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(demo) = gallery_scene {
+            demo.pmrem(scene, enabled)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
     }
     pub fn resource_counts(&self) -> Vec<f64> {
         let (resident, uploads, filters) = self.state.borrow().renderer.resource_counts();
@@ -333,7 +556,11 @@ impl BrowserApp {
                 canvas.height(),
                 if example >= 4 {
                     RenderTargetOptions {
-                        samples: 4,
+                        samples: if [7, 8, 11, 12, 24, 25].contains(&example) {
+                            1
+                        } else {
+                            4
+                        },
                         format: wgpu::TextureFormat::Rgba16Float,
                         ..Default::default()
                     }
@@ -356,9 +583,17 @@ impl BrowserApp {
             )));
             let mut point_lights = None;
             let mut gltf = None;
-            if example == 4 || example == 5 {
+            let mut gallery_scene = None;
+            if (7..=25).contains(&example) {
+                gallery_scene = Some(
+                    gallery_scenes::GalleryScene::create(&mut scene, camera, mesh, example).await?,
+                );
+            } else if example == 6 {
+                gltf = Some(gallery::pmrem_grid(&mut scene, camera, mesh).await?);
+                let _ = canvas.set_attribute("data-meshes", "30");
+            } else if example == 4 || example == 5 {
                 let viewer =
-                    gltf_viewer::GltfViewer::create(&mut scene, camera, mesh, example, None)
+                    gltf_viewer::OrbitViewer::create(&mut scene, camera, mesh, example, None)
                         .await?;
                 let _ = canvas.set_attribute("data-triangles", &viewer.triangles.to_string());
                 let _ = canvas.set_attribute("data-meshes", &viewer.meshes.to_string());
@@ -369,6 +604,7 @@ impl BrowserApp {
                     camera,
                     mesh,
                     canvas.width() as f64 / canvas.height() as f64,
+                    &renderer,
                 )
                 .await?;
                 if !animate {
@@ -489,6 +725,7 @@ impl BrowserApp {
                 point_lights,
                 gltf,
                 load_generation: 0,
+                gallery_scene,
             }));
             let weak = Rc::downgrade(&state);
             let animation = Closure::wrap(Box::new(move |time: f64| {
@@ -511,7 +748,10 @@ impl BrowserApp {
             let pointer = Closure::wrap(Box::new(move |event: web_sys::PointerEvent| {
                 if let Some(state) = weak.upgrade() {
                     let mut state = state.borrow_mut();
-                    if state.point_lights.is_some() || state.gltf.is_some() {
+                    if state.point_lights.is_some()
+                        || state.gltf.is_some()
+                        || state.gallery_scene.is_some()
+                    {
                         return;
                     }
                     let ndc = Vector2::new(

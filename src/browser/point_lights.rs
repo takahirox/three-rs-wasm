@@ -1,5 +1,4 @@
-//! Port of r186 webgpu_lights_pointlights: asset-specific OBJ import and CPU
-//! equivalent of its tetrahedron displacement. No general-purpose loader API.
+//! Port of r186 webgpu_lights_pointlights with GPU vertex displacement.
 use crate::{
     Error, Result, attribute::BufferAttribute, camera::*, geometry::*, material::*, math::*,
     scene::*,
@@ -8,9 +7,6 @@ use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
 pub(super) struct PointLights {
-    base: Vec<Vector3>,
-    normals: Vec<Vector3>,
-    phases: Vec<(f64, f64)>,
     lights: [Object3D; 2],
     pub time: f64,
     pub amount: f64,
@@ -25,6 +21,7 @@ impl PointLights {
         camera: Object3D,
         mesh: Object3D,
         aspect: f64,
+        renderer: &crate::renderer::Renderer,
     ) -> Result<Self> {
         use wasm_bindgen_futures::JsFuture;
         let response = JsFuture::from(
@@ -111,10 +108,52 @@ impl PointLights {
             )?),
         );
         geometry.compute_vertex_normals()?;
-        let material = MeshStandardMaterial {
+        geometry.set_attribute(
+            "uv",
+            Attribute::F32(BufferAttribute::new(
+                (0..base.len())
+                    .flat_map(|i| [(i / 12) as f32, 0.0])
+                    .collect(),
+                2,
+                false,
+            )?),
+        );
+        let face_data: Vec<f32> = normals
+            .iter()
+            .zip(&phases)
+            .flat_map(|(n, (phase, seed))| {
+                [
+                    n.x as f32,
+                    n.y as f32,
+                    n.z as f32,
+                    *phase as f32,
+                    *seed as f32,
+                    0.0,
+                    0.0,
+                    0.0,
+                ]
+            })
+            .collect();
+        let buffer = crate::compute::GpuBuffer::new(
+            renderer,
+            bytemuck::cast_slice(&face_data),
+            crate::compute::BufferAccess::Read,
+        )?;
+        let program=Arc::new(crate::shader::ShaderProgram::new(renderer,r#"
+            @group(1) @binding(0) var<storage,read> faces:array<vec4<f32>>;
+            fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{
+                let i=u32(uv.x)*2u;let face=faces[i];let seed=faces[i+1u].x;
+                let wave=abs(sin((face.w+u.custom[0].x)*2.0+seed)*0.5);
+                let distance_effect=(max(20.0-distance(position,u.custom[1].xyz),0.0)+max(20.0-distance(position,u.custom[2].xyz),0.0))*0.5;
+                return position+face.xyz*(wave+distance_effect)*u.custom[0].y;
+            }
+            fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}
+        "#,&[&buffer]).await?);
+        let mut material = MeshStandardMaterial {
             roughness: 0.4,
             ..Default::default()
         };
+        material.properties.vertex_program = Some(program);
         let node = scene.get_mut(mesh)?;
         node.kind = NodeKind::Mesh(Mesh::new(
             Arc::new(geometry),
@@ -155,9 +194,6 @@ impl PointLights {
             lights.push(light);
         }
         Ok(Self {
-            base,
-            normals,
-            phases,
             lights: [lights[0], lights[1]],
             time: 0.0,
             amount: 1.0,
@@ -199,26 +235,10 @@ impl PointLights {
         let NodeKind::Mesh(mesh) = &mut scene.get_mut(mesh)?.kind else {
             return Err(Error::Invalid("head mesh"));
         };
-        let geometry = Arc::make_mut(&mut mesh.geometry);
-        let Some(Attribute::F32(attribute)) = geometry.attributes.get_mut("position") else {
-            return Err(Error::Invalid("head positions"));
-        };
-        let array = attribute.array_mut();
-        for (face, base) in self.base.as_chunks::<12>().0.iter().enumerate() {
-            let (phase, seed) = self.phases[face];
-            let wave = (((phase + self.time) * 2.0 + seed).sin() * 0.5).abs();
-            for (corner, p) in base.iter().enumerate() {
-                let distance_effect = effectors
-                    .iter()
-                    .map(|light| (20.0 - p.distance(*light)).max(0.0) / 2.0)
-                    .sum::<f64>();
-                let displaced = (*p + self.normals[face] * (wave + distance_effect) * self.amount)
-                    .as_vec3()
-                    .to_array();
-                let offset = (face * 12 + corner) * 3;
-                array[offset..offset + 3].copy_from_slice(&displaced);
-            }
-        }
+        let material = Arc::make_mut(&mut mesh.materials[0]).properties_mut();
+        material.vertex_uniforms[0] = [self.time as f32, self.amount as f32, 0.0, 0.0];
+        material.vertex_uniforms[1] = effectors[0].extend(0.0).as_vec4().to_array();
+        material.vertex_uniforms[2] = effectors[1].extend(0.0).as_vec4().to_array();
         Ok(())
     }
 }
