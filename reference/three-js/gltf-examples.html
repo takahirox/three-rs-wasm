@@ -1,0 +1,37 @@
+<!doctype html><meta charset="utf-8"><title>Pinned glTF example comparison</title>
+<style>html,body{margin:0;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="module">
+import * as GPU from 'three';
+import * as GL from '/.cache/three-r186/src/Three.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {DRACOLoader,DRACO_GLTF_CONFIG} from 'three/addons/loaders/DRACOLoader.js';
+import {HDRLoader} from 'three/addons/loaders/HDRLoader.js';
+import {UltraHDRLoader} from 'three/addons/loaders/UltraHDRLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+try {
+ const id=new URLSearchParams(location.search).get('id'),kind=id.split('_').at(-1),T=id.startsWith('webgpu')?GPU:GL;
+ const configs={
+  iridescence:['IridescenceLamp.glb','venice_sunset_1k.hdr',50,.05,20,[.35,.05,.35],[0,.2,0],0,1,0,Infinity],
+  anisotropy:['AnisotropyBarnLamp.glb','royal_esplanade_2k.hdr.jpg',40,.01,10,[-.35,-.2,.35],[0,-.08,.11],.5,1.35,.1,2],
+  sheen:['SheenChair.glb','royal_esplanade_2k.hdr.jpg',45,.1,20,[-.75,.7,1.25],[0,.35,0],0,1,1,10],
+  transmission:['IridescentDishWithOlives.glb','royal_esplanade_2k.hdr.jpg',45,.25,20,[0,.4,.7],[0,.1,0],.35,1,.5,1],
+ };
+ const [model,env,fov,near,far,pos,target,blur,exposure,min,max]=configs[kind];
+ const renderer=T===GL?new T.WebGLRenderer({antialias:true}):new T.WebGPURenderer({antialias:true});
+ if(renderer.init)await renderer.init();renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=exposure;document.body.append(renderer.domElement);
+ const scene=new T.Scene(),camera=new T.PerspectiveCamera(fov,innerWidth/innerHeight,near,far);camera.position.fromArray(pos);
+ const controls=new OrbitControls(camera,renderer.domElement);controls.target.fromArray(target);controls.minDistance=min;controls.maxDistance=max;controls.update();
+ const draco=new DRACOLoader().setDecoderPath('/.cache/three-r186/examples/jsm/libs/draco/gltf/').setDecoderConfig(DRACO_GLTF_CONFIG);
+ const [gltf,texture]=await Promise.all([new GLTFLoader().setDRACOLoader(draco).loadAsync('/.cache/gltf-examples/models/gltf/'+model),new (env.endsWith('.jpg')?UltraHDRLoader:HDRLoader)().loadAsync('/.cache/gltf-examples/textures/equirectangular/'+env)]);draco.dispose();
+ texture.mapping=T.EquirectangularReflectionMapping;scene.background=texture;scene.environment=texture;scene.backgroundBlurriness=blur;scene.add(gltf.scene);
+ const mixer=new T.AnimationMixer(gltf.scene);if(gltf.animations.length)mixer.clipAction(gltf.animations[0]).play();
+ window.reference={renderer,scene,camera,controls};
+ let previousTime=0;
+ window.renderFixture=(time=0)=>{if(kind==='iridescence'){const offset=camera.position.clone().sub(controls.target),spherical=new T.Spherical().setFromVector3(offset);spherical.theta+=(time-previousTime)*Math.PI/60;camera.position.copy(controls.target).add(offset.setFromSpherical(spherical));controls.update();previousTime=time;}mixer.setTime(time);renderer.render(scene,camera);};
+ if(!new URLSearchParams(location.search).has('animate'))controls.addEventListener('change',()=>renderer.render(scene,camera));
+ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.render(scene,camera);});
+ renderFixture();renderer.domElement.dataset.ready='true';
+ if(new URLSearchParams(location.search).has('animate')){controls.autoRotate=kind==='iridescence';controls.autoRotateSpeed=-.5;const tick=()=>{controls.update();mixer.update(1/60);renderer.render(scene,camera);requestAnimationFrame(tick);};requestAnimationFrame(tick);}
+} catch(e){document.body.dataset.error=String(e);console.error(e);}
+</script>

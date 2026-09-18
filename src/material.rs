@@ -27,6 +27,9 @@ pub struct Texture {
     pub width: u32,
     pub height: u32,
     pub rgba: Vec<u8>,
+    #[cfg(target_arch = "wasm32")]
+    #[serde(skip)]
+    pub(crate) bitmap: Option<Arc<BrowserBitmap>>,
     pub srgb: bool,
     pub wrap_s: Wrapping,
     pub wrap_t: Wrapping,
@@ -44,7 +47,28 @@ pub struct Texture {
     /// Explicit UV matrix, used by formats whose transform order differs.
     pub matrix: Option<Matrix3>,
 }
+#[cfg(target_arch = "wasm32")]
+#[derive(Debug)]
+pub(crate) struct BrowserBitmap(pub web_sys::ImageBitmap);
+#[cfg(target_arch = "wasm32")]
+impl Drop for BrowserBitmap {
+    fn drop(&mut self) {
+        self.0.close();
+    }
+}
 impl Texture {
+    /// Retain native decoded pixels for a direct WebGPU upload. Canvas readback
+    /// destroys RGB beneath zero alpha, which changes filtered AVIF textures.
+    #[cfg(target_arch = "wasm32")]
+    pub(crate) fn from_bitmap(bitmap: web_sys::ImageBitmap) -> Result<Self> {
+        let mut texture = Self::from_rgba(1, 1, vec![0; 4], true)?;
+        texture.width = bitmap.width();
+        texture.height = bitmap.height();
+        texture.rgba.clear();
+        texture.bitmap = Some(Arc::new(BrowserBitmap(bitmap)));
+        Ok(texture)
+    }
+
     pub fn from_rgba(width: u32, height: u32, rgba: Vec<u8>, srgb: bool) -> Result<Self> {
         let size = (width as usize)
             .checked_mul(height as usize)
@@ -56,6 +80,8 @@ impl Texture {
             width,
             height,
             rgba,
+            #[cfg(target_arch = "wasm32")]
+            bitmap: None,
             srgb,
             wrap_s: Wrapping::Clamp,
             wrap_t: Wrapping::Clamp,
@@ -136,6 +162,8 @@ pub struct MaterialProperties {
     pub opacity: f64,
     pub alpha_test: f64,
     pub transparent: bool,
+    /// Draw transparent double-sided surfaces once (ShaderMaterial defaults to true).
+    pub force_single_pass: bool,
     pub side: Side,
     pub depth_test: bool,
     pub depth_write: bool,
@@ -166,6 +194,7 @@ impl Default for MaterialProperties {
             opacity: 1.0,
             alpha_test: 0.0,
             transparent: false,
+            force_single_pass: false,
             side: Side::Front,
             depth_test: true,
             depth_write: true,
@@ -500,7 +529,10 @@ pub struct ShaderMaterial {
 impl ShaderMaterial {
     pub fn new(program: Arc<crate::shader::ShaderProgram>) -> Self {
         Self {
-            properties: Default::default(),
+            properties: MaterialProperties {
+                force_single_pass: true,
+                ..Default::default()
+            },
             program,
             uniforms: [[0.0; 4]; 16],
         }

@@ -3,17 +3,25 @@ import {chromium} from '@playwright/test';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {timestamps} from './gpu-timestamps.js';
 const id=process.env.EXAMPLE||'webgl_geometries';
-const ports={webgl_buffergeometry:26,webgl_buffergeometry_rawshader:27,webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
+const ports={webgpu_loader_gltf_iridescence:29,webgl_loader_gltf_avif:28,webgl_buffergeometry:26,webgl_buffergeometry_rawshader:27,webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
 if(!(id in ports))throw new Error('Unknown expanded port');
 const browser=await chromium.launch({executablePath:process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined,args:['--enable-unsafe-webgpu']});
-const report={id,date:new Date().toISOString(),warmupMs:3000,sampleMs:3000,gpuInstrumentation:!!process.env.GPU,results:[]};
+const report={id,date:new Date().toISOString(),warmupMs:3000,sampleMs:3000,gpuInstrumentation:!!process.env.GPU,workload:id==='webgl_loader_gltf_avif'?'forced redraw of the same static camera; idle covered separately':'animation',results:[]};
 try {for(const runtime of ['three','rust']){
- const backend=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id)&&runtime==='three'?'WebGL2':'WebGPU';
+ const backend=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif'].includes(id)&&runtime==='three'?'WebGL2':'WebGPU';
  const page=await browser.newPage({viewport:{width:512,height:512},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  if(process.env.GPU)await page.addInitScript(timestamps);
- await page.addInitScript(()=>{
+ await page.addInitScript(forceRedraw=>{
   const fresh=()=>({cpu:[],frames:[],calls:{},writeBytes:0,drawCalls:0,triangles:0});window.measure=fresh();window.buffers=new Map();window.textures=new Map();
-  const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>raf(t=>{window.gpuProfileFrame=(window.gpuProfileFrame||0)+1;const start=performance.now();cb(t);window.measure.cpu.push(performance.now()-start);window.measure.frames.push(t);});
+  const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>raf(t=>{
+   const drawsBefore=window.measure.drawCalls;
+   const before=forceRedraw?Number(document.querySelector('canvas')?.dataset.frames||0):0;
+   window.gpuProfileFrame=(window.gpuProfileFrame||0)+1;const start=performance.now();cb(t);const elapsed=performance.now()-start;
+   const rendered=forceRedraw?Number(document.querySelector('canvas')?.dataset.frames||0)>before:window.measure.drawCalls>drawsBefore;
+   if(rendered){window.measure.cpu.push(elapsed);window.measure.frames.push(t);}
+   // Repeat only the application's draw callback, never wgpu's polling callbacks.
+   if(forceRedraw&&rendered)window.requestAnimationFrame(cb);
+  });
   for(const [proto,names] of [[GPUDevice.prototype,['createBuffer','createTexture','createBindGroup','createRenderPipeline']],[GPUQueue.prototype,['writeBuffer','writeTexture','submit']],[GPURenderPassEncoder.prototype,['draw','drawIndexed']]])for(const name of names){const original=proto[name];proto[name]=function(...a){const m=window.measure;m.calls[name]=(m.calls[name]||0)+1;
    if(name==='draw'||name==='drawIndexed'){m.drawCalls++;m.triangles+=a[0]*(a[1]??1)/3;}
    if(name==='writeBuffer'){const data=a[2],unit=ArrayBuffer.isView(data)?data.BYTES_PER_ELEMENT||1:1;m.writeBytes+=a[4]===undefined?data.byteLength-(a[3]||0)*unit:a[4]*unit;}
@@ -23,7 +31,7 @@ try {for(const runtime of ['three','rust']){
    return result;
   };}
   for(const [proto,map] of [[GPUBuffer.prototype,'buffers'],[GPUTexture.prototype,'textures']]){const destroy=proto.destroy;proto.destroy=function(){window[map].delete(this);return destroy.call(this);};}
- });
+ },id==='webgl_loader_gltf_avif'&&runtime==='rust');
  if(backend==='WebGL2')await page.addInitScript(()=>{
   const bound=new Map(),proto=WebGL2RenderingContext.prototype;
   for(const name of ['createBuffer','bindBuffer','bufferData','bufferSubData','deleteBuffer','drawArrays','drawElements','drawArraysInstanced','drawElementsInstanced','uniform1f','uniform1i','uniform2f','uniform3f','uniform4f','uniform1fv','uniform2fv','uniform3fv','uniform4fv','uniformMatrix3fv','uniformMatrix4fv']){
@@ -41,8 +49,8 @@ try {for(const runtime of ['three','rust']){
   const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===id),{status:'partial',port:{example:ports[id],limitations:[]}});
   await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
  }
- await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/expanded.html?id=${id}&animate=1`:`/web/gallery/example.html?id=${id}`));
- await page.waitForFunction(runtime==='three'?()=>document.querySelector('canvas')?.dataset.ready==='true':()=>document.querySelector('canvas')?.dataset.frames>5,null,{timeout:90000});
+ await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/${id==='webgpu_loader_gltf_iridescence'?'gltf-examples':'expanded'}.html?id=${id}&animate=1`:`/web/gallery/example.html?id=${id}`));
+ await page.waitForFunction(runtime==='three'?()=>document.querySelector('canvas')?.dataset.ready==='true':()=>document.querySelector('canvas')?.dataset.frames>0,null,{timeout:90000});
  if(['webgl_morphtargets','webgpu_morphtargets'].includes(id))await page.evaluate(async runtime=>{if(runtime==='rust')app.gallery_morph(.25,.75);else await window.renderFixture(0,[.25,.75]);},runtime);
  if(backend==='WebGL2'&&process.env.GPU)await page.evaluate(()=>{
   const renderer=reference.renderer,gl=renderer.getContext(),ext=gl.getExtension('EXT_disjoint_timer_query_webgl2');window.glTimerAvailable=!!ext;if(!ext)return;

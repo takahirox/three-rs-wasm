@@ -24,6 +24,7 @@ struct PipelineKey {
     side: u8,
     transparent: bool,
     alpha_mask: bool,
+    encode_srgb: bool,
     depth_test: bool,
     depth_write: bool,
     samples: u32,
@@ -141,6 +142,7 @@ struct Draw {
     custom_bindings: Option<wgpu::BindGroup>,
     instance_buffer: wgpu::Buffer,
     pipeline: wgpu::RenderPipeline,
+    back_pipeline: Option<wgpu::RenderPipeline>,
     vertices: wgpu::Buffer,
     bind_group: wgpu::BindGroup,
     range: std::ops::Range<u32>,
@@ -504,6 +506,7 @@ impl Renderer {
         self.queue.submit([encoder.finish()]);
     }
     pub fn render(&self, scene: &mut Scene, camera: Object3D, target: &RenderTarget) -> Result<()> {
+        self.draw_cursor.set(0);
         let mut needs_transmission = false;
         for root in scene.roots() {
             for handle in scene.traverse(root, true)? {
@@ -537,10 +540,14 @@ impl Renderer {
             background.viewport = target.viewport;
             background.scissor = target.scissor;
             self.render_inner(scene, camera, background, true, None)?;
-            self.render_inner(scene, camera, target, false, Some(&background.view))
+            self.render_inner(scene, camera, target, false, Some(&background.view))?
         } else {
-            self.render_inner(scene, camera, target, false, None)
+            self.render_inner(scene, camera, target, false, None)?
         }
+        self.draw_slots
+            .borrow_mut()
+            .truncate(self.draw_cursor.get());
+        Ok(())
     }
     fn render_inner(
         &self,
@@ -550,7 +557,6 @@ impl Renderer {
         opaque_only: bool,
         transmission_view: Option<&wgpu::TextureView>,
     ) -> Result<()> {
-        self.draw_cursor.set(0);
         let valid_rectangle = |r: [u32; 4]| {
             r[2] > 0
                 && r[3] > 0
@@ -1346,7 +1352,11 @@ impl Renderer {
                 })
         });
         {
-            let c = scene.background.0;
+            let c = if target.options.encode_srgb {
+                scene.background.0.map(linear_to_srgb)
+            } else {
+                scene.background.0
+            };
             let attachments: Vec<_> = target
                 .views
                 .iter()
@@ -1426,36 +1436,40 @@ impl Renderer {
                 pass.draw(0..3, 0..1);
             }
             for draw in &draws {
-                pass.set_pipeline(&draw.pipeline);
-                pass.set_stencil_reference(draw.stencil_reference);
-                pass.set_bind_group(0, &draw.bind_group, &[]);
-                if let Some(bindings) = &draw.custom_bindings {
-                    pass.set_bind_group(1, bindings, &[]);
-                }
-                pass.set_vertex_buffer(0, draw.vertices.slice(..));
-                pass.set_vertex_buffer(1, draw.instance_buffer.slice(..));
-                if let Some(indices) = &draw.indices {
-                    pass.set_index_buffer(indices.slice(..), wgpu::IndexFormat::Uint32);
-                }
-                if let Some(commands) = &draw.indirect {
-                    for &offset in &draw.indirect_offsets {
-                        if draw.indices.is_some() {
-                            pass.draw_indexed_indirect(commands, offset);
-                        } else {
-                            pass.draw_indirect(commands, offset);
-                        }
+                // Match Three.js: transparent double-sided meshes draw back faces first.
+                for pipeline in draw
+                    .back_pipeline
+                    .iter()
+                    .chain(std::iter::once(&draw.pipeline))
+                {
+                    pass.set_pipeline(pipeline);
+                    pass.set_stencil_reference(draw.stencil_reference);
+                    pass.set_bind_group(0, &draw.bind_group, &[]);
+                    if let Some(bindings) = &draw.custom_bindings {
+                        pass.set_bind_group(1, bindings, &[]);
                     }
-                } else if draw.indices.is_some() {
-                    pass.draw_indexed(draw.range.clone(), 0, 0..draw.instances);
-                } else {
-                    pass.draw(draw.range.clone(), 0..draw.instances);
+                    pass.set_vertex_buffer(0, draw.vertices.slice(..));
+                    pass.set_vertex_buffer(1, draw.instance_buffer.slice(..));
+                    if let Some(indices) = &draw.indices {
+                        pass.set_index_buffer(indices.slice(..), wgpu::IndexFormat::Uint32);
+                    }
+                    if let Some(commands) = &draw.indirect {
+                        for &offset in &draw.indirect_offsets {
+                            if draw.indices.is_some() {
+                                pass.draw_indexed_indirect(commands, offset);
+                            } else {
+                                pass.draw_indirect(commands, offset);
+                            }
+                        }
+                    } else if draw.indices.is_some() {
+                        pass.draw_indexed(draw.range.clone(), 0, 0..draw.instances);
+                    } else {
+                        pass.draw(draw.range.clone(), 0..draw.instances);
+                    }
                 }
             }
         }
         self.queue.submit([encoder.finish()]);
-        self.draw_slots
-            .borrow_mut()
-            .truncate(self.draw_cursor.get());
         for (object, callback) in after_hooks {
             callback(scene, object);
         }
@@ -1619,6 +1633,10 @@ impl Renderer {
                 "stencil material requires stencil attachment",
             ));
         }
+        let two_pass = properties.transparent
+            && !properties.force_single_pass
+            && properties.side == Side::Double
+            && topology == wgpu::PrimitiveTopology::TriangleList;
         let key = PipelineKey {
             material_kind: uniforms.material[0] as u8,
             light_count: uniforms.material[3] as u8,
@@ -1648,10 +1666,17 @@ impl Renderer {
             side: match properties.side {
                 Side::Front => 0,
                 Side::Back => 1,
-                Side::Double => 2,
+                Side::Double => {
+                    if two_pass {
+                        0
+                    } else {
+                        2
+                    }
+                }
             },
             transparent: properties.transparent,
             alpha_mask: properties.alpha_test > 0.0,
+            encode_srgb: target.options.encode_srgb,
             depth_test: properties.depth_test,
             depth_write: properties.depth_write,
             samples: target.options.samples.max(1),
@@ -1662,26 +1687,40 @@ impl Renderer {
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
         };
         let mut pipelines = self.pipelines.borrow_mut();
-        let pipeline=pipelines.entry(key.clone()).or_insert_with(|| {
-        let layout = self
-            .device
-            .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                label: Some("draw pipeline layout"),
-                bind_group_layouts: &custom.map_or_else(||vec![&self.layout],|p|vec![&self.layout,&p.layout]),
-                push_constant_ranges: &[],
-            });
-        let shader=custom.map_or(&self.shader,|p|&p.module);
-        self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
+        let create_pipeline = |key: &PipelineKey| {
+            let layout = self
+                .device
+                .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                    label: Some("draw pipeline layout"),
+                    bind_group_layouts: &custom
+                        .map_or_else(|| vec![&self.layout], |p| vec![&self.layout, &p.layout]),
+                    push_constant_ranges: &[],
+                });
+            let shader = custom.map_or(&self.shader, |p| &p.module);
+            self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
             vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
-            primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match properties.side {Side::Front=>Some(wgpu::Face::Back),Side::Back=>Some(wgpu::Face::Front),Side::Double=>None},..Default::default()},
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
+            primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
             depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
-        }).clone();
+        };
+        let pipeline = pipelines
+            .entry(key.clone())
+            .or_insert_with(|| create_pipeline(&key))
+            .clone();
+        let back_pipeline = two_pass.then(|| {
+            let mut back = key.clone();
+            back.side = 1;
+            pipelines
+                .entry(back.clone())
+                .or_insert_with(|| create_pipeline(&back))
+                .clone()
+        });
         Ok(Draw {
             stencil_reference: properties.stencil_reference,
             custom_bindings: custom.map(|p| p.bindings.clone()),
             instance_buffer,
             pipeline,
+            back_pipeline,
             vertices: vertex_buffer,
             bind_group,
             range: 0..0,

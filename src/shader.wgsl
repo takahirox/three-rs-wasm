@@ -1,4 +1,5 @@
 override INSTANCED:bool=false;
+override ENCODE_SRGB:bool=false;
 // Specialize material families so simple lit meshes do not execute PBR extensions.
 override MATERIAL_KIND:f32=-1.0;
 override PHYSICAL:bool=true;
@@ -22,7 +23,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -56,23 +57,31 @@ fn wrap_texel(coordinate:i32,size:i32,mode:f32)->i32 {
     let p=((coordinate%(size*2))+size*2)%(size*2);
     return select(p,size*2-1-p,p>=size);
 }
-fn extension_texel(index:u32,p:vec2<i32>)->vec4<f32> {
-    let size=u.extension_sizes[index];let mode=u.extension_wraps[index];
-    let value=textureLoad(extension_maps,vec2(wrap_texel(p.x,i32(size.x),mode.x),wrap_texel(p.y,i32(size.y),mode.y)),i32(index),0);
-    if size.w>0.5 {
+// Derivatives are evaluated before material-dependent fragment control flow.
+var<private> extension_lod:array<f32,12>;
+fn extension_texel(index:u32,p:vec2<i32>,level:i32)->vec4<f32> {
+    let info=u.extension_sizes[index];let size=max(vec2(1.0),floor(info.xy/exp2(f32(level))));let mode=u.extension_wraps[index];
+    let value=textureLoad(extension_maps,vec2(wrap_texel(p.x,i32(size.x),mode.x),wrap_texel(p.y,i32(size.y),mode.y)),i32(u.extension_sampling[index].w),level);
+    if info.w>0.5 {
         let linear=select(value.rgb/12.92,pow((value.rgb+0.055)/1.055,vec3(2.4)),value.rgb>vec3(0.04045));
         return vec4(linear,value.a);
     }
     return value;
 }
-fn extension_sample(index:u32,surface:VertexOut)->vec4<f32> {
-    let size=u.extension_sizes[index];
-    if size.x==0.0 {return vec4(1.0);}
-    let pixel=extension_uv(index,surface)*size.xy;
-    if size.z<0.5 {return extension_texel(index,vec2<i32>(floor(pixel)));}
+fn extension_level(index:u32,uv:vec2<f32>,level:i32,linear:bool)->vec4<f32> {
+    let size=max(vec2(1.0),floor(u.extension_sizes[index].xy/exp2(f32(level))));let pixel=uv*size;
+    if !linear {return extension_texel(index,vec2<i32>(floor(pixel)),level);}
     let base=vec2<i32>(floor(pixel-0.5));let f=fract(pixel-0.5);
-    return mix(mix(extension_texel(index,base),extension_texel(index,base+vec2(1,0)),f.x),
-        mix(extension_texel(index,base+vec2(0,1)),extension_texel(index,base+vec2(1,1)),f.x),f.y);
+    return mix(mix(extension_texel(index,base,level),extension_texel(index,base+vec2(1,0),level),f.x),
+        mix(extension_texel(index,base+vec2(0,1),level),extension_texel(index,base+vec2(1,1),level),f.x),f.y);
+}
+fn extension_sample(index:u32,surface:VertexOut)->vec4<f32> {
+    let size=u.extension_sizes[index];if size.x==0.0 {return vec4(1.0);}
+    let sampling=u.extension_sampling[index];let uv=extension_uv(index,surface);let lod=extension_lod[index];
+    let linear=select(size.z,sampling.x,lod>0.0)>0.5;
+    let mip=clamp(lod,0.0,sampling.z);
+    if sampling.y<0.5 {return extension_level(index,uv,i32(floor(mip+0.5)),linear);}
+    let low=floor(mip);return mix(extension_level(index,uv,i32(low),linear),extension_level(index,uv,i32(ceil(mip)),linear),mip-low);
 }
 // Thin-film model ported from Three.js r186 (MIT), Belcour/Barla 2017.
 fn sensitivity(opd:f32,shift:vec3<f32>)->vec3<f32> {
@@ -229,6 +238,21 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     return vec4(mix(color.rgb,u.fog_color.rgb,factor),color.a);
 }
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
+    let color=shade_fragment(in,front);
+    if ENCODE_SRGB {
+        let rgb=select(1.055*pow(max(color.rgb,vec3(0.0)),vec3(1.0/2.4))-0.055,color.rgb*12.92,color.rgb<=vec3(0.0031308));
+        return vec4(rgb,color.a);
+    }
+    return color;
+}
+fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
+    if PHYSICAL {
+        for(var i=0u;i<12u;i++) {
+            let uv=extension_uv(i,in)*u.extension_sizes[i].xy;
+            let dx=dpdx(uv);let dy=dpdy(uv);
+            extension_lod[i]=0.5*log2(max(max(dot(dx,dx),dot(dy,dy)),1e-10));
+        }
+    }
     let q0=dpdx(in.view_position);let q1=-dpdy(in.view_position);let normal_uv=select(in.uv,map_uv(2u,in),u.maps.x>0.5);let st0=dpdx(normal_uv);let st1=-dpdy(normal_uv);
     var geometry_normal=normalize(in.normal);
     if u.flags.x>0.5 {geometry_normal=normalize(cross(q0,q1));}

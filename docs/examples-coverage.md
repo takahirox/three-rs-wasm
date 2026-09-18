@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-2 excluded for explicit WebGL APIs; 605 retained. 28 partial Rust ports; 577 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+2 excluded for explicit WebGL APIs; 605 retained. 30 partial Rust ports; 575 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -42,6 +42,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_loader_gltf_iridescence | `tests/browser/gltf-iridescence.spec.js` | 公式IridescenceLamp・HDR環境・自動回転・Orbit操作を移植。情報表示は未一致。一般の屈折・拡張材質と性能の完全互換は未保証。 |
+| webgl_loader_gltf_avif | `tests/browser/gltf-avif.spec.js` | 公式Forest HouseのDraco形状とAVIFテクスチャを読み込み、Orbit・パン・ズームと変更時のみの描画を移植。MSAAの輪郭と情報オーバーレイの外観は未一致。性能同等性は未保証。 |
 | webgl_buffergeometry | `tests/browser/expanded.spec.js` | 公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。 |
 | webgl_buffergeometry_rawshader | `tests/browser/expanded.spec.js` | 公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。 |
 | webgl_lights_rectarealight | `tests/browser/expanded.spec.js` | 公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。 |

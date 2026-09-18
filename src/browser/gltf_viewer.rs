@@ -236,6 +236,9 @@ pub(super) async fn decode_image(bytes: &[u8]) -> Result<crate::material::Textur
     .map_err(fail)?
     .dyn_into()
     .map_err(fail)?;
+    if !bytes.starts_with(&[0xff, 0xd8]) {
+        return Texture::from_bitmap(bitmap);
+    }
     let result = (|| {
         let canvas =
             web_sys::OffscreenCanvas::new(bitmap.width(), bitmap.height()).map_err(fail)?;

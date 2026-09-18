@@ -1,0 +1,47 @@
+[
+  {
+    "asset": "AnisotropyBarnLamp.glb",
+    "result": {
+      "clips": 0,
+      "meshes": 3,
+      "status": "imported-and-evaluated"
+    },
+    "sha256": "3068f5b617a63816aefb76a0154f22fde7a664ecd4bb29e7a530bd2dc77a0099"
+  },
+  {
+    "asset": "DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
+    "result": {
+      "clips": 0,
+      "meshes": 1,
+      "status": "imported-and-evaluated"
+    },
+    "sha256": "09ccbc68473fe7f32fd65a78f506edf79a4b8306f5cba7097d8d9ef00f5aa070"
+  },
+  {
+    "asset": "IridescenceLamp.glb",
+    "result": {
+      "clips": 0,
+      "meshes": 3,
+      "status": "imported-and-evaluated"
+    },
+    "sha256": "60e991ad33985c7b2b3af1d8a0d0f62e1e2d1f3c05f5d8f0aabfb8db6b70be30"
+  },
+  {
+    "asset": "IridescentDishWithOlives.glb",
+    "result": {
+      "clips": 1,
+      "meshes": 4,
+      "status": "imported-and-evaluated"
+    },
+    "sha256": "98a6db7fbc0b90b9807fd57189e8cf71642672ee0301609b0aabcc28c698f29f"
+  },
+  {
+    "asset": "SheenChair.glb",
+    "result": {
+      "clips": 0,
+      "meshes": 4,
+      "status": "imported-and-evaluated"
+    },
+    "sha256": "07c80216eb5d57fc9d4148e1e14a69e19d3436eca1af33590d8d36c04957ffd4"
+  }
+]

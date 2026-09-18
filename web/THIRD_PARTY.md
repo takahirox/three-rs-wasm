@@ -137,3 +137,28 @@ Additional example assets (Three.js r186, commit
 - Hilbert/Catmull-Rom and procedural scene formulas are ports of the pinned
   Three.js examples/utilities; the Three.js MIT notice is retained in
   `../LICENSE-THREE`.
+
+## Forest House (glTF AVIF example)
+
+`models/AVIFTest/forest_house.glb` is copied unchanged from the pinned Three.js
+r186 archive (`examples/models/gltf/AVIFTest/forest_house.glb`).
+[Forest House](https://sketchfab.com/3d-models/forest-house-52429e4ef7bf4deda1309364a2cda86f)
+by peachyroyalty is licensed under
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/); the asset is not
+covered by this repository's MIT license. The pinned file uses Draco geometry
+and AVIF textures. `python3 tools/gallery/prepare_avif.py` verifies its SHA-256
+and prepares the upstream Draco decoder for independent reference tests only.
+The product uses the Rust Draco decoder and the browser AVIF codec. Scene,
+materials and camera controls run in Rust; no JavaScript Three.js renderer is
+loaded by the product. The original information overlay is not reproduced.
+
+## Iridescence Lamp
+
+`models/IridescenceLamp.glb` is copied unchanged from the pinned Three.js r186
+archive. © 2022 Wayfair, LLC; asset by Eric Chadwick, licensed under
+[Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
+[Original model and attribution](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/IridescenceLamp).
+
+`environments/venice_sunset_1k.hdr` is copied unchanged from the same archive.
+Venice Sunset is by Greg Zaal, [Poly Haven, CC0](https://polyhaven.com/a/venice_sunset).
+Source paths and content hashes are recorded in `tools/gltf_examples/assets.json`.

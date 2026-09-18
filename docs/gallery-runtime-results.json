@@ -2413,7 +2413,7 @@
       "id": "webgl_loader_gltf_avif",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_avif.html",
       "source_sha256": "f6b3e0d31c97a7e78333ea7255ca249f112f82e56704ab7680f98a772f6b3f61",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gltf_avif",
         "source_sha256": "f6b3e0d31c97a7e78333ea7255ca249f112f82e56704ab7680f98a772f6b3f61",
@@ -10116,7 +10116,7 @@
       "id": "webgpu_loader_gltf_iridescence",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_iridescence.html",
       "source_sha256": "23e6534d0e43e4f1351364964f3ae8e5d66fedf511706e6b6a7a5074ee982636",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_iridescence",
         "source_sha256": "23e6534d0e43e4f1351364964f3ae8e5d66fedf511706e6b6a7a5074ee982636",

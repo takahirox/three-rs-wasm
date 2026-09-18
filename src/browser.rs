@@ -13,6 +13,7 @@ mod expanded_morph_models;
 mod expanded_triangles;
 mod gallery;
 mod gallery_scenes;
+mod gltf_examples;
 mod gltf_viewer;
 mod point_lights;
 mod robot;
@@ -58,6 +59,16 @@ struct State {
     gallery_scene: Option<gallery_scenes::GalleryScene>,
 }
 impl State {
+    fn request_render(&mut self) {
+        if self.request.is_none()
+            && let Some(callback) = &self.animation
+        {
+            self.request = web_sys::window().and_then(|w| {
+                w.request_animation_frame(callback.as_ref().unchecked_ref())
+                    .ok()
+            });
+        }
+    }
     fn render(&mut self, time: f64) -> Result<()> {
         self.timer.update();
         let _ = self
@@ -115,8 +126,8 @@ impl State {
             .surface
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
-        // RawShaderMaterial writes display values without Three color-space chunks.
-        let format = if self.example == 27 {
+        // RawShaderMaterial and encoded WebGL-style targets already contain display values.
+        let format = if [27, 28].contains(&self.example) {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -150,6 +161,25 @@ pub struct BrowserApp {
 }
 #[wasm_bindgen]
 impl BrowserApp {
+    /// Request a frame after a canvas resize, including on-demand examples.
+    pub fn request_render(&self) {
+        self.state.borrow_mut().request_render();
+    }
+    /// Configure MSAA for matched-quality renderer comparisons (default unchanged).
+    pub fn set_samples(&self, samples: u32) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let mut options = state.target.options.clone();
+        options.samples = samples;
+        state.target = RenderTarget::with_options(
+            &state.renderer.device,
+            state.canvas.width(),
+            state.canvas.height(),
+            options,
+        )
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.request_render();
+        Ok(())
+    }
     /// Presentation controls; all scene and deformation state remains in Rust.
     pub fn point_lights_controls(&self, paused: bool, amount: f64, speed: f64) {
         let mut state = self.state.borrow_mut();
@@ -245,6 +275,13 @@ impl BrowserApp {
         state.scene.background_blur = blur.clamp(0.0, 1.0);
         state.scene.background_environment = background;
     }
+    pub fn gallery_dragging(&self, value: bool) {
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
+            &mut self.state.borrow_mut().gallery_scene
+        {
+            demo.dragging(value);
+        }
+    }
     pub fn gallery_input(
         &self,
         dx: f64,
@@ -256,6 +293,7 @@ impl BrowserApp {
             return Ok(());
         }
         let mut state = self.state.borrow_mut();
+        state.request_render();
         let height = state.canvas.client_height().max(1) as f64;
         let State {
             scene,
@@ -279,6 +317,7 @@ impl BrowserApp {
             return Err(JsValue::from_str("invalid pan"));
         }
         let mut state = self.state.borrow_mut();
+        state.request_render();
         let height = state.canvas.client_height().max(1) as f64;
         let State {
             scene,
@@ -400,6 +439,7 @@ impl BrowserApp {
             return Err(JsValue::from_str("invalid gallery time"));
         }
         let mut state = self.state.borrow_mut();
+        state.request_render();
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
             demo.seek(seconds);
             state.paused = true;
@@ -584,7 +624,8 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        format: if example == 27 {
+                        encode_srgb: example == 28,
+                        format: if [27, 28].contains(&example) {
                             wgpu::TextureFormat::Rgba8Unorm
                         } else {
                             wgpu::TextureFormat::Rgba16Float
@@ -611,7 +652,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=27).contains(&example) {
+            if (7..=32).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -762,15 +803,14 @@ impl BrowserApp {
             let animation = Closure::wrap(Box::new(move |time: f64| {
                 if let Some(state) = weak.upgrade() {
                     let mut state = state.borrow_mut();
+                    state.request = None;
                     if let Err(error) = state.render(time) {
                         let _ = state.canvas.set_attribute("data-error", &error.to_string());
                         return;
                     }
-                    if let Some(callback) = &state.animation {
-                        state.request = web_sys::window().and_then(|w| {
-                            w.request_animation_frame(callback.as_ref().unchecked_ref())
-                                .ok()
-                        });
+                    // The official AVIF scene renders only on load, input and resize.
+                    if state.example != 28 {
+                        state.request_render();
                     }
                 }
             }) as Box<dyn FnMut(f64)>);
@@ -850,5 +890,6 @@ impl Drop for BrowserApp {
             self.pointer.as_ref().unchecked_ref(),
         );
         s.animation = None;
+        s.renderer.device.destroy();
     }
 }

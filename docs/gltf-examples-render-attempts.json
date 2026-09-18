@@ -1,0 +1,2917 @@
+[
+  {
+    "id": "webgpu_loader_gltf_iridescence",
+    "example": 29,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 206,
+        "writes": 83,
+        "bytes": 19956,
+        "textures": [
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "-msaa",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 6
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": [],
+            "textureBindingViewDimension": "cube"
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 1024,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 11,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 0,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 768,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 768,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "IridescenceLamp_BaseColor.png",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "IridescenceLamp_OcclusionRoughnessMetalness.png",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "DFG_LUT",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rg16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "IridescenceLamp_Iridescence.png",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "depthBuffer",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 127,
+        "writes": 3,
+        "bytes": 48,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1024,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 768,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 768,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        3,
+        1081032,
+        48,
+        48
+      ],
+      "resources": [
+        3,
+        3,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 127,
+      "writes": 3,
+      "transfer": [
+        3,
+        1081032,
+        48,
+        48
+      ],
+      "resources": [
+        3,
+        3,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.003326416015625,
+      "areaFraction": 0.002864837646484375,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  },
+  {
+    "id": "webgpu_loader_gltf_anisotropy",
+    "example": 30,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 212,
+        "writes": 76,
+        "bytes": 15316,
+        "textures": [
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "-msaa",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 0,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "DFG_LUT",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rg16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "depthBuffer",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 155,
+        "writes": 3,
+        "bytes": 48,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        3,
+        739716,
+        48,
+        48
+      ],
+      "resources": [
+        4,
+        4,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 155,
+      "writes": 3,
+      "transfer": [
+        3,
+        739716,
+        48,
+        48
+      ],
+      "resources": [
+        4,
+        4,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.18156051635742188,
+      "areaFraction": 0.19049835205078125,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  },
+  {
+    "id": "webgpu_loader_gltf_transmission",
+    "example": 32,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 308,
+        "writes": 90,
+        "bytes": 23572,
+        "textures": [
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "-msaa",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 0,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "DFG_LUT",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rg16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "depthBuffer",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 230,
+        "writes": 4,
+        "bytes": 64,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        4,
+        1482496,
+        64,
+        64
+      ],
+      "resources": [
+        9,
+        9,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 230,
+      "writes": 4,
+      "transfer": [
+        4,
+        1482496,
+        64,
+        64
+      ],
+      "resources": [
+        9,
+        9,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.06111907958984375,
+      "areaFraction": 0.051666259765625,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  },
+  {
+    "id": "webgpu_loader_gltf_sheen",
+    "example": 31,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 279,
+        "writes": 87,
+        "bytes": 16804,
+        "textures": [
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "-msaa",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 6
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": [],
+            "textureBindingViewDimension": "cube"
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 0,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_fabric_albedo.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_occlusion.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "DFG_LUT",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rg16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_fabric_normal.png",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 11,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_label.png",
+            "size": {
+              "width": 1024,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 11,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_occlusion.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_wood_albedo.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_occlusion.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_woodbrown_roughnessmetallic.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_woodbrown_roughnessmetallic.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "chair_occlusion.png",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "depthBuffer",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 185,
+        "writes": 4,
+        "bytes": 64,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 11,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 1024,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 11,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        4,
+        2275952,
+        64,
+        64
+      ],
+      "resources": [
+        10,
+        10,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 185,
+      "writes": 4,
+      "transfer": [
+        4,
+        2275952,
+        64,
+        64
+      ],
+      "resources": [
+        10,
+        10,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.0215911865234375,
+      "areaFraction": 0.0231170654296875,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  },
+  {
+    "id": "webgl_loader_gltf_instancing",
+    "example": 16,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 214,
+        "writes": 68,
+        "bytes": 13364,
+        "textures": [
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "-msaa",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 6
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": [],
+            "textureBindingViewDimension": "cube"
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 1024,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 0,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "PMREM.cubeUv",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "../glTF/Default_albedo.jpg",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "../glTF/Default_AO.jpg",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "../glTF/Default_metalRoughness.jpg",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "../glTF/Default_emissive.jpg",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "DFG_LUT",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rg16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "../glTF/Default_normal.jpg",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "depthBuffer",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "depth24plus",
+            "usage": 23,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 129,
+        "writes": 1,
+        "bytes": 16,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        1,
+        1349904,
+        16,
+        16
+      ],
+      "resources": [
+        6,
+        6,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 129,
+      "writes": 1,
+      "transfer": [
+        1,
+        1349904,
+        16,
+        16
+      ],
+      "resources": [
+        6,
+        6,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.047145843505859375,
+      "areaFraction": 0.036975860595703125,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  }
+]

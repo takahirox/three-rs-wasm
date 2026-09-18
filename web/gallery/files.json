@@ -10,6 +10,7 @@
     "webgl_lines_colors",
     "webgl_lines_dashed",
     "webgl_loader_gltf",
+    "webgl_loader_gltf_avif",
     "webgl_materials_texture_rotation",
     "webgl_pmrem_equirectangular",
     "webgl_pmrem_test",
@@ -29,6 +30,7 @@
     "webgpu_equirectangular",
     "webgpu_lights_pointlights",
     "webgpu_loader_gltf",
+    "webgpu_loader_gltf_iridescence",
     "webgpu_morphtargets",
     "webgpu_pmrem_equirectangular",
     "webgpu_pmrem_test"

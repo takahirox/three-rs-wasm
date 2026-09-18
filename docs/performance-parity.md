@@ -23,11 +23,11 @@ be enforced deterministically in CI. Do not relax visual tolerances to gain spee
 | Point Lights demo | Original displacement translated to WGSL, static per-face data in GPU storage. CPU updates light positions/time only. Adapted material remains an appearance limitation. |
 | Wide/dashed lines | Resident endpoint geometry; GPU near-plane clipping, screen-width expansion and dash masking. Camera/width changes do not rebuild or upload geometry. Rounded joins remain missing. |
 | Geometry buffers | Resident cache keyed by source ownership and attribute versions. Renderer culling bounds are cached by geometry ownership and position/morph versions, avoiding per-frame deep copies and vertex scans. Reupload only after actual source changes. Upload callbacks now run on uploads, not on every draw. |
-| Shadow/transmission targets | Reused between frames, reallocated when dimensions/layer/sample requirements change. |
+| Shadow/transmission targets | Reused between frames, reallocated when dimensions/layer/sample requirements change. Opaque and final transmission passes retain independent draw slots. |
 | Per-draw resources | Color, shadow and presentation passes reuse uniform and instance buffers and bind groups; changed contents use queue writes. Resource/layout changes rebuild bindings and removed draw slots are released. Robot browser tests enforce zero steady-state allocations, including after resize. HDR backgrounds and fullscreen effects reuse their uniform buffers and bindings too. Shadow atlas views are retained with their texture. Indirect command buffers are reused until their size changes. |
 | Static geometry merging utility | NOT BatchedMesh parity. CPU merge is suitable for one-time static preprocessing only; dynamic GPU batching/culling remains unsupported. |
 | KTX2/Basis to RGBA | Decode-only fallback, NOT compressed GPU texture parity. Hardware-compressed residency/mip chains remain unsupported. No compressed-texture example qualifies as reproduced via this path. |
-| Physical extension texture arrays | Prototype; padded array memory and missing mip/anisotropic sampling prevent a general performance/quality parity claim. |
+| Physical extension texture arrays | Occupied layers and GPU mip chains are retained; minification/trilinear sampling is supported. Mixed-size layer padding and missing anisotropic sampling still prevent a general performance/quality parity claim. |
 | Rough refraction/postprocessing | Approximate filter/generic effect interfaces are not equivalent to complete original effects; require workload-specific quality and performance validation. |
 
 There is no blanket FPS/performance parity claim for the renderer. The gallery

@@ -46,7 +46,7 @@ missing-feature labels do not describe the expanded Core.
   Standard/Physical materials and do not cast shadows.
 - Extension maps preserve independent UVs, wrap modes and color spaces, with
   nearest/bilinear sampling. Their array binding stays within WebGPU limits but
-  has no mipmaps/anisotropic filtering and is bounded to 256 MiB per material.
+  now packs occupied layers and retains GPU-generated mipmaps. Anisotropic filtering is still missing; mixed-size maps can require padded layers.
   Base PBR maps retain existing mipmaps.
 - Refraction samples opaque screen-space content. Rough refraction uses a small
   convolution rather than Three.js's mip-chain filter. Nested/transparent/offscreen

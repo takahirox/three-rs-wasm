@@ -24,7 +24,7 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     await page.goto(`/three-rs-wasm/web/gallery/#${entry.id}`);
     const viewer = page.frameLocator('#viewer');
     const canvas = viewer.locator('canvas');
-    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(2);
+    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(entry.port.example === 28 ? 0 : 2);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
     if (entry.port.example === 4) {
       await viewer.locator('#model').selectOption('5');

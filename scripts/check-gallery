@@ -6,6 +6,8 @@ if command -v rustup >/dev/null 2>&1; then
   export PATH="$(dirname "$GALLERY_RUSTC"):$PATH"
 fi
 python3 tools/compat/prepare_reference.py
+python3 tools/gallery/prepare_avif.py
+python3 tools/gltf_examples/prepare.py
 # Prepare the original gallery reference on a clean checkout too.
 python3 tools/gallery/build.py --check
 python3 tools/gallery/check.py

@@ -36,7 +36,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  try {
   if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
   const {default:init, BrowserApp} = await import('../pkg/three_rs_wasm.js'); await init();
-  const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); };
+  const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); app?.request_render(); };
   resize(); canvas.hidden = false;
   app = await BrowserApp.create(canvas, entry.port.example, !new URLSearchParams(location.search).has('still'));
   if (closing) { app.free(); app = null; } else {
@@ -46,8 +46,16 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    document.body.dataset.backend = 'rust-wasm-webgpu';
    const notice = document.querySelector('#notice'); notice.hidden = false;
    for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
+   if (entry.port.example === 28) {
+    const credit = text('a', 'Forest House — peachyroyalty · CC BY-NC 4.0', notice.querySelector('div'));
+    credit.href = '../THIRD_PARTY.md'; credit.target = '_blank'; credit.rel = 'noopener';
+   }
+   if (entry.port.example === 29) {
+    const credit=text('a','Iridescence Lamp — Wayfair / Eric Chadwick · CC BY 4.0',notice.querySelector('div'));
+    credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
+   }
    addEventListener('resize', resize);
-   if ([16,18,20,25].includes(entry.port.example)) { installOrbit(canvas,app); } else {
+   if ([16,18,20,25,28,29,30,31,32].includes(entry.port.example)) { installOrbit(canvas,app); } else {
    let drag;
    canvas.addEventListener('pointerdown', event => { drag = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId); app.gallery_input(0,0,0,true); });
    canvas.addEventListener('pointermove', event => { if(event.isPrimary===false)return;app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2); if (drag) { app.gallery_input(event.clientX-drag[0],event.clientY-drag[1],0,true); app.orbit(event.clientX-drag[0], event.clientY-drag[1], 0); drag = [event.clientX,event.clientY]; } });

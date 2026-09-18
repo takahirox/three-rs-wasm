@@ -4,6 +4,8 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    Avif,
+    Gltf(Box<super::gltf_examples::Demo>),
     Instancing,
     Triangles {
         objects: Vec<Object3D>,
@@ -43,6 +45,44 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            29..=32 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
+                near: 0.1,
+                far: 100.0,
+                elapsed: 0.0,
+                content: Content::Gltf(Box::new(
+                    super::gltf_examples::Demo::create(scene, camera, example).await?,
+                )),
+            }),
+            28 => {
+                let (asset, buffers, images) =
+                    load_asset("/web/models/AVIFTest/forest_house.glb").await?;
+                crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
+                scene.background = Color::from_hex(0xf6eedc);
+                scene.get_mut(camera)?.kind =
+                    NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+                        fov: 45.0,
+                        aspect,
+                        near: 0.1,
+                        far: 100.0,
+                        ..Default::default()
+                    }));
+                let center = Vector3::new(0.0, 2.0, 0.0);
+                let offset = Vector3::new(1.5, 4.0, 9.0) - center;
+                let mut viewer = OrbitViewer::from_camera(center, offset.length());
+                viewer.fixture(
+                    offset.x.atan2(offset.z),
+                    (offset.y / offset.length()).asin(),
+                    1.8,
+                );
+                Ok(Self {
+                    viewer,
+                    near: 0.1,
+                    far: 100.0,
+                    content: Content::Avif,
+                    elapsed: 0.0,
+                })
+            }
             26 | 27 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 2.0),
                 near: 1.0,
@@ -376,6 +416,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::Gltf(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Triangles { objects, raw } = &self.content {
             if animate {
                 self.elapsed += delta;
@@ -500,7 +543,15 @@ impl Demo {
             *pointer = Vector2::new(x, y);
         }
     }
+    pub fn dragging(&mut self, value: bool) {
+        if let Content::Gltf(demo) = &mut self.content {
+            demo.dragging(value);
+        }
+    }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::Gltf(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         self.elapsed = seconds;
         if let Content::Horse(horse) = &mut self.content {
             horse.theta = seconds * 6.0;
@@ -517,6 +568,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::Gltf(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if matches!(
             self.content,
             Content::Triangles { .. }

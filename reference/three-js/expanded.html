@@ -11,11 +11,12 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {ParametricGeometry} from 'three/addons/geometries/ParametricGeometry.js';
 import {plane,klein,mobius} from 'three/addons/geometries/ParametricFunctions.js';
+import {DRACOLoader, DRACO_GLTF_CONFIG} from 'three/addons/loaders/DRACOLoader.js';
 import {UltraHDRLoader} from 'three/addons/loaders/UltraHDRLoader.js';
 try {
  const id=new URLSearchParams(location.search).get('id');
- const T=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id)?GL:GPU;
- const antialias=!['webgl_morphtargets_horse','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id);
+ const T=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif'].includes(id)?GL:GPU;
+ const antialias=!(id==='webgl_loader_gltf_avif'&&new URLSearchParams(location.search).get('samples')==='1')&&!['webgl_morphtargets_horse','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id);
  const renderer=T===GL?new T.WebGLRenderer({antialias,alpha:false}):new T.WebGPURenderer({antialias,alpha:false});if(renderer.init)await renderer.init();renderer.setSize(512,512);document.body.append(renderer.domElement);
  const scene=new T.Scene();let camera,morphMesh,areaLights,horseMixer,horseAction,sphereMesh,sphereRotation;
  if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader') {
@@ -42,6 +43,10 @@ try {
    material=new T.MeshPhongMaterial({color:0xd5d5d5,specular:0xffffff,shininess:250,side:T.DoubleSide,vertexColors:true,transparent:true});
   }
   geometry.setAttribute('position',new T.Float32BufferAttribute(positions,3));geometry.computeBoundingSphere();scene.add(new T.Mesh(geometry,material));
+ } else if(id==='webgl_loader_gltf_avif') {
+  camera=new T.PerspectiveCamera(45,1,.1,100);camera.position.set(1.5,4,9);scene.background=new T.Color(0xf6eedc);
+  const draco=new DRACOLoader().setDecoderPath(DRACO_GLTF_CONFIG);
+  scene.add((await new GLTFLoader().setDRACOLoader(draco).loadAsync('/web/models/AVIFTest/forest_house.glb')).scene);draco.dispose();
  } else if(id==='webgl_loader_gltf_instancing') {
   // Scene/camera/assets from the pinned official example; WebGPU backend for comparison.
   camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(-.90,.41,-.89);camera.lookAt(0,.25,0);
@@ -122,11 +127,12 @@ try {
    const mesh=new T.Mesh(g,material);mesh.add(new T.Mesh(g,wire));mesh.position.x=x;if(index===0)mesh.rotation.x=-1.87;scene.add(mesh);
   });
  } else throw new Error('Unknown reference example');
- if(id==='webgl_loader_gltf_instancing'||morphMesh||areaLights||sphereMesh){const controls=new OrbitControls(camera,renderer.domElement);if(morphMesh){controls.enableZoom=false;}else if(sphereMesh){controls.minDistance=1;controls.maxDistance=20;}else if(areaLights){controls.target.set(0,5.5,0);}else{controls.target.set(0,.25,0);controls.minDistance=.2;controls.maxDistance=10;}controls.update();controls.addEventListener('change',()=>renderer.render(scene,camera));}
+ if(id==='webgl_loader_gltf_avif'||id==='webgl_loader_gltf_instancing'||morphMesh||areaLights||sphereMesh){const controls=new OrbitControls(camera,renderer.domElement);if(id==='webgl_loader_gltf_avif'){controls.target.set(0,2,0);}else if(morphMesh){controls.enableZoom=false;}else if(sphereMesh){controls.minDistance=1;controls.maxDistance=20;}else if(areaLights){controls.target.set(0,5.5,0);}else{controls.target.set(0,.25,0);controls.minDistance=.2;controls.maxDistance=10;}controls.update();controls.addEventListener('change',()=>renderer.render(scene,camera));}
  let pointer={x:0,y:0};
  if(['webgl_lines_colors','webgl_geometry_colors'].includes(id))document.addEventListener('pointermove',event=>{if(event.isPrimary===false)return;pointer={x:event.clientX-256,y:event.clientY-256};});
  const pointerCamera=()=>{camera.position.x+=(pointer.x-camera.position.x)*.05;camera.position.y+=(-pointer.y+(id==='webgl_lines_colors'?200:0)-camera.position.y)*.05;camera.lookAt(0,0,0);};
  window.reference={renderer,scene,camera};
+ if(id==='webgl_loader_gltf_avif')addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.render(scene,camera);});
  window.renderFixture=async(seconds=0,weights=[0,0])=>{
   if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader')scene.traverse(o=>{if(o.isMesh){o.rotation.set(id.endsWith('_rawshader')?0:seconds*.25,seconds*.5,0);if(o.material.uniforms)o.material.uniforms.time.value=seconds*5;}});
   if(id==='webgl_buffergeometry_indexed')scene.traverse(o=>{if(o.isMesh)o.rotation.set(seconds*.25,seconds*.5,0);});

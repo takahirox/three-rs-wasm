@@ -1,0 +1,12 @@
+[
+  {
+    "source": "examples/models/gltf/IridescenceLamp.glb",
+    "destination": "web/models/IridescenceLamp.glb",
+    "sha256": "60e991ad33985c7b2b3af1d8a0d0f62e1e2d1f3c05f5d8f0aabfb8db6b70be30"
+  },
+  {
+    "source": "examples/textures/equirectangular/venice_sunset_1k.hdr",
+    "destination": "web/environments/venice_sunset_1k.hdr",
+    "sha256": "0e72ed46b5316cb5fb67fc81ff85b024a09146fd89ef3811a8d2299647ada118"
+  }
+]

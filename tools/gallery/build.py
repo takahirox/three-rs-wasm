@@ -42,6 +42,8 @@ FEATURES = {
  'dom-svg-rendering': ('CSS2D/CSS3D/SVG scene renderers', r'\b(?:CSS2DRenderer|CSS3DRenderer|SVGRenderer)\b'),
 }
 PORTS = {
+ 'webgpu_loader_gltf_iridescence': {'example':29,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-iridescence.spec.js','limitations':['公式IridescenceLamp・HDR環境・自動回転・Orbit操作を移植。情報表示は未一致。一般の屈折・拡張材質と性能の完全互換は未保証。']},
+ 'webgl_loader_gltf_avif': {'example':28,'source':'src/browser/expanded.rs','test':'tests/browser/gltf-avif.spec.js','limitations':['公式Forest HouseのDraco形状とAVIFテクスチャを読み込み、Orbit・パン・ズームと変更時のみの描画を移植。MSAAの輪郭と情報オーバーレイの外観は未一致。性能同等性は未保証。']},
  'webgl_buffergeometry': {'example':26,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。']},
  'webgl_buffergeometry_rawshader': {'example':27,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。']},
  'webgl_lights_rectarealight': {'example': 20, 'source': 'src/browser/expanded_lights.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。']},

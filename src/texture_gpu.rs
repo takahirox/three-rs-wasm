@@ -5,6 +5,7 @@ use std::{
 };
 #[derive(Clone)]
 pub(crate) struct GpuTexture {
+    pub texture: wgpu::Texture,
     pub view: wgpu::TextureView,
     pub sampler: wgpu::Sampler,
 }
@@ -34,11 +35,14 @@ impl TextureCache {
         {
             return Ok(gpu.clone());
         }
+        let valid_data = image.rgba.len() == image.width as usize * image.height as usize * 4;
+        #[cfg(target_arch = "wasm32")]
+        let valid_data = valid_data || image.bitmap.is_some();
         if image.width == 0
             || image.height == 0
             || image.width > device.limits().max_texture_dimension_2d
             || image.height > device.limits().max_texture_dimension_2d
-            || image.rgba.len() != image.width as usize * image.height as usize * 4
+            || !valid_data
         {
             return Err(Error::Invalid("texture dimensions/data"));
         }
@@ -64,19 +68,41 @@ impl TextureCache {
             },
             usage: wgpu::TextureUsages::TEXTURE_BINDING
                 | wgpu::TextureUsages::COPY_DST
+                | wgpu::TextureUsages::COPY_SRC
                 | wgpu::TextureUsages::RENDER_ATTACHMENT,
             view_formats: &[],
         });
-        queue.write_texture(
-            texture.as_image_copy(),
-            &image.rgba,
-            wgpu::TexelCopyBufferLayout {
-                offset: 0,
-                bytes_per_row: Some(image.width * 4),
-                rows_per_image: Some(image.height),
-            },
-            texture.size(),
-        );
+        #[cfg(target_arch = "wasm32")]
+        if let Some(bitmap) = &image.bitmap {
+            queue.copy_external_image_to_texture(
+                &wgpu::CopyExternalImageSourceInfo {
+                    source: wgpu::ExternalImageSource::ImageBitmap(bitmap.0.clone()),
+                    origin: wgpu::Origin2d::ZERO,
+                    flip_y: false,
+                },
+                wgpu::CopyExternalImageDestInfo {
+                    texture: &texture,
+                    mip_level: 0,
+                    origin: wgpu::Origin3d::ZERO,
+                    aspect: wgpu::TextureAspect::All,
+                    color_space: wgpu::PredefinedColorSpace::Srgb,
+                    premultiplied_alpha: false,
+                },
+                texture.size(),
+            );
+        }
+        if !image.rgba.is_empty() {
+            queue.write_texture(
+                texture.as_image_copy(),
+                &image.rgba,
+                wgpu::TexelCopyBufferLayout {
+                    offset: 0,
+                    bytes_per_row: Some(image.width * 4),
+                    rows_per_image: Some(image.height),
+                },
+                texture.size(),
+            );
+        }
         if levels > 1 {
             let pipeline = self
                 .mip_pipelines
@@ -191,6 +217,7 @@ impl TextureCache {
         let gpu = GpuTexture {
             view: texture.create_view(&Default::default()),
             sampler,
+            texture,
         };
         self.entries
             .insert(key, (Arc::downgrade(image), gpu.clone()));

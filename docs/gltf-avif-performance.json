@@ -1,0 +1,314 @@
+{
+  "id": "webgl_loader_gltf_avif",
+  "date": "2026-09-18T16:31:01.913Z",
+  "warmupMs": 3000,
+  "sampleMs": 3000,
+  "gpuInstrumentation": false,
+  "workload": "forced redraw of the same static camera; idle covered separately",
+  "results": [
+    {
+      "runtime": "three",
+      "backend": "WebGL2",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.20000004768371582,
+        "p95": 0.2999999523162842,
+        "max": 0.40000009536743164
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "uniformMatrix4fv": 2340,
+        "drawElements": 2520
+      },
+      "writeBytes": 0,
+      "drawCalls": 2520,
+      "triangles": 2144520,
+      "logicalBufferBytes": 513040,
+      "textures": [],
+      "before": null,
+      "after": null,
+      "gpu": null,
+      "errors": []
+    },
+    {
+      "runtime": "rust",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.20000004768371582,
+        "p95": 0.3000001907348633,
+        "max": 0.5999999046325684
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "drawIndexed": 2520,
+        "submit": 360,
+        "draw": 180
+      },
+      "writeBytes": 0,
+      "drawCalls": 2700,
+      "triangles": 2144700,
+      "logicalBufferBytes": 1162400,
+      "textures": [
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            64,
+            64,
+            2
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            1024,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 11
+        }
+      ],
+      "before": {
+        "transfer": [
+          12,
+          1085392,
+          192,
+          192
+        ],
+        "resources": [
+          13,
+          13,
+          0
+        ]
+      },
+      "after": {
+        "transfer": [
+          12,
+          1085392,
+          192,
+          192
+        ],
+        "resources": [
+          13,
+          13,
+          0
+        ]
+      },
+      "gpu": null,
+      "errors": []
+    }
+  ]
+}

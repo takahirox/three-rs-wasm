@@ -1,0 +1,140 @@
+{
+  "scope": "Five glTF-specific examples selected after the user narrowed the task from all 22: WebGPU iridescence/anisotropy/sheen/transmission and WebGL instancing.",
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "counts": {
+    "validated-partial-gallery": 1,
+    "render-mismatch": 4
+  },
+  "interpretation": "Only validated gallery entries are published. Native import/query and initial browser comparison do not establish behavioral or performance parity. No CPU per-frame or reduced-quality fallback is substituted.",
+  "examples": [
+    {
+      "id": "webgpu_loader_gltf_iridescence",
+      "stage": "validated-partial-gallery",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_iridescence.html",
+      "source_sha256": "23e6534d0e43e4f1351364964f3ae8e5d66fedf511706e6b6a7a5074ee982636",
+      "asset": "IridescenceLamp.glb",
+      "import": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "comparison": {
+        "rawFraction": 0.003326416015625,
+        "areaFraction": 0.002864837646484375,
+        "channelTolerance": 6,
+        "maximumDifferentFraction": 0.005
+      },
+      "render_errors": [],
+      "steady_resource_creations": 0,
+      "runtime_test": "tests/browser/gltf-iridescence.spec.js",
+      "images": ".cache/gltf-examples/results/webgpu_loader_gltf_iridescence/",
+      "remaining": [
+        "公式IridescenceLamp・HDR環境・自動回転・Orbit操作を移植。情報表示は未一致。一般の屈折・拡張材質と性能の完全互換は未保証。"
+      ]
+    },
+    {
+      "id": "webgpu_loader_gltf_anisotropy",
+      "stage": "render-mismatch",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_anisotropy.html",
+      "source_sha256": "380c101323b6a254d390dd29f4d778a97812d28e5c3c51062bbc1a89b4e51362",
+      "asset": "AnisotropyBarnLamp.glb",
+      "import": {
+        "clips": 0,
+        "meshes": 3,
+        "status": "imported-and-evaluated"
+      },
+      "comparison": {
+        "rawFraction": 0.18156051635742188,
+        "areaFraction": 0.19049835205078125,
+        "channelTolerance": 6,
+        "maximumDifferentFraction": 0.005
+      },
+      "render_errors": [],
+      "steady_resource_creations": 0,
+      "runtime_test": null,
+      "images": ".cache/gltf-examples/results/webgpu_loader_gltf_anisotropy/",
+      "remaining": [
+        "Environment reflection still uses an isotropic roughness direction; direct-light anisotropy alone does not reproduce anisotropic IBL. Clearcoat/transmission also require matched-image validation.",
+        "Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery."
+      ]
+    },
+    {
+      "id": "webgpu_loader_gltf_sheen",
+      "stage": "render-mismatch",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_sheen.html",
+      "source_sha256": "89bb7901825b4fb309e1c96cf793880125e244fa5d86bacd455d4bced086b81a",
+      "asset": "SheenChair.glb",
+      "import": {
+        "clips": 0,
+        "meshes": 4,
+        "status": "imported-and-evaluated"
+      },
+      "comparison": {
+        "rawFraction": 0.0215911865234375,
+        "areaFraction": 0.0231170654296875,
+        "channelTolerance": 6,
+        "maximumDifferentFraction": 0.005
+      },
+      "render_errors": [],
+      "steady_resource_creations": 0,
+      "runtime_test": null,
+      "images": ".cache/gltf-examples/results/webgpu_loader_gltf_sheen/",
+      "remaining": [
+        "SheenChair default material/HDR render differs from the original. Image fidelity and the fabric sheen control remain incomplete; successful import is insufficient.",
+        "Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery."
+      ]
+    },
+    {
+      "id": "webgpu_loader_gltf_transmission",
+      "stage": "render-mismatch",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_transmission.html",
+      "source_sha256": "248f1150fb8b3f47bac5d6f4514735ffbfe452cbb5be21ff45ecababc90bc68e",
+      "asset": "IridescentDishWithOlives.glb",
+      "import": {
+        "clips": 1,
+        "meshes": 4,
+        "status": "imported-and-evaluated"
+      },
+      "comparison": {
+        "rawFraction": 0.06111907958984375,
+        "areaFraction": 0.051666259765625,
+        "channelTolerance": 6,
+        "maximumDifferentFraction": 0.005
+      },
+      "render_errors": [],
+      "steady_resource_creations": 0,
+      "runtime_test": null,
+      "images": ".cache/gltf-examples/results/webgpu_loader_gltf_transmission/",
+      "remaining": [
+        "Rough transmission/refraction sampling differs from the original. The real clip imports, but full animated/interactive image acceptance remains pending.",
+        "Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery."
+      ]
+    },
+    {
+      "id": "webgl_loader_gltf_instancing",
+      "stage": "render-mismatch",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html",
+      "source_sha256": "d0a5ccd5df8fb32dc9a17f2aa6ac2c29ac0ddb6b1d472fae90ec66d7f9891296",
+      "asset": "DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
+      "import": {
+        "clips": 0,
+        "meshes": 1,
+        "status": "imported-and-evaluated"
+      },
+      "comparison": {
+        "rawFraction": 0.047145843505859375,
+        "areaFraction": 0.036975860595703125,
+        "channelTolerance": 6,
+        "maximumDifferentFraction": 0.005
+      },
+      "render_errors": [],
+      "steady_resource_creations": 0,
+      "runtime_test": null,
+      "images": ".cache/gltf-examples/results/webgl_loader_gltf_instancing/",
+      "remaining": [
+        "EXT_mesh_gpu_instancing imports and executes on the GPU, but PBR/environment rendering differs from the original. This is a fidelity blocker, not a missing GPU-instancing API.",
+        "Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,428 @@
+{
+  "id": "webgpu_loader_gltf_iridescence",
+  "date": "2026-09-18T17:02:19.895Z",
+  "warmupMs": 3000,
+  "sampleMs": 3000,
+  "gpuInstrumentation": false,
+  "workload": "animation",
+  "results": [
+    {
+      "runtime": "three",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.2999999523162842,
+        "p95": 0.40000009536743164,
+        "max": 0.7000000476837158
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 540,
+        "drawIndexed": 720,
+        "submit": 360,
+        "draw": 180
+      },
+      "writeBytes": 59760,
+      "drawCalls": 900,
+      "triangles": 3753180,
+      "logicalBufferBytes": 632412,
+      "textures": [
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            6
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1024,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 11
+        },
+        {
+          "size": [
+            768,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            768,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 1,
+          "mips": 1
+        }
+      ],
+      "before": null,
+      "after": null,
+      "gpu": null,
+      "errors": []
+    },
+    {
+      "runtime": "rust",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": null,
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 181,
+      "cpu": {
+        "p50": 0.20000004768371582,
+        "p95": 0.3000001907348633,
+        "max": 0.6000001430511475
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 1086,
+        "draw": 543,
+        "drawIndexed": 905,
+        "submit": 543
+      },
+      "writeBytes": 325800,
+      "drawCalls": 1448,
+      "triangles": 5810643,
+      "logicalBufferBytes": 1115128,
+      "textures": [
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            64,
+            64,
+            2
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            1024,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            768,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            768,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            2048,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        }
+      ],
+      "before": {
+        "transfer": [
+          3,
+          1081032,
+          48,
+          48
+        ],
+        "resources": [
+          3,
+          3,
+          1
+        ]
+      },
+      "after": {
+        "transfer": [
+          3,
+          1081032,
+          48,
+          48
+        ],
+        "resources": [
+          3,
+          3,
+          1
+        ]
+      },
+      "gpu": null,
+      "errors": []
+    }
+  ]
+}
