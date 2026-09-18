@@ -1,17 +1,42 @@
 # three-rs-wasm
 
 A Rust-first WebGPU 3D library using Three.js r186 as its behavioral reference.
-The frozen compatibility manifest defines the MVP target; the acceptance scripts
-verify its implementation and the separate glTF PBR milestone.
+The frozen compatibility manifest defines the MVP target. Separate acceptance
+scripts cover the MVP, glTF PBR milestone, expanded Core features and examples
+gallery; passing them does not establish full Three.js or performance parity.
 
 Engine state, transforms, geometry, materials, raycasting and rendering live in
 Rust. Browser bindings provide DOM access and input. Rendering uses wgpu's WebGPU
 backend in the browser; there is no JavaScript scene mirror or WebGL fallback.
 
+## Demo: Three.js examples in Rust/Wasm
+
+The main demo is the [examples gallery](http://127.0.0.1:8173/web/gallery/):
+select an example from the list to launch its Rust/Wasm/WebGPU port. The gallery
+retains the pinned Three.js r186 browser's CSS, fonts, thumbnails, categories,
+search and mobile drawer. Only runnable ports appear in the list.
+
+With the [development prerequisites](#development) installed, build an optimized
+browser package and start the local server from the repository root:
+
+```sh
+PATH="$(dirname "$(rustup which rustc)"):$PATH" wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+python3 tools/serve.py
+```
+
+Open <http://127.0.0.1:8173/web/gallery/> in a WebGPU-capable browser.
+
+The example ports are a work in progress. See the
+[coverage report](docs/examples-coverage.md) for current support and limitations.
+Example names retain the upstream
+`webgl_` or `webgpu_` prefix; all ports render with WebGPU. See
+[asset credits](web/THIRD_PARTY.md).
+
 ## Development
 
-Install Rust with rustup, the `wasm32-unknown-unknown` target, Node.js, Python 3,
-wasm-pack and Chrome. Ensure `cargo` and `rustc` resolve to the same toolchain.
+Install Rust 1.94 or newer with rustup, the `wasm32-unknown-unknown` target,
+Node.js, Python 3, wasm-pack and a browser as described below. Ensure `cargo` and
+`rustc` resolve to the same toolchain.
 On machines that also have Homebrew Rust, the acceptance script selects the
 active rustup toolchain for all tools. For individual browser commands, prepend
 that toolchain's `bin` directory to `PATH` as well.
@@ -31,11 +56,7 @@ The browser tests use installed Chrome on macOS and Playwright Chromium on other
 platforms (`npx playwright install chromium`). Linux CI uses software Vulkan for
 native tests and Chromium's SwiftShader Vulkan driver for browser tests. The local server binds loopback.
 
-The browser example is at `/web/` when serving the repository. Click the cube to
-select and pause it; click outside to resume. All animation, input and raycasting
-code is Rust. The JavaScript bootstrap only loads Wasm and owns the app lifetime.
-
-`./scripts/check-mvp` runs the complete acceptance gate. Missing suites or missing
+`./scripts/check-mvp` runs the MVP acceptance gate. Missing suites or missing
 implementation evidence fail; README files alone cannot satisfy a check.
 
 ## Rust API mapping
@@ -61,51 +82,18 @@ Behavioral comparisons run the pinned JavaScript implementation, not generated
 Rust golden files. Geometry storage is float32 (absolute/relative tolerance
 `2e-6`); double-precision math uses `1e-10`. Integer/index results should be exact.
 
-## Interactive demos
+## Example coverage and validation
 
-Build an optimized browser package for the deforming model, then start the local
-server from the repository root:
-
-```sh
-PATH="$(dirname "$(rustup which rustc)"):$PATH" wasm-pack build --target web --out-dir web/pkg --release --no-typescript
-python3 tools/serve.py
-```
-
-Open <http://127.0.0.1:8173/web/?example=3> for the official Point Lights port:
-16,160 model triangles expanded into 64,640 animated tetrahedron faces, two moving
-colored lights, orbit/zoom, pause, speed and deformation controls. Other tabs show
-the introductory scenes and official textured cube. Rendering and deformation
-remain in Rust; the DOM controls forward user input to the app. See
-[asset credits and differences from the official examples](web/THIRD_PARTY.md).
-
-The glTF tabs show DamagedHelmet (`?example=4`, external .gltf/.bin/JPEG) and
-BoomBox (`?example=5`, embedded GLB). Both load in Rust/Wasm and support drag
-and zoom, with original PBR maps, HDR reflections, exposure and background controls.
-Run `./scripts/check-gltf-pbr` for the complete MVP + M2 acceptance gate.
-See [M2 API, validation and limitations](docs/gltf-pbr.md) and
-[asset credits](web/THIRD_PARTY.md).
-
-## Official-style examples gallery
-
-Open <http://127.0.0.1:8173/web/gallery/> for the pinned r186 examples browser.
-Its original CSS, fonts, thumbnails, category layout, search, minimal view and
-mobile drawer are retained. The tab title identifies this Rust port.
-The iframe launches Rust/Wasm/WebGPU pages; it never loads a Three.js renderer.
-
-The catalog covers all 607 upstream entries. Two examples that explicitly require
-WebGL APIs are excluded. **This is not a completed port of all examples:** 26
-entries have runnable partial Rust ports, including panorama backgrounds, UV
-transforms, animated lines and raycasting. The latest ten additions include
-procedural geometry, GPU morphs, area lighting, colored lines and glTF morph models
-([validation record](docs/examples-10-worklog.md)). Only runnable entries appear in the
-gallery list. The remaining 579 entries still need implementation; their source and feature investigation
-remain in the coverage catalog. Upstream thumbnails are
-labeled as reference previews on the investigation pages.
+The coverage catalog tracks implementation progress and known limitations.
+Examples requiring WebGL-specific APIs are excluded. Only runnable entries appear
+in the gallery; investigation pages label upstream thumbnails as reference previews.
 
 Run `./scripts/check-gallery` for source/asset accounting, desktop/mobile UI image
 comparisons, runnable examples, PMREM image parity, and existing glTF/point-light
 regressions. It starts a separate test server on port 8174. A passing gallery gate
 does **not** mean all examples are reproduced. See [coverage and missing capabilities](docs/examples-coverage.md).
+Run `./scripts/check-gltf-pbr` for the MVP + glTF PBR acceptance gate; see
+[glTF PBR API, validation and limitations](docs/gltf-pbr.md).
 `python3 tools/gallery/build.py` reproducibly regenerates the gallery inventory,
 upstream shell/assets and investigation report from the pinned archive.
 
