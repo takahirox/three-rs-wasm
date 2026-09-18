@@ -107,6 +107,20 @@ impl Demo {
                 .await?;
                 crate::gltf::import_animated_decoded(&asset, &buffers, &images)?
                     .instantiate(scene)?;
+                // r186 GLTFLoader applies assignFinalMaterial twice to InstancedMesh,
+                // flipping derivative-tangent normalScale.y twice. Match this example's
+                // actual material without changing the glTF importer's convention.
+                for root in scene.roots().to_vec() {
+                    for h in scene.traverse(root, true)? {
+                        if let NodeKind::Mesh(mesh) = &mut scene.get_mut(h)?.kind {
+                            for material in &mut mesh.materials {
+                                if let Material::Standard(p) = Arc::make_mut(material) {
+                                    p.normal_scale.y *= -1.0;
+                                }
+                            }
+                        }
+                    }
+                }
                 scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
                     &fetch("/web/environments/royal_esplanade_2k.hdr").await?,
                 )?));

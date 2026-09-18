@@ -15,8 +15,8 @@ import {DRACOLoader, DRACO_GLTF_CONFIG} from 'three/addons/loaders/DRACOLoader.j
 import {UltraHDRLoader} from 'three/addons/loaders/UltraHDRLoader.js';
 try {
  const id=new URLSearchParams(location.search).get('id');
- const T=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif'].includes(id)?GL:GPU;
- const antialias=!(id==='webgl_loader_gltf_avif'&&new URLSearchParams(location.search).get('samples')==='1')&&!['webgl_morphtargets_horse','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id);
+ const T=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif','webgl_loader_gltf_instancing'].includes(id)&&!(id==='webgl_loader_gltf_instancing'&&new URLSearchParams(location.search).get('backend')==='webgpu')?GL:GPU;
+ const antialias=new URLSearchParams(location.search).get('samples')!=='1'&&!['webgl_morphtargets_horse','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id);
  const renderer=T===GL?new T.WebGLRenderer({antialias,alpha:false}):new T.WebGPURenderer({antialias,alpha:false});if(renderer.init)await renderer.init();renderer.setSize(512,512);document.body.append(renderer.domElement);
  const scene=new T.Scene();let camera,morphMesh,areaLights,horseMixer,horseAction,sphereMesh,sphereRotation;
  if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader') {
@@ -48,7 +48,7 @@ try {
   const draco=new DRACOLoader().setDecoderPath(DRACO_GLTF_CONFIG);
   scene.add((await new GLTFLoader().setDRACOLoader(draco).loadAsync('/web/models/AVIFTest/forest_house.glb')).scene);draco.dispose();
  } else if(id==='webgl_loader_gltf_instancing') {
-  // Scene/camera/assets from the pinned official example; WebGPU backend for comparison.
+  // Scene/camera/assets and WebGL backend from the pinned official example.
   camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(-.90,.41,-.89);camera.lookAt(0,.25,0);
   const env=await new UltraHDRLoader().loadAsync('/web/environments/royal_esplanade_2k.hdr.jpg');env.mapping=T.EquirectangularReflectionMapping;
   scene.background=scene.environment=env;renderer.toneMapping=T.ACESFilmicToneMapping;
@@ -132,7 +132,7 @@ try {
  if(['webgl_lines_colors','webgl_geometry_colors'].includes(id))document.addEventListener('pointermove',event=>{if(event.isPrimary===false)return;pointer={x:event.clientX-256,y:event.clientY-256};});
  const pointerCamera=()=>{camera.position.x+=(pointer.x-camera.position.x)*.05;camera.position.y+=(-pointer.y+(id==='webgl_lines_colors'?200:0)-camera.position.y)*.05;camera.lookAt(0,0,0);};
  window.reference={renderer,scene,camera};
- if(id==='webgl_loader_gltf_avif')addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.render(scene,camera);});
+ if(['webgl_loader_gltf_avif','webgl_loader_gltf_instancing'].includes(id))addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.render(scene,camera);});
  window.renderFixture=async(seconds=0,weights=[0,0])=>{
   if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader')scene.traverse(o=>{if(o.isMesh){o.rotation.set(id.endsWith('_rawshader')?0:seconds*.25,seconds*.5,0);if(o.material.uniforms)o.material.uniforms.time.value=seconds*5;}});
   if(id==='webgl_buffergeometry_indexed')scene.traverse(o=>{if(o.isMesh)o.rotation.set(seconds*.25,seconds*.5,0);});

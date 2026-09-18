@@ -19,12 +19,20 @@ fn sharp_background(d:vec3<f32>)->vec3<f32> {
  return mix(mix(a,b,weight.x),mix(c,e,weight.x),weight.y);
 }
 @fragment fn fs(in:Out)->@location(0) vec4<f32> {
+ var color=background_color(in);
+ if u.intensity.w>0.5 {
+  if u.intensity.z>0.5 {color=aces_output(color,u.intensity.y);}
+  color=srgb_output(color);
+ }
+ return vec4(color,1.0);
+}
+fn background_color(in:Out)->vec3<f32> {
  let view=u.inverse_projection*vec4(in.ndc,1.0,1.0);
  let direction=normalize((u.camera*vec4(view.xyz/view.w,0.0)).xyz);
  let c=cos(u.options.x);let s=sin(u.options.x);let d=vec3(c*direction.x-s*direction.z,direction.y,s*direction.x+c*direction.z);
- if u.options.w>0.5 {return vec4(textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x,1.0);}
- if u.options.y==0.0 {return vec4(sharp_background(d)*u.intensity.x,1.0);}
+ if u.options.w>0.5 {return textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x;}
+ if u.options.y==0.0 {return sharp_background(d)*u.intensity.x;}
  let filtered=vec3(d.x,-d.y,d.z);
  let mip=clamp(roughness_mip(u.options.y),-2.0,u.options.z);let lo=floor(mip);
- return vec4(mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip))*u.intensity.x,1.0);
+ return mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip))*u.intensity.x;
 }

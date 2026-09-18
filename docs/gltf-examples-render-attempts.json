@@ -226,7 +226,7 @@
     },
     "rust": {
       "costs": {
-        "creates": 127,
+        "creates": 137,
         "writes": 3,
         "bytes": 48,
         "textures": [
@@ -354,6 +354,20 @@
             "dimension": "2d",
             "mipLevelCount": 1,
             "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 22,
+            "label": "transmission mip chain",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
             "viewFormats": []
           },
           {
@@ -497,7 +511,7 @@
       ]
     },
     "steady": {
-      "creates": 127,
+      "creates": 137,
       "writes": 3,
       "transfer": [
         3,
@@ -512,8 +526,8 @@
       ]
     },
     "comparison": {
-      "rawFraction": 0.003326416015625,
-      "areaFraction": 0.002864837646484375,
+      "rawFraction": 0.000003814697265625,
+      "areaFraction": 0,
       "channelTolerance": 6,
       "maximumDifferentFraction": 0.005
     }
@@ -730,7 +744,7 @@
     },
     "rust": {
       "costs": {
-        "creates": 155,
+        "creates": 165,
         "writes": 3,
         "bytes": 48,
         "textures": [
@@ -863,6 +877,20 @@
           {
             "format": "rgba16float",
             "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 22,
+            "label": "transmission mip chain",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
               "width": 2048,
               "height": 1024,
               "depthOrArrayLayers": 1
@@ -1029,7 +1057,7 @@
       ]
     },
     "steady": {
-      "creates": 155,
+      "creates": 165,
       "writes": 3,
       "transfer": [
         3,
@@ -1044,736 +1072,8 @@
       ]
     },
     "comparison": {
-      "rawFraction": 0.18156051635742188,
-      "areaFraction": 0.19049835205078125,
-      "channelTolerance": 6,
-      "maximumDifferentFraction": 0.005
-    }
-  },
-  {
-    "id": "webgpu_loader_gltf_transmission",
-    "example": 32,
-    "states": [],
-    "errors": [],
-    "reference": {
-      "costs": {
-        "creates": 308,
-        "writes": 90,
-        "bytes": 23572,
-        "textures": [
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "-msaa",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "dimension": "2d",
-            "format": "depth24plus",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "PMREM.cubeUv",
-            "size": {
-              "width": 1536,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 0,
-              "height": 1,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "viewFormats": []
-          },
-          {
-            "label": "PMREM.cubeUv",
-            "size": {
-              "width": 1536,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm-srgb",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "DFG_LUT",
-            "size": {
-              "width": 16,
-              "height": 16,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rg16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm-srgb",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm-srgb",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm-srgb",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "depthBuffer",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "depth24plus",
-            "usage": 23,
-            "viewFormats": []
-          }
-        ]
-      },
-      "transfer": null,
-      "resources": null
-    },
-    "rust": {
-      "costs": {
-        "creates": 230,
-        "writes": 4,
-        "bytes": 64,
-        "textures": [
-          {
-            "format": "rg16float",
-            "size": {
-              "width": 16,
-              "height": 16,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 6,
-            "label": "r186 DFG",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "depth32float",
-            "size": {
-              "width": 1,
-              "height": 1,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 20,
-            "label": "shadow atlas",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 64,
-              "height": 64,
-              "depthOrArrayLayers": 2
-            },
-            "usage": 6,
-            "label": "r186 LTC tables",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "render target color",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 16,
-            "label": "render target msaa",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "viewFormats": []
-          },
-          {
-            "format": "depth32float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 20,
-            "label": "render target depth",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "render target color",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 16,
-            "label": "render target msaa",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "viewFormats": []
-          },
-          {
-            "format": "depth32float",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 20,
-            "label": "render target depth",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 4,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 6,
-            "label": "HDR equirectangular",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 1536,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 12,
-            "label": "PMREM atlas",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba16float",
-            "size": {
-              "width": 1536,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 12,
-            "label": "PMREM scratch",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 1,
-              "height": 1,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 6,
-            "label": "physical extension maps",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm-srgb",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 512,
-              "height": 512,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 10,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 1,
-              "height": 1,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm-srgb",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 6,
-            "label": "physical extension maps",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm-srgb",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 2
-            },
-            "usage": 6,
-            "label": "physical extension maps",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm-srgb",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          },
-          {
-            "format": "rgba8unorm",
-            "size": {
-              "width": 2048,
-              "height": 1024,
-              "depthOrArrayLayers": 1
-            },
-            "usage": 23,
-            "label": "cached material texture",
-            "dimension": "2d",
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "viewFormats": []
-          }
-        ]
-      },
-      "transfer": [
-        4,
-        1482496,
-        64,
-        64
-      ],
-      "resources": [
-        9,
-        9,
-        1
-      ]
-    },
-    "steady": {
-      "creates": 230,
-      "writes": 4,
-      "transfer": [
-        4,
-        1482496,
-        64,
-        64
-      ],
-      "resources": [
-        9,
-        9,
-        1
-      ]
-    },
-    "comparison": {
-      "rawFraction": 0.06111907958984375,
-      "areaFraction": 0.051666259765625,
+      "rawFraction": 0.0021209716796875,
+      "areaFraction": 0.001163482666015625,
       "channelTolerance": 6,
       "maximumDifferentFraction": 0.005
     }
@@ -2403,22 +1703,22 @@
       ]
     },
     "comparison": {
-      "rawFraction": 0.0215911865234375,
-      "areaFraction": 0.0231170654296875,
+      "rawFraction": 0.000034332275390625,
+      "areaFraction": 0,
       "channelTolerance": 6,
       "maximumDifferentFraction": 0.005
     }
   },
   {
-    "id": "webgl_loader_gltf_instancing",
-    "example": 16,
+    "id": "webgpu_loader_gltf_transmission",
+    "example": 32,
     "states": [],
     "errors": [],
     "reference": {
       "costs": {
-        "creates": 214,
-        "writes": 68,
-        "bytes": 13364,
+        "creates": 308,
+        "writes": 90,
+        "bytes": 23572,
         "textures": [
           {
             "label": "",
@@ -2463,31 +1763,16 @@
             "viewFormats": []
           },
           {
-            "label": "",
+            "label": "PMREM.cubeUv",
             "size": {
-              "width": 1024,
-              "height": 1024,
-              "depthOrArrayLayers": 6
-            },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": [],
-            "textureBindingViewDimension": "cube"
-          },
-          {
-            "label": "",
-            "size": {
-              "width": 1024,
-              "height": 1024,
+              "width": 1536,
+              "height": 2048,
               "depthOrArrayLayers": 1
             },
             "mipLevelCount": 1,
             "sampleCount": 1,
             "dimension": "2d",
-            "format": "depth24plus",
+            "format": "rgba16float",
             "usage": 23,
             "viewFormats": []
           },
@@ -2532,27 +1817,13 @@
             "viewFormats": []
           },
           {
-            "label": "PMREM.cubeUv",
+            "label": "",
             "size": {
-              "width": 1536,
-              "height": 2048,
+              "width": 512,
+              "height": 512,
               "depthOrArrayLayers": 1
             },
-            "mipLevelCount": 1,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba16float",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "../glTF/Default_albedo.jpg",
-            "size": {
-              "width": 2048,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
+            "mipLevelCount": 10,
             "sampleCount": 1,
             "dimension": "2d",
             "format": "rgba8unorm-srgb",
@@ -2560,44 +1831,16 @@
             "viewFormats": []
           },
           {
-            "label": "../glTF/Default_AO.jpg",
+            "label": "",
             "size": {
-              "width": 2048,
-              "height": 2048,
+              "width": 512,
+              "height": 512,
               "depthOrArrayLayers": 1
             },
-            "mipLevelCount": 12,
+            "mipLevelCount": 10,
             "sampleCount": 1,
             "dimension": "2d",
             "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "../glTF/Default_metalRoughness.jpg",
-            "size": {
-              "width": 2048,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm",
-            "usage": 23,
-            "viewFormats": []
-          },
-          {
-            "label": "../glTF/Default_emissive.jpg",
-            "size": {
-              "width": 2048,
-              "height": 2048,
-              "depthOrArrayLayers": 1
-            },
-            "mipLevelCount": 12,
-            "sampleCount": 1,
-            "dimension": "2d",
-            "format": "rgba8unorm-srgb",
             "usage": 23,
             "viewFormats": []
           },
@@ -2616,10 +1859,136 @@
             "viewFormats": []
           },
           {
-            "label": "../glTF/Default_normal.jpg",
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
             "size": {
               "width": 2048,
-              "height": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba16float",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm-srgb",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "dimension": "2d",
+            "format": "rgba8unorm",
+            "usage": 23,
+            "viewFormats": []
+          },
+          {
+            "label": "",
+            "size": {
+              "width": 2048,
+              "height": 1024,
               "depthOrArrayLayers": 1
             },
             "mipLevelCount": 12,
@@ -2650,9 +2019,9 @@
     },
     "rust": {
       "costs": {
-        "creates": 129,
-        "writes": 1,
-        "bytes": 16,
+        "creates": 240,
+        "writes": 4,
+        "bytes": 64,
         "textures": [
           {
             "format": "rg16float",
@@ -2712,6 +2081,455 @@
           },
           {
             "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 16,
+            "label": "render target msaa",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "render target depth",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 4,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 22,
+            "label": "transmission mip chain",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "HDR equirectangular",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 1536,
+              "height": 2048,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 12,
+            "label": "PMREM scratch",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 10,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "physical extension maps",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm-srgb",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 2048,
+              "height": 1024,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "cached material texture",
+            "dimension": "2d",
+            "mipLevelCount": 12,
+            "sampleCount": 1,
+            "viewFormats": []
+          }
+        ]
+      },
+      "transfer": [
+        4,
+        1482496,
+        64,
+        64
+      ],
+      "resources": [
+        9,
+        9,
+        1
+      ]
+    },
+    "steady": {
+      "creates": 240,
+      "writes": 4,
+      "transfer": [
+        4,
+        1482496,
+        64,
+        64
+      ],
+      "resources": [
+        9,
+        9,
+        1
+      ]
+    },
+    "comparison": {
+      "rawFraction": 0.00006866455078125,
+      "areaFraction": 0,
+      "channelTolerance": 6,
+      "maximumDifferentFraction": 0.005
+    }
+  },
+  {
+    "id": "webgl_loader_gltf_instancing",
+    "example": 16,
+    "states": [],
+    "errors": [],
+    "reference": {
+      "costs": {
+        "creates": 0,
+        "writes": 0,
+        "bytes": 0,
+        "textures": []
+      },
+      "transfer": null,
+      "resources": null
+    },
+    "rust": {
+      "costs": {
+        "creates": 129,
+        "writes": 1,
+        "bytes": 16,
+        "textures": [
+          {
+            "format": "rg16float",
+            "size": {
+              "width": 16,
+              "height": 16,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 6,
+            "label": "r186 DFG",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "depth32float",
+            "size": {
+              "width": 1,
+              "height": 1,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 20,
+            "label": "shadow atlas",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba16float",
+            "size": {
+              "width": 64,
+              "height": 64,
+              "depthOrArrayLayers": 2
+            },
+            "usage": 6,
+            "label": "r186 LTC tables",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
+            "size": {
+              "width": 512,
+              "height": 512,
+              "depthOrArrayLayers": 1
+            },
+            "usage": 23,
+            "label": "render target color",
+            "dimension": "2d",
+            "mipLevelCount": 1,
+            "sampleCount": 1,
+            "viewFormats": []
+          },
+          {
+            "format": "rgba8unorm",
             "size": {
               "width": 512,
               "height": 512,
@@ -2908,8 +2726,8 @@
       ]
     },
     "comparison": {
-      "rawFraction": 0.047145843505859375,
-      "areaFraction": 0.036975860595703125,
+      "rawFraction": 0.05910491943359375,
+      "areaFraction": 0.031291961669921875,
       "channelTolerance": 6,
       "maximumDifferentFraction": 0.005
     }

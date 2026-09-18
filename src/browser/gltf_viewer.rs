@@ -139,14 +139,29 @@ impl OrbitViewer {
         dy: f64,
         height: f64,
     ) -> Result<()> {
+        self.pan_world(Self::pan_delta(scene, camera, self.radius, dx, dy, height)?);
+        Ok(())
+    }
+    pub(super) fn pan_delta(
+        scene: &Scene,
+        camera: Object3D,
+        radius: f64,
+        dx: f64,
+        dy: f64,
+        height: f64,
+    ) -> Result<Vector3> {
         let node = scene.get(camera)?;
         let Camera::Perspective(projection) = scene.camera(camera)?.0 else {
-            return Ok(());
+            return Ok(Vector3::ZERO);
         };
-        let scale = 2.0 * self.radius * (projection.fov.to_radians() / 2.0).tan() / height.max(1.0);
-        self.center +=
-            (node.quaternion * Vector3::X * (-dx) + node.quaternion * Vector3::Y * dy) * scale;
-        Ok(())
+        let scale = 2.0 * radius * (projection.fov.to_radians() / 2.0).tan() / height.max(1.0);
+        Ok((node.quaternion * Vector3::X * (-dx) + node.quaternion * Vector3::Y * dy) * scale)
+    }
+    pub(super) fn radius(&self) -> f64 {
+        self.radius
+    }
+    pub(super) fn pan_world(&mut self, offset: Vector3) {
+        self.center += offset;
     }
     pub fn update(&self, scene: &mut Scene, camera: Object3D) -> Result<()> {
         if let NodeKind::Camera(Camera::Perspective(perspective)) = &mut scene.get_mut(camera)?.kind

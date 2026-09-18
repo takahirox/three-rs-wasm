@@ -12,7 +12,10 @@ pub(super) struct Demo {
     far: f64,
     min: f64,
     max: f64,
-    auto_rotate: bool,
+    auto_speed: f64,
+    damping: bool,
+    orbit_delta: Vector2,
+    pan_delta: Vector3,
     time: f64,
     seek: Option<f64>,
     dragging: bool,
@@ -75,12 +78,7 @@ impl Demo {
                 ),
                 _ => return Err(crate::Error::Invalid("glTF candidate id")),
             };
-        let (asset, buffers, images) = load_asset(&if example == 29 {
-            format!("/web/models/{model}")
-        } else {
-            format!("/.cache/gltf-examples/models/gltf/{model}")
-        })
-        .await?;
+        let (asset, buffers, images) = load_asset(&format!("/web/models/{model}")).await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let mut mixer = AnimationMixer::default();
@@ -119,7 +117,14 @@ impl Demo {
             far,
             min,
             max,
-            auto_rotate: example == 29,
+            auto_speed: match example {
+                29 => -0.5,
+                32 => -0.75,
+                _ => 0.0,
+            },
+            damping: matches!(example, 31 | 32),
+            orbit_delta: Vector2::ZERO,
+            pan_delta: Vector3::ZERO,
             time: 0.0,
             seek: None,
             dragging: false,
@@ -135,11 +140,21 @@ impl Demo {
         let step = if let Some(seconds) = self.seek.take() {
             let step = seconds - self.time;
             self.time = seconds;
+            self.viewer.orbit_pixels(
+                step * self.auto_speed / 60.0,
+                0.0,
+                0.0,
+                1.0,
+                self.min,
+                self.max,
+            );
+            self.orbit_delta = Vector2::ZERO;
+            self.pan_delta = Vector3::ZERO;
             for action in &mut self.mixer.actions {
                 action.time = seconds;
             }
             self.mixer.update(scene, 0.0)?;
-            step
+            0.0
         } else if animate {
             self.mixer.update(scene, delta)?;
             // The original OrbitControls.update() omits deltaTime: one step per frame.
@@ -148,10 +163,19 @@ impl Demo {
         } else {
             0.0
         };
-        if self.auto_rotate {
-            self.viewer
-                .orbit_pixels(-step / 120.0, 0.0, 0.0, 1.0, self.min, self.max);
-        }
+        self.orbit_delta.x += step * self.auto_speed / 60.0;
+        let damping = if self.damping { 0.05 } else { 1.0 };
+        self.viewer.orbit_pixels(
+            self.orbit_delta.x * damping,
+            self.orbit_delta.y * damping,
+            0.0,
+            1.0,
+            self.min,
+            self.max,
+        );
+        self.viewer.pan_world(self.pan_delta * damping);
+        self.orbit_delta *= 1.0 - damping;
+        self.pan_delta *= 1.0 - damping;
         self.viewer.update(scene, camera)?;
         if let NodeKind::Camera(Camera::Perspective(p)) = &mut scene.get_mut(camera)?.kind {
             p.near = self.near;
@@ -177,10 +201,12 @@ impl Demo {
         height: f64,
     ) -> Result<()> {
         if pan {
-            self.viewer.pan_pixels(scene, camera, dx, dy, height)?;
+            self.pan_delta +=
+                OrbitViewer::pan_delta(scene, camera, self.viewer.radius(), dx, dy, height)?;
         } else {
+            self.orbit_delta += Vector2::new(dx, dy) / height.max(1.0);
             self.viewer
-                .orbit_pixels(dx, dy, wheel, height, self.min, self.max);
+                .orbit_pixels(0.0, 0.0, wheel, height, self.min, self.max);
         }
         Ok(())
     }

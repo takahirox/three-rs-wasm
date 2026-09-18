@@ -162,3 +162,17 @@ archive. © 2022 Wayfair, LLC; asset by Eric Chadwick, licensed under
 `environments/venice_sunset_1k.hdr` is copied unchanged from the same archive.
 Venice Sunset is by Greg Zaal, [Poly Haven, CC0](https://polyhaven.com/a/venice_sunset).
 Source paths and content hashes are recorded in `tools/gltf_examples/assets.json`.
+
+## Additional physical glTF scenes (Three.js r186)
+
+The following unchanged GLBs are copied from the pinned Three.js examples revision.
+The original embedded PNG/JPEG textures are retained.
+
+- `models/AnisotropyBarnLamp.glb`: © 2023 Wayfair, LLC; Eric Chadwick.
+  [CC BY 4.0 and source](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/AnisotropyBarnLamp).
+- `models/SheenChair.glb`: © 2020 Wayfair, LLC; Eric Chadwick.
+  [CC0 and source](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/SheenChair).
+- `models/IridescentDishWithOlives.glb`: © 2020 Wayfair, LLC; Eric Chadwick.
+  [CC BY 4.0 and source](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/IridescentDishWithOlives).
+
+These scenes use the existing Royal Esplanade environment credited above.

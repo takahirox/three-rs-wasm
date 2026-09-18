@@ -3,12 +3,12 @@ import {chromium} from '@playwright/test';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {timestamps} from './gpu-timestamps.js';
 const id=process.env.EXAMPLE||'webgl_geometries';
-const ports={webgpu_loader_gltf_iridescence:29,webgl_loader_gltf_avif:28,webgl_buffergeometry:26,webgl_buffergeometry_rawshader:27,webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
+const ports={webgpu_loader_gltf_anisotropy:30,webgpu_loader_gltf_sheen:31,webgpu_loader_gltf_transmission:32,webgpu_loader_gltf_iridescence:29,webgl_loader_gltf_avif:28,webgl_buffergeometry:26,webgl_buffergeometry_rawshader:27,webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
 if(!(id in ports))throw new Error('Unknown expanded port');
 const browser=await chromium.launch({executablePath:process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined,args:['--enable-unsafe-webgpu']});
-const report={id,date:new Date().toISOString(),warmupMs:3000,sampleMs:3000,gpuInstrumentation:!!process.env.GPU,workload:id==='webgl_loader_gltf_avif'?'forced redraw of the same static camera; idle covered separately':'animation',results:[]};
+const report={id,date:new Date().toISOString(),warmupMs:3000,sampleMs:3000,gpuInstrumentation:!!process.env.GPU,workload:['webgl_loader_gltf_avif','webgl_loader_gltf_instancing'].includes(id)?'forced redraw of the same static camera; idle covered separately':[30,31].includes(ports[id])?'continuous redraw of the original static scene':'animation',results:[]};
 try {for(const runtime of ['three','rust']){
- const backend=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif'].includes(id)&&runtime==='three'?'WebGL2':'WebGPU';
+ const backend=['webgl_loader_gltf_instancing','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader','webgl_loader_gltf_avif'].includes(id)&&runtime==='three'?'WebGL2':'WebGPU';
  const page=await browser.newPage({viewport:{width:512,height:512},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  if(process.env.GPU)await page.addInitScript(timestamps);
  await page.addInitScript(forceRedraw=>{
@@ -31,7 +31,7 @@ try {for(const runtime of ['three','rust']){
    return result;
   };}
   for(const [proto,map] of [[GPUBuffer.prototype,'buffers'],[GPUTexture.prototype,'textures']]){const destroy=proto.destroy;proto.destroy=function(){window[map].delete(this);return destroy.call(this);};}
- },id==='webgl_loader_gltf_avif'&&runtime==='rust');
+ },['webgl_loader_gltf_avif','webgl_loader_gltf_instancing'].includes(id)&&runtime==='rust');
  if(backend==='WebGL2')await page.addInitScript(()=>{
   const bound=new Map(),proto=WebGL2RenderingContext.prototype;
   for(const name of ['createBuffer','bindBuffer','bufferData','bufferSubData','deleteBuffer','drawArrays','drawElements','drawArraysInstanced','drawElementsInstanced','uniform1f','uniform1i','uniform2f','uniform3f','uniform4f','uniform1fv','uniform2fv','uniform3fv','uniform4fv','uniformMatrix3fv','uniformMatrix4fv']){
@@ -49,7 +49,7 @@ try {for(const runtime of ['three','rust']){
   const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===id),{status:'partial',port:{example:ports[id],limitations:[]}});
   await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
  }
- await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/${id==='webgpu_loader_gltf_iridescence'?'gltf-examples':'expanded'}.html?id=${id}&animate=1`:`/web/gallery/example.html?id=${id}`));
+ await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/${[29,30,31,32].includes(ports[id])?'gltf-examples':'expanded'}.html?id=${id}&animate=1`:`/web/gallery/example.html?id=${id}`));
  await page.waitForFunction(runtime==='three'?()=>document.querySelector('canvas')?.dataset.ready==='true':()=>document.querySelector('canvas')?.dataset.frames>0,null,{timeout:90000});
  if(['webgl_morphtargets','webgpu_morphtargets'].includes(id))await page.evaluate(async runtime=>{if(runtime==='rust')app.gallery_morph(.25,.75);else await window.renderFixture(0,[.25,.75]);},runtime);
  if(backend==='WebGL2'&&process.env.GPU)await page.evaluate(()=>{

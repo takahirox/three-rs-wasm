@@ -17,7 +17,7 @@ pub(crate) fn prepare(
     environment: &GpuEnvironment,
     projection: Matrix4,
     camera: Matrix4,
-    options: [f64; 4],
+    options: [f64; 6],
 ) -> (wgpu::RenderPipeline, wgpu::BindGroup) {
     let key = (
         target.options.format,
@@ -31,7 +31,11 @@ pub(crate) fn prepare(
                 format!(
                     "{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
-                    include_str!("shaders/background.wgsl")
+                    concat!(
+                        include_str!("shaders/output.wgsl"),
+                        "\n",
+                        include_str!("shaders/background.wgsl")
+                    )
                 )
                 .into(),
             ),
@@ -81,9 +85,9 @@ pub(crate) fn prepare(
         environment.max_mip,
         options[2] as f32,
         options[3] as f32,
-        0.0,
-        0.0,
-        0.0,
+        options[4] as f32,
+        options[5] as f32,
+        f32::from(target.options.encode_srgb),
     ]);
     let uniform = slot.uniform(device, queue, bytemuck::cast_slice(&parameters));
     let bind_group = slot.bindings(

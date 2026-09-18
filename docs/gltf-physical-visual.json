@@ -1,0 +1,131 @@
+{
+  "channelTolerance": 6,
+  "maximumDifferentFraction": 0.005,
+  "note": "Instancing is a common-WebGPU 1x diagnostic only; original WebGL acceptance still fails.",
+  "states": {
+    "anisotropy": [
+      {
+        "state": 0,
+        "fraction": 0.0021209716796875
+      },
+      {
+        "state": 1,
+        "fraction": 0.0021209716796875
+      },
+      {
+        "state": 2,
+        "fraction": 0.0021209716796875
+      },
+      {
+        "state": 3,
+        "fraction": 0.0007171630859375
+      },
+      {
+        "state": 4,
+        "fraction": 0.000408172607421875
+      },
+      {
+        "state": 5,
+        "fraction": 0.000629425048828125
+      },
+      {
+        "state": 6,
+        "fraction": 0.0003515625
+      }
+    ],
+    "sheen": [
+      {
+        "state": 0,
+        "fraction": 3.4332275390625e-05
+      },
+      {
+        "state": 1,
+        "fraction": 3.4332275390625e-05
+      },
+      {
+        "state": 2,
+        "fraction": 3.4332275390625e-05
+      },
+      {
+        "state": 3,
+        "fraction": 0.000133514404296875
+      },
+      {
+        "state": 4,
+        "fraction": 0.0001373291015625
+      },
+      {
+        "state": 5,
+        "fraction": 0.00014495849609375
+      },
+      {
+        "state": 6,
+        "fraction": 7.03125e-05
+      },
+      {
+        "state": 7,
+        "fraction": 8.59375e-05
+      },
+      {
+        "state": 8,
+        "fraction": 7.421875e-05
+      },
+      {
+        "state": 9,
+        "fraction": 7.03125e-05
+      }
+    ],
+    "transmission": [
+      {
+        "state": 0,
+        "fraction": 6.866455078125e-05
+      },
+      {
+        "state": 1,
+        "fraction": 9.918212890625e-05
+      },
+      {
+        "state": 2,
+        "fraction": 6.103515625e-05
+      },
+      {
+        "state": 3,
+        "fraction": 0.000225067138671875
+      },
+      {
+        "state": 4,
+        "fraction": 0.000152587890625
+      },
+      {
+        "state": 5,
+        "fraction": 5.7220458984375e-05
+      },
+      {
+        "state": 6,
+        "fraction": 4.296875e-05
+      }
+    ],
+    "instancing_common_webgpu_1x_diagnostic": [
+      {
+        "state": 0,
+        "fraction": 0.00406646728515625
+      },
+      {
+        "state": 1,
+        "fraction": 0.00235748291015625
+      },
+      {
+        "state": 2,
+        "fraction": 0.002407073974609375
+      },
+      {
+        "state": 3,
+        "fraction": 0.002445220947265625
+      },
+      {
+        "state": 4,
+        "fraction": 0.00154296875
+      }
+    ]
+  }
+}

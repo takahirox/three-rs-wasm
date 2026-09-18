@@ -15,7 +15,8 @@ pub struct RenderTargetOptions {
     pub store_multisampled_stencil_buffer: bool,
     pub use_array_depth_texture: bool,
     pub format: wgpu::TextureFormat,
-    /// Encode built-in material output before blending, matching the WebGL canvas.
+    /// Tone-map (using scene settings) and encode built-in output before blending,
+    /// matching the WebGL canvas.
     /// Use an unorm (non-sRGB) attachment and present without another conversion.
     pub encode_srgb: bool,
 }

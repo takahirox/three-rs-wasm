@@ -8,5 +8,20 @@
     "source": "examples/textures/equirectangular/venice_sunset_1k.hdr",
     "destination": "web/environments/venice_sunset_1k.hdr",
     "sha256": "0e72ed46b5316cb5fb67fc81ff85b024a09146fd89ef3811a8d2299647ada118"
+  },
+  {
+    "source": "examples/models/gltf/AnisotropyBarnLamp.glb",
+    "destination": "web/models/AnisotropyBarnLamp.glb",
+    "sha256": "3068f5b617a63816aefb76a0154f22fde7a664ecd4bb29e7a530bd2dc77a0099"
+  },
+  {
+    "source": "examples/models/gltf/SheenChair.glb",
+    "destination": "web/models/SheenChair.glb",
+    "sha256": "07c80216eb5d57fc9d4148e1e14a69e19d3436eca1af33590d8d36c04957ffd4"
+  },
+  {
+    "source": "examples/models/gltf/IridescentDishWithOlives.glb",
+    "destination": "web/models/IridescentDishWithOlives.glb",
+    "sha256": "98a6db7fbc0b90b9807fd57189e8cf71642672ee0301609b0aabcc28c698f29f"
   }
 ]

@@ -1,0 +1,600 @@
+{
+  "id": "webgpu_loader_gltf_transmission",
+  "date": "2026-09-18T17:41:57.029Z",
+  "warmupMs": 3000,
+  "sampleMs": 3000,
+  "gpuInstrumentation": true,
+  "workload": "animation",
+  "results": [
+    {
+      "runtime": "three",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": {
+        "p50": 0.464907,
+        "p95": 2.548335,
+        "max": 4.415769
+      },
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.39999985694885254,
+        "p95": 0.5,
+        "max": 0.7000000476837158
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 771,
+        "drawIndexed": 900,
+        "createBuffer": 240,
+        "submit": 360,
+        "draw": 180
+      },
+      "writeBytes": 87952,
+      "drawCalls": 1080,
+      "triangles": 4757940,
+      "logicalBufferBytes": 1043028,
+      "textures": [
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            1536,
+            2048,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            1536,
+            2048,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 1,
+          "mips": 1
+        }
+      ],
+      "before": null,
+      "after": null,
+      "gpu": {
+        "render": {
+          "p50": 0.041083,
+          "p95": 0.198788,
+          "max": 0.650156
+        }
+      },
+      "errors": []
+    },
+    {
+      "runtime": "rust",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": {
+        "p50": 0.273372,
+        "p95": 0.6982809999999999,
+        "max": 3.507905
+      },
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.2999999523162842,
+        "p95": 0.40000009536743164,
+        "max": 0.7000000476837158
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 1260,
+        "draw": 2160,
+        "drawIndexed": 1080,
+        "createBuffer": 240,
+        "submit": 720
+      },
+      "writeBytes": 386640,
+      "drawCalls": 3240,
+      "triangles": 7789680,
+      "logicalBufferBytes": 1523392,
+      "textures": [
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            64,
+            64,
+            2
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1536,
+            2048,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1536,
+            2048,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 10
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm-srgb",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            2
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        },
+        {
+          "size": [
+            2048,
+            1024,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 12
+        }
+      ],
+      "before": {
+        "transfer": [
+          4,
+          1482496,
+          64,
+          64
+        ],
+        "resources": [
+          9,
+          9,
+          1
+        ]
+      },
+      "after": {
+        "transfer": [
+          4,
+          1482496,
+          64,
+          64
+        ],
+        "resources": [
+          9,
+          9,
+          1
+        ]
+      },
+      "gpu": {
+        "scene": {
+          "p50": 0.120248,
+          "p95": 0.228121,
+          "max": 0.870653
+        },
+        "transmission mip": {
+          "p50": 0.006666,
+          "p95": 0.036291,
+          "max": 0.446077
+        },
+        "present": {
+          "p50": 0.010333,
+          "p95": 0.202289,
+          "max": 0.268621
+        }
+      },
+      "errors": []
+    }
+  ]
+}

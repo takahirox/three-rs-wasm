@@ -21,17 +21,18 @@ try {
  const renderer=T===GL?new T.WebGLRenderer({antialias:true}):new T.WebGPURenderer({antialias:true});
  if(renderer.init)await renderer.init();renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=exposure;document.body.append(renderer.domElement);
  const scene=new T.Scene(),camera=new T.PerspectiveCamera(fov,innerWidth/innerHeight,near,far);camera.position.fromArray(pos);
- const controls=new OrbitControls(camera,renderer.domElement);controls.target.fromArray(target);controls.minDistance=min;controls.maxDistance=max;controls.update();
+ const controls=new OrbitControls(camera,renderer.domElement);controls.target.fromArray(target);controls.minDistance=min;controls.maxDistance=max;controls.update();controls.enableDamping=['sheen','transmission'].includes(kind);
  const draco=new DRACOLoader().setDecoderPath('/.cache/three-r186/examples/jsm/libs/draco/gltf/').setDecoderConfig(DRACO_GLTF_CONFIG);
  const [gltf,texture]=await Promise.all([new GLTFLoader().setDRACOLoader(draco).loadAsync('/.cache/gltf-examples/models/gltf/'+model),new (env.endsWith('.jpg')?UltraHDRLoader:HDRLoader)().loadAsync('/.cache/gltf-examples/textures/equirectangular/'+env)]);draco.dispose();
  texture.mapping=T.EquirectangularReflectionMapping;scene.background=texture;scene.environment=texture;scene.backgroundBlurriness=blur;scene.add(gltf.scene);
  const mixer=new T.AnimationMixer(gltf.scene);if(gltf.animations.length)mixer.clipAction(gltf.animations[0]).play();
  window.reference={renderer,scene,camera,controls};
  let previousTime=0;
- window.renderFixture=(time=0)=>{if(kind==='iridescence'){const offset=camera.position.clone().sub(controls.target),spherical=new T.Spherical().setFromVector3(offset);spherical.theta+=(time-previousTime)*Math.PI/60;camera.position.copy(controls.target).add(offset.setFromSpherical(spherical));controls.update();previousTime=time;}mixer.setTime(time);renderer.render(scene,camera);};
- if(!new URLSearchParams(location.search).has('animate'))controls.addEventListener('change',()=>renderer.render(scene,camera));
+ window.renderFixture=(time=0)=>{if(['iridescence','transmission'].includes(kind)){const offset=camera.position.clone().sub(controls.target),spherical=new T.Spherical().setFromVector3(offset);spherical.theta+=(time-previousTime)*Math.PI/(kind==='transmission'?40:60);camera.position.copy(controls.target).add(offset.setFromSpherical(spherical));const damping=controls.enableDamping;controls.enableDamping=false;controls.update();controls.enableDamping=damping;previousTime=time;}mixer.setTime(time);renderer.render(scene,camera);};
+ if(!controls.enableDamping&&!new URLSearchParams(location.search).has('animate'))controls.addEventListener('change',()=>renderer.render(scene,camera));
  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.render(scene,camera);});
  renderFixture();renderer.domElement.dataset.ready='true';
- if(new URLSearchParams(location.search).has('animate')){controls.autoRotate=kind==='iridescence';controls.autoRotateSpeed=-.5;const tick=()=>{controls.update();mixer.update(1/60);renderer.render(scene,camera);requestAnimationFrame(tick);};requestAnimationFrame(tick);}
+ if(new URLSearchParams(location.search).has('animate')){controls.autoRotate=['iridescence','transmission'].includes(kind);controls.autoRotateSpeed=kind==='transmission'?-.75:-.5;const tick=()=>{controls.update();mixer.update(1/60);renderer.render(scene,camera);requestAnimationFrame(tick);};requestAnimationFrame(tick);}
+ else if(controls.enableDamping){const tick=()=>{controls.update();renderer.render(scene,camera);requestAnimationFrame(tick);};requestAnimationFrame(tick);}
 } catch(e){document.body.dataset.error=String(e);console.error(e);}
 </script>

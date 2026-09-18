@@ -30,7 +30,10 @@
     "webgpu_equirectangular",
     "webgpu_lights_pointlights",
     "webgpu_loader_gltf",
+    "webgpu_loader_gltf_anisotropy",
     "webgpu_loader_gltf_iridescence",
+    "webgpu_loader_gltf_sheen",
+    "webgpu_loader_gltf_transmission",
     "webgpu_morphtargets",
     "webgpu_pmrem_equirectangular",
     "webgpu_pmrem_test"

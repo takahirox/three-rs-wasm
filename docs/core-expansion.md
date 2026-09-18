@@ -48,9 +48,12 @@ missing-feature labels do not describe the expanded Core.
   nearest/bilinear sampling. Their array binding stays within WebGPU limits but
   now packs occupied layers and retains GPU-generated mipmaps. Anisotropic filtering is still missing; mixed-size maps can require padded layers.
   Base PBR maps retain existing mipmaps.
-- Refraction samples opaque screen-space content. Rough refraction uses a small
-  convolution rather than Three.js's mip-chain filter. Nested/transparent/offscreen
+- Refraction samples opaque screen-space content using a persistent GPU mip chain
+  and Three.js-style IOR-scaled bicubic filtering. Nested/transparent/offscreen
   content is not traced. Dispersion has no dedicated reference-image test yet.
+- Physical IBL includes anisotropic bent normals and AO on sheen/clearcoat.
+  Validated model workloads and remaining WebGL differences are recorded in
+  [the physical glTF worklog](gltf-physical-worklog.md).
 - Batches require compatible opaque triangle meshes and rebuild when edited;
   GPU-driven BatchedMesh/culling is not implemented. Wide lines have butt caps and
   independent segments rather than rounded Line2 joins.

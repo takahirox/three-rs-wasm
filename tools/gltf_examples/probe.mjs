@@ -1,6 +1,6 @@
 // Real unpublished Rust scenes versus pinned original model/renderer workloads.
 import {chromium} from '@playwright/test';
-import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {PNG} from 'pngjs';
 const cases=[
  {id:'webgpu_loader_gltf_iridescence',example:29},
@@ -10,8 +10,9 @@ const cases=[
  {id:'webgl_loader_gltf_instancing',example:16},
 ];
 const browser=await chromium.launch({executablePath:process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined,args:['--enable-unsafe-webgpu']});
-const results=[];
-try {for(const entry of cases){
+const reportPath='docs/gltf-examples-render-attempts.json';
+const results=process.env.EXAMPLE&&existsSync(reportPath)?JSON.parse(readFileSync(reportPath)).filter(e=>e.id!==process.env.EXAMPLE):[];
+try {for(const entry of cases.filter(e=>!process.env.EXAMPLE||e.id===process.env.EXAMPLE)){
  const result={...entry,states:[],errors:[]},images={};
  for(const runtime of ['reference','rust']){
   const page=await browser.newPage({viewport:{width:512,height:512},deviceScaleFactor:1});
@@ -28,7 +29,7 @@ try {for(const entry of cases){
    }
    const ref=entry.example===16?'expanded':'gltf-examples';
    await page.goto('http://127.0.0.1:8173'+(runtime==='reference'?`/reference/three-js/${ref}.html?id=${entry.id}`:`/web/gallery/example.html?id=${entry.id}&still=1`));
-   await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>2||document.querySelector('canvas')?.dataset.error||document.body.dataset.error||document.body.dataset.status==='error',null,{timeout:30000});
+   await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>0||document.querySelector('canvas')?.dataset.error||document.body.dataset.error||document.body.dataset.status==='error',null,{timeout:30000});
    const error=await page.evaluate(()=>document.querySelector('canvas')?.dataset.error||document.body.dataset.error||document.body.dataset.status==='error'&&document.body.innerText);
    if(error)throw new Error(error);
    if(runtime==='rust')await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
@@ -52,6 +53,6 @@ try {for(const entry of cases){
   }
   result.comparison={rawFraction:raw/(a.width*a.height),areaFraction:area/(a.width*a.height),channelTolerance:6,maximumDifferentFraction:.005};
  }
- results.push(result);writeFileSync('docs/gltf-examples-render-attempts.json',JSON.stringify(results,null,2)+'\n');
+ results.push(result);writeFileSync(reportPath,JSON.stringify(results,null,2)+'\n');
  console.log(entry.id,JSON.stringify({comparison:result.comparison,errors:result.errors}));
 }}finally{await browser.close();}

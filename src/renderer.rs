@@ -10,6 +10,7 @@ struct PipelineKey {
     shader_id: u64,
     material_kind: u8,
     texture_mask: u8,
+    extension_mask: u16,
     light_count: u8,
     light_types: u32,
     receive_shadow: bool,
@@ -97,6 +98,7 @@ struct Uniforms {
     coat_normal: [f32; 4],
     iridescence: [f32; 4],
     line: [[f32; 4]; 2],
+    output: [f32; 4],
 }
 
 pub use crate::render_target::{RenderTarget, RenderTarget3D, RenderTargetOptions};
@@ -127,6 +129,7 @@ pub struct Renderer {
         RefCell<HashMap<wgpu::TextureFormat, (wgpu::BindGroupLayout, wgpu::RenderPipeline)>>,
     environment_builds: std::cell::Cell<u64>,
     transmission_target: RefCell<Option<RenderTarget>>,
+    transmission_mips: RefCell<Option<crate::transmission::MipChain>>,
     draw_slots: RefCell<Vec<crate::draw_gpu::Slot>>,
     draw_cursor: std::cell::Cell<usize>,
     present_slot: RefCell<crate::draw_gpu::Slot>,
@@ -344,6 +347,8 @@ impl Renderer {
                     concat!(
                         include_str!("shaders/deformation.wgsl"),
                         "\n",
+                        include_str!("shaders/output.wgsl"),
+                        "\n",
                         include_str!("shader.wgsl")
                     ),
                     crate::shader::DEFAULT_HOOKS
@@ -373,6 +378,7 @@ impl Renderer {
             presentations: RefCell::new(Default::default()),
             environment_builds: std::cell::Cell::new(0),
             transmission_target: Default::default(),
+            transmission_mips: Default::default(),
             draw_slots: Default::default(),
             draw_cursor: Default::default(),
             present_slot: Default::default(),
@@ -402,7 +408,14 @@ impl Renderer {
                 .device
                 .create_shader_module(wgpu::ShaderModuleDescriptor {
                     label: Some("present"),
-                    source: wgpu::ShaderSource::Wgsl(include_str!("present.wgsl").into()),
+                    source: wgpu::ShaderSource::Wgsl(
+                        concat!(
+                            include_str!("shaders/output.wgsl"),
+                            "\n",
+                            include_str!("present.wgsl")
+                        )
+                        .into(),
+                    ),
                 });
             let layout = self
                 .device
@@ -535,12 +548,19 @@ impl Renderer {
                         ..Default::default()
                     },
                 )?);
+                *self.transmission_mips.borrow_mut() = Some(crate::transmission::MipChain::new(
+                    &self.device,
+                    cached.as_ref().unwrap(),
+                ));
             }
             let background = cached.as_mut().expect("transmission target");
             background.viewport = target.viewport;
             background.scissor = target.scissor;
             self.render_inner(scene, camera, background, true, None)?;
-            self.render_inner(scene, camera, target, false, Some(&background.view))?
+            let mips = self.transmission_mips.borrow();
+            let mips = mips.as_ref().expect("transmission mip chain");
+            mips.update(&self.device, &self.queue, background);
+            self.render_inner(scene, camera, target, false, Some(&mips.view))?
         } else {
             self.render_inner(scene, camera, target, false, None)?
         }
@@ -619,6 +639,8 @@ impl Renderer {
                             0.0
                         },
                         scene.background_intensity,
+                        scene.exposure,
+                        f64::from(scene.aces_tone_mapping),
                     ],
                 )
             })
@@ -973,6 +995,12 @@ impl Renderer {
                     uv_transforms[i * 3..i * 3 + 3].copy_from_slice(&columns);
                 }
                 let u = Uniforms {
+                    output: [
+                        scene.exposure as f32,
+                        f32::from(scene.aces_tone_mapping),
+                        0.0,
+                        0.0,
+                    ],
                     uv_transforms,
                     clipping,
                     physical: match material {
@@ -1638,6 +1666,14 @@ impl Renderer {
             && properties.side == Side::Double
             && topology == wgpu::PrimitiveTopology::TriangleList;
         let key = PipelineKey {
+            extension_mask: if let Material::Physical(p) = material {
+                p.extension_maps()
+                    .iter()
+                    .enumerate()
+                    .fold(0, |mask, (i, map)| mask | (u16::from(map.is_some()) << i))
+            } else {
+                0
+            },
             material_kind: uniforms.material[0] as u8,
             light_count: uniforms.material[3] as u8,
             light_types: uniforms
@@ -1699,7 +1735,7 @@ impl Renderer {
             let shader = custom.map_or(&self.shader, |p| &p.module);
             self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
             vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
             depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
         };

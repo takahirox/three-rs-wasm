@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 573,
-    "runnable-partial": 30,
+    "blocked-at-port-review": 570,
+    "runnable-partial": 33,
     "requires-feature-review": 2,
     "excluded": 2
   },
@@ -25978,10 +25978,10 @@
     },
     {
       "id": "webgpu_loader_gltf_anisotropy",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_anisotropy.html",
       "source_sha256": "380c101323b6a254d390dd29f4d778a97812d28e5c3c51062bbc1a89b4e51362",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/gltf-physical.spec.js",
       "blockers": [
         {
           "kind": "asset-extension",
@@ -26185,10 +26185,10 @@
     },
     {
       "id": "webgpu_loader_gltf_sheen",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_sheen.html",
       "source_sha256": "89bb7901825b4fb309e1c96cf793880125e244fa5d86bacd455d4bced086b81a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/gltf-physical.spec.js",
       "blockers": [
         {
           "kind": "import-rejected",
@@ -26226,10 +26226,10 @@
     },
     {
       "id": "webgpu_loader_gltf_transmission",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_transmission.html",
       "source_sha256": "248f1150fb8b3f47bac5d6f4514735ffbfe452cbb5be21ff45ecababc90bc68e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/gltf-physical.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

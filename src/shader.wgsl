@@ -3,6 +3,7 @@ override ENCODE_SRGB:bool=false;
 // Specialize material families so simple lit meshes do not execute PBR extensions.
 override MATERIAL_KIND:f32=-1.0;
 override PHYSICAL:bool=true;
+override EXTENSION_MAP_MASK:u32=0u;
 override LIGHT_COUNT:i32=-1;
 override LIGHT_TYPES:u32=0u;
 fn light_count()->u32 {if LIGHT_COUNT<0 {return u32(u.material.w);}return u32(LIGHT_COUNT);}
@@ -23,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -76,7 +77,8 @@ fn extension_level(index:u32,uv:vec2<f32>,level:i32,linear:bool)->vec4<f32> {
         mix(extension_texel(index,base+vec2(0,1),level),extension_texel(index,base+vec2(1,1),level),f.x),f.y);
 }
 fn extension_sample(index:u32,surface:VertexOut)->vec4<f32> {
-    let size=u.extension_sizes[index];if size.x==0.0 {return vec4(1.0);}
+    if (EXTENSION_MAP_MASK&(1u<<index))==0u {return vec4(1.0);}
+    let size=u.extension_sizes[index];
     let sampling=u.extension_sampling[index];let uv=extension_uv(index,surface);let lod=extension_lod[index];
     let linear=select(size.z,sampling.x,lod>0.0)>0.5;
     let mip=clamp(lod,0.0,sampling.z);
@@ -117,6 +119,20 @@ fn fresnel_to_f0(f:vec3<f32>,nv:f32)->vec3<f32> {
     let x=clamp(1.0-nv,0.0,1.0);let x5=clamp(x*x*x*x*x,0.0,0.9999);
     return (f-x5)/(1.0-x5);
 }
+// Mipped bicubic B-spline filtering, matching Three.js TextureBicubic.
+fn cubic_weights(a:vec2<f32>)->mat4x2<f32> {
+    return mat4x2((a*(a*(-a+3.0)-3.0)+1.0)/6.0,
+        (a*a*(3.0*a-6.0)+4.0)/6.0,
+        (a*(a*(-3.0*a+3.0)+3.0)+1.0)/6.0,a*a*a/6.0);
+}
+fn transmission_bicubic(uv:vec2<f32>,level:i32)->vec3<f32> {
+    let size=vec2<f32>(textureDimensions(transmission_map,level));
+    let pixel=uv*size+0.5;let base=floor(pixel);let w=cubic_weights(fract(pixel));
+    let g0=w[0]+w[1];let g1=w[2]+w[3];
+    let p0=(base-1.0+w[1]/g0-0.5)/size;let p1=(base+1.0+w[3]/g1-0.5)/size;
+    return g0.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,p0,f32(level)).rgb+g1.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p1.x,p0.y),f32(level)).rgb)
+        +g1.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p0.x,p1.y),f32(level)).rgb+g1.x*textureSampleLevel(transmission_map,transmission_sampler,p1,f32(level)).rgb);
+}
 fn transmitted(surface:VertexOut,n:vec3<f32>,v:vec3<f32>,ior:f32,roughness:f32)->vec3<f32> {
     let world_normal=(transpose(u.view)*vec4(n,0.0)).xyz;
     let world_view=(transpose(u.view)*vec4(v,0.0)).xyz;
@@ -124,12 +140,9 @@ fn transmitted(surface:VertexOut,n:vec3<f32>,v:vec3<f32>,ior:f32,roughness:f32)-
     let clip=u.projection*u.view*vec4(surface.position+ray,1.0);
     let screen=clip.xy/clip.w*0.5+0.5;
     let uv=u.transmission[2].xy+vec2(screen.x,1.0-screen.y)*u.transmission[2].zw;
-    var color=vec3(0.0);
-    // Finite screen-space convolution for rough refraction; no scene ray tracing.
-    let radius=roughness*roughness*clamp(ior*2.0-2.0,0.0,1.0)*0.025;
-    for(var y=-1;y<=1;y++) {for(var x=-1;x<=1;x++) {
-        color+=textureSampleLevel(transmission_map,transmission_sampler,uv+vec2(f32(x),f32(y))*radius,0.0).rgb/9.0;
-    }}
+    let size=vec2<f32>(textureDimensions(transmission_map));
+    let lod=clamp(log2(size.x*u.transmission[2].z)*roughness*clamp(ior*2.0-2.0,0.0,1.0),0.0,f32(textureNumLevels(transmission_map)-1u));
+    var color=mix(transmission_bicubic(uv,i32(floor(lod))),transmission_bicubic(uv,i32(ceil(lod))),fract(lod));
     if u.transmission[0].z<1e30 {
         color*=pow(max(u.transmission[1].rgb,vec3(0.000001)),vec3(length(ray)/u.transmission[0].z));
     }
@@ -240,14 +253,16 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
     let color=shade_fragment(in,front);
     if ENCODE_SRGB {
-        let rgb=select(1.055*pow(max(color.rgb,vec3(0.0)),vec3(1.0/2.4))-0.055,color.rgb*12.92,color.rgb<=vec3(0.0031308));
-        return vec4(rgb,color.a);
+        var rgb=color.rgb;
+        if u.output.y>0.5 {rgb=aces_output(rgb,u.output.x);}
+        return vec4(srgb_output(rgb),color.a);
     }
     return color;
 }
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
         for(var i=0u;i<12u;i++) {
+            if (EXTENSION_MAP_MASK&(1u<<i))==0u {continue;}
             let uv=extension_uv(i,in)*u.extension_sizes[i].xy;
             let dx=dpdx(uv);let dy=dpdy(uv);
             extension_lod[i]=0.5*log2(max(max(dot(dx,dx),dot(dy,dy)),1e-10));
@@ -349,16 +364,24 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,nv),0.0).rg;
         let sd=film_d*dfg.x+f90*dfg.y;let sm=film_m*dfg.x+f90*dfg.y;
         let md=multiscattering(film_d,dfg,f90);let mm=multiscattering(film_m,dfg,f90);
-        let radiance=environment_sample(normalize(mix(reflect(-v,n),n,pow(roughness,4.0))),roughness);
+        // Three.js/Filament anisotropic IBL: bend the radiance normal along
+        // the bitangent, retaining the shading normal for diffuse irradiance.
+        var radiance_normal=n;
+        if PHYSICAL && u.physical[1].w>0.0 {
+            let strength=clamp(u.physical[1].w*aniso_sample.b,0.0,1.0);
+            let bent=normalize(cross(cross(anisotropy_b,v),anisotropy_b));
+            radiance_normal=normalize(mix(bent,n,pow(1.0-strength*(1.0-roughness),4.0)));
+        }
+        let radiance=environment_sample(normalize(mix(reflect(-v,radiance_normal),radiance_normal,pow(roughness,4.0))),roughness);
         let irradiance=environment_sample(n,1.0);
         var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
         let specular_ao=clamp(pow(nv+ao,exp2(-16.0*roughness-1.0))-1.0+ao,0.0,1.0);
         let sheen_comp=1.0-sheen_max*sheen_albedo(nv,sheenrough);
         result+=(diffuse*(1.0-sd-md)*irradiance*ao+(radiance*mix(sd,sm,metalness)+irradiance*mix(md,mm,metalness))*specular_ao)*sheen_comp;
-        sheen_light+=irradiance*sheen*sheen_albedo(nv,sheenrough);
+        sheen_light+=irradiance*sheen*sheen_albedo(nv,sheenrough)*ao;
         if cc>0.0 {
             let coatdfg=textureSampleLevel(dfg_map,environment_sampler,vec2(ccrough,clamp(dot(coat_n,v),0.0,1.0)),0.0).rg;
-            coat+=environment_sample(normalize(mix(reflect(-v,coat_n),coat_n,pow(ccrough,4.0))),ccrough)*(vec3(0.04)*coatdfg.x+coatdfg.y);
+            coat+=environment_sample(normalize(mix(reflect(-v,coat_n),coat_n,pow(ccrough,4.0))),ccrough)*(vec3(0.04)*coatdfg.x+coatdfg.y)*ao;
         }
     }
     for(var i=0u;i<light_count();i++) {

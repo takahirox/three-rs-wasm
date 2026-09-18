@@ -29,6 +29,8 @@ impl ShaderProgram {
             concat!(
                 include_str!("shaders/deformation.wgsl"),
                 "\n",
+                include_str!("shaders/output.wgsl"),
+                "\n",
                 include_str!("shader.wgsl")
             )
         );

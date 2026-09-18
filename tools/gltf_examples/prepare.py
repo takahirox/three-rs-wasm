@@ -1,4 +1,4 @@
-"""Prepare pinned, unpublished assets for five selected glTF example reproduction attempts."""
+"""Prepare pinned assets for five selected glTF example reproduction attempts."""
 import json, tarfile, hashlib, shutil
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
@@ -17,4 +17,4 @@ for entry in json.loads((ROOT/'tools/gltf_examples/assets.json').read_text()):
  source=cache/entry['source'].removeprefix('examples/')
  if hashlib.sha256(source.read_bytes()).hexdigest()!=entry['sha256']:raise ValueError('Pinned glTF asset checksum mismatch')
  target=ROOT/entry['destination'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,target)
-print('Verified published Iridescence assets')
+print('Verified published physical glTF assets')

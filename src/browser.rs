@@ -127,7 +127,7 @@ impl State {
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // RawShaderMaterial and encoded WebGL-style targets already contain display values.
-        let format = if [27, 28].contains(&self.example) {
+        let format = if [16, 27, 28].contains(&self.example) {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -141,7 +141,7 @@ impl State {
             &view,
             format,
             self.scene.exposure,
-            self.scene.aces_tone_mapping,
+            self.scene.aces_tone_mapping && !self.target.options.encode_srgb,
         );
         frame.present();
         self.frame += 1;
@@ -450,6 +450,38 @@ impl BrowserApp {
             ))
         }
     }
+    pub fn gallery_sheen(&self, value: f64) -> std::result::Result<(), JsValue> {
+        if !value.is_finite() || !(0.0..=1.0).contains(&value) {
+            return Err(JsValue::from_str("invalid sheen"));
+        }
+        let mut state = self.state.borrow_mut();
+        if state.example != 31 {
+            return Err(JsValue::from_str("Sheen example required"));
+        }
+        let roots = state.scene.roots().to_vec();
+        for root in roots {
+            for h in state
+                .scene
+                .traverse(root, true)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?
+            {
+                if let NodeKind::Mesh(mesh) = &mut state
+                    .scene
+                    .get_mut(h)
+                    .map_err(|e| JsValue::from_str(&e.to_string()))?
+                    .kind
+                {
+                    for m in &mut mesh.materials {
+                        if let Material::Physical(p) = Arc::make_mut(m) {
+                            p.sheen = value;
+                        }
+                    }
+                }
+            }
+        }
+        state.request_render();
+        Ok(())
+    }
     pub fn scene_json(&self) -> std::result::Result<String, JsValue> {
         self.state
             .borrow()
@@ -624,8 +656,8 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: example == 28,
-                        format: if [27, 28].contains(&example) {
+                        encode_srgb: [16, 28].contains(&example),
+                        format: if [16, 27, 28].contains(&example) {
                             wgpu::TextureFormat::Rgba8Unorm
                         } else {
                             wgpu::TextureFormat::Rgba16Float
@@ -808,8 +840,8 @@ impl BrowserApp {
                         let _ = state.canvas.set_attribute("data-error", &error.to_string());
                         return;
                     }
-                    // The official AVIF scene renders only on load, input and resize.
-                    if state.example != 28 {
+                    // These official static scenes render only on load, input and resize.
+                    if ![16, 28].contains(&state.example) {
                         state.request_render();
                     }
                 }

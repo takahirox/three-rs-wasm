@@ -10035,7 +10035,7 @@
       "id": "webgpu_loader_gltf_anisotropy",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_anisotropy.html",
       "source_sha256": "380c101323b6a254d390dd29f4d778a97812d28e5c3c51062bbc1a89b4e51362",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_anisotropy",
         "source_sha256": "380c101323b6a254d390dd29f4d778a97812d28e5c3c51062bbc1a89b4e51362",
@@ -10142,7 +10142,7 @@
       "id": "webgpu_loader_gltf_sheen",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_sheen.html",
       "source_sha256": "89bb7901825b4fb309e1c96cf793880125e244fa5d86bacd455d4bced086b81a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_sheen",
         "source_sha256": "89bb7901825b4fb309e1c96cf793880125e244fa5d86bacd455d4bced086b81a",
@@ -10168,7 +10168,7 @@
       "id": "webgpu_loader_gltf_transmission",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_transmission.html",
       "source_sha256": "248f1150fb8b3f47bac5d6f4514735ffbfe452cbb5be21ff45ecababc90bc68e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_transmission",
         "source_sha256": "248f1150fb8b3f47bac5d6f4514735ffbfe452cbb5be21ff45ecababc90bc68e",

@@ -46,6 +46,10 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    document.body.dataset.backend = 'rust-wasm-webgpu';
    const notice = document.querySelector('#notice'); notice.hidden = false;
    for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
+   if ([30,31,32].includes(entry.port.example)) {
+    const credit=text('a','Model and environment credits',notice.querySelector('div'));
+    credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
+   }
    if (entry.port.example === 28) {
     const credit = text('a', 'Forest House — peachyroyalty · CC BY-NC 4.0', notice.querySelector('div'));
     credit.href = '../THIRD_PARTY.md'; credit.target = '_blank'; credit.rel = 'noopener';
@@ -63,6 +67,10 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    canvas.addEventListener('wheel', event => { event.preventDefault(); app.gallery_input(0,0,event.deltaY,false); app.orbit(0,0,event.deltaY); }, {passive:false});
    }
    const settings = document.querySelector('#settings');
+   if (entry.port.example === 31) {
+    settings.hidden=false;settings.innerHTML='<strong>SheenChair_fabric</strong><label>Sheen <input id="sheen" type="range" min="0" max="1" value="1" step="0.01"></label>';
+    settings.addEventListener('input',()=>app.gallery_sheen(Number(document.querySelector('#sheen').value)));
+   }
    if ([4,5,6].includes(entry.port.example)) {
     settings.hidden = false;
     settings.innerHTML = `<label>Model <select id="model"><option value="4">DamagedHelmet</option><option value="5">BoomBox</option></select></label><label>Exposure <input id="exposure" type="range" min="0.1" max="3" step="0.05" value="1"></label><label>Environment <input id="intensity" type="range" min="0" max="3" step="0.05" value="1"></label><label>Rotation <input id="rotation" type="range" min="-3.14159" max="3.14159" step="0.01" value="0"></label><label>Background blur <input id="blur" type="range" min="0" max="1" step="0.01" value="${entry.port.example===6?0.5:0}"></label><label>Background <input id="background" type="checkbox" checked></label><p id="asset-status" role="status"></p>`;
