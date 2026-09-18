@@ -106,6 +106,7 @@ impl GalleryScene {
         camera: Object3D,
         placeholder: Object3D,
         example: u32,
+        renderer: &crate::renderer::Renderer,
     ) -> Result<Self> {
         scene.dispose(placeholder)?;
         scene.background = Color::BLACK;
@@ -115,7 +116,7 @@ impl GalleryScene {
         };
         if example >= 16 {
             Ok(Self::Expanded(
-                super::expanded::Demo::create(scene, camera, example).await?,
+                super::expanded::Demo::create(scene, camera, example, renderer).await?,
             ))
         } else if example == 15 {
             Ok(Self::Robot(

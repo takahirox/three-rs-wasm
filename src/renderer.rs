@@ -8,6 +8,12 @@ use std::{
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct PipelineKey {
     shader_id: u64,
+    material_kind: u8,
+    texture_mask: u8,
+    light_count: u8,
+    light_types: u32,
+    receive_shadow: bool,
+    physical: bool,
     instanced: bool,
     clipping: bool,
     dashed: bool,
@@ -1614,6 +1620,19 @@ impl Renderer {
             ));
         }
         let key = PipelineKey {
+            material_kind: uniforms.material[0] as u8,
+            light_count: uniforms.material[3] as u8,
+            light_types: uniforms
+                .light_position
+                .iter()
+                .enumerate()
+                .fold(0, |mask, (i, light)| mask | ((light[3] as u32) << (i * 3))),
+            texture_mask: maps
+                .iter()
+                .enumerate()
+                .fold(0, |mask, (i, map)| mask | (u8::from(map.is_some()) << i)),
+            receive_shadow: uniforms.flags[1] > 0.5,
+            physical: matches!(material, Material::Physical(_)),
             dashed: uniforms.line[1][1] > 0.5,
             clipping: uniforms.clipping.params[0] + uniforms.clipping.params[1] > 0.0,
             blend: properties.blending.or_else(|| {
@@ -1654,7 +1673,7 @@ impl Renderer {
         let shader=custom.map_or(&self.shader,|p|&p.module);
         self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
             vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match properties.side {Side::Front=>Some(wgpu::Face::Back),Side::Back=>Some(wgpu::Face::Front),Side::Double=>None},..Default::default()},
             depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
         }).clone();

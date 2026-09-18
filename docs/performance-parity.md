@@ -66,3 +66,13 @@ timestamps (its diagnostic buffers are included in that run's API counts).
 
 The broader implemented-demo audit and before/after measurements are recorded in
 [gallery-performance.md](gallery-performance.md).
+
+## Additional triangle scenes (2026-09-18)
+
+The 160,000-triangle Phong port exposed unnecessary work in the common shader.
+Specializing material family, maps, shadow reception and light configuration
+reduced its scene GPU median from about 1.43 ms to 0.43 ms without reducing the
+workload or image threshold. The 80-byte vertex layout still doubles geometry
+memory versus Three in this scene; CPU attributes remain resident and GPU p95 is
+also higher. Both new examples remain explicitly partial, not full performance
+parity. See [scene validation and measurements](examples-2-worklog.md).

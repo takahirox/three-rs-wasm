@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 577,
-    "runnable-partial": 26,
+    "blocked-at-port-review": 575,
+    "runnable-partial": 28,
     "requires-feature-review": 2,
     "excluded": 2
   },
@@ -16736,10 +16736,10 @@
     },
     {
       "id": "webgl_buffergeometry",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry.html",
       "source_sha256": "7a4ac8162786e2a3e7ceefe0a07434f5c4d5afab790b5dd2462d68211fd0122d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/expanded.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17242,10 +17242,10 @@
     },
     {
       "id": "webgl_buffergeometry_rawshader",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_rawshader.html",
       "source_sha256": "22dd64e21aac42d2d3056ee56dce2ed820c2cf54e06e1ab7719c9b1bbbfd1d2b",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/expanded.spec.js",
       "blockers": [
         {
           "kind": "core-api",

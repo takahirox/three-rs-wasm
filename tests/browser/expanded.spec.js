@@ -2,6 +2,8 @@ import {test,expect} from '@playwright/test';
 import {PNG} from 'pngjs';
 import {writeFileSync,readFileSync} from 'node:fs';
 const cases=[
+ {id:'webgl_buffergeometry',example:26,times:[0,3,11]},
+ {id:'webgl_buffergeometry_rawshader',example:27,times:[0,.3,2.1]},
  {id:'webgl_morphtargets_horse',example:24,times:[0,.25,.7,2.4]},
  {id:'webgl_morphtargets_sphere',example:25,times:[0,1,2,3.5]},
  {id:'webgl_buffergeometry_indexed',example:22,times:[0,3,11]},
@@ -107,4 +109,28 @@ for(const [id,example] of [['webgl_lights_rectarealight',20],['webgl_morphtarget
  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await gesture();writeFileSync(info.outputPath('actual-camera.json'),JSON.stringify(await page.evaluate(()=>JSON.parse(app.scene_json()).children.find(n=>'Camera' in n.kind))));const actual=PNG.sync.read(await canvas.screenshot());let different=0;
  for(let i=0;i<actual.data.length;i+=4)if([0,1,2].some(c=>Math.abs(actual.data[i+c]-reference.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('reference.png'),PNG.sync.write(reference));expect(different/(actual.width*actual.height)).toBeLessThanOrEqual(.005);
+});
+
+for(const id of ['webgl_buffergeometry','webgl_buffergeometry_rawshader'])test(`${id} wide viewport and animated residency`,async({page},info)=>{
+ test.setTimeout(120000);await page.setViewportSize({width:800,height:450});
+ await page.goto(`/reference/three-js/expanded.html?id=${id}`);
+ const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-ready','true');
+ await page.evaluate(async()=>{reference.renderer.setSize(800,450);reference.camera.aspect=800/450;reference.camera.updateProjectionMatrix();await renderFixture(1.2);});
+ const reference=PNG.sync.read(await canvas.screenshot());
+ await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
+ await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await page.evaluate(()=>app.gallery_time(1.2));
+ const frame=Number(await canvas.getAttribute('data-frames'));await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(frame+2);
+ const actual=PNG.sync.read(await canvas.screenshot());let different=0;
+ expect([actual.width,actual.height]).toEqual([800,450]);
+ for(let i=0;i<actual.data.length;i+=4)if([0,1,2].some(c=>Math.abs(actual.data[i+c]-reference.data[i+c])>6))different++;
+ writeFileSync(info.outputPath('wide-actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('wide-reference.png'),PNG.sync.write(reference));
+ expect(different/(800*450)).toBeLessThanOrEqual(.005);
+ // Run real animation rather than measuring only a frozen fixture.
+ await page.goto(`/web/gallery/example.html?id=${id}`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(10);
+ const counts=()=>page.evaluate(()=>({transfer:JSON.parse(app.transfer_counts()),resources:Array.from(app.resource_counts())}));
+ const before=await counts();expect(before.transfer[0]).toBe(1); // Shared back/front geometry is uploaded once.
+ const first=await canvas.screenshot(),start=Number(await canvas.getAttribute('data-frames'));
+ await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(start+30);
+ expect(await counts()).toEqual(before);expect((await canvas.screenshot()).equals(first)).toBe(false);
+ await expect(canvas).not.toHaveAttribute('data-error',/.+/);
 });

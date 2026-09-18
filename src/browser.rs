@@ -10,6 +10,7 @@ mod expanded_indexed;
 mod expanded_lights;
 mod expanded_lines;
 mod expanded_morph_models;
+mod expanded_triangles;
 mod gallery;
 mod gallery_scenes;
 mod gltf_viewer;
@@ -97,7 +98,12 @@ impl State {
             .surface
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
-        let format = self.configuration.format.add_srgb_suffix();
+        // RawShaderMaterial writes display values without Three color-space chunks.
+        let format = if self.example == 27 {
+            self.configuration.format
+        } else {
+            self.configuration.format.add_srgb_suffix()
+        };
         let view = frame.texture.create_view(&wgpu::TextureViewDescriptor {
             format: Some(format),
             ..Default::default()
@@ -556,12 +562,16 @@ impl BrowserApp {
                 canvas.height(),
                 if example >= 4 {
                     RenderTargetOptions {
-                        samples: if [7, 8, 11, 12, 24, 25].contains(&example) {
+                        samples: if [7, 8, 11, 12, 24, 25, 27].contains(&example) {
                             1
                         } else {
                             4
                         },
-                        format: wgpu::TextureFormat::Rgba16Float,
+                        format: if example == 27 {
+                            wgpu::TextureFormat::Rgba8Unorm
+                        } else {
+                            wgpu::TextureFormat::Rgba16Float
+                        },
                         ..Default::default()
                     }
                 } else {
@@ -584,9 +594,12 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=25).contains(&example) {
+            if (7..=27).contains(&example) {
                 gallery_scene = Some(
-                    gallery_scenes::GalleryScene::create(&mut scene, camera, mesh, example).await?,
+                    gallery_scenes::GalleryScene::create(
+                        &mut scene, camera, mesh, example, &renderer,
+                    )
+                    .await?,
                 );
             } else if example == 6 {
                 gltf = Some(gallery::pmrem_grid(&mut scene, camera, mesh).await?);

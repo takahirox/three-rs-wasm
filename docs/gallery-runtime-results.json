@@ -6602,7 +6602,7 @@
       "id": "webgl_buffergeometry",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry.html",
       "source_sha256": "7a4ac8162786e2a3e7ceefe0a07434f5c4d5afab790b5dd2462d68211fd0122d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_buffergeometry",
         "source_sha256": "7a4ac8162786e2a3e7ceefe0a07434f5c4d5afab790b5dd2462d68211fd0122d",
@@ -6949,7 +6949,7 @@
       "id": "webgl_buffergeometry_rawshader",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_rawshader.html",
       "source_sha256": "22dd64e21aac42d2d3056ee56dce2ed820c2cf54e06e1ab7719c9b1bbbfd1d2b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_buffergeometry_rawshader",
         "source_sha256": "22dd64e21aac42d2d3056ee56dce2ed820c2cf54e06e1ab7719c9b1bbbfd1d2b",

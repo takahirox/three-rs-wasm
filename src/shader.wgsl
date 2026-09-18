@@ -1,4 +1,18 @@
 override INSTANCED:bool=false;
+// Specialize material families so simple lit meshes do not execute PBR extensions.
+override MATERIAL_KIND:f32=-1.0;
+override PHYSICAL:bool=true;
+override LIGHT_COUNT:i32=-1;
+override LIGHT_TYPES:u32=0u;
+fn light_count()->u32 {if LIGHT_COUNT<0 {return u32(u.material.w);}return u32(LIGHT_COUNT);}
+fn light_type(i:u32)->f32 {if LIGHT_COUNT<0 {return u.light_position[i].w;}return f32((LIGHT_TYPES>>(i*3u))&7u);}
+override COLOR_MAP:bool=true;
+override MR_MAP:bool=true;
+override NORMAL_MAP:bool=true;
+override AO_MAP:bool=true;
+override EMISSIVE_MAP:bool=true;
+override RECEIVE_SHADOW:bool=true;
+fn material_kind()->f32 {if MATERIAL_KIND<0.0 {return u.material.x;}return MATERIAL_KIND;}
 // Specialize away discard for opaque draws: helper-lane derivatives must remain intact.
 override ALPHA_MASK: bool = false;
 override CLIPPING:bool=false;
@@ -220,8 +234,8 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     if u.flags.x>0.5 {geometry_normal=normalize(cross(q0,q1));}
     let view_normal=geometry_normal;
     let derivative=max(abs(dpdx(view_normal)),abs(dpdy(view_normal)));
-    let normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;
-    var base=u.color*in.color*textureSample(color_map,color_sampler,map_uv(0u,in));
+    var normal_sample=vec3(1.0);if NORMAL_MAP {normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;}
+    var base=u.color*in.color;if COLOR_MAP {base*=textureSample(color_map,color_sampler,map_uv(0u,in));}
     if CLIPPING {
         let global=u32(u.clipping_params.x);let local=u32(u.clipping_params.y);
         for(var i=0u;i<global;i++){if dot(u.clipping_planes[i],vec4(in.position,1.0))<0.0 {discard;}}
@@ -232,12 +246,12 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     if LINE_DASH {let distance=in.line_distance*u.line[0].w+u.line[1].x;let period=u.line[0].y+u.line[0].z;if distance-floor(distance/period)*period>u.line[0].y {discard;}}
     if ALPHA_MASK && base.a<u.pbr.w {discard;}
     if u.maps.y<0.5 {base.a=1.0;}
-    if u.material.x==5.0 {return apply_fog(shade(in,base),-in.view_position.z);}
-    if u.material.x<0.5 {return apply_fog(base,-in.view_position.z);}
+    if material_kind()==5.0 {return apply_fog(shade(in,base),-in.view_position.z);}
+    if material_kind()<0.5 {return apply_fog(base,-in.view_position.z);}
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;
     let v=normalize(-in.view_position);
-    if u.maps.x>0.5 {
+    if NORMAL_MAP && u.maps.x>0.5 {
         var t:vec3<f32>;var b:vec3<f32>;
         if abs(in.tangent.w)>0.5 {t=normalize(in.tangent.xyz);b=normalize(in.bitangent);}
         else {
@@ -248,25 +262,25 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
         let sample=normal_sample;
         n=normalize(t*sample.x*u.pbr.x*face+b*sample.y*u.pbr.y*face+n*sample.z);
     }
-    if u.material.x==8.0 {return vec4(vec3(1.0-in.clip.z),base.a);}
-    if u.material.x==7.0 {
+    if material_kind()==8.0 {return vec4(vec3(1.0-in.clip.z),base.a);}
+    if material_kind()==7.0 {
         let x=normalize(vec3(v.z,0.0,-v.x));let y=cross(v,x);
         let uv=vec2(dot(x,n),dot(y,n))*0.495+0.5;
         let matcap=textureSample(mr_map,mr_sampler,vec2(uv.x,1.0-uv.y)).rgb;
         let sample=select(vec3(mix(0.2,0.8,uv.y)),matcap,u.custom[0].x>0.5);
         return apply_fog(vec4(base.rgb*sample,base.a),-in.view_position.z);
     }
-    if u.material.x==4.0 {return vec4(n*0.5+0.5,base.a);}
-    let mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));
+    if material_kind()==4.0 {return vec4(n*0.5+0.5,base.a);}
+    var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
     let roughness=min(max(u.material.y*mr.g,0.0525)+geometry_roughness,1.0);
     let metalness=clamp(u.material.z*mr.b,0.0,1.0);
-    let transmission=u.transmission[0].x*extension_sample(8u,in).r;
+    var transmission=0.0;if PHYSICAL {transmission=u.transmission[0].x*extension_sample(8u,in).r;}
     let diffuse=base.rgb*(1.0-metalness)*(1.0-transmission);
     let specular_color=u.physical[2].rgb*extension_sample(7u,in).rgb;let specular_intensity=u.physical[2].w*extension_sample(6u,in).a;
     var dielectric=vec3(0.04);var f90=1.0;
-    if u.physical[3].y>0.5 {let ratio=(u.physical[0].w-1.0)/(u.physical[0].w+1.0);dielectric=min(vec3(ratio*ratio)*specular_color,vec3(1.0))*specular_intensity;f90=mix(specular_intensity,1.0,metalness);}
+    if PHYSICAL && u.physical[3].y>0.5 {let ratio=(u.physical[0].w-1.0)/(u.physical[0].w+1.0);dielectric=min(vec3(ratio*ratio)*specular_color,vec3(1.0))*specular_intensity;f90=mix(specular_intensity,1.0,metalness);}
     let f0=mix(dielectric,base.rgb,vec3(metalness));
     let film_thickness=mix(u.iridescence.z,u.iridescence.w,extension_sample(11u,in).g);
     let film=select(clamp(u.iridescence.x*extension_sample(10u,in).r,0.0,1.0),0.0,film_thickness==0.0);
@@ -277,11 +291,11 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
         let m=iridescent(u.iridescence.y,film_nv,film_thickness,base.rgb);
         film_f=mix(d,m,metalness);film_d=mix(dielectric,fresnel_to_f0(d,film_nv),film);film_m=mix(base.rgb,fresnel_to_f0(m,film_nv),film);
     }
-    let cc=u.physical[0].x*extension_sample(0u,in).r;let ccrough=min(max(u.physical[0].y*extension_sample(1u,in).g,0.0525)+geometry_roughness,1.0);
-    let sheen=u.physical[1].rgb*extension_sample(3u,in).rgb;let sheen_max=max(sheen.r,max(sheen.g,sheen.b));let sheenrough=max(u.physical[0].z*extension_sample(4u,in).a,0.07);
+    var cc=0.0;if PHYSICAL {cc=u.physical[0].x*extension_sample(0u,in).r;}let ccrough=min(max(u.physical[0].y*extension_sample(1u,in).g,0.0525)+geometry_roughness,1.0);
+    var sheen=vec3(0.0);if PHYSICAL {sheen=u.physical[1].rgb*extension_sample(3u,in).rgb;}let sheen_max=max(sheen.r,max(sheen.g,sheen.b));let sheenrough=max(u.physical[0].z*extension_sample(4u,in).a,0.07);
     var coat_n=geometry_normal*face;
     let coat_uv=extension_uv(2u,in);let coat_st0=dpdx(coat_uv);let coat_st1=-dpdy(coat_uv);
-    if u.extension_sizes[2].x>0.0 {
+    if PHYSICAL && u.extension_sizes[2].x>0.0 {
         var t=normalize(in.tangent.xyz);var b=normalize(in.bitangent);
         if abs(in.tangent.w)<0.5 {
             t=cross(q1,geometry_normal)*coat_st0.x+cross(geometry_normal,q0)*coat_st1.x;
@@ -303,16 +317,17 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     let rotation=u.physical[3].x+select(0.0,atan2(aniso_sample.y*2.0-1.0,aniso_sample.x*2.0-1.0),u.extension_sizes[5].x>0.0);let tangent=anisotropy_t;
     anisotropy_t=(tangent*cos(rotation)+anisotropy_b*sin(rotation))*face;
     anisotropy_b=(anisotropy_b*cos(rotation)-tangent*sin(rotation))*face;
-    var result=diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+u.emissive.xyz*textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;
+    var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
+    var result=diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+u.emissive.xyz*emissive_sample;
     sheen_light+=u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
-    if u.environment.x>0.0 && u.material.x==1.0 {
+    if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);
         let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,nv),0.0).rg;
         let sd=film_d*dfg.x+f90*dfg.y;let sm=film_m*dfg.x+f90*dfg.y;
         let md=multiscattering(film_d,dfg,f90);let mm=multiscattering(film_m,dfg,f90);
         let radiance=environment_sample(normalize(mix(reflect(-v,n),n,pow(roughness,4.0))),roughness);
         let irradiance=environment_sample(n,1.0);
-        let ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;
+        var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
         let specular_ao=clamp(pow(nv+ao,exp2(-16.0*roughness-1.0))-1.0+ao,0.0,1.0);
         let sheen_comp=1.0-sheen_max*sheen_albedo(nv,sheenrough);
         result+=(diffuse*(1.0-sd-md)*irradiance*ao+(radiance*mix(sd,sm,metalness)+irradiance*mix(md,mm,metalness))*specular_ao)*sheen_comp;
@@ -322,10 +337,10 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             coat+=environment_sample(normalize(mix(reflect(-v,coat_n),coat_n,pow(ccrough,4.0))),ccrough)*(vec3(0.04)*coatdfg.x+coatdfg.y);
         }
     }
-    for(var i=0u;i<u32(u.material.w);i++) {
+    for(var i=0u;i<light_count();i++) {
         var light=(u.view*vec4(u.light_position[i].xyz,0.0)).xyz;var attenuation=1.0;
-        if u.light_position[i].w==4.0 {
-            if u.material.x!=1.0 {continue;}
+        if light_type(i)==4.0 {
+            if material_kind()!=1.0 {continue;}
             let center=(u.view*vec4(u.light_position[i].xyz,1.0)).xyz;
             let width=(u.view*vec4(u.light_direction[i].xyz,0.0)).xyz;let height=(u.view*vec4(u.light_params[i].xyz,0.0)).xyz;
             let rect=array<vec3<f32>,4>(center+width-height,center-width-height,center-width+height,center+width+height);
@@ -340,34 +355,34 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             }
             continue;
         }
-        if u.light_position[i].w==3.0 {
+        if light_type(i)==3.0 {
             let weight=dot(n,light)*0.5+0.5;
             result+=diffuse*mix(u.light_params[i].xyz,u.light_color[i].xyz,weight)/3.14159265359;
             continue;
         }
-        if u.light_position[i].w>0.5 {
+        if light_type(i)>0.5 {
             let delta=(u.view*vec4(u.light_position[i].xyz,1.0)).xyz-in.view_position;let distance=length(delta);light=delta/max(distance,0.00001);
             attenuation=1.0/max(pow(distance,u.light_params[i].y),0.01);
             let cutoff=u.light_params[i].x;
             if cutoff>0.0 {let falloff=clamp(1.0-pow(distance/cutoff,4.0),0.0,1.0);attenuation*=falloff*falloff;}
         }
-        if u.light_position[i].w==2.0 {
+        if light_type(i)==2.0 {
             let direction=(u.view*vec4(u.light_direction[i].xyz,0.0)).xyz;
             let cone=dot(light,direction);let outer=u.light_params[i].z;let inner=u.light_params[i].w;
             attenuation*=select(smoothstep(outer,max(inner,outer+0.000001),cone),select(0.0,1.0,cone>=outer),inner==outer);
         }
-        attenuation*=shadow_visibility(i,in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));
+        if RECEIVE_SHADOW {attenuation*=shadow_visibility(i,in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));}
         let h=normalize(light+v);let nl=clamp(dot(n,light),0.0,1.0);let nv=clamp(dot(n,v),0.0,1.0);
         let nh=clamp(dot(n,h),0.0,1.0);let vh=clamp(dot(v,h),0.0,1.0);
-        if u.material.x==6.0 {
+        if material_kind()==6.0 {
             let coordinate=dot(n,light)*0.5+0.5;let width=fwidth(coordinate)*0.5;
             let gradient=textureSampleLevel(mr_map,mr_sampler,vec2(coordinate,0.0),0.0).r;
             let toon=select(mix(0.7,1.0,smoothstep(0.7-width,0.7+width,coordinate)),gradient,u.custom[0].x>0.5);
             result+=diffuse*u.light_color[i].xyz*attenuation*toon/3.14159265359;continue;
         }
-        if u.material.x>=2.0 {
+        if material_kind()>=2.0 {
             var brdf=diffuse/3.14159265359;
-            if u.material.x==3.0 {
+            if material_kind()==3.0 {
                 let fresnel=u.specular.rgb+(vec3(1.0)-u.specular.rgb)*exp2((-5.55473*vh-6.98316)*vh);
                 brdf+=fresnel*(u.specular.w+2.0)/(8.0*3.14159265359)*pow(nh,u.specular.w)*mr.r;
             }
@@ -377,7 +392,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         let alpha=roughness*roughness;let a2=alpha*alpha;let denom=nh*nh*(a2-1.0)+1.0;
         var distribution=a2/(3.14159265359*denom*denom);
         var visibility=0.5/max(nl*sqrt(nv*nv*(1.0-a2)+a2)+nv*sqrt(nl*nl*(1.0-a2)+a2),0.000001);
-        let anisotropy=u.physical[1].w*aniso_sample.b;
+        var anisotropy=0.0;if PHYSICAL {anisotropy=u.physical[1].w*aniso_sample.b;}
         if anisotropy>0.0 {
             let at=mix(alpha,1.0,anisotropy*anisotropy);let ab=alpha;
             let projected=vec3(ab*dot(anisotropy_t,h),at*dot(anisotropy_b,h),at*ab*nh);

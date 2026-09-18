@@ -3,12 +3,12 @@ import {chromium} from '@playwright/test';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {timestamps} from './gpu-timestamps.js';
 const id=process.env.EXAMPLE||'webgl_geometries';
-const ports={webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
+const ports={webgl_buffergeometry:26,webgl_buffergeometry_rawshader:27,webgl_morphtargets_horse:24,webgl_morphtargets_sphere:25,webgl_buffergeometry_indexed:22,webgl_lines_colors:23,webgl_geometries:17,webgl_loader_gltf_instancing:16,webgl_morphtargets:18,webgpu_morphtargets:18,webgl_lines_dashed:19,webgl_lights_rectarealight:20,webgl_geometry_colors:21};
 if(!(id in ports))throw new Error('Unknown expanded port');
 const browser=await chromium.launch({executablePath:process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined,args:['--enable-unsafe-webgpu']});
 const report={id,date:new Date().toISOString(),warmupMs:3000,sampleMs:3000,gpuInstrumentation:!!process.env.GPU,results:[]};
 try {for(const runtime of ['three','rust']){
- const backend=id==='webgl_morphtargets_sphere'&&runtime==='three'?'WebGL2':'WebGPU';
+ const backend=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id)&&runtime==='three'?'WebGL2':'WebGPU';
  const page=await browser.newPage({viewport:{width:512,height:512},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  if(process.env.GPU)await page.addInitScript(timestamps);
  await page.addInitScript(()=>{

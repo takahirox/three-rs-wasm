@@ -78,7 +78,7 @@ validate(report)
 OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 blockers = collections.Counter(b for r in rows for b in set(r.get('browser', {}).get('blockers', [])))
 lines = ['# All-example runtime reproduction attempts', '', report['method'], '',
-         '**These are attempts, not 605 completed ports.** The gallery contains 16 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.', '',
+         f'**These are attempts, not 605 completed ports.** The gallery contains {sum(bool(e.get("port")) for e in catalog["examples"])} partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.', '',
          '| Outcome | Examples |', '| --- | ---: |']
 lines += [f'| {k} | {v} |' for k, v in report['counts'].items()]
 lines += ['', '## Limits', ''] + [f'- {v}' for v in report['limits']]

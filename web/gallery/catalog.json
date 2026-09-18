@@ -11232,7 +11232,7 @@
     {
       "id": "webgl_buffergeometry",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry.html",
       "source_sha256": "7a4ac8162786e2a3e7ceefe0a07434f5c4d5afab790b5dd2462d68211fd0122d",
@@ -11250,7 +11250,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 26,
+        "source": "src/browser/expanded_triangles.rs",
+        "test": "tests/browser/expanded.spec.js",
+        "limitations": [
+          "公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11612,7 +11619,7 @@
     {
       "id": "webgl_buffergeometry_rawshader",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_rawshader.html",
       "source_sha256": "22dd64e21aac42d2d3056ee56dce2ed820c2cf54e06e1ab7719c9b1bbbfd1d2b",
@@ -11624,7 +11631,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 27,
+        "source": "src/browser/expanded_triangles.rs",
+        "test": "tests/browser/expanded.spec.js",
+        "limitations": [
+          "公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"

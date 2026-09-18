@@ -14,11 +14,35 @@ import {plane,klein,mobius} from 'three/addons/geometries/ParametricFunctions.js
 import {UltraHDRLoader} from 'three/addons/loaders/UltraHDRLoader.js';
 try {
  const id=new URLSearchParams(location.search).get('id');
- const T=id==='webgl_morphtargets_sphere'?GL:GPU;
- const antialias=!['webgl_morphtargets_horse','webgl_morphtargets_sphere'].includes(id);
+ const T=['webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id)?GL:GPU;
+ const antialias=!['webgl_morphtargets_horse','webgl_morphtargets_sphere','webgl_buffergeometry_rawshader'].includes(id);
  const renderer=T===GL?new T.WebGLRenderer({antialias,alpha:false}):new T.WebGPURenderer({antialias,alpha:false});if(renderer.init)await renderer.init();renderer.setSize(512,512);document.body.append(renderer.domElement);
  const scene=new T.Scene();let camera,morphMesh,areaLights,horseMixer,horseAction,sphereMesh,sphereRotation;
- if(id==='webgl_loader_gltf_instancing') {
+ if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader') {
+  const raw=id.endsWith('_rawshader');camera=new T.PerspectiveCamera(raw?50:27,1,1,raw?10:3500);camera.position.z=raw?2:2750;
+  scene.background=new T.Color(raw?0x101010:0x050505);
+  let seed=186;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+  const geometry=new T.BufferGeometry(),positions=[],normals=[],colors=[];let material;
+  if(raw){
+   for(let i=0;i<600;i++){positions.push(random()-.5,random()-.5,random()-.5);colors.push(random()*255,random()*255,random()*255,random()*255);}
+   geometry.setAttribute('color',new T.Uint8BufferAttribute(colors,4,true));
+   material=new T.RawShaderMaterial({uniforms:{time:{value:0}},side:T.DoubleSide,transparent:true,
+    vertexShader:`precision mediump float;precision mediump int;uniform mat4 modelViewMatrix;uniform mat4 projectionMatrix;attribute vec3 position;attribute vec4 color;varying vec3 vPosition;varying vec4 vColor;void main(){vPosition=position;vColor=color;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`precision mediump float;precision mediump int;uniform float time;varying vec3 vPosition;varying vec4 vColor;void main(){vec4 color=vColor;color.r+=sin(vPosition.x*10.0+time)*0.5;gl_FragColor=color;}`});
+  }else{
+   scene.fog=new T.Fog(0x050505,2000,3500);scene.add(new T.AmbientLight(0xcccccc));
+   for(const [p,intensity] of [[[1,1,1],1.5],[[0,-1,0],4.5]]){const light=new T.DirectionalLight(0xffffff,intensity);light.position.fromArray(p);scene.add(light);}
+   for(let i=0;i<160000;i++){
+    const x=random()*800-400,y=random()*800-400,z=random()*800-400;
+    const a=new T.Vector3(x+random()*12-6,y+random()*12-6,z+random()*12-6),b=new T.Vector3(x+random()*12-6,y+random()*12-6,z+random()*12-6),c=new T.Vector3(x+random()*12-6,y+random()*12-6,z+random()*12-6);
+    positions.push(...a,...b,...c);const normal=c.clone().sub(b).cross(a.clone().sub(b)).normalize();const alpha=random();
+    for(let j=0;j<3;j++){normals.push(...normal);colors.push(x/800+.5,y/800+.5,z/800+.5,alpha);}
+   }
+   geometry.setAttribute('normal',new T.Float32BufferAttribute(normals,3));geometry.setAttribute('color',new T.Float32BufferAttribute(colors,4));
+   material=new T.MeshPhongMaterial({color:0xd5d5d5,specular:0xffffff,shininess:250,side:T.DoubleSide,vertexColors:true,transparent:true});
+  }
+  geometry.setAttribute('position',new T.Float32BufferAttribute(positions,3));geometry.computeBoundingSphere();scene.add(new T.Mesh(geometry,material));
+ } else if(id==='webgl_loader_gltf_instancing') {
   // Scene/camera/assets from the pinned official example; WebGPU backend for comparison.
   camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(-.90,.41,-.89);camera.lookAt(0,.25,0);
   const env=await new UltraHDRLoader().loadAsync('/web/environments/royal_esplanade_2k.hdr.jpg');env.mapping=T.EquirectangularReflectionMapping;
@@ -104,6 +128,7 @@ try {
  const pointerCamera=()=>{camera.position.x+=(pointer.x-camera.position.x)*.05;camera.position.y+=(-pointer.y+(id==='webgl_lines_colors'?200:0)-camera.position.y)*.05;camera.lookAt(0,0,0);};
  window.reference={renderer,scene,camera};
  window.renderFixture=async(seconds=0,weights=[0,0])=>{
+  if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader')scene.traverse(o=>{if(o.isMesh){o.rotation.set(id.endsWith('_rawshader')?0:seconds*.25,seconds*.5,0);if(o.material.uniforms)o.material.uniforms.time.value=seconds*5;}});
   if(id==='webgl_buffergeometry_indexed')scene.traverse(o=>{if(o.isMesh)o.rotation.set(seconds*.25,seconds*.5,0);});
   if(id==='webgl_lines_colors')scene.children.forEach((o,i)=>o.rotation.y=seconds*.5*(i%2?1:-1));
   if(horseMixer){camera.position.set(600*Math.sin(seconds*Math.PI/30),300,600*Math.cos(seconds*Math.PI/30));camera.lookAt(0,150,0);horseMixer.setTime(seconds);}
@@ -114,6 +139,6 @@ try {
   if(id==='webgl_geometries'){const t=seconds*.1;camera.position.set(Math.cos(t)*800,500,Math.sin(t)*800);camera.lookAt(0,0,0);scene.traverse(m=>{if(m.isMesh)m.rotation.set(t*5,t*2.5,0);});}
 if(renderer.renderAsync){await renderer.renderAsync(scene,camera);await renderer.backend.device.queue.onSubmittedWorkDone();}else{renderer.render(scene,camera);renderer.getContext().finish();}};
  await window.renderFixture();renderer.domElement.dataset.ready='true';
- if(new URLSearchParams(location.search).has('animate')){const start=performance.now();let horseTheta=0;renderer.setAnimationLoop(()=>{const t=(performance.now()-start)*.0001;if(horseMixer){horseTheta+=.1;camera.position.set(600*Math.sin(horseTheta*Math.PI/180),300,600*Math.cos(horseTheta*Math.PI/180));camera.lookAt(0,150,0);horseMixer.setTime(t*10);}if(sphereMesh){sphereMesh.rotation.y=sphereRotation+t*5;const phase=t*5%2;sphereMesh.morphTargetInfluences[1]=Math.min(phase,2-phase);}if(['webgl_geometry_colors','webgl_lines_colors'].includes(id))pointerCamera();if(id==='webgl_lines_colors')scene.children.forEach((o,i)=>o.rotation.y=t*5*(i%2?1:-1));if(id==='webgl_buffergeometry_indexed')scene.traverse(o=>{if(o.isMesh)o.rotation.set(t*2.5,t*5,0);});if(id==='webgl_geometries'){camera.position.set(Math.cos(t)*800,500,Math.sin(t)*800);camera.lookAt(0,0,0);scene.traverse(m=>{if(m.isMesh)m.rotation.set(t*5,t*2.5,0);});}if(areaLights)areaLights.forEach((light,i)=>light.rotation.y=t*10*[-1,.5,1][i]);if(id==='webgl_lines_dashed')scene.traverse(o=>{if(o.isLine)o.rotation.set(t*2.5,t*2.5,0);});renderer.render(scene,camera);});}
+ if(new URLSearchParams(location.search).has('animate')){const start=performance.now();let horseTheta=0;renderer.setAnimationLoop(()=>{const t=(performance.now()-start)*.0001;if(horseMixer){horseTheta+=.1;camera.position.set(600*Math.sin(horseTheta*Math.PI/180),300,600*Math.cos(horseTheta*Math.PI/180));camera.lookAt(0,150,0);horseMixer.setTime(t*10);}if(sphereMesh){sphereMesh.rotation.y=sphereRotation+t*5;const phase=t*5%2;sphereMesh.morphTargetInfluences[1]=Math.min(phase,2-phase);}if(['webgl_geometry_colors','webgl_lines_colors'].includes(id))pointerCamera();if(id==='webgl_lines_colors')scene.children.forEach((o,i)=>o.rotation.y=t*5*(i%2?1:-1));if(id==='webgl_buffergeometry'||id==='webgl_buffergeometry_rawshader')scene.traverse(o=>{if(o.isMesh){o.rotation.set(id.endsWith('_rawshader')?0:t*2.5,t*5,0);if(o.material.uniforms)o.material.uniforms.time.value=t*50;}});if(id==='webgl_buffergeometry_indexed')scene.traverse(o=>{if(o.isMesh)o.rotation.set(t*2.5,t*5,0);});if(id==='webgl_geometries'){camera.position.set(Math.cos(t)*800,500,Math.sin(t)*800);camera.lookAt(0,0,0);scene.traverse(m=>{if(m.isMesh)m.rotation.set(t*5,t*2.5,0);});}if(areaLights)areaLights.forEach((light,i)=>light.rotation.y=t*10*[-1,.5,1][i]);if(id==='webgl_lines_dashed')scene.traverse(o=>{if(o.isLine)o.rotation.set(t*2.5,t*2.5,0);});renderer.render(scene,camera);});}
 } catch(error) {document.body.dataset.error=String(error);console.error(error);}
 </script>

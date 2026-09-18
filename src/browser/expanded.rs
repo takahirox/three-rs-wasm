@@ -5,6 +5,10 @@ use std::sync::Arc;
 
 enum Content {
     Instancing,
+    Triangles {
+        objects: Vec<Object3D>,
+        raw: bool,
+    },
     Horse(super::expanded_morph_models::Horse),
     Sphere(super::expanded_morph_models::Sphere),
     Indexed(Object3D),
@@ -28,12 +32,34 @@ pub(super) struct Demo {
     elapsed: f64,
 }
 impl Demo {
-    pub async fn create(scene: &mut Scene, camera: Object3D, example: u32) -> Result<Self> {
+    pub async fn create(
+        scene: &mut Scene,
+        camera: Object3D,
+        example: u32,
+        renderer: &crate::renderer::Renderer,
+    ) -> Result<Self> {
         let aspect = match scene.camera(camera)?.0 {
             Camera::Perspective(c) => c.aspect,
             _ => 1.0,
         };
         match example {
+            26 | 27 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 2.0),
+                near: 1.0,
+                far: 3500.0,
+                elapsed: 0.0,
+                content: Content::Triangles {
+                    objects: super::expanded_triangles::create(
+                        scene,
+                        camera,
+                        aspect,
+                        example == 27,
+                        renderer,
+                    )
+                    .await?,
+                    raw: example == 27,
+                },
+            }),
             16 => {
                 let (asset, buffers, images) = load_asset(
                     "/web/models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
@@ -350,6 +376,12 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::Triangles { objects, raw } = &self.content {
+            if animate {
+                self.elapsed += delta;
+            }
+            return super::expanded_triangles::update(scene, objects, self.elapsed, *raw);
+        }
         if let Content::Horse(horse) = &mut self.content {
             if animate {
                 self.elapsed += delta;
@@ -487,7 +519,8 @@ impl Demo {
     ) -> Result<()> {
         if matches!(
             self.content,
-            Content::Horse(_)
+            Content::Triangles { .. }
+                | Content::Horse(_)
                 | Content::ColorLines { .. }
                 | Content::Indexed(_)
                 | Content::Geometries(_)

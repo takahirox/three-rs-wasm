@@ -42,6 +42,8 @@ FEATURES = {
  'dom-svg-rendering': ('CSS2D/CSS3D/SVG scene renderers', r'\b(?:CSS2DRenderer|CSS3DRenderer|SVGRenderer)\b'),
 }
 PORTS = {
+ 'webgl_buffergeometry': {'example':26,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。']},
+ 'webgl_buffergeometry_rawshader': {'example':27,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。']},
  'webgl_lights_rectarealight': {'example': 20, 'source': 'src/browser/expanded_lights.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。']},
  'webgl_geometry_colors': {'example': 21, 'source': 'src/browser/expanded_geometry_colors.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式3個の頂点色Icosahedron・ワイヤー・影画像・ポインターカメラを移植。']},
  'webgl_buffergeometry_indexed': {'example': 22, 'source': 'src/browser/expanded_indexed.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式のインデックス付き色グリッド・回転・ワイヤーフレーム切替を移植。GUI外観とStatsは未一致。']},

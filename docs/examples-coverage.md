@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-2 excluded for explicit WebGL APIs; 605 retained. 26 partial Rust ports; 579 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+2 excluded for explicit WebGL APIs; 605 retained. 28 partial Rust ports; 577 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -42,6 +42,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_buffergeometry | `tests/browser/expanded.spec.js` | 公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。 |
+| webgl_buffergeometry_rawshader | `tests/browser/expanded.spec.js` | 公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。 |
 | webgl_lights_rectarealight | `tests/browser/expanded.spec.js` | 公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。 |
 | webgl_geometry_colors | `tests/browser/expanded.spec.js` | 公式3個の頂点色Icosahedron・ワイヤー・影画像・ポインターカメラを移植。 |
 | webgl_buffergeometry_indexed | `tests/browser/expanded.spec.js` | 公式のインデックス付き色グリッド・回転・ワイヤーフレーム切替を移植。GUI外観とStatsは未一致。 |

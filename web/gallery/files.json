@@ -19,9 +19,11 @@
     "webgl_panorama_equirectangular"
   ],
   "webgl / advanced": [
+    "webgl_buffergeometry",
     "webgl_buffergeometry_indexed",
     "webgl_buffergeometry_lines",
-    "webgl_buffergeometry_lines_indexed"
+    "webgl_buffergeometry_lines_indexed",
+    "webgl_buffergeometry_rawshader"
   ],
   "webgpu": [
     "webgpu_equirectangular",

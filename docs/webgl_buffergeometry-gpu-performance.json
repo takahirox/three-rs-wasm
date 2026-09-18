@@ -1,0 +1,262 @@
+{
+  "id": "webgl_buffergeometry",
+  "date": "2026-09-17T22:21:28.686Z",
+  "warmupMs": 3000,
+  "sampleMs": 3000,
+  "gpuInstrumentation": true,
+  "results": [
+    {
+      "runtime": "three",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": {
+        "p50": 0.335786,
+        "p95": 0.775238,
+        "max": 1.206982
+      },
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.2999999523162842,
+        "p95": 0.40000009536743164,
+        "max": 0.7000000476837158
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 360,
+        "draw": 540,
+        "createBuffer": 240,
+        "submit": 360
+      },
+      "writeBytes": 40320,
+      "drawCalls": 540,
+      "triangles": 57600180,
+      "logicalBufferBytes": 19200868,
+      "textures": [
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth24plus",
+          "samples": 1,
+          "mips": 1
+        }
+      ],
+      "before": null,
+      "after": null,
+      "gpu": {
+        "render": {
+          "p50": 0.29912,
+          "p95": 0.55095,
+          "max": 0.774738
+        }
+      },
+      "errors": []
+    },
+    {
+      "runtime": "rust",
+      "backend": "WebGPU",
+      "gpuTimerAvailable": null,
+      "gpuFrame": {
+        "p50": 0.44174399999999997,
+        "p95": 1.63885,
+        "max": 1.826304
+      },
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3"
+      },
+      "canvas": [
+        512,
+        512
+      ],
+      "frames": 180,
+      "cpu": {
+        "p50": 0.20000004768371582,
+        "p95": 0.39999985694885254,
+        "max": 0.5
+      },
+      "interval": {
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.800000000000182
+      },
+      "calls": {
+        "writeBuffer": 360,
+        "draw": 540,
+        "createBuffer": 240,
+        "submit": 360
+      },
+      "writeBytes": 64288,
+      "drawCalls": 540,
+      "triangles": 57600180,
+      "logicalBufferBytes": 38412832,
+      "textures": [
+        {
+          "size": [
+            16,
+            16,
+            1
+          ],
+          "format": "rg16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            64,
+            64,
+            2
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "rgba16float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            512,
+            512,
+            1
+          ],
+          "format": "depth32float",
+          "samples": 4,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
+          ],
+          "format": "rgba8unorm",
+          "samples": 1,
+          "mips": 1
+        }
+      ],
+      "before": {
+        "transfer": [
+          1,
+          38400000,
+          16,
+          32
+        ],
+        "resources": [
+          1,
+          1,
+          0
+        ]
+      },
+      "after": {
+        "transfer": [
+          1,
+          38400000,
+          16,
+          32
+        ],
+        "resources": [
+          1,
+          1,
+          0
+        ]
+      },
+      "gpu": {
+        "scene": {
+          "p50": 0.431993,
+          "p95": 1.423561,
+          "max": 1.816222
+        },
+        "present": {
+          "p50": 0.009875,
+          "p95": 0.249371,
+          "max": 0.562241
+        }
+      },
+      "errors": []
+    }
+  ]
+}
