@@ -4,7 +4,6 @@ use crate::{
     scene::*,
 };
 use std::sync::Arc;
-use wasm_bindgen::JsCast;
 
 pub(super) struct PointLights {
     lights: [Object3D; 2],
@@ -23,28 +22,8 @@ impl PointLights {
         aspect: f64,
         renderer: &crate::renderer::Renderer,
     ) -> Result<Self> {
-        use wasm_bindgen_futures::JsFuture;
-        let response = JsFuture::from(
-            web_sys::window()
-                .ok_or(Error::Invalid("window"))?
-                .fetch_with_str("/web/models/WaltHead.obj"),
-        )
-        .await
-        .map_err(|e| Error::Asset(format!("{e:?}")))?
-        .dyn_into::<web_sys::Response>()
-        .map_err(|_| Error::Invalid("model response"))?;
-        if !response.ok() {
-            return Err(Error::Asset(format!("model HTTP {}", response.status())));
-        }
-        let source = JsFuture::from(
-            response
-                .text()
-                .map_err(|e| Error::Asset(format!("{e:?}")))?,
-        )
-        .await
-        .map_err(|e| Error::Asset(format!("{e:?}")))?
-        .as_string()
-        .ok_or(Error::Invalid("model text"))?;
+        let bytes = super::gltf_viewer::fetch("/web/models/WaltHead.obj").await?;
+        let source = std::str::from_utf8(&bytes).map_err(|_| Error::Invalid("model text"))?;
         let mut vertices = Vec::new();
         let mut base = Vec::new();
         let mut normals = Vec::new();

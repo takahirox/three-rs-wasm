@@ -17,6 +17,23 @@ mod gltf_viewer;
 mod point_lights;
 mod robot;
 
+// Demo assets live under web/ both locally and below a static hosting prefix.
+fn asset_url(url: &str) -> Result<String> {
+    let Some(path) = url.strip_prefix("/web/") else {
+        return Ok(url.to_owned());
+    };
+    let base = web_sys::window()
+        .and_then(|window| window.document())
+        .ok_or(Error::Invalid("document"))?
+        .base_uri()
+        .map_err(|_| Error::Invalid("document base URI"))?
+        .ok_or(Error::Invalid("document base URI"))?;
+    let (prefix, _) = base
+        .rsplit_once("/web/")
+        .ok_or(Error::Invalid("demo must be served under web/"))?;
+    Ok(format!("{prefix}/web/{path}"))
+}
+
 type AnimationCallback = Closure<dyn FnMut(f64)>;
 struct State {
     timer: crate::time::Timer,
@@ -636,7 +653,7 @@ impl BrowserApp {
                 scene.get_mut(mesh)?.position.x = -1.1;
                 let group = scene.insert(NodeKind::Group);
                 scene.get_mut(group)?.position = Vector3::new(0.8, 0.6, 0.0);
-                let texture = Arc::new(Texture::load("/web/checker.png").await?);
+                let texture = Arc::new(Texture::load(&asset_url("/web/checker.png")?).await?);
                 let mut standard = MeshStandardMaterial::default();
                 standard.properties.map = Some(texture);
                 standard.roughness = 0.7;
@@ -696,8 +713,9 @@ impl BrowserApp {
                     }));
                 scene.get_mut(camera)?.position.z = 2.0;
                 let mut material = Material::default();
-                material.properties_mut().map =
-                    Some(Arc::new(Texture::load("/web/crate.gif").await?));
+                material.properties_mut().map = Some(Arc::new(
+                    Texture::load(&asset_url("/web/crate.gif")?).await?,
+                ));
                 scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
                     Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
                     Arc::new(material),

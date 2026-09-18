@@ -11,7 +11,7 @@ backend in the browser; there is no JavaScript scene mirror or WebGL fallback.
 
 ## Demo: Three.js examples in Rust/Wasm
 
-The main demo is the [examples gallery](http://127.0.0.1:8173/web/gallery/):
+The main demo is the [examples gallery](https://takahirox.github.io/three-rs-wasm/):
 select an example from the list to launch its Rust/Wasm/WebGPU port. The gallery
 retains the pinned Three.js r186 browser's CSS, fonts, thumbnails, categories,
 search and mobile drawer. Only runnable ports appear in the list.
@@ -96,6 +96,12 @@ Run `./scripts/check-gltf-pbr` for the MVP + glTF PBR acceptance gate; see
 [glTF PBR API, validation and limitations](docs/gltf-pbr.md).
 `python3 tools/gallery/build.py` reproducibly regenerates the gallery inventory,
 upstream shell/assets and investigation report from the pinned archive.
+
+GitHub Actions builds the release Wasm package, checks the gallery under the
+project URL prefix, and deploys the demo to GitHub Pages on pushes to `main`.
+For a local preview of the published layout, run `python3 tools/build_site.py`
+after the release build, serve `.cache/pages` with a static HTTP server, and open
+`/three-rs-wasm/`. The deployment contains demo assets and licenses only.
 
 [Per-example prerequisites and execution evidence](docs/gallery-port-attempts.md)
 distinguish implemented browser ports from source-level blockers. To repeat the

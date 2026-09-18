@@ -5,10 +5,11 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 
 pub(super) async fn fetch(url: &str) -> Result<Vec<u8>> {
+    let url = super::asset_url(url)?;
     let response = JsFuture::from(
         web_sys::window()
             .ok_or(Error::Invalid("window"))?
-            .fetch_with_str(url),
+            .fetch_with_str(&url),
     )
     .await
     .map_err(|e| Error::Asset(format!("{e:?}")))?
