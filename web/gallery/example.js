@@ -40,7 +40,10 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
 } else {
  try {
   if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
-  const {default:init, BrowserApp} = await import('../pkg/three_rs_wasm.js'); await init();
+  // Keep the glue and Wasm on the same cache revision when the runtime API changes.
+  const runtimeRevision = 'tsl-1';
+  const {default:init, BrowserApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
+  await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
   const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); app?.request_render(); };
   resize(); canvas.hidden = false;
   app = await BrowserApp.create(canvas, entry.port.example, !new URLSearchParams(location.search).has('still'));
@@ -64,7 +67,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
     credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
    }
    addEventListener('resize', resize);
-   if ([16,18,20,25,28,29,30,31,32,33,34].includes(entry.port.example)) { installOrbit(canvas,app); } else {
+   if ([16,18,20,25,28,29,30,31,32,33,34].includes(entry.port.example)) { installOrbit(canvas,app); } else if (entry.port.example < 35) {
    let drag;
    canvas.addEventListener('pointerdown', event => { drag = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId); app.gallery_input(0,0,0,true); });
    canvas.addEventListener('pointermove', event => { if(event.isPrimary===false)return;app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2); if (drag) { app.gallery_input(event.clientX-drag[0],event.clientY-drag[1],0,true); app.orbit(event.clientX-drag[0], event.clientY-drag[1], 0); drag = [event.clientX,event.clientY]; } });
@@ -72,6 +75,20 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    canvas.addEventListener('wheel', event => { event.preventDefault(); app.gallery_input(0,0,event.deltaY,false); app.orbit(0,0,event.deltaY); }, {passive:false});
    }
    const settings = document.querySelector('#settings');
+   if ([35,37].includes(entry.port.example)) {
+    settings.hidden=false;
+    const fields=entry.port.example===35 ? [[1,'Cell Size',6,6,50,1],[2,'Cell Offset',.5,0,1,.1],[3,'Border Mask',1,0,5,.1],[4,'Pulse Intensity',.06,0,.5,.01],[5,'Pulse Width',60,10,100,5],[6,'WGSL Shader Speed',1,1,10,.1],[7,'TSL Shader Speed',1,1,10,.1]] : [[1,'uv scale ( before rtt )',4,1,10,.1],[2,'blur amount ( after rtt )',.5,0,2,.01]];
+    for (const [index,name,value,min,max,step] of fields) {
+     const label=text('label',name,settings),input=document.createElement('input');
+     Object.assign(input,{type:'range',id:`tsl-${index}`,min,max,step,value});label.append(input);
+     input.addEventListener('input',()=>app.tsl_parameter(index,Number(input.value)));
+    }
+    if (entry.port.example===37) {
+     const label=text('label','auto update',settings),input=document.createElement('input');
+     Object.assign(input,{type:'checkbox',id:'tsl-auto',checked:true});label.append(input);
+     input.addEventListener('change',()=>app.tsl_parameter(3,Number(input.checked)));
+    }
+   }
    if (entry.port.example === 31) {
     settings.hidden=false;settings.innerHTML='<strong>SheenChair_fabric</strong><label>Sheen <input id="sheen" type="range" min="0" max="1" value="1" step="0.01"></label>';
     settings.addEventListener('input',()=>app.gallery_sheen(Number(document.querySelector('#sheen').value)));

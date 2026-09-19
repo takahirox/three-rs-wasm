@@ -17,6 +17,7 @@ mod gltf_examples;
 mod gltf_viewer;
 mod point_lights;
 mod robot;
+mod tsl_examples;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
 fn asset_url(url: &str) -> Result<String> {
@@ -120,14 +121,22 @@ impl State {
                 Quaternion::from_rotation_y(time * 0.0003)
             };
         }
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
+            demo.prepare(
+                &self.renderer,
+                &mut self.scene,
+                self.camera,
+                width as f64 / height as f64,
+            )?;
+        }
         self.renderer
             .render(&mut self.scene, self.camera, &self.target)?;
         let frame = self
             .surface
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
-        // RawShaderMaterial and encoded WebGL-style targets already contain display values.
-        let format = if [16, 27, 28].contains(&self.example) {
+        // Raw/encoded targets contain display values; the CRT example requests linear output.
+        let format = if [16, 27, 28, 35].contains(&self.example) {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -454,6 +463,15 @@ impl BrowserApp {
             ))
         }
     }
+    pub fn tsl_parameter(&self, index: usize, value: f32) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.tsl_parameter(index, value)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        state.request_render();
+        Ok(())
+    }
     pub fn gallery_sheen(&self, value: f64) -> std::result::Result<(), JsValue> {
         if !value.is_finite() || !(0.0..=1.0).contains(&value) {
             return Err(JsValue::from_str("invalid sheen"));
@@ -655,7 +673,7 @@ impl BrowserApp {
                 canvas.height(),
                 if example >= 4 {
                     RenderTargetOptions {
-                        samples: if [7, 8, 11, 12, 24, 25, 27].contains(&example) {
+                        samples: if [7, 8, 11, 12, 24, 25, 27, 36].contains(&example) {
                             1
                         } else {
                             4
@@ -688,7 +706,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=34).contains(&example) {
+            if (7..=37).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

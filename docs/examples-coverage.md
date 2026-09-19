@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 30 partial Rust ports; 567 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 33 partial Rust ports; 564 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,9 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_tsl_interoperability | `tests/browser/tsl.spec.js` | RustのTSLノードAPIとWGSL関数連携でCRTを移植。Inspector UIの外観と性能の完全な同等性は未保証。 |
+| webgpu_texturegrad | `tests/browser/tsl.spec.js` | 公式のWebGPU側を単独表示。WebGL比較パネルは対象外。RustのTSLによる勾配付きGPUテクスチャサンプリング。性能の完全な同等性は未保証。 |
+| webgpu_procedural_texture | `tests/browser/tsl.spec.js` | RustのTSLからGPUテクスチャ生成・2段Gaussian blurと調整を移植。Inspector UIの外観と性能の完全な同等性は未保証。 |
 | webgpu_loader_gltf_dispersion | `tests/browser/gltf-physical.spec.js` | 公式DispersionTest・色分散・HDR・Orbit操作を移植。情報表示の外観は未一致。性能の完全な同等性は未保証。 |
 | webgpu_loader_gltf_compressed | `tests/browser/gltf-physical.spec.js` | 公式coffeemat・Meshopt・KTX2/BasisのGPU圧縮テクスチャ・Orbit操作を移植。対応GPU圧縮形式が必要。情報表示と性能の完全な同等性は未保証。 |
 | webgl_loader_gltf_instancing | `tests/browser/gltf-instancing.spec.js` | 試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。 |

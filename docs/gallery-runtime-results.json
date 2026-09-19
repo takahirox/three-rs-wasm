@@ -9,10 +9,10 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 566,
-    "rust-static-frame-rendered": 36,
-    "rust-empty-frame": 3,
-    "excluded": 2
+    "runtime-prerequisite": 559,
+    "rust-static-frame-rendered": 35,
+    "excluded": 10,
+    "rust-empty-frame": 3
   },
   "examples": [
     {
@@ -1788,27 +1788,8 @@
       "id": "webgl_lights_rectarealight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html",
       "source_sha256": "0f376a50d0d98bdbf3567f1686736feb2e6f747084e59d0639aa27088eef0c39",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_lights_rectarealight",
-        "source_sha256": "0f376a50d0d98bdbf3567f1686736feb2e6f747084e59d0639aa27088eef0c39",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Light type: RectAreaLight",
-          "Separate roughness and metalness textures"
-        ],
-        "observed": {
-          "objects": 8,
-          "vertices": 3474,
-          "lights": 3
-        },
-        "elapsed_ms": 1267,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lines_colors",
@@ -2337,26 +2318,8 @@
       "id": "webgl_loader_gltf",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf.html",
       "source_sha256": "46564bbb6dc5abbfee13d3718c9853a11ba734087760d89174963e43bf0d5695",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_loader_gltf",
-        "source_sha256": "46564bbb6dc5abbfee13d3718c9853a11ba734087760d89174963e43bf0d5695",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Probe resource limit: combined texture data exceeds 8M pixels"
-        ],
-        "observed": {
-          "objects": 1,
-          "vertices": 14556,
-          "lights": 0
-        },
-        "elapsed_ms": 1760,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": true
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_loader_gltf_animation_pointer",
@@ -2438,60 +2401,21 @@
       "id": "webgl_loader_gltf_compressed",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_compressed.html",
       "source_sha256": "e1537edce61b1b41ba057a00150c41c2030f6bb0131a46db7c70ecfad2b03413",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_loader_gltf_compressed",
-        "source_sha256": "e1537edce61b1b41ba057a00150c41c2030f6bb0131a46db7c70ecfad2b03413",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Separate roughness and metalness textures"
-        ],
-        "observed": {
-          "objects": 3,
-          "vertices": 177291,
-          "lights": 0
-        },
-        "elapsed_ms": 1286,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_loader_gltf_dispersion",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_dispersion.html",
       "source_sha256": "6822f939b081ebb4a99d49c74491a5e56f19704046fc0270dbbc7feee276726a",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_loader_gltf_dispersion",
-        "source_sha256": "6822f939b081ebb4a99d49c74491a5e56f19704046fc0270dbbc7feee276726a",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Tone mapping mode: 7",
-          "Physical material extension: transmission",
-          "Non-default material IOR",
-          "Physical material extension: dispersion"
-        ],
-        "observed": {
-          "objects": 27,
-          "vertices": 37794,
-          "lights": 0
-        },
-        "elapsed_ms": 1213,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_loader_gltf_instancing",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html",
       "source_sha256": "d0a5ccd5df8fb32dc9a17f2aa6ac2c29ac0ddb6b1d472fae90ec66d7f9891296",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gltf_instancing",
         "source_sha256": "d0a5ccd5df8fb32dc9a17f2aa6ac2c29ac0ddb6b1d472fae90ec66d7f9891296",
@@ -4438,51 +4362,15 @@
       "id": "webgl_pmrem_equirectangular",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_equirectangular.html",
       "source_sha256": "223968372809c4dc0e5087d4c0fbf447a92b67e85d8c0867fc11e3b9d6976b19",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_pmrem_equirectangular",
-        "source_sha256": "223968372809c4dc0e5087d4c0fbf447a92b67e85d8c0867fc11e3b9d6976b19",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'."
-        ],
-        "observed": {
-          "objects": 30,
-          "vertices": 126750,
-          "lights": 0
-        },
-        "elapsed_ms": 1239,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_pmrem_test",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_test.html",
       "source_sha256": "6f6a4366f0376910edd25fa87b97d2cebaf1a35648e444ab9148bb4a63a0d861",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_pmrem_test",
-        "source_sha256": "6f6a4366f0376910edd25fa87b97d2cebaf1a35648e444ab9148bb4a63a0d861",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'."
-        ],
-        "observed": {
-          "objects": 33,
-          "vertices": 35937,
-          "lights": 1
-        },
-        "elapsed_ms": 1349,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_math_obb",
@@ -4744,28 +4632,8 @@
       "id": "webgl_morphtargets",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html",
       "source_sha256": "2a5cbfd0de2950224c2ce792d09b87536e0b606031112e552db81d4a2157a006",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_morphtargets",
-        "source_sha256": "2a5cbfd0de2950224c2ce792d09b87536e0b606031112e552db81d4a2157a006",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Morph target evaluation",
-          "Material type: MeshPhongMaterial",
-          "Flat shaded lit material"
-        ],
-        "observed": {
-          "objects": 1,
-          "vertices": 6534,
-          "lights": 2
-        },
-        "elapsed_ms": 1271,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_morphtargets_face",
@@ -5014,32 +4882,8 @@
       "id": "webgl_panorama_equirectangular",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_equirectangular.html",
       "source_sha256": "dfdfa57c273051b2bf2b46d0f8621847bf02612ca784a806f2c3dfcea6aec27f",
-      "product_status": "partial",
-      "browser": {
-        "id": "webgl_panorama_equirectangular",
-        "source_sha256": "dfdfa57c273051b2bf2b46d0f8621847bf02612ca784a806f2c3dfcea6aec27f",
-        "stage": "captured-scene",
-        "blockers": [],
-        "observed": {
-          "objects": 1,
-          "vertices": 2501,
-          "lights": 0
-        },
-        "elapsed_ms": 2632,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "rust": {
-        "colored_pixels": 64031,
-        "distinct_colors": 16938,
-        "fidelity": "Not compared with upstream pixels; this is one captured frame, not a behavioral port.",
-        "objects": 1,
-        "stage": "rust-static-frame-rendered"
-      },
-      "outcome": "rust-static-frame-rendered",
-      "local_image": ".cache/gallery-runtime/webgl_panorama_equirectangular.png",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_points_billboards",
@@ -10062,7 +9906,7 @@
       "id": "webgpu_loader_gltf_compressed",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_compressed.html",
       "source_sha256": "f395363eec343693b28beeacfc6bf9c16b4ece70ebabdaec88fbe780cadf791b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_compressed",
         "source_sha256": "f395363eec343693b28beeacfc6bf9c16b4ece70ebabdaec88fbe780cadf791b",
@@ -10088,7 +9932,7 @@
       "id": "webgpu_loader_gltf_dispersion",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_dispersion.html",
       "source_sha256": "e9015e7864e71678d8a8b39eb70f6ec4db38ad27e6f6973d23c0fe6cf9861d83",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_gltf_dispersion",
         "source_sha256": "e9015e7864e71678d8a8b39eb70f6ec4db38ad27e6f6973d23c0fe6cf9861d83",
@@ -12332,7 +12176,7 @@
       "id": "webgpu_procedural_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_procedural_texture.html",
       "source_sha256": "1cec5ecee5437c5bf1d966b366197a5e0b37541ce90b76c5f4a6db9c36f65fde",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_procedural_texture",
         "source_sha256": "1cec5ecee5437c5bf1d966b366197a5e0b37541ce90b76c5f4a6db9c36f65fde",
@@ -13155,7 +12999,7 @@
       "id": "webgpu_texturegrad",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_texturegrad.html",
       "source_sha256": "f16768c754fbc2b885b15144a43fd20acd2934cbc9e2ba94a94034d51eb47023",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_texturegrad",
         "source_sha256": "f16768c754fbc2b885b15144a43fd20acd2934cbc9e2ba94a94034d51eb47023",
@@ -13509,7 +13353,7 @@
       "id": "webgpu_tsl_interoperability",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_interoperability.html",
       "source_sha256": "ed610f98adfe61a7c14da05ac51953abfd585ae04c2474f376d34c8eb72016dc",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_interoperability",
         "source_sha256": "ed610f98adfe61a7c14da05ac51953abfd585ae04c2474f376d34c8eb72016dc",

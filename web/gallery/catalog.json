@@ -23284,7 +23284,7 @@
     {
       "id": "webgpu_procedural_texture",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_procedural_texture.html",
       "source_sha256": "1cec5ecee5437c5bf1d966b366197a5e0b37541ce90b76c5f4a6db9c36f65fde",
@@ -23316,7 +23316,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 37,
+        "source": "src/browser/tsl_examples.rs",
+        "test": "tests/browser/tsl.spec.js",
+        "limitations": [
+          "RustのTSLからGPUテクスチャ生成・2段Gaussian blurと調整を移植。Inspector UIの外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/GaussianBlurNode.js",
@@ -25063,7 +25070,7 @@
     {
       "id": "webgpu_texturegrad",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_texturegrad.html",
       "source_sha256": "f16768c754fbc2b885b15144a43fd20acd2934cbc9e2ba94a94034d51eb47023",
@@ -25075,7 +25082,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 36,
+        "source": "src/browser/tsl_examples.rs",
+        "test": "tests/browser/tsl.spec.js",
+        "limitations": [
+          "公式のWebGPU側を単独表示。WebGL比較パネルは対象外。RustのTSLによる勾配付きGPUテクスチャサンプリング。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/tsl",
         "three/webgpu"
@@ -25687,7 +25701,7 @@
     {
       "id": "webgpu_tsl_interoperability",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_interoperability.html",
       "source_sha256": "ed610f98adfe61a7c14da05ac51953abfd585ae04c2474f376d34c8eb72016dc",
@@ -25709,7 +25723,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 35,
+        "source": "src/browser/tsl_examples.rs",
+        "test": "tests/browser/tsl.spec.js",
+        "limitations": [
+          "RustのTSLノードAPIとWGSL関数連携でCRTを移植。Inspector UIの外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/inspector/Inspector.js",

@@ -44,6 +44,9 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_tsl_interoperability': {'example':35,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['RustのTSLノードAPIとWGSL関数連携でCRTを移植。Inspector UIの外観と性能の完全な同等性は未保証。']},
+ 'webgpu_texturegrad': {'example':36,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['公式のWebGPU側を単独表示。WebGL比較パネルは対象外。RustのTSLによる勾配付きGPUテクスチャサンプリング。性能の完全な同等性は未保証。']},
+ 'webgpu_procedural_texture': {'example':37,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['RustのTSLからGPUテクスチャ生成・2段Gaussian blurと調整を移植。Inspector UIの外観と性能の完全な同等性は未保証。']},
  'webgpu_loader_gltf_dispersion': {'example':33,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式DispersionTest・色分散・HDR・Orbit操作を移植。情報表示の外観は未一致。性能の完全な同等性は未保証。']},
  'webgpu_loader_gltf_compressed': {'example':34,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式coffeemat・Meshopt・KTX2/BasisのGPU圧縮テクスチャ・Orbit操作を移植。対応GPU圧縮形式が必要。情報表示と性能の完全な同等性は未保証。']},
  'webgl_loader_gltf_instancing': {'example':16,'source':'src/browser/expanded.rs','test':'tests/browser/gltf-instancing.spec.js','limitations':['試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。']},

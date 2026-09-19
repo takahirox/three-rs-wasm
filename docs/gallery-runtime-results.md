@@ -6,10 +6,10 @@ Baseline recorded before Core expansion. Instrumented pinned upstream HTML execu
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 566 |
-| rust-static-frame-rendered | 36 |
+| runtime-prerequisite | 559 |
+| rust-static-frame-rendered | 35 |
+| excluded | 10 |
 | rust-empty-frame | 3 |
-| excluded | 2 |
 
 ## Limits
 
@@ -27,31 +27,31 @@ Counts overlap and describe the sampled execution, not all possible branches.
 
 | Prerequisite | Examples |
 | --- | ---: |
-| Material type: MeshPhongMaterial | 99 |
 | Shadow maps | 98 |
+| Material type: MeshPhongMaterial | 98 |
 | Light type: HemisphereLight | 81 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |
 | Fog: linear | 57 |
 | Material type: ShaderMaterial | 49 |
 | Material type: MeshLambertMaterial | 42 |
-| Flat shaded lit material | 40 |
+| Flat shaded lit material | 39 |
 | Instance/batch transforms: Mesh | 37 |
 | Material type: RawShaderMaterial | 32 |
 | WebXR session integration | 31 |
 | Programmable background node | 27 |
 | GPU compute/storage dispatch | 24 |
-| Tone mapping mode: 7 | 23 |
 | Light type: SunLight | 22 |
 | Light type: SpotLight | 22 |
-| Physical material extension: transmission | 22 |
+| Tone mapping mode: 7 | 22 |
+| Physical material extension: transmission | 21 |
 | Skinned mesh / skeleton | 20 |
 | Wireframe material | 19 |
-| Morph target evaluation | 18 |
 | Programmable material: positionNode | 18 |
+| Morph target evaluation | 17 |
 | Material type: NodeMaterial | 17 |
-| Non-default material IOR | 14 |
 | Material type: MeshPhongNodeMaterial | 14 |
+| Programmable material: normalNode | 14 |
 
 ## Repeat the experiment
 
@@ -142,7 +142,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html) | runtime-prerequisite | Tone mapping mode: 7; Light type: HemisphereLight; Light type: SpotLight; Shadow maps; Material type: MeshLambertMaterial |
 | [webgl_lights_spotlights](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlights.html) | runtime-prerequisite | Shadow maps; Material type: MeshPhongMaterial; Light type: SpotLight |
 | [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | runtime-prerequisite | Fog: linear; Light type: SunLight; Material type: ShaderMaterial; Shadow maps; Instance/batch transforms: Mesh |
-| [webgl_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html) | runtime-prerequisite | Light type: RectAreaLight; Separate roughness and metalness textures |
+| [webgl_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html) | excluded |  |
 | [webgl_lines_colors](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_colors.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_lines_dashed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_dashed.html) | runtime-prerequisite | Fog: linear; Dashed lines |
 | [webgl_lines_fat](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat.html) | runtime-prerequisite | Instanced custom attributes; Material type: LineMaterial; Alpha-to-coverage |
@@ -162,12 +162,12 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_loader_fbx](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_fbx.html) | runtime-prerequisite | Fog: linear; Light type: HemisphereLight; Light type: SunLight; Shadow maps; Material type: MeshPhongMaterial; Skinned mesh / skeleton |
 | [webgl_loader_fbx_nurbs](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_fbx_nurbs.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_loader_gcode](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gcode.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
-| [webgl_loader_gltf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf.html) | runtime-prerequisite | PROBE LIMIT: Probe resource limit: combined texture data exceeds 8M pixels |
+| [webgl_loader_gltf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf.html) | excluded |  |
 | [webgl_loader_gltf_animation_pointer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_animation_pointer.html) | runtime-prerequisite | Physical material extension: transmission |
 | [webgl_loader_gltf_progressive_lod](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_progressive_lod.html) | runtime-prerequisite | Fog: linear; Skinned mesh / skeleton |
 | [webgl_loader_gltf_avif](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_avif.html) | runtime-prerequisite | PROBE LIMIT: Probe resource limit: combined texture data exceeds 8M pixels |
-| [webgl_loader_gltf_compressed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_compressed.html) | runtime-prerequisite | Separate roughness and metalness textures |
-| [webgl_loader_gltf_dispersion](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_dispersion.html) | runtime-prerequisite | Tone mapping mode: 7; Physical material extension: transmission; Non-default material IOR; Physical material extension: dispersion |
+| [webgl_loader_gltf_compressed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_compressed.html) | excluded |  |
+| [webgl_loader_gltf_dispersion](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_dispersion.html) | excluded |  |
 | [webgl_loader_gltf_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html) | runtime-prerequisite | Instance/batch transforms: Mesh |
 | [webgl_loader_gltf_iridescence](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_iridescence.html) | runtime-prerequisite | Physical material extension: transmission; Physical material extension: iridescence |
 | [webgl_loader_gltf_sheen](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_sheen.html) | runtime-prerequisite | Physical material extension: sheen; Separate roughness and metalness textures |
@@ -241,8 +241,8 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_materials_video_webcam](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video_webcam.html) | runtime-prerequisite | Texture image is not loaded or is GPU-only |
 | [webgl_materials_wireframe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_wireframe.html) | runtime-prerequisite | Wireframe material; Material type: ShaderMaterial; Alpha-to-coverage |
 | [webgl_pmrem_cubemap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_cubemap.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |
-| [webgl_pmrem_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_equirectangular.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |
-| [webgl_pmrem_test](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_test.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |
+| [webgl_pmrem_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_equirectangular.html) | excluded |  |
+| [webgl_pmrem_test](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_test.html) | excluded |  |
 | [webgl_math_obb](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_obb.html) | runtime-prerequisite | Light type: HemisphereLight; Material type: MeshLambertMaterial |
 | [webgl_math_orientation_transform](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_orientation_transform.html) | runtime-prerequisite | Material type: MeshNormalMaterial; Wireframe material |
 | [webgl_mesh_batch](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_mesh_batch.html) | runtime-prerequisite | Instance/batch transforms: Mesh; Material type: MeshPhongMaterial |
@@ -253,7 +253,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_modifier_simplifier](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_simplifier.html) | runtime-prerequisite | Flat shaded lit material |
 | [webgl_modifier_subdivision](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_subdivision.html) | runtime-prerequisite | Light type: HemisphereLight; Polygon offset |
 | [webgl_modifier_tessellation](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_tessellation.html) | runtime-prerequisite | Material type: ShaderMaterial |
-| [webgl_morphtargets](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html) | runtime-prerequisite | Morph target evaluation; Material type: MeshPhongMaterial; Flat shaded lit material |
+| [webgl_morphtargets](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html) | excluded |  |
 | [webgl_morphtargets_face](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_face.html) | runtime-prerequisite | Morph target evaluation |
 | [webgl_morphtargets_horse](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_horse.html) | runtime-prerequisite | Morph target evaluation; Flat shaded lit material |
 | [webgl_morphtargets_sphere](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_sphere.html) | runtime-prerequisite | Morph target evaluation |
@@ -263,7 +263,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_multiple_scenes_comparison](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_scenes_comparison.html) | runtime-prerequisite | Light type: HemisphereLight; Wireframe material |
 | [webgl_multiple_views](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_views.html) | runtime-prerequisite | Material type: MeshPhongMaterial; Flat shaded lit material; Wireframe material |
 | [webgl_panorama_cube](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_cube.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
-| [webgl_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_equirectangular.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
+| [webgl_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_equirectangular.html) | excluded |  |
 | [webgl_points_billboards](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_billboards.html) | runtime-prerequisite | Fog: exponential |
 | [webgl_points_dynamic](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_dynamic.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_points_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_sprites.html) | runtime-prerequisite | Fog: exponential; Blend mode: 2 |

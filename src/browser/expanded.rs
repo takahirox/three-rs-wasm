@@ -5,6 +5,7 @@ use std::sync::Arc;
 
 enum Content {
     Avif,
+    Tsl(Box<super::tsl_examples::Demo>),
     Gltf(Box<super::gltf_examples::Demo>),
     Instancing,
     Triangles {
@@ -45,6 +46,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            35..=37 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
+                near: 0.0,
+                far: 2.0,
+                elapsed: 0.0,
+                content: Content::Tsl(Box::new(
+                    super::tsl_examples::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             29..=34 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -430,6 +440,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::Tsl(demo) = &mut self.content {
+            return demo.update(scene, delta, animate);
+        }
         if let Content::Gltf(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -562,7 +575,28 @@ impl Demo {
             demo.dragging(value);
         }
     }
+    pub fn prepare(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut Scene,
+        camera: Object3D,
+        aspect: f64,
+    ) -> Result<()> {
+        if let Content::Tsl(demo) = &mut self.content {
+            demo.prepare(renderer, scene, camera, aspect)?;
+        }
+        Ok(())
+    }
+    pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::Tsl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        Err(crate::Error::Invalid("not a TSL example"))
+    }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::Tsl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::Gltf(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -587,7 +621,8 @@ impl Demo {
         }
         if matches!(
             self.content,
-            Content::Triangles { .. }
+            Content::Tsl(_)
+                | Content::Triangles { .. }
                 | Content::Horse(_)
                 | Content::ColorLines { .. }
                 | Content::Indexed(_)

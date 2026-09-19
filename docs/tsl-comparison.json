@@ -1,0 +1,167 @@
+{
+  "reference_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-20",
+  "viewport_cases": [
+    [
+      512,
+      512
+    ],
+    [
+      640,
+      400
+    ]
+  ],
+  "per_channel_tolerance": 6,
+  "allowed_different_pixel_fraction": 0.005,
+  "browser_checks_passed": 14,
+  "native_checks_passed": 5,
+  "timing_parity_measured": false,
+  "examples": [
+    {
+      "example": "webgpu_tsl_interoperability",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0034383138020833335
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0034434000651041665
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0031483968098958335
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0032183329264322915
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0031763712565104165
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0016110738118489583
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0016110738118489583
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.0016352335611979167
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.001674652099609375
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.0016835530598958333
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.0016783854166666666
+        }
+      ],
+      "steady_state_resource_creations": 0,
+      "steady_state_geometry_reuploads": 0
+    },
+    {
+      "example": "webgpu_texturegrad",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.004393259684244792
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.004459381103515625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0044708251953125
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0028059895833333335
+        }
+      ],
+      "steady_state_resource_creations": 0,
+      "steady_state_geometry_reuploads": 0
+    },
+    {
+      "example": "webgpu_procedural_texture",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.010040283203125
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.010040283203125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.010040283203125
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.005733489990234375
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.005382537841796875
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.005382537841796875
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.005382537841796875
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0
+        }
+      ],
+      "steady_state_resource_creations": 0,
+      "steady_state_geometry_reuploads": 0
+    }
+  ]
+}

@@ -21,6 +21,16 @@ impl ShaderProgram {
     /// consecutive uniform or read-only storage bindings, and may be written
     /// by a compute kernel between renders without a CPU readback.
     pub async fn new(renderer: &Renderer, wgsl: &str, buffers: &[&GpuBuffer]) -> Result<Self> {
+        Self::with_textures(renderer, wgsl, buffers, &[]).await
+    }
+    /// Group 1 contains buffers followed by consecutive texture/sampler pairs.
+    /// Views stay resident in the bind group, including render-to-texture outputs.
+    pub async fn with_textures(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let source = format!(
@@ -57,6 +67,27 @@ impl ShaderProgram {
                     },
                     count: None,
                 })
+                .chain(textures.iter().enumerate().flat_map(|(i, _)| {
+                    let binding = (buffers.len() + i * 2) as u32;
+                    [
+                        wgpu::BindGroupLayoutEntry {
+                            binding,
+                            visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
+                            ty: wgpu::BindingType::Texture {
+                                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                                view_dimension: wgpu::TextureViewDimension::D2,
+                                multisampled: false,
+                            },
+                            count: None,
+                        },
+                        wgpu::BindGroupLayoutEntry {
+                            binding: binding + 1,
+                            visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
+                            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                            count: None,
+                        },
+                    ]
+                }))
                 .collect::<Vec<_>>(),
         });
         let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
@@ -69,6 +100,24 @@ impl ShaderProgram {
                     binding: i as u32,
                     resource: b.buffer.as_entire_binding(),
                 })
+                .chain(
+                    textures
+                        .iter()
+                        .enumerate()
+                        .flat_map(|(i, (view, sampler))| {
+                            let binding = (buffers.len() + i * 2) as u32;
+                            [
+                                wgpu::BindGroupEntry {
+                                    binding,
+                                    resource: wgpu::BindingResource::TextureView(view),
+                                },
+                                wgpu::BindGroupEntry {
+                                    binding: binding + 1,
+                                    resource: wgpu::BindingResource::Sampler(sampler),
+                                },
+                            ]
+                        }),
+                )
                 .collect::<Vec<_>>(),
         });
         // Validate the group layout contract at creation, before render() caches

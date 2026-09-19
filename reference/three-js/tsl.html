@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body><canvas id="c"></canvas>
+<script type="module">
+// Run the pinned official source; only deterministic clock, GUI capture and the
+// WebGL comparison panel are adapted. The shader expressions remain upstream.
+import * as THREE from 'three/webgpu';
+import {uniform} from 'three/tsl';
+const id=new URLSearchParams(location.search).get('id');
+if(!['webgpu_tsl_interoperability','webgpu_texturegrad','webgpu_procedural_texture'].includes(id))throw Error('invalid fixture');
+window.fixtureTime=uniform(0);window.fixtureControls=[];
+let loading=Promise.resolve();
+const originalStart=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager);
+THREE.DefaultLoadingManager.itemStart=(...args)=>{loading=new Promise(resolve=>{THREE.DefaultLoadingManager.onLoad=resolve;});originalStart(...args);};
+THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};};
+const source=await (await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){return {add(object,key){fixtureControls.push({object,key});return {name(){return this;}};}};}}`)
+ .replace('renderer.inspector = new Inspector();','const fixtureInspector = new Inspector();')
+ .replace('renderer.inspector.createParameters','fixtureInspector.createParameters')
+ .replace(/\btime, /,'').replace(/, time\b/,'')
+ .replaceAll("'textures/","'/.cache/three-r186/examples/textures/")
+ .replace('init( true );','')
+ .replaceAll('window.innerWidth / 2','window.innerWidth')
+ .replaceAll("'50%'","'100%'");
+module='const time=window.fixtureTime;\n'+module;
+await import(URL.createObjectURL(new Blob([module],{type:'text/javascript'})));
+while(!window.reference)await new Promise(r=>setTimeout(r,10));
+await loading;
+await reference.renderer.init();
+window.renderFixture=async(seconds=0)=>{fixtureTime.value=seconds;reference.callback();await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(index,value)=>{const item=fixtureControls[index];item.object[item.key]=value;};
+await renderFixture();
+for(const c of document.querySelectorAll('canvas'))if(c!==reference.renderer.domElement)c.remove();
+reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

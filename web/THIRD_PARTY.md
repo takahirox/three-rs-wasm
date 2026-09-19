@@ -191,3 +191,19 @@ SHA-256 hashes are recorded in `tools/gltf_examples/assets.json`.
   the original GLB's `asset.extras`. Meshopt and KTX2/Basis payloads are retained.
 - `environments/pedestrian_overpass_1k.hdr`: Pedestrian Overpass by Greg Zaal,
   [Poly Haven, CC0](https://polyhaven.com/a/pedestrian_overpass).
+
+# TSL examples
+
+The Rust graph translations and `src/browser/tsl_crt.wgsl` follow the pinned
+Three.js r186 examples `webgpu_tsl_interoperability`, `webgpu_texturegrad`, and
+`webgpu_procedural_texture`, and the `Checker` / `GaussianBlurNode` implementations.
+Three.js MIT terms are in `../LICENSE-THREE`. The CRT example credits
+[Xor's Mini CRT](https://mini.gmshaders.com/p/gm-shaders-mini-crt).
+
+`gallery/assets/earth-lights.png` is the unchanged
+`examples/textures/planets/earth_lights_2048.png` from commit
+`148ef33ecb6d2502ff796d4554abd1549c95d519`.
+SHA-256: `0564fa57f5fade2f65e56d3ad59b3c6bf5e32c44f60370a3e46fd367b0cabaee`.
+`gallery/assets/uv-grid.jpg` is the existing pinned `uv_grid_opengl.jpg`.
+`tools/tsl/prepare.py` restores the image and reference-only helper modules from
+that same archive; `tools/gallery/check.py` verifies published asset bytes.

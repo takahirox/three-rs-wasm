@@ -33,6 +33,9 @@
     "webgpu_loader_gltf_transmission",
     "webgpu_morphtargets",
     "webgpu_pmrem_equirectangular",
-    "webgpu_pmrem_test"
+    "webgpu_pmrem_test",
+    "webgpu_procedural_texture",
+    "webgpu_texturegrad",
+    "webgpu_tsl_interoperability"
   ]
 }

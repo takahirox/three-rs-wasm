@@ -35,6 +35,7 @@ pub mod shadow;
 mod texture_gpu;
 pub mod time;
 mod transmission;
+pub mod tsl;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
