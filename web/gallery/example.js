@@ -41,7 +41,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  try {
   if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
-  const runtimeRevision = 'tsl-3';
+  const runtimeRevision = 'tsl-4';
   const {default:init, BrowserApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
   await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
   const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); app?.request_render(); };
@@ -67,16 +67,24 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
     credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
    }
    addEventListener('resize', resize);
-   if ([16,18,20,25,28,29,30,31,32,33,34,41].includes(entry.port.example)) { installOrbit(canvas,app); } else if (entry.port.example < 35) {
+   if ([16,18,20,25,28,29,30,31,32,33,34,41,48,51].includes(entry.port.example)) { installOrbit(canvas,app); } else if (entry.port.example < 35) {
    let drag;
    canvas.addEventListener('pointerdown', event => { drag = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId); app.gallery_input(0,0,0,true); });
    canvas.addEventListener('pointermove', event => { if(event.isPrimary===false)return;app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2); if (drag) { app.gallery_input(event.clientX-drag[0],event.clientY-drag[1],0,true); app.orbit(event.clientX-drag[0], event.clientY-drag[1], 0); drag = [event.clientX,event.clientY]; } });
    for (const event of ['pointerup','pointercancel','lostpointercapture']) canvas.addEventListener(event, () => { drag = null; app?.gallery_input(0,0,0,false); });
    canvas.addEventListener('wheel', event => { event.preventDefault(); app.gallery_input(0,0,event.deltaY,false); app.orbit(0,0,event.deltaY); }, {passive:false});
    }
-   if (entry.port.example === 39) canvas.addEventListener('pointermove',event=>app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
-   if (entry.port.example === 46) document.body.style.background = '#000';
+   if ([39,50].includes(entry.port.example)) canvas.addEventListener('pointermove',event=>app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
+   if ([46,50].includes(entry.port.example)) document.body.style.background = '#000';
    const settings = document.querySelector('#settings');
+   if (entry.port.example >= 48) {
+    const controls={48:[['Density',.001,.1,.04,.0001],['Height',-5,5,2,.01]],49:[],50:[['size attenuation',true]],51:[['size',0,1,.08,.001],['color inside','#ffa575'],['color outside','#311599']],52:[['damp',.25,1,.8,.01],['enabled',true]]}[entry.port.example];
+    settings.hidden=!controls.length;
+    controls.forEach(([name,min,max,value,step],i)=>{const label=text('label',name+' ',settings),input=document.createElement('input');input.id='particle-'+i;
+     input.type=typeof min==='boolean'?'checkbox':typeof min==='string'?'color':'range';if(input.type==='checkbox')input.checked=min;else if(input.type==='color')input.value=min;else Object.assign(input,{min,max,value,step});
+     label.append(input);input.addEventListener('input',()=>app.tsl_parameter(i,input.type==='checkbox'?Number(input.checked):input.type==='color'?parseInt(input.value.slice(1),16):Number(input.value)));
+    });
+   }
    if (entry.port.example >= 43 && entry.port.example <= 47) {
     const controls = {
      43:[['Saturation',0,1,0,.01]],

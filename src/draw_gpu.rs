@@ -1,5 +1,4 @@
 //! Reuse draw resources between submissions. Each draw in a submission owns a slot.
-use wgpu::util::DeviceExt;
 
 #[derive(PartialEq)]
 enum Resource {
@@ -31,12 +30,17 @@ fn upload(
     usage: wgpu::BufferUsages,
 ) -> wgpu::Buffer {
     if slot.as_ref().is_none_or(|s| s.bytes.len() != bytes.len()) {
+        // Queue uploads avoid a mapped-buffer copy holding a Wasm memory view
+        // across allocator growth when a scene initializes many draw slots.
+        let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("resident draw data"),
+            size: bytes.len() as u64,
+            usage: usage | wgpu::BufferUsages::COPY_DST,
+            mapped_at_creation: false,
+        });
+        queue.write_buffer(&buffer, 0, bytes);
         *slot = Some(Upload {
-            buffer: device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("resident draw data"),
-                contents: bytes,
-                usage: usage | wgpu::BufferUsages::COPY_DST,
-            }),
+            buffer,
             bytes: bytes.to_vec(),
         });
     }

@@ -237,3 +237,15 @@ come from the same pinned archive. `tools/tsl/prepare.py` restores them and
 - `gallery/assets/transition4.png`: `ea6fda270aa178d68bf134c0d429b266381183f80b89f9f2f8460c8c9b97b03c`
 - `gallery/assets/transition5.png`: `93027d664ab8e57d4f07db582b522277091a44973fa2aab2abae346806c2c198`
 - `gallery/assets/transition6.png`: `43848b237c3d6a66aa31f9f8375c286c6542be85ac8c2a82e4d0eb8a2a66ee68`
+
+The height-fog, sprite, instanced-sprite, galaxy and afterimage translations
+follow the same pinned Three.js r186 examples, `SpriteNodeMaterial`, `Fog.js`,
+`RangeNode` and `AfterImageNode` (MIT; see `../LICENSE-THREE`). The galaxy
+example credits [Three.js Journey](https://threejs-journey.com/lessons/animated-galaxy).
+
+The following PNG files are copied unchanged from that archive; preparation and
+byte verification use `tools/tsl/prepare.py` and `tools/gallery/check.py`.
+
+- `gallery/assets/sprite1.png`: `examples/textures/sprite1.png`; SHA-256 `0c69d3d1eaed72c3f13ddf93db0e233475b0cf850d3e3d9e45fd7a3803cac9e4`.
+- `gallery/assets/snowflake1.png`: `examples/textures/sprites/snowflake1.png`; SHA-256 `7b0c12c16b37b0d03e73009da109e97cdfdd1f40f047fd025c80954a8422d220`.
+- `gallery/assets/circle.png`: `examples/textures/sprites/circle.png`; SHA-256 `05fff2c8a01602cd4d8099cf456386ab28498093d084d5ca3805d16ebc71d3f8`.

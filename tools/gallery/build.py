@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_fog_height': {'example':48,'source':'src/browser/tsl_particles.rs','test':'tests/browser/tsl-particles.spec.js','limitations':['TSL高さフォグと100インスタンス。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_sprites': {'example':49,'source':'src/browser/tsl_particles.rs','test':'tests/browser/tsl-particles.spec.js','limitations':['200スプライトのGPUビルボード・個別回転・フォグ。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_instance_sprites': {'example':50,'source':'src/browser/tsl_particles.rs','test':'tests/browser/tsl-particles.spec.js','limitations':['10000スプライトのGPU回転・インスタンス属性。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_tsl_galaxy': {'example':51,'source':'src/browser/tsl_particles.rs','test':'tests/browser/tsl-particles.spec.js','limitations':['20000粒子のGPU位置・色・拡縮。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_afterimage': {'example':52,'source':'src/browser/tsl_particles.rs','test':'tests/browser/tsl-particles.spec.js','limitations':['50000粒子のGPUアニメーションと履歴テクスチャ。Inspector外観と性能の完全な同等性は未保証。']},
+
  'webgpu_postprocessing_direct': {'example':43,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['描画シェーダー内のTSL saturationとNeutral tone mappingを移植。Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_postprocessing_radial_blur': {'example':44,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['100インスタンスとGPU可変サンプル数Radial Blurを移植。Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_postprocessing_fxaa': {'example':45,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['100インスタンスとsRGB空間の適応的FXAAを移植。Inspector外観と性能の完全な同等性は未保証。']},

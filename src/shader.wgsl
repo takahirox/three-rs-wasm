@@ -205,22 +205,26 @@ fn ggx(alpha:f32,nl:f32,nv:f32,nh:f32)->f32 {
  let visibility=0.5/max(nl*sqrt(nv*nv*(1.0-a2)+a2)+nv*sqrt(nl*nl*(1.0-a2)+a2),0.000001);
  return distribution*visibility;
 }
+var<private> vertex_instance_index:u32;
+var<private> fragment_position_world:vec3<f32>;
+var<private> fragment_view_z:f32;
 struct VertexOut {
     @builtin(position) clip: vec4<f32>, @location(0) position: vec3<f32>,
-    @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32>, @location(3) color: vec4<f32>, @location(4) tangent:vec4<f32>, @location(5) bitangent:vec3<f32>, @location(6) view_position:vec3<f32>,@location(7) uv1:vec2<f32>,@location(8) line_distance:f32,
+    @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32>, @location(3) color: vec4<f32>, @location(4) tangent:vec4<f32>, @location(5) bitangent:vec3<f32>, @location(6) view_position:vec3<f32>,@location(7) uv1:vec2<f32>,@location(8) line_distance:f32, @location(9) @interpolate(flat) instance_index:u32,
 };
-@vertex fn vs_main(@builtin(vertex_index) vertex:u32,@location(0) input_position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) color:vec4<f32>, @location(4) corner:vec2<f32>, @location(5) tangent:vec4<f32>,@location(6) i0:vec4<f32>,@location(7) i1:vec4<f32>,@location(8) i2:vec4<f32>,@location(9) i3:vec4<f32>,@location(10) instance_color:vec4<f32>,@location(11) uv1:vec2<f32>)->VertexOut {
+@vertex fn vs_main(@builtin(vertex_index) vertex:u32,@builtin(instance_index) instance_index:u32,@location(0) input_position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) color:vec4<f32>, @location(4) corner:vec2<f32>, @location(5) tangent:vec4<f32>,@location(6) i0:vec4<f32>,@location(7) i1:vec4<f32>,@location(8) i2:vec4<f32>,@location(9) i3:vec4<f32>,@location(10) instance_color:vec4<f32>,@location(11) uv1:vec2<f32>)->VertexOut {
+    vertex_instance_index=instance_index;
     let animated=skin_morph(select(vertex,u32(tangent.z),u.line[0].x>0.0),input_position,normal,color,tangent);
-    let instance=mat4x4(i0,i1,i2,i3);
+    var instance=mat4x4<f32>(vec4(1.0,0.0,0.0,0.0),vec4(0.0,1.0,0.0,0.0),vec4(0.0,0.0,1.0,0.0),vec4(0.0,0.0,0.0,1.0));if INSTANCED {instance=mat4x4(i0,i1,i2,i3);}
     let position=(instance*vec4(deform(animated.position,animated.normal,uv),1.0)).xyz;
     let cofactor=mat3x3(cross(i1.xyz,i2.xyz),cross(i2.xyz,i0.xyz),cross(i0.xyz,i1.xyz));
     let instance_normal=select(animated.normal,normalize(cofactor*animated.normal),INSTANCED);
-    var out:VertexOut;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
+    var out:VertexOut;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
     if u.point.z>0.0 {
         var size=u.point.z;if u.point.w>0.0 {size*=u.point.y*0.5/out.clip.w;}
         out.clip=vec4(out.clip.xy+corner*size/u.point.xy*out.clip.w,out.clip.zw);
     }
-    out.normal=normalize((u.view*vec4((u.normal*vec4(instance_normal,0.0)).xyz,0.0)).xyz);out.uv=uv;out.uv1=uv1;out.color=select(color,animated.color,u.flags.z>0.5)*instance_color;out.tangent=vec4((model_view*instance*vec4(animated.tangent.xyz,0.0)).xyz,animated.tangent.w);out.bitangent=cross(normalize(out.normal),normalize(out.tangent.xyz))*tangent.w;out.line_distance=corner.x;
+    out.normal=normalize((u.view*vec4((u.normal*vec4(instance_normal,0.0)).xyz,0.0)).xyz);out.uv=uv;out.uv1=uv1;out.color=select(color,animated.color,u.flags.z>0.5);if INSTANCED {out.color*=instance_color;}out.tangent=vec4((model_view*instance*vec4(animated.tangent.xyz,0.0)).xyz,animated.tangent.w);out.bitangent=cross(normalize(out.normal),normalize(out.tangent.xyz))*tangent.w;out.line_distance=corner.x;
     if u.line[0].x>0.0 {
         let other=skin_morph(u32(tangent.w),normal,vec3(0.0,0.0,1.0),color,tangent);
         let world_a=u.model*instance*vec4(animated.position,1.0);let world_b=u.model*instance*vec4(other.position,1.0);
@@ -237,7 +241,7 @@ struct VertexOut {
         out.position=world.xyz;out.view_position=(u.view*world).xyz;
         out.line_distance=mix(tangent.x,tangent.y,fraction);
     }
-    return out;
+    return project_vertex(out,animated.position);
 }
 fn map_uv(index:u32,surface:VertexOut)->vec2<f32> {
  let start=index*3u;let t=u.uv_transforms;
@@ -251,6 +255,7 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     return vec4(mix(color.rgb,u.fog_color.rgb,factor),color.a);
 }
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
+    fragment_position_world=in.position;fragment_view_z=-in.view_position.z;
     let color=transform_output(shade_fragment(in,front));
     if ENCODE_SRGB {
         var rgb=color.rgb;
@@ -283,9 +288,9 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
         if all_outside && u.clipping_params.z>0.0 {discard;}
     }
     if LINE_DASH {let distance=in.line_distance*u.line[0].w+u.line[1].x;let period=u.line[0].y+u.line[0].z;if distance-floor(distance/period)*period>u.line[0].y {discard;}}
-    if ALPHA_MASK && base.a<u.pbr.w {discard;}
+    if ALPHA_MASK && material_kind()!=5.0 && base.a<u.pbr.w {discard;}
     if u.maps.y<0.5 {base.a=1.0;}
-    if material_kind()==5.0 {return apply_fog(shade(in,base),-in.view_position.z);}
+    if material_kind()==5.0 {let shaded=shade(in,base);if ALPHA_MASK && shaded.a<=u.pbr.w {discard;}return apply_fog(shaded,-in.view_position.z);}
     if material_kind()<0.5 {return apply_fog(base,-in.view_position.z);}
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;

@@ -19,6 +19,7 @@ mod point_lights;
 mod robot;
 mod tsl_examples;
 mod tsl_filters;
+mod tsl_particles;
 mod tsl_passes;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -146,7 +147,7 @@ impl State {
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
-        let format = if [16, 27, 28, 35, 45, 46].contains(&self.example) {
+        let format = if [16, 27, 28, 35, 45, 46, 50].contains(&self.example) {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -155,17 +156,33 @@ impl State {
             format: Some(format),
             ..Default::default()
         });
-        self.renderer.blit_with_tone_mapping(
-            &self.target,
-            &view,
-            format,
-            self.scene.exposure,
-            if self.target.options.encode_srgb {
-                ToneMapping::None
-            } else {
-                self.scene.output_tone_mapping()
-            },
-        );
+        let presentation = match &self.gallery_scene {
+            Some(gallery_scenes::GalleryScene::Expanded(demo)) => {
+                demo.output_target().unwrap_or(&self.target)
+            }
+            _ => &self.target,
+        };
+        if self.example == 50 {
+            self.renderer.blit_premultiplied_srgb(
+                presentation,
+                &view,
+                format,
+                self.scene.exposure,
+                self.scene.output_tone_mapping(),
+            );
+        } else {
+            self.renderer.blit_with_tone_mapping(
+                presentation,
+                &view,
+                format,
+                self.scene.exposure,
+                if presentation.options.encode_srgb {
+                    ToneMapping::None
+                } else {
+                    self.scene.output_tone_mapping()
+                },
+            );
+        }
         frame.present();
         self.frame += 1;
         let _ = self
@@ -680,7 +697,7 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if example == 46 {
+            if [46, 50].contains(&example) {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
@@ -692,7 +709,8 @@ impl BrowserApp {
                 if example >= 4 {
                     RenderTargetOptions {
                         samples: if [
-                            7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+                            7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
+                            52,
                         ]
                         .contains(&example)
                         {
@@ -728,7 +746,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=47).contains(&example) {
+            if (7..=52).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

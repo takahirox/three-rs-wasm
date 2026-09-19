@@ -134,7 +134,7 @@ pub struct Renderer {
     transmission_mips: RefCell<Option<crate::transmission::MipChain>>,
     draw_slots: RefCell<DrawSlots>,
     scene_draw_slots: RefCell<HashMap<u32, (std::sync::Weak<()>, DrawSlots)>>,
-    present_slot: RefCell<crate::draw_gpu::Slot>,
+    present_slots: RefCell<Vec<(wgpu::Texture, crate::draw_gpu::Slot)>>,
 }
 type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
@@ -203,7 +203,7 @@ impl Renderer {
         for (_, _, slot) in self.backgrounds.borrow_mut().values_mut() {
             *slot = Default::default();
         }
-        *self.present_slot.borrow_mut() = Default::default();
+        self.present_slots.borrow_mut().clear();
         self.geometry.borrow_mut().prune();
         self.textures.borrow_mut().prune();
         self.physical_maps.borrow_mut().prune();
@@ -357,7 +357,7 @@ impl Renderer {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
                 format!(
-                    "{}\n{}\n{}\n{}",
+                    "{}\n{}\n{}\n{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
                     concat!(
                         include_str!("shaders/deformation.wgsl"),
@@ -367,7 +367,8 @@ impl Renderer {
                         include_str!("shader.wgsl")
                     ),
                     crate::shader::DEFAULT_HOOKS,
-                    crate::shader::DEFAULT_OUTPUT
+                    crate::shader::DEFAULT_OUTPUT,
+                    crate::shader::DEFAULT_PROJECTION
                 )
                 .into(),
             ),
@@ -405,7 +406,7 @@ impl Renderer {
             transmission_mips: Default::default(),
             draw_slots: Default::default(),
             scene_draw_slots: Default::default(),
-            present_slot: Default::default(),
+            present_slots: Default::default(),
         })
     }
 
@@ -445,6 +446,37 @@ impl Renderer {
         format: wgpu::TextureFormat,
         exposure: f64,
         tone_mapping: ToneMapping,
+    ) {
+        self.present(
+            target,
+            view,
+            format,
+            [exposure as f32, tone_mapping as u32 as f32, 0.0, 0.0],
+        );
+    }
+    /// Convert a premultiplied linear target to premultiplied sRGB canvas output.
+    /// Use an unorm (non-sRGB) destination view to avoid a second conversion.
+    pub fn blit_premultiplied_srgb(
+        &self,
+        target: &RenderTarget,
+        view: &wgpu::TextureView,
+        format: wgpu::TextureFormat,
+        exposure: f64,
+        tone_mapping: ToneMapping,
+    ) {
+        self.present(
+            target,
+            view,
+            format,
+            [exposure as f32, tone_mapping as u32 as f32, 1.0, 0.0],
+        );
+    }
+    fn present(
+        &self,
+        target: &RenderTarget,
+        view: &wgpu::TextureView,
+        format: wgpu::TextureFormat,
+        parameters: [f32; 4],
     ) {
         let mut cache = self.presentations.borrow_mut();
         let (layout, pipeline) = cache.entry(format).or_insert_with(|| {
@@ -524,8 +556,24 @@ impl Renderer {
                 });
             (layout, pipeline)
         });
-        let parameters = [exposure as f32, tone_mapping as u32 as f32, 0.0, 0.0];
-        let mut slot = self.present_slot.borrow_mut();
+        // Retain both history targets and the direct scene presentation. Bound
+        // storage so resizing or replacing targets does not grow this cache.
+        let mut slots = self.present_slots.borrow_mut();
+        let index = if let Some(i) = slots.iter().position(|(t, _)| t == &target.texture) {
+            i
+        } else {
+            // A resized canvas must not retain full-sized attachments from
+            // previous dimensions merely to fill the history cache.
+            slots.retain(|(t, _)| {
+                t.size() == target.texture.size() && t.format() == target.texture.format()
+            });
+            if slots.len() == 3 {
+                slots.remove(0);
+            }
+            slots.push((target.texture.clone(), Default::default()));
+            slots.len() - 1
+        };
+        let slot = &mut slots[index].1;
         let uniform = slot.uniform(&self.device, &self.queue, bytemuck::cast_slice(&parameters));
         let bind_group = slot.bindings(
             &self.device,

@@ -119,3 +119,24 @@ fn output_is_not_an_unlit_or_fullscreen_input() {
     );
     assert!(effect_wgsl_with_textures(&graph, 1).is_ok());
 }
+
+#[test]
+fn instance_attributes_and_world_inputs_validate_stages_and_bindings() {
+    assert!(effect_wgsl(&instanced_attribute(0)).is_err());
+    assert!(NodeMaterial::new(instanced_attribute(0)).wgsl(0).is_err());
+    let graph = NodeMaterial::new(instanced_attribute(0) * Texture::External(0).sample(uv()));
+    let code = graph.wgsl_with_buffers(1, 1).unwrap();
+    assert!(code.contains("@binding(1)"));
+    assert!(
+        NodeMaterial::new(instanced_attribute(1))
+            .wgsl_with_buffers(0, 1)
+            .is_err()
+    );
+    assert!(NodeMaterial::new(position_world()).wgsl(0).is_ok());
+    assert!(NodeMaterial::new(view_z()).wgsl(0).is_ok());
+    assert!(effect_wgsl(&position_world()).is_err());
+    assert!(effect_wgsl(&view_z()).is_err());
+    let mut graph = NodeMaterial::new(float(1.0));
+    graph.position = Some(position_world());
+    assert!(graph.wgsl(0).is_err());
+}

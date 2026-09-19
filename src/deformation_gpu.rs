@@ -4,7 +4,6 @@ use std::{
     collections::HashMap,
     sync::{Arc, Weak},
 };
-use wgpu::util::DeviceExt;
 #[derive(Clone)]
 pub(crate) struct Bindings {
     pub data: wgpu::Buffer,
@@ -51,17 +50,21 @@ pub(crate) fn layout_entries() -> Vec<wgpu::BindGroupLayoutEntry> {
         })
         .collect()
 }
-fn buffer(device: &wgpu::Device, bytes: &[u8], uniform: bool) -> wgpu::Buffer {
-    device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+fn buffer(device: &wgpu::Device, queue: &wgpu::Queue, bytes: &[u8], uniform: bool) -> wgpu::Buffer {
+    // Do not retain a Wasm memory view across mapped-buffer initialization.
+    let buffer = device.create_buffer(&wgpu::BufferDescriptor {
         label: Some("skin/morph input"),
-        contents: bytes,
+        size: bytes.len() as u64,
+        mapped_at_creation: false,
         usage: wgpu::BufferUsages::COPY_DST
             | if uniform {
                 wgpu::BufferUsages::UNIFORM
             } else {
                 wgpu::BufferUsages::STORAGE
             },
-    })
+    });
+    queue.write_buffer(&buffer, 0, bytes);
+    buffer
 }
 impl Cache {
     pub fn prune(&mut self, scene: &Scene) {
@@ -214,7 +217,7 @@ impl Cache {
                 Geometry {
                     owner: Arc::downgrade(source),
                     versions,
-                    data: buffer(device, bytemuck::cast_slice(&data), false),
+                    data: buffer(device, queue, bytemuck::cast_slice(&data), false),
                     targets,
                     max_joint,
                     layout: [skin_size as u32, stride as u32, mask],
@@ -275,8 +278,8 @@ impl Cache {
             geometry: key,
             binding: Bindings {
                 data: geometry.data.clone(),
-                pose: buffer(device, bytemuck::cast_slice(&values), false),
-                info: buffer(device, bytemuck::cast_slice(&header), true),
+                pose: buffer(device, queue, bytemuck::cast_slice(&values), false),
+                info: buffer(device, queue, bytemuck::cast_slice(&header), true),
             },
             last: Vec::new(),
             header,
@@ -287,8 +290,8 @@ impl Cache {
                 geometry: key,
                 binding: Bindings {
                     data: geometry.data.clone(),
-                    pose: buffer(device, bytemuck::cast_slice(&values), false),
-                    info: buffer(device, bytemuck::cast_slice(&header), true),
+                    pose: buffer(device, queue, bytemuck::cast_slice(&values), false),
+                    info: buffer(device, queue, bytemuck::cast_slice(&header), true),
                 },
                 last: Vec::new(),
                 header,

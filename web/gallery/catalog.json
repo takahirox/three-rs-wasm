@@ -16050,7 +16050,7 @@
     {
       "id": "webgpu_fog_height",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_fog_height.html",
       "source_sha256": "1c8367a2ff54509abea68bde40870624ec579a57c27d5b953ff635469901082b",
@@ -16112,7 +16112,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 48,
+        "source": "src/browser/tsl_particles.rs",
+        "test": "tests/browser/tsl-particles.spec.js",
+        "limitations": [
+          "TSL高さフォグと100インスタンス。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -16634,7 +16641,7 @@
     {
       "id": "webgpu_instance_sprites",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_sprites.html",
       "source_sha256": "443982968e50fc6487eea2e5d09ea928c4d904b0774e4f19174508b58ecb4808",
@@ -16672,7 +16679,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 50,
+        "source": "src/browser/tsl_particles.rs",
+        "test": "tests/browser/tsl-particles.spec.js",
+        "limitations": [
+          "10000スプライトのGPU回転・インスタンス属性。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/tsl",
@@ -20946,7 +20960,7 @@
     {
       "id": "webgpu_postprocessing_afterimage",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_afterimage.html",
       "source_sha256": "8373aa5e8a793c5f1964305fe09a1a22992d5ade666b3adab2e390365f82f1ab",
@@ -20980,7 +20994,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 52,
+        "source": "src/browser/tsl_particles.rs",
+        "test": "tests/browser/tsl-particles.spec.js",
+        "limitations": [
+          "50000粒子のGPUアニメーションと履歴テクスチャ。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/AfterImageNode.js",
@@ -24906,7 +24927,7 @@
     {
       "id": "webgpu_sprites",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sprites.html",
       "source_sha256": "cf6ecf2488327c9431246aff08da69f140ad3804744b7b3d08c443dd05b6326a",
@@ -24924,7 +24945,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 49,
+        "source": "src/browser/tsl_particles.rs",
+        "test": "tests/browser/tsl-particles.spec.js",
+        "limitations": [
+          "200スプライトのGPUビルボード・個別回転・フォグ。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/tsl",
         "three/webgpu"
@@ -25608,7 +25636,7 @@
     {
       "id": "webgpu_tsl_galaxy",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_galaxy.html",
       "source_sha256": "8485ea10a48bb27085a71c2537cde4e87767c942cb996698afa4352b4ed19db3",
@@ -25652,7 +25680,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 51,
+        "source": "src/browser/tsl_particles.rs",
+        "test": "tests/browser/tsl-particles.spec.js",
+        "limitations": [
+          "20000粒子のGPU位置・色・拡縮。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

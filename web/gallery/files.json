@@ -24,6 +24,8 @@
   "webgpu": [
     "webgpu_compute_texture",
     "webgpu_equirectangular",
+    "webgpu_fog_height",
+    "webgpu_instance_sprites",
     "webgpu_lights_pointlights",
     "webgpu_loader_gltf",
     "webgpu_loader_gltf_anisotropy",
@@ -35,6 +37,7 @@
     "webgpu_morphtargets",
     "webgpu_pmrem_equirectangular",
     "webgpu_pmrem_test",
+    "webgpu_postprocessing_afterimage",
     "webgpu_postprocessing_difference",
     "webgpu_postprocessing_fxaa",
     "webgpu_postprocessing_masking",
@@ -45,7 +48,9 @@
     "webgpu_postprocessing_direct",
     "webgpu_procedural_texture",
     "webgpu_rtt",
+    "webgpu_sprites",
     "webgpu_texturegrad",
+    "webgpu_tsl_galaxy",
     "webgpu_tsl_interoperability"
   ]
 }

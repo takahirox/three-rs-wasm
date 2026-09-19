@@ -343,3 +343,5 @@ fn extra_bindings(
 }
 
 pub mod ssaa;
+
+pub mod afterimage;

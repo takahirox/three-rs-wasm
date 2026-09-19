@@ -9,6 +9,8 @@ static NEXT: AtomicU64 = AtomicU64::new(1);
 pub(crate) const DEFAULT_OUTPUT: &str =
     "fn transform_output(value:vec4<f32>)->vec4<f32>{return value;}";
 pub(crate) const DEFAULT_HOOKS: &str = "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;} fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}";
+pub(crate) const DEFAULT_PROJECTION: &str =
+    "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
 #[derive(Debug)]
 pub struct ShaderProgram {
     pub(crate) id: u64,
@@ -33,13 +35,46 @@ impl ShaderProgram {
         buffers: &[&GpuBuffer],
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
-        Self::build(renderer, wgsl, buffers, textures, DEFAULT_OUTPUT).await
+        Self::build(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            DEFAULT_OUTPUT,
+            DEFAULT_PROJECTION,
+        )
+        .await
     }
     /// Transform a lit material's linear output before tone mapping, without a
     /// fullscreen pass. Bind via MaterialProperties::vertex_program and use its
     /// vertex_uniforms for the shared u.custom slots.
     pub async fn with_output(renderer: &Renderer, output: &str) -> Result<Self> {
-        Self::build(renderer, DEFAULT_HOOKS, &[], &[], output).await
+        Self::build(
+            renderer,
+            DEFAULT_HOOKS,
+            &[],
+            &[],
+            output,
+            DEFAULT_PROJECTION,
+        )
+        .await
+    }
+    pub(crate) async fn with_projection(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        projection: &str,
+    ) -> Result<Self> {
+        Self::build(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            DEFAULT_OUTPUT,
+            projection,
+        )
+        .await
     }
     async fn build(
         renderer: &Renderer,
@@ -47,11 +82,12 @@ impl ShaderProgram {
         buffers: &[&GpuBuffer],
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
         output: &str,
+        projection: &str,
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let source = format!(
-            "{}\n{}\n{wgsl}\n{output}",
+            "{}\n{}\n{wgsl}\n{output}\n{projection}",
             include_str!("shaders/cube_uv.wgsl"),
             concat!(
                 include_str!("shaders/deformation.wgsl"),

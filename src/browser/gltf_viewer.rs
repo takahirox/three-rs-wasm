@@ -108,6 +108,9 @@ impl OrbitViewer {
         self.pitch = pitch;
         self.radius = self.initial_radius / 1.8 * distance;
     }
+    pub(super) fn limit_pitch(&mut self, min: f64, max: f64) {
+        self.pitch = self.pitch.clamp(min, max);
+    }
     pub fn orbit(&mut self, dx: f64, dy: f64, zoom: f64) {
         self.yaw -= dx * 0.008;
         self.pitch = (self.pitch + dy * 0.008).clamp(-1.4, 1.4);

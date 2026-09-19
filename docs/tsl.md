@@ -188,3 +188,69 @@ at 512×512; enabling r186 lighting in the port reduced its end-to-end discrepan
 to at most 4 pixels across the tested square views. No threshold was relaxed.
 Raw measurements, GPU resource counts and local PNG paths:
 [`tsl-filters-comparison.json`](tsl-filters-comparison.json).
+
+## Five fog and particle examples
+
+| Gallery example | Implemented work |
+| --- | --- |
+| `webgpu_fog_height` | 100 instanced Phong columns, fragment world height/view depth fog, Orbit controls |
+| `webgpu_sprites` | 200 GPU billboards with individual rotation/scale and linear fog |
+| `webgpu_instance_sprites` | 10,000 sprites in one draw, GPU rotation, alpha test, pointer camera and attenuation toggle |
+| `webgpu_tsl_galaxy` | 20,000 particles in one draw, resident random attributes, GPU position/scale/color expressions |
+| `webgpu_postprocessing_afterimage` | 50,000 GPU-animated particles in one draw and persistent HDR history with damp/enabled controls |
+
+`tsl::sprites::SpriteNodeMaterial` compiles local center, scale, rotation and
+size-attenuation expressions into a camera-facing vertex projection. It uses
+ordinary plane geometry with `BufferGeometry.instance_count`; no per-instance identity
+matrices or CPU-expanded billboards are needed. `instanced_attribute(binding)`
+reads an explicitly bound `GpuBuffer` array of vec4s in vertex/fragment stages.
+Callers supply at least one vec4 per instance. `instance_index()` now works in
+these stages too. External texture bindings follow the attribute buffers.
+Negative material output is clamped to zero, matching upstream node materials.
+This is an unlit centered billboard subset; arbitrary Sprite centers, sprite
+raycasting and sprite shadow/lighting nodes are not implemented.
+
+`position_world()` and positive `view_z()` are fragment/output inputs used by
+`exponential_height_fog_factor`. `AfterImagePass` applies the original
+component-wise `max(new, old * damp * max(sign(old - 0.1), 0))` in two persistent
+RGBA16Float targets. Resizing clears history. The gallery presents that result
+directly, retaining both presentation bindings rather than copying into another
+target. Disabling the effect presents the scene and pauses history updates.
+
+The instanced-sprite scene has a transparent background upstream. Core's
+`blit_premultiplied_srgb` unpremultiplies linear color, applies tone mapping and
+sRGB encoding, then restores premultiplied alpha for the unorm canvas view.
+Using an opaque black clear instead caused the original edge-brightness mismatch;
+readback confirmed identical source texels and all six texture mip levels.
+Non-matrix instances use explicit identity transforms/colors in the shader,
+including on native Metal. Draw and deformation buffer initialization uses queue
+uploads, avoiding detached Wasm views during mapped copies as memory grows.
+
+`reference/three-js/tsl-particles.html` executes the pinned official scripts with
+seeded initialization and explicit time. Each upstream RangeNode has its own
+seed; only initial random data changes. Per-frame sprite rotation is set to the
+corresponding 60 Hz pose for comparison. An opacity=1 node marks the height-fog
+material dynamic because the r186 observer does not detect scene-level fog-node
+uniform changes at a frozen camera pose. The shader's fog expression is retained.
+UI changes and time seeking are applied together so each history sequence has the
+same number of rendered frames. Pointer/Orbit comparisons settle damping before
+capture; resize starts empty history on both implementations.
+
+`tests/browser/tsl-particles.spec.js` compares poses, controls, pointer/Orbit
+input and resize at the existing 6/255 channel / 0.5% pixel threshold. It also
+checks draw/pass counts and requires zero warmed GPU resource creations and zero
+geometry/deformation-input uploads, before and after resize. Particle movement
+must not write vertex/index/storage buffers. Native tests cover camera-facing
+projection from two axes, instance attributes, node alpha discard, history decay,
+threshold/resize behavior and transparent output encoding. Hardware CPU/GPU
+frame-time parity and Inspector styling remain unverified; these are partial ports.
+
+Validation on 2026-09-20: all 42 new image states passed the unchanged threshold.
+The largest fraction of pixels exceeding 6/255 was 0.078125% (height fog after
+Orbit input and resize); sprites and afterimage had zero exceeding pixels in all
+recorded states. The three particle workloads keep one scene draw each, and
+warmed frames create no GPU resources or vertex/index/storage uploads. The 67
+native tests (including doctests), all 138 browser regressions, native/Wasm Clippy
+and formatting checks passed.
+Raw measurements, resource counts and local PNG pair locations:
+[`tsl-particles-comparison.json`](tsl-particles-comparison.json).

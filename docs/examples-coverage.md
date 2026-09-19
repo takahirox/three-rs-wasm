@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 43 partial Rust ports; 554 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 48 partial Rust ports; 549 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_fog_height | `tests/browser/tsl-particles.spec.js` | TSL高さフォグと100インスタンス。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_sprites | `tests/browser/tsl-particles.spec.js` | 200スプライトのGPUビルボード・個別回転・フォグ。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_instance_sprites | `tests/browser/tsl-particles.spec.js` | 10000スプライトのGPU回転・インスタンス属性。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_galaxy | `tests/browser/tsl-particles.spec.js` | 20000粒子のGPU位置・色・拡縮。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_afterimage | `tests/browser/tsl-particles.spec.js` | 50000粒子のGPUアニメーションと履歴テクスチャ。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_direct | `tests/browser/tsl-filters.spec.js` | 描画シェーダー内のTSL saturationとNeutral tone mappingを移植。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_radial_blur | `tests/browser/tsl-filters.spec.js` | 100インスタンスとGPU可変サンプル数Radial Blurを移植。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_fxaa | `tests/browser/tsl-filters.spec.js` | 100インスタンスとsRGB空間の適応的FXAAを移植。Inspector外観と性能の完全な同等性は未保証。 |

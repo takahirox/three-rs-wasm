@@ -117,6 +117,9 @@ enum Expr {
     Constant(f32),
     Uint(u32),
     InstanceIndex,
+    InstanceAttribute(usize),
+    PositionWorld,
+    ViewZ,
     Output,
     Uniform(usize, Type),
     Uv,
@@ -154,6 +157,16 @@ pub async fn output_program(renderer: &Renderer, color: &Node) -> Result<ShaderP
 }
 pub fn uint(value: u32) -> Node {
     Node::new(Expr::Uint(value))
+}
+/// Per-instance resident vec4 storage buffer, indexed on the GPU.
+pub fn instanced_attribute(index: usize) -> Node {
+    Node::new(Expr::InstanceAttribute(index))
+}
+pub fn position_world() -> Node {
+    Node::new(Expr::PositionWorld)
+}
+pub fn view_z() -> Node {
+    Node::new(Expr::ViewZ)
 }
 pub fn instance_index() -> Node {
     Node::new(Expr::InstanceIndex)
@@ -221,6 +234,9 @@ impl Node {
     }
     fn binary(&self, op: &'static str, rhs: Node) -> Self {
         Self::new(Expr::Binary(op, self.clone(), rhs))
+    }
+    pub fn exp(&self) -> Self {
+        self.unary("exp")
     }
     pub fn sqrt(&self) -> Self {
         self.unary("sqrt")
@@ -320,12 +336,17 @@ impl NodeMaterial {
         }
     }
     pub fn wgsl(&self, texture_count: usize) -> Result<String> {
+        self.wgsl_with_buffers(texture_count, 0)
+    }
+    pub fn wgsl_with_buffers(&self, texture_count: usize, buffer_count: usize) -> Result<String> {
         let mut vertex = Compiler::new(Stage::Vertex, texture_count);
+        vertex.buffers = buffer_count;
         let (ty, position) = vertex.emit(self.position.as_ref().unwrap_or(&position_geometry()))?;
         if ty != Type::Vec3 {
             return Err(Error::Invalid("TSL position must be vec3"));
         }
         let mut fragment = Compiler::new(Stage::Fragment, texture_count);
+        fragment.buffers = buffer_count;
         let (ty, color) = fragment.emit(&self.color)?;
         let color = output_color(ty, color)?;
         let mut functions = vertex.functions;
@@ -339,9 +360,17 @@ impl NodeMaterial {
             .map(|key| functions[key].as_str())
             .collect::<Vec<_>>()
             .join("\n");
-        let resources = (0..texture_count).map(|i| format!("@group(1) @binding({}) var tsl_texture_{i}:texture_2d<f32>;\n@group(1) @binding({}) var tsl_sampler_{i}:sampler;",i*2,i*2+1)).collect::<Vec<_>>().join("\n");
+        let resources = (0..texture_count).map(|i| format!("@group(1) @binding({}) var tsl_texture_{i}:texture_2d<f32>;\n@group(1) @binding({}) var tsl_sampler_{i}:sampler;",buffer_count+i*2,buffer_count+i*2+1)).collect::<Vec<_>>().join("\n");
+        let attributes = (0..buffer_count)
+            .map(|i| {
+                format!(
+                    "@group(1) @binding({i}) var<storage,read> tsl_attribute_{i}:array<vec4<f32>>;"
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
         Ok(format!(
-            "{resources}\n{functions}\nfn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{{\n{}return {position};\n}}\nfn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{{\n{}return {color};\n}}",
+            "{attributes}\n{resources}\n{functions}\nfn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{{\n{}return {position};\n}}\nfn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{{\n{}return {color};\n}}",
             vertex.body, fragment.body
         ))
     }
@@ -416,6 +445,7 @@ enum Stage {
 struct Compiler {
     stage: Stage,
     textures: usize,
+    buffers: usize,
     body: String,
     values: HashMap<usize, (Type, String)>,
     functions: HashMap<String, String>,
@@ -425,6 +455,7 @@ impl Compiler {
         Self {
             stage,
             textures,
+            buffers: 0,
             body: String::new(),
             values: HashMap::new(),
             functions: HashMap::new(),
@@ -460,11 +491,39 @@ impl Compiler {
                 (Type::Vec4, "value".into())
             }
             Expr::Uint(x) => (Type::Uint, format!("{x}u")),
-            Expr::InstanceIndex => {
-                if self.stage != Stage::Compute {
-                    return Err(Error::Invalid("TSL instance index requires compute stage"));
+            Expr::InstanceIndex => (
+                Type::Uint,
+                match self.stage {
+                    Stage::Compute => "tsl_index",
+                    Stage::Vertex => "vertex_instance_index",
+                    Stage::Fragment => "surface.instance_index",
+                    _ => return Err(Error::Invalid("TSL instance index stage")),
                 }
-                (Type::Uint, "tsl_index".into())
+                .into(),
+            ),
+            Expr::InstanceAttribute(i) => {
+                if *i >= self.buffers || !matches!(self.stage, Stage::Vertex | Stage::Fragment) {
+                    return Err(Error::Invalid("TSL instance attribute binding or stage"));
+                }
+                let index = if self.stage == Stage::Vertex {
+                    "vertex_instance_index"
+                } else {
+                    "surface.instance_index"
+                };
+                (Type::Vec4, format!("tsl_attribute_{i}[{index}]"))
+            }
+            Expr::PositionWorld | Expr::ViewZ => {
+                if !matches!(self.stage, Stage::Output | Stage::Fragment) {
+                    return Err(Error::Invalid("TSL fragment position stage"));
+                }
+                match (&*node.0, self.stage) {
+                    (Expr::PositionWorld, Stage::Output) => {
+                        (Type::Vec3, "fragment_position_world".into())
+                    }
+                    (Expr::PositionWorld, _) => (Type::Vec3, "surface.position".into()),
+                    (_, Stage::Output) => (Type::Float, "fragment_view_z".into()),
+                    _ => (Type::Float, "(-surface.view_position.z)".into()),
+                }
             }
             Expr::Constant(x) => {
                 if !x.is_finite() {
@@ -837,3 +896,5 @@ pub fn rgb_shift(texture: Texture, coordinate: Node, amount: Node, angle: Node) 
 pub mod compute;
 
 pub mod display;
+
+pub mod sprites;
