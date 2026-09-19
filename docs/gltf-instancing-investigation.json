@@ -1,0 +1,352 @@
+{
+  "firstRun": {
+    "browser": "153.0.8010.48",
+    "viewport": [
+      512,
+      512
+    ],
+    "threshold": 6,
+    "cases": [
+      {
+        "name": "original-1x",
+        "samples": 1,
+        "glSamples": 0,
+        "fraction": 0.01525115966796875,
+        "mean": 0.5897789001464844,
+        "max": 190
+      },
+      {
+        "name": "original-4x",
+        "samples": 4,
+        "glSamples": 4,
+        "fraction": 0.05910491943359375,
+        "mean": 1.4617029825846355,
+        "max": 190
+      },
+      {
+        "name": "solid-1x",
+        "samples": 1,
+        "mode": "solid",
+        "glSamples": 0,
+        "fraction": 0.0032806396484375,
+        "mean": 0.25332895914713544,
+        "max": 47
+      },
+      {
+        "name": "basic-4x",
+        "samples": 4,
+        "mode": "basic",
+        "glSamples": 4,
+        "fraction": 0.042667388916015625,
+        "mean": 1.2419026692708333,
+        "max": 115
+      },
+      {
+        "name": "aligned-basic-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "basic",
+        "glSamples": 4,
+        "fraction": 0.003353118896484375,
+        "mean": 0.3026695251464844,
+        "max": 47
+      },
+      {
+        "name": "aligned-4x",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.010959625244140625,
+        "mean": 0.5131797790527344,
+        "max": 190
+      },
+      {
+        "name": "aligned-noMR-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "noMR",
+        "glSamples": 4,
+        "fraction": 0.003307342529296875,
+        "mean": 0.3691393534342448,
+        "max": 47
+      },
+      {
+        "name": "aligned-normal-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "normal",
+        "glSamples": 4,
+        "fraction": 0.003307342529296875,
+        "mean": 0.28682200113932294,
+        "max": 47
+      },
+      {
+        "name": "aligned-roughness-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "roughness",
+        "glSamples": 4,
+        "fraction": 0.003505706787109375,
+        "mean": 0.34060033162434894,
+        "max": 47
+      },
+      {
+        "name": "aligned-radiance-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "radiance",
+        "glSamples": 4,
+        "fraction": 0.03089141845703125,
+        "mean": 0.791998545328776,
+        "max": 109
+      },
+      {
+        "name": "aligned-copyMR-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "copyMR",
+        "glSamples": 4,
+        "mips": [
+          {
+            "level": 0,
+            "fraction": 0,
+            "max": 0
+          },
+          {
+            "level": 1,
+            "fraction": 0,
+            "max": 0
+          },
+          {
+            "level": 2,
+            "fraction": 0.1552591323852539,
+            "max": 1
+          },
+          {
+            "level": 3,
+            "fraction": 0.17964935302734375,
+            "max": 2
+          },
+          {
+            "level": 4,
+            "fraction": 0.2917327880859375,
+            "max": 2
+          },
+          {
+            "level": 5,
+            "fraction": 0.31329345703125,
+            "max": 2
+          },
+          {
+            "level": 6,
+            "fraction": 0.418212890625,
+            "max": 2
+          },
+          {
+            "level": 7,
+            "fraction": 0.4228515625,
+            "max": 2
+          },
+          {
+            "level": 8,
+            "fraction": 0.51171875,
+            "max": 2
+          },
+          {
+            "level": 9,
+            "fraction": 0.515625,
+            "max": 1
+          },
+          {
+            "level": 10,
+            "fraction": 0.5625,
+            "max": 1
+          },
+          {
+            "level": 11,
+            "fraction": 0.5,
+            "max": 1
+          }
+        ],
+        "fraction": 0.0163726806640625,
+        "mean": 0.5974146525065104,
+        "max": 167
+      }
+    ]
+  },
+  "repeatRun": {
+    "browser": "153.0.8010.48",
+    "viewport": [
+      512,
+      512
+    ],
+    "threshold": 6,
+    "cases": [
+      {
+        "name": "original-1x",
+        "samples": 1,
+        "glSamples": 0,
+        "fraction": 0.01525115966796875,
+        "mean": 0.5897789001464844,
+        "max": 190
+      },
+      {
+        "name": "original-4x",
+        "samples": 4,
+        "glSamples": 4,
+        "fraction": 0.06226348876953125,
+        "mean": 1.5130526224772136,
+        "max": 166
+      },
+      {
+        "name": "solid-1x",
+        "samples": 1,
+        "mode": "solid",
+        "glSamples": 0,
+        "fraction": 0.0032806396484375,
+        "mean": 0.25332895914713544,
+        "max": 47
+      },
+      {
+        "name": "basic-4x",
+        "samples": 4,
+        "mode": "basic",
+        "glSamples": 4,
+        "fraction": 0.042110443115234375,
+        "mean": 1.2265828450520833,
+        "max": 115
+      },
+      {
+        "name": "aligned-basic-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "basic",
+        "glSamples": 4,
+        "fraction": 0.004367828369140625,
+        "mean": 0.3332227071126302,
+        "max": 66
+      },
+      {
+        "name": "aligned-4x",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.016490936279296875,
+        "mean": 0.6018600463867188,
+        "max": 166
+      },
+      {
+        "name": "aligned-noMR-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "noMR",
+        "glSamples": 4,
+        "fraction": 0.004352569580078125,
+        "mean": 0.4008038838704427,
+        "max": 70
+      },
+      {
+        "name": "aligned-normal-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "normal",
+        "glSamples": 4,
+        "fraction": 0.003307342529296875,
+        "mean": 0.28682200113932294,
+        "max": 47
+      },
+      {
+        "name": "aligned-roughness-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "roughness",
+        "glSamples": 4,
+        "fraction": 0.003505706787109375,
+        "mean": 0.34060033162434894,
+        "max": 47
+      },
+      {
+        "name": "aligned-radiance-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "radiance",
+        "glSamples": 4,
+        "fraction": 0.03089141845703125,
+        "mean": 0.791998545328776,
+        "max": 109
+      },
+      {
+        "name": "aligned-copyMR-4x",
+        "samples": 4,
+        "flip": true,
+        "mode": "copyMR",
+        "glSamples": 4,
+        "mips": [
+          {
+            "level": 0,
+            "fraction": 0,
+            "max": 0
+          },
+          {
+            "level": 1,
+            "fraction": 0,
+            "max": 0
+          },
+          {
+            "level": 2,
+            "fraction": 0.1552591323852539,
+            "max": 1
+          },
+          {
+            "level": 3,
+            "fraction": 0.17964935302734375,
+            "max": 2
+          },
+          {
+            "level": 4,
+            "fraction": 0.2917327880859375,
+            "max": 2
+          },
+          {
+            "level": 5,
+            "fraction": 0.31329345703125,
+            "max": 2
+          },
+          {
+            "level": 6,
+            "fraction": 0.418212890625,
+            "max": 2
+          },
+          {
+            "level": 7,
+            "fraction": 0.4228515625,
+            "max": 2
+          },
+          {
+            "level": 8,
+            "fraction": 0.51171875,
+            "max": 2
+          },
+          {
+            "level": 9,
+            "fraction": 0.515625,
+            "max": 1
+          },
+          {
+            "level": 10,
+            "fraction": 0.5625,
+            "max": 1
+          },
+          {
+            "level": 11,
+            "fraction": 0.5,
+            "max": 1
+          }
+        ],
+        "fraction": 0.0163726806640625,
+        "mean": 0.5974146525065104,
+        "max": 167
+      }
+    ]
+  }
+}

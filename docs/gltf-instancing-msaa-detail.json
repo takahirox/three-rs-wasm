@@ -1,0 +1,1797 @@
+{
+  "browser": "153.0.8010.48",
+  "resolveStress": {
+    "cases": 990,
+    "changed": 78,
+    "max": 1,
+    "examples": [
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.8171372549019608,
+        "gl": 129,
+        "gpu": 130,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.8485098039215686,
+        "gl": 133,
+        "gpu": 134,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.8798823529411764,
+        "gl": 137,
+        "gpu": 138,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.9112549019607843,
+        "gl": 141,
+        "gpu": 142,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.9426274509803921,
+        "gl": 145,
+        "gpu": 146,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.2,
+        "x": 0.5,
+        "y": 1,
+        "gray": 0.974,
+        "gl": 149,
+        "gpu": 150,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.5,
+        "x": 0.5,
+        "y": 1,
+        "gray": 1,
+        "gl": 191,
+        "gpu": 192,
+        "error": 1
+      },
+      {
+        "dither": false,
+        "background": 0.8,
+        "x": 0.5,
+        "y": 1,
+        "gray": 1,
+        "gl": 229,
+        "gpu": 230,
+        "error": 1
+      }
+    ]
+  },
+  "variants": [
+    {
+      "name": "default-run1",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "default",
+      "repeat": 1,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "depth24-run1",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "depth24",
+      "repeat": 1,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "coarse-run1",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "coarse",
+      "repeat": 1,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003753662109375,
+      "mean": 0.3527933756510417,
+      "max": 44
+    },
+    {
+      "name": "fine-run1",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "fine",
+      "repeat": 1,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "default-run2",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "default",
+      "repeat": 2,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    },
+    {
+      "name": "depth24-run2",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "depth24",
+      "repeat": 2,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "coarse-run2",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "coarse",
+      "repeat": 2,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "fine-run2",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "fine",
+      "repeat": 2,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "default-run3",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "default",
+      "repeat": 3,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "depth24-run3",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "depth24",
+      "repeat": 3,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    },
+    {
+      "name": "coarse-run3",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "coarse",
+      "repeat": 3,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    },
+    {
+      "name": "fine-run3",
+      "samples": 4,
+      "rustFlip": true,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "variant": "fine",
+      "repeat": 3,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    }
+  ],
+  "capturedCanonicalInputs": {
+    "buffers": [
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "b1a9f425019949dda28ebd7896207c84fbfefca2194d2b6a3639a8dad6b94e8f"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "d86c7b1609b69f4e4bcc92deb7c243d3e83cabb965df6c07c4253a6c2ae8e08b"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "9f91a9e7dde06ce209e536283c10fa83a01c4b8f2eaa538ba47befd9f8a7b7bd"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "eb060c2323d4321f215f5cc1c4a3ab739ce804d850a361c5bb25aea4a97b1976"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "85d9a875492119df8f545598e38d04af7bcfcbfc61c0e7e82847709e01341d6f"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "3e445dda2d8532e507891dbe59d17ac6774e15665161e2241cf7cdb22cbc6d89"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "46edc2290a0ea687a1a4d6523320f47799fb18dd990dfe67ac420e7353722e5b"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "0034f66f054627bf4b05682aba9d5c3066fe0b94ef82d7ca9b635dc5b832b098"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "21846679e48d76b4f1294615b5638dec762ff9b353b43e8b6c854ba8af7a828c"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "5ba4121c98db625587158b06207cbf7c18652cec9384f8701a98ff191ad31942"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "aadbe06e5cda35f164663f9ba4c2137438fa31e32e4837f7c4695457f9650f06"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "89737fdf0a723e9c92bcfb495327120716a250b5e7011bf4028710200a6a1f7d"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "f91d748da43e84c24a87d685e6171d34b7e47995bcb1dc4e5b92f44351c8c0ef"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "ef5267cbcd5b36c9aa461838fc78f66764c2420567e48ab8595e1c1c28bf7c48"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "8d2620facc3759b406965a373e6e0e00d514f7321e0cd97704551ed49e9d64bd"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "2129cc9c5476d7e4f961f7e9cf0eb5d9aea9742e2362bc24a2cd1c111fe738a6"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "32bad8e27c2a5bd1b96f42186671f2218d6925a8ca2f7ef3ead48d2aa8f05731"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "0d1269048b3a3fb1a9b7adb12e9458cc34cf3dea1a323334bf8971bac6cacfb1"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "134760c576f3ff10981cd89a69d8869bae5f1984c092ed349737e7ea26bab43b"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "0317b9885498a178cd9c71241244f5f4769b1c4962a36de1e82e1c28770bee40"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "5019c69b8280a5356958ffc8d1305674e2a0372eb86e059a66e833e6b2f2d850"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "f0ef121d53a9471bac2a0a31592a38ef2dce9054d020bd7488eef5a3aeb555b5"
+      },
+      {
+        "label": "PMREM parameters",
+        "size": 48,
+        "usage": 64,
+        "hash": "1e92d01d988ae71397174fabcd27995707e46c384855e3dd606be34e03542075"
+      },
+      {
+        "label": "resident draw data",
+        "size": 160,
+        "usage": 72,
+        "hash": "1108019485a8289428a0490897d4a34e8189a253806ce7d5941493c163246faa"
+      },
+      {
+        "label": "resident vertices",
+        "size": 1164480,
+        "usage": 32,
+        "hash": "f77982fc173313f96227bce74c7d78c8f735b0c6f8002b84a0392c8130dc4c63"
+      },
+      {
+        "label": "resident indices",
+        "size": 185424,
+        "usage": 16,
+        "hash": "9134b719663dab7b696391ee04671b4329235691167a687289cb103752ac7c62"
+      },
+      {
+        "label": "skin/morph input",
+        "size": 16,
+        "usage": 136,
+        "hash": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb"
+      },
+      {
+        "label": "skin/morph input",
+        "size": 16,
+        "usage": 136,
+        "hash": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb"
+      },
+      {
+        "label": "skin/morph input",
+        "size": 32,
+        "usage": 72,
+        "hash": "66a36f2cd89da3b0389b800d975360502fe1c26fb536919637f7dfb6ab8d777b"
+      },
+      {
+        "label": "resident draw data",
+        "size": 6480,
+        "usage": 72,
+        "hash": "37124ec034fb8cbf56f965ff83f545b0939ceec6c8bce17cd43b18ecefa8156c"
+      },
+      {
+        "label": "resident draw data",
+        "size": 5120,
+        "usage": 40,
+        "hash": "5b47ce71cbe0620d4aff2b38f9ecc46a10d25ede3d66cafdd9d71fa672f670d1"
+      },
+      {
+        "label": "resident draw data",
+        "size": 16,
+        "usage": 72,
+        "hash": "ccaf6f183579497e8bfcd71045c04286fd3c2e60f3641e3eea164b761a4494b7"
+      }
+    ],
+    "samplers": [
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "compare": "less-equal",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "repeat",
+        "addressModeV": "repeat",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "linear",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "repeat",
+        "addressModeV": "repeat",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "linear",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "repeat",
+        "addressModeV": "repeat",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "linear",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "repeat",
+        "addressModeV": "repeat",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "linear",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "repeat",
+        "addressModeV": "repeat",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "linear",
+        "maxAnisotropy": 1
+      },
+      {
+        "addressModeU": "clamp-to-edge",
+        "addressModeV": "clamp-to-edge",
+        "addressModeW": "clamp-to-edge",
+        "lodMaxClamp": 32,
+        "lodMinClamp": 0,
+        "magFilter": "linear",
+        "minFilter": "linear",
+        "mipmapFilter": "nearest",
+        "maxAnisotropy": 1
+      }
+    ],
+    "shaders": [
+      "0d53ba7f24739bdfaa632ab1aac64bd272998058c81b790dc27ede3f7f4014c0",
+      "3aceaed03d62ff993ea04defa15d3ae888f3a236dcfa3aa9f27a034694fc91e8",
+      "a710fdd6ab639f6d7658935c6c9e3720f3e719d95c837cc8a2fc39c8040bf03b",
+      "1e4428d02c5bbf6ea00b952b065b8fb6a84cb3b71cf67ed93f090ef7007f9bf9",
+      "7d6e90d7414e6c58a4c47e0ade674cb2e4ec5a7828f38c4528844a008cc23302",
+      "7d6e90d7414e6c58a4c47e0ade674cb2e4ec5a7828f38c4528844a008cc23302",
+      "78bf7feb99a331ec77742a0ae0c4600dbae8b3c17b31f9af7af4a21bb36b2685"
+    ],
+    "pipelines": [
+      {
+        "vertex": {
+          "module": 1,
+          "entryPoint": "vs_main",
+          "buffers": [
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x3",
+                  "offset": 0,
+                  "shaderLocation": 0
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 24,
+                  "shaderLocation": 1
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 72,
+                  "shaderLocation": 2
+                }
+              ],
+              "stepMode": "vertex"
+            },
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x4",
+                  "offset": 0,
+                  "shaderLocation": 6
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 16,
+                  "shaderLocation": 7
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 32,
+                  "shaderLocation": 8
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 48,
+                  "shaderLocation": 9
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 64,
+                  "shaderLocation": 10
+                }
+              ],
+              "stepMode": "instance"
+            }
+          ]
+        },
+        "label": "shadow depth",
+        "depthStencil": {
+          "format": "depth32float",
+          "depthCompare": "less-equal",
+          "depthWriteEnabled": true,
+          "depthBias": 0,
+          "depthBiasClamp": 0,
+          "depthBiasSlopeScale": 0,
+          "stencilBack": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilFront": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilReadMask": 0,
+          "stencilWriteMask": 0
+        },
+        "fragment": {
+          "module": 1,
+          "targets": [],
+          "entryPoint": "fs_main"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "back",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 1,
+          "entryPoint": "vs_main",
+          "buffers": [
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x3",
+                  "offset": 0,
+                  "shaderLocation": 0
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 24,
+                  "shaderLocation": 1
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 72,
+                  "shaderLocation": 2
+                }
+              ],
+              "stepMode": "vertex"
+            },
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x4",
+                  "offset": 0,
+                  "shaderLocation": 6
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 16,
+                  "shaderLocation": 7
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 32,
+                  "shaderLocation": 8
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 48,
+                  "shaderLocation": 9
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 64,
+                  "shaderLocation": 10
+                }
+              ],
+              "stepMode": "instance"
+            }
+          ]
+        },
+        "label": "shadow depth",
+        "depthStencil": {
+          "format": "depth32float",
+          "depthCompare": "less-equal",
+          "depthWriteEnabled": true,
+          "depthBias": 0,
+          "depthBiasClamp": 0,
+          "depthBiasSlopeScale": 0,
+          "stencilBack": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilFront": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilReadMask": 0,
+          "stencilWriteMask": 0
+        },
+        "fragment": {
+          "module": 1,
+          "targets": [],
+          "entryPoint": "fs_main"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "front",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 1,
+          "entryPoint": "vs_main",
+          "buffers": [
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x3",
+                  "offset": 0,
+                  "shaderLocation": 0
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 24,
+                  "shaderLocation": 1
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 72,
+                  "shaderLocation": 2
+                }
+              ],
+              "stepMode": "vertex"
+            },
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x4",
+                  "offset": 0,
+                  "shaderLocation": 6
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 16,
+                  "shaderLocation": 7
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 32,
+                  "shaderLocation": 8
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 48,
+                  "shaderLocation": 9
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 64,
+                  "shaderLocation": 10
+                }
+              ],
+              "stepMode": "instance"
+            }
+          ]
+        },
+        "label": "shadow depth",
+        "depthStencil": {
+          "format": "depth32float",
+          "depthCompare": "less-equal",
+          "depthWriteEnabled": true,
+          "depthBias": 0,
+          "depthBiasClamp": 0,
+          "depthBiasSlopeScale": 0,
+          "stencilBack": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilFront": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilReadMask": 0,
+          "stencilWriteMask": 0
+        },
+        "fragment": {
+          "module": 1,
+          "targets": [],
+          "entryPoint": "fs_main"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "none",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 3,
+          "entryPoint": "vs",
+          "buffers": []
+        },
+        "label": "HDR background",
+        "depthStencil": {
+          "format": "depth32float",
+          "depthCompare": "always",
+          "depthWriteEnabled": false,
+          "depthBias": 0,
+          "depthBiasClamp": 0,
+          "depthBiasSlopeScale": 0,
+          "stencilBack": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilFront": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilReadMask": 0,
+          "stencilWriteMask": 0
+        },
+        "fragment": {
+          "module": 3,
+          "targets": [
+            {
+              "format": "rgba8unorm",
+              "writeMask": 15
+            }
+          ],
+          "entryPoint": "fs"
+        },
+        "multisample": {
+          "count": 4,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "none",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 4,
+          "entryPoint": "vs",
+          "buffers": []
+        },
+        "label": "mip filter",
+        "fragment": {
+          "module": 4,
+          "targets": [
+            {
+              "format": "rgba8unorm-srgb",
+              "writeMask": 15
+            }
+          ],
+          "entryPoint": "fs"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "none",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 5,
+          "entryPoint": "vs",
+          "buffers": []
+        },
+        "label": "mip filter",
+        "fragment": {
+          "module": 5,
+          "targets": [
+            {
+              "format": "rgba8unorm",
+              "writeMask": 15
+            }
+          ],
+          "entryPoint": "fs"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "none",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 0,
+          "constants": {
+            "INSTANCED": 1
+          },
+          "entryPoint": "vs_main",
+          "buffers": [
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x3",
+                  "offset": 0,
+                  "shaderLocation": 0
+                },
+                {
+                  "format": "float32x3",
+                  "offset": 12,
+                  "shaderLocation": 1
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 24,
+                  "shaderLocation": 2
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 32,
+                  "shaderLocation": 3
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 48,
+                  "shaderLocation": 4
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 56,
+                  "shaderLocation": 5
+                },
+                {
+                  "format": "float32x2",
+                  "offset": 72,
+                  "shaderLocation": 11
+                }
+              ],
+              "stepMode": "vertex"
+            },
+            {
+              "arrayStride": 80,
+              "attributes": [
+                {
+                  "format": "float32x4",
+                  "offset": 0,
+                  "shaderLocation": 6
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 16,
+                  "shaderLocation": 7
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 32,
+                  "shaderLocation": 8
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 48,
+                  "shaderLocation": 9
+                },
+                {
+                  "format": "float32x4",
+                  "offset": 64,
+                  "shaderLocation": 10
+                }
+              ],
+              "stepMode": "instance"
+            }
+          ]
+        },
+        "label": "material pipeline",
+        "depthStencil": {
+          "format": "depth32float",
+          "depthCompare": "less-equal",
+          "depthWriteEnabled": true,
+          "depthBias": 0,
+          "depthBiasClamp": 0,
+          "depthBiasSlopeScale": 0,
+          "stencilBack": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilFront": {
+            "compare": "always",
+            "depthFailOp": "keep",
+            "failOp": "keep",
+            "passOp": "keep"
+          },
+          "stencilReadMask": 0,
+          "stencilWriteMask": 0
+        },
+        "fragment": {
+          "module": 0,
+          "targets": [
+            {
+              "format": "rgba8unorm",
+              "writeMask": 15
+            }
+          ],
+          "constants": {
+            "LIGHT_COUNT": 0,
+            "LIGHT_TYPES": 0,
+            "COLOR_MAP": 1,
+            "MR_MAP": 1,
+            "NORMAL_MAP": 1,
+            "AO_MAP": 1,
+            "EMISSIVE_MAP": 1,
+            "RECEIVE_SHADOW": 0,
+            "MATERIAL_KIND": 1,
+            "PHYSICAL": 0,
+            "EXTENSION_MAP_MASK": 0,
+            "ENCODE_SRGB": 1,
+            "ALPHA_MASK": 0,
+            "CLIPPING": 0,
+            "LINE_DASH": 0
+          },
+          "entryPoint": "fs_main"
+        },
+        "multisample": {
+          "count": 4,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "back",
+          "frontFace": "cw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      },
+      {
+        "vertex": {
+          "module": 6,
+          "entryPoint": "vs",
+          "buffers": []
+        },
+        "label": "present",
+        "fragment": {
+          "module": 6,
+          "targets": [
+            {
+              "format": "bgra8unorm",
+              "writeMask": 15
+            }
+          ],
+          "entryPoint": "fs"
+        },
+        "multisample": {
+          "count": 1,
+          "mask": 4294967295,
+          "alphaToCoverageEnabled": false
+        },
+        "primitive": {
+          "cullMode": "none",
+          "frontFace": "ccw",
+          "topology": "triangle-list",
+          "unclippedDepth": false
+        }
+      }
+    ]
+  },
+  "capturedCanonicalMaterialMips": [
+    {
+      "level": 0,
+      "width": 2048,
+      "height": 2048,
+      "format": "rgba8unorm-srgb",
+      "hash": "57eeab31e3b820cce2e296942937868102d38ef4905d7130e8bddf2fa7ed692a"
+    },
+    {
+      "level": 1,
+      "width": 1024,
+      "height": 1024,
+      "format": "rgba8unorm-srgb",
+      "hash": "e6d57b699d5e4d13356cd2a1b11633097adf9fdac8661ee327a60cfa56136af0"
+    },
+    {
+      "level": 2,
+      "width": 512,
+      "height": 512,
+      "format": "rgba8unorm-srgb",
+      "hash": "8f8ee0ba1cdd84dc2be20b5b590873b518c33c3cfcaa08bbc220e681196bcfec"
+    },
+    {
+      "level": 3,
+      "width": 256,
+      "height": 256,
+      "format": "rgba8unorm-srgb",
+      "hash": "c677bc238abc6a73e628733e801c77449c928671db142941edb8892357e980a5"
+    },
+    {
+      "level": 4,
+      "width": 128,
+      "height": 128,
+      "format": "rgba8unorm-srgb",
+      "hash": "3249d54676c8425a2cd9b4ee3e068df7276fec1719f9f02f56f3a7d102731dfb"
+    },
+    {
+      "level": 5,
+      "width": 64,
+      "height": 64,
+      "format": "rgba8unorm-srgb",
+      "hash": "b0725eb430132f3cde0b42bdd968968097c0f8dbd2e236a2be16ae3d86daa991"
+    },
+    {
+      "level": 6,
+      "width": 32,
+      "height": 32,
+      "format": "rgba8unorm-srgb",
+      "hash": "39655fc287416f3178e3b805de50014a75d60bd7c3ca6c286f4eeb9ba82836a7"
+    },
+    {
+      "level": 7,
+      "width": 16,
+      "height": 16,
+      "format": "rgba8unorm-srgb",
+      "hash": "1d7c45a877daf94ea3bfca99ca0d0d5adc75b8062cc5510d87493c3b1756c4ee"
+    },
+    {
+      "level": 8,
+      "width": 8,
+      "height": 8,
+      "format": "rgba8unorm-srgb",
+      "hash": "b15c45411da8daf2d08b55fd8cea49ce2fee81111c0ed6f96eaeb3b0099e6702"
+    },
+    {
+      "level": 9,
+      "width": 4,
+      "height": 4,
+      "format": "rgba8unorm-srgb",
+      "hash": "c4cf798eb457125759ea204490898327b45020bb4a3b23bde8aafa6f055f2eba"
+    },
+    {
+      "level": 10,
+      "width": 2,
+      "height": 2,
+      "format": "rgba8unorm-srgb",
+      "hash": "4eb27ec11b113bfb2640398e4c9f5c45f1e728691672c600bf061a5d6fb6d15f"
+    },
+    {
+      "level": 11,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm-srgb",
+      "hash": "eb9f1787d276f7f5e0862703328f99160172f0f4e80eea4287cd30140133c4a8"
+    },
+    {
+      "level": 0,
+      "width": 2048,
+      "height": 2048,
+      "format": "rgba8unorm",
+      "hash": "b4120c6874a5b28cd7a00dc7fe8a6001b98abcdacddf52e5a58c7d480d3e0497"
+    },
+    {
+      "level": 1,
+      "width": 1024,
+      "height": 1024,
+      "format": "rgba8unorm",
+      "hash": "3c22e97831d1fd4de22d9dc68f36d4394792ba949efcdeeef458bcb97648cae2"
+    },
+    {
+      "level": 2,
+      "width": 512,
+      "height": 512,
+      "format": "rgba8unorm",
+      "hash": "f4c819bb5aeba3d607f23fca00ced4579349d74c6f7fe921a0ffa4857cc4df67"
+    },
+    {
+      "level": 3,
+      "width": 256,
+      "height": 256,
+      "format": "rgba8unorm",
+      "hash": "71a6bb3f34c62eaa0f92fbcf7f5216aca6acd4d7517cd960a045835dbc3ed3dc"
+    },
+    {
+      "level": 4,
+      "width": 128,
+      "height": 128,
+      "format": "rgba8unorm",
+      "hash": "7a546ba12dd80fa7539758ebbefefda2c3050e71a250fd2e9658303b05b465d1"
+    },
+    {
+      "level": 5,
+      "width": 64,
+      "height": 64,
+      "format": "rgba8unorm",
+      "hash": "28c93091d1d24dd3c3d88862e3db23d6921a5c6636e29f121844532e388b274d"
+    },
+    {
+      "level": 6,
+      "width": 32,
+      "height": 32,
+      "format": "rgba8unorm",
+      "hash": "e339d28aa6a04ca6198285baa9dcde5edce62dab1aea76271ccdc7af558c10f9"
+    },
+    {
+      "level": 7,
+      "width": 16,
+      "height": 16,
+      "format": "rgba8unorm",
+      "hash": "6b3c35ee076599311c9347d7b9f62727f44689e6254bb670dc58b8f7fda2c3fa"
+    },
+    {
+      "level": 8,
+      "width": 8,
+      "height": 8,
+      "format": "rgba8unorm",
+      "hash": "5e51d13299e04bf04ccc90a3512051b0a6c4caa5554596ebb06d2a9b941e3827"
+    },
+    {
+      "level": 9,
+      "width": 4,
+      "height": 4,
+      "format": "rgba8unorm",
+      "hash": "8c106417205476b96ac00ca4b119196a67d35d7bddcaa663506c7cc3fcc4bfa0"
+    },
+    {
+      "level": 10,
+      "width": 2,
+      "height": 2,
+      "format": "rgba8unorm",
+      "hash": "e3646fcd63f5f1ae2eca7112ebe1ea62506ba622b2d9f774b6e8eda820a7089a"
+    },
+    {
+      "level": 11,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm",
+      "hash": "c19d3e238932de21bf7a28fcfdd630742db20ff8a274ffbc5a1c507613d8539b"
+    },
+    {
+      "level": 0,
+      "width": 2048,
+      "height": 2048,
+      "format": "rgba8unorm",
+      "hash": "8720e7d1cd61e6b5ddac62f07a70e8cd7e9ef8a32d9b4b8dbaa6759c8ed7f338"
+    },
+    {
+      "level": 1,
+      "width": 1024,
+      "height": 1024,
+      "format": "rgba8unorm",
+      "hash": "a965327c4a427c96722957050c3ba09465e22ab854d32a8336a2299035ab21b4"
+    },
+    {
+      "level": 2,
+      "width": 512,
+      "height": 512,
+      "format": "rgba8unorm",
+      "hash": "aaf8e45095e515e8a679192cf69c7f2ad1d7b5e9def751862fa4264197b68fd7"
+    },
+    {
+      "level": 3,
+      "width": 256,
+      "height": 256,
+      "format": "rgba8unorm",
+      "hash": "6f27ed116381f55810f8390a4d8de91e7002b6b896647388d37936136b52cabe"
+    },
+    {
+      "level": 4,
+      "width": 128,
+      "height": 128,
+      "format": "rgba8unorm",
+      "hash": "d00615f5324b3bcc6721802113a9ac8c1fc99f6378fc006a4226cfd101f9ca6a"
+    },
+    {
+      "level": 5,
+      "width": 64,
+      "height": 64,
+      "format": "rgba8unorm",
+      "hash": "86a9bed58eecfc26baf0eb46c340102a095708a17966806fb1030e09d0e20dbd"
+    },
+    {
+      "level": 6,
+      "width": 32,
+      "height": 32,
+      "format": "rgba8unorm",
+      "hash": "c75a3d186b5112404ec224f282c890eaacebd22d17d3c8f65fbeb2134104ff43"
+    },
+    {
+      "level": 7,
+      "width": 16,
+      "height": 16,
+      "format": "rgba8unorm",
+      "hash": "b62ecea41fcc5b9b42d1877ab90819f210875353cf868a47aefe98acb2958e9d"
+    },
+    {
+      "level": 8,
+      "width": 8,
+      "height": 8,
+      "format": "rgba8unorm",
+      "hash": "d38f1fde861c25dee6e975f9d8e9149232cb99af7b6fd3fbb2a31054b95769eb"
+    },
+    {
+      "level": 9,
+      "width": 4,
+      "height": 4,
+      "format": "rgba8unorm",
+      "hash": "93e56ef20e666e6c0044556f745048aaf9143033647d1db15f80504bdbbec02a"
+    },
+    {
+      "level": 10,
+      "width": 2,
+      "height": 2,
+      "format": "rgba8unorm",
+      "hash": "e7d751194746b6127494bb06b2e0230979380feae7d15418486753260abdeab1"
+    },
+    {
+      "level": 11,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm",
+      "hash": "cb68b1e3a9bc9f656cf947f0f2a3cab9fee274e4e1db195a0362a76c2167f9cd"
+    },
+    {
+      "level": 0,
+      "width": 2048,
+      "height": 2048,
+      "format": "rgba8unorm",
+      "hash": "1fb7529f9a51067f96dc1a1d296019530cba344953551db0c4b035c0e680fb7a"
+    },
+    {
+      "level": 1,
+      "width": 1024,
+      "height": 1024,
+      "format": "rgba8unorm",
+      "hash": "9942efa259aed95b3028ddc7b5196f8aed1d035741533ed7beeb1b5095c76adb"
+    },
+    {
+      "level": 2,
+      "width": 512,
+      "height": 512,
+      "format": "rgba8unorm",
+      "hash": "2813684473210d2cc737dbebe36e70b3624ca7dc8c01880176d4aa1da7618e5f"
+    },
+    {
+      "level": 3,
+      "width": 256,
+      "height": 256,
+      "format": "rgba8unorm",
+      "hash": "c27053ac82cdca7a103e728b626bc78520c5f7f8e1ad39a19fe393201cd357d0"
+    },
+    {
+      "level": 4,
+      "width": 128,
+      "height": 128,
+      "format": "rgba8unorm",
+      "hash": "c353dd2f5bd91e3d6040ef0e16d13bddbb605eb83fcc84a3f733b2c0345e0a43"
+    },
+    {
+      "level": 5,
+      "width": 64,
+      "height": 64,
+      "format": "rgba8unorm",
+      "hash": "286d168203c9b09d0f1c28c94781e936b0e27632a4de42979769743d332c1504"
+    },
+    {
+      "level": 6,
+      "width": 32,
+      "height": 32,
+      "format": "rgba8unorm",
+      "hash": "e99534fdc29180a8aabaa67d00b426c3dc5885fbcd4133d951f6eecb3754696b"
+    },
+    {
+      "level": 7,
+      "width": 16,
+      "height": 16,
+      "format": "rgba8unorm",
+      "hash": "d2557bd1f599d02a747d693774b05d440b380f258d07b572a87958ab66fedcab"
+    },
+    {
+      "level": 8,
+      "width": 8,
+      "height": 8,
+      "format": "rgba8unorm",
+      "hash": "5e4fafbbf3cc457a24ffad5a85d1499171cb9ad98fa316e99c5439c971817ea9"
+    },
+    {
+      "level": 9,
+      "width": 4,
+      "height": 4,
+      "format": "rgba8unorm",
+      "hash": "ebaa7cae7837ba207aa08b1b55e06950405b6d97a289ddc12189a80425db0309"
+    },
+    {
+      "level": 10,
+      "width": 2,
+      "height": 2,
+      "format": "rgba8unorm",
+      "hash": "f99d9cef17406ddf5000b3a4bb0bf3ae5f0ccf82a7788979a9de108daf414336"
+    },
+    {
+      "level": 11,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm",
+      "hash": "bc602b7997541357c44523cc505a6744e81602ee46b2c858e04e8663cafdfc9f"
+    },
+    {
+      "level": 0,
+      "width": 2048,
+      "height": 2048,
+      "format": "rgba8unorm-srgb",
+      "hash": "318c6044e80796641ce63514f23bb1ce8e49e1ca8fbb960e2e60286e724cdb2d"
+    },
+    {
+      "level": 1,
+      "width": 1024,
+      "height": 1024,
+      "format": "rgba8unorm-srgb",
+      "hash": "17cf9090216ce9deb310a447fd7a9f8542fa714c0d91fa9b215c191c47c2fd91"
+    },
+    {
+      "level": 2,
+      "width": 512,
+      "height": 512,
+      "format": "rgba8unorm-srgb",
+      "hash": "1d30c26cca1c253aa79f56bdba6bd8738a59dc2f07394639c1db07994546e322"
+    },
+    {
+      "level": 3,
+      "width": 256,
+      "height": 256,
+      "format": "rgba8unorm-srgb",
+      "hash": "729cbdb44466a352e61ec491b1ca6c42b1175263557daa416233e02a44e5ce43"
+    },
+    {
+      "level": 4,
+      "width": 128,
+      "height": 128,
+      "format": "rgba8unorm-srgb",
+      "hash": "4faf3bdebe69ef6d5c2ae9bbd17ba5f26ffcf2499b69ef9533d3dc45d98575a8"
+    },
+    {
+      "level": 5,
+      "width": 64,
+      "height": 64,
+      "format": "rgba8unorm-srgb",
+      "hash": "78eddb3e142802cc8c6a6c7bb9f66bde41c5dc72f98c594a96766641c1d8f8b4"
+    },
+    {
+      "level": 6,
+      "width": 32,
+      "height": 32,
+      "format": "rgba8unorm-srgb",
+      "hash": "053f6587d0244f0ed5a6a79271c06c522535c2efc9ad70465561709fc48a2690"
+    },
+    {
+      "level": 7,
+      "width": 16,
+      "height": 16,
+      "format": "rgba8unorm-srgb",
+      "hash": "ea4d870406f167eb9033fc2ec8db65cf4640ad700d02d05a3c6a0bda4215bf49"
+    },
+    {
+      "level": 8,
+      "width": 8,
+      "height": 8,
+      "format": "rgba8unorm-srgb",
+      "hash": "4c29660accebf301fde0043c4eaebce090d05c70a0044fd9025001fa79d2479f"
+    },
+    {
+      "level": 9,
+      "width": 4,
+      "height": 4,
+      "format": "rgba8unorm-srgb",
+      "hash": "3b33527f3c7ecbdffdd88379ed5dd12482f949b562e9dc4f0549dbea366dc127"
+    },
+    {
+      "level": 10,
+      "width": 2,
+      "height": 2,
+      "format": "rgba8unorm-srgb",
+      "hash": "3602def07df59c50bfb3e35602a42a84d009450fb34c991b0af5176e0b8304fa"
+    },
+    {
+      "level": 11,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm-srgb",
+      "hash": "d160ab5e323f1993a5e70fe47b4a2c80272f2cd2bb650576516f20a6ec5eee7b"
+    },
+    {
+      "level": 0,
+      "width": 1,
+      "height": 1,
+      "format": "rgba8unorm",
+      "hash": "ad95131bc0b799c0b1af477fb14fcf26a6a9f76079e48bf090acb7e8367bfd0e"
+    }
+  ],
+  "initializationCases": [
+    {
+      "name": "default-run1",
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    },
+    {
+      "name": "default-run2",
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    },
+    {
+      "name": "default-run3",
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    },
+    {
+      "name": "default-run4",
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    },
+    {
+      "name": "default-run5",
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    },
+    {
+      "name": "default-run6",
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44,
+      "inputSignatures": {
+        "buffers": "b0dcf2baf847b4e5d5af8ca0591bd6d2f0e066292cf18eafd07b86b76efb9916",
+        "samplers": "adcff93d8149fe2702235390850e5d8cd5106f1da6d155328f77e3025c0b2f3e",
+        "shaders": "c8dbde730a7817d49f764929bd6ac3a92ca9bae6c0e447590df263af4a4d5890",
+        "pipelines": "febb1051094bacc4fb9910e05feb6b1cf14e4f39d49782511ba025c6abb25cfa"
+      },
+      "materialMipSignature": "936fa0a1e57d19f37469e93a1834c429547dd71d684bcb6120a1019fe4de10b9",
+      "materialMipCount": 61
+    }
+  ],
+  "redrawAndUnmodifiedInitialization": [
+    {
+      "recreatedSampleTarget": false,
+      "initializations": 6,
+      "redrawsPerInitialization": 3,
+      "allRedrawPixelsIdentical": true,
+      "allCapturedInputsIdentical": true,
+      "initialImagesIdentical": true
+    },
+    {
+      "recreatedSampleTarget": true,
+      "initializations": 8,
+      "redrawsPerInitialization": 3,
+      "allRedrawPixelsIdentical": true,
+      "allCapturedInputsIdentical": true,
+      "initialImagesIdentical": true
+    }
+  ]
+}

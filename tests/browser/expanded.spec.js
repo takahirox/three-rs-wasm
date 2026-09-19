@@ -11,9 +11,8 @@ const cases=[
  ...(process.env.EXPANDED_PENDING?[{id:'webgl_loader_gltf_instancing',example:16,times:[0]}]:[]),
  {id:'webgl_geometries',example:17,times:[0,3,11]},
  {id:'webgl_lines_dashed',example:19,times:[0,3,11]},
- {id:'webgl_lights_rectarealight',example:20,times:[0,1,3]},
  {id:'webgl_geometry_colors',example:21,times:[0]},
- ...['webgl_morphtargets','webgpu_morphtargets'].map(id=>({id,example:18,times:[0,0,0,0],weights:[[0,0],[1,0],[0,1],[.4,.7]]})),
+ ...['webgpu_morphtargets'].map(id=>({id,example:18,times:[0,0,0,0],weights:[[0,0],[1,0],[0,1],[.4,.7]]})),
 ];
 for(const entry of cases)test(`additional scene and GPU resources: ${entry.id}`,async({page},info)=>{
  test.setTimeout(120000);await page.setViewportSize({width:512,height:512});
@@ -98,7 +97,7 @@ test('indexed mesh wireframe toggle matches the original',async({page},info)=>{
  writeFileSync(info.outputPath('actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('reference.png'),PNG.sync.write(expected));expect(different/(actual.width*actual.height)).toBeLessThanOrEqual(.005);
 });
 
-for(const [id,example] of [['webgl_lights_rectarealight',20],['webgl_morphtargets_sphere',25]])test(`${id} orbit, zoom and pan match the original`,async({page},info)=>{
+for(const [id,example] of [['webgl_morphtargets_sphere',25]])test(`${id} orbit, zoom and pan match the original`,async({page},info)=>{
  test.setTimeout(120000);await page.setViewportSize({width:512,height:512});
  const gesture=async()=>{
   await page.mouse.move(240,250);await page.mouse.down();await page.mouse.move(280,274,{steps:4});await page.mouse.up();

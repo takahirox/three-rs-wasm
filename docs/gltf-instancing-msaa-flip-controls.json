@@ -1,0 +1,36 @@
+{
+  "resources": {
+    "idleStable": true,
+    "steadyAllocations": 0,
+    "staticReuploads": false,
+    "drawsPerRequestedFrame": 3
+  },
+  "patches": {
+    "mesh": 1,
+    "background": 1,
+    "present": 1,
+    "pipelines": 1
+  },
+  "views": [
+    {
+      "state": 0,
+      "fraction": 0.010944366455078125
+    },
+    {
+      "state": 1,
+      "fraction": 0.01290130615234375
+    },
+    {
+      "state": 2,
+      "fraction": 0.01467132568359375
+    },
+    {
+      "state": 3,
+      "fraction": 0.014331817626953125
+    },
+    {
+      "state": 4,
+      "fraction": 0.01393359375
+    }
+  ]
+}

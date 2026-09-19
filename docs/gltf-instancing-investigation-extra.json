@@ -1,0 +1,490 @@
+{
+  "initialAblations": [
+    {
+      "samples": 1,
+      "mode": "baseline",
+      "fraction": 0.011768341064453125,
+      "mean": 0.5275319417317709,
+      "max": 190
+    },
+    {
+      "samples": 1,
+      "mode": "noNormal",
+      "fraction": 0.0111083984375,
+      "mean": 0.5065956115722656,
+      "max": 171
+    },
+    {
+      "samples": 1,
+      "mode": "noMR",
+      "fraction": 0.00389862060546875,
+      "mean": 0.3904533386230469,
+      "max": 203
+    },
+    {
+      "samples": 1,
+      "mode": "noAO",
+      "fraction": 0.015171051025390625,
+      "mean": 0.5824419657389323,
+      "max": 190
+    },
+    {
+      "samples": 1,
+      "mode": "noGeomRough",
+      "fraction": 0.017108917236328125,
+      "mean": 0.6080373128255209,
+      "max": 201
+    },
+    {
+      "samples": 1,
+      "mode": "basic",
+      "fraction": 0.00391387939453125,
+      "mean": 0.31025060017903644,
+      "max": 168
+    },
+    {
+      "samples": 1,
+      "mode": "solid",
+      "fraction": 0.0032806396484375,
+      "mean": 0.25332895914713544,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "baseline",
+      "fraction": 0.05910491943359375,
+      "mean": 1.4617029825846355,
+      "max": 190
+    },
+    {
+      "samples": 4,
+      "mode": "noNormal",
+      "fraction": 0.058746337890625,
+      "mean": 1.4512914021809895,
+      "max": 181
+    },
+    {
+      "samples": 4,
+      "mode": "noMR",
+      "fraction": 0.0459442138671875,
+      "mean": 1.3111432393391926,
+      "max": 131
+    },
+    {
+      "samples": 4,
+      "mode": "noAO",
+      "fraction": 0.062530517578125,
+      "mean": 1.5160573323567708,
+      "max": 166
+    },
+    {
+      "samples": 4,
+      "mode": "noGeomRough",
+      "fraction": 0.061382293701171875,
+      "mean": 1.4682095845540364,
+      "max": 201
+    },
+    {
+      "samples": 4,
+      "mode": "basic",
+      "fraction": 0.042110443115234375,
+      "mean": 1.2265828450520833,
+      "max": 115
+    },
+    {
+      "samples": 4,
+      "mode": "solid",
+      "fraction": 0.007335662841796875,
+      "mean": 0.4302228291829427,
+      "max": 99
+    }
+  ],
+  "interpolation": [
+    {
+      "samples": 4,
+      "mode": "centroid",
+      "fraction": 0.097076416015625,
+      "mean": 2.0978851318359375,
+      "max": 178
+    },
+    {
+      "samples": 4,
+      "mode": "sample",
+      "fraction": 0.09046173095703125,
+      "mean": 1.9917831420898438,
+      "max": 217
+    },
+    {
+      "samples": 4,
+      "mode": "fine",
+      "fraction": 0.06226348876953125,
+      "mean": 1.5130526224772136,
+      "max": 166
+    },
+    {
+      "samples": 4,
+      "mode": "coarse",
+      "fraction": 0.05910491943359375,
+      "mean": 1.4617029825846355,
+      "max": 190
+    }
+  ],
+  "lod": [
+    {
+      "samples": 1,
+      "mode": "lod0",
+      "fraction": 0.01084136962890625,
+      "mean": 0.48808034261067706,
+      "max": 168
+    },
+    {
+      "samples": 1,
+      "mode": "lod2",
+      "fraction": 0.01332855224609375,
+      "mean": 0.5387598673502604,
+      "max": 168
+    },
+    {
+      "samples": 1,
+      "mode": "explicit",
+      "fraction": 0.015064239501953125,
+      "mean": 0.587334950764974,
+      "max": 190
+    },
+    {
+      "samples": 4,
+      "mode": "lod0",
+      "fraction": 0.0572509765625,
+      "mean": 1.5016415913899739,
+      "max": 141
+    },
+    {
+      "samples": 4,
+      "mode": "lod2",
+      "fraction": 0.058055877685546875,
+      "mean": 1.5053037007649739,
+      "max": 149
+    },
+    {
+      "samples": 4,
+      "mode": "explicit",
+      "fraction": 0.061923980712890625,
+      "mean": 1.511731465657552,
+      "max": 184
+    }
+  ],
+  "yReflection": [
+    {
+      "samples": 1,
+      "mode": "basic",
+      "fraction": 0.00389862060546875,
+      "mean": 0.3093007405598958,
+      "max": 168
+    },
+    {
+      "samples": 1,
+      "mode": "solid",
+      "fraction": 0.003276824951171875,
+      "mean": 0.2532450358072917,
+      "max": 47
+    },
+    {
+      "samples": 1,
+      "mode": "baseline",
+      "fraction": 0.0808563232421875,
+      "mean": 2.0719985961914062,
+      "max": 240
+    },
+    {
+      "samples": 4,
+      "mode": "basic",
+      "fraction": 0.003353118896484375,
+      "mean": 0.3026695251464844,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "solid",
+      "fraction": 0.0032806396484375,
+      "mean": 0.2536938985188802,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "baseline",
+      "fraction": 0.07970809936523438,
+      "mean": 2.013342539469401,
+      "max": 240
+    }
+  ],
+  "correctedYReflection": [
+    {
+      "samples": 1,
+      "mode": "baseline",
+      "fraction": 0.011749267578125,
+      "mean": 0.5268987019856771,
+      "max": 190
+    },
+    {
+      "samples": 1,
+      "mode": "noNormal",
+      "fraction": 0.011096954345703125,
+      "mean": 0.5059839884440104,
+      "max": 171
+    },
+    {
+      "samples": 1,
+      "mode": "noMR",
+      "fraction": 0.00388336181640625,
+      "mean": 0.3898022969563802,
+      "max": 203
+    },
+    {
+      "samples": 1,
+      "mode": "noGeomRough",
+      "fraction": 0.01624298095703125,
+      "mean": 0.5856590270996094,
+      "max": 201
+    },
+    {
+      "samples": 4,
+      "mode": "baseline",
+      "fraction": 0.016490936279296875,
+      "mean": 0.6018600463867188,
+      "max": 166
+    },
+    {
+      "samples": 4,
+      "mode": "noNormal",
+      "fraction": 0.01287078857421875,
+      "mean": 0.5317471822102865,
+      "max": 181
+    },
+    {
+      "samples": 4,
+      "mode": "noMR",
+      "fraction": 0.003307342529296875,
+      "mean": 0.3691393534342448,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "noGeomRough",
+      "fraction": 0.0143890380859375,
+      "mean": 0.5608380635579427,
+      "max": 201
+    }
+  ],
+  "intermediateOutputs": [
+    {
+      "samples": 4,
+      "mode": "roughness",
+      "fraction": 0.003505706787109375,
+      "mean": 0.34060033162434894,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "mappedNormal",
+      "fraction": 0.003307342529296875,
+      "mean": 0.28682200113932294,
+      "max": 47
+    },
+    {
+      "samples": 4,
+      "mode": "radiance",
+      "fraction": 0.0224456787109375,
+      "mean": 0.6686274210611979,
+      "max": 120
+    }
+  ],
+  "copiedMaterialMips": [
+    {
+      "samples": 1,
+      "mode": "copyMR",
+      "fraction": 0.015087127685546875,
+      "mean": 0.5822067260742188,
+      "max": 190
+    },
+    {
+      "samples": 4,
+      "mode": "copyMR",
+      "fraction": 0.0163726806640625,
+      "mean": 0.5974146525065104,
+      "max": 167
+    }
+  ],
+  "webglPMREMConvention": [
+    {
+      "samples": 1,
+      "mode": "pmremGL",
+      "fraction": 0.011157989501953125,
+      "mean": 0.50030517578125,
+      "max": 180
+    },
+    {
+      "samples": 4,
+      "mode": "pmremGL",
+      "fraction": 0.012935638427734375,
+      "mean": 0.5226109822591146,
+      "max": 161
+    }
+  ],
+  "copiedWebGLPMREM": [
+    {
+      "samples": 1,
+      "mode": "copyPMREM",
+      "fraction": 0.01119232177734375,
+      "mean": 0.4899152119954427,
+      "max": 180
+    },
+    {
+      "samples": 4,
+      "mode": "copyPMREM",
+      "fraction": 0.01287841796875,
+      "mean": 0.514733632405599,
+      "max": 161
+    }
+  ],
+  "foregroundRegions": [
+    {
+      "name": "baseline",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 14102,
+      "backgroundDiff": 1392
+    },
+    {
+      "name": "aligned",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 3459,
+      "backgroundDiff": 864
+    },
+    {
+      "name": "aligned-noMR",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 8,
+      "backgroundDiff": 859
+    },
+    {
+      "name": "normal",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 7,
+      "backgroundDiff": 860
+    },
+    {
+      "name": "roughness",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 59,
+      "backgroundDiff": 860
+    },
+    {
+      "name": "radiance",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 5018,
+      "backgroundDiff": 866
+    },
+    {
+      "name": "solid-1",
+      "foregroundPixels": 64933,
+      "foregroundDiff": 0,
+      "backgroundDiff": 860
+    }
+  ],
+  "forcedCoarseGradients": {
+    "browser": "153.0.8010.48",
+    "viewport": [
+      512,
+      512
+    ],
+    "threshold": 6,
+    "cases": [
+      {
+        "name": "coarse-0",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.01242828369140625,
+        "mean": 0.5590044657389323,
+        "max": 190
+      },
+      {
+        "name": "coarse-1",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.01242828369140625,
+        "mean": 0.5590044657389323,
+        "max": 190
+      },
+      {
+        "name": "coarse-2",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.01242828369140625,
+        "mean": 0.5590044657389323,
+        "max": 190
+      },
+      {
+        "name": "coarse-3",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.0177459716796875,
+        "mean": 0.6393597920735677,
+        "max": 184
+      },
+      {
+        "name": "coarse-4",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.0177459716796875,
+        "mean": 0.6393597920735677,
+        "max": 184
+      },
+      {
+        "name": "coarse-5",
+        "samples": 4,
+        "flip": true,
+        "glSamples": 4,
+        "fraction": 0.01242828369140625,
+        "mean": 0.5590044657389323,
+        "max": 190
+      }
+    ]
+  },
+  "repeatComparison": {
+    "note": "Same scenario and runtime across the two recorded suite runs. RGB >6/255.",
+    "original4x": {
+      "gl": {
+        "differingPixels": 0,
+        "maxChannelError": 0
+      },
+      "rust": {
+        "differingPixels": 1503,
+        "maxChannelError": 88
+      }
+    },
+    "aligned4x": {
+      "gl": {
+        "differingPixels": 0,
+        "maxChannelError": 0
+      },
+      "rust": {
+        "differingPixels": 1503,
+        "maxChannelError": 88
+      }
+    },
+    "alignedBasic4x": {
+      "gl": {
+        "differingPixels": 0,
+        "maxChannelError": 0
+      },
+      "rust": {
+        "differingPixels": 264,
+        "maxChannelError": 66
+      }
+    }
+  }
+}

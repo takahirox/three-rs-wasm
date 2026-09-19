@@ -1,0 +1,267 @@
+{
+  "browser": "153.0.8010.48",
+  "viewport": [
+    512,
+    512
+  ],
+  "threshold": 6,
+  "referenceBackend": "webgpu",
+  "matrix": false,
+  "rustFlip": false,
+  "repeats": 3,
+  "lighting": "Original scene",
+  "cases": [
+    {
+      "name": "original-1x-run1",
+      "samples": 1,
+      "variant": "default",
+      "repeat": 1,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 1,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.004062652587890625,
+      "mean": 0.3954302469889323,
+      "max": 161
+    },
+    {
+      "name": "original-4x-run1",
+      "samples": 4,
+      "variant": "default",
+      "repeat": 1,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 4,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 4,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.0441436767578125,
+      "mean": 1.2144279479980469,
+      "max": 155
+    },
+    {
+      "name": "original-1x-run2",
+      "samples": 1,
+      "variant": "default",
+      "repeat": 2,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 1,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.001110076904296875,
+      "mean": 0.34116872151692706,
+      "max": 160
+    },
+    {
+      "name": "original-4x-run2",
+      "samples": 4,
+      "variant": "default",
+      "repeat": 2,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 4,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 4,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.04065704345703125,
+      "mean": 1.1524365743001301,
+      "max": 156
+    },
+    {
+      "name": "original-1x-run3",
+      "samples": 1,
+      "variant": "default",
+      "repeat": 3,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 1,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.001110076904296875,
+      "mean": 0.34116872151692706,
+      "max": 160
+    },
+    {
+      "name": "original-4x-run3",
+      "samples": 4,
+      "variant": "default",
+      "repeat": 3,
+      "reference": {
+        "backend": "webgpu",
+        "samples": 4,
+        "pipelines": [
+          {
+            "samples": 1,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 4,
+            "formats": [
+              "rgba16float"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm-srgb"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "rgba8unorm"
+            ]
+          },
+          {
+            "samples": 1,
+            "formats": [
+              "bgra8unorm"
+            ]
+          }
+        ]
+      },
+      "fraction": 0.044284820556640625,
+      "mean": 1.215405782063802,
+      "max": 156
+    }
+  ]
+}

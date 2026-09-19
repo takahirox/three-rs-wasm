@@ -53,6 +53,11 @@ precision: GPU readback of the actual roughness maps found identical mip 1 but
 The evidence does not establish that these explain every remaining pixel.
 No tolerance was relaxed and Instancing remains outside the gallery.
 
+The subsequent [Instancing investigation](gltf-instancing-investigation.md)
+isolates the dominant MSAA-orientation difference, shows that material mipmap
+rounding does not explain the remaining mismatch, and records Rust/WebGPU output
+variation between independent initializations.
+
 The original Inspector/info overlays are not reproduced. The published entries
 remain labelled partial, with the UI limitations stated in the catalog. Assets
 are unchanged pinned GLBs, with hashes in `tools/gltf_examples/assets.json` and

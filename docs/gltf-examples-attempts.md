@@ -1,6 +1,6 @@
 # Five glTF example addition attempts
 
-The user narrowed the scope to **five glTF-specific examples**. Each one was imported and rendered against its pinned original scene. Only validated candidates enter the gallery.
+The user narrowed the scope to **five glTF-specific examples**. Each one was imported and rendered against its pinned original scene. Instancing is also available as an explicitly labelled prototype at user request; its image comparison still fails.
 
 | Example | Stage | Initial raw image difference | Remaining issue |
 | --- | --- | ---: | --- |
@@ -8,11 +8,11 @@ The user narrowed the scope to **five glTF-specific examples**. Each one was imp
 | webgpu_loader_gltf_anisotropy | validated-partial-gallery | 0.212% | 公式の異方性反射・クリアコート・透過材質とOrbit操作を移植。情報表示とInspector UIは未一致。 |
 | webgpu_loader_gltf_sheen | validated-partial-gallery | 0.003% | 公式SheenChair・Sheen調整・減衰付きOrbit操作を移植。調整UIの外観と情報表示は未一致。 |
 | webgpu_loader_gltf_transmission | validated-partial-gallery | 0.007% | 公式の透過・玉虫色材質・蓋のアニメーション・自動回転とOrbit操作を移植。情報表示とInspector UIは未一致。 |
-| webgl_loader_gltf_instancing | render-mismatch | 5.910% | GPU instancing and the pinned loader normalScale convention now match. Per-fragment ACES/sRGB output and on-demand rendering are implemented. Same-backend 1x material/control comparisons pass; original WebGL mipmap quantization/MSAA images still exceed the threshold. This candidate remains hidden.; Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery. |
+| webgl_loader_gltf_instancing | prototype-gallery | 5.910% | 試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。 |
 
 [Per-example evidence](gltf-examples-attempts.json), [native model import/query results](gltf-examples-import-attempts.json), [original/Rust render and allocation measurements](gltf-examples-render-attempts.json).
 
-The four new scene candidates are implemented in `src/browser/gltf_examples.rs`; instancing uses the existing scene. The three newly accepted physical scenes use pinned published assets. Hidden Instancing uses test-only catalog overrides; the original WebGL reference is kept distinct from the common-WebGPU diagnostic. The pinned Three.js code runs only in reference pages.
+The four new scene candidates are implemented in `src/browser/gltf_examples.rs`; instancing uses the existing scene. The three newly accepted physical scenes use pinned published assets. Instancing now uses the real gallery catalog; the original WebGL reference is kept distinct from the common-WebGPU diagnostic. The pinned Three.js code runs only in reference pages.
 
 ## Core fixes required by these attempts
 

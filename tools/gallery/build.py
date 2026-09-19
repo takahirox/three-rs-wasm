@@ -41,7 +41,10 @@ FEATURES = {
  'inspector': ('Inspector and per-example GUI parity', r'\bInspector\b'),
  'dom-svg-rendering': ('CSS2D/CSS3D/SVG scene renderers', r'\b(?:CSS2DRenderer|CSS3DRenderer|SVGRenderer)\b'),
 }
+# Reviewed scene equivalents, not an automatic name-prefix heuristic.
+WEBGPU_EQUIVALENTS = {'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgl_loader_gltf_instancing': {'example':16,'source':'src/browser/expanded.rs','test':'tests/browser/gltf-instancing.spec.js','limitations':['試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。']},
  'webgpu_loader_gltf_anisotropy': {'example':30,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式の異方性反射・クリアコート・透過材質とOrbit操作を移植。情報表示とInspector UIは未一致。']},
  'webgpu_loader_gltf_sheen': {'example':31,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式SheenChair・Sheen調整・減衰付きOrbit操作を移植。調整UIの外観と情報表示は未一致。']},
  'webgpu_loader_gltf_transmission': {'example':32,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式の透過・玉虫色材質・蓋のアニメーション・自動回転とOrbit操作を移植。情報表示とInspector UIは未一致。']},
@@ -49,26 +52,20 @@ PORTS = {
  'webgl_loader_gltf_avif': {'example':28,'source':'src/browser/expanded.rs','test':'tests/browser/gltf-avif.spec.js','limitations':['公式Forest HouseのDraco形状とAVIFテクスチャを読み込み、Orbit・パン・ズームと変更時のみの描画を移植。MSAAの輪郭と情報オーバーレイの外観は未一致。性能同等性は未保証。']},
  'webgl_buffergeometry': {'example':26,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。']},
  'webgl_buffergeometry_rawshader': {'example':27,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。Stats表示は未移植。汎用頂点形式のメモリ使用量は公式より大きい。']},
- 'webgl_lights_rectarealight': {'example': 20, 'source': 'src/browser/expanded_lights.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。']},
  'webgl_geometry_colors': {'example': 21, 'source': 'src/browser/expanded_geometry_colors.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式3個の頂点色Icosahedron・ワイヤー・影画像・ポインターカメラを移植。']},
  'webgl_buffergeometry_indexed': {'example': 22, 'source': 'src/browser/expanded_indexed.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式のインデックス付き色グリッド・回転・ワイヤーフレーム切替を移植。GUI外観とStatsは未一致。']},
  'webgl_lines_colors': {'example': 23, 'source': 'src/browser/expanded_lines.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の6色線・Hilbert/Catmull-Rom・回転・ポインターカメラを移植。']},
  'webgl_morphtargets_horse': {'example': 24, 'source': 'src/browser/expanded_morph_models.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式Horse・GPUモーフ・変形後の面法線・1秒ループ・周回カメラを移植。Stats表示は未移植。']},
  'webgl_morphtargets_sphere': {'example': 25, 'source': 'src/browser/expanded_morph_models.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式AnimatedMorphSphere・GPUモーフ・点スプライト・Orbit操作を移植。WebGPUでは点をGPUで展開した四角形として描画。']},
- 'webgl_morphtargets': {'example': 18, 'source': 'src/browser/expanded.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の球化・ねじり・混合モーフをGPUで処理。スライダー、回転・パン・ズーム無効化を比較済み。GUIの外観は未一致。']},
- 'webgpu_morphtargets': {'example': 18, 'source': 'src/browser/expanded.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['WebGL版と同じGPUモーフシーンと操作を共有。Inspector全体のUIは未移植。']},
+ 'webgpu_morphtargets': {'example': 18, 'source': 'src/browser/expanded.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式WebGPU版のGPUモーフシーンと操作を移植。Inspector全体のUIは未移植。']},
  'webgl_lines_dashed': {'example': 19, 'source': 'src/browser/expanded_lines.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式Hilbert曲線・Catmull-Rom補間・破線・霧・回転を移植。1ピクセル線はGPU線プリミティブ。Stats表示は未移植。']},
  'webgl_geometries': {'example':17,'source':'src/browser/expanded.rs','test':'tests/browser/expanded.spec.js','limitations':['公式16形状・Phong材質・カメラと物体の回転を移植。3時刻で画像比較、GPU保持と負荷を検証。Stats表示は未移植。']},
  'webgl_animation_skinning_morph': {'example': 15, 'source': 'src/browser/robot.rs', 'test': 'tests/browser/core-robot.spec.js', 'limitations': ['公式RobotExpressive・14クリップ・スキニング・モーフ・照明・床・FogをRustへ移植。クリップ切替とOrbit操作を追加。公式GUIの表情スライダー・一時動作の復帰・Statsは未移植。']},
- 'webgl_pmrem_test': {'example': 14, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['公式spot1Lux HDR・33球・PMREMと直接光の切り替えを移植。Orbit制限とGUI外観は未一致。']},
- 'webgpu_pmrem_test': {'example': 14, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['WebGL版と同じ33球の光量比較シーンを共有。InspectorとOrbit制限は未一致。']},
+ 'webgpu_pmrem_test': {'example': 14, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['公式WebGPU版の33球の光量比較シーンを移植。InspectorとOrbit制限は未一致。']},
  'webgpu_equirectangular': {'example': 13, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['公式画像を直接サンプリングする背景、自動回転と明るさ調整を移植。Inspector・Orbitの操作感は未一致。']},
- 'webgl_pmrem_equirectangular': {'example': 6, 'source': 'src/browser/gallery.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['WebGPU版と同じ30球・HDRのシーンを共有。WebGLのPMREMとの描画差を比較ログに記録。Orbit制限は未一致。']},
- 'webgl_loader_gltf': {'example': 4, 'source': 'src/browser/gltf_viewer.rs', 'test': 'tests/browser/gltf-pbr.spec.js', 'limitations': ['WebGPU版と共有するDamagedHelmet / BoomBoxの静的PBR移植。全モデルカタログ・アニメーション・拡張材質・GUIは未再現。']},
  'webgl_materials_texture_rotation': {'example': 11, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['UVのoffset・repeat・rotation・centerとドラッグを移植。異方性フィルタリング対応。Orbit制限とGUI外観は未一致。']},
  'webgl_buffergeometry_lines': {'example': 12, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['10000頂点の線モーフをGPU頂点シェーダーで処理。回転・モーフ重みのみCPUで更新。乱数は固定seed、Statsは未移植。']},
  'webgl_buffergeometry_lines_indexed': {'example': 7, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['雪片の再帰生成・頂点色・回転を移植。乱数は比較可能な固定seed。Stats表示は未移植。']},
- 'webgl_panorama_equirectangular': {'example': 8, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['公式写真・内向き球・自動回転・ドラッグ・FOVズームを移植。情報表示の見た目は未一致。']},
  'webgl_interactive_lines': {'example': 9, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['50個の線、カメラ回転、線レイキャストと交点マーカーを移植。頂点と変換を公式と比較。WebGLの線ラスタライズ・Statsは未一致。乱数は固定seed。']},
  'webgl_interactive_raycasting_points': {'example': 10, 'source': 'src/browser/gallery_scenes.rs', 'test': 'tests/browser/gallery-scenes.spec.js', 'limitations': ['3種類の点群、回転カメラ、点レイキャスト、40個の縮小マーカーを移植。頂点と変換を公式と比較。WebGLの点ラスタライズ・Statsは未一致。']},
  'webgpu_pmrem_equirectangular': {'example': 6, 'source': 'src/browser/gallery.rs', 'test': 'tests/browser/gallery.spec.js', 'limitations': ['30個の球・材質・HDR背景は固定視点で公式と画像比較済み。Orbitの慣性・パン・ズーム制限とInspectorは未再現。']},
@@ -118,6 +115,9 @@ def main():
     # are NOT grounds for exclusion: depth/compressed-texture demos are portable.
     gl = re.search(r'\bGLBufferAttribute\b|renderer\.getContext\s*\(|WEBGL_clip_cull_distance', source) if name.startswith('webgl') else None
     excluded = f'WebGL-specific API: {gl.group()}' if gl else None
+    preferred = WEBGPU_EQUIVALENTS.get(name)
+    if preferred:
+     excluded = f'Equivalent WebGPU example preferred: {preferred}'
     port = PORTS.get(name)
     status = 'excluded' if excluded else 'partial' if port else 'not-ported'
     entry = {'id': name, 'category': category, 'status': status, 'excluded_reason': excluded,
@@ -125,6 +125,7 @@ def main():
              'source_sha256': hashlib.sha256(source.encode()).hexdigest(),
              'requirements': evidence, 'port': port,
              'imports': sorted(set(re.findall(r"from\s*['\"]([^'\"]+)['\"]", source)))}
+    if preferred: entry['preferred_example'] = preferred
     entries.append(entry)
     if port and not excluded:
      included.setdefault(category, []).append(name)
@@ -151,11 +152,11 @@ def main():
   catalog = {'revision': REV, 'analysis': 'Source-level requirement detection, not proof of runtime compatibility. Unported examples are never substituted with a different scene.', 'features': {k:v[0] for k,v in FEATURES.items()}, 'examples': entries}
   write(OUT/'catalog.json', json.dumps(catalog, ensure_ascii=False, indent=2)+'\n')
   counts = Counter(e['status'] for e in entries)
-  lines = ['# Three.js examples coverage', '', f'Pinned reference: `{REV}`. {len(entries)} examples inspected.', '', f"{counts['excluded']} excluded for explicit WebGL APIs; {len(entries)-counts['excluded']} retained. {counts['partial']} partial Rust ports; {counts['not-ported']} not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.", '', 'All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).', '', 'See [performance acceptance and current audit](performance-parity.md). The counts below identify source usage, not proven independent blockers; do not add them together. TSL usage can be ported to Rust/WGSL without implementing TSL itself.', '', '| Required capability (source inventory, not current support status) | Examples mentioning it |', '| --- | ---: |']
+  lines = ['# Three.js examples coverage', '', f'Pinned reference: `{REV}`. {len(entries)} examples inspected.', '', f"{counts['excluded']} excluded for explicit WebGL APIs or equivalent WebGPU examples; {len(entries)-counts['excluded']} retained. {counts['partial']} partial Rust ports; {counts['not-ported']} not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.", '', 'All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).', '', 'See [example selection and comparison policy](example-policy.md).', '', 'See [performance acceptance and current audit](performance-parity.md). The counts below identify source usage, not proven independent blockers; do not add them together. TSL usage can be ported to Rust/WGSL without implementing TSL itself.', '', '| Required capability (source inventory, not current support status) | Examples mentioning it |', '| --- | ---: |']
   for key, n in Counter(k for e in entries if e['status']!='excluded' for k in e['requirements']).most_common(): lines.append(f'| {FEATURES[key][0]} | {n} |')
   lines += ['', '## Existing runnable ports', '', '| Example | Evidence | Remaining differences |', '| --- | --- | --- |']
   for name,p in PORTS.items(): lines.append(f"| {name} | `{p['test']}` | {' '.join(p['limitations'])} |")
-  lines += ['', 'Detailed per-example port prerequisites and actual importer results: [port attempts](gallery-port-attempts.md).', '', 'All 605 retained upstream pages were also executed through a diagnostic bridge, with eligible captured scenes sent to the native Rust renderer: [runtime outcomes and limitations](gallery-runtime-results.md). These sampled frames are not behavioral ports and are not added to the gallery.', '', '## Priority', '', '1. Programmable materials and reusable WGSL effect interfaces, GPU compute/storage, and postprocessing targets/history unlock the largest group of WebGPU scenes.', '2. Animation/skinning/morph targets and compressed/additional asset loaders unlock animated models.', '3. Shadows, physical material extensions and advanced lights close appearance gaps.', '4. Instancing/batching and procedural geometry enable large scenes.', '5. WebXR, physics, spatial audio and DOM/SVG renderers require their own integrations and validation environments.', '', 'Gallery thumbnails are the original upstream previews, not screenshots of completed Rust ports. Unported entries show a diagnostic instead of executing Three.js or pretending another scene reproduces the example.', '']
+  lines += ['', 'Detailed per-example port prerequisites and actual importer results: [port attempts](gallery-port-attempts.md).', '', 'Before the WebGPU preference policy, 605 upstream pages were also executed through a diagnostic bridge, with eligible captured scenes sent to the native Rust renderer: [runtime outcomes and limitations](gallery-runtime-results.md). These sampled frames are not behavioral ports and are not added to the gallery.', '', '## Priority', '', '1. Programmable materials and reusable WGSL effect interfaces, GPU compute/storage, and postprocessing targets/history unlock the largest group of WebGPU scenes.', '2. Animation/skinning/morph targets and compressed/additional asset loaders unlock animated models.', '3. Shadows, physical material extensions and advanced lights close appearance gaps.', '4. Instancing/batching and procedural geometry enable large scenes.', '5. WebXR, physics, spatial audio and DOM/SVG renderers require their own integrations and validation environments.', '', 'Gallery thumbnails are the original upstream previews, not screenshots of completed Rust ports. Unported entries show a diagnostic instead of executing Three.js or pretending another scene reproduces the example.', '']
   write(ROOT/'docs/examples-coverage.md', '\n'.join(lines))
   print(json.dumps({'total':len(entries), **counts}))
 

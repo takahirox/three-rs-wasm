@@ -3200,8 +3200,8 @@
     {
       "id": "webgl_lights_rectarealight",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lights_rectarealight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html",
       "source_sha256": "0f376a50d0d98bdbf3567f1686736feb2e6f747084e59d0639aa27088eef0c39",
       "requirements": {
@@ -3246,21 +3246,15 @@
           }
         ]
       },
-      "port": {
-        "example": 20,
-        "source": "src/browser/expanded_lights.rs",
-        "test": "tests/browser/expanded.spec.js",
-        "limitations": [
-          "公式の3色の面光源・LTC・ヘルパー・粗さ床・TorusKnotとOrbit操作を移植。Stats表示は未移植。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/RectAreaLightHelper.js",
         "three/addons/libs/stats.module.js",
         "three/addons/lights/RectAreaLightUniformsLib.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lights_rectarealight"
     },
     {
       "id": "webgl_lines_colors",
@@ -4166,8 +4160,8 @@
     {
       "id": "webgl_loader_gltf",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_loader_gltf",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf.html",
       "source_sha256": "46564bbb6dc5abbfee13d3718c9853a11ba734087760d89174963e43bf0d5695",
       "requirements": {
@@ -4188,21 +4182,15 @@
           }
         ]
       },
-      "port": {
-        "example": 4,
-        "source": "src/browser/gltf_viewer.rs",
-        "test": "tests/browser/gltf-pbr.spec.js",
-        "limitations": [
-          "WebGPU版と共有するDamagedHelmet / BoomBoxの静的PBR移植。全モデルカタログ・アニメーション・拡張材質・GUIは未再現。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/loaders/GLTFLoader.js",
         "three/addons/loaders/UltraHDRLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_loader_gltf"
     },
     {
       "id": "webgl_loader_gltf_animation_pointer",
@@ -4418,7 +4406,7 @@
     {
       "id": "webgl_loader_gltf_instancing",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html",
       "source_sha256": "d0a5ccd5df8fb32dc9a17f2aa6ac2c29ac0ddb6b1d472fae90ec66d7f9891296",
@@ -4434,7 +4422,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 16,
+        "source": "src/browser/expanded.rs",
+        "test": "tests/browser/gltf-instancing.spec.js",
+        "limitations": [
+          "試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -7374,8 +7369,8 @@
     {
       "id": "webgl_pmrem_equirectangular",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_pmrem_equirectangular",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_equirectangular.html",
       "source_sha256": "223968372809c4dc0e5087d4c0fbf447a92b67e85d8c0867fc11e3b9d6976b19",
       "requirements": {
@@ -7390,25 +7385,19 @@
           }
         ]
       },
-      "port": {
-        "example": 6,
-        "source": "src/browser/gallery.rs",
-        "test": "tests/browser/gallery-scenes.spec.js",
-        "limitations": [
-          "WebGPU版と同じ30球・HDRのシーンを共有。WebGLのPMREMとの描画差を比較ログに記録。Orbit制限は未一致。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/loaders/UltraHDRLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_pmrem_equirectangular"
     },
     {
       "id": "webgl_pmrem_test",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_pmrem_test",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_test.html",
       "source_sha256": "6f6a4366f0376910edd25fa87b97d2cebaf1a35648e444ab9148bb4a63a0d861",
       "requirements": {
@@ -7423,20 +7412,14 @@
           }
         ]
       },
-      "port": {
-        "example": 14,
-        "source": "src/browser/gallery_scenes.rs",
-        "test": "tests/browser/gallery-scenes.spec.js",
-        "limitations": [
-          "公式spot1Lux HDR・33球・PMREMと直接光の切り替えを移植。Orbit制限とGUI外観は未一致。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/loaders/HDRLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_pmrem_test"
     },
     {
       "id": "webgl_math_obb",
@@ -7901,8 +7884,8 @@
     {
       "id": "webgl_morphtargets",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_morphtargets",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html",
       "source_sha256": "2a5cbfd0de2950224c2ce792d09b87536e0b606031112e552db81d4a2157a006",
       "requirements": {
@@ -7941,19 +7924,13 @@
           }
         ]
       },
-      "port": {
-        "example": 18,
-        "source": "src/browser/expanded.rs",
-        "test": "tests/browser/expanded.spec.js",
-        "limitations": [
-          "公式の球化・ねじり・混合モーフをGPUで処理。スライダー、回転・パン・ズーム無効化を比較済み。GUIの外観は未一致。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js"
-      ]
+      ],
+      "preferred_example": "webgpu_morphtargets"
     },
     {
       "id": "webgl_morphtargets_face",
@@ -8333,22 +8310,16 @@
     {
       "id": "webgl_panorama_equirectangular",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_equirectangular",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_equirectangular.html",
       "source_sha256": "dfdfa57c273051b2bf2b46d0f8621847bf02612ca784a806f2c3dfcea6aec27f",
       "requirements": {},
-      "port": {
-        "example": 8,
-        "source": "src/browser/gallery_scenes.rs",
-        "test": "tests/browser/gallery-scenes.spec.js",
-        "limitations": [
-          "公式写真・内向き球・自動回転・ドラッグ・FOVズームを移植。情報表示の見た目は未一致。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three"
-      ]
+      ],
+      "preferred_example": "webgpu_equirectangular"
     },
     {
       "id": "webgl_points_billboards",
@@ -19791,7 +19762,7 @@
         "source": "src/browser/expanded.rs",
         "test": "tests/browser/expanded.spec.js",
         "limitations": [
-          "WebGL版と同じGPUモーフシーンと操作を共有。Inspector全体のUIは未移植。"
+          "公式WebGPU版のGPUモーフシーンと操作を移植。Inspector全体のUIは未移植。"
         ]
       },
       "imports": [
@@ -20817,7 +20788,7 @@
         "source": "src/browser/gallery_scenes.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
-          "WebGL版と同じ33球の光量比較シーンを共有。InspectorとOrbit制限は未一致。"
+          "公式WebGPU版の33球の光量比較シーンを移植。InspectorとOrbit制限は未一致。"
         ]
       },
       "imports": [

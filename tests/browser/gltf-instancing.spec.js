@@ -1,13 +1,11 @@
 import {test,expect} from '@playwright/test';
 import {PNG} from 'pngjs';
-import {readFileSync,writeFileSync} from 'node:fs';
+import {writeFileSync} from 'node:fs';
 const id='webgl_loader_gltf_instancing';
 // This isolates the material/instancing math using the same GPU backend and 1x
 // samples. It does NOT accept the remaining original WebGL/MSAA image difference.
 test('Instancing material regression on a common backend, plus GPU residency',async({page},info)=>{
  test.setTimeout(120000);
- const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));catalog.examples.find(e=>e.id===id).port={example:16,limitations:[]};
- await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));const images={};
  await page.addInitScript(()=>{window.creates=0;for(const n of ['createBuffer','createTexture','createBindGroup','createRenderPipeline']){const f=GPUDevice.prototype[n];GPUDevice.prototype[n]=function(...a){creates++;return f.apply(this,a);};}});
  for(const runtime of ['reference','rust']){

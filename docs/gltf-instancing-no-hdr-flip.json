@@ -1,0 +1,110 @@
+{
+  "browser": "153.0.8010.48",
+  "viewport": [
+    512,
+    512
+  ],
+  "threshold": 6,
+  "matrix": true,
+  "rustFlip": true,
+  "repeats": 3,
+  "lighting": "Fixed white directional light, intensity 3, position (-3,4,-2), on in every case. HDR toggles environment illumination/reflection and background; reflection-only holds the background black. ACES and materials remain unchanged.",
+  "cases": [
+    {
+      "name": "hdr-off-msaa-on-original-run1",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": false,
+      "repeat": 1,
+      "glSamples": 4,
+      "fraction": 0.0392913818359375,
+      "mean": 1.0732930501302083,
+      "max": 118
+    },
+    {
+      "name": "hdr-off-msaa-on-reflected-run1",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": true,
+      "repeat": 1,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.003757476806640625,
+      "mean": 0.35280481974283856,
+      "max": 44
+    },
+    {
+      "name": "hdr-off-msaa-on-original-run2",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": false,
+      "repeat": 2,
+      "glSamples": 4,
+      "fraction": 0.0392913818359375,
+      "mean": 1.0732930501302083,
+      "max": 118
+    },
+    {
+      "name": "hdr-off-msaa-on-reflected-run2",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": true,
+      "repeat": 2,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    },
+    {
+      "name": "hdr-off-msaa-on-original-run3",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": false,
+      "repeat": 3,
+      "glSamples": 4,
+      "fraction": 0.041698455810546875,
+      "mean": 1.1204261779785156,
+      "max": 117
+    },
+    {
+      "name": "hdr-off-msaa-on-reflected-run3",
+      "samples": 4,
+      "hdr": false,
+      "background": false,
+      "fixedLight": true,
+      "rustFlip": true,
+      "repeat": 3,
+      "glSamples": 4,
+      "shaderPatches": {
+        "mesh": 1,
+        "background": 1,
+        "present": 1,
+        "pipelines": 1
+      },
+      "fraction": 0.008464813232421875,
+      "mean": 0.43369801839192706,
+      "max": 153
+    }
+  ]
+}

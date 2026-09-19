@@ -3,6 +3,25 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {PNG} from 'pngjs';
 const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));
 const files=readFileSync('web/gallery/files.json','utf8');
+test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
+ const listed=Object.values(JSON.parse(files)).flat();
+ const excluded=catalog.examples.filter(e=>e.preferred_example);
+ expect(excluded).toHaveLength(6);
+ for(const entry of excluded){
+  expect(entry.status).toBe('excluded');expect(entry.port).toBeNull();
+  expect(listed).not.toContain(entry.id);
+  const preferred=catalog.examples.find(e=>e.id===entry.preferred_example);
+  expect(preferred).toBeDefined();
+  if(preferred.port)expect(listed).toContain(preferred.id);
+ }
+ expect(listed).not.toContain('webgpu_lights_rectarealight');
+ expect(listed).toContain('webgl_loader_gltf_instancing');
+ expect(listed).toContain('webgl_loader_gltf_avif');
+ await page.goto('/web/gallery/example.html?id=webgl_loader_gltf');
+ await expect(page.locator('#diagnostic')).toBeVisible();
+ await page.locator('a[href="example.html?id=webgpu_loader_gltf"]').click();
+ await expect(page.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu',{timeout:90000});
+});
 for(const mode of [{name:'desktop-light',width:1280,height:900,colorScheme:'light'},{name:'mobile-dark',width:390,height:844,colorScheme:'dark'}]){
  test(`official gallery layout: ${mode.name}`,async({page},info)=>{
   await page.setViewportSize(mode);await page.emulateMedia({colorScheme:mode.colorScheme});
@@ -37,7 +56,7 @@ test('unported examples show source evidence rather than a fake reproduction',as
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
  test.setTimeout(120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas');
- await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(entry.port.example === 28 ? 0 : 2);
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28].includes(entry.port.example) ? 0 : 2);
  await expect(viewer.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');await expect(canvas).not.toHaveAttribute('data-error',/.+/);
  if(entry.port.example===6)await expect(canvas).toHaveAttribute('data-meshes','30');
  const png=PNG.sync.read(await canvas.screenshot());expect(new Set(png.data).size).toBeGreaterThan(80);

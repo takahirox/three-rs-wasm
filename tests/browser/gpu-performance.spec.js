@@ -12,7 +12,7 @@ for(const id of ['webgl_buffergeometry_lines','webgpu_lights_pointlights'])test(
  expect((await page.locator('canvas').screenshot()).equals(image)).toBe(false);
  expect(errors).toEqual([]);
 });
-for(const id of ['webgl_loader_gltf','webgl_pmrem_equirectangular','webgpu_equirectangular'])test(`HDR background reuses resources: ${id}`,async({page})=>{
+for(const id of ['webgpu_loader_gltf','webgpu_pmrem_equirectangular','webgpu_equirectangular'])test(`HDR background reuses resources: ${id}`,async({page})=>{
  await page.addInitScript(()=>{
   window.allocations={};
   for(const name of ['createBuffer','createBindGroup','createTexture','createRenderPipeline']){

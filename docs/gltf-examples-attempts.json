@@ -3,9 +3,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "counts": {
     "validated-partial-gallery": 4,
-    "render-mismatch": 1
+    "prototype-gallery": 1
   },
-  "interpretation": "Only validated gallery entries are published. Native import/query and initial browser comparison do not establish behavioral or performance parity. No CPU per-frame or reduced-quality fallback is substituted.",
+  "interpretation": "Instancing is published as a prototype at user request despite its failed original-WebGL image comparison. Native import/query and initial browser comparison do not establish behavioral or performance parity. No CPU per-frame or reduced-quality fallback is substituted.",
   "examples": [
     {
       "id": "webgpu_loader_gltf_iridescence",
@@ -109,7 +109,7 @@
     },
     {
       "id": "webgl_loader_gltf_instancing",
-      "stage": "render-mismatch",
+      "stage": "prototype-gallery",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_instancing.html",
       "source_sha256": "d0a5ccd5df8fb32dc9a17f2aa6ac2c29ac0ddb6b1d472fae90ec66d7f9891296",
       "asset": "DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
@@ -126,11 +126,10 @@
       },
       "render_errors": [],
       "steady_resource_creations": 0,
-      "runtime_test": null,
+      "runtime_test": "tests/browser/gltf-instancing.spec.js",
       "images": ".cache/gltf-examples/results/webgl_loader_gltf_instancing/",
       "remaining": [
-        "GPU instancing and the pinned loader normalScale convention now match. Per-fragment ACES/sRGB output and on-demand rendering are implemented. Same-backend 1x material/control comparisons pass; original WebGL mipmap quantization/MSAA images still exceed the threshold. This candidate remains hidden.",
-        "Image comparison exceeds 0.5% differing pixels at 6/255. No tolerance was relaxed and this candidate is not listed in the gallery."
+        "試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。"
       ]
     }
   ]

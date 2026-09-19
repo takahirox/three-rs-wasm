@@ -1,5 +1,10 @@
 # Reproduction acceptance
 
+- Prefer the official WebGPU example when an equivalent WebGL scene exists;
+  list only the WebGPU port. For WebGL-only scenes, document backend-related
+  image tolerance without relaxing behavior or performance requirements.
+  Follow docs/example-policy.md for selection and comparison.
+
 - Treat performance and execution architecture as part of Three.js compatibility.
   Matching appearance or successful import alone does not establish reproduction.
 - Do not replace GPU per-vertex work with CPU/Wasm per-vertex work, stream unchanged

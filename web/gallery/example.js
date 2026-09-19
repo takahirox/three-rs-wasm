@@ -16,6 +16,11 @@ function explain(error) {
  text('h1', entry?.id.replaceAll('_', ' / ') || 'Unknown example', diagnostic);
  text('p', error || 'このexampleはまだRustへ移植されていません。', diagnostic);
  if (!entry) return;
+ if (entry.preferred_example) {
+  const preferred = catalog.examples.find(e => e.id === entry.preferred_example);
+  const link = text('a', `WebGPU版: ${entry.preferred_example}${preferred?.port ? '' : '（移植待ち）'}`, diagnostic);
+  link.href = `example.html?id=${encodeURIComponent(entry.preferred_example)}`;
+ }
  const preview = document.createElement('img'); preview.src = `screenshots/${entry.id}.jpg`; preview.alt = 'Three.js公式のプレビュー（Rustの実行結果ではありません）'; diagnostic.append(preview);
  text('p', preview.alt, diagnostic);
  const source = text('a', '固定したThree.jsのソースを見る ↗', diagnostic); source.href = entry.source; source.target = '_blank'; source.rel = 'noopener';
