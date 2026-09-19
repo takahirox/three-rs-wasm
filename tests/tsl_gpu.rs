@@ -9,6 +9,73 @@ use three_rs_wasm::{
 };
 
 #[test]
+fn compute_texture_writes_partial_workgroups_and_reuses_external_bindings() {
+    let renderer = pollster::block_on(Renderer::new()).unwrap();
+    let index = instance_index();
+    let x = index.modulo(uint(9));
+    let y = index / uint(9);
+    let graph = vec4(
+        vec3(
+            x.to_float() / float(8.0),
+            y.to_float() / float(7.0),
+            uniform(0, Type::Float),
+        ),
+        float(1.0),
+    );
+    let compute = pollster::block_on(compute::TextureCompute::new(
+        &renderer,
+        9,
+        8,
+        uvec2(x, y),
+        graph,
+    ))
+    .unwrap();
+    let target = || {
+        RenderTarget::with_options(
+            &renderer.device,
+            9,
+            8,
+            RenderTargetOptions {
+                format: wgpu::TextureFormat::Rgba8Unorm,
+                depth_buffer: false,
+                ..Default::default()
+            },
+        )
+        .unwrap()
+    };
+    let dummy = target();
+    let output = target();
+    let pass = pollster::block_on(effect_with_textures(
+        &renderer,
+        wgpu::TextureFormat::Rgba8Unorm,
+        &Texture::External(0).sample(uv()),
+        &[(&compute.view, &compute.sampler)],
+    ))
+    .unwrap();
+    for blue in [0.25, 0.75] {
+        let mut uniforms = [[0.0; 4]; 16];
+        uniforms[0][0] = blue;
+        compute.set_uniforms(&renderer, &uniforms).unwrap();
+        compute.dispatch(&renderer).unwrap();
+        pass.apply(&renderer, &dummy, None, &output).unwrap();
+        let pixels = renderer.read_rgba(&output).unwrap();
+        for y in 0..8 {
+            for x in 0..9 {
+                let expected = [
+                    (x as f32 / 8.0 * 255.0).round() as u8,
+                    (y as f32 / 7.0 * 255.0).round() as u8,
+                    (blue * 255.0).round() as u8,
+                    255,
+                ];
+                for (a, b) in pixels[(y * 9 + x) * 4..][..4].iter().zip(expected) {
+                    assert!(a.abs_diff(b) <= 1);
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn nodes_drive_gpu_vertex_fragment_native_functions_and_uniform_updates() {
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let function = WgslFn::new(

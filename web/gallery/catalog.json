@@ -15205,7 +15205,7 @@
     {
       "id": "webgpu_compute_texture",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_texture.html",
       "source_sha256": "ad50ad1c9ae87d4fb76c3b71aae4b459ece1528e879f990424d761c14615d2e7",
@@ -15241,7 +15241,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 38,
+        "source": "src/browser/tsl_passes.rs",
+        "test": "tests/browser/tsl-passes.spec.js",
+        "limitations": [
+          "Rust TSLのcompute・textureStoreでGPUテクスチャを生成。描画は変更時のみ。情報表示の外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/tsl",
@@ -21383,7 +21390,7 @@
     {
       "id": "webgpu_postprocessing_difference",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_difference.html",
       "source_sha256": "c86a609581d7a2fbb0fd867f377509ed55d3cc8bf3c8d7b20a8660e38655e26e",
@@ -21427,7 +21434,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 41,
+        "source": "src/browser/tsl_passes.rs",
+        "test": "tests/browser/tsl-passes.spec.js",
+        "limitations": [
+          "前フレームのGPUテクスチャを参照するTSL合成・速度調整・Orbit操作を移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -21898,7 +21912,7 @@
     {
       "id": "webgpu_postprocessing_masking",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_masking.html",
       "source_sha256": "a608f36f98eb24f005ec28b0387ecc0ab485868b68c67d8d6604e6c7f69c4ba6",
@@ -21932,7 +21946,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 42,
+        "source": "src/browser/tsl_passes.rs",
+        "test": "tests/browser/tsl-passes.spec.js",
+        "limitations": [
+          "3シーンのGPU描画・アルファマスク・TSL画像合成を移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/tsl",
@@ -23194,7 +23215,7 @@
     {
       "id": "webgpu_postprocessing",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing.html",
       "source_sha256": "f12d4e910b85f1860eaf923c0e8b346770180035d9e29c3e3452073cc80876ca",
@@ -23234,7 +23255,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 40,
+        "source": "src/browser/tsl_passes.rs",
+        "test": "tests/browser/tsl-passes.spec.js",
+        "limitations": [
+          "100個のPhong球とDot Screen・RGB ShiftをTSLで移植。比較可能な固定乱数を使用。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/DotScreenNode.js",
@@ -23688,7 +23716,7 @@
     {
       "id": "webgpu_rtt",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_rtt.html",
       "source_sha256": "36f88445e43f1fd3e0431b4852f7dec9bb4985a427b5e028b47f4d30d2a40575",
@@ -23710,7 +23738,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 39,
+        "source": "src/browser/tsl_passes.rs",
+        "test": "tests/browser/tsl-passes.spec.js",
+        "limitations": [
+          "TSLのrender-to-texture・saturation・hueとマウス操作を移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/tsl",

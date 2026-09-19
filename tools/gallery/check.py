@@ -10,7 +10,7 @@ catalog = json.loads((ROOT/'web/gallery/catalog.json').read_text())
 files = json.loads((ROOT/'web/gallery/files.json').read_text())
 rows = catalog['examples']
 ids = [row['id'] for row in rows]
-assets={'panorama.jpg':'examples/textures/2294472375_24a3b8ef46_o.jpg','uv-grid.jpg':'examples/textures/uv_grid_opengl.jpg','spot1Lux.hdr':'examples/textures/equirectangular/spot1Lux.hdr','earth-lights.png':'examples/textures/planets/earth_lights_2048.png'}
+assets={'caravaggio.jpg':'examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg','panorama.jpg':'examples/textures/2294472375_24a3b8ef46_o.jpg','uv-grid.jpg':'examples/textures/uv_grid_opengl.jpg','spot1Lux.hdr':'examples/textures/equirectangular/spot1Lux.hdr','earth-lights.png':'examples/textures/planets/earth_lights_2048.png'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
 with tarfile.open(ARCHIVE) as tar:
  sources = {}

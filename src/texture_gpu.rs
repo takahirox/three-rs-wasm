@@ -4,7 +4,7 @@ use std::{
     sync::{Arc, Weak},
 };
 #[derive(Clone)]
-pub(crate) struct GpuTexture {
+pub struct GpuTexture {
     pub texture: wgpu::Texture,
     pub view: wgpu::TextureView,
     pub sampler: wgpu::Sampler,

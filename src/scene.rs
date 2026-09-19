@@ -346,6 +346,7 @@ pub enum ToneMapping {
     None = 0,
     Aces = 1,
     Reinhard = 2,
+    Neutral = 3,
 }
 #[derive(Debug)]
 pub struct Scene {
@@ -353,9 +354,12 @@ pub struct Scene {
     pub shadow_map_size: u32,
     pub defaults: NodeDefaults,
     id: u32,
+    pub(crate) cache_owner: Arc<()>,
     slots: Vec<Slot>,
     free: Vec<usize>,
     pub background: Color,
+    /// Alpha used when clearing a solid background, including transparent masks.
+    pub background_alpha: f64,
     pub environment: Option<Arc<crate::environment::EnvironmentMap>>,
     pub environment_intensity: f64,
     pub environment_rotation: f64,
@@ -376,9 +380,11 @@ impl Default for Scene {
             clipping_planes: Vec::new(),
             defaults: Default::default(),
             id: NEXT_SCENE.fetch_add(1, Ordering::Relaxed),
+            cache_owner: Arc::new(()),
             slots: Vec::new(),
             free: Vec::new(),
             background: Color::BLACK,
+            background_alpha: 1.0,
             environment: None,
             environment_intensity: 1.0,
             environment_rotation: 0.0,
@@ -394,6 +400,9 @@ impl Default for Scene {
     }
 }
 impl Scene {
+    pub(crate) fn cache_id(&self) -> u32 {
+        self.id
+    }
     pub fn output_tone_mapping(&self) -> ToneMapping {
         if self.tone_mapping != ToneMapping::None {
             self.tone_mapping

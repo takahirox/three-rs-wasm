@@ -56,7 +56,7 @@ test('unported examples show source evidence rather than a fake reproduction',as
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
  test.setTimeout(120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas');
- await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28].includes(entry.port.example) ? 0 : 2);
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28,38].includes(entry.port.example) ? 0 : 2);
  await expect(viewer.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');await expect(canvas).not.toHaveAttribute('data-error',/.+/);
  if(entry.port.example===6)await expect(canvas).toHaveAttribute('data-meshes','30');
  const png=PNG.sync.read(await canvas.screenshot());expect(new Set(png.data).size).toBeGreaterThan(80);

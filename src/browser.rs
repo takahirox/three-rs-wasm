@@ -18,6 +18,7 @@ mod gltf_viewer;
 mod point_lights;
 mod robot;
 mod tsl_examples;
+mod tsl_passes;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
 fn asset_url(url: &str) -> Result<String> {
@@ -129,8 +130,16 @@ impl State {
                 width as f64 / height as f64,
             )?;
         }
-        self.renderer
-            .render(&mut self.scene, self.camera, &self.target)?;
+        let handled =
+            if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
+                demo.render(&self.renderer, &mut self.scene, self.camera, &self.target)?
+            } else {
+                false
+            };
+        if !handled {
+            self.renderer
+                .render(&mut self.scene, self.camera, &self.target)?;
+        }
         let frame = self
             .surface
             .get_current_texture()
@@ -352,8 +361,13 @@ impl BrowserApp {
         let mut state = self.state.borrow_mut();
         let width = state.canvas.client_width() as f64;
         let height = state.canvas.client_height() as f64;
+        let is_rtt = state.example == 39;
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.pointer(x * width / 2.0, -y * height / 2.0);
+            if is_rtt {
+                demo.pointer(x, y);
+            } else {
+                demo.pointer(x * width / 2.0, -y * height / 2.0);
+            }
         } else if let Some(demo) = &mut state.gallery_scene {
             demo.pointer(x, y);
         }
@@ -673,7 +687,9 @@ impl BrowserApp {
                 canvas.height(),
                 if example >= 4 {
                     RenderTargetOptions {
-                        samples: if [7, 8, 11, 12, 24, 25, 27, 36].contains(&example) {
+                        samples: if [7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42]
+                            .contains(&example)
+                        {
                             1
                         } else {
                             4
@@ -706,7 +722,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=37).contains(&example) {
+            if (7..=42).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -863,7 +879,9 @@ impl BrowserApp {
                         return;
                     }
                     // These official static scenes render only on load, input and resize.
-                    if ![16, 28].contains(&state.example) {
+                    if !([16, 28, 38].contains(&state.example)
+                        || state.paused && state.example >= 39)
+                    {
                         state.request_render();
                     }
                 }

@@ -207,3 +207,17 @@ SHA-256: `0564fa57f5fade2f65e56d3ad59b3c6bf5e32c44f60370a3e46fd367b0cabaee`.
 `gallery/assets/uv-grid.jpg` is the existing pinned `uv_grid_opengl.jpg`.
 `tools/tsl/prepare.py` restores the image and reference-only helper modules from
 that same archive; `tools/gallery/check.py` verifies published asset bytes.
+
+The additional GPU-pass translations follow `webgpu_compute_texture`,
+`webgpu_rtt`, `webgpu_postprocessing`, `webgpu_postprocessing_difference`, and
+`webgpu_postprocessing_masking`, including `DotScreenNode`, `RGBShiftNode`,
+color-adjustment nodes and Neutral tone mapping from the same MIT-licensed
+Three.js revision.
+
+`gallery/assets/caravaggio.jpg` is the unchanged
+`examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg` from that archive
+(Caravaggio's *Basket of Fruit*).
+SHA-256: `3f9a556c4e12583981427e2d6b7fa268c1a46c9036a23514acd9e179c22ae37f`.
+The masking and difference examples reuse the already credited panorama and
+crate assets. `tools/tsl/prepare.py` restores reference assets and
+`tools/gallery/check.py` verifies the published Caravaggio image byte-for-byte.

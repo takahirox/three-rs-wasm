@@ -1,6 +1,52 @@
 use three_rs_wasm::tsl::*;
 
 #[test]
+fn compute_graphs_validate_integer_types_stages_and_storage_coordinates() {
+    use compute::texture_store_wgsl;
+    let index = instance_index();
+    let coordinate = uvec2(index.modulo(uint(9)), index / uint(9));
+    let color = vec4(splat(coordinate.x().to_float(), Type::Vec3), float(1.0));
+    assert!(texture_store_wgsl(72, &coordinate, &color).is_ok());
+    assert!(texture_store_wgsl(0, &coordinate, &color).is_err());
+    for invalid in [
+        uv(),
+        uint(0),
+        uvec2(float(0.0), uint(0)),
+        coordinate.clone() + float(1.0),
+    ] {
+        assert!(texture_store_wgsl(72, &invalid, &color).is_err());
+    }
+    for invalid in [
+        uv(),
+        position_geometry(),
+        Texture::Input.sample(uv()),
+        uint(1) + float(1.0),
+        uint(1).sin(),
+        uniform(0, Type::Uint),
+        coordinate.swizzle("xyz"),
+        uint(1).pow(uint(2)),
+    ] {
+        assert!(texture_store_wgsl(72, &coordinate, &invalid).is_err());
+    }
+    assert!(effect_wgsl(&instance_index().to_float()).is_err());
+    assert!(
+        NodeMaterial::new(Texture::History.sample(uv()))
+            .wgsl(0)
+            .is_err()
+    );
+    assert!(effect_wgsl(&Texture::History.sample(uv())).is_ok());
+    assert!(effect_wgsl_with_textures(&Texture::External(1).sample(uv()), 1).is_err());
+    assert!(effect_wgsl_with_textures(&Texture::External(1).sample(uv()), 2).is_ok());
+    // Scalar broadcast stays in the unsigned family until explicitly converted.
+    let value = (coordinate.clone() + uint(1)).x().to_float();
+    assert!(
+        texture_store_wgsl(72, &coordinate, &vec4(splat(value, Type::Vec3), float(1.0))).is_ok()
+    );
+    assert!(effect_wgsl(&uv().cross(uv())).is_err());
+    assert!(effect_wgsl(&uv().dot(splat(float(1.0), Type::Vec3))).is_err());
+}
+
+#[test]
 fn graph_checks_types_stages_resources_and_shared_expressions() {
     let shared = (uv().x() * uniform(0, Type::Float)).sin();
     let source = NodeMaterial::new(vec3(shared.clone(), shared.clone(), shared))

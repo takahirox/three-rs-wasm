@@ -1,3 +1,4 @@
+pub use crate::texture_gpu::GpuTexture;
 use crate::{Error, Result, material::*, math::*, scene::*};
 use std::{
     cell::RefCell,
@@ -131,11 +132,13 @@ pub struct Renderer {
     transmission_target: RefCell<Option<RenderTarget>>,
     transmission_sampler: wgpu::Sampler,
     transmission_mips: RefCell<Option<crate::transmission::MipChain>>,
-    draw_slots: RefCell<Vec<crate::draw_gpu::Slot>>,
-    draw_cursor: std::cell::Cell<usize>,
+    draw_slots: RefCell<DrawSlots>,
+    scene_draw_slots: RefCell<HashMap<u32, (std::sync::Weak<()>, DrawSlots)>>,
     present_slot: RefCell<crate::draw_gpu::Slot>,
 }
+type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
+    key: (Object3D, usize, bool),
     vertices: wgpu::Buffer,
     deformation: crate::deformation_gpu::Bindings,
     instances: &'a [Instance],
@@ -174,6 +177,12 @@ impl Renderer {
             });
         let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&[Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL})]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
     }
+    /// Upload once and retain a sampled texture for custom material/effect bindings.
+    pub fn upload_texture(&self, image: &Arc<crate::material::Texture>) -> Result<GpuTexture> {
+        self.textures
+            .borrow_mut()
+            .get(&self.device, &self.queue, image)
+    }
     /// Cumulative geometry uploads/bytes, static skin/morph bytes, and pose bytes.
     /// A pose-only frame must not increase the first three counters.
     pub fn transfer_counts(&self) -> (u64, u64, u64, u64) {
@@ -189,6 +198,7 @@ impl Renderer {
     /// Release cached resources whose application-owned inputs have been dropped.
     pub fn collect_resources(&self) {
         self.draw_slots.borrow_mut().clear();
+        self.scene_draw_slots.borrow_mut().clear();
         self.shadows.collect_resources();
         for (_, _, slot) in self.backgrounds.borrow_mut().values_mut() {
             *slot = Default::default();
@@ -393,7 +403,7 @@ impl Renderer {
             transmission_target: Default::default(),
             transmission_mips: Default::default(),
             draw_slots: Default::default(),
-            draw_cursor: Default::default(),
+            scene_draw_slots: Default::default(),
             present_slot: Default::default(),
         })
     }
@@ -552,7 +562,32 @@ impl Renderer {
         self.queue.submit([encoder.finish()]);
     }
     pub fn render(&self, scene: &mut Scene, camera: Object3D, target: &RenderTarget) -> Result<()> {
-        self.draw_cursor.set(0);
+        if !(0.0..=1.0).contains(&scene.background_alpha) {
+            return Err(Error::Invalid("scene background alpha"));
+        }
+        let key = scene.cache_id();
+        {
+            let mut cache = self.scene_draw_slots.borrow_mut();
+            cache.retain(|_, (owner, _)| owner.strong_count() > 0);
+            let (_, slots) = cache
+                .entry(key)
+                .or_insert_with(|| (Arc::downgrade(&scene.cache_owner), HashMap::new()));
+            std::mem::swap(slots, &mut self.draw_slots.borrow_mut());
+        }
+        let result = self.render_with_slots(scene, camera, target);
+        let mut cache = self.scene_draw_slots.borrow_mut();
+        std::mem::swap(
+            &mut cache.get_mut(&key).unwrap().1,
+            &mut self.draw_slots.borrow_mut(),
+        );
+        result
+    }
+    fn render_with_slots(
+        &self,
+        scene: &mut Scene,
+        camera: Object3D,
+        target: &RenderTarget,
+    ) -> Result<()> {
         let mut needs_transmission = false;
         for root in scene.roots() {
             for handle in scene.traverse(root, true)? {
@@ -599,7 +634,17 @@ impl Renderer {
         }
         self.draw_slots
             .borrow_mut()
-            .truncate(self.draw_cursor.get());
+            .retain(|(handle, group, opaque), _| {
+                scene.get(*handle).is_ok_and(|node| {
+                    node.geometry().is_some_and(|g| {
+                        let count = match &node.kind {
+                            NodeKind::Mesh(m) if m.materials.len() > 1 => g.groups.len(),
+                            _ => 1,
+                        };
+                        *group < count && (!*opaque || needs_transmission)
+                    })
+                })
+            });
         Ok(())
     }
     fn render_inner(
@@ -908,7 +953,7 @@ impl Renderer {
                     material_index: 0,
                 }]
             };
-            for group in groups {
+            for (group_index, group) in groups.into_iter().enumerate() {
                 let Some(material) = materials.get(group.material_index) else {
                     return Err(Error::Invalid("group material index"));
                 };
@@ -1284,6 +1329,7 @@ impl Renderer {
                 };
                 let mut draw = self.prepare_draw(
                     DrawGeometry {
+                        key: (h, group_index, opaque_only),
                         vertices: gpu_geometry.vertices,
                         deformation: self.deformation.borrow_mut().get(
                             &self.device,
@@ -1384,11 +1430,11 @@ impl Renderer {
                         draw.indirect_offsets.push(offset as u64);
                     }
                     draw.indirect = Some(
-                        self.draw_slots.borrow_mut()[self.draw_cursor.get() - 1].indirect(
-                            &self.device,
-                            &self.queue,
-                            bytemuck::cast_slice(&commands),
-                        ),
+                        self.draw_slots
+                            .borrow_mut()
+                            .get_mut(&(h, group_index, opaque_only))
+                            .unwrap()
+                            .indirect(&self.device, &self.queue, bytemuck::cast_slice(&commands)),
                     );
                 }
                 draws.push(draw);
@@ -1442,7 +1488,7 @@ impl Renderer {
                                 r: c.x,
                                 g: c.y,
                                 b: c.z,
-                                a: 1.0,
+                                a: scene.background_alpha,
                             }),
                             store: if target.options.samples > 1
                                 && !target.options.store_multisampled_color_buffer
@@ -1546,6 +1592,7 @@ impl Renderer {
         shadows: &crate::shadow::Atlas,
     ) -> Result<Draw> {
         let DrawGeometry {
+            key,
             vertices,
             deformation,
             instances,
@@ -1553,13 +1600,8 @@ impl Renderer {
         } = geometry;
         let properties = material.properties();
         let vertex_buffer = vertices;
-        let cursor = self.draw_cursor.get();
-        self.draw_cursor.set(cursor + 1);
         let mut slots = self.draw_slots.borrow_mut();
-        if cursor == slots.len() {
-            slots.push(Default::default());
-        }
-        let slot = &mut slots[cursor];
+        let slot = slots.entry(key).or_default();
         let uniform_buffer = slot.uniform(&self.device, &self.queue, bytemuck::bytes_of(uniforms));
         let extension_maps = self.physical_maps.borrow_mut().get(
             &self.device,

@@ -11,6 +11,8 @@ use std::{collections::HashMap, sync::Arc};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Type {
+    Uint,
+    UVec2,
     Float,
     Vec2,
     Vec3,
@@ -22,8 +24,8 @@ pub enum Type {
 impl Type {
     fn lanes(self) -> usize {
         match self {
-            Self::Float => 1,
-            Self::Vec2 => 2,
+            Self::Float | Self::Uint => 1,
+            Self::Vec2 | Self::UVec2 => 2,
             Self::Vec3 => 3,
             Self::Vec4 => 4,
             _ => 0,
@@ -40,6 +42,8 @@ impl Type {
     }
     fn wgsl(self) -> &'static str {
         match self {
+            Self::Uint => "u32",
+            Self::UVec2 => "vec2<u32>",
             Self::Float => "f32",
             Self::Vec2 => "vec2<f32>",
             Self::Vec3 => "vec3<f32>",
@@ -54,6 +58,7 @@ impl Type {
 pub enum Texture {
     Map,
     Input,
+    History,
     External(usize),
 }
 impl Texture {
@@ -110,6 +115,8 @@ pub struct Node(Arc<Expr>);
 #[derive(Debug)]
 enum Expr {
     Constant(f32),
+    Uint(u32),
+    InstanceIndex,
     Uniform(usize, Type),
     Uv,
     Position,
@@ -123,6 +130,15 @@ enum Expr {
     Resource(Texture, bool),
     Sample(Texture, Vec<Node>),
     Call(Arc<WgslFn>, Vec<Node>),
+}
+pub fn uint(value: u32) -> Node {
+    Node::new(Expr::Uint(value))
+}
+pub fn instance_index() -> Node {
+    Node::new(Expr::InstanceIndex)
+}
+pub fn uvec2(x: Node, y: Node) -> Node {
+    Node::new(Expr::Vector(Type::UVec2, vec![x, y]))
 }
 pub fn float(value: f32) -> Node {
     Node::new(Expr::Constant(value))
@@ -185,6 +201,18 @@ impl Node {
     fn binary(&self, op: &'static str, rhs: Node) -> Self {
         Self::new(Expr::Binary(op, self.clone(), rhs))
     }
+    pub fn sqrt(&self) -> Self {
+        self.unary("sqrt")
+    }
+    pub fn dot(&self, rhs: Node) -> Self {
+        self.binary("dot", rhs)
+    }
+    pub fn cross(&self, rhs: Node) -> Self {
+        self.binary("cross", rhs)
+    }
+    pub fn max(&self, rhs: Node) -> Self {
+        self.binary("max", rhs)
+    }
     pub fn sin(&self) -> Self {
         self.unary("sin")
     }
@@ -209,7 +237,7 @@ impl Node {
     pub fn pow(&self, rhs: Node) -> Self {
         self.binary("pow", rhs)
     }
-    /// TSL mod is floor-based, unlike WGSL's remainder for negative inputs.
+    /// Float mod is floor-based; unsigned mod uses integer remainder.
     pub fn modulo(&self, rhs: Node) -> Self {
         self.binary("mod", rhs)
     }
@@ -309,7 +337,10 @@ impl NodeMaterial {
 }
 /// Compile the same expression API for a fullscreen GPU pass.
 pub fn effect_wgsl(color: &Node) -> Result<String> {
-    let mut compiler = Compiler::new(Stage::Effect, 0);
+    effect_wgsl_with_textures(color, 0)
+}
+pub fn effect_wgsl_with_textures(color: &Node, textures: usize) -> Result<String> {
+    let mut compiler = Compiler::new(Stage::Effect, textures);
     let (ty, value) = compiler.emit(color)?;
     let value = output_color(ty, value)?;
     let mut names: Vec<_> = compiler.functions.keys().collect();
@@ -320,7 +351,8 @@ pub fn effect_wgsl(color: &Node) -> Result<String> {
         .collect::<Vec<_>>()
         .join("\n");
     Ok(format!(
-        "{functions}\nfn effect(uv:vec2<f32>)->vec4<f32>{{\n{}return {value};\n}}",
+        "{}\n{functions}\nfn effect(uv:vec2<f32>)->vec4<f32>{{\n{}return {value};\n}}",
+        texture_declarations(textures),
         compiler.body
     ))
 }
@@ -357,6 +389,7 @@ enum Stage {
     Vertex,
     Fragment,
     Effect,
+    Compute,
 }
 struct Compiler {
     stage: Stage,
@@ -377,13 +410,16 @@ impl Compiler {
     }
     fn texture(&self, texture: Texture) -> Result<(String, String)> {
         match texture {
-            Texture::Map if self.stage != Stage::Effect => {
+            Texture::Map if matches!(self.stage, Stage::Vertex | Stage::Fragment) => {
                 Ok(("color_map".into(), "color_sampler".into()))
+            }
+            Texture::History if self.stage == Stage::Effect => {
+                Ok(("history_texture".into(), "input_sampler".into()))
             }
             Texture::Input if self.stage == Stage::Effect => {
                 Ok(("input_texture".into(), "input_sampler".into()))
             }
-            Texture::External(i) if self.stage != Stage::Effect && i < self.textures => {
+            Texture::External(i) if self.stage != Stage::Compute && i < self.textures => {
                 Ok((format!("tsl_texture_{i}"), format!("tsl_sampler_{i}")))
             }
             _ => Err(Error::Invalid("TSL texture binding for this stage")),
@@ -395,6 +431,13 @@ impl Compiler {
             return Ok(value.clone());
         }
         let (ty, expression) = match &*node.0 {
+            Expr::Uint(x) => (Type::Uint, format!("{x}u")),
+            Expr::InstanceIndex => {
+                if self.stage != Stage::Compute {
+                    return Err(Error::Invalid("TSL instance index requires compute stage"));
+                }
+                (Type::Uint, "tsl_index".into())
+            }
             Expr::Constant(x) => {
                 if !x.is_finite() {
                     return Err(Error::Invalid("nonfinite TSL constant"));
@@ -402,15 +445,18 @@ impl Compiler {
                 (Type::Float, format!("{x:?}"))
             }
             Expr::Uniform(i, ty) => {
-                if *i >= 16 || ty.lanes() == 0 {
+                if *i >= 16 || ty.lanes() == 0 || matches!(ty, Type::Uint | Type::UVec2) {
                     return Err(Error::Invalid("TSL uniform slot or type"));
                 }
-                let prefix = if self.stage == Stage::Effect {
+                let prefix = if matches!(self.stage, Stage::Effect | Stage::Compute) {
                     "params"
                 } else {
                     "u.custom"
                 };
                 (*ty, format!("{prefix}[{i}].{}", &"xyzw"[..ty.lanes()]))
+            }
+            Expr::Uv if self.stage == Stage::Compute => {
+                return Err(Error::Invalid("TSL UV is unavailable in compute"));
             }
             Expr::Uv => (
                 Type::Vec2,
@@ -445,7 +491,9 @@ impl Compiler {
                 let mut lanes = 0;
                 for arg in args {
                     let (t, v) = self.emit(arg)?;
-                    if t.lanes() == 0 {
+                    if t.lanes() == 0
+                        || matches!(ty, Type::UVec2) != matches!(t, Type::Uint | Type::UVec2)
+                    {
                         return Err(Error::Invalid("TSL vector argument type"));
                     }
                     lanes += t.lanes();
@@ -467,24 +515,37 @@ impl Compiler {
                 {
                     return Err(Error::Invalid("TSL swizzle"));
                 }
-                (Type::vector(components.len())?, format!("{v}.{components}"))
+                (
+                    if t == Type::UVec2 {
+                        match components.len() {
+                            1 => Type::Uint,
+                            2 => Type::UVec2,
+                            _ => return Err(Error::Invalid("TSL unsigned swizzle width")),
+                        }
+                    } else {
+                        Type::vector(components.len())?
+                    },
+                    format!("{v}.{components}"),
+                )
             }
             Expr::Unary(op, input) => {
                 let (t, v) = self.emit(input)?;
                 if *op == "f32" {
-                    if ![Type::Float, Type::Bool].contains(&t) {
+                    if ![Type::Float, Type::Bool, Type::Uint].contains(&t) {
                         return Err(Error::Invalid("TSL float conversion"));
                     }
                     (
                         Type::Float,
                         if t == Type::Bool {
                             format!("select(0.0,1.0,{v})")
+                        } else if t == Type::Uint {
+                            format!("f32({v})")
                         } else {
                             v
                         },
                     )
                 } else {
-                    if t.lanes() == 0 {
+                    if t.lanes() == 0 || matches!(t, Type::Uint | Type::UVec2) {
                         return Err(Error::Invalid("TSL numeric unary operand"));
                     }
                     (
@@ -505,6 +566,21 @@ impl Compiler {
                         return Err(Error::Invalid("TSL boolean operands"));
                     }
                     (Type::Bool, format!("({} && {})", a.1, b.1))
+                } else if ["dot", "cross"].contains(op) {
+                    if a.0 != b.0
+                        || !matches!(a.0, Type::Vec2 | Type::Vec3 | Type::Vec4)
+                        || (*op == "cross" && a.0 != Type::Vec3)
+                    {
+                        return Err(Error::Invalid("TSL vector operation"));
+                    }
+                    (
+                        if *op == "dot" {
+                            Type::Float
+                        } else {
+                            Type::Vec3
+                        },
+                        format!("{op}({},{})", a.1, b.1),
+                    )
                 } else if ["==", ">", "<"].contains(op) {
                     if a.0 != Type::Float || b.0 != Type::Float {
                         return Err(Error::Invalid("TSL comparison requires scalars"));
@@ -512,10 +588,17 @@ impl Compiler {
                     (Type::Bool, format!("({} {op} {})", a.1, b.1))
                 } else {
                     let (t, a, b) = promote(a, b)?;
+                    if matches!(t, Type::Uint | Type::UVec2)
+                        && !["+", "-", "*", "/", "mod", "max"].contains(op)
+                    {
+                        return Err(Error::Invalid("TSL integer operation"));
+                    }
                     (
                         t,
                         match *op {
+                            "max" => format!("max({a},{b})"),
                             "pow" => format!("pow({a},{b})"),
+                            "mod" if matches!(t, Type::Uint | Type::UVec2) => format!("({a}%{b})"),
                             "mod" => format!("({a}-{b}*floor({a}/{b}))"),
                             _ => format!("({a} {op} {b})"),
                         },
@@ -616,7 +699,11 @@ impl Compiler {
 fn promote(a: (Type, String), b: (Type, String)) -> Result<(Type, String, String)> {
     let (ta, a) = a;
     let (tb, b) = b;
-    if ta.lanes() == 0 || tb.lanes() == 0 || (ta != tb && ta != Type::Float && tb != Type::Float) {
+    if ta.lanes() == 0
+        || tb.lanes() == 0
+        || matches!(ta, Type::Uint | Type::UVec2) != matches!(tb, Type::Uint | Type::UVec2)
+        || (ta != tb && ta.lanes() != 1 && tb.lanes() != 1)
+    {
         return Err(Error::Invalid("TSL incompatible numeric operands"));
     }
     let ty = if ta.lanes() >= tb.lanes() { ta } else { tb };
@@ -657,3 +744,66 @@ pub fn gaussian_blur(texture: Texture, coordinate: Node, step: Node, sigma: u32)
     }
     Ok(color)
 }
+
+fn texture_declarations(count: usize) -> String {
+    (0..count).map(|i|format!("@group(1) @binding({}) var tsl_texture_{i}:texture_2d<f32>;\n@group(1) @binding({}) var tsl_sampler_{i}:sampler;",i*2,i*2+1)).collect::<Vec<_>>().join("\n")
+}
+pub async fn effect_with_textures(
+    renderer: &Renderer,
+    format: wgpu::TextureFormat,
+    color: &Node,
+    textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+) -> Result<Effect> {
+    Effect::with_textures(
+        renderer,
+        format,
+        &effect_wgsl_with_textures(color, textures.len())?,
+        textures,
+    )
+    .await
+}
+pub fn mix(a: Node, b: Node, factor: Node) -> Node {
+    a.clone() + (b - a) * factor
+}
+pub fn luminance(color: Node) -> Node {
+    color.dot(vec3(float(0.2126), float(0.7152), float(0.0722)))
+}
+pub fn saturation(color: Node, amount: Node) -> Node {
+    mix(splat(luminance(color.clone()), Type::Vec3), color, amount).max(float(0.0))
+}
+pub fn hue(color: Node, angle: Node) -> Node {
+    let k = splat(float(0.57735), Type::Vec3);
+    let c = angle.cos();
+    (color.clone() * c.clone()
+        + k.cross(color.clone()) * angle.sin()
+        + k.clone() * k.dot(color) * (float(1.0) - c))
+        .max(float(0.0))
+}
+/// DotScreenNode r186. Supply the UVs used by the destination quad.
+/// For a WebGPU render-to-texture pass these match Effect's top-left UVs.
+pub fn dot_screen(color: Node, coordinate: Node, size: Node, angle: Node, scale: Node) -> Node {
+    let p = coordinate * size;
+    let s = angle.sin();
+    let c = angle.cos();
+    let point = vec2(c.clone() * p.x() - s.clone() * p.y(), s * p.x() + c * p.y()) * scale;
+    let pattern = point.x().sin() * point.y().sin() * float(4.0);
+    let avg = (color.x() + color.y() + color.swizzle("z")) / float(3.0);
+    vec4(
+        splat(avg * float(10.0) - float(5.0) + pattern, Type::Vec3),
+        color.swizzle("w"),
+    )
+}
+pub fn rgb_shift(texture: Texture, coordinate: Node, amount: Node, angle: Node) -> Node {
+    let offset = vec2(angle.cos(), angle.sin()) * amount;
+    let center = texture.sample(coordinate.clone());
+    vec4(
+        vec3(
+            texture.sample(coordinate.clone() + offset.clone()).x(),
+            center.y(),
+            texture.sample(coordinate - offset).swizzle("z"),
+        ),
+        center.swizzle("w"),
+    )
+}
+
+pub mod compute;

@@ -1,0 +1,257 @@
+{
+  "reference_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-20",
+  "environment": "macOS / installed Google Chrome / WebGPU",
+  "viewport_cases": [
+    [
+      512,
+      512
+    ],
+    [
+      640,
+      400
+    ]
+  ],
+  "per_channel_tolerance": 6,
+  "allowed_different_pixel_fraction": 0.005,
+  "browser_checks_passed": 77,
+  "native_checks_passed_including_doctests": 60,
+  "timing_parity_measured": false,
+  "examples": [
+    {
+      "example": "webgpu_compute_texture",
+      "device_pixel_ratio": 1,
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0.0006103515625,
+          "meanError": 0.024815877278645832
+        },
+        {
+          "state": 1,
+          "fraction": 0.0006103515625,
+          "meanError": 0.024815877278645832
+        },
+        {
+          "state": 2,
+          "fraction": 0.0006103515625,
+          "meanError": 0.024815877278645832
+        },
+        {
+          "state": 3,
+          "fraction": 0.0006103515625,
+          "meanError": 0.024815877278645832
+        },
+        {
+          "state": 4,
+          "fraction": 0.0006103515625,
+          "meanError": 0.024815877278645832
+        },
+        {
+          "state": 5,
+          "fraction": 0.00453125,
+          "meanError": 0.0465078125
+        },
+        {
+          "state": 6,
+          "fraction": 0.00453125,
+          "meanError": 0.0465078125
+        }
+      ],
+      "raw_images": "test-results/tsl-passes-final/tsl-passes-webgpu-compute--a4983-ring-webgpu-compute-texture",
+      "steady_state_new_gpu_objects": 0,
+      "steady_state_geometry_uploads": 0,
+      "compute_dispatches": 1
+    },
+    {
+      "example": "webgpu_postprocessing_difference",
+      "device_pixel_ratio": 1,
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.011013031005859375
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.004238128662109375
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.003962198893229167
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.010936737060546875
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.004216512044270833
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.00662890625
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0026380208333333334
+        }
+      ],
+      "raw_images": "test-results/tsl-passes-final/tsl-passes-webgpu-postproc-92961-u-postprocessing-difference",
+      "steady_state_new_gpu_objects": 0,
+      "steady_state_geometry_uploads": 0,
+      "compute_dispatches": 0
+    },
+    {
+      "example": "webgpu_postprocessing_masking",
+      "device_pixel_ratio": 1,
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.005430857340494792
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.005231221516927083
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.005011240641276042
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.005011240641276042
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.005678812662760417
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0035299479166666665
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.004848958333333334
+        }
+      ],
+      "raw_images": "test-results/tsl-passes-final/tsl-passes-webgpu-postproc-b8274-bgpu-postprocessing-masking",
+      "steady_state_new_gpu_objects": 0,
+      "steady_state_geometry_uploads": 0,
+      "compute_dispatches": 0
+    },
+    {
+      "example": "webgpu_postprocessing",
+      "device_pixel_ratio": 1,
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0009129842122395834
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.000888824462890625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0009180704752604166
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0009180704752604166
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0010426839192708333
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0007825520833333333
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0006927083333333334
+        }
+      ],
+      "raw_images": "test-results/tsl-passes-final/tsl-passes-webgpu-postproc-d9f38-ering-webgpu-postprocessing",
+      "steady_state_new_gpu_objects": 0,
+      "steady_state_geometry_uploads": 0,
+      "compute_dispatches": 0
+    },
+    {
+      "example": "webgpu_rtt",
+      "device_pixel_ratio": 2,
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0014677047729492188
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0014476776123046875
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0016638437906901042
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0016638437906901042
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.001728057861328125
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0018526713053385417
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0018218358357747395
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.0011298828125
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.001119140625
+        }
+      ],
+      "raw_images": "test-results/tsl-passes-final/tsl-passes-webgpu-rtt-TSL-pass-rendering-webgpu-rtt",
+      "steady_state_new_gpu_objects": 0,
+      "steady_state_geometry_uploads": 0,
+      "compute_dispatches": 0
+    }
+  ]
+}

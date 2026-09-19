@@ -5,6 +5,7 @@ use std::sync::Arc;
 
 enum Content {
     Avif,
+    TslPass(Box<super::tsl_passes::Demo>),
     Tsl(Box<super::tsl_examples::Demo>),
     Gltf(Box<super::gltf_examples::Demo>),
     Instancing,
@@ -46,6 +47,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            38..=42 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
+                near: 0.0,
+                far: 2.0,
+                elapsed: 0.0,
+                content: Content::TslPass(Box::new(
+                    super::tsl_passes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             35..=37 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -440,6 +450,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::TslPass(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Tsl(demo) = &mut self.content {
             return demo.update(scene, delta, animate);
         }
@@ -564,6 +577,9 @@ impl Demo {
         }
     }
     pub fn pointer(&mut self, x: f64, y: f64) {
+        if let Content::TslPass(demo) = &mut self.content {
+            demo.pointer(x, y);
+        }
         if let Content::VertexColors { pointer } | Content::ColorLines { pointer, .. } =
             &mut self.content
         {
@@ -574,6 +590,18 @@ impl Demo {
         if let Content::Gltf(demo) = &mut self.content {
             demo.dragging(value);
         }
+    }
+    pub fn render(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut Scene,
+        camera: Object3D,
+        target: &crate::renderer::RenderTarget,
+    ) -> Result<bool> {
+        if let Content::TslPass(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        Ok(false)
     }
     pub fn prepare(
         &mut self,
@@ -588,12 +616,18 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::TslPass(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::Tsl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         Err(crate::Error::Invalid("not a TSL example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::TslPass(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::Tsl(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -617,6 +651,9 @@ impl Demo {
         height: f64,
     ) -> Result<()> {
         if let Content::Gltf(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TslPass(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if matches!(

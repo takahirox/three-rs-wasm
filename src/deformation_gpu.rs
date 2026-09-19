@@ -20,6 +20,7 @@ struct Geometry {
     layout: [u32; 3],
 }
 struct Pose {
+    owner: Weak<()>,
     geometry: usize,
     binding: Bindings,
     last: Vec<f32>,
@@ -65,8 +66,11 @@ fn buffer(device: &wgpu::Device, bytes: &[u8], uniform: bool) -> wgpu::Buffer {
 impl Cache {
     pub fn prune(&mut self, scene: &Scene) {
         self.geometry.retain(|_, g| g.owner.strong_count() > 0);
-        self.poses
-            .retain(|h, p| scene.get(*h).is_ok() && self.geometry.contains_key(&p.geometry));
+        self.poses.retain(|h, p| {
+            p.owner.strong_count() > 0
+                && (!p.owner.ptr_eq(&Arc::downgrade(&scene.cache_owner)) || scene.get(*h).is_ok())
+                && self.geometry.contains_key(&p.geometry)
+        });
     }
     pub fn get(
         &mut self,
@@ -267,6 +271,7 @@ impl Cache {
             0,
         ];
         let pose = self.poses.entry(handle).or_insert_with(|| Pose {
+            owner: Arc::downgrade(&scene.cache_owner),
             geometry: key,
             binding: Bindings {
                 data: geometry.data.clone(),
@@ -278,6 +283,7 @@ impl Cache {
         });
         if pose.geometry != key || pose.binding.pose.size() != values.len() as u64 * 4 {
             *pose = Pose {
+                owner: Arc::downgrade(&scene.cache_owner),
                 geometry: key,
                 binding: Bindings {
                     data: geometry.data.clone(),

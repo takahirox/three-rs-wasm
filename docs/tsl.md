@@ -19,15 +19,17 @@ material.uniforms[0][0] = 1.0; // time in seconds, supplied by the application
 
 Supported building blocks:
 
-- Float, bool and float vectors; scalar broadcasting, vector constructors and
-  swizzles; arithmetic, floor-based modulo, powers, trigonometry, clamp, comparison
+- Float, bool, uint, uvec2 and float vectors; scalar broadcasting, vector constructors and
+  swizzles; arithmetic, floor-based modulo, powers, trigonometry, square root, dot/cross products, max, clamp, comparison
   and selection. `checker` matches Three.js's 2×2 pattern per UV unit.
 - Explicit uniform slots (16 vec4s), vertex UV/position/normal inputs and
   interpolated fragment UV. `NodeMaterial.position` is a GPU vertex expression;
   `color` supplies unlit float/vec3/vec4 output. Existing material fog applies.
 - Implicit texture sampling, explicit LOD and explicit gradients. Vertex texture
   sampling requires explicit LOD. Material maps, retained external 2D
-  texture/sampler pairs, and fullscreen-pass inputs are available.
+  texture/sampler pairs, and fullscreen-pass input/history textures are available.
+  `effect_with_textures` binds additional sampled textures; `Effect::set_textures`
+  rebinds resized targets without recompiling the shader.
 - `function(|| ...)` provides Fn-style Rust closure composition. Cloned nodes
   share identity, so a reused expression is emitted once per stage. `WgslFn`
   integrates a native WGSL function with a checked argument/result signature.
@@ -35,6 +37,13 @@ Supported building blocks:
 - `effect` compiles the same nodes into an existing fullscreen `Effect`.
   `gaussian_blur` builds the pinned GaussianBlurNode kernel; the application
   schedules its horizontal and vertical passes with resident render targets.
+- `mix`, `luminance`, `saturation`, `hue`, `dot_screen`, and `rgb_shift` compose
+  reusable expression graphs. Multi-pass order is explicit in Rust.
+- `compute::TextureCompute` compiles `instance_index`, unsigned arithmetic,
+  `uvec2` coordinates and vec4 colors into a bounds-checked GPU `textureStore`
+  dispatch. Its RGBA8 storage texture, uniforms and compute pipeline are retained;
+  repeated dispatches and uniform updates require no CPU image generation.
+  Uint-to-float conversion is explicit; uniform slots remain floating point.
 
 Graph compilation rejects incompatible types, invalid swizzles, out-of-range
 uniform/texture slots, wrong stage inputs and conflicting native function names.
@@ -49,7 +58,7 @@ examples prepare image rows once to match WebGPU TextureLoader's upload flip;
 render-to-texture coordinates are explicitly converted to Three.js QuadMesh UVs.
 
 Not implemented: the JavaScript DSL/parser/transpiler, general mutable variables
-and control-flow nodes, matrices/integer/storage/compute node graphs, arbitrary
+and control-flow nodes, matrices, general storage-buffer/atomic compute graphs, arbitrary
 attributes/varyings, automatic render-graph scheduling, or PBR node hooks such as
 roughness/normal/lighting/output overrides. `select` evaluates both expressions;
 it does not promise lazy branches. Native WGSL functions are an explicit escape
@@ -76,7 +85,7 @@ python3 tools/gallery/build.py
 python3 tools/tsl/prepare.py
 cargo test --test tsl --test tsl_gpu --test programming
 wasm-pack build --target web --out-dir web/pkg --release --no-typescript
-npx playwright test tests/browser/tsl.spec.js
+npx playwright test tests/browser/tsl.spec.js tests/browser/tsl-passes.spec.js
 ```
 
 Native tests check graph errors, GPU vertex displacement, signed modulo, uniform
@@ -90,3 +99,41 @@ Validation on 2026-09-20: all 25 image states had zero pixels exceeding the
 The 14 targeted browser checks and 5 native checks passed, including existing
 RawShaderMaterial and gallery-layout regression cases. Structured results:
 [`tsl-comparison.json`](tsl-comparison.json).
+
+## Five additional GPU-pass examples
+
+| Gallery example | Implemented work |
+| --- | --- |
+| `webgpu_compute_texture` | Official 512×512 GPU compute graph, storage texture, on-demand display |
+| `webgpu_rtt` | UV-grid cube to RGBA8 render target, mouse-controlled hue/saturation |
+| `webgpu_postprocessing` | 100 shared-geometry Phong spheres, HDR scene pass, Dot Screen and RGB Shift |
+| `webgpu_postprocessing_difference` | Current/previous HDR textures, motion-dependent saturation, Neutral tone mapping, speed and Orbit controls |
+| `webgpu_postprocessing_masking` | Three GPU scene passes, transparent box/torus masks, sampled image composition |
+
+`reference/three-js/tsl-passes.html` executes the unchanged shader expressions in
+pinned upstream scripts. The fixture controls time and seeds `Math.random` for
+the 100-sphere scene. RGB-shift input remains signed HDR; the Dot Screen quad's
+UV follows WebGPU render-target orientation. Scene-only isolation confirmed that
+the sphere geometry, Phong lighting and fog match before applying the effects.
+Difference comparisons settle history after resize because each backend resizes
+its two history textures on a different frame; consecutive equal and changed
+poses are also compared before resize.
+
+`tests/browser/tsl-passes.spec.js` compares animation, mouse input, history and
+resize. It warms and repeats the same motion cycle before/after resizing and
+requires zero new GPU buffers/textures/bind groups/pipelines/shaders and zero
+new geometry/deformation-input uploads. Compute Texture must dispatch exactly
+once even across resize. Render slots now follow scene/object/material-group
+identity, so culling or another scene's render does not discard reusable data.
+Scene lifetime and removed handles still release cached entries.
+
+These remain partial ports: Inspector styling and equivalent CPU/GPU frame times
+are not claimed. No JavaScript TSL parser or automatic pass scheduler was added.
+
+Validation on 2026-09-20: all 37 new image states passed the unchanged threshold.
+The four RTT/postprocessing examples had zero pixels exceeding 6/255; Compute
+Texture reached 0.453125% at the resized viewport (allowed: 0.5%). RTT also passed
+with device-pixel ratio 2. The 77 browser regressions and all 60 native tests
+(including doctests) passed, as did native/Wasm Clippy and formatting checks.
+Measurements and paths to the local PNG pairs:
+[`tsl-passes-comparison.json`](tsl-passes-comparison.json).

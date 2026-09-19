@@ -6,7 +6,10 @@ pub struct Effect {
     pipeline: wgpu::RenderPipeline,
     sampler: wgpu::Sampler,
     format: wgpu::TextureFormat,
-    slot: std::cell::RefCell<crate::draw_gpu::Slot>,
+    slots: std::cell::RefCell<Vec<(wgpu::Texture, wgpu::Texture, crate::draw_gpu::Slot)>>,
+    texture_layout: wgpu::BindGroupLayout,
+    textures: wgpu::BindGroup,
+    texture_count: usize,
     /// Sixteen vec4 parameters, available as `params` in WGSL.
     pub parameters: [[f32; 4]; 16],
 }
@@ -14,6 +17,15 @@ impl Effect {
     /// Define `fn effect(uv:vec2<f32>)->vec4<f32>`. Bindings expose
     /// `input_texture`, `input_sampler`, `history_texture`, and `params`.
     pub async fn new(renderer: &Renderer, format: wgpu::TextureFormat, wgsl: &str) -> Result<Self> {
+        Self::with_textures(renderer, format, wgsl, &[]).await
+    }
+    /// Extra filterable 2D texture/sampler pairs use consecutive bindings in group 1.
+    pub async fn with_textures(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
@@ -62,9 +74,37 @@ impl Effect {
             label: Some("fullscreen effect"),
             source: wgpu::ShaderSource::Wgsl(source.into()),
         });
+        let texture_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("effect extra textures"),
+            entries: &textures
+                .iter()
+                .enumerate()
+                .flat_map(|(i, _)| {
+                    [
+                        wgpu::BindGroupLayoutEntry {
+                            binding: (i * 2) as u32,
+                            visibility: wgpu::ShaderStages::FRAGMENT,
+                            ty: wgpu::BindingType::Texture {
+                                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                                view_dimension: wgpu::TextureViewDimension::D2,
+                                multisampled: false,
+                            },
+                            count: None,
+                        },
+                        wgpu::BindGroupLayoutEntry {
+                            binding: (i * 2 + 1) as u32,
+                            visibility: wgpu::ShaderStages::FRAGMENT,
+                            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                            count: None,
+                        },
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        });
+        let texture_bindings = extra_bindings(device, &texture_layout, textures);
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: None,
-            bind_group_layouts: &[&layout],
+            bind_group_layouts: &[&layout, &texture_layout],
             push_constant_ranges: &[],
         });
         let pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
@@ -97,7 +137,10 @@ impl Effect {
         }
         Ok(Self {
             layout,
-            slot: Default::default(),
+            slots: Default::default(),
+            texture_layout,
+            textures: texture_bindings,
+            texture_count: textures.len(),
             pipeline,
             format,
             sampler: device.create_sampler(&wgpu::SamplerDescriptor {
@@ -107,6 +150,18 @@ impl Effect {
             }),
             parameters: [[0.0; 4]; 16],
         })
+    }
+    /// Rebind views after resizing external render targets without recompiling.
+    pub fn set_textures(
+        &mut self,
+        renderer: &Renderer,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<()> {
+        if textures.len() != self.texture_count {
+            return Err(Error::Invalid("effect texture count"));
+        }
+        self.textures = extra_bindings(&renderer.device, &self.texture_layout, textures);
+        Ok(())
     }
     pub fn apply(
         &self,
@@ -130,7 +185,26 @@ impl Effect {
             ));
         }
         let device = &renderer.device;
-        let mut slot = self.slot.borrow_mut();
+        // Keep both sides of a history ping-pong resident. Bound the cache when
+        // resizing or when an application replaces its source textures.
+        let mut slots = self.slots.borrow_mut();
+        let index = if let Some(i) = slots
+            .iter()
+            .position(|(a, b, _)| a == &input.texture && b == &history.texture)
+        {
+            i
+        } else {
+            if slots.len() == 2 {
+                slots.remove(0);
+            }
+            slots.push((
+                input.texture.clone(),
+                history.texture.clone(),
+                Default::default(),
+            ));
+            slots.len() - 1
+        };
+        let slot = &mut slots[index].2;
         let uniform = slot.uniform(
             device,
             &renderer.queue,
@@ -177,6 +251,7 @@ impl Effect {
             });
             pass.set_pipeline(&self.pipeline);
             pass.set_bind_group(0, &bind, &[]);
+            pass.set_bind_group(1, &self.textures, &[]);
             pass.draw(0..3, 0..1);
         }
         renderer.queue.submit([encoder.finish()]);
@@ -206,3 +281,30 @@ fn effect(uv:vec2<f32>)->vec4<f32> {
     let original=textureSample(history_texture,input_sampler,uv);
     return vec4(original.rgb+textureSample(input_texture,input_sampler,uv).rgb*params[0].x,original.a);
 }"#;
+
+fn extra_bindings(
+    device: &wgpu::Device,
+    layout: &wgpu::BindGroupLayout,
+    textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+) -> wgpu::BindGroup {
+    device.create_bind_group(&wgpu::BindGroupDescriptor {
+        label: Some("effect extra textures"),
+        layout,
+        entries: &textures
+            .iter()
+            .enumerate()
+            .flat_map(|(i, (view, sampler))| {
+                [
+                    wgpu::BindGroupEntry {
+                        binding: (i * 2) as u32,
+                        resource: wgpu::BindingResource::TextureView(view),
+                    },
+                    wgpu::BindGroupEntry {
+                        binding: (i * 2 + 1) as u32,
+                        resource: wgpu::BindingResource::Sampler(sampler),
+                    },
+                ]
+            })
+            .collect::<Vec<_>>(),
+    })
+}

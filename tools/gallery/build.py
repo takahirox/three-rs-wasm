@@ -44,6 +44,11 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_compute_texture': {'example':38,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['Rust TSLのcompute・textureStoreでGPUテクスチャを生成。描画は変更時のみ。情報表示の外観と性能の完全な同等性は未保証。']},
+ 'webgpu_rtt': {'example':39,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['TSLのrender-to-texture・saturation・hueとマウス操作を移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing': {'example':40,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['100個のPhong球とDot Screen・RGB ShiftをTSLで移植。比較可能な固定乱数を使用。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_difference': {'example':41,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['前フレームのGPUテクスチャを参照するTSL合成・速度調整・Orbit操作を移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_masking': {'example':42,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['3シーンのGPU描画・アルファマスク・TSL画像合成を移植。Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_tsl_interoperability': {'example':35,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['RustのTSLノードAPIとWGSL関数連携でCRTを移植。Inspector UIの外観と性能の完全な同等性は未保証。']},
  'webgpu_texturegrad': {'example':36,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['公式のWebGPU側を単独表示。WebGL比較パネルは対象外。RustのTSLによる勾配付きGPUテクスチャサンプリング。性能の完全な同等性は未保証。']},
  'webgpu_procedural_texture': {'example':37,'source':'src/browser/tsl_examples.rs','test':'tests/browser/tsl.spec.js','limitations':['RustのTSLからGPUテクスチャ生成・2段Gaussian blurと調整を移植。Inspector UIの外観と性能の完全な同等性は未保証。']},

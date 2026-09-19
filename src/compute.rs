@@ -90,6 +90,15 @@ impl ComputeKernel {
     /// WGSL uses group 0, consecutive bindings matching `buffers`, and `main`.
     /// Shader and binding errors are returned instead of invoking wgpu's panic handler.
     pub async fn new(renderer: &Renderer, wgsl: &str, buffers: &[&GpuBuffer]) -> Result<Self> {
+        Self::with_storage_textures(renderer, wgsl, buffers, &[]).await
+    }
+    /// Storage textures follow the buffers in group 0; each is write-only 2D.
+    pub async fn with_storage_textures(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, wgpu::TextureFormat)],
+    ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let entries = buffers
@@ -111,6 +120,21 @@ impl ComputeKernel {
                 },
                 count: None,
             })
+            .chain(
+                textures
+                    .iter()
+                    .enumerate()
+                    .map(|(i, (_, format))| wgpu::BindGroupLayoutEntry {
+                        binding: (buffers.len() + i) as u32,
+                        visibility: wgpu::ShaderStages::COMPUTE,
+                        ty: wgpu::BindingType::StorageTexture {
+                            access: wgpu::StorageTextureAccess::WriteOnly,
+                            format: *format,
+                            view_dimension: wgpu::TextureViewDimension::D2,
+                        },
+                        count: None,
+                    }),
+            )
             .collect::<Vec<_>>();
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("compute buffers"),
@@ -126,6 +150,15 @@ impl ComputeKernel {
                     binding: i as u32,
                     resource: b.buffer.as_entire_binding(),
                 })
+                .chain(
+                    textures
+                        .iter()
+                        .enumerate()
+                        .map(|(i, (view, _))| wgpu::BindGroupEntry {
+                            binding: (buffers.len() + i) as u32,
+                            resource: wgpu::BindingResource::TextureView(view),
+                        }),
+                )
                 .collect::<Vec<_>>(),
         });
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {

@@ -12,6 +12,18 @@ fn srgb_output(rgb:vec3<f32>)->vec3<f32> {
 }
 
 fn tone_output(value:vec3<f32>,exposure:f32,mode:f32)->vec3<f32> {
+    if mode>2.5 {
+        var c=value*exposure;
+        let x=min(c.r,min(c.g,c.b));
+        let offset=select(0.04,x-6.25*x*x,x<0.08);
+        c-=offset;
+        let peak=max(c.r,max(c.g,c.b));
+        if peak<0.76 {return c;}
+        let new_peak=1.0-0.24*0.24/(peak-0.52);
+        c*=new_peak/peak;
+        let g=1.0-1.0/(0.15*(peak-new_peak)+1.0);
+        return mix(c,vec3(new_peak),g);
+    }
     if mode>1.5 {let c=value*exposure;return clamp(c/(vec3(1.0)+c),vec3(0.0),vec3(1.0));}
     if mode>0.5 {return aces_output(value,exposure);}
     return value;
