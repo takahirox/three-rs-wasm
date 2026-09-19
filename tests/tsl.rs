@@ -104,3 +104,18 @@ fn native_functions_are_typed_and_conflicts_are_rejected() {
     );
     assert!(gaussian_blur(Texture::Input, uv(), uv(), 33).is_err());
 }
+
+#[test]
+fn output_is_not_an_unlit_or_fullscreen_input() {
+    assert!(NodeMaterial::new(output()).wgsl(0).is_err());
+    assert!(effect_wgsl(&output()).is_err());
+    let graph = display::transition(
+        Texture::Input.sample(uv()),
+        Texture::History.sample(uv()),
+        Texture::External(0).sample(uv()).x(),
+        uniform(0, Type::Float),
+        float(0.1),
+        float(1.0),
+    );
+    assert!(effect_wgsl_with_textures(&graph, 1).is_ok());
+}

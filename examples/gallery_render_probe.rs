@@ -161,6 +161,7 @@ fn material(m: MaterialSpec, textures: &[Arc<Texture>]) -> Result<Arc<Material>>
         }),
         "standard" => Material::Standard(MeshStandardMaterial {
             properties,
+            energy_conservation: false,
             roughness: m.roughness,
             metalness: m.metalness,
             emissive: color(m.emissive),

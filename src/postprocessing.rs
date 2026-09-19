@@ -26,6 +26,24 @@ impl Effect {
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
+        Self::build(renderer, format, wgsl, textures, None).await
+    }
+    /// Fullscreen pass with an explicit blend state (for GPU accumulation).
+    pub async fn with_blend(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        blend: wgpu::BlendState,
+    ) -> Result<Self> {
+        Self::build(renderer, format, wgsl, &[], Some(blend)).await
+    }
+    async fn build(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        blend: Option<wgpu::BlendState>,
+    ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
@@ -122,7 +140,7 @@ impl Effect {
                 compilation_options: Default::default(),
                 targets: &[Some(wgpu::ColorTargetState {
                     format,
-                    blend: None,
+                    blend,
                     write_mask: wgpu::ColorWrites::ALL,
                 })],
             }),
@@ -169,6 +187,17 @@ impl Effect {
         input: &RenderTarget,
         history: Option<&RenderTarget>,
         output: &RenderTarget,
+    ) -> Result<()> {
+        self.apply_with_load(renderer, input, history, output, false)
+    }
+    /// Retain destination pixels when accumulating additional samples.
+    pub fn apply_with_load(
+        &self,
+        renderer: &Renderer,
+        input: &RenderTarget,
+        history: Option<&RenderTarget>,
+        output: &RenderTarget,
+        load: bool,
     ) -> Result<()> {
         let history = history.unwrap_or(input);
         if input.texture == output.texture || history.texture == output.texture {
@@ -241,7 +270,11 @@ impl Effect {
                     depth_slice: None,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
+                        load: if load {
+                            wgpu::LoadOp::Load
+                        } else {
+                            wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
+                        },
                         store: wgpu::StoreOp::Store,
                     },
                 })],
@@ -308,3 +341,5 @@ fn extra_bindings(
             .collect::<Vec<_>>(),
     })
 }
+
+pub mod ssaa;

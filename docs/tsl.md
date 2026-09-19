@@ -60,7 +60,7 @@ render-to-texture coordinates are explicitly converted to Three.js QuadMesh UVs.
 Not implemented: the JavaScript DSL/parser/transpiler, general mutable variables
 and control-flow nodes, matrices, general storage-buffer/atomic compute graphs, arbitrary
 attributes/varyings, automatic render-graph scheduling, or PBR node hooks such as
-roughness/normal/lighting/output overrides. `select` evaluates both expressions;
+roughness/normal/lighting overrides. A limited final lit-color hook is described below. `select` evaluates both expressions;
 it does not promise lazy branches. Native WGSL functions are an explicit escape
 hatch, not a claim that their behavior has been implemented as Rust nodes.
 
@@ -137,3 +137,54 @@ with device-pixel ratio 2. The 77 browser regressions and all 60 native tests
 (including doctests) passed, as did native/Wasm Clippy and formatting checks.
 Measurements and paths to the local PNG pairs:
 [`tsl-passes-comparison.json`](tsl-passes-comparison.json).
+
+## Five display-filter examples
+
+| Gallery example | Implemented work |
+| --- | --- |
+| `webgpu_postprocessing_direct` | 100 Phong spheres, inline saturation before Neutral tone mapping |
+| `webgpu_postprocessing_radial_blur` | 100 GPU instances, HDR radial blur with runtime sample count |
+| `webgpu_postprocessing_fxaa` | 100 GPU instances, sRGB conversion followed by adaptive FXAA |
+| `webgpu_postprocessing_ssaa` | 120 GPU instances, 1–32 jittered scene samples and weighted GPU accumulation |
+| `webgpu_postprocessing_transition` | Two 500-instance scenes, six texture masks, animated transition and endpoint pass skipping |
+
+`output_program(renderer, node)` compiles `output()` expressions into the lit
+material fragment shader, before tone mapping and output encoding. Assign the
+program to `MaterialProperties.vertex_program`; `vertex_uniforms` supplies its
+uniform slots. This reuses the existing custom-program binding and does not add
+a fullscreen effect for saturation. The browser still uses its normal canvas
+presentation pass. Arbitrary vertex displacement combined with this hook, and
+material normal/roughness/lighting graphs, are outside this API.
+
+`tsl::display` provides `srgb`, `premultiplied_srgb`, `radial_blur`, `fxaa` and
+`transition`. Radial blur and adaptive FXAA loops are reusable native WGSL
+helpers, not a general Rust control-flow AST. FXAA requires sRGB input; masks
+are linear data. External transition mask UVs account for TextureLoader's
+upload orientation. `SsaaPass` supports perspective cameras, view offsets and
+color-only RGBA16Float accumulation; it restores the original camera view even
+on an error. MRT/depth propagation and orthographic SSAA are not implemented.
+`MeshStandardMaterial.energy_conservation` enables r186 WebGPU punctual-light
+Fresnel attenuation and multiple-scattering compensation, plus ambient/hemisphere
+diffuse energy attenuation. The previous lighting remains the default for existing
+ports; the three new Standard-material scenes enable the option. Rect-area light
+energy compensation is outside this addition. The FXAA investigation isolated the
+filter on an identical official input before identifying this lighting difference.
+Solid-background alpha is premultiplied, and transparent SSAA canvas output is
+encoded after unpremultiplication.
+
+The pinned reference scripts in `reference/three-js/tsl-filters.html` retain
+the official shader expressions and use seeded placement and explicit time.
+`tests/browser/tsl-filters.spec.js` compares poses, controls and resize, enforces
+steady-state GPU resource/geometry residency, and checks instanced draw counts
+and SSAA sample counts. `tests/tsl_filters_gpu.rs` checks uniform-only inline
+color changes, weighted alpha accumulation and camera restoration. Inspector
+UI styling remains a limitation; hardware timing parity is not claimed.
+
+Validation on 2026-09-20: 65 new image states passed the unchanged 6/255
+channel / 0.5% pixel threshold, including multiple transition cycles and resize.
+112 browser checks and all native tests passed; native/Wasm Clippy and formatting
+also passed. FXAA's same-input isolation found only 2 pixels above threshold
+at 512×512; enabling r186 lighting in the port reduced its end-to-end discrepancy
+to at most 4 pixels across the tested square views. No threshold was relaxed.
+Raw measurements, GPU resource counts and local PNG paths:
+[`tsl-filters-comparison.json`](tsl-filters-comparison.json).

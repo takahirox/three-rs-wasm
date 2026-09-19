@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 557,
-    "runnable-partial": 38,
+    "blocked-at-port-review": 552,
+    "runnable-partial": 43,
     "excluded": 10,
     "requires-feature-review": 2
   },
@@ -30328,10 +30328,10 @@
     },
     {
       "id": "webgpu_postprocessing_fxaa",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_fxaa.html",
       "source_sha256": "7858a8bde218fd97bd7ee419c84bd031c65c679a2a3351c5bcff9cdac2adb786",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-filters.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -31122,10 +31122,10 @@
     },
     {
       "id": "webgpu_postprocessing_radial_blur",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_radial_blur.html",
       "source_sha256": "73e2cdcee4c9544433c9dd9fb8af48771a852f32ba00327b2337d2b241badeb4",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-filters.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -31412,10 +31412,10 @@
     },
     {
       "id": "webgpu_postprocessing_ssaa",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssaa.html",
       "source_sha256": "7d32d513c20a68ba7649187a2f33663a4b3f3b0f6a2fa42d8aa9e8648e85f633",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-filters.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -32147,10 +32147,10 @@
     },
     {
       "id": "webgpu_postprocessing_transition",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_transition.html",
       "source_sha256": "d2a197e49c22b50262698005b22e2bc16e9dabcdfd8245fe8529bcb99e359056",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-filters.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -32310,10 +32310,10 @@
     },
     {
       "id": "webgpu_postprocessing_direct",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_direct.html",
       "source_sha256": "85182dbeea6d53d8a7da42293c9fff58852d1af4fccfcac7db09d36ff75cccc3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-filters.spec.js",
       "blockers": [
         {
           "kind": "core-api",

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 38 partial Rust ports; 559 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 43 partial Rust ports; 554 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_postprocessing_direct | `tests/browser/tsl-filters.spec.js` | 描画シェーダー内のTSL saturationとNeutral tone mappingを移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_radial_blur | `tests/browser/tsl-filters.spec.js` | 100インスタンスとGPU可変サンプル数Radial Blurを移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_fxaa | `tests/browser/tsl-filters.spec.js` | 100インスタンスとsRGB空間の適応的FXAAを移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_ssaa | `tests/browser/tsl-filters.spec.js` | 120インスタンスと1〜32回のジッター付きGPU描画・加算を移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_transition | `tests/browser/tsl-filters.spec.js` | 2シーン・各500インスタンスと6種の遷移マスクを移植。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_compute_texture | `tests/browser/tsl-passes.spec.js` | Rust TSLのcompute・textureStoreでGPUテクスチャを生成。描画は変更時のみ。情報表示の外観と性能の完全な同等性は未保証。 |
 | webgpu_rtt | `tests/browser/tsl-passes.spec.js` | TSLのrender-to-texture・saturation・hueとマウス操作を移植。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing | `tests/browser/tsl-passes.spec.js` | 100個のPhong球とDot Screen・RGB ShiftをTSLで移植。比較可能な固定乱数を使用。Inspector外観と性能の完全な同等性は未保証。 |

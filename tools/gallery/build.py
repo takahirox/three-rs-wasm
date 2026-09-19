@@ -44,6 +44,11 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_postprocessing_direct': {'example':43,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['描画シェーダー内のTSL saturationとNeutral tone mappingを移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_radial_blur': {'example':44,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['100インスタンスとGPU可変サンプル数Radial Blurを移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_fxaa': {'example':45,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['100インスタンスとsRGB空間の適応的FXAAを移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_ssaa': {'example':46,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['120インスタンスと1〜32回のジッター付きGPU描画・加算を移植。Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_transition': {'example':47,'source':'src/browser/tsl_filters.rs','test':'tests/browser/tsl-filters.spec.js','limitations':['2シーン・各500インスタンスと6種の遷移マスクを移植。Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_compute_texture': {'example':38,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['Rust TSLのcompute・textureStoreでGPUテクスチャを生成。描画は変更時のみ。情報表示の外観と性能の完全な同等性は未保証。']},
  'webgpu_rtt': {'example':39,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['TSLのrender-to-texture・saturation・hueとマウス操作を移植。Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_postprocessing': {'example':40,'source':'src/browser/tsl_passes.rs','test':'tests/browser/tsl-passes.spec.js','limitations':['100個のPhong球とDot Screen・RGB ShiftをTSLで移植。比較可能な固定乱数を使用。Inspector外観と性能の完全な同等性は未保証。']},

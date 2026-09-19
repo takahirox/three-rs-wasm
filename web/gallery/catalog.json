@@ -21710,7 +21710,7 @@
     {
       "id": "webgpu_postprocessing_fxaa",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_fxaa.html",
       "source_sha256": "7858a8bde218fd97bd7ee419c84bd031c65c679a2a3351c5bcff9cdac2adb786",
@@ -21764,7 +21764,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 45,
+        "source": "src/browser/tsl_filters.rs",
+        "test": "tests/browser/tsl-filters.spec.js",
+        "limitations": [
+          "100インスタンスとsRGB空間の適応的FXAAを移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/FXAANode.js",
@@ -22358,7 +22365,7 @@
     {
       "id": "webgpu_postprocessing_radial_blur",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_radial_blur.html",
       "source_sha256": "73e2cdcee4c9544433c9dd9fb8af48771a852f32ba00327b2337d2b241badeb4",
@@ -22404,7 +22411,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 44,
+        "source": "src/browser/tsl_filters.rs",
+        "test": "tests/browser/tsl-filters.spec.js",
+        "limitations": [
+          "100インスタンスとGPU可変サンプル数Radial Blurを移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/radialBlur.js",
@@ -22579,7 +22593,7 @@
     {
       "id": "webgpu_postprocessing_ssaa",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssaa.html",
       "source_sha256": "7d32d513c20a68ba7649187a2f33663a4b3f3b0f6a2fa42d8aa9e8648e85f633",
@@ -22607,7 +22621,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 46,
+        "source": "src/browser/tsl_filters.rs",
+        "test": "tests/browser/tsl-filters.spec.js",
+        "limitations": [
+          "120インスタンスと1〜32回のジッター付きGPU描画・加算を移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/SSAAPassNode.js",
@@ -23157,7 +23178,7 @@
     {
       "id": "webgpu_postprocessing_transition",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_transition.html",
       "source_sha256": "d2a197e49c22b50262698005b22e2bc16e9dabcdfd8245fe8529bcb99e359056",
@@ -23203,7 +23224,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 47,
+        "source": "src/browser/tsl_filters.rs",
+        "test": "tests/browser/tsl-filters.spec.js",
+        "limitations": [
+          "2シーン・各500インスタンスと6種の遷移マスクを移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/libs/tween.module.js",
@@ -23274,7 +23302,7 @@
     {
       "id": "webgpu_postprocessing_direct",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_direct.html",
       "source_sha256": "85182dbeea6d53d8a7da42293c9fff58852d1af4fccfcac7db09d36ff75cccc3",
@@ -23302,7 +23330,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 43,
+        "source": "src/browser/tsl_filters.rs",
+        "test": "tests/browser/tsl-filters.spec.js",
+        "limitations": [
+          "描画シェーダー内のTSL saturationとNeutral tone mappingを移植。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/tsl",

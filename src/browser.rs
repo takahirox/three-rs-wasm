@@ -18,6 +18,7 @@ mod gltf_viewer;
 mod point_lights;
 mod robot;
 mod tsl_examples;
+mod tsl_filters;
 mod tsl_passes;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -145,7 +146,7 @@ impl State {
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
-        let format = if [16, 27, 28, 35].contains(&self.example) {
+        let format = if [16, 27, 28, 35, 45, 46].contains(&self.example) {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -679,6 +680,9 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
+            if example == 46 {
+                configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
+            }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
             surface.configure(&renderer.device, &configuration);
             let target = RenderTarget::with_options(
@@ -687,8 +691,10 @@ impl BrowserApp {
                 canvas.height(),
                 if example >= 4 {
                     RenderTargetOptions {
-                        samples: if [7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42]
-                            .contains(&example)
+                        samples: if [
+                            7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+                        ]
+                        .contains(&example)
                         {
                             1
                         } else {
@@ -722,7 +728,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=42).contains(&example) {
+            if (7..=47).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

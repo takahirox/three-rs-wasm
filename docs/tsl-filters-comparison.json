@@ -1,0 +1,678 @@
+{
+  "reference_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-20",
+  "environment": "macOS / installed Google Chrome / WebGPU",
+  "viewport_cases": [
+    [
+      512,
+      512
+    ],
+    [
+      640,
+      400
+    ]
+  ],
+  "per_channel_tolerance": 6,
+  "allowed_different_pixel_fraction": 0.005,
+  "timing_parity_measured": false,
+  "examples": [
+    {
+      "example": "webgpu_postprocessing_direct",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.05631256103515625
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0185089111328125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.02716827392578125
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.016849517822265625
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.023303985595703125
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.018561045328776043
+        },
+        {
+          "state": 6,
+          "fraction": 0.00405859375,
+          "meanError": 0.22656770833333334
+        }
+      ],
+      "raw_images": "test-results/tsl-filters-final/tsl-filters-TSL-filter-off-be9f0-ndering-and-controls-direct",
+      "gpu_residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 498,
+            "transfers": [
+              1,
+              2288,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 498,
+            "transfers": [
+              1,
+              2288,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 501,
+            "transfers": [
+              1,
+              2288,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 501,
+            "transfers": [
+              1,
+              2288,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_postprocessing_radial_blur",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.057636260986328125
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.05638758341471354
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.05997339884440104
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.061091105143229164
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.056432088216145836
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.058690388997395836
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.07043838500976562
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.05876795450846354
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.061634063720703125
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.054812113444010414
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.012615203857421875
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.054812113444010414
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.05230208333333333
+        }
+      ],
+      "raw_images": "test-results/tsl-filters-final/tsl-filters-TSL-filter-off-a2b6e-ng-and-controls-radial-blur",
+      "gpu_residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 33,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 33,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 40,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 40,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_postprocessing_fxaa",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 3.814697265625e-06,
+          "meanError": 2.1616617838541668e-05
+        },
+        {
+          "state": 1,
+          "fraction": 7.62939453125e-06,
+          "meanError": 0.00012715657552083334
+        },
+        {
+          "state": 2,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.00023396809895833334
+        },
+        {
+          "state": 3,
+          "fraction": 7.62939453125e-06,
+          "meanError": 0.00012842814127604166
+        },
+        {
+          "state": 4,
+          "fraction": 3.814697265625e-06,
+          "meanError": 4.1961669921875e-05
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.005209604899088542
+        },
+        {
+          "state": 6,
+          "fraction": 3.814697265625e-06,
+          "meanError": 4.1961669921875e-05
+        },
+        {
+          "state": 7,
+          "fraction": 3.90625e-06,
+          "meanError": 4.1666666666666665e-05
+        }
+      ],
+      "raw_images": "test-results/tsl-filters-fxaa-final/tsl-filters-TSL-filter-official-rendering-and-controls-fxaa",
+      "gpu_residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 42,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 42,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 53,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 53,
+            "transfers": [
+              1,
+              960,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_postprocessing_ssaa",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.014542897542317709
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.01428985595703125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.01386260986328125
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.014661153157552084
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.014626820882161459
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0147247314453125
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0147552490234375
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.0146026611328125
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.0146636962890625
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.014614105224609375
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.01459503173828125
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.008973958333333334
+        }
+      ],
+      "raw_images": "test-results/tsl-filters-final/tsl-filters-TSL-filter-official-rendering-and-controls-ssaa",
+      "gpu_residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 43,
+            "transfers": [
+              1,
+              124496,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 43,
+            "transfers": [
+              1,
+              124496,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 54,
+            "transfers": [
+              1,
+              124496,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 54,
+            "transfers": [
+              1,
+              124496,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_postprocessing_transition",
+      "states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.019494374593098957
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.023091634114583332
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.022775014241536457
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.027614593505859375
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.04811731974283854
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.033283233642578125
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.049725850423177086
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.043139139811197914
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.021942138671875
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.017696380615234375
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.014367421468098959
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.027828216552734375
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.012630462646484375
+        },
+        {
+          "state": 13,
+          "fraction": 0,
+          "meanError": 0.045644124348958336
+        },
+        {
+          "state": 14,
+          "fraction": 0,
+          "meanError": 0.035221099853515625
+        },
+        {
+          "state": 15,
+          "fraction": 0,
+          "meanError": 0.04575220743815104
+        },
+        {
+          "state": 16,
+          "fraction": 0,
+          "meanError": 0.048221588134765625
+        },
+        {
+          "state": 17,
+          "fraction": 0,
+          "meanError": 0.04575220743815104
+        },
+        {
+          "state": 18,
+          "fraction": 0,
+          "meanError": 0.046284993489583336
+        },
+        {
+          "state": 19,
+          "fraction": 0,
+          "meanError": 0.045867919921875
+        },
+        {
+          "state": 20,
+          "fraction": 0,
+          "meanError": 0.041979471842447914
+        },
+        {
+          "state": 21,
+          "fraction": 0,
+          "meanError": 0.04833984375
+        },
+        {
+          "state": 22,
+          "fraction": 0,
+          "meanError": 0.018033345540364582
+        },
+        {
+          "state": 23,
+          "fraction": 0,
+          "meanError": 0.045644124348958336
+        },
+        {
+          "state": 24,
+          "fraction": 0,
+          "meanError": 0.04854817708333333
+        }
+      ],
+      "raw_images": "test-results/tsl-filters-final/tsl-filters-TSL-filter-off-38312-ing-and-controls-transition",
+      "gpu_residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 116,
+            "transfers": [
+              2,
+              21264,
+              32
+            ],
+            "resources": [
+              1,
+              7,
+              0
+            ]
+          },
+          "after": {
+            "creates": 116,
+            "transfers": [
+              2,
+              21264,
+              32
+            ],
+            "resources": [
+              1,
+              7,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 127,
+            "transfers": [
+              2,
+              21264,
+              32
+            ],
+            "resources": [
+              1,
+              7,
+              0
+            ]
+          },
+          "after": {
+            "creates": 127,
+            "transfers": [
+              2,
+              21264,
+              32
+            ],
+            "resources": [
+              1,
+              7,
+              0
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "browser_regressions_passed": 112,
+  "native_tests": "cargo test --offline: all passed, including doctests",
+  "final_fxaa_and_architecture_rechecks_passed": 3
+}

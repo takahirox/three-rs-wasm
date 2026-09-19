@@ -251,7 +251,7 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     return vec4(mix(color.rgb,u.fog_color.rgb,factor),color.a);
 }
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
-    let color=shade_fragment(in,front);
+    let color=transform_output(shade_fragment(in,front));
     if ENCODE_SRGB {
         var rgb=color.rgb;
         if u.output.y>0.5 {rgb=tone_output(rgb,u.output.x,u.output.y);}
@@ -357,7 +357,13 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     anisotropy_t=(tangent*cos(rotation)+anisotropy_b*sin(rotation))*face;
     anisotropy_b=(anisotropy_b*cos(rotation)-tangent*sin(rotation))*face;
     var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
-    var result=diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+u.emissive.xyz*emissive_sample;
+    var indirect_energy=vec3(1.0);var direct_energy=vec3(1.0);
+    if u.physical[3].z>0.5 && material_kind()==1.0 {
+        let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,clamp(dot(n,v),0.0,1.0)),0.0).rg;
+        indirect_energy=vec3(1.0)-(film_d*dfg.x+f90*dfg.y+multiscattering(film_d,dfg,f90));
+        direct_energy=vec3(1.0)+f0*(1.0/(dfg.x+dfg.y)-1.0);
+    }
+    var result=indirect_energy*diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+u.emissive.xyz*emissive_sample;
     sheen_light+=u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);
@@ -404,7 +410,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         }
         if light_type(i)==3.0 {
             let weight=dot(n,light)*0.5+0.5;
-            result+=diffuse*mix(u.light_params[i].xyz,u.light_color[i].xyz,weight)/3.14159265359;
+            result+=indirect_energy*diffuse*mix(u.light_params[i].xyz,u.light_color[i].xyz,weight)/3.14159265359;
             continue;
         }
         if light_type(i)>0.5 {
@@ -452,7 +458,9 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         let fresnel=mix(f0+(vec3(f90)-f0)*exp2((-5.55473*vh-6.98316)*vh),film_f,film);
         let irradiance=u.light_color[i].xyz*attenuation*nl;
         let sheen_comp=1.0-sheen_max*max(sheen_albedo(nv,sheenrough),sheen_albedo(nl,sheenrough));
-        result+=(diffuse/3.14159265359+fresnel*distribution*visibility)*irradiance*sheen_comp;
+        var diffuse_energy=vec3(1.0);
+        if u.physical[3].z>0.5 { diffuse_energy=vec3(1.0)-(dielectric+(vec3(f90)-dielectric)*exp2((-5.55473*vh-6.98316)*vh)); }
+        result+=(diffuse_energy*diffuse/3.14159265359+direct_energy*fresnel*distribution*visibility)*irradiance*sheen_comp;
         if sheen_max>0.0 {
             let inv=1.0/(sheenrough*sheenrough);let charlie=(2.0+inv)*pow(max(1.0-nh*nh,0.0078125),inv*0.5)/(2.0*3.14159265359);
             let neubelt=clamp(1.0/(4.0*max(nl+nv-nl*nv,0.000001)),0.0,1.0);

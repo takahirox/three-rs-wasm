@@ -41,7 +41,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  try {
   if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
-  const runtimeRevision = 'tsl-2';
+  const runtimeRevision = 'tsl-3';
   const {default:init, BrowserApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
   await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
   const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); app?.request_render(); };
@@ -75,7 +75,24 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    canvas.addEventListener('wheel', event => { event.preventDefault(); app.gallery_input(0,0,event.deltaY,false); app.orbit(0,0,event.deltaY); }, {passive:false});
    }
    if (entry.port.example === 39) canvas.addEventListener('pointermove',event=>app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
+   if (entry.port.example === 46) document.body.style.background = '#000';
    const settings = document.querySelector('#settings');
+   if (entry.port.example >= 43 && entry.port.example <= 47) {
+    const controls = {
+     43:[['Saturation',0,1,0,.01]],
+     44:[['weight',0,1,.9,.01],['decay',0,1,.95,.01],['sample count',16,64,32,1],['exposure',1,10,5,1],['enabled',true],['animated',true]],
+     45:[['enabled',true],['animated',false]],
+     46:[['sample level',0,5,3,1],['clear color',['black','white','blue','green','red'],0],['clear alpha',0,1,1,.01],['view offset X',-100,100,0,1],['auto rotate',true]],
+     47:[['animate scene',true],['animate transition',true],['transition',0,1,0,.01],['use texture',true],['texture',['Perlin','Squares','Cells','Distort','Gradient','Radial'],5],['cycle',true],['threshold',0,1,.1,.01]]
+    }[entry.port.example];
+    settings.hidden=false;
+    controls.forEach(([name,min,max,value,step],i)=>{
+     const label=text('label',name+' ',settings);let input;
+     if(Array.isArray(min)){input=document.createElement('select');min.forEach((name,index)=>{const option=new Option(name,index);input.add(option);});input.value=max;}
+     else{input=document.createElement('input');input.type=typeof min==='boolean'?'checkbox':'range';if(input.type==='checkbox')input.checked=min;else{Object.assign(input,{min,max,value,step});}}
+     input.id='filter-'+i;label.append(input);input.addEventListener('input',()=>app.tsl_parameter(i,input.type==='checkbox'?Number(input.checked):Number(input.value)));
+    });
+   }
    if (entry.port.example === 41) {
     settings.hidden=false;settings.innerHTML='<label>speed <input id="tsl-speed" type="range" min="0" max="2" value="0" step="0.01"></label>';
     settings.addEventListener('input',()=>app.tsl_parameter(0,Number(document.querySelector('#tsl-speed').value)));

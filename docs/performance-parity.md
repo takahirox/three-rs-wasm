@@ -18,7 +18,7 @@ be enforced deterministically in CI. Do not relax visual tolerances to gain spee
 
 | Path | Status |
 | --- | --- |
-| Rust TSL graphs | Compiled once into GPU vertex/fragment or fullscreen WGSL. The three TSL examples retain geometry, render targets and shader/pipeline/binding resources across frames; only uniforms change. Procedural Texture uses the upstream 512×512 HDR checker and two 85-tap blur passes. See [TSL scope and checks](tsl.md). No CPU/GPU timing parity claim. |
+| Rust TSL graphs | Compiled once into GPU vertex/fragment or fullscreen WGSL. The TSL examples retain geometry, render targets and shader/pipeline/binding resources across warmed frame cycles; only uniforms and changed instance poses are uploaded. Procedural Texture uses the upstream 512×512 HDR checker and two 85-tap blur passes. Added radial blur and FXAA use GPU sampling loops; SSAA repeats instanced scene draws and GPU accumulation at the selected 1–32 sample count. Direct saturation executes inside material shaders. See [TSL scope and checks](tsl.md). No CPU/GPU timing parity claim. |
 | Skin and morph rendering | GPU vertex shader for both color and shadow passes. CPU uploads bone matrices and morph weights only. Geometry, indices and morph inputs remain resident. Native tests compare 28 real-model frames with a CPU oracle, including shadows; browser tests enforce zero geometry reuploads during animation. CPU oracle results are separately checked against original Three.js. |
 | Line morph demo | GPU morph weights; no per-frame CPU vertex interpolation. |
 | Point Lights demo | Original displacement translated to WGSL, static per-face data in GPU storage. CPU updates light positions/time only. Adapted material remains an appearance limitation. |

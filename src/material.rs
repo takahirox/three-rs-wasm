@@ -210,6 +210,7 @@ pub struct MaterialProperties {
     pub color_write: bool,
     pub map: Option<Arc<Texture>>,
     #[serde(skip)]
+    /// Optional vertex/output hooks; output-only programs retain standard lighting.
     pub vertex_program: Option<Arc<crate::shader::ShaderProgram>>,
     pub vertex_uniforms: [[f32; 4]; 16],
 }
@@ -249,6 +250,9 @@ pub struct MeshBasicMaterial {
 #[derive(Clone, Debug, Serialize)]
 pub struct MeshStandardMaterial {
     pub properties: MaterialProperties,
+    /// r186 WebGPU punctual/ambient lighting: Fresnel diffuse attenuation and
+    /// multiple-scattering specular compensation. False retains legacy lighting.
+    pub energy_conservation: bool,
     pub roughness: f64,
     pub metalness: f64,
     pub emissive: Color,
@@ -263,6 +267,7 @@ impl Default for MeshStandardMaterial {
     fn default() -> Self {
         Self {
             properties: MaterialProperties::default(),
+            energy_conservation: false,
             roughness: 1.0,
             metalness: 0.0,
             emissive: Color::BLACK,

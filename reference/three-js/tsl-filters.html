@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body>
+<script type="module">
+// Pinned official scripts; only time, random scene placement and GUI capture are adapted.
+import * as THREE from 'three/webgpu';
+const kind=new URLSearchParams(location.search).get('kind');
+if(!['direct','radial_blur','fxaa','ssaa','transition'].includes(kind))throw Error('invalid fixture');
+window.fixtureControls=[];window.fixtureSeconds=0;
+let loading=Promise.resolve();const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager);
+THREE.DefaultLoadingManager.itemStart=(...args)=>{loading=new Promise(r=>THREE.DefaultLoadingManager.onLoad=r);start(...args);};
+THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};};
+const source=await(await fetch(`/.cache/three-r186/examples/webgpu_postprocessing_${kind}.html`)).text();
+let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){return {add(object,key){const item={object,key,callback:null,name(){return this;},onChange(fn){this.callback=fn;return this;},setValue(value){this.object[this.key]=value;this.callback?.(value);return this;}};fixtureControls.push(item);return item;}};}}`)
+ .replace('renderer.inspector = new Inspector();','const fixtureInspector=new Inspector();')
+ .replace('renderer.inspector.createParameters','fixtureInspector.createParameters')
+ .replaceAll('Math.random()','fixtureRandom()')
+ .replaceAll('timer.getDelta()','0')
+ .replace('TWEEN.update()','TWEEN.update(window.fixtureSeconds*1000)')
+ .replace('.start();','.start(0);')
+ .replaceAll("'textures/","'/.cache/three-r186/examples/textures/");
+module='let fixtureSeed=186;function fixtureRandom(){fixtureSeed=(Math.imul(fixtureSeed,1664525)+1013904223)>>>0;return fixtureSeed/4294967296;}\n'+module;
+const setup={direct:'object.rotation.set(t*.3-.005,t*.6-.01,0);',radial_blur:'group.rotation.y=t*.1;',fxaa:'group.rotation.y=t*.1;',ssaa:'mesh.rotation.set(t*.25,t*.5,0);',transition:'fxSceneA.mesh.rotation.set(0,-t*.4,0);fxSceneB.mesh.rotation.set(0,t*.2,t*.1);'}[kind];
+module+='\nwindow.fixtureSet=t=>{'+setup+'};';
+await import(URL.createObjectURL(new Blob([module],{type:'text/javascript'})));
+while(!window.reference)await new Promise(r=>setTimeout(r,10));await loading;await reference.renderer.init();
+window.renderFixture=async(t=0)=>{window.fixtureSeconds=t;fixtureSet(t);reference.renderer.info.reset();reference.renderer._nodes.nodeFrame.update();reference.renderer.info.frame=reference.renderer._nodes.nodeFrame.frameId;reference.callback();await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(index,value)=>fixtureControls[index].setValue(value);
+await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

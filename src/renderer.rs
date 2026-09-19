@@ -357,7 +357,7 @@ impl Renderer {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
                 format!(
-                    "{}\n{}\n{}",
+                    "{}\n{}\n{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
                     concat!(
                         include_str!("shaders/deformation.wgsl"),
@@ -366,7 +366,8 @@ impl Renderer {
                         "\n",
                         include_str!("shader.wgsl")
                     ),
-                    crate::shader::DEFAULT_HOOKS
+                    crate::shader::DEFAULT_HOOKS,
+                    crate::shader::DEFAULT_OUTPUT
                 )
                 .into(),
             ),
@@ -1115,8 +1116,18 @@ impl Renderer {
                                     .extend(m.specular_intensity.clamp(0.0, 1.0))
                                     .as_vec4()
                                     .to_array(),
-                                [m.anisotropy_rotation as f32, 1.0, 0.0, 0.0],
+                                [
+                                    m.anisotropy_rotation as f32,
+                                    1.0,
+                                    f32::from(m.base.energy_conservation),
+                                    0.0,
+                                ],
                             ]
+                        }
+                        Material::Standard(m) => {
+                            let mut p = [[0.0; 4]; 4];
+                            p[3][2] = f32::from(m.energy_conservation);
+                            p
                         }
                         _ => [[0.0; 4]; 4],
                     },
@@ -1485,9 +1496,9 @@ impl Renderer {
                         },
                         ops: wgpu::Operations {
                             load: wgpu::LoadOp::Clear(wgpu::Color {
-                                r: c.x,
-                                g: c.y,
-                                b: c.z,
+                                r: c.x * scene.background_alpha,
+                                g: c.y * scene.background_alpha,
+                                b: c.z * scene.background_alpha,
                                 a: scene.background_alpha,
                             }),
                             store: if target.options.samples > 1

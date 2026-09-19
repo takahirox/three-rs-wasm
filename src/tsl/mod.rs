@@ -117,6 +117,7 @@ enum Expr {
     Constant(f32),
     Uint(u32),
     InstanceIndex,
+    Output,
     Uniform(usize, Type),
     Uv,
     Position,
@@ -130,6 +131,26 @@ enum Expr {
     Resource(Texture, bool),
     Sample(Texture, Vec<Node>),
     Call(Arc<WgslFn>, Vec<Node>),
+}
+/// Linear material output, available only to output_program.
+pub fn output() -> Node {
+    Node::new(Expr::Output)
+}
+pub async fn output_program(renderer: &Renderer, color: &Node) -> Result<ShaderProgram> {
+    let mut compiler = Compiler::new(Stage::Output, 0);
+    let (ty, value) = compiler.emit(color)?;
+    let value = output_color(ty, value)?;
+    let mut functions: Vec<_> = compiler.functions.values().cloned().collect();
+    functions.sort();
+    ShaderProgram::with_output(
+        renderer,
+        &format!(
+            "{}\nfn transform_output(value:vec4<f32>)->vec4<f32>{{\n{}return {value};\n}}",
+            functions.join("\n"),
+            compiler.body
+        ),
+    )
+    .await
 }
 pub fn uint(value: u32) -> Node {
     Node::new(Expr::Uint(value))
@@ -390,6 +411,7 @@ enum Stage {
     Fragment,
     Effect,
     Compute,
+    Output,
 }
 struct Compiler {
     stage: Stage,
@@ -431,6 +453,12 @@ impl Compiler {
             return Ok(value.clone());
         }
         let (ty, expression) = match &*node.0 {
+            Expr::Output => {
+                if self.stage != Stage::Output {
+                    return Err(Error::Invalid("TSL output stage"));
+                }
+                (Type::Vec4, "value".into())
+            }
             Expr::Uint(x) => (Type::Uint, format!("{x}u")),
             Expr::InstanceIndex => {
                 if self.stage != Stage::Compute {
@@ -455,8 +483,8 @@ impl Compiler {
                 };
                 (*ty, format!("{prefix}[{i}].{}", &"xyzw"[..ty.lanes()]))
             }
-            Expr::Uv if self.stage == Stage::Compute => {
-                return Err(Error::Invalid("TSL UV is unavailable in compute"));
+            Expr::Uv if matches!(self.stage, Stage::Compute | Stage::Output) => {
+                return Err(Error::Invalid("TSL UV is unavailable in this stage"));
             }
             Expr::Uv => (
                 Type::Vec2,
@@ -807,3 +835,5 @@ pub fn rgb_shift(texture: Texture, coordinate: Node, amount: Node, angle: Node) 
 }
 
 pub mod compute;
+
+pub mod display;

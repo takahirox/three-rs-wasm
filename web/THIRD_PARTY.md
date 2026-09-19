@@ -221,3 +221,19 @@ SHA-256: `3f9a556c4e12583981427e2d6b7fa268c1a46c9036a23514acd9e179c22ae37f`.
 The masking and difference examples reuse the already credited panorama and
 crate assets. `tools/tsl/prepare.py` restores reference assets and
 `tools/gallery/check.py` verifies the published Caravaggio image byte-for-byte.
+
+The direct-output, radial blur, FXAA, SSAA and transition ports follow the
+pinned r186 examples and `radialBlur`, `FXAANode`, `SSAAPassNode`,
+`TransitionNode` and `PhysicalLightingModel` energy compensation (MIT; see `../LICENSE-THREE`). GPU helper translations are in
+`src/tsl/` and `src/postprocessing/ssaa.rs`.
+
+The following unchanged `examples/textures/transition/transitionN.png` masks
+come from the same pinned archive. `tools/tsl/prepare.py` restores them and
+`tools/gallery/check.py` checks their bytes. SHA-256:
+
+- `gallery/assets/transition1.png`: `a5da995d423c701997784a0e3aa662f57569413dd0951666adb71a55539f514f`
+- `gallery/assets/transition2.png`: `217881c3b114d1df84278dd4fc5ed641abc467e0e588db89bcdb1532fb1e4d51`
+- `gallery/assets/transition3.png`: `b5d09c828cc1a98610664b77695122cf89444891b9a8d25ddab622fd5d20eacf`
+- `gallery/assets/transition4.png`: `ea6fda270aa178d68bf134c0d429b266381183f80b89f9f2f8460c8c9b97b03c`
+- `gallery/assets/transition5.png`: `93027d664ab8e57d4f07db582b522277091a44973fa2aab2abae346806c2c198`
+- `gallery/assets/transition6.png`: `43848b237c3d6a66aa31f9f8375c286c6542be85ac8c2a82e4d0eb8a2a66ee68`

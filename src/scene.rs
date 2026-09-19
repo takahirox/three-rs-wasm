@@ -358,7 +358,7 @@ pub struct Scene {
     slots: Vec<Slot>,
     free: Vec<usize>,
     pub background: Color,
-    /// Alpha used when clearing a solid background, including transparent masks.
+    /// Alpha used when clearing a solid background. RGB is premultiplied by it.
     pub background_alpha: f64,
     pub environment: Option<Arc<crate::environment::EnvironmentMap>>,
     pub environment_intensity: f64,
