@@ -136,12 +136,16 @@ impl State {
             format: Some(format),
             ..Default::default()
         });
-        self.renderer.blit_tone_mapped(
+        self.renderer.blit_with_tone_mapping(
             &self.target,
             &view,
             format,
             self.scene.exposure,
-            self.scene.aces_tone_mapping && !self.target.options.encode_srgb,
+            if self.target.options.encode_srgb {
+                ToneMapping::None
+            } else {
+                self.scene.output_tone_mapping()
+            },
         );
         frame.present();
         self.frame += 1;
@@ -684,7 +688,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=32).contains(&example) {
+            if (7..=34).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

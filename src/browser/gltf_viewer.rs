@@ -186,6 +186,19 @@ pub(super) async fn load_asset(url: &str) -> Result<(gltf::Gltf, Vec<Vec<u8>>, V
         .map_err(|e| Error::Asset(e.to_string()))?;
     let mut buffers = Vec::new();
     for buffer in asset.buffers() {
+        if ["EXT_meshopt_compression", "KHR_meshopt_compression"]
+            .iter()
+            .any(|key| {
+                buffer
+                    .extension_value(key)
+                    .and_then(|v| v.get("fallback"))
+                    .and_then(|v| v.as_bool())
+                    == Some(true)
+            })
+        {
+            buffers.push(Vec::new());
+            continue;
+        }
         let data = match buffer.source() {
             gltf::buffer::Source::Bin => asset.blob.clone().ok_or(Error::Invalid("GLB buffer"))?,
             gltf::buffer::Source::Uri(uri) => fetch(&external(base, uri)?).await?,
@@ -226,6 +239,9 @@ pub(super) async fn load_asset(url: &str) -> Result<(gltf::Gltf, Vec<Vec<u8>>, V
 // to preserve RGB under transparent pixels without a canvas premultiply roundtrip.
 pub(super) async fn decode_image(bytes: &[u8]) -> Result<crate::material::Texture> {
     use crate::material::Texture;
+    if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
+        return Texture::from_basis_compressed(bytes.to_vec(), true);
+    }
     if !(bytes.starts_with(&[0xff, 0xd8])
         || (bytes.get(4..8) == Some(b"ftyp")
             && bytes

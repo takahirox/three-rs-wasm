@@ -1,0 +1,207 @@
+{
+  "reference": "Three.js r186 / 148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "backend": "WebGPU on both sides",
+  "wasm": "release",
+  "channel_threshold": 6,
+  "pixel_fraction_limit": 0.005,
+  "states": [
+    "initial",
+    "time 1",
+    "time 3",
+    "orbit",
+    "pan",
+    "zoom",
+    "resize 640x400"
+  ],
+  "viewport": [
+    512,
+    512
+  ],
+  "samples": 4,
+  "examples": {
+    "dispersion": {
+      "measurements": [
+        {
+          "state": 0,
+          "fraction": 0.000423431396484375
+        },
+        {
+          "state": 1,
+          "fraction": 0.000354766845703125
+        },
+        {
+          "state": 2,
+          "fraction": 0.000354766845703125
+        },
+        {
+          "state": 3,
+          "fraction": 0.0003814697265625
+        },
+        {
+          "state": 4,
+          "fraction": 0.00034332275390625
+        },
+        {
+          "state": 5,
+          "fraction": 0.00028228759765625
+        },
+        {
+          "state": 6,
+          "fraction": 0.0001328125
+        }
+      ],
+      "max_fraction": 0.000423431396484375,
+      "steady_state_resource_creates": 0,
+      "steady_state_geometry_reuploads": 0
+    },
+    "compressed": {
+      "measurements": [
+        {
+          "state": 0,
+          "fraction": 0.00040435791015625
+        },
+        {
+          "state": 1,
+          "fraction": 0.00018310546875
+        },
+        {
+          "state": 2,
+          "fraction": 0.00018310546875
+        },
+        {
+          "state": 3,
+          "fraction": 0.00026702880859375
+        },
+        {
+          "state": 4,
+          "fraction": 0.000255584716796875
+        },
+        {
+          "state": 5,
+          "fraction": 0.000225067138671875
+        },
+        {
+          "state": 6,
+          "fraction": 0.000140625
+        }
+      ],
+      "max_fraction": 0.00040435791015625,
+      "steady_state_resource_creates": 0,
+      "steady_state_geometry_reuploads": 0
+    }
+  },
+  "compressed_textures": {
+    "reference": [
+      {
+        "format": "etc2-rgb8unorm-srgb",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm-srgb",
+        "width": 512,
+        "height": 512,
+        "levels": 10,
+        "bytes": 174776,
+        "writes": 10
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 512,
+        "height": 512,
+        "levels": 10,
+        "bytes": 174776,
+        "writes": 10
+      }
+    ],
+    "rust": [
+      {
+        "format": "etc2-rgb8unorm-srgb",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13,
+        "bytes": 11184824,
+        "writes": 13
+      },
+      {
+        "format": "etc2-rgb8unorm-srgb",
+        "width": 512,
+        "height": 512,
+        "levels": 10,
+        "bytes": 174776,
+        "writes": 10
+      },
+      {
+        "format": "etc2-rgb8unorm",
+        "width": 512,
+        "height": 512,
+        "levels": 10,
+        "bytes": 174776,
+        "writes": 10
+      }
+    ]
+  },
+  "compressed_upload_bytes": {
+    "reference": 56273672,
+    "rust": 45088848
+  }
+}

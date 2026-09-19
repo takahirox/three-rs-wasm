@@ -76,6 +76,32 @@ impl Demo {
                     0.5,
                     1.0,
                 ),
+                33 => (
+                    "DispersionTest.glb",
+                    "/web/environments/pedestrian_overpass_1k.hdr",
+                    45.0,
+                    0.01,
+                    5.0,
+                    Vector3::new(0.1, 0.05, 0.15),
+                    Vector3::ZERO,
+                    0.5,
+                    1.0,
+                    0.1,
+                    10.0,
+                ),
+                34 => (
+                    "coffeemat.glb",
+                    "",
+                    50.0,
+                    1.0,
+                    20.0,
+                    Vector3::new(2.0, 2.0, 2.0),
+                    Vector3::ZERO,
+                    0.0,
+                    1.0,
+                    3.0,
+                    6.0,
+                ),
                 _ => return Err(crate::Error::Invalid("glTF candidate id")),
             };
         let (asset, buffers, images) = load_asset(&format!("/web/models/{model}")).await?;
@@ -85,12 +111,32 @@ impl Demo {
         if let Some(clip) = instance.clips.first() {
             mixer.play(clip.clone())?;
         }
-        scene.environment = Some(Arc::new(EnvironmentMap::from_hdr(
-            &fetch(environment).await?,
-        )?));
-        scene.background_environment = true;
+        if example == 34 {
+            let group = scene.insert(NodeKind::Group);
+            scene.get_mut(group)?.position.y = -0.8;
+            scene.get_mut(group)?.scale = Vector3::splat(0.01);
+            for root in &instance.roots {
+                scene.add(group, *root)?;
+            }
+            let light = scene.insert(NodeKind::Light(Light::Point {
+                color: Color::WHITE,
+                intensity: 1300.0 / (4.0 * std::f64::consts::PI),
+                distance: 0.0,
+                decay: 2.0,
+            }));
+            scene.add(camera, light)?;
+            scene.background = Color::from_hex(0xeeeeee);
+        } else {
+            scene.environment = Some(Arc::new(EnvironmentMap::from_hdr(
+                &fetch(environment).await?,
+            )?));
+            scene.background_environment = true;
+        }
         scene.background_blur = blur;
-        scene.aces_tone_mapping = true;
+        scene.aces_tone_mapping = example < 33;
+        if example >= 33 {
+            scene.tone_mapping = ToneMapping::Reinhard;
+        }
         scene.exposure = exposure;
         let aspect = match scene.camera(camera)?.0 {
             Camera::Perspective(p) => p.aspect,

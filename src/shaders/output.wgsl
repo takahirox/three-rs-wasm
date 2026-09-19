@@ -10,3 +10,9 @@ fn aces_output(value:vec3<f32>,exposure:f32)->vec3<f32> {
 fn srgb_output(rgb:vec3<f32>)->vec3<f32> {
     return select(1.055*pow(max(rgb,vec3(0.0)),vec3(1.0/2.4))-0.055,rgb*12.92,rgb<=vec3(0.0031308));
 }
+
+fn tone_output(value:vec3<f32>,exposure:f32,mode:f32)->vec3<f32> {
+    if mode>1.5 {let c=value*exposure;return clamp(c/(vec3(1.0)+c),vec3(0.0),vec3(1.0));}
+    if mode>0.5 {return aces_output(value,exposure);}
+    return value;
+}

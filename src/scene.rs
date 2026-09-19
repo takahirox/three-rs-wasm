@@ -339,6 +339,14 @@ pub enum Fog {
     Linear { color: Color, near: f64, far: f64 },
     Exp2 { color: Color, density: f64 },
 }
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+#[repr(u32)]
+pub enum ToneMapping {
+    #[default]
+    None = 0,
+    Aces = 1,
+    Reinhard = 2,
+}
 #[derive(Debug)]
 pub struct Scene {
     pub clipping_planes: Vec<Plane>,
@@ -359,6 +367,7 @@ pub struct Scene {
     pub background_intensity: f64,
     pub exposure: f64,
     pub aces_tone_mapping: bool,
+    pub tone_mapping: ToneMapping,
 }
 impl Default for Scene {
     fn default() -> Self {
@@ -380,10 +389,21 @@ impl Default for Scene {
             background_intensity: 1.0,
             exposure: 1.0,
             aces_tone_mapping: false,
+            tone_mapping: ToneMapping::None,
         }
     }
 }
 impl Scene {
+    pub fn output_tone_mapping(&self) -> ToneMapping {
+        if self.tone_mapping != ToneMapping::None {
+            self.tone_mapping
+        } else if self.aces_tone_mapping {
+            ToneMapping::Aces
+        } else {
+            ToneMapping::None
+        }
+    }
+
     pub fn new() -> Self {
         Self::default()
     }

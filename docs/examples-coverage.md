@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-8 excluded for explicit WebGL APIs or equivalent WebGPU examples; 599 retained. 28 partial Rust ports; 571 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 30 partial Rust ports; 567 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,7 +12,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 388 |
+| Full camera controls: pan, touch, damping and control variants | 386 |
 | Programmable materials / TSL equivalents | 219 |
 | Phong, Lambert, normal, depth, toon and matcap materials | 180 |
 | Additional procedural geometry builders | 175 |
@@ -21,8 +21,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | Hemisphere/spot/area lights, light probes and baking | 124 |
 | Postprocessing passes and temporal history | 103 |
 | Distance and height fog | 95 |
-| Wireframe materials and scene helpers | 92 |
-| Additional loaders and compressed assets | 86 |
+| Wireframe materials and scene helpers | 91 |
+| Additional loaders and compressed assets | 85 |
 | Instance transforms and batched drawing | 75 |
 | Animation mixer and skeletal animation | 48 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 48 |
@@ -44,6 +44,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_loader_gltf_dispersion | `tests/browser/gltf-physical.spec.js` | 公式DispersionTest・色分散・HDR・Orbit操作を移植。情報表示の外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_loader_gltf_compressed | `tests/browser/gltf-physical.spec.js` | 公式coffeemat・Meshopt・KTX2/BasisのGPU圧縮テクスチャ・Orbit操作を移植。対応GPU圧縮形式が必要。情報表示と性能の完全な同等性は未保証。 |
 | webgl_loader_gltf_instancing | `tests/browser/gltf-instancing.spec.js` | 試作版：公式モデルのGPUインスタンシングとOrbit操作を実装。公式WebGL版とのMSAA・金属反射の描画差と、初期化ごとの描画変動は調査中。外観・性能の同等性は未確認。 |
 | webgpu_loader_gltf_anisotropy | `tests/browser/gltf-physical.spec.js` | 公式の異方性反射・クリアコート・透過材質とOrbit操作を移植。情報表示とInspector UIは未一致。 |
 | webgpu_loader_gltf_sheen | `tests/browser/gltf-physical.spec.js` | 公式SheenChair・Sheen調整・減衰付きOrbit操作を移植。調整UIの外観と情報表示は未一致。 |

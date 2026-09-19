@@ -35,6 +35,13 @@ impl TextureCache {
         {
             return Ok(gpu.clone());
         }
+        if let Some(bytes) = &image.basis {
+            let gpu = compressed_texture(device, queue, image, bytes)?;
+            self.entries
+                .insert(key, (Arc::downgrade(image), gpu.clone()));
+            self.uploads += 1;
+            return Ok(gpu);
+        }
         let valid_data = image.rgba.len() == image.width as usize * image.height as usize * 4;
         #[cfg(target_arch = "wasm32")]
         let valid_data = valid_data || image.bitmap.is_some();
@@ -189,31 +196,7 @@ impl TextureCache {
             }
             queue.submit([encoder.finish()]);
         }
-        let wrap = |v| match v {
-            Wrapping::Clamp => wgpu::AddressMode::ClampToEdge,
-            Wrapping::Repeat => wgpu::AddressMode::Repeat,
-            Wrapping::Mirror => wgpu::AddressMode::MirrorRepeat,
-        };
-        let filter = |v| match v {
-            Filter::Nearest => wgpu::FilterMode::Nearest,
-            Filter::Linear => wgpu::FilterMode::Linear,
-        };
-        let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
-            address_mode_u: wrap(image.wrap_s),
-            address_mode_v: wrap(image.wrap_t),
-            mag_filter: filter(image.filter),
-            min_filter: filter(image.min_filter.unwrap_or(image.filter)),
-            mipmap_filter: filter(image.mipmap_filter.unwrap_or(Filter::Nearest)),
-            anisotropy_clamp: if image.filter == Filter::Linear
-                && image.min_filter.unwrap_or(image.filter) == Filter::Linear
-                && image.mipmap_filter == Some(Filter::Linear)
-            {
-                image.anisotropy.clamp(1, 16)
-            } else {
-                1
-            },
-            ..Default::default()
-        });
+        let sampler = material_sampler(device, image);
         let gpu = GpuTexture {
             view: texture.create_view(&Default::default()),
             sampler,
@@ -224,4 +207,151 @@ impl TextureCache {
         self.uploads += 1;
         Ok(gpu)
     }
+}
+
+fn material_sampler(device: &wgpu::Device, image: &Texture) -> wgpu::Sampler {
+    let wrap = |v| match v {
+        Wrapping::Clamp => wgpu::AddressMode::ClampToEdge,
+        Wrapping::Repeat => wgpu::AddressMode::Repeat,
+        Wrapping::Mirror => wgpu::AddressMode::MirrorRepeat,
+    };
+    let filter = |v| match v {
+        Filter::Nearest => wgpu::FilterMode::Nearest,
+        Filter::Linear => wgpu::FilterMode::Linear,
+    };
+    device.create_sampler(&wgpu::SamplerDescriptor {
+        address_mode_u: wrap(image.wrap_s),
+        address_mode_v: wrap(image.wrap_t),
+        mag_filter: filter(image.filter),
+        min_filter: filter(image.min_filter.unwrap_or(image.filter)),
+        mipmap_filter: filter(image.mipmap_filter.unwrap_or(Filter::Nearest)),
+        lod_max_clamp: if image.mipmap_filter.is_some() {
+            32.0
+        } else {
+            0.0
+        },
+        anisotropy_clamp: if image.filter == Filter::Linear
+            && image.min_filter.unwrap_or(image.filter) == Filter::Linear
+            && image.mipmap_filter == Some(Filter::Linear)
+        {
+            image.anisotropy.clamp(1, 16)
+        } else {
+            1
+        },
+        ..Default::default()
+    })
+}
+
+fn compressed_texture(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    image: &Texture,
+    bytes: &[u8],
+) -> Result<GpuTexture> {
+    use basisu::{SourceFormat, TargetFormat};
+    let t = basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+    let features = device.features();
+    let (target, linear) = if t.source_format() == SourceFormat::UastcLdr
+        && features.contains(wgpu::Features::TEXTURE_COMPRESSION_ASTC)
+    {
+        (
+            TargetFormat::Astc4x4Rgba,
+            wgpu::TextureFormat::Astc {
+                block: wgpu::AstcBlock::B4x4,
+                channel: wgpu::AstcChannel::Unorm,
+            },
+        )
+    } else if t.source_format() == SourceFormat::Etc1s
+        && features.contains(wgpu::Features::TEXTURE_COMPRESSION_ETC2)
+    {
+        if t.has_alpha() {
+            (TargetFormat::Etc2Rgba, wgpu::TextureFormat::Etc2Rgba8Unorm)
+        } else {
+            (TargetFormat::Etc1Rgb, wgpu::TextureFormat::Etc2Rgb8Unorm)
+        }
+    } else if features.contains(wgpu::Features::TEXTURE_COMPRESSION_BC) {
+        (TargetFormat::Bc7Rgba, wgpu::TextureFormat::Bc7RgbaUnorm)
+    } else if features.contains(wgpu::Features::TEXTURE_COMPRESSION_ETC2) {
+        if t.has_alpha() {
+            (TargetFormat::Etc2Rgba, wgpu::TextureFormat::Etc2Rgba8Unorm)
+        } else {
+            (TargetFormat::Etc1Rgb, wgpu::TextureFormat::Etc2Rgb8Unorm)
+        }
+    } else {
+        return Err(Error::Gpu(
+            "GPU compressed textures require BC, ETC2 or compatible ASTC support".into(),
+        ));
+    };
+    if image.width > device.limits().max_texture_dimension_2d
+        || image.height > device.limits().max_texture_dimension_2d
+        || !image.width.is_multiple_of(4)
+        || !image.height.is_multiple_of(4)
+    {
+        return Err(Error::Invalid("GPU block texture dimensions"));
+    }
+    if t.base_dimensions() != (image.width, image.height)
+        || t.level_count() == 0
+        || t.level_count() > image.width.max(image.height).ilog2() + 1
+        || !t.supports(target)
+    {
+        return Err(Error::Invalid(
+            "compressed texture metadata/target mismatch",
+        ));
+    }
+    let levels = t.level_count();
+    let texture = device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("cached compressed material texture"),
+        size: wgpu::Extent3d {
+            width: image.width,
+            height: image.height,
+            depth_or_array_layers: 1,
+        },
+        mip_level_count: levels,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: if image.srgb {
+            linear.add_srgb_suffix()
+        } else {
+            linear
+        },
+        usage: wgpu::TextureUsages::TEXTURE_BINDING
+            | wgpu::TextureUsages::COPY_DST
+            | wgpu::TextureUsages::COPY_SRC,
+        view_formats: &[],
+    });
+    for level in 0..levels {
+        let data = t
+            .transcode(level, target, basisu::DecodeFlags::NONE)
+            .map_err(|e| Error::Asset(format!("Basis mip {level}: {e:?}")))?;
+        let width = (image.width >> level).max(1).div_ceil(4) * 4;
+        let height = (image.height >> level).max(1).div_ceil(4) * 4;
+        let row = width / 4 * target.bytes_per_block_or_pixel() as u32;
+        if data.len() != row as usize * (height / 4) as usize {
+            return Err(Error::Invalid("compressed mip byte count"));
+        }
+        queue.write_texture(
+            wgpu::TexelCopyTextureInfo {
+                texture: &texture,
+                mip_level: level,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            &data,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(row),
+                rows_per_image: Some(height / 4),
+            },
+            wgpu::Extent3d {
+                width,
+                height,
+                depth_or_array_layers: 1,
+            },
+        );
+    }
+    Ok(GpuTexture {
+        view: texture.create_view(&Default::default()),
+        sampler: material_sampler(device, image),
+        texture,
+    })
 }

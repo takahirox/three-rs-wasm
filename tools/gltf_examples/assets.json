@@ -23,5 +23,20 @@
     "source": "examples/models/gltf/IridescentDishWithOlives.glb",
     "destination": "web/models/IridescentDishWithOlives.glb",
     "sha256": "98a6db7fbc0b90b9807fd57189e8cf71642672ee0301609b0aabcc28c698f29f"
+  },
+  {
+    "source": "examples/models/gltf/DispersionTest.glb",
+    "destination": "web/models/DispersionTest.glb",
+    "sha256": "bb7710e6eaeb1c81fc5f62000ed014689e4bd8ef300c3f9e3a08b2a6db821be7"
+  },
+  {
+    "source": "examples/models/gltf/coffeemat.glb",
+    "destination": "web/models/coffeemat.glb",
+    "sha256": "2cf091a8a32da5fc495f64beb02b1155fc57c0c9d3ef871ebce67981dedddf69"
+  },
+  {
+    "source": "examples/textures/equirectangular/pedestrian_overpass_1k.hdr",
+    "destination": "web/environments/pedestrian_overpass_1k.hdr",
+    "sha256": "3d2c4068676cfead5dce9a12896cf1ebcac4e97914938e3c2987b70cad4e4c4a"
   }
 ]

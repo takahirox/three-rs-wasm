@@ -85,6 +85,11 @@ impl Cache {
         if let Some((_, view)) = self.entries.get(&key) {
             return Ok(view.clone());
         }
+        if maps.iter().flatten().any(|t| t.basis.is_some()) {
+            return Err(Error::Invalid(
+                "compressed physical-extension texture arrays are unsupported",
+            ));
+        }
         let width = maps.iter().flatten().map(|t| t.width).max().unwrap_or(1);
         let height = maps.iter().flatten().map(|t| t.height).max().unwrap_or(1);
         let layers = maps.iter().flatten().count().max(1) as u32;

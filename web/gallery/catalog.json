@@ -4334,8 +4334,8 @@
     {
       "id": "webgl_loader_gltf_compressed",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_loader_gltf_compressed",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_compressed.html",
       "source_sha256": "e1537edce61b1b41ba057a00150c41c2030f6bb0131a46db7c70ecfad2b03413",
       "requirements": {
@@ -4374,13 +4374,14 @@
         "three/addons/libs/meshopt_decoder.module.js",
         "three/addons/loaders/GLTFLoader.js",
         "three/addons/loaders/KTX2Loader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_loader_gltf_compressed"
     },
     {
       "id": "webgl_loader_gltf_dispersion",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_loader_gltf_dispersion",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_dispersion.html",
       "source_sha256": "6822f939b081ebb4a99d49c74491a5e56f19704046fc0270dbbc7feee276726a",
       "requirements": {
@@ -4401,7 +4402,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",
         "three/addons/loaders/GLTFLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_loader_gltf_dispersion"
     },
     {
       "id": "webgl_loader_gltf_instancing",
@@ -18288,7 +18290,7 @@
     {
       "id": "webgpu_loader_gltf_compressed",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_compressed.html",
       "source_sha256": "f395363eec343693b28beeacfc6bf9c16b4ece70ebabdaec88fbe780cadf791b",
@@ -18314,7 +18316,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 34,
+        "source": "src/browser/gltf_examples.rs",
+        "test": "tests/browser/gltf-physical.spec.js",
+        "limitations": [
+          "公式coffeemat・Meshopt・KTX2/BasisのGPU圧縮テクスチャ・Orbit操作を移植。対応GPU圧縮形式が必要。情報表示と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/meshopt_decoder.module.js",
@@ -18326,7 +18335,7 @@
     {
       "id": "webgpu_loader_gltf_dispersion",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_gltf_dispersion.html",
       "source_sha256": "e9015e7864e71678d8a8b39eb70f6ec4db38ad27e6f6973d23c0fe6cf9861d83",
@@ -18342,7 +18351,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 33,
+        "source": "src/browser/gltf_examples.rs",
+        "test": "tests/browser/gltf-physical.spec.js",
+        "limitations": [
+          "公式DispersionTest・色分散・HDR・Orbit操作を移植。情報表示の外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/loaders/GLTFLoader.js",

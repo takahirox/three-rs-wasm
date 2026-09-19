@@ -51,7 +51,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    document.body.dataset.backend = 'rust-wasm-webgpu';
    const notice = document.querySelector('#notice'); notice.hidden = false;
    for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
-   if ([30,31,32].includes(entry.port.example)) {
+   if ([30,31,32,33,34].includes(entry.port.example)) {
     const credit=text('a','Model and environment credits',notice.querySelector('div'));
     credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
    }
@@ -64,7 +64,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
     credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
    }
    addEventListener('resize', resize);
-   if ([16,18,20,25,28,29,30,31,32].includes(entry.port.example)) { installOrbit(canvas,app); } else {
+   if ([16,18,20,25,28,29,30,31,32,33,34].includes(entry.port.example)) { installOrbit(canvas,app); } else {
    let drag;
    canvas.addEventListener('pointerdown', event => { drag = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId); app.gallery_input(0,0,0,true); });
    canvas.addEventListener('pointermove', event => { if(event.isPrimary===false)return;app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2); if (drag) { app.gallery_input(event.clientX-drag[0],event.clientY-drag[1],0,true); app.orbit(event.clientX-drag[0], event.clientY-drag[1], 0); drag = [event.clientX,event.clientY]; } });

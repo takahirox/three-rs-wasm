@@ -33,3 +33,7 @@ available for future adaptation, but is not a gallery entry.
 Instancing and AVIF glTF examples remain listed with their limitations because
 no equivalent official WebGPU scenes were found in this baseline. Historical
 investigation reports retain their original measurements and scope.
+
+The newly added `webgpu_loader_gltf_compressed` and
+`webgpu_loader_gltf_dispersion` also supersede their corresponding official
+WebGL examples; those WebGL entries are excluded from the port inventory.

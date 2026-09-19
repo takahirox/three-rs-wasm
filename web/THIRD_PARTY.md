@@ -176,3 +176,18 @@ The original embedded PNG/JPEG textures are retained.
   [CC BY 4.0 and source](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/IridescentDishWithOlives).
 
 These scenes use the existing Royal Esplanade environment credited above.
+
+## Dispersion and compressed glTF scenes (Three.js r186)
+
+These files are copied unchanged from the pinned archive; source paths and
+SHA-256 hashes are recorded in `tools/gltf_examples/assets.json`.
+
+- `models/DispersionTest.glb`: © 2023 Analytical Graphics, Inc.; model by
+  Ed Mackey, CC BY 4.0. Cloth backdrop CC0 by Adobe Inc. Attribution is embedded
+  in the original GLB's `asset.copyright`.
+- `models/coffeemat.glb`: [Coffeemat](https://sketchfab.com/3d-models/coffeemat-7fb196a40a6e4697aad9ca2f75c8b33d)
+  by [Roman Red](https://sketchfab.com/OFFcours1),
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), as recorded in
+  the original GLB's `asset.extras`. Meshopt and KTX2/Basis payloads are retained.
+- `environments/pedestrian_overpass_1k.hdr`: Pedestrian Overpass by Greg Zaal,
+  [Poly Haven, CC0](https://polyhaven.com/a/pedestrian_overpass).

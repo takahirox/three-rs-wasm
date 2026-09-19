@@ -21,7 +21,7 @@ fn sharp_background(d:vec3<f32>)->vec3<f32> {
 @fragment fn fs(in:Out)->@location(0) vec4<f32> {
  var color=background_color(in);
  if u.intensity.w>0.5 {
-  if u.intensity.z>0.5 {color=aces_output(color,u.intensity.y);}
+  if u.intensity.z>0.5 {color=tone_output(color,u.intensity.y,u.intensity.z);}
   color=srgb_output(color);
  }
  return vec4(color,1.0);

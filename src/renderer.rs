@@ -129,6 +129,7 @@ pub struct Renderer {
         RefCell<HashMap<wgpu::TextureFormat, (wgpu::BindGroupLayout, wgpu::RenderPipeline)>>,
     environment_builds: std::cell::Cell<u64>,
     transmission_target: RefCell<Option<RenderTarget>>,
+    transmission_sampler: wgpu::Sampler,
     transmission_mips: RefCell<Option<crate::transmission::MipChain>>,
     draw_slots: RefCell<Vec<crate::draw_gpu::Slot>>,
     draw_cursor: std::cell::Cell<usize>,
@@ -221,7 +222,11 @@ impl Renderer {
         let (device, queue) = adapter
             .request_device(&wgpu::DeviceDescriptor {
                 label: Some("three-rs-wasm"),
-                required_features: adapter.features() & wgpu::Features::INDIRECT_FIRST_INSTANCE,
+                required_features: adapter.features()
+                    & (wgpu::Features::INDIRECT_FIRST_INSTANCE
+                        | wgpu::Features::TEXTURE_COMPRESSION_BC
+                        | wgpu::Features::TEXTURE_COMPRESSION_ETC2
+                        | wgpu::Features::TEXTURE_COMPRESSION_ASTC),
                 required_limits: wgpu::Limits::default(),
                 ..Default::default()
             })
@@ -358,6 +363,13 @@ impl Renderer {
         });
         let shadows = crate::shadow::ShadowRenderer::new(&device);
         let ltc = crate::area_light::texture(&device, &queue);
+        let transmission_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("viewport refraction sampler"),
+            mag_filter: wgpu::FilterMode::Nearest,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
         Ok(Self {
             shadows,
             geometry: Default::default(),
@@ -377,6 +389,7 @@ impl Renderer {
             backgrounds: RefCell::new(Default::default()),
             presentations: RefCell::new(Default::default()),
             environment_builds: std::cell::Cell::new(0),
+            transmission_sampler,
             transmission_target: Default::default(),
             transmission_mips: Default::default(),
             draw_slots: Default::default(),
@@ -401,6 +414,26 @@ impl Renderer {
         format: wgpu::TextureFormat,
         exposure: f64,
         aces: bool,
+    ) {
+        self.blit_with_tone_mapping(
+            target,
+            view,
+            format,
+            exposure,
+            if aces {
+                ToneMapping::Aces
+            } else {
+                ToneMapping::None
+            },
+        );
+    }
+    pub fn blit_with_tone_mapping(
+        &self,
+        target: &RenderTarget,
+        view: &wgpu::TextureView,
+        format: wgpu::TextureFormat,
+        exposure: f64,
+        tone_mapping: ToneMapping,
     ) {
         let mut cache = self.presentations.borrow_mut();
         let (layout, pipeline) = cache.entry(format).or_insert_with(|| {
@@ -480,7 +513,7 @@ impl Renderer {
                 });
             (layout, pipeline)
         });
-        let parameters = [exposure as f32, if aces { 1.0 } else { 0.0 }, 0.0, 0.0];
+        let parameters = [exposure as f32, tone_mapping as u32 as f32, 0.0, 0.0];
         let mut slot = self.present_slot.borrow_mut();
         let uniform = slot.uniform(&self.device, &self.queue, bytemuck::cast_slice(&parameters));
         let bind_group = slot.bindings(
@@ -640,7 +673,7 @@ impl Renderer {
                         },
                         scene.background_intensity,
                         scene.exposure,
-                        f64::from(scene.aces_tone_mapping),
+                        scene.output_tone_mapping() as u32 as f64,
                     ],
                 )
             })
@@ -997,7 +1030,7 @@ impl Renderer {
                 let u = Uniforms {
                     output: [
                         scene.exposure as f32,
-                        f32::from(scene.aces_tone_mapping),
+                        scene.output_tone_mapping() as u32 as f32,
                         0.0,
                         0.0,
                     ],
@@ -1614,7 +1647,7 @@ impl Renderer {
         });
         bindings.push(wgpu::BindGroupEntry {
             binding: 19,
-            resource: wgpu::BindingResource::Sampler(&fallback.sampler),
+            resource: wgpu::BindingResource::Sampler(&self.transmission_sampler),
         });
         bindings.extend([
             wgpu::BindGroupEntry {

@@ -8,10 +8,14 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader,DRACO_GLTF_CONFIG} from 'three/addons/loaders/DRACOLoader.js';
 import {HDRLoader} from 'three/addons/loaders/HDRLoader.js';
 import {UltraHDRLoader} from 'three/addons/loaders/UltraHDRLoader.js';
+import {KTX2Loader} from 'three/addons/loaders/KTX2Loader.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 try {
  const id=new URLSearchParams(location.search).get('id'),kind=id.split('_').at(-1),T=id.startsWith('webgpu')?GPU:GL;
  const configs={
+  dispersion:['DispersionTest.glb','pedestrian_overpass_1k.hdr',45,.01,5,[.1,.05,.15],[0,0,0],.5,1,.1,10],
+  compressed:['coffeemat.glb',null,50,1,20,[2,2,2],[0,0,0],0,1,3,6],
   iridescence:['IridescenceLamp.glb','venice_sunset_1k.hdr',50,.05,20,[.35,.05,.35],[0,.2,0],0,1,0,Infinity],
   anisotropy:['AnisotropyBarnLamp.glb','royal_esplanade_2k.hdr.jpg',40,.01,10,[-.35,-.2,.35],[0,-.08,.11],.5,1.35,.1,2],
   sheen:['SheenChair.glb','royal_esplanade_2k.hdr.jpg',45,.1,20,[-.75,.7,1.25],[0,.35,0],0,1,1,10],
@@ -19,12 +23,16 @@ try {
  };
  const [model,env,fov,near,far,pos,target,blur,exposure,min,max]=configs[kind];
  const renderer=T===GL?new T.WebGLRenderer({antialias:true}):new T.WebGPURenderer({antialias:true});
- if(renderer.init)await renderer.init();renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=exposure;document.body.append(renderer.domElement);
+ if(renderer.init)await renderer.init();renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=["dispersion","compressed"].includes(kind)?T.ReinhardToneMapping:T.ACESFilmicToneMapping;renderer.toneMappingExposure=exposure;document.body.append(renderer.domElement);
  const scene=new T.Scene(),camera=new T.PerspectiveCamera(fov,innerWidth/innerHeight,near,far);camera.position.fromArray(pos);
  const controls=new OrbitControls(camera,renderer.domElement);controls.target.fromArray(target);controls.minDistance=min;controls.maxDistance=max;controls.update();controls.enableDamping=['sheen','transmission'].includes(kind);
  const draco=new DRACOLoader().setDecoderPath('/.cache/three-r186/examples/jsm/libs/draco/gltf/').setDecoderConfig(DRACO_GLTF_CONFIG);
- const [gltf,texture]=await Promise.all([new GLTFLoader().setDRACOLoader(draco).loadAsync('/.cache/gltf-examples/models/gltf/'+model),new (env.endsWith('.jpg')?UltraHDRLoader:HDRLoader)().loadAsync('/.cache/gltf-examples/textures/equirectangular/'+env)]);draco.dispose();
- texture.mapping=T.EquirectangularReflectionMapping;scene.background=texture;scene.environment=texture;scene.backgroundBlurriness=blur;scene.add(gltf.scene);
+ const loader=new GLTFLoader().setDRACOLoader(draco);
+ const ktx=await new KTX2Loader().detectSupport(renderer);loader.setKTX2Loader(ktx).setMeshoptDecoder(MeshoptDecoder);
+ const [gltf,texture]=await Promise.all([loader.loadAsync('/.cache/gltf-examples/models/gltf/'+model),env?new (env.endsWith('.jpg')?UltraHDRLoader:HDRLoader)().loadAsync('/.cache/gltf-examples/textures/equirectangular/'+env):null]);draco.dispose();ktx.dispose();
+ if(texture){texture.mapping=T.EquirectangularReflectionMapping;scene.background=texture;scene.environment=texture;scene.backgroundBlurriness=blur;}
+ if(kind==='compressed'){scene.background=new T.Color(0xeeeeee);const light=new T.PointLight(0xffffff);light.power=1300;camera.add(light);scene.add(camera);gltf.scene.position.y=-.8;gltf.scene.scale.setScalar(.01);}
+ scene.add(gltf.scene);
  const mixer=new T.AnimationMixer(gltf.scene);if(gltf.animations.length)mixer.clipAction(gltf.animations[0]).play();
  window.reference={renderer,scene,camera,controls};
  let previousTime=0;

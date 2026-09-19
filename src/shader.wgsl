@@ -254,7 +254,7 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     let color=shade_fragment(in,front);
     if ENCODE_SRGB {
         var rgb=color.rgb;
-        if u.output.y>0.5 {rgb=aces_output(rgb,u.output.x);}
+        if u.output.y>0.5 {rgb=tone_output(rgb,u.output.x,u.output.y);}
         return vec4(srgb_output(rgb),color.a);
     }
     return color;

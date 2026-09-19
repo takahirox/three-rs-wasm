@@ -45,7 +45,7 @@ impl Demo {
             _ => 1.0,
         };
         match example {
-            29..=32 => Ok(Self {
+            29..=34 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
                 far: 100.0,
