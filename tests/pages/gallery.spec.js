@@ -23,8 +23,11 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     });
     await page.goto(`/three-rs-wasm/web/gallery/#${entry.id}`);
     const viewer = page.frameLocator('#viewer');
-    const canvas = viewer.locator('canvas');
-    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(entry.port.example === 28 ? 0 : 2);
+    const canvas = viewer.locator('canvas').first();
+    // These scenes render on demand; the first canvas owns runtime diagnostics
+    // even when the example presents through several additional canvases.
+    const onDemand = [16, 28, 38].includes(entry.port.example);
+    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(onDemand ? 0 : 2);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
     if (entry.port.example === 4) {
       await viewer.locator('#model').selectOption('5');
