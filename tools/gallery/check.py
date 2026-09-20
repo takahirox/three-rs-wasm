@@ -12,13 +12,19 @@ rows = catalog['examples']
 ids = [row['id'] for row in rows]
 assets={'caravaggio.jpg':'examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg','panorama.jpg':'examples/textures/2294472375_24a3b8ef46_o.jpg','uv-grid.jpg':'examples/textures/uv_grid_opengl.jpg','spot1Lux.hdr':'examples/textures/equirectangular/spot1Lux.hdr','earth-lights.png':'examples/textures/planets/earth_lights_2048.png'}
 assets.update({f'transition{i}.png':f'examples/textures/transition/transition{i}.png' for i in range(1,7)})
-assets.update({'sprite1.png':'examples/textures/sprite1.png','snowflake1.png':'examples/textures/sprites/snowflake1.png','circle.png':'examples/textures/sprites/circle.png'})
+assets.update({'smoke1.png':'examples/textures/opengameart/smoke1.png','suzanne_buffergeometry.json':'examples/models/json/suzanne_buffergeometry.json','sprite1.png':'examples/textures/sprite1.png','snowflake1.png':'examples/textures/sprites/snowflake1.png','circle.png':'examples/textures/sprites/circle.png'})
+assets.update({'hardwood2_diffuse.jpg':'examples/textures/hardwood2_diffuse.jpg','Water_1_M_Normal.jpg':'examples/textures/water/Water_1_M_Normal.jpg','roughness_map.jpg':'examples/textures/roughness_map.jpg','flames-grayscale-256x256.png':'examples/textures/noises/voronoi/grayscale-256x256.png','flames-rgb-256x256.png':'examples/textures/noises/perlin/rgb-256x256.png'})
+assets.update({f'cube_m0{level}_c0{face}.jpg':f'examples/textures/cube/angus/cube_m0{level}_c0{face}.jpg' for level in range(9) for face in range(6)})
+assets.update({f'castle-{face}.jpg':f'examples/textures/cube/SwedishRoyalCastle/{face}.jpg' for face in ['px','nx','py','ny','pz','nz']})
+assets.update({name:f'examples/textures/planets/{name}' for name in ['earth_day_4096.jpg','earth_night_4096.jpg','earth_bump_roughness_clouds_4096.jpg']})
+assets.update({'spiritedaway.ktx2':'examples/textures/spiritedaway.ktx2','blossom.png':'examples/textures/sprites/blossom.png'})
+extra_assets={'web/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
 with tarfile.open(ARCHIVE) as tar:
  sources = {}
  for entry in tar:
   path = entry.name.split('/',1)[-1]
-  if entry.isfile() and (path in assets.values() or path=='examples/files.json' or path.startswith('files/') or path.startswith('examples/screenshots/') or (path.startswith('examples/') and path.endswith('.html'))):
+  if entry.isfile() and (path in assets.values() or path in extra_assets.values() or path=='examples/files.json' or path.startswith('files/') or path.startswith('examples/screenshots/') or (path.startswith('examples/') and path.endswith('.html'))):
    sources[path] = tar.extractfile(entry).read()
  original = json.loads(sources['examples/files.json'])
  assert ids == [name for group in original.values() for name in group], 'missing/reordered source examples'
@@ -40,6 +46,7 @@ with tarfile.open(ARCHIVE) as tar:
   for evidence in row['requirements'].values():
    for item in evidence: assert sources[f'examples/{name}.html'].decode().splitlines()[item['line']-1].strip().startswith(item['text'])
  for name,upstream in assets.items():assert (ROOT/f'web/gallery/assets/{name}').read_bytes()==sources[upstream],name
+ for name,upstream in extra_assets.items():assert (ROOT/name).read_bytes()==sources[upstream],name
  for name in UI_FILES: assert (ROOT/f'web/files/{name}').read_bytes()==sources[f'files/{name}'], name
  for name in ['webgl_loader_gltf_instancing','webgl_loader_gltf_compressed','webgl_loader_gltf_avif','webgl_depth_texture','webgl_loader_texture_ktx']:
   assert name in WEBGPU_EQUIVALENTS or next(r for r in rows if r['id']==name)['status']!='excluded', 'portable examples need a WebGPU equivalent to be excluded'

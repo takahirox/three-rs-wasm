@@ -347,6 +347,14 @@ pub enum ToneMapping {
     Aces = 1,
     Reinhard = 2,
     Neutral = 3,
+    Linear = 4,
+}
+/// Background values written to corresponding MRT attachments.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum BackgroundOutput {
+    Color,
+    NormalView,
+    Zero,
 }
 #[derive(Debug)]
 pub struct Scene {
@@ -364,6 +372,7 @@ pub struct Scene {
     pub environment_intensity: f64,
     pub environment_rotation: f64,
     pub background_environment: bool,
+    pub background_outputs: Vec<BackgroundOutput>,
     pub background_blur: f64,
     pub fog: Option<Fog>,
     /// Sample the equirectangular source directly instead of cube conversion.
@@ -389,6 +398,7 @@ impl Default for Scene {
             environment_intensity: 1.0,
             environment_rotation: 0.0,
             background_environment: false,
+            background_outputs: Vec::new(),
             background_blur: 0.0,
             fog: None,
             background_equirectangular: false,

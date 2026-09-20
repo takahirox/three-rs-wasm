@@ -26,13 +26,14 @@ struct PipelineKey {
     side: u8,
     transparent: bool,
     alpha_mask: bool,
+    alpha_to_coverage: bool,
     encode_srgb: bool,
     depth_test: bool,
     depth_write: bool,
     samples: u32,
     format: wgpu::TextureFormat,
     depth_format: Option<wgpu::TextureFormat>,
-    attachments: u32,
+    attachment_formats: Vec<wgpu::TextureFormat>,
     mirrored: bool,
 }
 
@@ -124,6 +125,7 @@ pub struct Renderer {
     >,
     dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
+    ltc_sampler: wgpu::Sampler,
     physical_maps: RefCell<crate::physical_maps::Cache>,
     backgrounds: RefCell<crate::background::PipelineCache>,
     presentations:
@@ -145,6 +147,7 @@ struct DrawGeometry<'a> {
     transmission_view: Option<&'a wgpu::TextureView>,
 }
 struct Draw {
+    object: Object3D,
     stencil_reference: u32,
     custom_bindings: Option<wgpu::BindGroup>,
     instance_buffer: wgpu::Buffer,
@@ -167,6 +170,7 @@ impl Renderer {
         &self,
         module: &wgpu::ShaderModule,
         extra: &wgpu::BindGroupLayout,
+        outputs: u32,
     ) {
         let layout = self
             .device
@@ -175,7 +179,7 @@ impl Renderer {
                 bind_group_layouts: &[&self.layout, extra],
                 push_constant_ranges: &[],
             });
-        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&[Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL})]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
+        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
     }
     /// Upload once and retain a sampled texture for custom material/effect bindings.
     pub fn upload_texture(&self, image: &Arc<crate::material::Texture>) -> Result<GpuTexture> {
@@ -233,7 +237,8 @@ impl Renderer {
             .request_device(&wgpu::DeviceDescriptor {
                 label: Some("three-rs-wasm"),
                 required_features: adapter.features()
-                    & (wgpu::Features::INDIRECT_FIRST_INSTANCE
+                    & (wgpu::Features::FLOAT32_FILTERABLE
+                        | wgpu::Features::INDIRECT_FIRST_INSTANCE
                         | wgpu::Features::TEXTURE_COMPRESSION_BC
                         | wgpu::Features::TEXTURE_COMPRESSION_ETC2
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC),
@@ -323,6 +328,12 @@ impl Renderer {
             },
             count: None,
         });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 24,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+            count: None,
+        });
         entries.extend(crate::deformation_gpu::layout_entries());
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("draw layout"),
@@ -357,7 +368,7 @@ impl Renderer {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
                 format!(
-                    "{}\n{}\n{}\n{}\n{}",
+                    "{}\n{}\n{}\n{}\n{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
                     concat!(
                         include_str!("shaders/deformation.wgsl"),
@@ -368,13 +379,20 @@ impl Renderer {
                     ),
                     crate::shader::DEFAULT_HOOKS,
                     crate::shader::DEFAULT_OUTPUT,
-                    crate::shader::DEFAULT_PROJECTION
+                    crate::shader::DEFAULT_PROJECTION,
+                    crate::shader::DEFAULT_SURFACE
                 )
                 .into(),
             ),
         });
         let shadows = crate::shadow::ShadowRenderer::new(&device);
         let ltc = crate::area_light::texture(&device, &queue);
+        let ltc_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("LTC linear magnification, nearest minification"),
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Nearest,
+            ..Default::default()
+        });
         let transmission_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("viewport refraction sampler"),
             mag_filter: wgpu::FilterMode::Nearest,
@@ -397,6 +415,7 @@ impl Renderer {
             environment: RefCell::new(None),
             dfg,
             ltc,
+            ltc_sampler,
             physical_maps: Default::default(),
             backgrounds: RefCell::new(Default::default()),
             presentations: RefCell::new(Default::default()),
@@ -611,6 +630,17 @@ impl Renderer {
         self.queue.submit([encoder.finish()]);
     }
     pub fn render(&self, scene: &mut Scene, camera: Object3D, target: &RenderTarget) -> Result<()> {
+        self.render_with_occlusion(scene, camera, target, None)
+    }
+    /// Render with optional asynchronous, resident GPU occlusion queries.
+    pub fn render_with_occlusion(
+        &self,
+        scene: &mut Scene,
+        camera: Object3D,
+        target: &RenderTarget,
+        queries: Option<&crate::occlusion::OcclusionQueries>,
+    ) -> Result<()> {
+        let queries = queries.filter(|q| q.available());
         if !(0.0..=1.0).contains(&scene.background_alpha) {
             return Err(Error::Invalid("scene background alpha"));
         }
@@ -623,7 +653,7 @@ impl Renderer {
                 .or_insert_with(|| (Arc::downgrade(&scene.cache_owner), HashMap::new()));
             std::mem::swap(slots, &mut self.draw_slots.borrow_mut());
         }
-        let result = self.render_with_slots(scene, camera, target);
+        let result = self.render_with_slots(scene, camera, target, queries);
         let mut cache = self.scene_draw_slots.borrow_mut();
         std::mem::swap(
             &mut cache.get_mut(&key).unwrap().1,
@@ -636,6 +666,7 @@ impl Renderer {
         scene: &mut Scene,
         camera: Object3D,
         target: &RenderTarget,
+        queries: Option<&crate::occlusion::OcclusionQueries>,
     ) -> Result<()> {
         let mut needs_transmission = false;
         for root in scene.roots() {
@@ -673,13 +704,13 @@ impl Renderer {
             let background = cached.as_mut().expect("transmission target");
             background.viewport = target.viewport;
             background.scissor = target.scissor;
-            self.render_inner(scene, camera, background, true, None)?;
+            self.render_inner(scene, camera, background, true, None, None)?;
             let mips = self.transmission_mips.borrow();
             let mips = mips.as_ref().expect("transmission mip chain");
             mips.update(&self.device, &self.queue, background);
-            self.render_inner(scene, camera, target, false, Some(&mips.view))?
+            self.render_inner(scene, camera, target, false, Some(&mips.view), queries)?
         } else {
-            self.render_inner(scene, camera, target, false, None)?
+            self.render_inner(scene, camera, target, false, None, queries)?
         }
         self.draw_slots
             .borrow_mut()
@@ -703,6 +734,7 @@ impl Renderer {
         target: &RenderTarget,
         opaque_only: bool,
         transmission_view: Option<&wgpu::TextureView>,
+        queries: Option<&crate::occlusion::OcclusionQueries>,
     ) -> Result<()> {
         let valid_rectangle = |r: [u32; 4]| {
             r[2] > 0
@@ -769,6 +801,7 @@ impl Renderer {
                         scene.exposure,
                         scene.output_tone_mapping() as u32 as f64,
                     ],
+                    &scene.background_outputs,
                 )
             })
         } else {
@@ -923,7 +956,7 @@ impl Renderer {
         visible.sort_by_key(|h| scene.get(*h).expect("valid node").render_order);
         let mut draws = Vec::new();
         let mut after_hooks = Vec::new();
-        for h in visible {
+        for &h in &visible {
             let n = scene.get(h)?;
             if !n.layers.test(camera_layers) {
                 continue;
@@ -1030,9 +1063,16 @@ impl Renderer {
                 if end <= start {
                     continue;
                 }
-                let is_points = matches!(n.kind, NodeKind::Points(_));
+                // Shader points use native one-pixel primitives; PointsMaterial
+                // alone requests the sized billboard expansion.
+                let is_points = matches!(n.kind, NodeKind::Points(_))
+                    && matches!(material, Material::Points(_));
                 let wireframe = properties.wireframe && matches!(n.kind, NodeKind::Mesh(_));
-                if wireframe && (geometry.indirect.is_some() || start % 3 != 0 || end % 3 != 0) {
+                if wireframe
+                    && ((geometry.indirect.is_some() || geometry.gpu_indirect.is_some())
+                        || start % 3 != 0
+                        || end % 3 != 0)
+                {
                     return Err(Error::Invalid(
                         "wireframe requires direct complete triangles",
                     ));
@@ -1121,7 +1161,7 @@ impl Renderer {
                     };
                     uv_transforms[i * 3..i * 3 + 3].copy_from_slice(&columns);
                 }
-                let u = Uniforms {
+                let mut u = Uniforms {
                     output: [
                         scene.exposure as f32,
                         scene.output_tone_mapping() as u32 as f32,
@@ -1380,12 +1420,49 @@ impl Renderer {
                             ],
                         ]
                     } else {
-                        [[0.0; 4]; 3]
+                        [
+                            [0.0; 4],
+                            [0.0; 4],
+                            [
+                                target.viewport[0] as f32 / target.width as f32,
+                                target.viewport[1] as f32 / target.height as f32,
+                                target.viewport[2] as f32 / target.width as f32,
+                                target.viewport[3] as f32 / target.height as f32,
+                            ],
+                        ]
                     },
                     shadow_matrices: shadows.matrices,
                     shadow_params: shadows.params,
                     shadow_filters: shadows.filters,
                 };
+                if let Some(selected) = &properties.lights {
+                    u.ambient = [0.0; 4];
+                    for &light in selected {
+                        if visible.contains(&light)
+                            && scene.get(light)?.layers.test(camera_layers)
+                            && let NodeKind::Light(Light::Ambient { color, intensity }) =
+                                &scene.get(light)?.kind
+                        {
+                            for (i, c) in color.0.to_array().iter().enumerate() {
+                                u.ambient[i] += (*c * *intensity) as f32;
+                            }
+                        }
+                    }
+                    let mut count = 0;
+                    for (index, light) in shadow_lights.iter().enumerate() {
+                        if selected.contains(light) {
+                            u.light_position[count] = light_position[index];
+                            u.light_color[count] = light_color[index];
+                            u.light_params[count] = light_params[index];
+                            u.light_direction[count] = light_direction[index];
+                            u.shadow_params[count] = shadows.params[index];
+                            u.shadow_filters[count] = shadows.filters[index];
+
+                            count += 1;
+                        }
+                    }
+                    u.material[3] = count as f32;
+                }
                 let mut draw = self.prepare_draw(
                     DrawGeometry {
                         key: (h, group_index, opaque_only),
@@ -1433,7 +1510,9 @@ impl Renderer {
                 draw.depth = view_projection.project_point3(n.world_position()).z;
                 draw.range = (start as u32) * factor..(end as u32) * factor;
                 if let Some(segments) = wide {
-                    if geometry.indirect.is_some() || (segments && start % 2 != 0) {
+                    if (geometry.indirect.is_some() || geometry.gpu_indirect.is_some())
+                        || (segments && start % 2 != 0)
+                    {
                         return Err(Error::Invalid("wide line direct range"));
                     }
                     draw.range = if segments {
@@ -1496,6 +1575,32 @@ impl Renderer {
                             .indirect(&self.device, &self.queue, bytemuck::cast_slice(&commands)),
                     );
                 }
+                if let Some(buffer) = &geometry.gpu_indirect {
+                    if geometry.indirect.is_some()
+                        || is_points
+                        || wireframe
+                        || !buffer.usage().contains(wgpu::BufferUsages::INDIRECT)
+                    {
+                        return Err(Error::Invalid("GPU indirect geometry"));
+                    }
+                    let offsets = if geometry.indirect_offsets.is_empty() {
+                        vec![geometry.indirect_offset]
+                    } else {
+                        geometry.indirect_offsets.clone()
+                    };
+                    for offset in offsets {
+                        let size = if draw.indices.is_some() { 20 } else { 16 };
+                        if offset % 4 != 0
+                            || (offset as u64)
+                                .checked_add(size)
+                                .is_none_or(|end| end > buffer.size())
+                        {
+                            return Err(Error::Invalid("GPU indirect command offset"));
+                        }
+                        draw.indirect_offsets.push(offset as u64);
+                    }
+                    draw.indirect = Some(buffer.clone());
+                }
                 draws.push(draw);
             }
         }
@@ -1517,6 +1622,15 @@ impl Renderer {
                     }
                 })
         });
+        let query_objects: Vec<_> = draws
+            .iter()
+            .filter(|d| queries.is_some_and(|q| q.contains(d.object)))
+            .map(|d| d.object)
+            .collect();
+        if let Some(q) = queries {
+            q.validate_count(query_objects.len() as u32)?;
+        }
+        let queries = queries.filter(|_| !query_objects.is_empty());
         {
             let c = if target.options.encode_srgb {
                 scene.background.0.map(linear_to_srgb)
@@ -1543,12 +1657,20 @@ impl Renderer {
                             None
                         },
                         ops: wgpu::Operations {
-                            load: wgpu::LoadOp::Clear(wgpu::Color {
-                                r: c.x * scene.background_alpha,
-                                g: c.y * scene.background_alpha,
-                                b: c.z * scene.background_alpha,
-                                a: scene.background_alpha,
-                            }),
+                            load: if target.options.load_color {
+                                wgpu::LoadOp::Load
+                            } else {
+                                wgpu::LoadOp::Clear(if i == 0 {
+                                    wgpu::Color {
+                                        r: c.x * scene.background_alpha,
+                                        g: c.y * scene.background_alpha,
+                                        b: c.z * scene.background_alpha,
+                                        a: scene.background_alpha,
+                                    }
+                                } else {
+                                    wgpu::Color::TRANSPARENT
+                                })
+                            },
                             store: if target.options.samples > 1
                                 && !target.options.store_multisampled_color_buffer
                             {
@@ -1589,7 +1711,7 @@ impl Renderer {
                     }
                 }),
                 timestamp_writes: None,
-                occlusion_query_set: None,
+                occlusion_query_set: queries.map(|q| &q.queries),
             });
             let [x, y, w, h] = target.viewport;
             pass.set_viewport(x as f32, y as f32, w as f32, h as f32, 0.0, 1.0);
@@ -1601,7 +1723,13 @@ impl Renderer {
                 pass.set_bind_group(0, bindings, &[]);
                 pass.draw(0..3, 0..1);
             }
+            let mut query_index = 0;
             for draw in &draws {
+                let query = queries.is_some_and(|q| q.contains(draw.object));
+                if query {
+                    pass.begin_occlusion_query(query_index);
+                    query_index += 1;
+                }
                 // Match Three.js: transparent double-sided meshes draw back faces first.
                 for pipeline in draw
                     .back_pipeline
@@ -1633,9 +1761,18 @@ impl Renderer {
                         pass.draw(draw.range.clone(), 0..draw.instances);
                     }
                 }
+                if query {
+                    pass.end_occlusion_query();
+                }
             }
         }
+        if let Some(q) = queries {
+            q.resolve(&mut encoder, query_objects.len() as u32);
+        }
         self.queue.submit([encoder.finish()]);
+        if let Some(q) = queries {
+            q.read(query_objects);
+        }
         for (object, callback) in after_hooks {
             callback(scene, object);
         }
@@ -1657,6 +1794,7 @@ impl Renderer {
             instances,
             transmission_view,
         } = geometry;
+        let object = key.0;
         let properties = material.properties();
         let vertex_buffer = vertices;
         let mut slots = self.draw_slots.borrow_mut();
@@ -1737,6 +1875,10 @@ impl Renderer {
             resource: wgpu::BindingResource::TextureView(&extension_maps),
         });
         bindings.push(wgpu::BindGroupEntry {
+            binding: 24,
+            resource: wgpu::BindingResource::Sampler(&self.ltc_sampler),
+        });
+        bindings.push(wgpu::BindGroupEntry {
             binding: 17,
             resource: wgpu::BindingResource::TextureView(&self.ltc),
         });
@@ -1766,6 +1908,11 @@ impl Renderer {
         } else {
             properties.vertex_program.as_ref()
         };
+        if custom.is_some_and(|p| p.outputs > target.options.count) {
+            return Err(Error::Invalid(
+                "shader outputs exceed render target attachments",
+            ));
+        }
         let instance_data = if instances.is_empty() {
             vec![InstanceVertex {
                 matrix: Matrix4::IDENTITY.as_mat4().to_cols_array(),
@@ -1846,13 +1993,14 @@ impl Renderer {
             },
             transparent: properties.transparent,
             alpha_mask: properties.alpha_test > 0.0,
+            alpha_to_coverage: properties.alpha_to_coverage && target.options.samples > 1,
             encode_srgb: target.options.encode_srgb,
             depth_test: properties.depth_test,
             depth_write: properties.depth_write,
             samples: target.options.samples.max(1),
             format: target.options.format,
             depth_format: target.depth_format(),
-            attachments: target.options.count,
+            attachment_formats: target.color_formats(),
             mirrored: uniforms.point[2] == 0.0
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
         };
@@ -1869,9 +2017,9 @@ impl Renderer {
             let shader = custom.map_or(&self.shader, |p| &p.module);
             self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
             vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&(0..target.options.count).map(|_|Some(wgpu::ColorTargetState {format:target.options.format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&key.attachment_formats.iter().map(|&format|Some(wgpu::ColorTargetState {format,blend:key.blend,write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
-            depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),..Default::default()},multiview:None,cache:None})
+            depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:Default::default()}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),alpha_to_coverage_enabled:key.alpha_to_coverage,..Default::default()},multiview:None,cache:None})
         };
         let pipeline = pipelines
             .entry(key.clone())
@@ -1886,6 +2034,7 @@ impl Renderer {
                 .clone()
         });
         Ok(Draw {
+            object,
             stencil_reference: properties.stencil_reference,
             custom_bindings: custom.map(|p| p.bindings.clone()),
             instance_buffer,

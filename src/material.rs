@@ -187,6 +187,7 @@ pub struct MaterialProperties {
     pub color: Color,
     pub opacity: f64,
     pub alpha_test: f64,
+    pub alpha_to_coverage: bool,
     pub transparent: bool,
     /// Draw transparent double-sided surfaces once (ShaderMaterial defaults to true).
     pub force_single_pass: bool,
@@ -198,6 +199,9 @@ pub struct MaterialProperties {
     pub flat_shading: bool,
     pub wireframe: bool,
     pub fog: bool,
+    /// Optional scene-light selection for this material. None uses all visible lights.
+    #[serde(skip)]
+    pub lights: Option<Vec<crate::scene::Object3D>>,
     pub clipping_planes: Vec<Plane>,
     pub clip_intersection: bool,
     pub clip_shadows: bool,
@@ -220,6 +224,7 @@ impl Default for MaterialProperties {
             color: Color::WHITE,
             opacity: 1.0,
             alpha_test: 0.0,
+            alpha_to_coverage: false,
             transparent: false,
             force_single_pass: false,
             side: Side::Front,
@@ -230,6 +235,7 @@ impl Default for MaterialProperties {
             flat_shading: false,
             wireframe: false,
             fog: true,
+            lights: None,
             clipping_planes: Vec::new(),
             clip_intersection: false,
             clip_shadows: false,

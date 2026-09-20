@@ -19,6 +19,11 @@ pub enum Type {
     Vec4,
     Bool,
     Texture,
+    TextureArray,
+    Texture3D,
+    TextureCube,
+    DepthTexture,
+    ComparisonSampler,
     Sampler,
 }
 impl Type {
@@ -50,6 +55,11 @@ impl Type {
             Self::Vec4 => "vec4<f32>",
             Self::Bool => "bool",
             Self::Texture => "texture_2d<f32>",
+            Self::TextureArray => "texture_2d_array<f32>",
+            Self::Texture3D => "texture_3d<f32>",
+            Self::TextureCube => "texture_cube<f32>",
+            Self::DepthTexture => "texture_depth_2d",
+            Self::ComparisonSampler => "sampler_comparison",
             Self::Sampler => "sampler",
         }
     }
@@ -70,6 +80,10 @@ impl Texture {
     }
     pub fn sample(self, uv: Node) -> Node {
         Node::new(Expr::Sample(self, vec![uv]))
+    }
+    /// Sample one resident 2D-array layer. Layer conversion truncates towards zero.
+    pub fn sample_array(self, uv: Node, layer: Node) -> Node {
+        Node::new(Expr::SampleArray(self, uv, layer))
     }
     pub fn sample_grad(self, uv: Node, dx: Node, dy: Node) -> Node {
         Node::new(Expr::Sample(self, vec![uv, dx, dy]))
@@ -117,10 +131,17 @@ enum Expr {
     Constant(f32),
     Uint(u32),
     InstanceIndex,
-    InstanceAttribute(usize),
+    VertexIndex,
+    StorageElement(usize, Node),
+    PositionLocal,
+    NormalWorld,
     PositionWorld,
     ViewZ,
     Output,
+    BaseColor,
+    LitProperty(&'static str, Type),
+    ScreenCoordinate,
+    ScreenSize,
     Uniform(usize, Type),
     Uv,
     Position,
@@ -133,9 +154,20 @@ enum Expr {
     Select(Node, Node, Node),
     Resource(Texture, bool),
     Sample(Texture, Vec<Node>),
+    SampleArray(Texture, Node, Node),
+    StorageLoad(usize, Node),
+    DepthSample(Node),
     Call(Arc<WgslFn>, Vec<Node>),
 }
-/// Linear material output, available only to output_program.
+/// Current render target dimensions in physical pixels.
+pub fn screen_size() -> Node {
+    Node::new(Expr::ScreenSize)
+}
+/// Fragment pixel coordinates, with top-left origin.
+pub fn screen_coordinate() -> Node {
+    Node::new(Expr::ScreenCoordinate)
+}
+/// Linear material output, available in output programs and MRT graphs.
 pub fn output() -> Node {
     Node::new(Expr::Output)
 }
@@ -155,18 +187,46 @@ pub async fn output_program(renderer: &Renderer, color: &Node) -> Result<ShaderP
     )
     .await
 }
+/// Read a compute storage texture using signed texel coordinates (vec2).
+pub fn texture_load(binding: usize, coordinate: Node) -> Node {
+    Node::new(Expr::StorageLoad(binding, coordinate))
+}
 pub fn uint(value: u32) -> Node {
     Node::new(Expr::Uint(value))
 }
 /// Per-instance resident vec4 storage buffer, indexed on the GPU.
 pub fn instanced_attribute(index: usize) -> Node {
-    Node::new(Expr::InstanceAttribute(index))
+    storage_element(index, instance_index())
+}
+/// Read a typed resident storage element. Its type comes from the binding layout.
+pub fn storage_element(binding: usize, index: Node) -> Node {
+    Node::new(Expr::StorageElement(binding, index))
+}
+pub fn position_local() -> Node {
+    Node::new(Expr::PositionLocal)
+}
+pub fn normal_world() -> Node {
+    Node::new(Expr::NormalWorld)
+}
+/// Resolved material normal, available after lighting in output/MRT graphs.
+pub fn normal_view() -> Node {
+    Node::new(Expr::LitProperty("fragment_normal", Type::Vec3))
+}
+pub fn diffuse_color() -> Node {
+    Node::new(Expr::LitProperty("fragment_diffuse", Type::Vec4))
+}
+pub fn emissive() -> Node {
+    Node::new(Expr::LitProperty("fragment_emissive", Type::Vec3))
 }
 pub fn position_world() -> Node {
     Node::new(Expr::PositionWorld)
 }
 pub fn view_z() -> Node {
     Node::new(Expr::ViewZ)
+}
+/// Index of the current vertex, including indexed draws. Vertex stage only.
+pub fn vertex_index() -> Node {
+    Node::new(Expr::VertexIndex)
 }
 pub fn instance_index() -> Node {
     Node::new(Expr::InstanceIndex)
@@ -235,6 +295,12 @@ impl Node {
     fn binary(&self, op: &'static str, rhs: Node) -> Self {
         Self::new(Expr::Binary(op, self.clone(), rhs))
     }
+    pub fn normalize(&self) -> Self {
+        self.unary("normalize")
+    }
+    pub fn fwidth(&self) -> Self {
+        self.unary("fwidth")
+    }
     pub fn exp(&self) -> Self {
         self.unary("exp")
     }
@@ -297,6 +363,11 @@ impl Node {
     pub fn select(&self, when_true: Node, when_false: Node) -> Self {
         Self::new(Expr::Select(self.clone(), when_true, when_false))
     }
+    /// Smooth Hermite interpolation between two edges.
+    pub fn smoothstep(&self, low: Node, high: Node) -> Self {
+        let t = ((self.clone() - low.clone()) / (high - low)).clamp(float(0.0), float(1.0));
+        t.clone() * t.clone() * (float(3.0) - float(2.0) * t)
+    }
     pub fn to_float(&self) -> Self {
         self.unary("f32")
     }
@@ -339,14 +410,41 @@ impl NodeMaterial {
         self.wgsl_with_buffers(texture_count, 0)
     }
     pub fn wgsl_with_buffers(&self, texture_count: usize, buffer_count: usize) -> Result<String> {
+        self.wgsl_with_storage(texture_count, &vec![Type::Vec4; buffer_count])
+    }
+    pub fn wgsl_with_storage(&self, texture_count: usize, types: &[Type]) -> Result<String> {
+        self.wgsl_with_texture_types(&vec![Type::Texture; texture_count], types)
+    }
+    pub fn wgsl_with_texture_types(
+        &self,
+        texture_types: &[Type],
+        types: &[Type],
+    ) -> Result<String> {
+        if texture_types.iter().any(|t| {
+            !matches!(
+                t,
+                Type::Texture
+                    | Type::TextureArray
+                    | Type::Texture3D
+                    | Type::TextureCube
+                    | Type::DepthTexture
+            )
+        }) {
+            return Err(Error::Invalid("TSL sampled texture type"));
+        }
+        let texture_count = texture_types.len();
+        validate_storage_types(types)?;
+        let buffer_count = types.len();
         let mut vertex = Compiler::new(Stage::Vertex, texture_count);
-        vertex.buffers = buffer_count;
+        vertex.buffers = types.to_vec();
+        vertex.texture_types = texture_types.to_vec();
         let (ty, position) = vertex.emit(self.position.as_ref().unwrap_or(&position_geometry()))?;
         if ty != Type::Vec3 {
             return Err(Error::Invalid("TSL position must be vec3"));
         }
         let mut fragment = Compiler::new(Stage::Fragment, texture_count);
-        fragment.buffers = buffer_count;
+        fragment.buffers = types.to_vec();
+        fragment.texture_types = texture_types.to_vec();
         let (ty, color) = fragment.emit(&self.color)?;
         let color = output_color(ty, color)?;
         let mut functions = vertex.functions;
@@ -360,11 +458,12 @@ impl NodeMaterial {
             .map(|key| functions[key].as_str())
             .collect::<Vec<_>>()
             .join("\n");
-        let resources = (0..texture_count).map(|i| format!("@group(1) @binding({}) var tsl_texture_{i}:texture_2d<f32>;\n@group(1) @binding({}) var tsl_sampler_{i}:sampler;",buffer_count+i*2,buffer_count+i*2+1)).collect::<Vec<_>>().join("\n");
+        let resources = (0..texture_count).map(|i| format!("@group(1) @binding({}) var tsl_texture_{i}:{};\n@group(1) @binding({}) var tsl_sampler_{i}:{};",buffer_count+i*2,texture_types[i].wgsl(),buffer_count+i*2+1,if texture_types[i]==Type::DepthTexture{"sampler_comparison"}else{"sampler"})).collect::<Vec<_>>().join("\n");
         let attributes = (0..buffer_count)
             .map(|i| {
                 format!(
-                    "@group(1) @binding({i}) var<storage,read> tsl_attribute_{i}:array<vec4<f32>>;"
+                    "@group(1) @binding({i}) var<storage,read> tsl_attribute_{i}:array<{}>;",
+                    types[i].wgsl()
                 )
             })
             .collect::<Vec<_>>()
@@ -379,9 +478,85 @@ impl NodeMaterial {
         renderer: &Renderer,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<ShaderMaterial> {
+        self.build_with_storage(renderer, &[], textures).await
+    }
+    /// Build with explicitly typed sampled texture views.
+    pub async fn build_with_texture_types(
+        &self,
+        renderer: &Renderer,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler, Type)],
+    ) -> Result<ShaderMaterial> {
+        let types: Vec<_> = textures.iter().map(|x| x.2).collect();
+        let source = self.wgsl_with_texture_types(&types, &[])?;
+        let dimensions: Vec<_> = types
+            .iter()
+            .map(|t| {
+                if *t == Type::TextureArray {
+                    wgpu::TextureViewDimension::D2Array
+                } else if *t == Type::TextureCube {
+                    wgpu::TextureViewDimension::Cube
+                } else if *t == Type::Texture3D {
+                    wgpu::TextureViewDimension::D3
+                } else {
+                    wgpu::TextureViewDimension::D2
+                }
+            })
+            .collect();
+        let sample_types: Vec<_> = types
+            .iter()
+            .map(|t| {
+                if *t == Type::DepthTexture {
+                    wgpu::TextureSampleType::Depth
+                } else {
+                    wgpu::TextureSampleType::Float { filterable: true }
+                }
+            })
+            .collect();
+        let views: Vec<_> = textures.iter().map(|x| (x.0, x.1)).collect();
+        Ok(ShaderMaterial::new(Arc::new(
+            ShaderProgram::with_texture_dimensions(
+                renderer,
+                &source,
+                &[],
+                &views,
+                &dimensions,
+                &sample_types,
+            )
+            .await?,
+        )))
+    }
+    /// Interpolation of the primary UV varying, useful for texture atlases with MSAA.
+    pub async fn build_interpolated(
+        &self,
+        renderer: &Renderer,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        interpolation: crate::shader::UvInterpolation,
+    ) -> Result<ShaderMaterial> {
         let source = self.wgsl(textures.len())?;
         Ok(ShaderMaterial::new(Arc::new(
-            ShaderProgram::with_textures(renderer, &source, &[], textures).await?,
+            ShaderProgram::with_uv_interpolation(renderer, &source, textures, interpolation)
+                .await?,
+        )))
+    }
+    pub async fn build_with_storage(
+        &self,
+        renderer: &Renderer,
+        buffers: &[(&crate::compute::GpuBuffer, Type)],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<ShaderMaterial> {
+        if buffers
+            .iter()
+            .any(|(b, _)| matches!(b.access, crate::compute::BufferAccess::Uniform))
+        {
+            return Err(Error::Invalid(
+                "TSL storage binding requires storage buffer",
+            ));
+        }
+        let types: Vec<_> = buffers.iter().map(|(_, t)| *t).collect();
+        let refs: Vec<_> = buffers.iter().map(|(b, _)| *b).collect();
+        let source = self.wgsl_with_storage(textures.len(), &types)?;
+        Ok(ShaderMaterial::new(Arc::new(
+            ShaderProgram::with_textures(renderer, &source, &refs, textures).await?,
         )))
     }
 }
@@ -390,7 +565,11 @@ pub fn effect_wgsl(color: &Node) -> Result<String> {
     effect_wgsl_with_textures(color, 0)
 }
 pub fn effect_wgsl_with_textures(color: &Node, textures: usize) -> Result<String> {
+    effect_source(color, textures, false)
+}
+fn effect_source(color: &Node, textures: usize, depth: bool) -> Result<String> {
     let mut compiler = Compiler::new(Stage::Effect, textures);
+    compiler.depth = depth;
     let (ty, value) = compiler.emit(color)?;
     let value = output_color(ty, value)?;
     let mut names: Vec<_> = compiler.functions.keys().collect();
@@ -402,7 +581,11 @@ pub fn effect_wgsl_with_textures(color: &Node, textures: usize) -> Result<String
         .join("\n");
     Ok(format!(
         "{}\n{functions}\nfn effect(uv:vec2<f32>)->vec4<f32>{{\n{}return {value};\n}}",
-        texture_declarations(textures),
+        if depth {
+            "@group(1) @binding(0) var tsl_depth:texture_depth_2d;".into()
+        } else {
+            texture_declarations(textures)
+        },
         compiler.body
     ))
 }
@@ -445,7 +628,9 @@ enum Stage {
 struct Compiler {
     stage: Stage,
     textures: usize,
-    buffers: usize,
+    texture_types: Vec<Type>,
+    buffers: Vec<Type>,
+    depth: bool,
     body: String,
     values: HashMap<usize, (Type, String)>,
     functions: HashMap<String, String>,
@@ -455,7 +640,9 @@ impl Compiler {
         Self {
             stage,
             textures,
-            buffers: 0,
+            texture_types: vec![Type::Texture; textures],
+            buffers: vec![],
+            depth: false,
             body: String::new(),
             values: HashMap::new(),
             functions: HashMap::new(),
@@ -501,16 +688,51 @@ impl Compiler {
                 }
                 .into(),
             ),
-            Expr::InstanceAttribute(i) => {
-                if *i >= self.buffers || !matches!(self.stage, Stage::Vertex | Stage::Fragment) {
-                    return Err(Error::Invalid("TSL instance attribute binding or stage"));
+            Expr::VertexIndex => {
+                if self.stage != Stage::Vertex {
+                    return Err(Error::Invalid("TSL vertex index stage"));
                 }
-                let index = if self.stage == Stage::Vertex {
-                    "vertex_instance_index"
+                (Type::Uint, "tsl_vertex_index".into())
+            }
+            Expr::StorageElement(i, index) => {
+                let ty = *self
+                    .buffers
+                    .get(*i)
+                    .ok_or(Error::Invalid("TSL storage binding"))?;
+                if !matches!(self.stage, Stage::Vertex | Stage::Fragment | Stage::Compute) {
+                    return Err(Error::Invalid("TSL storage stage"));
+                }
+                let (it, value) = self.emit(index)?;
+                if it != Type::Uint {
+                    return Err(Error::Invalid("TSL storage index requires uint"));
+                }
+                (ty, format!("tsl_attribute_{i}[{value}]"))
+            }
+            Expr::PositionLocal | Expr::NormalWorld => {
+                if !matches!(self.stage, Stage::Fragment | Stage::Output) {
+                    return Err(Error::Invalid("TSL fragment attribute stage"));
+                }
+                let surface = if self.stage == Stage::Output {
+                    "fragment_surface"
                 } else {
-                    "surface.instance_index"
+                    "surface"
                 };
-                (Type::Vec4, format!("tsl_attribute_{i}[{index}]"))
+                (
+                    Type::Vec3,
+                    if matches!(&*node.0, Expr::PositionLocal) {
+                        format!("{surface}.local_position")
+                    } else {
+                        format!(
+                            "normalize(transpose(mat3x3(u.view[0].xyz,u.view[1].xyz,u.view[2].xyz))*{surface}.normal)"
+                        )
+                    },
+                )
+            }
+            Expr::LitProperty(name, ty) => {
+                if self.stage != Stage::Output {
+                    return Err(Error::Invalid("TSL material output property stage"));
+                }
+                (*ty, (*name).into())
             }
             Expr::PositionWorld | Expr::ViewZ => {
                 if !matches!(self.stage, Stage::Output | Stage::Fragment) {
@@ -524,6 +746,38 @@ impl Compiler {
                     (_, Stage::Output) => (Type::Float, "fragment_view_z".into()),
                     _ => (Type::Float, "(-surface.view_position.z)".into()),
                 }
+            }
+            Expr::ScreenSize => match self.stage {
+                Stage::Vertex | Stage::Fragment | Stage::Output => {
+                    (Type::Vec2, "u.point.xy".into())
+                }
+                _ => return Err(Error::Invalid("TSL screen size stage")),
+            },
+            Expr::ScreenCoordinate => match self.stage {
+                Stage::Fragment => (Type::Vec2, "surface.clip.xy".into()),
+                Stage::Output => (Type::Vec2, "fragment_surface.clip.xy".into()),
+                _ => return Err(Error::Invalid("TSL screen coordinate stage")),
+            },
+            Expr::DepthSample(coordinate) => {
+                if self.stage != Stage::Effect || !self.depth {
+                    return Err(Error::Invalid("TSL depth texture binding"));
+                }
+                let (ty, value) = self.emit(coordinate)?;
+                if ty != Type::Vec2 {
+                    return Err(Error::Invalid("TSL depth UV type"));
+                }
+                (
+                    Type::Float,
+                    format!(
+                        "textureLoad(tsl_depth,clamp(vec2<i32>({value}*vec2<f32>(textureDimensions(tsl_depth))),vec2(0),vec2<i32>(textureDimensions(tsl_depth))-1),0)"
+                    ),
+                )
+            }
+            Expr::BaseColor => {
+                if self.stage != Stage::Fragment {
+                    return Err(Error::Invalid("TSL base color stage"));
+                }
+                (Type::Vec4, "base".into())
             }
             Expr::Constant(x) => {
                 if !x.is_finite() {
@@ -542,13 +796,15 @@ impl Compiler {
                 };
                 (*ty, format!("{prefix}[{i}].{}", &"xyzw"[..ty.lanes()]))
             }
-            Expr::Uv if matches!(self.stage, Stage::Compute | Stage::Output) => {
+            Expr::Uv if self.stage == Stage::Compute => {
                 return Err(Error::Invalid("TSL UV is unavailable in this stage"));
             }
             Expr::Uv => (
                 Type::Vec2,
                 if self.stage == Stage::Fragment {
                     "surface.uv"
+                } else if self.stage == Stage::Output {
+                    "fragment_surface.uv"
                 } else {
                     "uv"
                 }
@@ -617,6 +873,9 @@ impl Compiler {
             }
             Expr::Unary(op, input) => {
                 let (t, v) = self.emit(input)?;
+                if *op == "fwidth" && !matches!(self.stage, Stage::Fragment | Stage::Effect) {
+                    return Err(Error::Invalid("TSL derivative stage"));
+                }
                 if *op == "f32" {
                     if ![Type::Float, Type::Bool, Type::Uint].contains(&t) {
                         return Err(Error::Invalid("TSL float conversion"));
@@ -714,16 +973,65 @@ impl Compiler {
                 let (t, a, b) = promote(a, b)?;
                 (t, format!("select({b},{a},{})", c.1))
             }
+            Expr::StorageLoad(i, coordinate) => {
+                if self.stage != Stage::Compute || *i >= self.textures {
+                    return Err(Error::Invalid("TSL storage texture binding or stage"));
+                }
+                let (ty, v) = self.emit(coordinate)?;
+                if !matches!(ty, Type::Vec2 | Type::UVec2) {
+                    return Err(Error::Invalid("TSL textureLoad coordinate"));
+                }
+                (
+                    Type::Vec4,
+                    format!("textureLoad(tsl_storage_{i},vec2<i32>({v}))"),
+                )
+            }
             Expr::Resource(texture, sampler) => {
                 let (t, s) = self.texture(*texture)?;
                 if *sampler {
-                    (Type::Sampler, s)
+                    (
+                        if matches!(texture,Texture::External(i) if self.texture_types[*i]==Type::DepthTexture)
+                        {
+                            Type::ComparisonSampler
+                        } else {
+                            Type::Sampler
+                        },
+                        s,
+                    )
                 } else {
-                    (Type::Texture, t)
+                    (
+                        if let Texture::External(i) = texture {
+                            self.texture_types[*i]
+                        } else {
+                            Type::Texture
+                        },
+                        t,
+                    )
                 }
+            }
+            Expr::SampleArray(texture, uv, layer) => {
+                let (t, s) = self.texture(*texture)?;
+                if !matches!(texture, Texture::External(i) if self.texture_types[*i]==Type::TextureArray)
+                    || self.stage == Stage::Vertex
+                {
+                    return Err(Error::Invalid("TSL array sample binding or stage"));
+                }
+                let (uv_ty, uv) = self.emit(uv)?;
+                let (layer_ty, layer) = self.emit(layer)?;
+                if uv_ty != Type::Vec2 || !matches!(layer_ty, Type::Float | Type::Uint) {
+                    return Err(Error::Invalid("TSL array sample coordinate or layer"));
+                }
+                (
+                    Type::Vec4,
+                    format!("textureSample({t},{s},{uv},i32({layer}))"),
+                )
             }
             Expr::Sample(texture, args) => {
                 let (t, s) = self.texture(*texture)?;
+                if matches!(texture, Texture::External(i) if self.texture_types[*i]!=Type::Texture)
+                {
+                    return Err(Error::Invalid("TSL 2D sample requires a 2D texture"));
+                }
                 if self.stage == Stage::Vertex && args.len() != 2 {
                     return Err(Error::Invalid("TSL vertex texture requires explicit level"));
                 }
@@ -771,7 +1079,16 @@ impl Compiler {
             }
         };
         // Resource handles cannot be assigned to WGSL let declarations.
-        let value = if matches!(ty, Type::Texture | Type::Sampler) {
+        let value = if matches!(
+            ty,
+            Type::Texture
+                | Type::TextureArray
+                | Type::Texture3D
+                | Type::TextureCube
+                | Type::DepthTexture
+                | Type::ComparisonSampler
+                | Type::Sampler
+        ) {
             expression
         } else {
             let name = format!("tsl_n{}", self.values.len());
@@ -897,4 +1214,94 @@ pub mod compute;
 
 pub mod display;
 
+pub mod bloom;
 pub mod sprites;
+pub mod surface;
+
+fn validate_storage_types(types: &[Type]) -> Result<()> {
+    if types.iter().any(|t| {
+        !matches!(
+            t,
+            Type::Float | Type::Vec2 | Type::Vec3 | Type::Vec4 | Type::Uint | Type::UVec2
+        )
+    }) {
+        return Err(Error::Invalid("TSL storage element type"));
+    }
+    Ok(())
+}
+/// PCG hash used by Three.js. Executes integer arithmetic on the GPU.
+pub fn hash(seed: Node) -> Node {
+    WgslFn::new("tsl_hash", "fn tsl_hash(seed:u32)->f32 { let state=seed*747796405u+2891336453u; let word=((state>>((state>>28u)+4u))^state)*277803737u; return f32((word>>22u)^word)*(1.0/4294967296.0); }", &[Type::Uint], Type::Float).unwrap().call(&[seed])
+}
+
+/// Circle opacity with the same derivative smoothing as Three.js shapeCircle.
+/// Enable the material's alpha_to_coverage when `antialias` is true.
+pub fn shape_circle(antialias: bool) -> Node {
+    let p = uv() * float(2.0) - float(1.0);
+    let len = p.clone().dot(p);
+    if antialias {
+        let d = len.fwidth();
+        let t = ((len - (float(1.0) - d.clone())) / (d * float(2.0))).clamp(float(0.0), float(1.0));
+        float(1.0) - t.clone() * t.clone() * (float(3.0) - float(2.0) * t)
+    } else {
+        len.greater_than(float(1.0)).select(float(0.0), float(1.0))
+    }
+}
+
+/// MaterialX scalar 3D Perlin noise. Evaluated on the GPU; signed, with the
+/// pinned Three.js hash, gradient and amplitude normalization.
+pub fn mx_noise_float3(position: Node) -> Node {
+    WgslFn::new(
+        "tsl_mx_noise3",
+        include_str!("noise.wgsl"),
+        &[Type::Vec3],
+        Type::Float,
+    )
+    .unwrap()
+    .call(&[position])
+}
+
+/// Nearest depth sampling from a single-sampled GPU depth attachment.
+pub fn depth_texture(coordinate: Node) -> Node {
+    Node::new(Expr::DepthSample(coordinate))
+}
+pub async fn depth_effect(
+    renderer: &Renderer,
+    format: wgpu::TextureFormat,
+    color: &Node,
+    depth: &wgpu::TextureView,
+) -> Result<Effect> {
+    Effect::with_depth(renderer, format, &effect_source(color, 0, true)?, depth).await
+}
+
+/// As `depth_effect`, with a multisampled depth input. `depth_texture` reads sample 0,
+/// matching Three.js PassNode; it does not average or copy depth samples.
+pub async fn multisampled_depth_effect(
+    renderer: &Renderer,
+    format: wgpu::TextureFormat,
+    color: &Node,
+    depth: &wgpu::TextureView,
+) -> Result<Effect> {
+    let source = effect_source(color, 0, true)?.replace(
+        "tsl_depth:texture_depth_2d",
+        "tsl_depth:texture_depth_multisampled_2d",
+    );
+    Effect::with_multisampled_depth(renderer, format, &source, depth).await
+}
+
+/// Rotate a position by XYZ Euler angles, matching r186's rotate(vec3, vec3).
+/// Evaluated per vertex on the GPU; does not rebuild geometry.
+pub fn rotate_euler(position: Node, angles: Node) -> Node {
+    WgslFn::new("tsl_rotate_euler", "fn tsl_rotate_euler(p:vec3<f32>,a:vec3<f32>)->vec3<f32>{let c=cos(a);let s=sin(a);let z=vec3(c.z*p.x-s.z*p.y,s.z*p.x+c.z*p.y,p.z);let y=vec3(c.y*z.x+s.y*z.z,z.y,-s.y*z.x+c.y*z.z);return vec3(y.x,c.x*y.y-s.x*y.z,s.x*y.y+c.x*y.z);}", &[Type::Vec3,Type::Vec3],Type::Vec3).unwrap().call(&[position,angles])
+}
+
+/// Three.js triangle oscillator, in the range zero to one.
+pub fn osc_triangle(t: Node) -> Node {
+    ((t + float(0.5)).fract() * float(2.0) - float(1.0)).abs()
+}
+
+pub mod volume;
+
+pub mod sampling;
+
+pub mod dof;

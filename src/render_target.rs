@@ -2,6 +2,8 @@ use crate::{Error, Result};
 
 #[derive(Clone, Debug)]
 pub struct RenderTargetOptions {
+    /// Preserve attachment color between scene passes (e.g. scissored views).
+    pub load_color: bool,
     pub samples: u32,
     pub count: u32,
     pub depth: u32,
@@ -15,6 +17,8 @@ pub struct RenderTargetOptions {
     pub store_multisampled_stencil_buffer: bool,
     pub use_array_depth_texture: bool,
     pub format: wgpu::TextureFormat,
+    /// Optional formats for all MRT attachments; attachment 0 must equal `format`.
+    pub color_formats: Vec<wgpu::TextureFormat>,
     /// Tone-map (using scene settings) and encode built-in output before blending,
     /// matching the WebGL canvas.
     /// Use an unorm (non-sRGB) attachment and present without another conversion.
@@ -23,6 +27,7 @@ pub struct RenderTargetOptions {
 impl Default for RenderTargetOptions {
     fn default() -> Self {
         Self {
+            load_color: false,
             samples: 0,
             count: 1,
             depth: 1,
@@ -36,6 +41,7 @@ impl Default for RenderTargetOptions {
             store_multisampled_stencil_buffer: true,
             use_array_depth_texture: false,
             format: wgpu::TextureFormat::Rgba8UnormSrgb,
+            color_formats: Vec::new(),
             encode_srgb: false,
         }
     }
@@ -99,6 +105,12 @@ impl RenderTarget {
                 "render target dimensions, attachment count or samples",
             ));
         }
+        if !options.color_formats.is_empty()
+            && (options.color_formats.len() != options.count as usize
+                || options.color_formats[0] != options.format)
+        {
+            return Err(Error::Invalid("MRT color formats"));
+        }
         if options.depth > 1 && samples > 1 {
             return Err(Error::Invalid("multisampling layered textures"));
         }
@@ -112,7 +124,12 @@ impl RenderTarget {
         let mut views = Vec::new();
         let mut multisampled = Vec::new();
         let mut multisampled_views = Vec::new();
-        for _ in 0..options.count {
+        for i in 0..options.count {
+            let format = options
+                .color_formats
+                .get(i as usize)
+                .copied()
+                .unwrap_or(options.format);
             let texture = device.create_texture(&wgpu::TextureDescriptor {
                 label: Some("render target color"),
                 size: wgpu::Extent3d {
@@ -123,7 +140,7 @@ impl RenderTarget {
                 mip_level_count: 1,
                 sample_count: 1,
                 dimension,
-                format: options.format,
+                format,
                 usage: wgpu::TextureUsages::RENDER_ATTACHMENT
                     | wgpu::TextureUsages::TEXTURE_BINDING
                     | wgpu::TextureUsages::COPY_SRC
@@ -144,7 +161,7 @@ impl RenderTarget {
                     mip_level_count: 1,
                     sample_count: samples,
                     dimension: wgpu::TextureDimension::D2,
-                    format: options.format,
+                    format,
                     usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
                     view_formats: &[],
                 });
@@ -227,6 +244,9 @@ impl RenderTarget {
     pub fn options(&self) -> &RenderTargetOptions {
         &self.options
     }
+    pub(crate) fn color_formats(&self) -> Vec<wgpu::TextureFormat> {
+        self.textures.iter().map(wgpu::Texture::format).collect()
+    }
     pub fn textures(&self) -> &[wgpu::Texture] {
         &self.textures
     }
@@ -281,6 +301,10 @@ impl RenderTarget {
         self.texture = self.textures[0].clone();
         self.view = self.views[0].clone();
         Ok(())
+    }
+    /// Preserve color while starting a new pass (depth is still cleared).
+    pub fn set_load_color(&mut self, load: bool) {
+        self.options.load_color = load;
     }
     pub fn set_layer(&mut self, layer: u32) -> Result<()> {
         if layer >= self.options.depth {

@@ -9,6 +9,159 @@ pub struct GpuTexture {
     pub view: wgpu::TextureView,
     pub sampler: wgpu::Sampler,
 }
+impl GpuTexture {
+    /// Upload +X,-X,+Y,-Y,+Z,-Z cube faces and generate their mip chains on the GPU.
+    pub fn from_cube_rgba(
+        renderer: &crate::renderer::Renderer,
+        faces: &[Texture; 6],
+    ) -> Result<Self> {
+        Self::cube_rgba(renderer, std::slice::from_ref(faces), true)
+    }
+    /// Upload an explicit cube mip chain, with six faces per level. No filtering
+    /// or regeneration is performed on caller-supplied levels.
+    pub fn from_cube_mipmaps(
+        renderer: &crate::renderer::Renderer,
+        levels: &[[Texture; 6]],
+    ) -> Result<Self> {
+        Self::cube_rgba(renderer, levels, false)
+    }
+    fn cube_rgba(
+        renderer: &crate::renderer::Renderer,
+        levels: &[[Texture; 6]],
+        generate: bool,
+    ) -> Result<Self> {
+        let faces = levels
+            .first()
+            .ok_or(Error::Invalid("empty cube mip chain"))?;
+        let first = &faces[0];
+        let size = first.width;
+        if size == 0
+            || size > renderer.device.limits().max_texture_dimension_2d
+            || faces.iter().any(|f| {
+                f.width != size
+                    || f.height != size
+                    || f.srgb != first.srgb
+                    || f.rgba.len() != size as usize * size as usize * 4
+            })
+        {
+            return Err(Error::Invalid("cube texture faces"));
+        }
+        let mip_count = if generate {
+            size.ilog2() + 1
+        } else {
+            levels.len() as u32
+        };
+        if mip_count > size.ilog2() + 1
+            || levels.iter().enumerate().any(|(level, faces)| {
+                let side = (size >> level).max(1);
+                faces.iter().any(|f| {
+                    f.width != side
+                        || f.height != side
+                        || f.srgb != first.srgb
+                        || f.rgba.len() != side as usize * side as usize * 4
+                })
+            })
+        {
+            return Err(Error::Invalid("cube mip dimensions"));
+        }
+        let texture = renderer.device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("cube texture"),
+            size: wgpu::Extent3d {
+                width: size,
+                height: size,
+                depth_or_array_layers: 6,
+            },
+            mip_level_count: mip_count,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: if first.srgb {
+                wgpu::TextureFormat::Rgba8UnormSrgb
+            } else {
+                wgpu::TextureFormat::Rgba8Unorm
+            },
+            usage: wgpu::TextureUsages::TEXTURE_BINDING
+                | wgpu::TextureUsages::COPY_DST
+                | wgpu::TextureUsages::RENDER_ATTACHMENT,
+            view_formats: &[],
+        });
+        for (level, faces) in levels.iter().enumerate() {
+            let size = (size >> level).max(1);
+            for (layer, image) in faces.iter().enumerate() {
+                renderer.queue.write_texture(
+                    wgpu::TexelCopyTextureInfo {
+                        texture: &texture,
+                        mip_level: level as u32,
+                        origin: wgpu::Origin3d {
+                            x: 0,
+                            y: 0,
+                            z: layer as u32,
+                        },
+                        aspect: wgpu::TextureAspect::All,
+                    },
+                    &image.rgba,
+                    wgpu::TexelCopyBufferLayout {
+                        offset: 0,
+                        bytes_per_row: Some(size * 4),
+                        rows_per_image: Some(size),
+                    },
+                    wgpu::Extent3d {
+                        width: size,
+                        height: size,
+                        depth_or_array_layers: 1,
+                    },
+                );
+            }
+        }
+        if generate {
+            crate::mipmap::MipGenerator::new(&renderer.device, &texture)?
+                .update(&renderer.device, &renderer.queue);
+        }
+        let view = texture.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::Cube),
+            ..Default::default()
+        });
+        let sampler = renderer.device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        Ok(Self {
+            texture,
+            view,
+            sampler,
+        })
+    }
+
+    /// Transcode every layer/mip to a supported GPU block format, retaining the
+    /// compressed representation. No RGBA fallback is used.
+    pub fn from_basis_array(
+        renderer: &crate::renderer::Renderer,
+        bytes: &[u8],
+        srgb: bool,
+    ) -> Result<Self> {
+        let t =
+            basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        if t.face_count() != 1
+            || t.layer_count() == 0
+            || t.is_video()
+            || t.layer_count() > renderer.device.limits().max_texture_array_layers
+        {
+            return Err(Error::Invalid("compressed texture array dimensions"));
+        }
+        let mut image = Texture::from_rgba(1, 1, vec![0; 4], srgb)?;
+        (image.width, image.height) = t.base_dimensions();
+        image.mipmap_filter = Some(Filter::Linear);
+        compressed_texture_layers(
+            &renderer.device,
+            &renderer.queue,
+            &image,
+            bytes,
+            t.layer_count(),
+            true,
+        )
+    }
+}
 #[derive(Default)]
 pub(crate) struct TextureCache {
     entries: HashMap<usize, (Weak<Texture>, GpuTexture)>,
@@ -248,6 +401,16 @@ fn compressed_texture(
     image: &Texture,
     bytes: &[u8],
 ) -> Result<GpuTexture> {
+    compressed_texture_layers(device, queue, image, bytes, 1, false)
+}
+fn compressed_texture_layers(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    image: &Texture,
+    bytes: &[u8],
+    layers: u32,
+    array: bool,
+) -> Result<GpuTexture> {
     use basisu::{SourceFormat, TargetFormat};
     let t = basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
     let features = device.features();
@@ -282,7 +445,9 @@ fn compressed_texture(
             "GPU compressed textures require BC, ETC2 or compatible ASTC support".into(),
         ));
     };
-    if image.width > device.limits().max_texture_dimension_2d
+    if image.width == 0
+        || image.height == 0
+        || image.width > device.limits().max_texture_dimension_2d
         || image.height > device.limits().max_texture_dimension_2d
         || !image.width.is_multiple_of(4)
         || !image.height.is_multiple_of(4)
@@ -304,7 +469,7 @@ fn compressed_texture(
         size: wgpu::Extent3d {
             width: image.width,
             height: image.height,
-            depth_or_array_layers: 1,
+            depth_or_array_layers: layers,
         },
         mip_level_count: levels,
         sample_count: 1,
@@ -319,38 +484,51 @@ fn compressed_texture(
             | wgpu::TextureUsages::COPY_SRC,
         view_formats: &[],
     });
-    for level in 0..levels {
-        let data = t
-            .transcode(level, target, basisu::DecodeFlags::NONE)
-            .map_err(|e| Error::Asset(format!("Basis mip {level}: {e:?}")))?;
-        let width = (image.width >> level).max(1).div_ceil(4) * 4;
-        let height = (image.height >> level).max(1).div_ceil(4) * 4;
-        let row = width / 4 * target.bytes_per_block_or_pixel() as u32;
-        if data.len() != row as usize * (height / 4) as usize {
-            return Err(Error::Invalid("compressed mip byte count"));
+    for layer in 0..layers {
+        for level in 0..levels {
+            let data = t
+                .transcode_image(level, layer, 0, target, basisu::DecodeFlags::NONE)
+                .map_err(|e| Error::Asset(format!("Basis mip {level}: {e:?}")))?;
+            let width = (image.width >> level).max(1).div_ceil(4) * 4;
+            let height = (image.height >> level).max(1).div_ceil(4) * 4;
+            let row = width / 4 * target.bytes_per_block_or_pixel() as u32;
+            if data.len() != row as usize * (height / 4) as usize {
+                return Err(Error::Invalid("compressed mip byte count"));
+            }
+            queue.write_texture(
+                wgpu::TexelCopyTextureInfo {
+                    texture: &texture,
+                    mip_level: level,
+                    origin: wgpu::Origin3d {
+                        x: 0,
+                        y: 0,
+                        z: layer,
+                    },
+                    aspect: wgpu::TextureAspect::All,
+                },
+                &data,
+                wgpu::TexelCopyBufferLayout {
+                    offset: 0,
+                    bytes_per_row: Some(row),
+                    rows_per_image: Some(height / 4),
+                },
+                wgpu::Extent3d {
+                    width,
+                    height,
+                    depth_or_array_layers: 1,
+                },
+            );
         }
-        queue.write_texture(
-            wgpu::TexelCopyTextureInfo {
-                texture: &texture,
-                mip_level: level,
-                origin: wgpu::Origin3d::ZERO,
-                aspect: wgpu::TextureAspect::All,
-            },
-            &data,
-            wgpu::TexelCopyBufferLayout {
-                offset: 0,
-                bytes_per_row: Some(row),
-                rows_per_image: Some(height / 4),
-            },
-            wgpu::Extent3d {
-                width,
-                height,
-                depth_or_array_layers: 1,
-            },
-        );
     }
     Ok(GpuTexture {
-        view: texture.create_view(&Default::default()),
+        view: texture.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(if array {
+                wgpu::TextureViewDimension::D2Array
+            } else {
+                wgpu::TextureViewDimension::D2
+            }),
+            ..Default::default()
+        }),
         sampler: material_sampler(device, image),
         texture,
     })

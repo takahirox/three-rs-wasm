@@ -14,3 +14,12 @@ for table in (1,2):
 target=root/'src/shaders/ltc-r186.bin'
 if '--check' in sys.argv: assert target.read_bytes()==data
 else: target.write_bytes(data)
+
+data32=bytearray()
+for table in (1,2):
+    text=re.search(r'const LTC_MAT_'+str(table)+r' = \[([^\]]+)\]',source)[1]
+    values=[float(v.strip().replace(' ','')) for v in text.split(',') if v.strip()]
+    data32.extend(b''.join(struct.pack('<f',value) for value in values))
+target32=root/'src/shaders/ltc-r186-f32.bin'
+if '--check' in sys.argv: assert target32.read_bytes()==data32
+else: target32.write_bytes(data32)

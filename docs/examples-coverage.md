@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 48 partial Rust ports; 549 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 93 partial Rust ports; 504 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,51 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_postprocessing_anamorphic | `tests/browser/tsl-extended.spec.js` | GPUインスタンス変形、HDR高輝度抽出と横方向フィルタ、5段ブルーム。 |
+| webgpu_tsl_earth | `tests/browser/tsl-extended.spec.js` | 昼夜テクスチャ、GPUバンプマップ、大気のフレネル表現。 |
+| webgpu_occlusion | `tests/browser/tsl-extended.spec.js` | GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。 |
+| webgpu_instance_uniform | `tests/browser/tsl-extended.spec.js` | 共有ノードプログラムとオブジェクトごとのuniform、ネイティブGPUキューブマップ。 |
+| webgpu_postprocessing_dof | `tests/browser/tsl-extended.spec.js` | GPU上の近景・遠景CoC、64/16タップのボケと合成。CoCは同じ画素数・精度のRG16Fに格納。 |
+| webgpu_multiple_elements | `tests/browser/tsl-extended.spec.js` | 単一GPUデバイス、40シーンのviewport/scissor描画。画面外は描画せず、部分表示はカメラのview offsetで切り取る。 |
+| webgpu_multiple_canvas | `tests/browser/tsl-extended.spec.js` | 40個のWebGPU CanvasTargetが1個のGPUデバイスを共有。独立したOrbit操作。 |
+| webgpu_struct_drawindirect | `tests/browser/tsl-extended.spec.js` | GPU構造体のatomicStoreで間接描画コマンドを更新。頂点変形・色計算もGPUで実行。 |
+| webgpu_materials_cubemap_mipmaps | `tests/browser/tsl-extended.spec.js` | Rust TSLでキューブマップ反射。GPU生成mipmapと公式の手動mipmapを比較。 |
+| webgpu_rendertarget_2d-array_3d | `tests/browser/tsl-extended.spec.js` | 配列・3DテクスチャとレイヤーへのGPU描画を4ビューで比較。 |
+| webgpu_instance_points | `tests/browser/tsl-extended.spec.js` | GPU Computeでサイズ更新、ピクセル単位のインスタンス点群と共有ターゲットの拡大ビュー。 |
+| webgpu_texturegather | `tests/browser/tsl-extended.spec.js` | WebGPU側を全幅表示。色Gatherと深度比較GatherはGPU命令で実行。WebGL比較欄は対象外。 |
+| webgpu_centroid_sampling | `tests/browser/tsl-extended.spec.js` | 左右のMSAA比較を1キャンバス上の独立したターゲットで表示。5種類のUV補間をGPUで実行。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_textures_2d-array_compressed | `tests/browser/tsl-extended.spec.js` | 圧縮ブロックを維持したGPU配列テクスチャ。BC/ETC2/ASTC非対応環境では明示的にエラー。性能の完全な同等性は未保証。 |
+| webgpu_compute_texture_3d | `tests/browser/tsl-extended.spec.js` | 200³ボクセルをGPU Computeで更新しGPUレイマーチング。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_volume_perlin | `tests/browser/tsl-extended.spec.js` | 3DテクスチャをGPU上でレイマーチング。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_volume_cloud | `tests/browser/tsl-extended.spec.js` | 3DテクスチャをGPU上でレイマーチング。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_textures_2d-array | `tests/browser/tsl-extended.spec.js` | 109層をGPU配列テクスチャに保持してレイヤーをシェーダーで選択。性能の完全な同等性は未保証。 |
+| webgpu_multisampled_renderbuffers | `tests/browser/tsl-extended.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_layers | `tests/browser/tsl-extended.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_vfx_flames | `tests/browser/tsl-surface.spec.js` | 公式の2種類のGPU炎シェーダーと水平Billboardを移植。性能の完全な同等性は未保証。 |
+| webgpu_custom_fog_background | `tests/browser/tsl-surface.spec.js` | MSAA深度からTSLの霧を計算し、HDRトーンマッピング後の色と合成。性能の完全な同等性は未保証。 |
+| webgpu_lights_selective | `tests/browser/tsl-surface.spec.js` | 材質ごとのライト選択とTSL材質入力、公式Teapot形状を移植。性能の完全な同等性は未保証。 |
+| webgpu_lights_phong | `tests/browser/tsl-surface.spec.js` | 材質ごとのライト選択とTSL材質入力、公式Teapot形状を移植。性能の完全な同等性は未保証。 |
+| webgpu_mrt | `tests/browser/tsl-surface.spec.js` | HDR色と8bit法線・拡散色・発光色の混合形式MRTを移植。性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_bloom | `tests/browser/tsl-surface.spec.js` | 公式の5段階HDR BloomをGPUで移植。性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_bloom_emissive | `tests/browser/tsl-surface.spec.js` | 公式の5段階HDR BloomをGPUで移植。性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_bloom_selective | `tests/browser/tsl-surface.spec.js` | MRTマスクとGPU Bloom、クリックによる対象選択を移植。比較用に固定乱数を使用。性能の完全な同等性は未保証。 |
+| webgpu_storage_buffer | `tests/browser/tsl-surface.spec.js` | WebGPU側のみ全幅表示。4種類のStorage BufferをGPU同期・反転。WebGL比較欄とタイムスタンプUIは対象外。 |
+| webgpu_compute_geometry | `tests/browser/tsl-surface.spec.js` | 常駐位置と速度をGPU Computeで更新するJelly変形。性能の完全な同等性は未保証。 |
+| webgpu_tsl_vfx_tornado | `tests/browser/tsl-surface.spec.js` | GPU頂点変形・ノイズ・HDR Bloomによる竜巻を移植。性能の完全な同等性は未保証。 |
+| webgpu_mrt_mask | `tests/browser/tsl-surface.spec.js` | GPUスキニングと材質ごとのMRTマスク、2方向Gaussian Blurを移植。性能の完全な同等性は未保証。 |
+| webgpu_shadertoy | `tests/browser/tsl-surface.spec.js` | 公式の2種類の固定シェーダーをRust TSL/WGSLで移植。任意GLSLを変換するTranspiler APIは未対応。 |
+| webgpu_lights_custom | `tests/browser/tsl-surface.spec.js` | 50万点の常駐位置とTSLカスタム照明をGPUで計算。比較用に固定乱数を使用。性能の完全な同等性は未保証。 |
+| webgpu_multiple_rendertargets | `tests/browser/tsl-surface.spec.js` | TSLによる色・法線のMRT出力を1回の描画で生成し左右に表示。性能の完全な同等性は未保証。 |
+| webgpu_depth_texture | `tests/browser/tsl-surface.spec.js` | 50オブジェクトの深度アタッチメントをGPU上で直接サンプリング。比較用に固定乱数を使用。性能の完全な同等性は未保証。 |
+| webgpu_skinning | `tests/browser/tsl-surface.spec.js` | 公式Michelleモデル・GPUスキニング・TSL背景・Linear tone mappingを移植。性能の完全な同等性は未保証。 |
+| webgpu_tsl_halftone | `tests/browser/tsl-surface.spec.js` | 公式モデルと画面座標・法線に基づくTSLハーフトーンと調整を移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_raging_sea | `tests/browser/tsl-surface.spec.js` | GPUの波変形・MaterialXノイズ・法線・発光と15個の調整項目を移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_lights_rectarealight | `tests/browser/tsl-surface.spec.js` | TSL粗さノード・LTC面光源と回転・Orbit操作を移植。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_particles | `tests/browser/tsl-compute.spec.js` | 2000煙・1000炎のGPUビルボードと間接描画。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_instance_mesh | `tests/browser/tsl-compute.spec.js` | 1000 SuzanneインスタンスとTSLの色。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_points | `tests/browser/tsl-compute.spec.js` | 30万点のGPUストレージ更新と点描画。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_particles | `tests/browser/tsl-compute.spec.js` | 20万粒子のGPU物理更新・ポインター入力とAlpha to Coverage。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_texture_pingpong | `tests/browser/tsl-compute.spec.js` | 512×512 HDRテクスチャのGPU交互更新。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_fog_height | `tests/browser/tsl-particles.spec.js` | TSL高さフォグと100インスタンス。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_sprites | `tests/browser/tsl-particles.spec.js` | 200スプライトのGPUビルボード・個別回転・フォグ。Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_instance_sprites | `tests/browser/tsl-particles.spec.js` | 10000スプライトのGPU回転・インスタンス属性。Inspector外観と性能の完全な同等性は未保証。 |

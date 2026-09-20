@@ -43,6 +43,7 @@ struct Uniforms {
 @group(0) @binding(14) var dfg_map: texture_2d<f32>;
 @group(0) @binding(15) var shadow_atlas:texture_depth_2d_array;
 @group(0) @binding(16) var shadow_sampler:sampler_comparison;
+@group(0) @binding(24) var ltc_sampler:sampler;
 @group(0) @binding(17) var ltc_tables:texture_2d_array<f32>;
 @group(0) @binding(18) var transmission_map:texture_2d<f32>;
 @group(0) @binding(19) var transmission_sampler:sampler;
@@ -209,17 +210,20 @@ var<private> vertex_instance_index:u32;
 var<private> fragment_position_world:vec3<f32>;
 var<private> fragment_view_z:f32;
 struct VertexOut {
+    @location(10) local_position:vec3<f32>,
     @builtin(position) clip: vec4<f32>, @location(0) position: vec3<f32>,
     @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32>, @location(3) color: vec4<f32>, @location(4) tangent:vec4<f32>, @location(5) bitangent:vec3<f32>, @location(6) view_position:vec3<f32>,@location(7) uv1:vec2<f32>,@location(8) line_distance:f32, @location(9) @interpolate(flat) instance_index:u32,
 };
+var<private> tsl_vertex_index:u32;
 @vertex fn vs_main(@builtin(vertex_index) vertex:u32,@builtin(instance_index) instance_index:u32,@location(0) input_position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) color:vec4<f32>, @location(4) corner:vec2<f32>, @location(5) tangent:vec4<f32>,@location(6) i0:vec4<f32>,@location(7) i1:vec4<f32>,@location(8) i2:vec4<f32>,@location(9) i3:vec4<f32>,@location(10) instance_color:vec4<f32>,@location(11) uv1:vec2<f32>)->VertexOut {
+    tsl_vertex_index=vertex;
     vertex_instance_index=instance_index;
     let animated=skin_morph(select(vertex,u32(tangent.z),u.line[0].x>0.0),input_position,normal,color,tangent);
     var instance=mat4x4<f32>(vec4(1.0,0.0,0.0,0.0),vec4(0.0,1.0,0.0,0.0),vec4(0.0,0.0,1.0,0.0),vec4(0.0,0.0,0.0,1.0));if INSTANCED {instance=mat4x4(i0,i1,i2,i3);}
     let position=(instance*vec4(deform(animated.position,animated.normal,uv),1.0)).xyz;
     let cofactor=mat3x3(cross(i1.xyz,i2.xyz),cross(i2.xyz,i0.xyz),cross(i0.xyz,i1.xyz));
     let instance_normal=select(animated.normal,normalize(cofactor*animated.normal),INSTANCED);
-    var out:VertexOut;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
+    var out:VertexOut;out.local_position=position;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
     if u.point.z>0.0 {
         var size=u.point.z;if u.point.w>0.0 {size*=u.point.y*0.5/out.clip.w;}
         out.clip=vec4(out.clip.xy+corner*size/u.point.xy*out.clip.w,out.clip.zw);
@@ -254,7 +258,14 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     if u.fog_params.x==2.0 {factor=1.0-exp(-u.fog_params.y*u.fog_params.y*depth*depth);}
     return vec4(mix(color.rgb,u.fog_color.rgb,factor),color.a);
 }
+var<private> fragment_surface:VertexOut;
+var<private> fragment_front:bool;
+var<private> fragment_normal:vec3<f32>;
+var<private> fragment_diffuse:vec4<f32>;
+var<private> fragment_emissive:vec3<f32>;
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
+    fragment_surface=in;fragment_front=front;
+    fragment_normal=normalize(in.normal)*select(-1.0,1.0,front);fragment_diffuse=vec4(0.0);fragment_emissive=vec3(0.0);
     fragment_position_world=in.position;fragment_view_z=-in.view_position.z;
     let color=transform_output(shade_fragment(in,front));
     if ENCODE_SRGB {
@@ -264,6 +275,7 @@ fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
     }
     return color;
 }
+struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,}
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
         for(var i=0u;i<12u;i++) {
@@ -288,9 +300,11 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
         if all_outside && u.clipping_params.z>0.0 {discard;}
     }
     if LINE_DASH {let distance=in.line_distance*u.line[0].w+u.line[1].x;let period=u.line[0].y+u.line[0].z;if distance-floor(distance/period)*period>u.line[0].y {discard;}}
+    if material_kind()!=5.0 {base=shade(in,base);}
     if ALPHA_MASK && material_kind()!=5.0 && base.a<u.pbr.w {discard;}
     if u.maps.y<0.5 {base.a=1.0;}
     if material_kind()==5.0 {let shaded=shade(in,base);if ALPHA_MASK && shaded.a<=u.pbr.w {discard;}return apply_fog(shaded,-in.view_position.z);}
+    fragment_diffuse=base;
     if material_kind()<0.5 {return apply_fog(base,-in.view_position.z);}
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;
@@ -317,9 +331,12 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if material_kind()==4.0 {return vec4(n*0.5+0.5,base.a);}
     var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
+    var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
+    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular));
+    n=surface.normal;fragment_normal=n;fragment_emissive=surface.emissive;
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
-    let roughness=min(max(u.material.y*mr.g,0.0525)+geometry_roughness,1.0);
-    let metalness=clamp(u.material.z*mr.b,0.0,1.0);
+    let roughness=min(max(surface.roughness,0.0525)+geometry_roughness,1.0);
+    let metalness=clamp(surface.metalness,0.0,1.0);
     var transmission=0.0;if PHYSICAL {transmission=u.transmission[0].x*extension_sample(8u,in).r;}
     let diffuse=base.rgb*(1.0-metalness)*(1.0-transmission);
     let specular_color=u.physical[2].rgb*extension_sample(7u,in).rgb;let specular_intensity=u.physical[2].w*extension_sample(6u,in).a;
@@ -361,14 +378,13 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     let rotation=u.physical[3].x+select(0.0,atan2(aniso_sample.y*2.0-1.0,aniso_sample.x*2.0-1.0),u.extension_sizes[5].x>0.0);let tangent=anisotropy_t;
     anisotropy_t=(tangent*cos(rotation)+anisotropy_b*sin(rotation))*face;
     anisotropy_b=(anisotropy_b*cos(rotation)-tangent*sin(rotation))*face;
-    var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
     var indirect_energy=vec3(1.0);var direct_energy=vec3(1.0);
     if u.physical[3].z>0.5 && material_kind()==1.0 {
         let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,clamp(dot(n,v),0.0,1.0)),0.0).rg;
         indirect_energy=vec3(1.0)-(film_d*dfg.x+f90*dfg.y+multiscattering(film_d,dfg,f90));
         direct_energy=vec3(1.0)+f0*(1.0/(dfg.x+dfg.y)-1.0);
     }
-    var result=indirect_energy*diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+u.emissive.xyz*emissive_sample;
+    var result=indirect_energy*diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
     sheen_light+=u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);
@@ -402,12 +418,12 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             let center=(u.view*vec4(u.light_position[i].xyz,1.0)).xyz;
             let width=(u.view*vec4(u.light_direction[i].xyz,0.0)).xyz;let height=(u.view*vec4(u.light_params[i].xyz,0.0)).xyz;
             let rect=array<vec3<f32>,4>(center+width-height,center-width-height,center-width+height,center+width+height);
-            let uv=ltc_uv(n,v,roughness);let t1=textureSampleLevel(ltc_tables,environment_sampler,uv,0,0.0);let t2=textureSampleLevel(ltc_tables,environment_sampler,uv,1,0.0);
+            let uv=ltc_uv(n,v,roughness);let t1=textureSample(ltc_tables,ltc_sampler,uv,0);let t2=textureSample(ltc_tables,ltc_sampler,uv,1);
             let inverse=mat3x3(vec3(t1.x,0.0,t1.y),vec3(0.0,1.0,0.0),vec3(t1.z,0.0,t1.w));
             let identity=mat3x3(vec3(1.0,0.0,0.0),vec3(0.0,1.0,0.0),vec3(0.0,0.0,1.0));
             result+=u.light_color[i].xyz*((f0*t2.x+(vec3(f90)-f0)*t2.y)*ltc_evaluate(n,v,in.view_position,inverse,rect)+diffuse*ltc_evaluate(n,v,in.view_position,identity,rect));
+                let uvcc=ltc_uv(coat_n,v,ccrough);let a=textureSample(ltc_tables,ltc_sampler,uvcc,0);let b=textureSample(ltc_tables,ltc_sampler,uvcc,1);
             if cc>0.0 {
-                let uvcc=ltc_uv(coat_n,v,ccrough);let a=textureSampleLevel(ltc_tables,environment_sampler,uvcc,0,0.0);let b=textureSampleLevel(ltc_tables,environment_sampler,uvcc,1,0.0);
                 let inversecc=mat3x3(vec3(a.x,0.0,a.y),vec3(0.0,1.0,0.0),vec3(a.z,0.0,a.w));
                 coat+=u.light_color[i].xyz*(0.04*b.x+0.96*b.y)*ltc_evaluate(coat_n,v,in.view_position,inversecc,rect);
             }
@@ -441,8 +457,8 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         if material_kind()>=2.0 {
             var brdf=diffuse/3.14159265359;
             if material_kind()==3.0 {
-                let fresnel=u.specular.rgb+(vec3(1.0)-u.specular.rgb)*exp2((-5.55473*vh-6.98316)*vh);
-                brdf+=fresnel*(u.specular.w+2.0)/(8.0*3.14159265359)*pow(nh,u.specular.w)*mr.r;
+                let fresnel=surface.specular.rgb+(vec3(1.0)-surface.specular.rgb)*exp2((-5.55473*vh-6.98316)*vh);
+                brdf+=fresnel*(surface.specular.w+2.0)/(8.0*3.14159265359)*pow(nh,surface.specular.w)*mr.r;
             }
             result+=brdf*u.light_color[i].xyz*attenuation*nl;
             continue;

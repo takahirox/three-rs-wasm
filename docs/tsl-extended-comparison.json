@@ -1,0 +1,3047 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-20",
+  "examples": [
+    {
+      "id": "webgpu_multisampled_renderbuffers",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multisampled_renderbuffers.html",
+      "runtime": 78,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 44,
+            "transfers": [
+              2,
+              224448,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 44,
+            "transfers": [
+              2,
+              224448,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 53,
+            "transfers": [
+              2,
+              224448,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 53,
+            "transfers": [
+              2,
+              224448,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "multisampled_renderbuffers",
+        "reference": {
+          "passes": 3,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 6528,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 5184,
+              "instances": 50,
+              "calls": 1
+            },
+            {
+              "vertices": 10368,
+              "instances": 50,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 3,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 344,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 5184,
+              "instances": 50,
+              "calls": 1
+            },
+            {
+              "vertices": 10368,
+              "instances": 50,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_layers",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_layers.html",
+      "runtime": 79,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0030670166015625,
+          "meanError": 0.33485666910807294
+        },
+        {
+          "state": 1,
+          "fraction": 0.003017425537109375,
+          "meanError": 0.3303362528483073
+        },
+        {
+          "state": 2,
+          "fraction": 0.003307342529296875,
+          "meanError": 0.371795654296875
+        },
+        {
+          "state": 3,
+          "fraction": 0.003131866455078125,
+          "meanError": 0.35057957967122394
+        },
+        {
+          "state": 4,
+          "fraction": 0.002292633056640625,
+          "meanError": 0.2308349609375
+        },
+        {
+          "state": 5,
+          "fraction": 0.001117706298828125,
+          "meanError": 0.1219011942545573
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.008305867513020834
+        },
+        {
+          "state": 7,
+          "fraction": 0.000865936279296875,
+          "meanError": 0.12326558430989583
+        },
+        {
+          "state": 8,
+          "fraction": 0.00208282470703125,
+          "meanError": 0.23654556274414062
+        },
+        {
+          "state": 9,
+          "fraction": 0.00313568115234375,
+          "meanError": 0.3433189392089844
+        },
+        {
+          "state": 10,
+          "fraction": 0.0047265625,
+          "meanError": 0.5108151041666666
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 77,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 77,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 82,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 82,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "layers",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 12,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 6,
+              "instances": 2500,
+              "calls": 3
+            },
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 12,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 6,
+              "instances": 2500,
+              "calls": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_textures_2d-array",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_2d-array.html",
+      "runtime": 80,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.003643035888671875
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.002590179443359375
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 7.62939453125e-06
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.003643035888671875
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.00223828125
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 29,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 29,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 33,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 33,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "textures_2d-array",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0,
+          "draws": []
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0,
+          "draws": []
+        }
+      }
+    },
+    {
+      "id": "webgpu_volume_perlin",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_perlin.html",
+      "runtime": 81,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0016632080078125,
+          "meanError": 0.03846104939778646
+        },
+        {
+          "state": 1,
+          "fraction": 0.0016632080078125,
+          "meanError": 0.03846104939778646
+        },
+        {
+          "state": 2,
+          "fraction": 0.0016632080078125,
+          "meanError": 0.03846104939778646
+        },
+        {
+          "state": 3,
+          "fraction": 0.0016632080078125,
+          "meanError": 0.03846104939778646
+        },
+        {
+          "state": 4,
+          "fraction": 0.0025634765625,
+          "meanError": 0.0599212646484375
+        },
+        {
+          "state": 5,
+          "fraction": 0.0025634765625,
+          "meanError": 0.059809366861979164
+        },
+        {
+          "state": 6,
+          "fraction": 0.0025634765625,
+          "meanError": 0.05991363525390625
+        },
+        {
+          "state": 7,
+          "fraction": 0.0025634765625,
+          "meanError": 0.059809366861979164
+        },
+        {
+          "state": 8,
+          "fraction": 0.000675201416015625,
+          "meanError": 0.02286529541015625
+        },
+        {
+          "state": 9,
+          "fraction": 0.00081634521484375,
+          "meanError": 0.024506886800130207
+        },
+        {
+          "state": 10,
+          "fraction": 0.00067578125,
+          "meanError": 0.019928385416666666
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 30,
+            "transfers": [
+              1,
+              2064,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 30,
+            "transfers": [
+              1,
+              2064,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 35,
+            "transfers": [
+              1,
+              2064,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 35,
+            "transfers": [
+              1,
+              2064,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "volume_perlin",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_volume_cloud",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_cloud.html",
+      "runtime": 82,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.17361323038736978
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.17317326863606772
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.17212422688802084
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.1710535685221354
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.2117284138997396
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.20933024088541666
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.18976720174153647
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.18802515665690103
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.1751887003580729
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.1783930460611979
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.1965234375
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 50,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 50,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 55,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 55,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "volume_cloud",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 128,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4396,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_compute_texture_3d",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_texture_3d.html",
+      "runtime": 83,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.22045516967773438
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.219268798828125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.2196680704752604
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.21884663899739584
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.24663798014322916
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.24065653483072916
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.2277704874674479
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.22340265909830728
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.16027959187825522
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.1591466267903646
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.1666484375
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 54,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 54,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 59,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 59,
+            "transfers": [
+              2,
+              58464,
+              32
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "compute_texture_3d",
+        "reference": {
+          "passes": 2,
+          "dispatches": [
+            [
+              65535,
+              2,
+              1
+            ]
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [
+            [
+              65535,
+              2,
+              1
+            ]
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 16,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_textures_2d-array_compressed",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_2d-array_compressed.html",
+      "runtime": 84,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0026639302571614585
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0024871826171875
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0026639302571614585
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0026639302571614585
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0016171875
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 29,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 29,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 33,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 33,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "textures_2d-array_compressed",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": []
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0,
+          "draws": []
+        }
+      }
+    },
+    {
+      "id": "webgpu_centroid_sampling",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_centroid_sampling.html",
+      "runtime": 85,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.0421142578125
+        },
+        {
+          "state": 1,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.0421142578125
+        },
+        {
+          "state": 2,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.0421142578125
+        },
+        {
+          "state": 3,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.0421142578125
+        },
+        {
+          "state": 4,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.041887919108072914
+        },
+        {
+          "state": 5,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.041887919108072914
+        },
+        {
+          "state": 6,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.03185399373372396
+        },
+        {
+          "state": 7,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.03185399373372396
+        },
+        {
+          "state": 8,
+          "fraction": 0.0027008056640625,
+          "meanError": 0.0421142578125
+        },
+        {
+          "state": 9,
+          "fraction": 0.00215625,
+          "meanError": 0.06082421875
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 849,
+            "transfers": [
+              100,
+              34400,
+              1600
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 849,
+            "transfers": [
+              100,
+              34400,
+              1600
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 860,
+            "transfers": [
+              100,
+              34400,
+              1600
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 860,
+            "transfers": [
+              100,
+              34400,
+              1600
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "centroid_sampling",
+        "reference": {
+          "passes": 4,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": []
+        },
+        "rust": {
+          "passes": 4,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": []
+        }
+      }
+    },
+    {
+      "id": "webgpu_texturegather",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_texturegather.html",
+      "runtime": 86,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0101318359375
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0101318359375
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0101318359375
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0101318359375
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.006640625
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 39,
+            "transfers": [
+              2,
+              2408,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 39,
+            "transfers": [
+              2,
+              2408,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 43,
+            "transfers": [
+              2,
+              2408,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 43,
+            "transfers": [
+              2,
+              2408,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "texturegather",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": []
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": []
+        }
+      }
+    },
+    {
+      "id": "webgpu_postprocessing_anamorphic",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_anamorphic.html",
+      "runtime": 87,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.12448883056640625
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.13070551554361978
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.13842010498046875
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.13656997680664062
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.12821578979492188
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.14415995279947916
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.14768346150716147
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.14599100748697916
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.16803868611653647
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.14130020141601562
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.13317235310872397
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.13531366984049478
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.1312890625
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 128,
+            "transfers": [
+              2,
+              111272,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 128,
+            "transfers": [
+              2,
+              111272,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 176,
+            "transfers": [
+              2,
+              111272,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 176,
+            "transfers": [
+              2,
+              111272,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "postprocessing_anamorphic",
+        "reference": {
+          "passes": 15,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 12964,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 5952,
+              "instances": 200,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 16,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 5952,
+              "instances": 200,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_tsl_earth",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_earth.html",
+      "runtime": 88,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.033022562662760414
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.03319422403971354
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.03288141886393229
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.033261617024739586
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.033023834228515625
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.03214136759440104
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.03260930379231771
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.032338460286458336
+        },
+        {
+          "state": 8,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.025877634684244793
+        },
+        {
+          "state": 9,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.024139404296875
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.015170572916666666
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 80,
+            "transfers": [
+              1,
+              434768,
+              16
+            ],
+            "resources": [
+              1,
+              4,
+              0
+            ]
+          },
+          "after": {
+            "creates": 80,
+            "transfers": [
+              1,
+              434768,
+              16
+            ],
+            "resources": [
+              1,
+              4,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 84,
+            "transfers": [
+              1,
+              434768,
+              16
+            ],
+            "resources": [
+              1,
+              4,
+              0
+            ]
+          },
+          "after": {
+            "creates": 84,
+            "transfers": [
+              1,
+              434768,
+              16
+            ],
+            "resources": [
+              1,
+              4,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "tsl_earth",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 112,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 24192,
+              "instances": 1,
+              "calls": 2
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 172,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 24192,
+              "instances": 1,
+              "calls": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_occlusion",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_occlusion.html",
+      "runtime": 89,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0023956298828125,
+          "meanError": 0.04258600870768229
+        },
+        {
+          "state": 1,
+          "fraction": 0.0023956298828125,
+          "meanError": 0.04258600870768229
+        },
+        {
+          "state": 2,
+          "fraction": 0.0023956298828125,
+          "meanError": 0.04258600870768229
+        },
+        {
+          "state": 3,
+          "fraction": 0.0023956298828125,
+          "meanError": 0.04258600870768229
+        },
+        {
+          "state": 4,
+          "fraction": 0.001697540283203125,
+          "meanError": 0.030999501546223957
+        },
+        {
+          "state": 5,
+          "fraction": 0.001674652099609375,
+          "meanError": 0.030333201090494793
+        },
+        {
+          "state": 6,
+          "fraction": 0.0013359375,
+          "meanError": 0.022291666666666668
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 40,
+            "transfers": [
+              2,
+              56744,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 40,
+            "transfers": [
+              2,
+              56744,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 45,
+            "transfers": [
+              2,
+              56744,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 45,
+            "transfers": [
+              2,
+              56744,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "occlusion",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 2880,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_instance_uniform",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_uniform.html",
+      "runtime": 90,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0029296875,
+          "meanError": 0.05242919921875
+        },
+        {
+          "state": 1,
+          "fraction": 0.002872467041015625,
+          "meanError": 0.050128936767578125
+        },
+        {
+          "state": 2,
+          "fraction": 0.00337982177734375,
+          "meanError": 0.05809911092122396
+        },
+        {
+          "state": 3,
+          "fraction": 0.003475189208984375,
+          "meanError": 0.057964324951171875
+        },
+        {
+          "state": 4,
+          "fraction": 0.00310516357421875,
+          "meanError": 0.05646387736002604
+        },
+        {
+          "state": 5,
+          "fraction": 0.003047943115234375,
+          "meanError": 0.054799397786458336
+        },
+        {
+          "state": 6,
+          "fraction": 0.00280078125,
+          "meanError": 0.04829817708333333
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 149,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 149,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 154,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 154,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "instance_uniform",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 1344,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 164,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 61776,
+              "instances": 1,
+              "calls": 12
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 2144,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 164,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 61776,
+              "instances": 1,
+              "calls": 12
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_postprocessing_dof",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_dof.html",
+      "runtime": 91,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.12757746378580728
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.12674713134765625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.12199147542317708
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.1099853515625
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.10219446818033855
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.10338083902994792
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.1183484395345052
+        },
+        {
+          "state": 7,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.12144851684570312
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.12074788411458333
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.12710416666666666
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 146,
+            "transfers": [
+              1,
+              22800,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 146,
+            "transfers": [
+              1,
+              22800,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 180,
+            "transfers": [
+              1,
+              22800,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 180,
+            "transfers": [
+              1,
+              22800,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "postprocessing_dof",
+        "reference": {
+          "passes": 11,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 2564,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 1080,
+              "instances": 1764,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 12,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 12,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 1080,
+              "instances": 1764,
+              "calls": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_multiple_elements",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_elements.html",
+      "runtime": 92,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.004384358723958333
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.004367828369140625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.004116058349609375
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.005260467529296875
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.004625956217447917
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0037816365559895835
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.00462109375
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 233,
+            "transfers": [
+              19,
+              33896,
+              304
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 233,
+            "transfers": [
+              19,
+              33896,
+              304
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 240,
+            "transfers": [
+              19,
+              33896,
+              304
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 240,
+            "transfers": [
+              19,
+              33896,
+              304
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "multiple_elements",
+        "reference": {
+          "passes": 32,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 960,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 7
+            },
+            {
+              "vertices": 108,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 144,
+              "instances": 1,
+              "calls": 2
+            },
+            {
+              "vertices": 504,
+              "instances": 1,
+              "calls": 5
+            },
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 15
+            }
+          ]
+        },
+        "rust": {
+          "passes": 17,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 2820,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 7
+            },
+            {
+              "vertices": 108,
+              "instances": 1,
+              "calls": 1
+            },
+            {
+              "vertices": 144,
+              "instances": 1,
+              "calls": 2
+            },
+            {
+              "vertices": 504,
+              "instances": 1,
+              "calls": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_multiple_canvas",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_canvas.html",
+      "runtime": 93,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.00437164306640625
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.00437164306640625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.00437164306640625
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.00437164306640625
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.004197438557942708
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0027135213216145835
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0025130208333333333
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 558,
+            "transfers": [
+              44,
+              42496,
+              704
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 558,
+            "transfers": [
+              44,
+              42496,
+              704
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 560,
+            "transfers": [
+              44,
+              42496,
+              704
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 560,
+            "transfers": [
+              44,
+              42496,
+              704
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "multiple_canvas",
+        "reference": {
+          "passes": 80,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 10
+            },
+            {
+              "vertices": 108,
+              "instances": 1,
+              "calls": 6
+            },
+            {
+              "vertices": 144,
+              "instances": 1,
+              "calls": 11
+            },
+            {
+              "vertices": 504,
+              "instances": 1,
+              "calls": 13
+            },
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 40
+            }
+          ]
+        },
+        "rust": {
+          "passes": 80,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 36,
+              "instances": 1,
+              "calls": 10
+            },
+            {
+              "vertices": 108,
+              "instances": 1,
+              "calls": 6
+            },
+            {
+              "vertices": 144,
+              "instances": 1,
+              "calls": 11
+            },
+            {
+              "vertices": 504,
+              "instances": 1,
+              "calls": 13
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_struct_drawindirect",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_struct_drawindirect.html",
+      "runtime": 94,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.0001220703125,
+          "meanError": 0.019383748372395832
+        },
+        {
+          "state": 1,
+          "fraction": 0.0001678466796875,
+          "meanError": 0.022001902262369793
+        },
+        {
+          "state": 2,
+          "fraction": 0.000156402587890625,
+          "meanError": 0.022130330403645832
+        },
+        {
+          "state": 3,
+          "fraction": 0.000751495361328125,
+          "meanError": 0.043306986490885414
+        },
+        {
+          "state": 4,
+          "fraction": 0.00017547607421875,
+          "meanError": 0.021556854248046875
+        },
+        {
+          "state": 5,
+          "fraction": 9.918212890625e-05,
+          "meanError": 0.02024078369140625
+        },
+        {
+          "state": 6,
+          "fraction": 0.000109375,
+          "meanError": 0.01733984375
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 40,
+            "transfers": [
+              1,
+              240,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 40,
+            "transfers": [
+              1,
+              240,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 45,
+            "transfers": [
+              1,
+              240,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 45,
+            "transfers": [
+              1,
+              240,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "struct_drawindirect",
+        "reference": {
+          "passes": 2,
+          "dispatches": [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1563,
+              1,
+              1
+            ]
+          ],
+          "indirect": 1,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 12,
+          "largeUniformBytes": 0,
+          "draws": []
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1563,
+              1,
+              1
+            ]
+          ],
+          "indirect": 1,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 20,
+          "largeUniformBytes": 0,
+          "draws": []
+        }
+      }
+    },
+    {
+      "id": "webgpu_instance_points",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_points.html",
+      "runtime": 95,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.003958384195963542
+        },
+        {
+          "state": 1,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.005130767822265625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.006482442220052083
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.006524403889973958
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0028584798177083335
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.004978179931640625
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.005971272786458333
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.006191253662109375
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.006702423095703125
+        },
+        {
+          "state": 9,
+          "fraction": 3.0517578125e-05,
+          "meanError": 0.007403055826822917
+        },
+        {
+          "state": 10,
+          "fraction": 1.9073486328125e-05,
+          "meanError": 0.006994883219401042
+        },
+        {
+          "state": 11,
+          "fraction": 3.90625e-06,
+          "meanError": 0.0050104166666666665
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 53,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 53,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 60,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 60,
+            "transfers": [
+              2,
+              688,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "instance_points",
+        "reference": {
+          "passes": 6,
+          "dispatches": [
+            [
+              4,
+              1,
+              1
+            ]
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 164,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 6,
+              "instances": 256,
+              "calls": 2
+            },
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 1
+            }
+          ]
+        },
+        "rust": {
+          "passes": 3,
+          "dispatches": [
+            [
+              4,
+              1,
+              1
+            ]
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 10512,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 6,
+              "instances": 256,
+              "calls": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_materials_cubemap_mipmaps",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_cubemap_mipmaps.html",
+      "runtime": 96,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.003627777099609375,
+          "meanError": 0.06809361775716145
+        },
+        {
+          "state": 1,
+          "fraction": 0.003627777099609375,
+          "meanError": 0.06809361775716145
+        },
+        {
+          "state": 2,
+          "fraction": 0.003627777099609375,
+          "meanError": 0.06809361775716145
+        },
+        {
+          "state": 3,
+          "fraction": 0.003627777099609375,
+          "meanError": 0.06809361775716145
+        },
+        {
+          "state": 4,
+          "fraction": 0.00328826904296875,
+          "meanError": 0.06949996948242188
+        },
+        {
+          "state": 5,
+          "fraction": 0.003093719482421875,
+          "meanError": 0.06455230712890625
+        },
+        {
+          "state": 6,
+          "fraction": 0.00257421875,
+          "meanError": 0.05386848958333333
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 90,
+            "transfers": [
+              1,
+              1721424,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 90,
+            "transfers": [
+              1,
+              1721424,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 95,
+            "transfers": [
+              1,
+              1721424,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 95,
+            "transfers": [
+              1,
+              1721424,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "materials_cubemap_mipmaps",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 97536,
+              "instances": 1,
+              "calls": 2
+            }
+          ]
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 97536,
+              "instances": 1,
+              "calls": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webgpu_rendertarget_2d-array_3d",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_rendertarget_2d-array_3d.html",
+      "runtime": 97,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.05919647216796875
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0868072509765625
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.07930755615234375
+        },
+        {
+          "state": 3,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.09088134765625
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.09004974365234375
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.09221649169921875
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.05144140625
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 127,
+            "transfers": [
+              6,
+              39216,
+              96
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 127,
+            "transfers": [
+              6,
+              39216,
+              96
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 133,
+            "transfers": [
+              6,
+              39216,
+              96
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 133,
+            "transfers": [
+              6,
+              39216,
+              96
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_workload": {
+        "kind": "rendertarget_2d-array_3d",
+        "reference": {
+          "passes": 96,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 80,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 654,
+              "instances": 1,
+              "calls": 8
+            },
+            {
+              "vertices": 5952,
+              "instances": 1,
+              "calls": 4
+            }
+          ]
+        },
+        "rust": {
+          "passes": 45,
+          "dispatches": [],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 80,
+          "largeUniformBytes": 0,
+          "draws": [
+            {
+              "vertices": 654,
+              "instances": 1,
+              "calls": 8
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "validation": {
+    "image_examples": 20,
+    "image_states": 173,
+    "threshold_per_channel": 6,
+    "max_different_pixel_fraction": 0.005,
+    "observed_max_different_pixel_fraction": 0.0047265625,
+    "native_gpu_regression_tests": 27,
+    "hidpi_dpr": 2,
+    "hidpi_tests": 6,
+    "timing_parity_claimed": false,
+    "browser_regression_tests": 164,
+    "continuous_layer_update_and_workload_tests": 2
+  },
+  "notes": [
+    "Independent pinned upstream scripts with fixed time and seeded initial data; controls, orbit, pan, scrolling and resize are exercised.",
+    "GPU background spheres (5952 indices) and Rust fullscreen background quads are excluded from scene-geometry equivalence assertions; raw draw groups are retained here.",
+    "All 20 warmed Rust workloads have zero CPU vertex/index/storage-attribute uploads. Uniform uploads and render passes remain reported, not treated as execution-time measurements.",
+    "Inspector overlays and viewport labels are hidden in scene comparisons; multiple-view DOM labels remain visible, with normalized font antialiasing.",
+    "DPR 2 repeats image/control and residency checks for instance_points, multiple_canvas and multiple_elements."
+  ]
+}

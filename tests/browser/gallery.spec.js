@@ -14,7 +14,7 @@ test('equivalent WebGL scenes are excluded and point to the preferred WebGPU sce
   expect(preferred).toBeDefined();
   if(preferred.port)expect(listed).toContain(preferred.id);
  }
- expect(listed).not.toContain('webgpu_lights_rectarealight');
+ expect(listed).toContain('webgpu_lights_rectarealight');
  expect(listed).toContain('webgl_loader_gltf_instancing');
  expect(listed).toContain('webgl_loader_gltf_avif');
  await page.goto('/web/gallery/example.html?id=webgl_loader_gltf');
@@ -46,8 +46,8 @@ test('unported examples show source evidence rather than a fake reproduction',as
  const requests=[];page.on('request',r=>requests.push(r.url()));
  await page.goto('/web/gallery/');
  await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port).length);
- await expect(page.locator('.card').filter({hasText:'compute / particles'})).toHaveCount(0);
- await page.goto('/web/gallery/example.html?id=webgpu_compute_particles');
+ await expect(page.locator('.card').filter({hasText:'compute / birds'})).toHaveCount(0);
+ await page.goto('/web/gallery/example.html?id=webgpu_compute_birds');
  await expect(page.locator('#diagnostic')).toBeVisible();
  await expect(page.locator('#diagnostic')).toContainText('GPU compute');
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module')||url.includes('three_rs_wasm'))).toBe(false);
@@ -55,12 +55,13 @@ test('unported examples show source evidence rather than a fake reproduction',as
 });
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
  test.setTimeout(120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
- await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas');
+ await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
  await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28,38].includes(entry.port.example) ? 0 : 2);
  await expect(viewer.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');await expect(canvas).not.toHaveAttribute('data-error',/.+/);
  if(entry.port.example===6)await expect(canvas).toHaveAttribute('data-meshes','30');
- const png=PNG.sync.read(await canvas.screenshot());expect(new Set(png.data).size).toBeGreaterThan(80);
- const dims=await canvas.boundingBox();const initial=await canvas.screenshot();
+ const rendered=entry.port.example===93?viewer.locator('canvas').nth(1):canvas;
+ const png=PNG.sync.read(await rendered.screenshot());expect(new Set(png.data).size).toBeGreaterThan(80);
+ const dims=await rendered.boundingBox();const initial=await rendered.screenshot();
  if([3,4,5,6].includes(entry.port.example)){await page.mouse.move(dims.x+dims.width/2,dims.y+dims.height/2);await page.mouse.down();await page.mouse.move(dims.x+dims.width/2+80,dims.y+dims.height/2+35,{steps:5});await page.mouse.up();await page.waitForTimeout(100);expect((await canvas.screenshot()).equals(initial)).toBe(false);}
  await page.setViewportSize({width:1000,height:700});await expect.poll(async()=>Number(await canvas.getAttribute('width'))).toBe(700);
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module'))).toBe(false);expect(errors).toEqual([]);

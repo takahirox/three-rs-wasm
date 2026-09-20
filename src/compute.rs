@@ -1,6 +1,5 @@
 //! Validated reusable WGSL compute kernels with persistent GPU buffers.
 use crate::{Error, Result, renderer::Renderer};
-use wgpu::util::DeviceExt;
 
 #[derive(Clone, Copy, Debug)]
 pub enum BufferAccess {
@@ -14,33 +13,39 @@ pub struct GpuBuffer {
 }
 impl GpuBuffer {
     pub fn new(renderer: &Renderer, bytes: &[u8], access: BufferAccess) -> Result<Self> {
+        let out = Self::zeroed(renderer, bytes.len() as u64, access)?;
+        out.write(renderer, 0, bytes)?;
+        Ok(out)
+    }
+    /// Allocate resident GPU storage without allocating/uploading a CPU zero array.
+    pub fn zeroed(renderer: &Renderer, size: u64, access: BufferAccess) -> Result<Self> {
         let uniform = matches!(access, BufferAccess::Uniform);
+        let limits = renderer.device.limits();
         let limit = if uniform {
-            renderer.device.limits().max_uniform_buffer_binding_size
+            limits.max_uniform_buffer_binding_size
         } else {
-            renderer.device.limits().max_storage_buffer_binding_size
-        } as usize;
-        if bytes.is_empty() || !bytes.len().is_multiple_of(4) || bytes.len() > limit {
+            limits.max_storage_buffer_binding_size
+        } as u64;
+        if size == 0 || !size.is_multiple_of(4) || size > limit {
             return Err(Error::Invalid("GPU buffer size/alignment"));
         }
         Ok(Self {
             access,
-            buffer: renderer
-                .device
-                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                    label: Some("application GPU buffer"),
-                    contents: bytes,
-                    usage: wgpu::BufferUsages::COPY_DST
-                        | wgpu::BufferUsages::COPY_SRC
-                        | if uniform {
-                            wgpu::BufferUsages::UNIFORM
-                        } else {
-                            wgpu::BufferUsages::STORAGE
-                                | wgpu::BufferUsages::VERTEX
-                                | wgpu::BufferUsages::INDEX
-                                | wgpu::BufferUsages::INDIRECT
-                        },
-                }),
+            buffer: renderer.device.create_buffer(&wgpu::BufferDescriptor {
+                label: Some("application GPU buffer"),
+                size,
+                mapped_at_creation: false,
+                usage: wgpu::BufferUsages::COPY_DST
+                    | wgpu::BufferUsages::COPY_SRC
+                    | if uniform {
+                        wgpu::BufferUsages::UNIFORM
+                    } else {
+                        wgpu::BufferUsages::STORAGE
+                            | wgpu::BufferUsages::VERTEX
+                            | wgpu::BufferUsages::INDEX
+                            | wgpu::BufferUsages::INDIRECT
+                    },
+            }),
         })
     }
     pub fn write(&self, renderer: &Renderer, offset: u64, bytes: &[u8]) -> Result<()> {
@@ -99,6 +104,41 @@ impl ComputeKernel {
         buffers: &[&GpuBuffer],
         textures: &[(&wgpu::TextureView, wgpu::TextureFormat)],
     ) -> Result<Self> {
+        let textures: Vec<_> = textures
+            .iter()
+            .map(|(v, f)| (*v, *f, wgpu::StorageTextureAccess::WriteOnly))
+            .collect();
+        Self::with_texture_access(renderer, wgsl, buffers, &textures).await
+    }
+    /// Explicit storage access permits resident ping-pong textures without copies.
+    pub async fn with_texture_access(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(
+            &wgpu::TextureView,
+            wgpu::TextureFormat,
+            wgpu::StorageTextureAccess,
+        )],
+    ) -> Result<Self> {
+        let layouts: Vec<_> = textures
+            .iter()
+            .map(|(v, f, a)| (*v, *f, *a, wgpu::TextureViewDimension::D2))
+            .collect();
+        Self::with_texture_dimensions(renderer, wgsl, buffers, &layouts).await
+    }
+    /// Explicit storage view dimensions, including 3D compute textures.
+    pub async fn with_texture_dimensions(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(
+            &wgpu::TextureView,
+            wgpu::TextureFormat,
+            wgpu::StorageTextureAccess,
+            wgpu::TextureViewDimension,
+        )],
+    ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let entries = buffers
@@ -124,16 +164,18 @@ impl ComputeKernel {
                 textures
                     .iter()
                     .enumerate()
-                    .map(|(i, (_, format))| wgpu::BindGroupLayoutEntry {
-                        binding: (buffers.len() + i) as u32,
-                        visibility: wgpu::ShaderStages::COMPUTE,
-                        ty: wgpu::BindingType::StorageTexture {
-                            access: wgpu::StorageTextureAccess::WriteOnly,
-                            format: *format,
-                            view_dimension: wgpu::TextureViewDimension::D2,
+                    .map(
+                        |(i, (_, format, access, dimension))| wgpu::BindGroupLayoutEntry {
+                            binding: (buffers.len() + i) as u32,
+                            visibility: wgpu::ShaderStages::COMPUTE,
+                            ty: wgpu::BindingType::StorageTexture {
+                                access: *access,
+                                format: *format,
+                                view_dimension: *dimension,
+                            },
+                            count: None,
                         },
-                        count: None,
-                    }),
+                    ),
             )
             .collect::<Vec<_>>();
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
@@ -150,15 +192,12 @@ impl ComputeKernel {
                     binding: i as u32,
                     resource: b.buffer.as_entire_binding(),
                 })
-                .chain(
-                    textures
-                        .iter()
-                        .enumerate()
-                        .map(|(i, (view, _))| wgpu::BindGroupEntry {
-                            binding: (buffers.len() + i) as u32,
-                            resource: wgpu::BindingResource::TextureView(view),
-                        }),
-                )
+                .chain(textures.iter().enumerate().map(|(i, (view, _, _, _))| {
+                    wgpu::BindGroupEntry {
+                        binding: (buffers.len() + i) as u32,
+                        resource: wgpu::BindingResource::TextureView(view),
+                    }
+                }))
                 .collect::<Vec<_>>(),
         });
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {

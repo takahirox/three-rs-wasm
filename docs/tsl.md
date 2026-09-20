@@ -58,9 +58,9 @@ examples prepare image rows once to match WebGPU TextureLoader's upload flip;
 render-to-texture coordinates are explicitly converted to Three.js QuadMesh UVs.
 
 Not implemented: the JavaScript DSL/parser/transpiler, general mutable variables
-and control-flow nodes, matrices, general storage-buffer/atomic compute graphs, arbitrary
-attributes/varyings, automatic render-graph scheduling, or PBR node hooks such as
-roughness/normal/lighting overrides. A limited final lit-color hook is described below. `select` evaluates both expressions;
+and control-flow nodes, matrices, general atomic compute graphs, arbitrary
+attributes/varyings or automatic render-graph scheduling. Lit surface hooks and typed
+storage updates are described below. `select` evaluates both expressions;
 it does not promise lazy branches. Native WGSL functions are an explicit escape
 hatch, not a claim that their behavior has been implemented as Rust nodes.
 
@@ -254,3 +254,145 @@ native tests (including doctests), all 138 browser regressions, native/Wasm Clip
 and formatting checks passed.
 Raw measurements, resource counts and local PNG pair locations:
 [`tsl-particles-comparison.json`](tsl-particles-comparison.json).
+
+## Five storage and instancing examples
+
+The next five ports use the pinned r186 WebGPU originals:
+
+| Gallery example | Workload and behavior |
+| --- | --- |
+| `webgpu_particles` | 2,000 smoke billboards plus 1,000 fire billboards, resident random ranges, UV rotation, lifetime/color/opacity, indirect fire draw, speed and Orbit controls |
+| `webgpu_instance_mesh` | 1,000 Suzanne instances, upstream CPU matrix animation, GPU world-normal/random-color mixing and instance-count control |
+| `webgpu_compute_points` | 300,000 native one-pixel point instances, GPU position/velocity updates, pointer reset and boundary controls |
+| `webgpu_compute_particles` | 200,000 GPU simulated billboard particles, gravity/friction/bounce, pointer impulses, PCG colors and alpha-to-coverage circle edges |
+| `webgpu_compute_texture_pingpong` | Two 512×512 RGBA16Float storage textures, signed initialization, five-tap GPU updates, periodic reseeding and ten-level GPU mip chains |
+
+The new APIs are reusable independently of the browser scenes:
+
+- `storage_element(binding, index)` reads typed storage in vertex, fragment and
+  compute stages. `NodeMaterial::build_with_storage` and
+  `SpriteNodeMaterial::build_with_storage` accept `(GpuBuffer, Type)` bindings.
+  `instanced_attribute` remains the vec4-layout convenience used by existing ports.
+  Buffer allocation/layout belongs to the caller: vec2 strides are 8 bytes;
+  vec3/vec4 strides are 16 bytes, following WGSL array alignment.
+- `compute::BufferCompute` compiles a list of typed `BufferStore`s with a guarded
+  64-thread workgroup. It evaluates all right-hand sides before stores, allowing
+  position/velocity updates from one snapshot. This is a per-invocation expression
+  subset, without atomics, workgroup memory or a general statement/control-flow API.
+  Callers must avoid cross-invocation read/write races and conflicting aliased
+  buffer bindings. Uniform slots remain 16 vec4s.
+- `compute::TextureKernel` binds existing write-only output and read-only input
+  storage views. `texture_load` uses texel coordinates; vec2 coordinates permit
+  negative offsets after conversion to signed integers. RGBA8Unorm, RGBA16Float
+  and RGBA32Float kernels are supported. Bind separate kernels for each ping-pong
+  direction; no texture copies or readbacks occur in the scene.
+- `mipmap::MipGenerator` retains views, bindings and a filter pipeline for a
+  filterable, renderable 2D texture. The caller schedules GPU mip generation after
+  writes. Screen-space transmission reuses this same implementation. The HDR
+  example retains both chains, including after canvas resize.
+- `position_local`, `normal_world`, `normalize`, `fwidth`, `hash` and `shape_circle`
+  provide the additional graph inputs/operators. World normal and local position
+  are fragment inputs. `MaterialProperties::alpha_to_coverage` selects MSAA
+  coverage; `shape_circle(true)` provides derivative-smoothed opacity for it.
+- Shader materials on `Points` now use native WebGPU one-pixel primitives.
+  `PointsMaterial` retains its existing sized-billboard path. The 300,000-point
+  scene uses one resident vertex and one instanced draw, not triangle expansion.
+  `GpuBuffer::zeroed` allocates simulation storage without a CPU zero array.
+
+The official source fixture retains shader expressions and uses seeded RangeNode
+initialization, explicit time and captured GUI controls. Integer `instanceIndex`
+modulo/division intentionally follows the generated official WGSL, including
+truncation of sqrt(200000) to 447 for the particle grid. Pointer impulses dispatch
+on input, before the next simulation step. In `still=1`, `gallery_time` advances
+one compute step; camera/input/resize-only redraws do not advance simulation.
+These discrete simulations are not random-access time-seeking APIs. Single-touch
+particle interaction and two-touch Orbit dolly/pan follow the original controls.
+
+Validation keeps the existing 6/255 channel / 0.5% pixel threshold. Cases include
+several times, parameter changes, pointer/settled Orbit input, resize, periodic
+texture resets and sixty additional ping-pong steps. All 39 captured states pass;
+the maximum fraction exceeding 6/255 is 0.007421875%. Smoke/fire, compute points
+and HDR ping-pong have no pixels exceeding the threshold in these states.
+Native checks cover typed update snapshots, partial workgroups, GPU render
+bindings, negative HDR values, ping-pong, mip filtering and native point drawing.
+Browser checks enforce retained resources before/after resize and compare actual
+scene draw counts, compute dispatch sizes and render-pass counts with upstream.
+Geometry stays resident; only changed instance matrices (as in the original),
+small uniforms and GPU-generated simulation/texture data change each frame.
+CPU/GPU frame-time parity and Inspector styling remain unverified; these are
+partial ports. Raw image measurements, upload/API counts and PNG locations:
+[`tsl-compute-comparison.json`](tsl-compute-comparison.json).
+
+On 2026-09-20, the 11 new browser checks, 157 browser regressions and 28 related
+native GPU/semantic tests passed, as did formatting, native/Wasm Clippy and pinned
+asset/catalog checks. The old unported-gallery diagnostic test now uses Compute
+Birds because Compute Particles is implemented.
+
+## Lit surfaces, MRT and GPU geometry
+
+`surface::SurfaceNodes` replaces position, base color, view-space normal,
+roughness, metalness, emissive or Phong specular inputs while retaining the core
+lighting path. `output` runs after lighting. `mx_noise_float` implements the
+pinned MaterialX noise; `surface::normal_map` constructs a derivative tangent
+basis from explicitly supplied UV coordinates. Geometry remains GPU resident.
+
+`build_mrt` writes multiple outputs in one scene draw. `output()`, `normal_view()`,
+`diffuse_color()` and `emissive()` address the resolved lit fragment. Attachment
+formats can differ via `RenderTargetOptions::color_formats`. Environment
+background outputs are configured with `Scene::background_outputs`.
+`depth_effect` and `multisampled_depth_effect` sample a depth attachment on the
+GPU; the multisampled version reads sample zero explicitly.
+
+`bloom::Bloom` retains five HDR levels, separable Gaussian passes and a composite
+pass. Threshold, strength and radius update uniforms. It accepts a custom input
+node for emissive-only or per-object masked bloom. `MaterialProperties::lights`
+selects ambient/punctual lights without duplicating scene geometry.
+
+`vertex_index()` reads resident storage positions in the vertex stage.
+`BufferCompute::new_workgroup_snapshot` evaluates reads across one workgroup
+before writes using a storage barrier (1–64 elements); it is not a global barrier
+or an atomic API. Larger independent vertex simulations use `BufferCompute::new`.
+
+The additional official scenes cover rect-area lighting, raging sea, halftone,
+skinning, depth texture, multiple render targets, custom point lights,
+ShaderToy, flames, custom fog, selective lights, Phong lights, MRT, three Bloom
+variants, storage buffers, compute geometry, tornado and MRT masks. ShaderToy
+ports the two embedded shaders through `WgslFn`; arbitrary GLSL translation is
+not implemented. Storage Buffer displays only its WebGPU pane. Inspector styling
+and hardware timing equivalence remain outside the validated scope.
+
+Validation: `tests/tsl_surface_gpu.rs`, `tests/browser/tsl-surface.spec.js` and the
+pinned-script fixture `reference/three-js/tsl-surface.html`.
+
+The 20-scene capture records 169 states in [comparison data](tsl-surface-comparison.json),
+including the same 6/255 and 0.5% pixel threshold used by the previous batches.
+
+## Texture dimensions, volumes and additional GPU operations
+
+The next twenty gallery ports (runtime IDs 78–97) add multisampled renderbuffers,
+layers, 2D texture arrays, Perlin/cloud volumes, computed 3D textures, compressed
+arrays, centroid/sample/flat interpolation, texture gather, anamorphic bloom,
+Earth, occlusion queries, instance uniforms, bokeh depth of field, multiple
+elements/canvases, structured indirect drawing, instance points, custom cubemap
+mipmaps and array/3D render targets. The cubemap mip example's original uses a
+built-in material; its Rust port uses the common TSL reflection/sampling graph.
+
+`NodeMaterial::build_with_texture_types` supports typed array, 3D and cube views.
+`Texture::sample_array`, `sampling::{cube,volume,gather,gather_compare}`, and
+`surface::bump_map` operate on GPU texture data. `GpuTexture::from_cube_rgba`
+generates all six mip chains on the GPU; `from_cube_mipmaps` validates and uploads
+caller-supplied levels. Compressed arrays retain a supported GPU block format.
+
+`BufferGeometry::gpu_indirect` accepts a resident INDIRECT buffer, including one
+written by Compute. `OcclusionQueries` resolves actual visibility queries
+asynchronously. `SpriteNodeMaterial::build_points` uses viewport pixel dimensions.
+`RenderTarget::set_load_color` allows successive viewport passes to preserve color.
+Bokeh DOF uses separate near/far blur kernels and GPU compositing; anamorphic bloom
+keeps the original full-resolution bright extraction and reduced-resolution blur.
+
+The 3D render-target example needs the narrowly documented local wgpu patch in
+`vendor/wgpu/PATCH.md`. It forwards the existing depthSlice field to WebGPU; it does
+not insert an intermediate copy. `tests/browser/tsl-extended.spec.js` compares the
+original scripts, GUI controls, camera movement and resize, and checks residency
+and draw/dispatch workloads. GPU timing parity is not inferred from these checks.
+Inspector presentation remains adapted, and entries remain marked partial ports.

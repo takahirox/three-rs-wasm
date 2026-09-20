@@ -191,6 +191,9 @@ pub struct BufferGeometry {
     pub morph_attributes: BTreeMap<String, Vec<Attribute>>,
     pub morph_targets_relative: bool,
     pub indirect: Option<Vec<u32>>,
+    /// GPU-produced native draw command; no readback or CPU command rebuild.
+    #[serde(skip)]
+    pub gpu_indirect: Option<wgpu::Buffer>,
     pub indirect_offset: usize,
     pub indirect_offsets: Vec<usize>,
     pub instance_count: Option<u32>,
@@ -227,6 +230,7 @@ impl Clone for BufferGeometry {
                 .collect(),
             morph_targets_relative: self.morph_targets_relative,
             indirect: self.indirect.clone(),
+            gpu_indirect: self.gpu_indirect.clone(),
             indirect_offset: self.indirect_offset,
             indirect_offsets: self.indirect_offsets.clone(),
             instance_count: self.instance_count,
@@ -559,6 +563,7 @@ impl BufferGeometry {
         self.index = None;
         self.morph_attributes.clear();
         self.indirect = None;
+        self.gpu_indirect = None;
     }
 }
 

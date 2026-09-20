@@ -249,3 +249,85 @@ byte verification use `tools/tsl/prepare.py` and `tools/gallery/check.py`.
 - `gallery/assets/sprite1.png`: `examples/textures/sprite1.png`; SHA-256 `0c69d3d1eaed72c3f13ddf93db0e233475b0cf850d3e3d9e45fd7a3803cac9e4`.
 - `gallery/assets/snowflake1.png`: `examples/textures/sprites/snowflake1.png`; SHA-256 `7b0c12c16b37b0d03e73009da109e97cdfdd1f40f047fd025c80954a8422d220`.
 - `gallery/assets/circle.png`: `examples/textures/sprites/circle.png`; SHA-256 `05fff2c8a01602cd4d8099cf456386ab28498093d084d5ca3805d16ebc71d3f8`.
+
+### TSL compute and instancing scenes
+
+`gallery/assets/smoke1.png` and `gallery/assets/suzanne_buffergeometry.json`
+are copied unchanged from Three.js r186 commit
+`148ef33ecb6d2502ff796d4554abd1549c95d519`, at
+`examples/textures/opengameart/smoke1.png` and
+`examples/models/json/suzanne_buffergeometry.json` respectively.
+The smoke texture is credited upstream to OpenGameArt. Scene expressions and
+PCG hash follow the five corresponding official WebGPU examples (MIT;
+see `LICENSE-THREE`). `tools/tsl/prepare.py` extracts the pinned assets and
+`tools/gallery/check.py` checks their bytes against the archive.
+
+### TSL surfaces, lighting and GPU geometry
+
+The twenty additional scenes and their WGSL translations follow the pinned r186
+examples (MIT; `LICENSE-THREE`). MaterialX noise follows Three.js's vendored
+MaterialX implementation. ShaderToy retains the source credits in the official
+`webgpu_shadertoy.html`; these are fixed embedded shader translations, not a
+GLSL transpiler. Raging Sea, Halftone, Flames and Tornado retain the Three.js
+Journey attribution from their official pages.
+
+Additional unchanged assets from that archive:
+
+- `gallery/assets/hardwood2_diffuse.jpg`: `examples/textures/hardwood2_diffuse.jpg`; SHA-256 `3986fe3bd7d3c24b18e7da17ae72bbef9385dbc355c931c52a04dbfe1412c802`.
+- `gallery/assets/Water_1_M_Normal.jpg`: `examples/textures/water/Water_1_M_Normal.jpg`; SHA-256 `6d7825469a374ff84700b4fb1a2890bd1fce0ca1f777bdd4d5ecdaf15833a804`.
+- `gallery/assets/roughness_map.jpg`: `examples/textures/roughness_map.jpg`; SHA-256 `261c6f32ab65a6ab1efa76a85702a1f46168081a3eeabd9d0b49de2f4ba4d7a1`.
+- `gallery/assets/flames-grayscale-256x256.png`: `examples/textures/noises/voronoi/grayscale-256x256.png`; SHA-256 `0bd7c9a6e440cb7ddd97a231fc5c3f93582a91609ead627075f6f2aa284aaccc`.
+- `gallery/assets/flames-rgb-256x256.png`: `examples/textures/noises/perlin/rgb-256x256.png`; SHA-256 `a6e852dd6115654f6c436454faba04fc7dc5c355a1a3769a7c9c905dbcb8f41a`.
+- `models/Michelle.glb`: `examples/models/gltf/Michelle.glb`; SHA-256 `7a87e15a99ccbc5e5877be66e1e4ecae0a581adcafa0cce1a5569f49909e968e`.
+- `models/PrimaryIonDrive.glb`: `examples/models/gltf/PrimaryIonDrive.glb`; SHA-256 `4da2bc76db5a1f639866f05219426c9fde0ece3239c3cb054b5675a8dc1cde21`.
+- `models/LeePerrySmith.glb`: `examples/models/gltf/LeePerrySmith/LeePerrySmith.glb`; SHA-256 `402b8a8ac9f03232e6d64b5962929703a069daf99d3c49ac8eb0e48bedc9c576`.
+- `environments/moonless_golf_1k.hdr`: `examples/textures/equirectangular/moonless_golf_1k.hdr`; SHA-256 `4f597078024bd81429431e872d466d8808653ad62a8bc8c61d8052af7466c3aa`.
+
+`gallery/assets/teapot-18.json` is generated once from the pinned MIT-licensed
+`TeapotGeometry` by `tools/tsl/prepare-geometry.mjs`. The float32 LTC table
+is generated from the same original tables as the half-float table by
+`tools/core/prepare_ltc.py`; see the existing LTC attribution.
+
+The Lee Perry-Smith head scan is by Lee Perry-Smith / Infinite,
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), based on
+www.triplegangers.com; the [original license](models/LeePerrySmith_License.txt)
+is retained. The displayed mesh is scaled and deformed on the GPU.
+Primary Ion Drive is by Mike Murdock / indierocktopus,
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), from
+[Sketchfab](https://sketchfab.com/models/d3f50a66fee74c6588dd9bc92f7fe7b3).
+Michelle is credited by the official example to Mixamo.
+The embedded ShaderToy sources credit
+[jackdavenport](https://www.shadertoy.com/view/Mt2SzR) and
+[trinketMage](https://www.shadertoy.com/view/3tcBzH); WGSL translations retain
+those scene contents.
+
+### Additional TSL texture and volume examples
+
+- `gallery/assets/blossom.png`: Three.js r186 example asset, Three.js MIT distribution.
+- `gallery/assets/head256x256x109.raw`: scanned head data by Divine Augustine,
+  distributed with the official `webgpu_textures_2d-array` example under
+  [CPOL](https://www.codeproject.com/info/cpol10.aspx). Extracted without modification
+  from `textures/3d/head256x256x109.zip`.
+- `gallery/assets/volume-{perlin,cloud}.raw`: generated from the official MIT
+  ImprovedNoise implementation and r186 example initialization; see
+  `tools/tsl/prepare-volume.mjs`. Volume raymarchers follow the MIT Three.js
+  `Raymarching.js`, `Texture3DNode.js` and volume examples.
+
+### Extended TSL, cubemap and postprocessing assets
+
+The following assets are copied unchanged from the pinned Three.js r186 MIT
+repository distribution by `tools/tsl/prepare.py`:
+
+- `gallery/assets/spiritedaway.ktx2` (the official compressed array example).
+- `gallery/assets/earth_{day,night,bump_roughness_clouds}_4096.jpg`.
+- `gallery/assets/castle-{px,nx,py,ny,pz,nz}.jpg`, from SwedishRoyalCastle.
+- `gallery/assets/cube_m0*_c0*.jpg`, from the angus custom cubemap mip chain.
+
+`teapot-50-18.json`, `dodecahedron.json`, and `hilbert-points.json` are static
+geometry/curve data generated by `tools/tsl/prepare-geometry.mjs` using the pinned
+MIT TeapotGeometry, DodecahedronGeometry and GeometryUtils implementations.
+The anamorphic, bokeh DOF, bump, sampling and volume shaders follow the corresponding
+MIT Three.js TSL nodes. See their upstream files and this repository's LICENSE.
+
+`vendor/wgpu` is the crates.io wgpu 26.0.1 package under its included MIT and
+Apache-2.0 licenses. `vendor/wgpu/PATCH.md` documents the WebGPU depthSlice fix.

@@ -1,0 +1,749 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-20",
+  "backend": "Chrome WebGPU on macOS / Metal",
+  "samples": 4,
+  "sizes": [
+    [
+      512,
+      512
+    ],
+    [
+      640,
+      400
+    ]
+  ],
+  "threshold": {
+    "channel_difference": 6,
+    "pixel_fraction": 0.005
+  },
+  "notes": [
+    "Original pinned scripts/shader expressions; seeded initial random arrays, explicit time and captured controls.",
+    "39 captured states include input, controls, resize, reseeding and 60 additional ping-pong updates.",
+    "Paused input/resize redraws retain simulation state; explicit gallery_time advances one GPU update.",
+    "Damping settles for 240 frames before camera comparisons, avoiding different DOM/rAF timing.",
+    "HDR base-level readback isolated two byte-identical 512x512 RGBA16Float textures; missing GPU mip generation caused the initial resized-display mismatch and is now implemented.",
+    "Draw/dispatch/residency evidence is not a CPU/GPU frame-time parity benchmark.",
+    "Upstream RangeNode/instance matrices may use large UNIFORM buffers. uniformBytes and largeUniformBytes include those uploads; attributeBytes alone does not."
+  ],
+  "examples": [
+    {
+      "example": "webgpu_particles",
+      "comparisons": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0023943583170572915
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.007467905680338542
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.025848388671875
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.24385197957356772
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.06867472330729167
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.07245127360026042
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.04838411458333333
+        }
+      ],
+      "images_directory": "test-results/tsl-compute-verified/tsl-compute-TSL-compute-of-f40d8-ring-and-controls-particles",
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 67,
+            "transfers": [
+              3,
+              13808,
+              48
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 67,
+            "transfers": [
+              3,
+              13808,
+              48
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 72,
+            "transfers": [
+              3,
+              13808,
+              48
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          },
+          "after": {
+            "creates": 72,
+            "transfers": [
+              3,
+              13808,
+              48
+            ],
+            "resources": [
+              1,
+              2,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_instance_mesh",
+      "comparisons": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0011088053385416667
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.001087188720703125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0011761983235677083
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0010706583658854167
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.000545501708984375
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0010197957356770833
+        },
+        {
+          "state": 6,
+          "fraction": 3.125e-05,
+          "meanError": 0.0012473958333333334
+        }
+      ],
+      "images_directory": "test-results/tsl-compute-verified/tsl-compute-TSL-compute-of-51310--and-controls-instance-mesh",
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 30,
+            "transfers": [
+              1,
+              52004,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 30,
+            "transfers": [
+              1,
+              52004,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 35,
+            "transfers": [
+              1,
+              52004,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 35,
+            "transfers": [
+              1,
+              52004,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_compute_points",
+      "comparisons": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.000141143798828125
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.00013932291666666666
+        }
+      ],
+      "images_directory": "test-results/tsl-compute-verified/tsl-compute-TSL-compute-of-86428-and-controls-compute-points",
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 38,
+            "transfers": [
+              1,
+              80,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 38,
+            "transfers": [
+              1,
+              80,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 43,
+            "transfers": [
+              1,
+              80,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 43,
+            "transfers": [
+              1,
+              80,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_compute_particles",
+      "comparisons": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.030980428059895832
+        },
+        {
+          "state": 7,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.019120534261067707
+        },
+        {
+          "state": 8,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.017739613850911457
+        },
+        {
+          "state": 9,
+          "fraction": 7.421875e-05,
+          "meanError": 0.01958203125
+        }
+      ],
+      "images_directory": "test-results/tsl-compute-verified/tsl-compute-TSL-compute-of-6c0c1--controls-compute-particles",
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 52,
+            "transfers": [
+              2,
+              15064,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 52,
+            "transfers": [
+              2,
+              15064,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 57,
+            "transfers": [
+              2,
+              15064,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 57,
+            "transfers": [
+              2,
+              15064,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "example": "webgpu_compute_texture_pingpong",
+      "comparisons": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.00023523966471354166
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.00016657511393229166
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.00022379557291666666
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.000244140625
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.000263214111328125
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.00013411458333333333
+        }
+      ],
+      "images_directory": "test-results/tsl-compute-verified/tsl-compute-TSL-compute-of-e00b2-ls-compute-texture-pingpong",
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 69,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 69,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 74,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 74,
+            "transfers": [
+              1,
+              344,
+              16
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "gpu_work": [
+    {
+      "kind": "particles",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 2000
+          }
+        ],
+        "indirect": 1,
+        "attributeBytes": 0,
+        "uniformBytes": 240016,
+        "largeUniformBytes": 240000
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 2000
+          }
+        ],
+        "indirect": 1,
+        "attributeBytes": 0,
+        "uniformBytes": 8,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "instance_mesh",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 2901,
+            "instances": 1000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 80116,
+        "largeUniformBytes": 80000
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 2901,
+            "instances": 1000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 79964,
+        "uniformBytes": 4372,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "compute_points",
+      "reference": {
+        "passes": 2,
+        "dispatches": [
+          [
+            4688,
+            1,
+            1
+          ]
+        ],
+        "draws": [
+          {
+            "vertices": 1,
+            "instances": 300000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [
+          [
+            4688,
+            1,
+            1
+          ]
+        ],
+        "draws": [
+          {
+            "vertices": 1,
+            "instances": 300000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 260,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "compute_particles",
+      "reference": {
+        "passes": 2,
+        "dispatches": [
+          [
+            3125,
+            1,
+            1
+          ]
+        ],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 200000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [
+          [
+            3125,
+            1,
+            1
+          ]
+        ],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 200000
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 260,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "compute_texture_pingpong",
+      "reference": {
+        "passes": 11,
+        "dispatches": [
+          [
+            4096,
+            1,
+            1
+          ]
+        ],
+        "draws": [],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 11,
+        "dispatches": [
+          [
+            4096,
+            1,
+            1
+          ]
+        ],
+        "draws": [],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      }
+    }
+  ],
+  "validation": {
+    "new_browser_checks": 11,
+    "browser_regressions": 157,
+    "native_gpu_and_semantic_checks": 28,
+    "format": "passed",
+    "clippy_native_all_targets": "passed",
+    "clippy_wasm": "passed",
+    "catalog_and_pinned_assets": "passed",
+    "note": "The stale unported-gallery case was updated from Compute Particles to still-unported Compute Birds, then passed."
+  }
+}

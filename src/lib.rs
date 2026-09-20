@@ -1,3 +1,6 @@
+// Browser WebGPU handles are thread-bound. Arc keeps the shared native/Wasm scene API;
+// native builds still require Send/Sync for cross-thread use.
+#![cfg_attr(target_arch = "wasm32", allow(clippy::arc_with_non_send_sync))]
 //! A Rust-first scene and rendering library, using Three.js r186 as its
 //! behavioral reference. The compatibility manifest describes the MVP target;
 //! see implementation evidence before treating any capability as complete.
@@ -24,6 +27,7 @@ mod geometry_gpu;
 pub mod identity;
 pub mod material;
 pub mod math;
+pub mod mipmap;
 mod physical_maps;
 pub mod postprocessing;
 pub mod raycast;
@@ -55,3 +59,5 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub mod gltf;
 
 mod background;
+
+pub mod occlusion;

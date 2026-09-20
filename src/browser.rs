@@ -17,10 +17,13 @@ mod gltf_examples;
 mod gltf_viewer;
 mod point_lights;
 mod robot;
+mod tsl_compute;
 mod tsl_examples;
+mod tsl_extended;
 mod tsl_filters;
 mod tsl_particles;
 mod tsl_passes;
+mod tsl_surface;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
 fn asset_url(url: &str) -> Result<String> {
@@ -142,12 +145,21 @@ impl State {
             self.renderer
                 .render(&mut self.scene, self.camera, &self.target)?;
         }
+        if self.example == 93 {
+            self.frame += 1;
+            let _ = self
+                .canvas
+                .set_attribute("data-frames", &self.frame.to_string());
+            return Ok(());
+        }
         let frame = self
             .surface
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
-        let format = if [16, 27, 28, 35, 45, 46, 50].contains(&self.example) {
+        let format = if [16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90]
+            .contains(&self.example)
+        {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
@@ -162,7 +174,7 @@ impl State {
             }
             _ => &self.target,
         };
-        if self.example == 50 {
+        if [50, 54, 55, 57, 58].contains(&self.example) {
             self.renderer.blit_premultiplied_srgb(
                 presentation,
                 &view,
@@ -322,6 +334,36 @@ impl BrowserApp {
             demo.dragging(value);
         }
     }
+    pub fn gallery_canvases(&self, canvases: js_sys::Array) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let State {
+            renderer,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            demo.attach_canvases(renderer, canvases)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        state.request_render();
+        Ok(())
+    }
+    pub fn gallery_viewport(
+        &self,
+        index: usize,
+        x: f64,
+        y: f64,
+        width: f64,
+        height: f64,
+    ) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.viewport(index, [x, y, width, height])
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+            state.request_render();
+        }
+        Ok(())
+    }
     pub fn gallery_input(
         &self,
         dx: f64,
@@ -372,6 +414,24 @@ impl BrowserApp {
             Ok(())
         }
     }
+    pub fn gallery_select(&self, x: f64, y: f64) -> std::result::Result<(), JsValue> {
+        if !x.is_finite() || !y.is_finite() {
+            return Err(JsValue::from_str("pointer coordinates"));
+        }
+        let mut state = self.state.borrow_mut();
+        state.request_render();
+        let State {
+            scene,
+            camera,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            demo.select(scene, *camera, x, y)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
+    }
     pub fn gallery_pointer(&self, x: f64, y: f64) {
         if !x.is_finite() || !y.is_finite() {
             return;
@@ -379,14 +439,25 @@ impl BrowserApp {
         let mut state = self.state.borrow_mut();
         let width = state.canvas.client_width() as f64;
         let height = state.canvas.client_height() as f64;
-        let is_rtt = state.example == 39;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+        let is_rtt = [39, 55, 56].contains(&state.example);
+        let State {
+            renderer,
+            scene,
+            camera,
+            gallery_scene,
+            canvas,
+            ..
+        } = &mut *state;
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
+            if let Err(e) = demo.gpu_pointer(renderer, scene, *camera, x, y) {
+                let _ = canvas.set_attribute("data-error", &e.to_string());
+            }
             if is_rtt {
                 demo.pointer(x, y);
             } else {
                 demo.pointer(x * width / 2.0, -y * height / 2.0);
             }
-        } else if let Some(demo) = &mut state.gallery_scene {
+        } else if let Some(demo) = gallery_scene {
             demo.pointer(x, y);
         }
     }
@@ -697,7 +768,7 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if [46, 50].contains(&example) {
+            if [46, 50, 54, 55, 57].contains(&example) {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
@@ -710,7 +781,8 @@ impl BrowserApp {
                     RenderTargetOptions {
                         samples: if [
                             7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
-                            52,
+                            52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
+                            91, 92, 93, 95, 97,
                         ]
                         .contains(&example)
                         {
@@ -718,8 +790,8 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: [16, 28].contains(&example),
-                        format: if [16, 27, 28].contains(&example) {
+                        encode_srgb: [16, 28, 90].contains(&example),
+                        format: if [16, 27, 28, 90].contains(&example) {
                             wgpu::TextureFormat::Rgba8Unorm
                         } else {
                             wgpu::TextureFormat::Rgba16Float
@@ -746,7 +818,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=52).contains(&example) {
+            if (7..=97).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

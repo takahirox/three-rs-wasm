@@ -1,4 +1,7 @@
 pub(crate) fn texture(device: &wgpu::Device, queue: &wgpu::Queue) -> wgpu::TextureView {
+    let float32 = device
+        .features()
+        .contains(wgpu::Features::FLOAT32_FILTERABLE);
     let texture = device.create_texture(&wgpu::TextureDescriptor {
         label: Some("r186 LTC tables"),
         size: wgpu::Extent3d {
@@ -9,16 +12,24 @@ pub(crate) fn texture(device: &wgpu::Device, queue: &wgpu::Queue) -> wgpu::Textu
         mip_level_count: 1,
         sample_count: 1,
         dimension: wgpu::TextureDimension::D2,
-        format: wgpu::TextureFormat::Rgba16Float,
+        format: if float32 {
+            wgpu::TextureFormat::Rgba32Float
+        } else {
+            wgpu::TextureFormat::Rgba16Float
+        },
         usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
         view_formats: &[],
     });
     queue.write_texture(
         texture.as_image_copy(),
-        include_bytes!("shaders/ltc-r186.bin"),
+        if float32 {
+            include_bytes!("shaders/ltc-r186-f32.bin").as_slice()
+        } else {
+            include_bytes!("shaders/ltc-r186.bin").as_slice()
+        },
         wgpu::TexelCopyBufferLayout {
             offset: 0,
-            bytes_per_row: Some(512),
+            bytes_per_row: Some(if float32 { 1024 } else { 512 }),
             rows_per_image: Some(64),
         },
         texture.size(),

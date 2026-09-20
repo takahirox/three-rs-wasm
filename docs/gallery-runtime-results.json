@@ -8023,7 +8023,7 @@
       "id": "webgpu_centroid_sampling",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_centroid_sampling.html",
       "source_sha256": "852874c4951bf3956d60c4471524b219730af30efea8adf6fae44158979004f5",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_centroid_sampling",
         "source_sha256": "852874c4951bf3956d60c4471524b219730af30efea8adf6fae44158979004f5",
@@ -8232,7 +8232,7 @@
       "id": "webgpu_compute_geometry",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_geometry.html",
       "source_sha256": "9b0f89977d63691b3379cf501873ad34bb8fa2c97f88f523913db0d4b7e11654",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_geometry",
         "source_sha256": "9b0f89977d63691b3379cf501873ad34bb8fa2c97f88f523913db0d4b7e11654",
@@ -8260,7 +8260,7 @@
       "id": "webgpu_compute_particles",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_particles.html",
       "source_sha256": "14711b1128113472a6ae6e0be7ea18bf2528f4ceb3d8631c5a4fffa04b3adef2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_particles",
         "source_sha256": "14711b1128113472a6ae6e0be7ea18bf2528f4ceb3d8631c5a4fffa04b3adef2",
@@ -8367,7 +8367,7 @@
       "id": "webgpu_compute_points",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_points.html",
       "source_sha256": "4a8fe355bf83767df4a57a3293f79e72024d8acaf23d249f67f67732d06702c7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_points",
         "source_sha256": "4a8fe355bf83767df4a57a3293f79e72024d8acaf23d249f67f67732d06702c7",
@@ -8498,7 +8498,7 @@
       "id": "webgpu_compute_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_texture.html",
       "source_sha256": "ad50ad1c9ae87d4fb76c3b71aae4b459ece1528e879f990424d761c14615d2e7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_texture",
         "source_sha256": "ad50ad1c9ae87d4fb76c3b71aae4b459ece1528e879f990424d761c14615d2e7",
@@ -8521,7 +8521,7 @@
       "id": "webgpu_compute_texture_3d",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_texture_3d.html",
       "source_sha256": "51d7e2c52dc941fd1327280ad9a86a23aa3d122b08eda37b81a02ce00c5e641c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_texture_3d",
         "source_sha256": "51d7e2c52dc941fd1327280ad9a86a23aa3d122b08eda37b81a02ce00c5e641c",
@@ -8548,7 +8548,7 @@
       "id": "webgpu_compute_texture_pingpong",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_texture_pingpong.html",
       "source_sha256": "fee0994bcb25b323703b4240f7b8d9f0955a7656301d442c64062ae5d390c11e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_compute_texture_pingpong",
         "source_sha256": "fee0994bcb25b323703b4240f7b8d9f0955a7656301d442c64062ae5d390c11e",
@@ -8719,7 +8719,7 @@
       "id": "webgpu_custom_fog_background",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_custom_fog_background.html",
       "source_sha256": "9598c4b827b897375034a6867f4c42a3b40f53f848f9dc182a4f59ec5dea0159",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_custom_fog_background",
         "source_sha256": "9598c4b827b897375034a6867f4c42a3b40f53f848f9dc182a4f59ec5dea0159",
@@ -8800,7 +8800,7 @@
       "id": "webgpu_depth_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_depth_texture.html",
       "source_sha256": "7c6647a03cba9f8e9f13041c4b0383c6421a49d20c7d61d7cee8cbb2eca45ff8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_depth_texture",
         "source_sha256": "7c6647a03cba9f8e9f13041c4b0383c6421a49d20c7d61d7cee8cbb2eca45ff8",
@@ -8877,7 +8877,7 @@
       "id": "webgpu_fog_height",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_fog_height.html",
       "source_sha256": "1c8367a2ff54509abea68bde40870624ec579a57c27d5b953ff635469901082b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_fog_height",
         "source_sha256": "1c8367a2ff54509abea68bde40870624ec579a57c27d5b953ff635469901082b",
@@ -9079,7 +9079,7 @@
       "id": "webgpu_instance_mesh",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_mesh.html",
       "source_sha256": "4d767c64ca54decba00e0a3c35a74d647cbdfd1c235ee63769ab889395255bda",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_instance_mesh",
         "source_sha256": "4d767c64ca54decba00e0a3c35a74d647cbdfd1c235ee63769ab889395255bda",
@@ -9133,7 +9133,7 @@
       "id": "webgpu_instance_points",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_points.html",
       "source_sha256": "97435a9b0203d2de8594d6310d18c7df6ca85c69c0a38159635c52929c579c17",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_instance_points",
         "source_sha256": "97435a9b0203d2de8594d6310d18c7df6ca85c69c0a38159635c52929c579c17",
@@ -9160,7 +9160,7 @@
       "id": "webgpu_instance_sprites",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_sprites.html",
       "source_sha256": "443982968e50fc6487eea2e5d09ea928c4d904b0774e4f19174508b58ecb4808",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_instance_sprites",
         "source_sha256": "443982968e50fc6487eea2e5d09ea928c4d904b0774e4f19174508b58ecb4808",
@@ -9192,7 +9192,7 @@
       "id": "webgpu_instance_uniform",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_uniform.html",
       "source_sha256": "1a62986ea9f04ccd36a6884f3e86c2de9816279c33e264658dd97b369c31b1c7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_instance_uniform",
         "source_sha256": "1a62986ea9f04ccd36a6884f3e86c2de9816279c33e264658dd97b369c31b1c7",
@@ -9249,7 +9249,7 @@
       "id": "webgpu_layers",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_layers.html",
       "source_sha256": "21da781446c67831de7cb6706d6e9ccd3076345250e41933b619acfe3f826089",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_layers",
         "source_sha256": "21da781446c67831de7cb6706d6e9ccd3076345250e41933b619acfe3f826089",
@@ -9466,7 +9466,7 @@
       "id": "webgpu_lights_custom",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_custom.html",
       "source_sha256": "d138a18a8d753902b715a6d39ea1b80d4323b71e14aef7ce36c673727c3acc6c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_custom",
         "source_sha256": "d138a18a8d753902b715a6d39ea1b80d4323b71e14aef7ce36c673727c3acc6c",
@@ -9545,7 +9545,7 @@
       "id": "webgpu_lights_phong",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_phong.html",
       "source_sha256": "09ddc6f7f2415dfb350628748cbe457d3e814fc2b8fbdd2148745da0216fd075",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_phong",
         "source_sha256": "09ddc6f7f2415dfb350628748cbe457d3e814fc2b8fbdd2148745da0216fd075",
@@ -9657,7 +9657,7 @@
       "id": "webgpu_lights_rectarealight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_rectarealight.html",
       "source_sha256": "91e3588a377bf9005a810a2ac66d7aaaca924ce9f8747372d22898dfd04fab81",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_rectarealight",
         "source_sha256": "91e3588a377bf9005a810a2ac66d7aaaca924ce9f8747372d22898dfd04fab81",
@@ -9683,7 +9683,7 @@
       "id": "webgpu_lights_selective",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_selective.html",
       "source_sha256": "a41c20f03ada9d8169d361c32472cefb94c9aca6d95b7e036eada75d3515d6d8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_selective",
         "source_sha256": "a41c20f03ada9d8169d361c32472cefb94c9aca6d95b7e036eada75d3515d6d8",
@@ -10222,7 +10222,7 @@
       "id": "webgpu_materials_cubemap_mipmaps",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_cubemap_mipmaps.html",
       "source_sha256": "d77c7aa1552782f77724d5e7e2366bab26c81122032733475b635412a50c65aa",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_materials_cubemap_mipmaps",
         "source_sha256": "d77c7aa1552782f77724d5e7e2366bab26c81122032733475b635412a50c65aa",
@@ -10750,7 +10750,7 @@
       "id": "webgpu_mrt",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_mrt.html",
       "source_sha256": "ec15f4dade43c5d80052268884efb912a5e94d340a79ef8d3e44653e072e144d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_mrt",
         "source_sha256": "ec15f4dade43c5d80052268884efb912a5e94d340a79ef8d3e44653e072e144d",
@@ -10777,7 +10777,7 @@
       "id": "webgpu_multiple_canvas",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_canvas.html",
       "source_sha256": "ae48d17d91ec4e3c254ee12aa796f7a16d1e176419bfce2b183bb679ca8600b3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_multiple_canvas",
         "source_sha256": "ae48d17d91ec4e3c254ee12aa796f7a16d1e176419bfce2b183bb679ca8600b3",
@@ -10804,7 +10804,7 @@
       "id": "webgpu_multiple_elements",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_elements.html",
       "source_sha256": "1839718687d58d4e724be8b6f8db8b7f3e5d0d38110f07d0d7a84251783c216f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_multiple_elements",
         "source_sha256": "1839718687d58d4e724be8b6f8db8b7f3e5d0d38110f07d0d7a84251783c216f",
@@ -10831,7 +10831,7 @@
       "id": "webgpu_mrt_mask",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_mrt_mask.html",
       "source_sha256": "4de5bd7a0d840beb5fdc7018a44c7a6fb15482cf02a381708b498b3901fe6540",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_mrt_mask",
         "source_sha256": "4de5bd7a0d840beb5fdc7018a44c7a6fb15482cf02a381708b498b3901fe6540",
@@ -10858,7 +10858,7 @@
       "id": "webgpu_multiple_rendertargets",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_rendertargets.html",
       "source_sha256": "c8395d29ea0941cb02926825e72ab43b3378b9cdd3b85a309a22c7204a7aea9d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_multiple_rendertargets",
         "source_sha256": "c8395d29ea0941cb02926825e72ab43b3378b9cdd3b85a309a22c7204a7aea9d",
@@ -10911,7 +10911,7 @@
       "id": "webgpu_multisampled_renderbuffers",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multisampled_renderbuffers.html",
       "source_sha256": "8f6f076db5eb18b56f9166eb341447cff72406ccd9daefbc800423249cc39126",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_multisampled_renderbuffers",
         "source_sha256": "8f6f076db5eb18b56f9166eb341447cff72406ccd9daefbc800423249cc39126",
@@ -10936,7 +10936,7 @@
       "id": "webgpu_occlusion",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_occlusion.html",
       "source_sha256": "012ea6b8cc87aa29c9be5f3192906b403fb179ad6debeb8497621b4bb213e89a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_occlusion",
         "source_sha256": "012ea6b8cc87aa29c9be5f3192906b403fb179ad6debeb8497621b4bb213e89a",
@@ -11044,7 +11044,7 @@
       "id": "webgpu_particles",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_particles.html",
       "source_sha256": "e3958d85a426462311b58543c95ff62a32eaf8faa98f1d35563c24a86624699d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_particles",
         "source_sha256": "e3958d85a426462311b58543c95ff62a32eaf8faa98f1d35563c24a86624699d",
@@ -11316,7 +11316,7 @@
       "id": "webgpu_postprocessing_afterimage",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_afterimage.html",
       "source_sha256": "8373aa5e8a793c5f1964305fe09a1a22992d5ade666b3adab2e390365f82f1ab",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_afterimage",
         "source_sha256": "8373aa5e8a793c5f1964305fe09a1a22992d5ade666b3adab2e390365f82f1ab",
@@ -11343,7 +11343,7 @@
       "id": "webgpu_postprocessing_anamorphic",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_anamorphic.html",
       "source_sha256": "1f971a39a9d54b7916a207982cc926c8b7425bf803f6c216c522e2af6547754e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_anamorphic",
         "source_sha256": "1f971a39a9d54b7916a207982cc926c8b7425bf803f6c216c522e2af6547754e",
@@ -11397,7 +11397,7 @@
       "id": "webgpu_postprocessing_bloom",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_bloom.html",
       "source_sha256": "298e5809e048ab7b344e0c059a559bcfcae2fd8f2fae5d5b70262d7dcbbe154c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_bloom",
         "source_sha256": "298e5809e048ab7b344e0c059a559bcfcae2fd8f2fae5d5b70262d7dcbbe154c",
@@ -11424,7 +11424,7 @@
       "id": "webgpu_postprocessing_bloom_emissive",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_bloom_emissive.html",
       "source_sha256": "c5c189ae139746d82a3f2ba1b39141bacc3a92f35d1356fed5c49ed093ee46b4",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_bloom_emissive",
         "source_sha256": "c5c189ae139746d82a3f2ba1b39141bacc3a92f35d1356fed5c49ed093ee46b4",
@@ -11451,7 +11451,7 @@
       "id": "webgpu_postprocessing_bloom_selective",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_bloom_selective.html",
       "source_sha256": "3c1b73e4658a6d3e10ee974be483546fd481c3c0fc4f7d84f2fbbde33886e3c1",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_bloom_selective",
         "source_sha256": "3c1b73e4658a6d3e10ee974be483546fd481c3c0fc4f7d84f2fbbde33886e3c1",
@@ -11478,7 +11478,7 @@
       "id": "webgpu_postprocessing_difference",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_difference.html",
       "source_sha256": "c86a609581d7a2fbb0fd867f377509ed55d3cc8bf3c8d7b20a8660e38655e26e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_difference",
         "source_sha256": "c86a609581d7a2fbb0fd867f377509ed55d3cc8bf3c8d7b20a8660e38655e26e",
@@ -11505,7 +11505,7 @@
       "id": "webgpu_postprocessing_dof",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_dof.html",
       "source_sha256": "da63d77b9b01220476e65e49888593b61a2d6f7cf97de782d0acff9e2e83b982",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_dof",
         "source_sha256": "da63d77b9b01220476e65e49888593b61a2d6f7cf97de782d0acff9e2e83b982",
@@ -11583,7 +11583,7 @@
       "id": "webgpu_postprocessing_fxaa",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_fxaa.html",
       "source_sha256": "7858a8bde218fd97bd7ee419c84bd031c65c679a2a3351c5bcff9cdac2adb786",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_fxaa",
         "source_sha256": "7858a8bde218fd97bd7ee419c84bd031c65c679a2a3351c5bcff9cdac2adb786",
@@ -11663,7 +11663,7 @@
       "id": "webgpu_postprocessing_masking",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_masking.html",
       "source_sha256": "a608f36f98eb24f005ec28b0387ecc0ab485868b68c67d8d6604e6c7f69c4ba6",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_masking",
         "source_sha256": "a608f36f98eb24f005ec28b0387ecc0ab485868b68c67d8d6604e6c7f69c4ba6",
@@ -11798,7 +11798,7 @@
       "id": "webgpu_postprocessing_radial_blur",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_radial_blur.html",
       "source_sha256": "73e2cdcee4c9544433c9dd9fb8af48771a852f32ba00327b2337d2b241badeb4",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_radial_blur",
         "source_sha256": "73e2cdcee4c9544433c9dd9fb8af48771a852f32ba00327b2337d2b241badeb4",
@@ -11906,7 +11906,7 @@
       "id": "webgpu_postprocessing_ssaa",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssaa.html",
       "source_sha256": "7d32d513c20a68ba7649187a2f33663a4b3f3b0f6a2fa42d8aa9e8648e85f633",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_ssaa",
         "source_sha256": "7d32d513c20a68ba7649187a2f33663a4b3f3b0f6a2fa42d8aa9e8648e85f633",
@@ -12095,7 +12095,7 @@
       "id": "webgpu_postprocessing_transition",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_transition.html",
       "source_sha256": "d2a197e49c22b50262698005b22e2bc16e9dabcdfd8245fe8529bcb99e359056",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_transition",
         "source_sha256": "d2a197e49c22b50262698005b22e2bc16e9dabcdfd8245fe8529bcb99e359056",
@@ -12122,7 +12122,7 @@
       "id": "webgpu_postprocessing",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing.html",
       "source_sha256": "f12d4e910b85f1860eaf923c0e8b346770180035d9e29c3e3452073cc80876ca",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing",
         "source_sha256": "f12d4e910b85f1860eaf923c0e8b346770180035d9e29c3e3452073cc80876ca",
@@ -12149,7 +12149,7 @@
       "id": "webgpu_postprocessing_direct",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_direct.html",
       "source_sha256": "85182dbeea6d53d8a7da42293c9fff58852d1af4fccfcac7db09d36ff75cccc3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_direct",
         "source_sha256": "85182dbeea6d53d8a7da42293c9fff58852d1af4fccfcac7db09d36ff75cccc3",
@@ -12313,7 +12313,7 @@
       "id": "webgpu_rendertarget_2d-array_3d",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_rendertarget_2d-array_3d.html",
       "source_sha256": "bafb28cd153ba9badbe997007378585618bc062e8daa504b9573af164abbbe39",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_rendertarget_2d-array_3d",
         "source_sha256": "bafb28cd153ba9badbe997007378585618bc062e8daa504b9573af164abbbe39",
@@ -12368,7 +12368,7 @@
       "id": "webgpu_rtt",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_rtt.html",
       "source_sha256": "36f88445e43f1fd3e0431b4852f7dec9bb4985a427b5e028b47f4d30d2a40575",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_rtt",
         "source_sha256": "36f88445e43f1fd3e0431b4852f7dec9bb4985a427b5e028b47f4d30d2a40575",
@@ -12452,7 +12452,7 @@
       "id": "webgpu_shadertoy",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadertoy.html",
       "source_sha256": "02800e0e8288478fb92784cf15194289d62fface81409d1baab275c99458ab9b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_shadertoy",
         "source_sha256": "02800e0e8288478fb92784cf15194289d62fface81409d1baab275c99458ab9b",
@@ -12707,7 +12707,7 @@
       "id": "webgpu_skinning",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning.html",
       "source_sha256": "1ef1252205b3f649d3f28d073dd0f1b026d6fa56de74780c2eaea60c223e2006",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_skinning",
         "source_sha256": "1ef1252205b3f649d3f28d073dd0f1b026d6fa56de74780c2eaea60c223e2006",
@@ -12860,7 +12860,7 @@
       "id": "webgpu_sprites",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sprites.html",
       "source_sha256": "cf6ecf2488327c9431246aff08da69f140ad3804744b7b3d08c443dd05b6326a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_sprites",
         "source_sha256": "cf6ecf2488327c9431246aff08da69f140ad3804744b7b3d08c443dd05b6326a",
@@ -12890,7 +12890,7 @@
       "id": "webgpu_storage_buffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_storage_buffer.html",
       "source_sha256": "333023bb20a625ab85b229416baa7741b2f6aa9216c67e8fe8a4676cd5946bb0",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_storage_buffer",
         "source_sha256": "333023bb20a625ab85b229416baa7741b2f6aa9216c67e8fe8a4676cd5946bb0",
@@ -12914,7 +12914,7 @@
       "id": "webgpu_struct_drawindirect",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_struct_drawindirect.html",
       "source_sha256": "a7f3fffc063916da72a17436fbf41dc0b5db112ff1161316237b4f1deaa82263",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_struct_drawindirect",
         "source_sha256": "a7f3fffc063916da72a17436fbf41dc0b5db112ff1161316237b4f1deaa82263",
@@ -12974,7 +12974,7 @@
       "id": "webgpu_texturegather",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_texturegather.html",
       "source_sha256": "02838d398739729473c62452910ee5117874baba54569d209167da6958fe2336",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_texturegather",
         "source_sha256": "02838d398739729473c62452910ee5117874baba54569d209167da6958fe2336",
@@ -13024,7 +13024,7 @@
       "id": "webgpu_textures_2d-array",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_2d-array.html",
       "source_sha256": "48e955c47e3be2cc9064cc0e35c6747cf8586ae8678cc469713be6ee249413a2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_textures_2d-array",
         "source_sha256": "48e955c47e3be2cc9064cc0e35c6747cf8586ae8678cc469713be6ee249413a2",
@@ -13049,7 +13049,7 @@
       "id": "webgpu_textures_2d-array_compressed",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_2d-array_compressed.html",
       "source_sha256": "e329782879bcdf9c4be90f0bfde7d8fbe8202b38c0fc3cb6dca316f8e74db648",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_textures_2d-array_compressed",
         "source_sha256": "e329782879bcdf9c4be90f0bfde7d8fbe8202b38c0fc3cb6dca316f8e74db648",
@@ -13212,7 +13212,7 @@
       "id": "webgpu_tsl_earth",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_earth.html",
       "source_sha256": "ced7e417b97d6b25ea03fa9cdbf84e9ec90c543be316d50cd18ebeeabfb49fc8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_earth",
         "source_sha256": "ced7e417b97d6b25ea03fa9cdbf84e9ec90c543be316d50cd18ebeeabfb49fc8",
@@ -13266,7 +13266,7 @@
       "id": "webgpu_tsl_galaxy",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_galaxy.html",
       "source_sha256": "8485ea10a48bb27085a71c2537cde4e87767c942cb996698afa4352b4ed19db3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_galaxy",
         "source_sha256": "8485ea10a48bb27085a71c2537cde4e87767c942cb996698afa4352b4ed19db3",
@@ -13326,7 +13326,7 @@
       "id": "webgpu_tsl_halftone",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_halftone.html",
       "source_sha256": "97ea61b671b94a3fd63056a0e5d8fc2a708348d6a402414494d6c9ba107ef369",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_halftone",
         "source_sha256": "97ea61b671b94a3fd63056a0e5d8fc2a708348d6a402414494d6c9ba107ef369",
@@ -13412,7 +13412,7 @@
       "id": "webgpu_tsl_raging_sea",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_raging_sea.html",
       "source_sha256": "030c1272d4ccda56e8fb819df5d438a8d7089b14bdbec369aec2d985319050bb",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_raging_sea",
         "source_sha256": "030c1272d4ccda56e8fb819df5d438a8d7089b14bdbec369aec2d985319050bb",
@@ -13460,7 +13460,7 @@
       "id": "webgpu_tsl_vfx_flames",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_flames.html",
       "source_sha256": "bd0d80883507148d8a8f3d80e398818f583f98c30d5450a9fe01053671844e76",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_vfx_flames",
         "source_sha256": "bd0d80883507148d8a8f3d80e398818f583f98c30d5450a9fe01053671844e76",
@@ -13516,7 +13516,7 @@
       "id": "webgpu_tsl_vfx_tornado",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_tornado.html",
       "source_sha256": "a2b11f0f7002c45d04344d9d7e7649b77c259ec50ccf0790270b02e503c788f7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_vfx_tornado",
         "source_sha256": "a2b11f0f7002c45d04344d9d7e7649b77c259ec50ccf0790270b02e503c788f7",
@@ -13710,7 +13710,7 @@
       "id": "webgpu_volume_cloud",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_cloud.html",
       "source_sha256": "dd7d2a4b7fae99172149b4e35ab1837c356e176cc7258d8198155fc0c77a7480",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_volume_cloud",
         "source_sha256": "dd7d2a4b7fae99172149b4e35ab1837c356e176cc7258d8198155fc0c77a7480",
@@ -13840,7 +13840,7 @@
       "id": "webgpu_volume_perlin",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_perlin.html",
       "source_sha256": "79a156a522e18d0f130053ad70f0bc931c35aff4539ca6b5e9d244a8e53a88db",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_volume_perlin",
         "source_sha256": "79a156a522e18d0f130053ad70f0bc931c35aff4539ca6b5e9d244a8e53a88db",

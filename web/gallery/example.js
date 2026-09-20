@@ -1,3 +1,4 @@
+import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
 const catalog = await (await fetch('catalog.json')).json();
 const id = new URLSearchParams(location.search).get('id');
@@ -41,7 +42,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  try {
   if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
-  const runtimeRevision = 'tsl-4';
+  const runtimeRevision = 'tsl-7';
   const {default:init, BrowserApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
   await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
   const resize = () => { canvas.width = Math.max(1, Math.round(innerWidth * devicePixelRatio)); canvas.height = Math.max(1, Math.round(innerHeight * devicePixelRatio)); app?.request_render(); };
@@ -67,22 +68,27 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
     credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
    }
    addEventListener('resize', resize);
-   if ([16,18,20,25,28,29,30,31,32,33,34,41,48,51].includes(entry.port.example)) { installOrbit(canvas,app); } else if (entry.port.example < 35) {
+   if([92,93].includes(entry.port.example))installElements(canvas,app,entry.port.example===93);
+   if(entry.port.example===97){for(const [i,label] of ['DataArrayTexture','Data3DTexture','RenderTargetArray','RenderTarget3D'].entries()){const item=text('div',label,document.body);item.className='viewport-label';item.style.cssText=`position:absolute;bottom:${i<2?2:52}%;left:${i%2?52:2}%;color:white;background:rgba(0,0,0,.7);padding:5px 10px;border-radius:4px;font-family:monospace;pointer-events:none;user-select:none`;}}
+   if ([16,18,20,25,28,29,30,31,32,33,34,41,48,51,53,56,58,59,60,62,63,64,66,67,68,69,70,71,72,73,75,76,77,81,82,83,87,88,89,90,91,94,95,96,97].includes(entry.port.example)) { installOrbit(canvas,app,{touchRotate:entry.port.example!==56}); } else if (entry.port.example < 35) {
    let drag;
    canvas.addEventListener('pointerdown', event => { drag = [event.clientX, event.clientY]; canvas.setPointerCapture(event.pointerId); app.gallery_input(0,0,0,true); });
    canvas.addEventListener('pointermove', event => { if(event.isPrimary===false)return;app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2); if (drag) { app.gallery_input(event.clientX-drag[0],event.clientY-drag[1],0,true); app.orbit(event.clientX-drag[0], event.clientY-drag[1], 0); drag = [event.clientX,event.clientY]; } });
    for (const event of ['pointerup','pointercancel','lostpointercapture']) canvas.addEventListener(event, () => { drag = null; app?.gallery_input(0,0,0,false); });
    canvas.addEventListener('wheel', event => { event.preventDefault(); app.gallery_input(0,0,event.deltaY,false); app.orbit(0,0,event.deltaY); }, {passive:false});
    }
-   if ([39,50].includes(entry.port.example)) canvas.addEventListener('pointermove',event=>app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
+   if (entry.port.example===73) canvas.addEventListener('pointerdown',event=>app.gallery_select(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
+   if (entry.port.example===75) window.addEventListener('pointermove',event=>app.gallery_pointer(event.clientX/canvas.clientWidth*2-1,1-event.clientY/canvas.clientHeight*2));
+   if ([39,50,55,56].includes(entry.port.example)) canvas.addEventListener('pointermove',event=>app.gallery_pointer(event.offsetX/canvas.clientWidth*2-1,1-event.offsetY/canvas.clientHeight*2));
    if ([46,50].includes(entry.port.example)) document.body.style.background = '#000';
    const settings = document.querySelector('#settings');
    if (entry.port.example >= 48) {
-    const controls={48:[['Density',.001,.1,.04,.0001],['Height',-5,5,2,.01]],49:[],50:[['size attenuation',true]],51:[['size',0,1,.08,.001],['color inside','#ffa575'],['color outside','#311599']],52:[['damp',.25,1,.8,.01],['enabled',true]]}[entry.port.example];
+    const controls={96:[],97:[],95:[['alphaToCoverage',true],['minWidth',1,30,6,1],['maxWidth',2,30,20,1],['pulseSpeed',1,20,6,.1]],94:[],93:[],92:[],91:[['focus distance',10,3000,500,1],['focal length',50,750,200,1],['bokeh scale',1,20,10,.1]],90:[],89:[],88:[['atmosphereDayColor','#4db2ff'],['atmosphereTwilightColor','#bc490b'],['roughnessLow',0,1,.25,.001],['roughnessHigh',0,1,.35,.001]],87:[['intensity',0,10,5,.01],['threshold',0,.9,.3,.01],['samples',2,128,80,1],['tint color','#7a8aff'],['bloom radius',0,1,0,.01],['time scale',0,1,.5,.01]],86:[],85:[['sampling',['normal','centroid','sample','flat first','flat either'],0]],84:[],83:[['threshold',0,1,.08,.01],['opacity',0,1,.08,.01],['range',0,1,.1,.01],['steps',0,200,100,1]],81:[['threshold',0,1,.6,.01],['steps',0,300,200,1],['refine',true]],82:[['threshold',0,1,.25,.01],['opacity',0,1,.25,.01],['range',0,1,.1,.01],['steps',0,200,100,1]],80:[],78:[['multisampling',true],['animated',true]],79:[['Red',true],['Yellow',true],['Green',true]],48:[['Density',.001,.1,.04,.0001],['Height',-5,5,2,.01]],49:[],50:[['size attenuation',true]],51:[['size',0,1,.08,.001],['color inside','#ffa575'],['color outside','#311599']],52:[['damp',.25,1,.8,.01],['enabled',true]],53:[['speed',0,1,.2,.01]],54:[['instance count',1,1000,1000,1]],55:[['limit x',0,1,1,.01],['limit y',0,1,1,.01]],56:[['gravity',-.0098,0,-.00098,.0001],['bounce',.1,1,.8,.01],['friction',.96,.99,.99,.01],['size',.12,.5,.12,.01]],57:[],58:[],61:[],62:[],63:[],64:[],65:[],66:[],67:[],68:[['roughness',0,1,.5,.01],['metalness',0,1,.5,.01]],69:[],73:[['threshold',0,1,0,.01],['strength',0,3,1,.01],['radius',0,1,0,.01],['exposure',.1,3,1,.01]],75:[['elasticity',0,.5,.4,.01],['damping',.9,.98,.94,.001],['brush size',.1,.5,.25,.01],['brush strength',.1,.3,.22,.01]],76:[['emissiveColor','#ff8b4d'],['timeScale',-1,1,.2,.01],['parabolStrength',0,2,1,.01],['parabolOffset',0,1,.3,.01],['parabolAmplitude',0,2,.2,.01],['strength',0,10,1,.01],['radius',0,1,.1,.01]],77:[],74:[],70:[],71:[['threshold',0,1,0,.01],['strength',0,3,1,.01],['radius',0,1,0,.01],['exposure',.1,2,1,.01]],72:[['strength',0,5,2.5,.01],['radius',0,1,.5,.01],['exposure',.1,2,1,.01]],60:[["ambient", 0, 10, 3, 0.001], ["directional", 0, 20, 8, 0.001], ["color", "#fb00ff"], ["count", 1, 200, 140, 1], ["x", -1, 1, -0.4, 0.01], ["y", -1, 1, -1, 0.01], ["z", -1, 1, 0.5, 0.01], ["start", -1, 1, 1, 0.01], ["end", -1, 1, 0, 0.01], ["mix low", 0, 1, 0, 0.01], ["mix high", 0, 1, 0.5, 0.01], ["radius", 0, 1, 0.8, 0.01], ["color", "#94ffd1"], ["count", 1, 200, 180, 1], ["x", -1, 1, 0.5, 0.01], ["y", -1, 1, 0.5, 0.01], ["z", -1, 1, -0.2, 0.01], ["start", -1, 1, 0.55, 0.01], ["end", -1, 1, 0.2, 0.01], ["mix low", 0, 1, 0.5, 0.01], ["mix high", 0, 1, 1, 0.01], ["radius", 0, 1, 0.8, 0.01], ["default color", "#ff622e"]],59:[['color','#271442'],['roughness',0,1,.15,.001],['emissive color','#ff0a81'],['low',-1,0,-.25,.001],['high',0,1,.2,.001],['power',1,10,7,1],['large speed',0,5,1.25,.01],['large multiplier',0,1,.15,.01],['frequency x',0,10,3,.01],['frequency y',0,10,1,.01],['small iterations',0,5,3,1],['small frequency',0,10,2,.01],['small speed',0,1,.3,.01],['small multiplier',0,1,.18,.01],['normal shift',0,.1,.01,.0001]]}[entry.port.example];
     settings.hidden=!controls.length;
-    controls.forEach(([name,min,max,value,step],i)=>{const label=text('label',name+' ',settings),input=document.createElement('input');input.id='particle-'+i;
+    controls.forEach(([name,min,max,value,step],i)=>{const label=text('label',name+' ',settings),input=document.createElement(Array.isArray(min)?'select':'input');input.id='particle-'+i;
+     if(Array.isArray(min)){min.forEach((name,index)=>input.add(new Option(name,index)));input.value=max;}else{
      input.type=typeof min==='boolean'?'checkbox':typeof min==='string'?'color':'range';if(input.type==='checkbox')input.checked=min;else if(input.type==='color')input.value=min;else Object.assign(input,{min,max,value,step});
-     label.append(input);input.addEventListener('input',()=>app.tsl_parameter(i,input.type==='checkbox'?Number(input.checked):input.type==='color'?parseInt(input.value.slice(1),16):Number(input.value)));
+     }label.append(input);input.addEventListener('input',()=>app.tsl_parameter(i,input.type==='checkbox'?Number(input.checked):input.type==='color'?parseInt(input.value.slice(1),16):Number(input.value)));
     });
    }
    if (entry.port.example >= 43 && entry.port.example <= 47) {

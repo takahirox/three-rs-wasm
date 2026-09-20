@@ -23,12 +23,11 @@
 | `webgl_pmrem_test` | `webgpu_pmrem_test` | Existing partial port retained |
 | `webgl_pmrem_equirectangular` | `webgpu_pmrem_equirectangular` | Existing partial port retained |
 | `webgl_panorama_equirectangular` | `webgpu_equirectangular` | Same panoramic photograph and viewing purpose; controls and projection setup differ |
-| `webgl_lights_rectarealight` | `webgpu_lights_rectarealight` | WebGPU port pending; neither version listed |
+| `webgl_lights_rectarealight` | `webgpu_lights_rectarealight` | WebGPU TSL checker/LTC port listed |
 
-The area-light scene cannot be relabeled as validated WebGPU parity: the
-official WebGPU floor uses a procedural checker roughness node rather than
-the WebGL texture implementation. The existing Rust scene code remains
-available for future adaptation, but is not a gallery entry.
+The area-light WebGPU port uses the official procedural checker roughness node.
+Its transparent MSAA output is unpremultiplied before sRGB conversion and then
+premultiplied again, matching the official WebGPU canvas.
 
 Instancing and AVIF glTF examples remain listed with their limitations because
 no equivalent official WebGPU scenes were found in this baseline. Historical

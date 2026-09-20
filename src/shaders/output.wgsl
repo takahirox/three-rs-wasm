@@ -12,6 +12,7 @@ fn srgb_output(rgb:vec3<f32>)->vec3<f32> {
 }
 
 fn tone_output(value:vec3<f32>,exposure:f32,mode:f32)->vec3<f32> {
+    if mode>3.5 {return clamp(value*exposure,vec3(0.0),vec3(1.0));}
     if mode>2.5 {
         var c=value*exposure;
         let x=min(c.r,min(c.g,c.b));

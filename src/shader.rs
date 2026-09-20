@@ -11,9 +11,32 @@ pub(crate) const DEFAULT_OUTPUT: &str =
 pub(crate) const DEFAULT_HOOKS: &str = "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;} fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}";
 pub(crate) const DEFAULT_PROJECTION: &str =
     "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
+pub(crate) const DEFAULT_SURFACE: &str =
+    "fn transform_surface(surface:VertexOut,value:LitSurface)->LitSurface{return value;}";
+/// Interpolation of the primary UV varying at triangle edges.
+#[derive(Clone, Copy, Debug)]
+pub enum UvInterpolation {
+    Center,
+    Centroid,
+    Sample,
+    FlatFirst,
+    FlatEither,
+}
+impl UvInterpolation {
+    fn wgsl(self) -> &'static str {
+        match self {
+            Self::Center => "perspective,center",
+            Self::Centroid => "perspective,centroid",
+            Self::Sample => "perspective,sample",
+            Self::FlatFirst => "flat,first",
+            Self::FlatEither => "flat,either",
+        }
+    }
+}
 #[derive(Debug)]
 pub struct ShaderProgram {
     pub(crate) id: u64,
+    pub(crate) outputs: u32,
     pub(crate) module: wgpu::ShaderModule,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
@@ -42,6 +65,60 @@ impl ShaderProgram {
             textures,
             DEFAULT_OUTPUT,
             DEFAULT_PROJECTION,
+            DEFAULT_SURFACE,
+            &[],
+            &[],
+            None,
+            None,
+        )
+        .await
+    }
+    /// Bind sampled textures with explicit dimensions, including 2D arrays.
+    pub async fn with_texture_dimensions(
+        renderer: &Renderer,
+        source: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        dimensions: &[wgpu::TextureViewDimension],
+        sample_types: &[wgpu::TextureSampleType],
+    ) -> Result<Self> {
+        if dimensions.len() != textures.len() || sample_types.len() != textures.len() {
+            return Err(Error::Invalid("shader texture dimensions"));
+        }
+        Self::build(
+            renderer,
+            source,
+            buffers,
+            textures,
+            DEFAULT_OUTPUT,
+            DEFAULT_PROJECTION,
+            DEFAULT_SURFACE,
+            dimensions,
+            sample_types,
+            None,
+            None,
+        )
+        .await
+    }
+    /// Change UV interpolation without altering positions or the sample count.
+    pub async fn with_uv_interpolation(
+        renderer: &Renderer,
+        source: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        interpolation: UvInterpolation,
+    ) -> Result<Self> {
+        Self::build(
+            renderer,
+            source,
+            &[],
+            textures,
+            DEFAULT_OUTPUT,
+            DEFAULT_PROJECTION,
+            DEFAULT_SURFACE,
+            &[],
+            &[],
+            None,
+            Some(interpolation),
         )
         .await
     }
@@ -56,6 +133,11 @@ impl ShaderProgram {
             &[],
             output,
             DEFAULT_PROJECTION,
+            DEFAULT_SURFACE,
+            &[],
+            &[],
+            None,
+            None,
         )
         .await
     }
@@ -73,9 +155,68 @@ impl ShaderProgram {
             textures,
             DEFAULT_OUTPUT,
             projection,
+            DEFAULT_SURFACE,
+            &[],
+            &[],
+            None,
+            None,
         )
         .await
     }
+    pub(crate) async fn with_surface(
+        renderer: &Renderer,
+        wgsl: &str,
+        surface: &str,
+        output: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
+        Self::build(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            output,
+            DEFAULT_PROJECTION,
+            surface,
+            &[],
+            &[],
+            None,
+            None,
+        )
+        .await
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) async fn with_mrt(
+        renderer: &Renderer,
+        wgsl: &str,
+        surface: &str,
+        output: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        count: u32,
+        mrt: &str,
+        projection: &str,
+    ) -> Result<Self> {
+        if count == 0 || count > renderer.device.limits().max_color_attachments {
+            return Err(Error::Invalid("MRT attachment count"));
+        }
+        Self::build(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            output,
+            projection,
+            surface,
+            &[],
+            &[],
+            Some((count, mrt)),
+            None,
+        )
+        .await
+    }
+    #[allow(clippy::too_many_arguments)]
     async fn build(
         renderer: &Renderer,
         wgsl: &str,
@@ -83,11 +224,16 @@ impl ShaderProgram {
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
         output: &str,
         projection: &str,
+        surface: &str,
+        dimensions: &[wgpu::TextureViewDimension],
+        sample_types: &[wgpu::TextureSampleType],
+        mrt: Option<(u32, &str)>,
+        interpolation: Option<UvInterpolation>,
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
-        let source = format!(
-            "{}\n{}\n{wgsl}\n{output}\n{projection}",
+        let mut source = format!(
+            "{}\n{}\n{wgsl}\n{output}\n{projection}\n{surface}",
             include_str!("shaders/cube_uv.wgsl"),
             concat!(
                 include_str!("shaders/deformation.wgsl"),
@@ -97,6 +243,19 @@ impl ShaderProgram {
                 include_str!("shader.wgsl")
             )
         );
+        if let Some(interpolation) = interpolation {
+            source = source.replace(
+                "@location(2) uv: vec2<f32>",
+                &format!(
+                    "@location(2) @interpolate({}) uv: vec2<f32>",
+                    interpolation.wgsl()
+                ),
+            );
+        }
+        if let Some((_, code)) = mrt {
+            source=source.replace("@fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>","fn color_main(in:VertexOut,front:bool)->vec4<f32>");
+            source.push_str(code);
+        }
         let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("custom mesh shader"),
             source: wgpu::ShaderSource::Wgsl(source.into()),
@@ -127,8 +286,14 @@ impl ShaderProgram {
                             binding,
                             visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
                             ty: wgpu::BindingType::Texture {
-                                sample_type: wgpu::TextureSampleType::Float { filterable: true },
-                                view_dimension: wgpu::TextureViewDimension::D2,
+                                sample_type: sample_types
+                                    .get(i)
+                                    .copied()
+                                    .unwrap_or(wgpu::TextureSampleType::Float { filterable: true }),
+                                view_dimension: dimensions
+                                    .get(i)
+                                    .copied()
+                                    .unwrap_or(wgpu::TextureViewDimension::D2),
                                 multisampled: false,
                             },
                             count: None,
@@ -136,7 +301,13 @@ impl ShaderProgram {
                         wgpu::BindGroupLayoutEntry {
                             binding: binding + 1,
                             visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
-                            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                            ty: wgpu::BindingType::Sampler(
+                                if sample_types.get(i) == Some(&wgpu::TextureSampleType::Depth) {
+                                    wgpu::SamplerBindingType::Comparison
+                                } else {
+                                    wgpu::SamplerBindingType::Filtering
+                                },
+                            ),
                             count: None,
                         },
                     ]
@@ -175,12 +346,13 @@ impl ShaderProgram {
         });
         // Validate the group layout contract at creation, before render() caches
         // format-specific variants. This pipeline is deliberately not submitted.
-        renderer.validate_shader_program(&module, &layout);
+        renderer.validate_shader_program(&module, &layout, mrt.map_or(1, |(count, _)| count));
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }
         Ok(Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
+            outputs: mrt.map_or(1, |(count, _)| count),
             module,
             layout,
             bindings,

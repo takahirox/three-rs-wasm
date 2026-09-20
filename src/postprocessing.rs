@@ -10,6 +10,7 @@ pub struct Effect {
     texture_layout: wgpu::BindGroupLayout,
     textures: wgpu::BindGroup,
     texture_count: usize,
+    has_depth: bool,
     /// Sixteen vec4 parameters, available as `params` in WGSL.
     pub parameters: [[f32; 4]; 16],
 }
@@ -26,7 +27,7 @@ impl Effect {
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, textures, None).await
+        Self::build(renderer, format, wgsl, textures, None, None).await
     }
     /// Fullscreen pass with an explicit blend state (for GPU accumulation).
     pub async fn with_blend(
@@ -35,7 +36,33 @@ impl Effect {
         wgsl: &str,
         blend: wgpu::BlendState,
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, &[], Some(blend)).await
+        Self::build(renderer, format, wgsl, &[], Some(blend), None).await
+    }
+    /// Fullscreen effect with a single-sampled depth view at group 1 binding 0.
+    /// Use textureLoad for exact depth reads; no depth copy or CPU readback.
+    pub async fn with_depth(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        depth: &wgpu::TextureView,
+    ) -> Result<Self> {
+        Self::build(renderer, format, wgsl, &[], None, Some((depth, false))).await
+    }
+    /// Sample an MSAA depth attachment directly on the GPU (sample index is chosen by WGSL).
+    pub async fn with_multisampled_depth(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        depth: &wgpu::TextureView,
+    ) -> Result<Self> {
+        Self::build(renderer, format, wgsl, &[], None, Some((depth, true))).await
+    }
+    pub fn set_depth(&mut self, renderer: &Renderer, depth: &wgpu::TextureView) -> Result<()> {
+        if !self.has_depth {
+            return Err(Error::Invalid("effect has no depth binding"));
+        }
+        self.textures = extra_bindings(&renderer.device, &self.texture_layout, &[], Some(depth));
+        Ok(())
     }
     async fn build(
         renderer: &Renderer,
@@ -43,6 +70,7 @@ impl Effect {
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
         blend: Option<wgpu::BlendState>,
+        depth: Option<(&wgpu::TextureView, bool)>,
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
@@ -117,9 +145,28 @@ impl Effect {
                         },
                     ]
                 })
+                .chain(
+                    depth
+                        .iter()
+                        .map(|(_, multisampled)| wgpu::BindGroupLayoutEntry {
+                            binding: 0,
+                            visibility: wgpu::ShaderStages::FRAGMENT,
+                            ty: wgpu::BindingType::Texture {
+                                sample_type: wgpu::TextureSampleType::Depth,
+                                view_dimension: wgpu::TextureViewDimension::D2,
+                                multisampled: *multisampled,
+                            },
+                            count: None,
+                        }),
+                )
                 .collect::<Vec<_>>(),
         });
-        let texture_bindings = extra_bindings(device, &texture_layout, textures);
+        let texture_bindings = extra_bindings(
+            device,
+            &texture_layout,
+            textures,
+            depth.map(|(view, _)| view),
+        );
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: None,
             bind_group_layouts: &[&layout, &texture_layout],
@@ -159,6 +206,7 @@ impl Effect {
             texture_layout,
             textures: texture_bindings,
             texture_count: textures.len(),
+            has_depth: depth.is_some(),
             pipeline,
             format,
             sampler: device.create_sampler(&wgpu::SamplerDescriptor {
@@ -175,10 +223,10 @@ impl Effect {
         renderer: &Renderer,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<()> {
-        if textures.len() != self.texture_count {
+        if self.has_depth || textures.len() != self.texture_count {
             return Err(Error::Invalid("effect texture count"));
         }
-        self.textures = extra_bindings(&renderer.device, &self.texture_layout, textures);
+        self.textures = extra_bindings(&renderer.device, &self.texture_layout, textures, None);
         Ok(())
     }
     pub fn apply(
@@ -319,6 +367,7 @@ fn extra_bindings(
     device: &wgpu::Device,
     layout: &wgpu::BindGroupLayout,
     textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    depth: Option<&wgpu::TextureView>,
 ) -> wgpu::BindGroup {
     device.create_bind_group(&wgpu::BindGroupDescriptor {
         label: Some("effect extra textures"),
@@ -338,6 +387,10 @@ fn extra_bindings(
                     },
                 ]
             })
+            .chain(depth.into_iter().map(|view| wgpu::BindGroupEntry {
+                binding: 0,
+                resource: wgpu::BindingResource::TextureView(view),
+            }))
             .collect::<Vec<_>>(),
     })
 }
