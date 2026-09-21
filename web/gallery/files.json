@@ -22,6 +22,8 @@
     "webgl_buffergeometry_rawshader"
   ],
   "webgpu": [
+    "webgpu_backdrop",
+    "webgpu_backdrop_area",
     "webgpu_centroid_sampling",
     "webgpu_compute_geometry",
     "webgpu_compute_particles",
@@ -67,6 +69,7 @@
     "webgpu_occlusion",
     "webgpu_parallax_uv",
     "webgpu_particles",
+    "webgpu_particles_soft",
     "webgpu_pmrem_cubemap",
     "webgpu_pmrem_equirectangular",
     "webgpu_pmrem_scene",
@@ -92,6 +95,7 @@
     "webgpu_postprocessing",
     "webgpu_postprocessing_direct",
     "webgpu_procedural_texture",
+    "webgpu_refraction",
     "webgpu_rendertarget_2d-array_3d",
     "webgpu_rtt",
     "webgpu_shadertoy",
@@ -110,6 +114,7 @@
     "webgpu_tsl_raging_sea",
     "webgpu_tsl_vfx_flames",
     "webgpu_tsl_vfx_tornado",
+    "webgpu_upscaling_fsr1",
     "webgpu_volume_cloud",
     "webgpu_volume_perlin"
   ]

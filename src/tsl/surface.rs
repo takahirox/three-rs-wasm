@@ -11,6 +11,8 @@ pub struct SurfaceNodes {
     /// Linear HDR environment radiance, evaluated for each BRDF sampling direction.
     pub environment: Option<Node>,
     pub output: Option<Node>,
+    /// Replace/mix diffuse lighting with framebuffer RGB; W is the mix factor.
+    pub backdrop: Option<Node>,
     pub color: Option<Node>,
     pub normal: Option<Node>,
     pub roughness: Option<Node>,
@@ -36,6 +38,7 @@ impl SurfaceNodes {
         fragment.buffers = types.to_vec();
         let mut assignments = String::new();
         for (name, node, expected) in [
+            ("backdrop", &self.backdrop, Type::Vec4),
             ("normal", &self.normal, Type::Vec3),
             ("roughness", &self.roughness, Type::Float),
             ("metalness", &self.metalness, Type::Float),

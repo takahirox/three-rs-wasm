@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body>
+<script type="module">
+// Original scripts and shaders. Only seeded initial data, time, GUI capture and layout are adapted.
+import * as THREE from 'three/webgpu';
+import {uniform,renderGroup,range as originalRange} from 'three/tsl';
+const id=new URLSearchParams(location.search).get('id');
+if(!['webgpu_backdrop','webgpu_backdrop_area','webgpu_refraction','webgpu_particles_soft','webgpu_upscaling_fsr1'].includes(id))throw Error('invalid fixture');
+window.fixtureRenderGroup=renderGroup;window.fixtureTime=uniform(0).setGroup(renderGroup);window.fixtureSeconds=0;window.fixtureControls=[];
+let rangeSeed=186;
+window.fixtureRange=(...args)=>{const node=originalRange(...args),setup=node.setup;const initial=rangeSeed++;node.setup=function(builder){let seed=initial;const old=Math.random;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};try{return setup.call(this,builder);}finally{Math.random=old;}};return node;};
+let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);
+THREE.DefaultLoadingManager.itemStart=(...args)=>{pending++;start(...args);};
+THREE.DefaultLoadingManager.itemEnd=(...args)=>{end(...args);pending--;};
+THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};(window.references??=[]).push(window.reference);};
+const source=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){const gui={add(object,key){object.setGroup?.(window.fixtureRenderGroup);const item={object,key,callback:null,name(){return this;},step(){return this;},listen(){return this;},onChange(fn){this.callback=fn;return this;},setValue(value){if(this.object[this.key]?.isColor)this.object[this.key].set(value);else this.object[this.key]=value;this.callback?.(value);return this;}};fixtureControls.push(item);return item;},addFolder(){return this;},addColor(object,key){return this.add(object,key);}};return gui;}}`)
+.replace(/\w+\.inspector = new Inspector\(\);/g,'window.fixtureInspector=new Inspector();').replace(/\w+\.inspector.createParameters/g,'fixtureInspector.createParameters')
+.replace(/import \{([^}]*)\} from 'three\/tsl';/g,(_,names)=>`import {${names.split(',').filter(x=>!['time','range'].includes(x.trim())).join(',')}} from 'three/tsl';`)
+.replace('timer.getDelta()', '(window.fixtureSeconds - (window.fixturePrevious ?? 0))')
+.replaceAll('Date.now()', '(window.fixtureSeconds*1000)')
+.replaceAll("'./textures/", "'/.cache/three-r186/examples/textures/")
+.replaceAll("'./models/", "'/.cache/three-r186/examples/models/")
+.replaceAll("'textures/", "'/.cache/three-r186/examples/textures/")
+.replaceAll("'models/", "'/.cache/three-r186/examples/models/");
+module=module.replaceAll('oscSine()', 'oscSine(time)');
+module=module.replaceAll('portals.rotation.y += delta * 0.5','portals.rotation.y = window.fixtureSeconds * 0.5');
+module='const range=window.fixtureRange;const time=window.fixtureTime;\n'+module;
+await import(URL.createObjectURL(new Blob([module],{type:'text/javascript'})));
+while(!window.reference)await new Promise(r=>setTimeout(r,10));while(pending)await new Promise(r=>setTimeout(r,10));for(const ref of references)await ref.renderer.init();
+window.fixtureFrames=0;window.renderFixture=async(t=0)=>{fixtureFrames++;window.fixtureDelta=t-(window.fixtureSeconds??0);fixtureTime.value=t;window.fixtureSeconds=t;for(const ref of references){ref.renderer._nodes.nodeFrame.update();await ref.callback(t*1000);await ref.renderer.backend.device.queue.onSubmittedWorkDone();}window.fixturePrevious=t;};
+window.fixtureParameter=(index,value)=>fixtureControls[index].setValue(value);
+
+// Warm up postprocess target sizes and material pipelines at the same fixed pose.
+await renderFixture();await renderFixture();for(const ref of references)ref.renderer.domElement.dataset.ready='true';
+</script></body></html>

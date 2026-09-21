@@ -1,0 +1,3071 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "backend": "Chrome WebGPU / Metal",
+  "threshold": {
+    "perChannel": 6,
+    "pixelFraction": 0.005
+  },
+  "referenceAdaptations": [
+    "Controlled time (including implicit oscSine time), fixed-pose warm-up, independent seeded RangeNode initialization, Inspector control capture and viewport layout; original scripts and shader expressions.",
+    "Soft-particle uniform controls refresh in the render group when parameters change at a fixed time.",
+    "The animated FSR1 scene advances once and rewinds before its zero-time measurement. Damped cameras settle before the orbit/pan/wheel images."
+  ],
+  "images": {
+    "webgpu_backdrop": [
+      {
+        "state": 0,
+        "fraction": 0.000995635986328125,
+        "meanError": 0.24401346842447916
+      },
+      {
+        "state": 1,
+        "fraction": 0.000713348388671875,
+        "meanError": 0.14752833048502603
+      },
+      {
+        "state": 2,
+        "fraction": 0.002010345458984375,
+        "meanError": 0.24787775675455728
+      },
+      {
+        "state": 3,
+        "fraction": 8.392333984375e-05,
+        "meanError": 0.05713780721028646
+      },
+      {
+        "state": 4,
+        "fraction": 0.000118255615234375,
+        "meanError": 0.058349609375
+      },
+      {
+        "state": 5,
+        "fraction": 0.000141143798828125,
+        "meanError": 0.057988484700520836
+      },
+      {
+        "state": 6,
+        "fraction": 0.000102996826171875,
+        "meanError": 0.05812708536783854
+      },
+      {
+        "state": 7,
+        "fraction": 0.0001484375,
+        "meanError": 0.06845572916666667
+      }
+    ],
+    "webgpu_backdrop_area": [
+      {
+        "state": 0,
+        "fraction": 3.814697265625e-06,
+        "meanError": 0.021165211995442707
+      },
+      {
+        "state": 1,
+        "fraction": 1.1444091796875e-05,
+        "meanError": 0.017470041910807293
+      },
+      {
+        "state": 2,
+        "fraction": 2.6702880859375e-05,
+        "meanError": 0.016721089680989582
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.017279307047526043
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.023924509684244793
+      },
+      {
+        "state": 5,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.025081634521484375
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.024126688639322918
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.020170847574869793
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.024717966715494793
+      },
+      {
+        "state": 9,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.025081634521484375
+      },
+      {
+        "state": 10,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.024305979410807293
+      },
+      {
+        "state": 11,
+        "fraction": 0,
+        "meanError": 0.024656931559244793
+      },
+      {
+        "state": 12,
+        "fraction": 0,
+        "meanError": 0.02445220947265625
+      },
+      {
+        "state": 13,
+        "fraction": 1.5625e-05,
+        "meanError": 0.022799479166666668
+      }
+    ],
+    "webgpu_particles_soft": [
+      {
+        "state": 0,
+        "fraction": 0.00028228759765625,
+        "meanError": 0.07373809814453125
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.06482696533203125
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.06664657592773438
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.064697265625
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.06885910034179688
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.06877899169921875
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.06890106201171875
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.06886672973632812
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.09493255615234375
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.09692001342773438
+      },
+      {
+        "state": 10,
+        "fraction": 0,
+        "meanError": 0.09576797485351562
+      },
+      {
+        "state": 11,
+        "fraction": 0,
+        "meanError": 0.11228125
+      }
+    ],
+    "webgpu_refraction": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.029819488525390625
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.0298004150390625
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.029997507731119793
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.029927571614583332
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.03623072306315104
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.03378931681315104
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.032221476236979164
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.02486328125
+      }
+    ],
+    "webgpu_upscaling_fsr1": [
+      {
+        "state": 0,
+        "fraction": 0.00215911865234375,
+        "meanError": 0.07725906372070312
+      },
+      {
+        "state": 1,
+        "fraction": 0.00213623046875,
+        "meanError": 0.076812744140625
+      },
+      {
+        "state": 2,
+        "fraction": 0.00214385986328125,
+        "meanError": 0.07724507649739583
+      },
+      {
+        "state": 3,
+        "fraction": 0.002101898193359375,
+        "meanError": 0.07717514038085938
+      },
+      {
+        "state": 4,
+        "fraction": 0.001125335693359375,
+        "meanError": 0.05364227294921875
+      },
+      {
+        "state": 5,
+        "fraction": 0.000453948974609375,
+        "meanError": 0.05284754435221354
+      },
+      {
+        "state": 6,
+        "fraction": 0.000675201416015625,
+        "meanError": 0.060894012451171875
+      },
+      {
+        "state": 7,
+        "fraction": 0.002353668212890625,
+        "meanError": 0.08120218912760417
+      },
+      {
+        "state": 8,
+        "fraction": 0.0049285888671875,
+        "meanError": 0.13609695434570312
+      },
+      {
+        "state": 9,
+        "fraction": 0.003391265869140625,
+        "meanError": 0.10196812947591145
+      },
+      {
+        "state": 10,
+        "fraction": 0.00305938720703125,
+        "meanError": 0.09354146321614583
+      },
+      {
+        "state": 11,
+        "fraction": 0.0033203125,
+        "meanError": 0.08112890625
+      }
+    ]
+  },
+  "residency": {
+    "webgpu_backdrop": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 167,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 167,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 184,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 184,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_backdrop_area": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 123,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 123,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 133,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 133,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_particles_soft": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 67,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 67,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 78,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 78,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_refraction": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 78,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 78,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 88,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 88,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_upscaling_fsr1": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 1392,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        },
+        "after": {
+          "creates": 1392,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 1404,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        },
+        "after": {
+          "creates": 1404,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        }
+      }
+    ]
+  },
+  "workload": [
+    {
+      "kind": "backdrop",
+      "reference": {
+        "passes": 12,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 84318,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 5068,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer4_render_(vertex,fragment,compute)",
+            "size": 224,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_0_(vertex)",
+            "size": 4160,
+            "bytes": 4160
+          },
+          {
+            "label": "bindingBuffer19_render_(vertex,fragment,compute)",
+            "size": 240,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBuffer18_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer18_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer12_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer12_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer24_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer24_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer6_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer6_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer27_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer27_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer9_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer9_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer22_render_(vertex,fragment,compute)",
+            "size": 240,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBuffer21_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer21_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 12,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 84318,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 4160,
+        "attributeWrites": [
+          {
+            "label": "skin/morph input",
+            "size": 4160,
+            "bytes": 4160
+          }
+        ],
+        "uniformBytes": 34984,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "backdrop_area",
+      "reference": {
+        "passes": 5,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 84318,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 4164,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_0_(vertex)",
+            "size": 4160,
+            "bytes": 4160
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 84318,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 4160,
+        "attributeWrites": [
+          {
+            "label": "skin/morph input",
+            "size": 4160,
+            "bytes": 4160
+          }
+        ],
+        "uniformBytes": 12,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "refraction",
+      "reference": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 60,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 64,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 60,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 188,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 188
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "particles_soft",
+      "reference": {
+        "passes": 3,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 50
+          },
+          {
+            "vertices": 300000,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 4008,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer6_render_(vertex,fragment,compute)",
+            "size": 192,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_2_(fragment)",
+            "size": 800,
+            "bytes": 800
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_3_(fragment)",
+            "size": 800,
+            "bytes": 800
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_0_(vertex)",
+            "size": 800,
+            "bytes": 800
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_1_(vertex)",
+            "size": 800,
+            "bytes": 800
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 800,
+            "bytes": 800
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 50
+          },
+          {
+            "vertices": 300000,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 4,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "upscaling_fsr1",
+      "reference": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 9,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 42,
+            "instances": 1
+          },
+          {
+            "vertices": 66,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 117,
+            "instances": 1
+          },
+          {
+            "vertices": 120,
+            "instances": 1
+          },
+          {
+            "vertices": 138,
+            "instances": 1
+          },
+          {
+            "vertices": 138,
+            "instances": 1
+          },
+          {
+            "vertices": 156,
+            "instances": 1
+          },
+          {
+            "vertices": 156,
+            "instances": 1
+          },
+          {
+            "vertices": 168,
+            "instances": 1
+          },
+          {
+            "vertices": 180,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 348,
+            "instances": 1
+          },
+          {
+            "vertices": 348,
+            "instances": 1
+          },
+          {
+            "vertices": 366,
+            "instances": 1
+          },
+          {
+            "vertices": 384,
+            "instances": 1
+          },
+          {
+            "vertices": 408,
+            "instances": 1
+          },
+          {
+            "vertices": 429,
+            "instances": 1
+          },
+          {
+            "vertices": 444,
+            "instances": 1
+          },
+          {
+            "vertices": 444,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 576,
+            "instances": 1
+          },
+          {
+            "vertices": 612,
+            "instances": 1
+          },
+          {
+            "vertices": 696,
+            "instances": 1
+          },
+          {
+            "vertices": 948,
+            "instances": 1
+          },
+          {
+            "vertices": 957,
+            "instances": 1
+          },
+          {
+            "vertices": 957,
+            "instances": 1
+          },
+          {
+            "vertices": 1152,
+            "instances": 1
+          },
+          {
+            "vertices": 1152,
+            "instances": 1
+          },
+          {
+            "vertices": 2406,
+            "instances": 1
+          },
+          {
+            "vertices": 4581,
+            "instances": 1
+          },
+          {
+            "vertices": 4746,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5544,
+            "instances": 1
+          },
+          {
+            "vertices": 8898,
+            "instances": 1
+          },
+          {
+            "vertices": 27372,
+            "instances": 1
+          },
+          {
+            "vertices": 28314,
+            "instances": 1
+          },
+          {
+            "vertices": 50805,
+            "instances": 1
+          },
+          {
+            "vertices": 52050,
+            "instances": 1
+          },
+          {
+            "vertices": 87828,
+            "instances": 1
+          },
+          {
+            "vertices": 122202,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 21088,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_2_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer90_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer90_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer98_object_(vertex,fragment,compute)",
+            "size": 256,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer98_object_(vertex,fragment,compute)",
+            "size": 256,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer107_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(vertex)",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer47_object_(vertex,fragment,compute)",
+            "size": 368,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer151_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer154_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 9,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 42,
+            "instances": 1
+          },
+          {
+            "vertices": 66,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 72,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 90,
+            "instances": 1
+          },
+          {
+            "vertices": 117,
+            "instances": 1
+          },
+          {
+            "vertices": 120,
+            "instances": 1
+          },
+          {
+            "vertices": 138,
+            "instances": 1
+          },
+          {
+            "vertices": 138,
+            "instances": 1
+          },
+          {
+            "vertices": 156,
+            "instances": 1
+          },
+          {
+            "vertices": 156,
+            "instances": 1
+          },
+          {
+            "vertices": 168,
+            "instances": 1
+          },
+          {
+            "vertices": 180,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 195,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 288,
+            "instances": 1
+          },
+          {
+            "vertices": 348,
+            "instances": 1
+          },
+          {
+            "vertices": 348,
+            "instances": 1
+          },
+          {
+            "vertices": 366,
+            "instances": 1
+          },
+          {
+            "vertices": 384,
+            "instances": 1
+          },
+          {
+            "vertices": 408,
+            "instances": 1
+          },
+          {
+            "vertices": 429,
+            "instances": 1
+          },
+          {
+            "vertices": 444,
+            "instances": 1
+          },
+          {
+            "vertices": 444,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 540,
+            "instances": 1
+          },
+          {
+            "vertices": 576,
+            "instances": 1
+          },
+          {
+            "vertices": 612,
+            "instances": 1
+          },
+          {
+            "vertices": 696,
+            "instances": 1
+          },
+          {
+            "vertices": 948,
+            "instances": 1
+          },
+          {
+            "vertices": 957,
+            "instances": 1
+          },
+          {
+            "vertices": 957,
+            "instances": 1
+          },
+          {
+            "vertices": 1152,
+            "instances": 1
+          },
+          {
+            "vertices": 1152,
+            "instances": 1
+          },
+          {
+            "vertices": 2406,
+            "instances": 1
+          },
+          {
+            "vertices": 4581,
+            "instances": 1
+          },
+          {
+            "vertices": 4746,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5022,
+            "instances": 1
+          },
+          {
+            "vertices": 5544,
+            "instances": 1
+          },
+          {
+            "vertices": 8898,
+            "instances": 1
+          },
+          {
+            "vertices": 27372,
+            "instances": 1
+          },
+          {
+            "vertices": 28314,
+            "instances": 1
+          },
+          {
+            "vertices": 50805,
+            "instances": 1
+          },
+          {
+            "vertices": 52050,
+            "instances": 1
+          },
+          {
+            "vertices": 87828,
+            "instances": 1
+          },
+          {
+            "vertices": 122202,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 16384,
+        "attributeWrites": [
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          },
+          {
+            "label": "skin/morph input",
+            "size": 2048,
+            "bytes": 2048
+          }
+        ],
+        "uniformBytes": 6924,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 188
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 156
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 160
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 188
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 164
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 164
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 184
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    }
+  ],
+  "sameInputFsrKernels": {
+    "passes": [
+      {
+        "label": "",
+        "size": [
+          256,
+          256
+        ]
+      },
+      {
+        "label": "",
+        "size": [
+          512,
+          512
+        ]
+      },
+      {
+        "label": "",
+        "size": [
+          512,
+          512
+        ]
+      }
+    ],
+    "comparisons": [
+      {
+        "fn": "fsr_easu",
+        "max": 0.00048828125,
+        "mean": 1.714215613901615e-08,
+        "bad": 0
+      },
+      {
+        "fn": "fsr_rcas",
+        "max": 0,
+        "mean": 0,
+        "bad": 0
+      }
+    ]
+  },
+  "limitations": [
+    "Inspector UI is adapted; hardware CPU/GPU timing parity has not been measured.",
+    "MSAA soft-particle depth sampling uses an additional fullscreen depth resolve; Backdrop Area avoids an identical redundant color copy.",
+    "Framebuffer sampling currently supports retained two-dimensional targets; color snapshots use nearest sampling and no mip chain."
+  ],
+  "imagesDpr2": {
+    "webgpu_backdrop": [
+      {
+        "state": 0,
+        "fraction": 0.000988006591796875,
+        "meanError": 0.23886775970458984
+      },
+      {
+        "state": 1,
+        "fraction": 0.0006322860717773438,
+        "meanError": 0.14179197947184244
+      },
+      {
+        "state": 2,
+        "fraction": 0.001850128173828125,
+        "meanError": 0.23378690083821616
+      },
+      {
+        "state": 3,
+        "fraction": 8.20159912109375e-05,
+        "meanError": 0.05820782979329427
+      },
+      {
+        "state": 4,
+        "fraction": 8.296966552734375e-05,
+        "meanError": 0.058884620666503906
+      },
+      {
+        "state": 5,
+        "fraction": 7.915496826171875e-05,
+        "meanError": 0.05808862050374349
+      },
+      {
+        "state": 6,
+        "fraction": 8.392333984375e-05,
+        "meanError": 0.05875396728515625
+      },
+      {
+        "state": 7,
+        "fraction": 8.30078125e-05,
+        "meanError": 0.06266471354166667
+      }
+    ],
+    "webgpu_backdrop_area": [
+      {
+        "state": 0,
+        "fraction": 9.5367431640625e-07,
+        "meanError": 0.024341583251953125
+      },
+      {
+        "state": 1,
+        "fraction": 1.52587890625e-05,
+        "meanError": 0.01885191599527995
+      },
+      {
+        "state": 2,
+        "fraction": 5.7220458984375e-06,
+        "meanError": 0.018390655517578125
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.015294710795084635
+      },
+      {
+        "state": 4,
+        "fraction": 2.86102294921875e-06,
+        "meanError": 0.01940600077311198
+      },
+      {
+        "state": 5,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.01986090342203776
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.01885541280110677
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.015045166015625
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.020202000935872395
+      },
+      {
+        "state": 9,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.01986090342203776
+      },
+      {
+        "state": 10,
+        "fraction": 1.9073486328125e-06,
+        "meanError": 0.019219716389973957
+      },
+      {
+        "state": 11,
+        "fraction": 0,
+        "meanError": 0.019430160522460938
+      },
+      {
+        "state": 12,
+        "fraction": 9.5367431640625e-07,
+        "meanError": 0.019186019897460938
+      },
+      {
+        "state": 13,
+        "fraction": 2.9296875e-06,
+        "meanError": 0.023196940104166668
+      }
+    ],
+    "webgpu_particles_soft": [
+      {
+        "state": 0,
+        "fraction": 0.0001049041748046875,
+        "meanError": 0.06703853607177734
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.06288528442382812
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.06407928466796875
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.06322669982910156
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.06794548034667969
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.0680551528930664
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.06789684295654297
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.06794166564941406
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.09438514709472656
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.09596443176269531
+      },
+      {
+        "state": 10,
+        "fraction": 0,
+        "meanError": 0.09604454040527344
+      },
+      {
+        "state": 11,
+        "fraction": 0,
+        "meanError": 0.1112783203125
+      }
+    ],
+    "webgpu_refraction": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.029558817545572918
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.02951335906982422
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.02971617380777995
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.02967357635498047
+      },
+      {
+        "state": 4,
+        "fraction": 1.9073486328125e-06,
+        "meanError": 0.03641986846923828
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.033922831217447914
+      },
+      {
+        "state": 6,
+        "fraction": 7.62939453125e-06,
+        "meanError": 0.03372955322265625
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.026227864583333333
+      }
+    ],
+    "webgpu_upscaling_fsr1": [
+      {
+        "state": 0,
+        "fraction": 0.0007457733154296875,
+        "meanError": 0.05937067667643229
+      },
+      {
+        "state": 1,
+        "fraction": 0.0007457733154296875,
+        "meanError": 0.05934969584147135
+      },
+      {
+        "state": 2,
+        "fraction": 0.0007600784301757812,
+        "meanError": 0.05997403462727865
+      },
+      {
+        "state": 3,
+        "fraction": 0.0007610321044921875,
+        "meanError": 0.06192843119303385
+      },
+      {
+        "state": 4,
+        "fraction": 0.0005035400390625,
+        "meanError": 0.04984696706136068
+      },
+      {
+        "state": 5,
+        "fraction": 0.00030612945556640625,
+        "meanError": 0.05282942454020182
+      },
+      {
+        "state": 6,
+        "fraction": 0.000392913818359375,
+        "meanError": 0.057093302408854164
+      },
+      {
+        "state": 7,
+        "fraction": 0.0020732879638671875,
+        "meanError": 0.07612387339274089
+      },
+      {
+        "state": 8,
+        "fraction": 0.0011501312255859375,
+        "meanError": 0.05549303690592448
+      },
+      {
+        "state": 9,
+        "fraction": 0.0015211105346679688,
+        "meanError": 0.06392478942871094
+      },
+      {
+        "state": 10,
+        "fraction": 0.0013217926025390625,
+        "meanError": 0.06052398681640625
+      },
+      {
+        "state": 11,
+        "fraction": 0.00114453125,
+        "meanError": 0.04966569010416667
+      }
+    ]
+  },
+  "residencyDpr2": {
+    "webgpu_backdrop": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 167,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 167,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 184,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 184,
+          "transfers": [
+            3,
+            1701216,
+            522912
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_backdrop_area": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 123,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 123,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 133,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        },
+        "after": {
+          "creates": 133,
+          "transfers": [
+            4,
+            1648944,
+            522928
+          ],
+          "resources": [
+            4,
+            4,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_particles_soft": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 67,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 67,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 78,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 78,
+          "transfers": [
+            3,
+            5200848,
+            48
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_refraction": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 78,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 78,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 88,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        },
+        "after": {
+          "creates": 88,
+          "transfers": [
+            2,
+            5144,
+            32
+          ],
+          "resources": [
+            1,
+            2,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_upscaling_fsr1": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 1392,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        },
+        "after": {
+          "creates": 1392,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 1404,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        },
+        "after": {
+          "creates": 1404,
+          "transfers": [
+            72,
+            17153688,
+            27168
+          ],
+          "resources": [
+            62,
+            62,
+            1
+          ]
+        }
+      }
+    ]
+  },
+  "validation": {
+    "dpr1BrowserChecks": 23,
+    "dpr2BrowserChecks": 10,
+    "nativeGpuChecks": 20,
+    "packagedSiteChecks": 6,
+    "clippy": [
+      "all-targets",
+      "wasm32-unknown-unknown"
+    ],
+    "timingParity": false
+  }
+}

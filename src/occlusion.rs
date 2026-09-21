@@ -17,7 +17,8 @@ pub struct OcclusionQueries {
     results: Arc<Mutex<HashMap<Object3D, bool>>>,
 }
 impl OcclusionQueries {
-    /// Capacity counts draw groups, including multiple materials of one object.
+    /// Capacity counts draw groups, including multiple materials and separately
+    /// captured back/front viewport passes of one object.
     pub fn new(r: &Renderer, objects: &[Object3D], capacity: u32) -> Result<Self> {
         if capacity == 0 || capacity > wgpu::QUERY_SET_MAX_QUERIES {
             return Err(Error::Invalid("occlusion query capacity"));

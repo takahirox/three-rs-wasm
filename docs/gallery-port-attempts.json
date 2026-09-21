@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 487,
-    "runnable-partial": 108,
+    "blocked-at-port-review": 482,
+    "runnable-partial": 113,
     "excluded": 10,
     "requires-feature-review": 2
   },
@@ -19977,10 +19977,10 @@
     },
     {
       "id": "webgpu_backdrop",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_backdrop.html",
       "source_sha256": "b4abe26ab8dc3073ec82c9ed747b2b3195b801f398a5a80073b0530f82d926c7",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-viewport.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -20070,10 +20070,10 @@
     },
     {
       "id": "webgpu_backdrop_area",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_backdrop_area.html",
       "source_sha256": "a8d7a44147784c98c35722512ddfaa5447cbe88e07ba92b15dbfd4849a286712",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-viewport.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -28785,10 +28785,10 @@
     },
     {
       "id": "webgpu_particles_soft",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_particles_soft.html",
       "source_sha256": "1cc28c050c7c8aaa9efe9e6f2c963f4c92d09afe6ef0691ba823738ca00633b5",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-viewport.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -32641,10 +32641,10 @@
     },
     {
       "id": "webgpu_refraction",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_refraction.html",
       "source_sha256": "ebbc7b86f6a3a6ca1533631475fa0d6f48c08be743d48e95b93c2441f49cbe1d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-viewport.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -36162,10 +36162,10 @@
     },
     {
       "id": "webgpu_upscaling_fsr1",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_upscaling_fsr1.html",
       "source_sha256": "75c22f60f7577f96229887097fc354896aa10059ecdf5da2ca3d4f8f57b079ce",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-viewport.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

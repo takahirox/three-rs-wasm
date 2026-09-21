@@ -110,6 +110,7 @@ pub struct Renderer {
     pub device: wgpu::Device,
     pub queue: wgpu::Queue,
     layout: wgpu::BindGroupLayout,
+    viewport_layout: wgpu::BindGroupLayout,
     shader: wgpu::ShaderModule,
     shadows: crate::shadow::ShadowRenderer,
     geometry: RefCell<crate::geometry_gpu::Cache>,
@@ -131,6 +132,7 @@ pub struct Renderer {
     presentations:
         RefCell<HashMap<wgpu::TextureFormat, (wgpu::BindGroupLayout, wgpu::RenderPipeline)>>,
     environment_builds: std::cell::Cell<u64>,
+    viewport: RefCell<Option<crate::viewport::Snapshot>>,
     transmission_target: RefCell<Option<RenderTarget>>,
     transmission_sampler: wgpu::Sampler,
     transmission_mips: RefCell<Option<crate::transmission::MipChain>>,
@@ -152,7 +154,9 @@ struct DrawGeometry<'a> {
     instances: &'a [Instance],
     transmission_view: Option<&'a wgpu::TextureView>,
 }
+#[derive(Clone)]
 struct Draw {
+    viewport: u8,
     object: Object3D,
     stencil_reference: u32,
     custom_bindings: Option<wgpu::BindGroup>,
@@ -177,12 +181,20 @@ impl Renderer {
         module: &wgpu::ShaderModule,
         extra: &wgpu::BindGroupLayout,
         outputs: u32,
+        viewport: bool,
     ) {
         let layout = self
             .device
             .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                 label: None,
-                bind_group_layouts: &[&self.layout, extra],
+                bind_group_layouts: &[
+                    if viewport {
+                        &self.viewport_layout
+                    } else {
+                        &self.layout
+                    },
+                    extra,
+                ],
                 push_constant_ranges: &[],
             });
         let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
@@ -214,6 +226,7 @@ impl Renderer {
             *slot = Default::default();
         }
         self.present_slots.borrow_mut().clear();
+        self.viewport.borrow_mut().take();
         self.geometry.borrow_mut().prune();
         self.textures.borrow_mut().prune();
         self.physical_maps.borrow_mut().prune();
@@ -345,6 +358,24 @@ impl Renderer {
             label: Some("draw layout"),
             entries: &entries,
         });
+        for binding in [25, 26] {
+            entries.push(wgpu::BindGroupLayoutEntry {
+                binding,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Texture {
+                    sample_type: wgpu::TextureSampleType::Float {
+                        filterable: binding == 25,
+                    },
+                    view_dimension: wgpu::TextureViewDimension::D2,
+                    multisampled: false,
+                },
+                count: None,
+            });
+        }
+        let viewport_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("viewport draw layout"),
+            entries: &entries,
+        });
         let dfg = device.create_texture(&wgpu::TextureDescriptor {
             label: Some("r186 DFG"),
             size: wgpu::Extent3d {
@@ -415,6 +446,7 @@ impl Renderer {
             device,
             queue,
             layout,
+            viewport_layout,
             shader,
             pipelines: RefCell::new(HashMap::new()),
             textures: RefCell::new(Default::default()),
@@ -428,6 +460,7 @@ impl Renderer {
             presentations: RefCell::new(Default::default()),
             environment_builds: std::cell::Cell::new(0),
             transmission_sampler,
+            viewport: Default::default(),
             transmission_target: Default::default(),
             transmission_mips: Default::default(),
             draw_slots: Default::default(),
@@ -1663,6 +1696,15 @@ impl Renderer {
                     }
                     draw.indirect = Some(buffer.clone());
                 }
+                if draw.viewport != 0
+                    && let Some(pipeline) = draw.back_pipeline.take()
+                {
+                    // Shared color captures each side; depth remains the pre-object snapshot.
+                    let mut back = draw.clone();
+                    back.pipeline = pipeline;
+                    draw.viewport &= 1;
+                    draws.push(back);
+                }
                 draws.push(draw);
             }
         }
@@ -1693,7 +1735,26 @@ impl Renderer {
             q.validate_count(query_objects.len() as u32)?;
         }
         let queries = queries.filter(|_| !query_objects.is_empty());
-        {
+        let mut start = 0;
+        let mut first = true;
+        let mut query_index = 0;
+        loop {
+            // An empty initial pass initializes attachments if the first object samples them.
+            if !first && start < draws.len() && draws[start].viewport != 0 {
+                self.viewport
+                    .borrow()
+                    .as_ref()
+                    .unwrap()
+                    .encode(&mut encoder, draws[start].viewport);
+            }
+            let end = if first && draws.first().is_some_and(|d| d.viewport != 0) {
+                0
+            } else {
+                (start + 1..draws.len())
+                    .find(|&i| draws[i].viewport != 0)
+                    .unwrap_or(draws.len())
+            };
+            let resume = resume || !first;
             let c = if target.options.encode_srgb {
                 scene.background.0.map(linear_to_srgb)
             } else {
@@ -1793,8 +1854,7 @@ impl Renderer {
                 pass.set_bind_group(0, bindings, &[]);
                 pass.draw(0..3, 0..1);
             }
-            let mut query_index = 0;
-            for draw in &draws {
+            for draw in &draws[start..end] {
                 let query = queries.is_some_and(|q| q.contains(draw.object));
                 if query {
                     pass.begin_occlusion_query(query_index);
@@ -1835,6 +1895,12 @@ impl Renderer {
                     pass.end_occlusion_query();
                 }
             }
+            drop(pass);
+            if end == draws.len() {
+                break;
+            }
+            start = end;
+            first = false;
         }
         if let Some(q) = queries {
             q.resolve(&mut encoder, query_objects.len() as u32);
@@ -1866,6 +1932,17 @@ impl Renderer {
         } = geometry;
         let object = key.0;
         let properties = material.properties();
+        let custom = if let Material::Shader(m) = material {
+            Some(&m.program)
+        } else {
+            properties.vertex_program.as_ref()
+        };
+        if custom.is_some_and(|p| p.viewport != 0) {
+            let mut cache = self.viewport.borrow_mut();
+            if cache.as_ref().is_none_or(|s| !s.matches(target)) {
+                *cache = Some(crate::viewport::Snapshot::new(&self.device, target)?);
+            }
+        }
         let vertex_buffer = vertices;
         let mut slots = self.draw_slots.borrow_mut();
         let slot = slots.entry(key).or_default();
@@ -1972,12 +2049,31 @@ impl Renderer {
                 resource: wgpu::BindingResource::Sampler(&self.shadows.sampler),
             },
         ]);
-        let bind_group = slot.bindings(&self.device, &self.layout, &bindings);
-        let custom = if let Material::Shader(m) = material {
-            Some(&m.program)
+        let uses_viewport = custom.is_some_and(|p| p.viewport != 0);
+        let draw_layout = if uses_viewport {
+            &self.viewport_layout
         } else {
-            properties.vertex_program.as_ref()
+            &self.layout
         };
+        let viewport = self.viewport.borrow();
+        if uses_viewport {
+            bindings.extend([
+                wgpu::BindGroupEntry {
+                    binding: 25,
+                    resource: wgpu::BindingResource::TextureView(
+                        viewport.as_ref().map_or(&fallback.view, |v| &v.color_view),
+                    ),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 26,
+                    resource: wgpu::BindingResource::TextureView(
+                        viewport.as_ref().map_or(&fallback.view, |v| &v.depth_view),
+                    ),
+                },
+            ]);
+        }
+        let bind_group = slot.bindings(&self.device, draw_layout, &bindings);
+
         if custom.is_some_and(|p| p.outputs > target.options.count) {
             return Err(Error::Invalid(
                 "shader outputs exceed render target attachments",
@@ -2081,7 +2177,7 @@ impl Renderer {
                 .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                     label: Some("draw pipeline layout"),
                     bind_group_layouts: &custom
-                        .map_or_else(|| vec![&self.layout], |p| vec![&self.layout, &p.layout]),
+                        .map_or_else(|| vec![draw_layout], |p| vec![draw_layout, &p.layout]),
                     push_constant_ranges: &[],
                 });
             let shader = custom.map_or(&self.shader, |p| &p.module);
@@ -2104,6 +2200,7 @@ impl Renderer {
                 .clone()
         });
         Ok(Draw {
+            viewport: custom.map_or(0, |p| p.viewport),
             object,
             stencil_reference: properties.stencil_reference,
             custom_bindings: custom.map(|p| p.bindings.clone()),

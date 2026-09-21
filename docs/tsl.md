@@ -504,3 +504,46 @@ Validation: `tests/tsl_lighting_gpu.rs` and
 `tests/browser/tsl-lighting.spec.js`; recorded comparisons are in
 [tsl-lighting-comparison.json](tsl-lighting-comparison.json).
 Inspector appearance and hardware timing equivalence remain unclaimed.
+
+## Framebuffer effects, soft particles and FSR1
+
+Runtime IDs 113–117 add `webgpu_backdrop`, `webgpu_backdrop_area`,
+`webgpu_refraction`, `webgpu_particles_soft`, and `webgpu_upscaling_fsr1`.
+
+`viewport::color`, `depth`, and `screen_uv` read resident GPU framebuffer
+snapshots. `safe_uv` rejects refracted coordinates occluded by foreground depth;
+`hash_blur` runs the original 45-sample stochastic kernel. Color is captured in
+transparent draw order, including between the back and front sides of a
+transparent double-sided mesh. Depth is captured before that mesh. MSAA depth
+uses sample zero, matching the official depth resolve. Targets must retain
+resolved color and their multisampled attachments; only 2D targets are supported.
+The renderer creates snapshots only for materials that need them and reuses
+textures/pipelines across frames. It does not redraw the scene or read back pixels. Extra framebuffer bindings
+are reserved only for materials using viewport nodes, preserving the four
+external texture slots available to ordinary TSL materials.
+
+`SurfaceNodes::backdrop` accepts RGBA: RGB replaces diffuse lighting and A mixes
+it with the material's diffuse contribution. Specular highlights remain lit.
+`viewport::soft_particles` applies the original depth-intersection contrast curve.
+The smoke scene uses 50 GPU instances and four resident randomized attributes;
+Wasm updates controls/time, not per-particle positions. Michelle uses GPU skinning.
+
+`fsr1::easu` and `fsr1::rcas` are separate GPU passes with 12- and 5-tap kernels.
+The example renders Littlest Tokyo into an adjustable-resolution MSAA HDR target,
+then upsamples and sharpens at display resolution. The Bilinear control uses the
+same source scene. EASU/RCAS also have a same-input comparison against the official
+HDR textures, separating kernel accuracy from scene rasterization differences.
+
+The original-script fixture fixes time (including implicit `oscSine` time), seeds
+RangeNode initialization independently, and captures GUI controls. Soft-particle
+uniform controls use render-group refresh so parameter edits at a fixed test time
+reach the GPU. Pipeline/target warm-up uses fixed poses; the FSR1 comparison advances its
+animated glTF once and rewinds to zero before measuring, so the reference
+initializes its animated bindings before the zero-time image. Original shader
+math and assets are preserved. Reference scripts use their actual light world
+transforms: the camera's default spot offset is (0,1,0), and the unattached smoke
+spot target has an identity world transform.
+
+See [the comparison report](tsl-viewport-comparison.json) and
+`tests/browser/tsl-viewport.spec.js`. Inspector styling and frame-time equivalence
+remain unclaimed.

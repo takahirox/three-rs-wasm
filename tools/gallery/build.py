@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_backdrop': {'example':113,'source':'src/browser/tsl_viewport.rs','test':'tests/browser/tsl-viewport.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_backdrop_area': {'example':114,'source':'src/browser/tsl_viewport.rs','test':'tests/browser/tsl-viewport.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_refraction': {'example':115,'source':'src/browser/tsl_viewport.rs','test':'tests/browser/tsl-viewport.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_particles_soft': {'example':116,'source':'src/browser/tsl_viewport.rs','test':'tests/browser/tsl-viewport.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_upscaling_fsr1': {'example':117,'source':'src/browser/tsl_viewport.rs','test':'tests/browser/tsl-viewport.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+
  'webgpu_pmrem_cubemap': {'example':108,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_pmrem_scene': {'example':109,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_materials_lightmap': {'example':110,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},

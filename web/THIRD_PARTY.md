@@ -387,3 +387,18 @@ images. `prepare-lighting-hdr.mjs` regenerates them using the local pinned
 reference and records source/output hashes in `hdr.json`. Runtime PMREM and
 all effects are computed by Rust/WebGPU. Box blur and lensflare shaders
 translate the MIT Three.js r186 TSL nodes.
+
+### TSL viewport effects, soft particles and FSR1
+
+`gallery/assets/tsl-viewport/` copies these files unchanged from the pinned r186
+archive: `models/gltf/Michelle.glb`, `models/gltf/LittlestTokyo.glb`,
+`models/ply/binary/Lucy100k.ply`, `textures/opengameart/smoke1.png`, and
+`textures/floors/FloorsCheckerboard_S_Normal.jpg`. Regeneration and byte checks
+are in `tools/tsl/prepare-viewport.py` and `tools/gallery/check.py`.
+Michelle and the OpenGameArt smoke texture retain the credits above.
+[Littlest Tokyo](https://artstation.com/artwork/1AGwX) is by
+[Glen Fox](https://artstation.com/glenatron), CC Attribution, as credited by the
+original keyframe example. Lucy is the Stanford 3D Scanning Repository model
+included in Three.js. The floor normal map is the original refraction asset.
+Viewport, hash blur, soft-particle and FSR1 shaders translate the MIT Three.js
+r186 nodes (`FSR1Node.js`, `hashBlur.js`, `SoftParticles.js`).

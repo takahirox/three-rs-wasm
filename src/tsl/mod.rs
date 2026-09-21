@@ -1382,3 +1382,7 @@ pub mod sampling;
 pub mod dof;
 
 pub mod environment;
+
+pub mod viewport;
+
+pub mod fsr1;

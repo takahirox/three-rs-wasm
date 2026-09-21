@@ -39,6 +39,7 @@ pub struct ShaderProgram {
     pub(crate) id: u64,
     pub(crate) outputs: u32,
     pub(crate) custom_environment: bool,
+    pub(crate) viewport: u8,
     pub(crate) module: wgpu::ShaderModule,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
@@ -351,13 +352,21 @@ impl ShaderProgram {
         });
         // Validate the group layout contract at creation, before render() caches
         // format-specific variants. This pipeline is deliberately not submitted.
-        renderer.validate_shader_program(&module, &layout, mrt.map_or(1, |(count, _)| count));
+        let viewport = u8::from(wgsl.contains("viewport_read_color"))
+            | (u8::from(wgsl.contains("viewport_read_depth")) << 1);
+        renderer.validate_shader_program(
+            &module,
+            &layout,
+            mrt.map_or(1, |(count, _)| count),
+            viewport != 0,
+        );
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }
         Ok(Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
             custom_environment: wgsl.contains("fn environment_sample("),
+            viewport,
             outputs: mrt.map_or(1, |(count, _)| count),
             module,
             layout,

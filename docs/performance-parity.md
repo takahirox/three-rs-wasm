@@ -219,3 +219,37 @@ render passes including presentation, matching the reference). DoF keeps the
 original GPU box kernel, depth-based mixing and FXAA. These are workload/residency
 checks, not CPU/GPU timing parity measurements. See
 [recorded comparisons](tsl-lighting-comparison.json).
+
+## Viewport effects, soft particles and FSR1 (runtime IDs 113–117)
+
+Backdrop, Backdrop Area and Refraction sample resident framebuffer snapshots
+between transparent draws. A double-sided material recaptures color before its
+front side, while retaining the pre-object depth. The renderer avoids a second
+scene traversal or geometry re-render for these captures. Soft Particles retains
+50 native GPU instances, four resident random attribute buffers, the 100,000-face
+Lucy mesh and the original GPU depth-fade/UV/position/scale expressions.
+
+FSR1 uses the original low-resolution MSAA HDR scene, full-resolution 12-tap EASU
+and 5-tap RCAS passes. Its Bilinear mode bypasses those two kernels. Same-input
+HDR comparisons check the filters separately from glTF rendering. Camera damping
+and the original distance bounds are retained for the smoke and upscaling scenes;
+Backdrop pauses portal rotation during dragging.
+
+Warmed frame tests require unchanged geometry transfers and stable GPU resource
+counts, including after resizing. Michelle updates one 65-joint palette (4,160
+bytes); Littlest Tokyo updates eight 32-joint palettes (16,384 bytes). These sizes
+match the original's uniform bone buffers; the port uses storage bone buffers.
+No vertices, joint weights/indices or particle attributes stream every frame.
+Mesh draw sizes match the reference, apart from replacing backdrop sky spheres
+with fullscreen triangles. The MSAA smoke depth resolve uses one additional
+fullscreen pass; Backdrop Area eliminates a redundant identical framebuffer copy.
+Pass counts and uniform upload bytes are recorded in
+[the comparison report](tsl-viewport-comparison.json). These checks do not establish
+hardware frame-time equivalence; the entries remain partial ports.
+
+All 54 image states pass at DPR 1 and DPR 2 without changing the 6/255 and 0.5%
+thresholds (maximum differing-pixel fractions: 0.493% and 0.208%). Twenty-three
+browser regression checks, ten DPR 2 checks, twenty native GPU checks and six
+packaged-site startup checks pass. The ordinary-material four-texture regression
+also verifies that adding viewport nodes does not reduce the existing texture
+budget for materials that do not use them.

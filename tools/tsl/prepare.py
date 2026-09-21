@@ -67,3 +67,5 @@ subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-next.py')], check=True)
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-environment.py')], check=True)
 
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-lighting.py')], check=True)
+
+subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-viewport.py')], check=True)

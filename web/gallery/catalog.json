@@ -13396,7 +13396,7 @@
     {
       "id": "webgpu_backdrop",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_backdrop.html",
       "source_sha256": "b4abe26ab8dc3073ec82c9ed747b2b3195b801f398a5a80073b0530f82d926c7",
@@ -13430,7 +13430,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 113,
+        "source": "src/browser/tsl_viewport.rs",
+        "test": "tests/browser/tsl-viewport.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/loaders/GLTFLoader.js",
@@ -13441,7 +13448,7 @@
     {
       "id": "webgpu_backdrop_area",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_backdrop_area.html",
       "source_sha256": "a8d7a44147784c98c35722512ddfaa5447cbe88e07ba92b15dbfd4849a286712",
@@ -13479,7 +13486,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 114,
+        "source": "src/browser/tsl_viewport.rs",
+        "test": "tests/browser/tsl-viewport.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -20716,7 +20730,7 @@
     {
       "id": "webgpu_particles_soft",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_particles_soft.html",
       "source_sha256": "1cc28c050c7c8aaa9efe9e6f2c963f4c92d09afe6ef0691ba823738ca00633b5",
@@ -20770,7 +20784,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 116,
+        "source": "src/browser/tsl_viewport.rs",
+        "test": "tests/browser/tsl-viewport.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -23929,7 +23950,7 @@
     {
       "id": "webgpu_refraction",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_refraction.html",
       "source_sha256": "ebbc7b86f6a3a6ca1533631475fa0d6f48c08be743d48e95b93c2441f49cbe1d",
@@ -23985,7 +24006,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 115,
+        "source": "src/browser/tsl_viewport.rs",
+        "test": "tests/browser/tsl-viewport.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26696,7 +26724,7 @@
     {
       "id": "webgpu_upscaling_fsr1",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_upscaling_fsr1.html",
       "source_sha256": "75c22f60f7577f96229887097fc354896aa10059ecdf5da2ca3d4f8f57b079ce",
@@ -26750,7 +26778,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 117,
+        "source": "src/browser/tsl_viewport.rs",
+        "test": "tests/browser/tsl-viewport.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",

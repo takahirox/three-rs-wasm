@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 108 partial Rust ports; 489 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 113 partial Rust ports; 484 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_backdrop | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_backdrop_area | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_refraction | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_particles_soft | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_upscaling_fsr1 | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_pmrem_cubemap | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_pmrem_scene | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_materials_lightmap | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
