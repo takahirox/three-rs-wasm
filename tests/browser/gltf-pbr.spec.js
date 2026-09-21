@@ -2,6 +2,16 @@ import{test,expect}from'@playwright/test';
 import{writeFileSync,readFileSync}from'node:fs';
 import{PNG}from'pngjs';
 const manifest=JSON.parse(readFileSync(new URL('../gltf-pbr/manifest.json',import.meta.url)));
+// Static scenes render on demand: observe the frame requested by the view
+// setter, rather than assuming three more animation frames will arrive.
+async function setView(page, canvas, view) {
+ const previous=await page.evaluate(v=>{
+  const frame=Number(document.querySelector('canvas').dataset.frames);
+  window.app.gltf_view(v.yaw,v.pitch,v.distance_factor,v.exposure,v.rotation,v.blur);
+  return frame;
+ },view);
+ await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:15000}).toBeGreaterThan(previous);
+}
 for(let m=0;m<2;m++)test(`M2 PBR parity: ${manifest.models[m].name}`,async({page},info)=>{
  test.setTimeout(240000);
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',e=>{if((e.type()==='error'&&!e.text().includes('404'))||(e.type()==='warning'&&!e.text().startsWith('THREE.'))) {if(errors.length<3)errors.push(e.text());}});
@@ -12,11 +22,10 @@ for(let m=0;m<2;m++)test(`M2 PBR parity: ${manifest.models[m].name}`,async({page
  await page.goto(`/web/?example=${m+4}&fixture=1`);
 
 
- await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:120000}).toBeGreaterThan(2);
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:120000}).toBeGreaterThan(0);
  const results=[];
  for(let v=0;v<manifest.views.length;v++) {
-  const view=manifest.views[v];await page.evaluate(v=>window.app.gltf_view(v.yaw,v.pitch,v.distance_factor,v.exposure,v.rotation,v.blur),view);
-  const frames=Number(await canvas.getAttribute('data-frames'));await expect.poll(async()=>Number(await canvas.getAttribute('data-frames'))).toBeGreaterThan(frames+2);
+  const view=manifest.views[v];await setView(page,canvas,view);
   const actual=await canvas.screenshot();writeFileSync(info.outputPath(`${v}-actual.png`),actual);writeFileSync(info.outputPath(`${v}-reference.png`),references[v]);
   const a=PNG.sync.read(actual),b=PNG.sync.read(references[v]);expect([a.width,a.height]).toEqual([b.width,b.height]);
   let different=0,maximum=0;for(let i=0;i<a.data.length;i+=4) {let d=0;for(let c=0;c<3;c++)d=Math.max(d,Math.abs(a.data[i+c]-b.data[i+c]));maximum=Math.max(maximum,d);if(d>manifest.comparison.channel_tolerance)different++;}
@@ -41,11 +50,9 @@ for(const size of [{width:640,height:360},{width:360,height:640}])test(`gallery 
  },size);
  const reference=PNG.sync.read(await canvas.screenshot());
  await page.goto('/web/gallery/example.html?id=webgpu_loader_gltf');
- await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(2);
+ await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(0);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
- await page.evaluate(v=>window.app.gltf_view(v.yaw,v.pitch,v.distance_factor,v.exposure,v.rotation,v.blur),manifest.views[0]);
- const frame=Number(await canvas.getAttribute('data-frames'));
- await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(frame+2);
+ await setView(page,canvas,manifest.views[0]);
  const actual=PNG.sync.read(await canvas.screenshot());
  expect([actual.width,actual.height]).toEqual([reference.width,reference.height]);
  let different=0;

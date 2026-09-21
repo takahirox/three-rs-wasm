@@ -4,6 +4,19 @@ use three_rs_wasm::{
     shader::ShaderProgram,
 };
 
+// The sRGB attachment conversion can differ by one 8-bit code between
+// Metal and software Vulkan. Keep zero, full-scale and alpha exact.
+fn assert_pixel(pixels: &[u8], expected: [u8; 4]) {
+    let actual = &pixels[(8 * 16 + 8) * 4..(8 * 16 + 8) * 4 + 4];
+    for (value, expected) in actual.iter().zip(expected) {
+        if expected == 0 || expected == 255 {
+            assert_eq!(*value, expected);
+        } else {
+            assert!(value.abs_diff(expected) <= 1, "{actual:?}");
+        }
+    }
+}
+
 #[test]
 fn compute_output_drives_custom_material_and_composable_effects() {
     let renderer = pollster::block_on(Renderer::new()).unwrap();
@@ -42,10 +55,7 @@ fn compute_output_drives_custom_material_and_composable_effects() {
     kernel.dispatch(&renderer, [1, 1, 1]).unwrap();
     renderer.render(&mut scene, camera, &input).unwrap();
     let pixels = renderer.read_rgba(&input).unwrap();
-    assert_eq!(
-        &pixels[(8 * 16 + 8) * 4..(8 * 16 + 8) * 4 + 4],
-        &[137, 188, 0, 255]
-    );
+    assert_pixel(&pixels, [137, 188, 0, 255]);
     kernel.dispatch(&renderer, [1, 1, 1]).unwrap();
     renderer.render(&mut scene, camera, &input).unwrap();
     let values = data.read(&renderer).unwrap();
@@ -57,17 +67,11 @@ fn compute_output_drives_custom_material_and_composable_effects() {
     let output = RenderTarget::new(&renderer.device, 16, 16).unwrap();
     effect.apply(&renderer, &input, None, &output).unwrap();
     let pixels = renderer.read_rgba(&output).unwrap();
-    assert_eq!(
-        &pixels[(8 * 16 + 8) * 4..(8 * 16 + 8) * 4 + 4],
-        &[0, 188, 188, 255]
-    );
+    assert_pixel(&pixels, [0, 188, 188, 255]);
     effect.parameters[0][0] = 0.5;
     effect.apply(&renderer, &input, None, &output).unwrap();
     let pixels = renderer.read_rgba(&output).unwrap();
-    assert_eq!(
-        &pixels[(8 * 16 + 8) * 4..(8 * 16 + 8) * 4 + 4],
-        &[0, 137, 137, 255]
-    );
+    assert_pixel(&pixels, [0, 137, 137, 255]);
     assert!(effect.apply(&renderer, &input, None, &input).is_err());
     assert!(kernel.dispatch(&renderer, [u32::MAX, 1, 1]).is_err());
     assert!(data.write(&renderer, 1, &[0; 4]).is_err());

@@ -676,6 +676,7 @@ impl BrowserApp {
         state.scene.exposure = exposure.max(0.0);
         state.scene.environment_rotation = rotation;
         state.scene.background_blur = blur.clamp(0.0, 1.0);
+        state.request_render();
     }
     pub fn orbit(&self, dx: f64, dy: f64, zoom: f64) {
         if dx.is_finite()
