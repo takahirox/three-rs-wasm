@@ -70,3 +70,22 @@ fn tsl_sobel(t:texture_2d<f32>,s:sampler,p:vec2<f32>,d:vec2<f32>)->vec4<f32>{
  let x=-a-2.0*e-g+c+2.0*f+i;let y=-a-2.0*b-c+g+2.0*h+i;return vec4(vec3(sqrt(x*x+y*y)),1.0);
 }"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec2],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,inverse_size])
 }
+
+/// r186 ChromaticAberrationNode: independently scaled, radial RGB samples.
+pub fn chromatic_aberration(
+    texture: Texture,
+    coordinate: Node,
+    strength: Node,
+    center: Node,
+    scale: Node,
+) -> Node {
+    let offset = coordinate.clone() - center.clone();
+    let shift = scale * float(0.02) * strength.clone() + strength * offset.length() * float(0.01);
+    let red = texture.sample(center.clone() + offset.clone() * (float(1.0) + shift.clone()));
+    let green = texture.sample(coordinate);
+    let blue = texture.sample(center + offset * (float(1.0) - shift));
+    vec4(
+        vec3(red.x(), green.y(), blue.swizzle("z")),
+        green.swizzle("w"),
+    )
+}

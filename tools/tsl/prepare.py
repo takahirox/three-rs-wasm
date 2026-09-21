@@ -63,3 +63,5 @@ subprocess.run(["node",str(ROOT/"tools/tsl/prepare-volume.mjs")],check=True)
 subprocess.run(["node",str(ROOT/"tools/tsl/prepare-geometry.mjs")],check=True)
 
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-next.py')], check=True)
+
+subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-environment.py')], check=True)

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 98 partial Rust ports; 499 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 103 partial Rust ports; 494 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -57,6 +57,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_postprocessing_sobel | `tests/browser/tsl-next.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_smaa | `tests/browser/tsl-next.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_3dlut | `tests/browser/tsl-next.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_cubemap_mix | `tests/browser/tsl-environment.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_cubemap_adjustments | `tests/browser/tsl-environment.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_envmaps_bpcem | `tests/browser/tsl-environment.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_alphahash | `tests/browser/tsl-environment.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_ca | `tests/browser/tsl-environment.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_parallax_uv | `tests/browser/tsl-next.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_rendertarget_2d-array_3d | `tests/browser/tsl-extended.spec.js` | 配列・3DテクスチャとレイヤーへのGPU描画を4ビューで比較。 |
 | webgpu_instance_points | `tests/browser/tsl-extended.spec.js` | GPU Computeでサイズ更新、ピクセル単位のインスタンス点群と共有ターゲットの拡大ビュー。 |

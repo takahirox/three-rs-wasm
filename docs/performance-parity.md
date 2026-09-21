@@ -174,3 +174,31 @@ PBR/gallery regressions), eighteen native GPU checks, and six DPR 2 image/reside
 checks pass. Sobel and LUT still have an additional fullscreen presentation pass;
 pass counts and uniform bytes are reported explicitly. GPU frame-time parity and
 Inspector styling parity are not claimed, and entries remain partial ports.
+
+## Environment graphs and transparency (runtime IDs 103–107)
+
+Cubemap Mix, Cubemap Adjustments, Box Projected Environment Mapping, Alpha Hash
+and Chromatic Aberration use resident GPU textures and the original scene draw
+sizes. Environment blending, color adjustment, box-ray intersection, alpha
+hashing and channel sampling execute in shaders. CubeCamera renders directly
+into six texture-array layers before GPU PMREM filtering. RoomEnvironment is
+captured once; SSAA retains the official eight-sample default and 27 instances.
+The chromatic scene retains native one-pixel WebGPU points and native grid lines.
+
+[Recorded comparisons](tsl-environment-comparison.json) include 71 image states,
+controls, camera orbit/pan/wheel and resizing at the unchanged 6/255 and 0.5%
+thresholds. Warmed geometry uploads are zero, and resource counts remain stable
+before and after resize. Geometry draw counts and GPU dispatches match the
+reference; pass counts and uniform bytes are recorded separately. Chromatic
+Aberration retains an additional presentation pass. No GPU timing parity is
+claimed; gallery entries remain partial ports and Inspector styling is adapted.
+
+The BPCEM roughness JPEG embeds Adobe RGB. Ordinary TextureLoader-style decoding
+now honors its profile; glTF decoding continues to ignore image profiles.
+The reference fixture correction for static scene-node uniforms is documented
+in [the TSL API notes](tsl.md). It does not change the official shader math.
+
+All 123 browser regression checks, 15 native GPU checks, six DPR 2 checks and
+five packaged-site startup checks pass. Two additional checks verify the final
+layered capture and workload implementation. Maximum differing-pixel fractions
+are 0.322% at DPR 1 and 0.145% at DPR 2; timing parity remains unmeasured.

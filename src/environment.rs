@@ -74,3 +74,31 @@ pub struct PrefilteredEnvironment {
     pub(crate) max_mip: f32,
     pub(crate) source_is_cube_uv: bool,
 }
+
+impl EnvironmentMap {
+    /// Prepare a resident GPU atlas once, also reusable by custom TSL environments.
+    pub fn prefilter(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+    ) -> Result<&PrefilteredEnvironment> {
+        if self.gpu.is_none() {
+            self.gpu = Some(crate::environment_gpu::build(
+                &renderer.device,
+                &renderer.queue,
+                self,
+            )?);
+        }
+        Ok(self.gpu.as_ref().unwrap())
+    }
+}
+impl PrefilteredEnvironment {
+    pub fn view(&self) -> &wgpu::TextureView {
+        &self.view
+    }
+    pub fn sampler(&self) -> &wgpu::Sampler {
+        &self.sampler
+    }
+    pub fn max_mip(&self) -> f32 {
+        self.max_mip
+    }
+}

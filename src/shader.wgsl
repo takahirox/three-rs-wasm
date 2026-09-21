@@ -183,7 +183,7 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     }}
     return visibility/9.0;
 }
-fn environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32> {
+fn default_environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32> {
  let world=normalize((transpose(u.view)*vec4(direction,0.0)).xyz);
  let c=cos(u.environment.y);let s=sin(u.environment.y);
  let d=vec3(c*world.x-s*world.z,-world.y,s*world.x+c*world.z);

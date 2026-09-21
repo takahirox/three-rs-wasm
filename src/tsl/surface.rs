@@ -8,6 +8,8 @@ use super::*;
 #[derive(Clone, Debug, Default)]
 pub struct SurfaceNodes {
     pub position: Option<Node>,
+    /// Linear HDR environment radiance, evaluated for each BRDF sampling direction.
+    pub environment: Option<Node>,
     pub output: Option<Node>,
     pub color: Option<Node>,
     pub normal: Option<Node>,
@@ -65,6 +67,24 @@ impl SurfaceNodes {
                 source.push_str(&format!("\n{body}"));
             }
             insert_function(&mut shared.functions, name, body)?;
+        }
+        if let Some(node) = &self.environment {
+            let mut compiler = Compiler::new(Stage::Output, texture_count);
+            compiler.environment = true;
+            compiler.buffers = types.to_vec();
+            let (ty, value) = compiler.emit(node)?;
+            if ty != Type::Vec3 {
+                return Err(Error::Invalid("TSL environment requires RGB"));
+            }
+            let mut helpers: Vec<_> = compiler.functions.into_iter().collect();
+            helpers.sort_by(|a, b| a.0.cmp(&b.0));
+            for (name, body) in helpers {
+                if !shared.functions.contains_key(&name) {
+                    source.push_str(&format!("\n{body}"));
+                }
+                insert_function(&mut shared.functions, name, body)?;
+            }
+            source.push_str(&format!("\nfn environment_sample(environment_direction:vec3<f32>,environment_roughness:f32)->vec3<f32>{{\n{}return {value}*u.environment.x;\n}}",compiler.body));
         }
         let output = if let Some(node) = &self.output {
             let mut compiler = Compiler::new(Stage::Output, texture_count);
@@ -298,4 +318,17 @@ pub fn parallax_uv_frame(coordinate: Node, scale: Node, normal: Node, geometry_u
 fn tsl_parallax_frame(uv:vec2<f32>,scale:vec2<f32>,normal:vec3<f32>,base:vec2<f32>,world:vec3<f32>,gn:vec3<f32>)->vec2<f32>{
  let p=(u.view*vec4(world,1.0)).xyz;let n=normalize((u.view*vec4(gn,0.0)).xyz);let q0=dpdx(p);let q1=-dpdy(p);let st0=dpdx(base);let st1=-dpdy(base);let first=cross(q1,n);let second=cross(n,q0);let t=first*st0.x+second*st1.x;let b=first*st0.y+second*st1.y;let det=max(dot(t,t),dot(b,b));let factor=select(inverseSqrt(max(det,1e-30)),0.0,det==0.0);let mapped_t=(cross(q1,normal)*st0.x+second*st1.x)*factor;let direction=normalize(-p);return uv-vec2(dot(direction,mapped_t),dot(direction,b*factor))*scale;
 }"#,&[Type::Vec2,Type::Vec2,Type::Vec3,Type::Vec2,Type::Vec3,Type::Vec3],Type::Vec2).unwrap().call(&[coordinate,scale,normal,geometry_uv,position_world(),normal_world()])
+}
+
+/// Derivative-scaled alpha hashing; surviving fragments retain their opacity.
+/// Supply local position after instance transforms, as in r186 NodeMaterial.
+pub fn alpha_hash(opacity: Node, position: Node, enabled: Node) -> Node {
+    WgslFn::new(
+        "tsl_alpha_hash",
+        include_str!("alpha_hash.wgsl"),
+        &[Type::Float, Type::Vec3, Type::Bool],
+        Type::Float,
+    )
+    .unwrap()
+    .call(&[opacity, position, enabled])
 }

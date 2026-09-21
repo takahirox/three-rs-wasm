@@ -368,7 +368,7 @@ impl Renderer {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
                 format!(
-                    "{}\n{}\n{}\n{}\n{}\n{}",
+                    "{}\n{}\n{}\n{}\n{}\n{}\n{}",
                     include_str!("shaders/cube_uv.wgsl"),
                     concat!(
                         include_str!("shaders/deformation.wgsl"),
@@ -380,7 +380,8 @@ impl Renderer {
                     crate::shader::DEFAULT_HOOKS,
                     crate::shader::DEFAULT_OUTPUT,
                     crate::shader::DEFAULT_PROJECTION,
-                    crate::shader::DEFAULT_SURFACE
+                    crate::shader::DEFAULT_SURFACE,
+                    crate::shader::DEFAULT_ENVIRONMENT
                 )
                 .into(),
             ),
@@ -1267,7 +1268,12 @@ impl Renderer {
                         _ => [1.0, 1.0, 1.0, properties.alpha_test as f32],
                     },
                     environment: [
-                        if scene.environment.is_some() {
+                        if scene.environment.is_some()
+                            || properties
+                                .vertex_program
+                                .as_ref()
+                                .is_some_and(|p| p.custom_environment)
+                        {
                             scene.environment_intensity as f32
                         } else {
                             0.0

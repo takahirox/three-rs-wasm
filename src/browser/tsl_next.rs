@@ -1,6 +1,6 @@
 mod lut;
 mod path;
-mod room;
+use super::room_environment as room;
 mod smaa;
 mod sobel;
 // Five r186 node scenes: GPU path deformation, Sobel, SMAA, LUT and parallax.

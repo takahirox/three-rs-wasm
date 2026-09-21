@@ -6,6 +6,7 @@ use crate::{
 };
 use std::sync::atomic::{AtomicU64, Ordering};
 static NEXT: AtomicU64 = AtomicU64::new(1);
+pub(crate) const DEFAULT_ENVIRONMENT: &str = "fn environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32>{return default_environment_sample(direction,roughness);}";
 pub(crate) const DEFAULT_OUTPUT: &str =
     "fn transform_output(value:vec4<f32>)->vec4<f32>{return value;}";
 pub(crate) const DEFAULT_HOOKS: &str = "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;} fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}";
@@ -37,6 +38,7 @@ impl UvInterpolation {
 pub struct ShaderProgram {
     pub(crate) id: u64,
     pub(crate) outputs: u32,
+    pub(crate) custom_environment: bool,
     pub(crate) module: wgpu::ShaderModule,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
@@ -243,6 +245,9 @@ impl ShaderProgram {
                 include_str!("shader.wgsl")
             )
         );
+        if !wgsl.contains("fn environment_sample(") {
+            source.push_str(DEFAULT_ENVIRONMENT);
+        }
         if let Some(interpolation) = interpolation {
             source = source.replace(
                 "@location(2) uv: vec2<f32>",
@@ -352,6 +357,7 @@ impl ShaderProgram {
         }
         Ok(Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
+            custom_environment: wgsl.contains("fn environment_sample("),
             outputs: mrt.map_or(1, |(count, _)| count),
             module,
             layout,

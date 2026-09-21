@@ -1,0 +1,1491 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "backend": "Chrome WebGPU / Metal",
+  "threshold": {
+    "perChannel": 6,
+    "pixelFraction": 0.005
+  },
+  "referenceAdaptations": [
+    "Seeded initial random data and controlled time, Inspector capture and viewport layout.",
+    "Preserve time render-group updates; move Cubemap Adjustments scene-node uniforms/references to renderGroup to work around r186 static-mesh refresh omission. Original shader expressions and PMREM generation are unchanged."
+  ],
+  "images": {
+    "webgpu_cubemap_mix": [
+      {
+        "state": 0,
+        "fraction": 7.2479248046875e-05,
+        "meanError": 0.1474482218424479
+      },
+      {
+        "state": 1,
+        "fraction": 6.103515625e-05,
+        "meanError": 0.19129435221354166
+      },
+      {
+        "state": 2,
+        "fraction": 7.2479248046875e-05,
+        "meanError": 0.1242052714029948
+      },
+      {
+        "state": 3,
+        "fraction": 0.00012969970703125,
+        "meanError": 0.10958226521809895
+      },
+      {
+        "state": 4,
+        "fraction": 0.000186920166015625,
+        "meanError": 0.11565017700195312
+      },
+      {
+        "state": 5,
+        "fraction": 0.0001983642578125,
+        "meanError": 0.11693700154622395
+      },
+      {
+        "state": 6,
+        "fraction": 0.0001220703125,
+        "meanError": 0.11328125
+      },
+      {
+        "state": 7,
+        "fraction": 9.375e-05,
+        "meanError": 0.1046796875
+      }
+    ],
+    "webgpu_cubemap_adjustments": [
+      {
+        "state": 0,
+        "fraction": 0.000171661376953125,
+        "meanError": 0.17748387654622397
+      },
+      {
+        "state": 1,
+        "fraction": 0.000171661376953125,
+        "meanError": 0.17748387654622397
+      },
+      {
+        "state": 2,
+        "fraction": 0.000171661376953125,
+        "meanError": 0.17748387654622397
+      },
+      {
+        "state": 3,
+        "fraction": 0.000171661376953125,
+        "meanError": 0.17748387654622397
+      },
+      {
+        "state": 4,
+        "fraction": 8.0108642578125e-05,
+        "meanError": 0.2163874308268229
+      },
+      {
+        "state": 5,
+        "fraction": 0.00019073486328125,
+        "meanError": 0.17934036254882812
+      },
+      {
+        "state": 6,
+        "fraction": 0.000171661376953125,
+        "meanError": 0.17748387654622397
+      },
+      {
+        "state": 7,
+        "fraction": 0.00016021728515625,
+        "meanError": 0.20822525024414062
+      },
+      {
+        "state": 8,
+        "fraction": 0.000217437744140625,
+        "meanError": 0.09279759724934895
+      },
+      {
+        "state": 9,
+        "fraction": 0.000209808349609375,
+        "meanError": 0.09284718831380208
+      },
+      {
+        "state": 10,
+        "fraction": 0.000152587890625,
+        "meanError": 0.11537933349609375
+      },
+      {
+        "state": 11,
+        "fraction": 0.000377655029296875,
+        "meanError": 0.05521519978841146
+      },
+      {
+        "state": 12,
+        "fraction": 0.000209808349609375,
+        "meanError": 0.054155985514322914
+      },
+      {
+        "state": 13,
+        "fraction": 9.1552734375e-05,
+        "meanError": 0.054804484049479164
+      },
+      {
+        "state": 14,
+        "fraction": 0.000125885009765625,
+        "meanError": 0.22139358520507812
+      },
+      {
+        "state": 15,
+        "fraction": 0.00011444091796875,
+        "meanError": 0.22439193725585938
+      },
+      {
+        "state": 16,
+        "fraction": 0.000148773193359375,
+        "meanError": 0.22897211710611978
+      },
+      {
+        "state": 17,
+        "fraction": 7.8125e-05,
+        "meanError": 0.19386979166666668
+      }
+    ],
+    "webgpu_materials_envmaps_bpcem": [
+      {
+        "state": 0,
+        "fraction": 0.002346038818359375,
+        "meanError": 0.07111485799153645
+      },
+      {
+        "state": 1,
+        "fraction": 0.002346038818359375,
+        "meanError": 0.07111485799153645
+      },
+      {
+        "state": 2,
+        "fraction": 0.002346038818359375,
+        "meanError": 0.07111485799153645
+      },
+      {
+        "state": 3,
+        "fraction": 0.002346038818359375,
+        "meanError": 0.07111485799153645
+      },
+      {
+        "state": 4,
+        "fraction": 0.0032196044921875,
+        "meanError": 0.07848103841145833
+      },
+      {
+        "state": 5,
+        "fraction": 0.002346038818359375,
+        "meanError": 0.07111485799153645
+      },
+      {
+        "state": 6,
+        "fraction": 0.0018768310546875,
+        "meanError": 0.05643463134765625
+      },
+      {
+        "state": 7,
+        "fraction": 0.002948760986328125,
+        "meanError": 0.08382161458333333
+      },
+      {
+        "state": 8,
+        "fraction": 0.003162384033203125,
+        "meanError": 0.08147939046223958
+      },
+      {
+        "state": 9,
+        "fraction": 0.002803802490234375,
+        "meanError": 0.06416575113932292
+      },
+      {
+        "state": 10,
+        "fraction": 0.002681732177734375,
+        "meanError": 0.0619049072265625
+      },
+      {
+        "state": 11,
+        "fraction": 0.00264739990234375,
+        "meanError": 0.059488932291666664
+      },
+      {
+        "state": 12,
+        "fraction": 0.0023671875,
+        "meanError": 0.045447916666666664
+      }
+    ],
+    "webgpu_materials_alphahash": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.007266998291015625
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.009619394938151041
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.009349822998046875
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.004881540934244792
+      },
+      {
+        "state": 10,
+        "fraction": 0,
+        "meanError": 0.009379069010416666
+      },
+      {
+        "state": 11,
+        "fraction": 0,
+        "meanError": 0.009473164876302084
+      },
+      {
+        "state": 12,
+        "fraction": 0,
+        "meanError": 0.009473164876302084
+      },
+      {
+        "state": 13,
+        "fraction": 0,
+        "meanError": 0.009473164876302084
+      },
+      {
+        "state": 14,
+        "fraction": 0,
+        "meanError": 0.0058515625
+      }
+    ],
+    "webgpu_postprocessing_ca": [
+      {
+        "state": 0,
+        "fraction": 3.814697265625e-06,
+        "meanError": 0.00011571248372395833
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.00010935465494791667
+      },
+      {
+        "state": 2,
+        "fraction": 6.866455078125e-05,
+        "meanError": 0.0004742940266927083
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 7.502237955729167e-05
+      },
+      {
+        "state": 4,
+        "fraction": 3.814697265625e-06,
+        "meanError": 0.007348378499348958
+      },
+      {
+        "state": 5,
+        "fraction": 3.814697265625e-06,
+        "meanError": 8.646647135416667e-05
+      },
+      {
+        "state": 6,
+        "fraction": 7.62939453125e-06,
+        "meanError": 9.282430013020833e-05
+      },
+      {
+        "state": 7,
+        "fraction": 1.52587890625e-05,
+        "meanError": 0.00020599365234375
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 6.993611653645833e-05
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 6.739298502604167e-05
+      },
+      {
+        "state": 10,
+        "fraction": 2.288818359375e-05,
+        "meanError": 0.0007489522298177084
+      },
+      {
+        "state": 11,
+        "fraction": 1.52587890625e-05,
+        "meanError": 0.00014368693033854166
+      },
+      {
+        "state": 12,
+        "fraction": 1.52587890625e-05,
+        "meanError": 0.00020472208658854166
+      },
+      {
+        "state": 13,
+        "fraction": 1.1444091796875e-05,
+        "meanError": 0.00014623006184895834
+      },
+      {
+        "state": 14,
+        "fraction": 3.0517578125e-05,
+        "meanError": 0.0003712972005208333
+      },
+      {
+        "state": 15,
+        "fraction": 1.52587890625e-05,
+        "meanError": 0.00015767415364583334
+      },
+      {
+        "state": 16,
+        "fraction": 7.8125e-06,
+        "meanError": 0.00012760416666666665
+      }
+    ]
+  },
+  "residency": {
+    "webgpu_cubemap_mix": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 217,
+          "transfers": [
+            2,
+            1460832,
+            32
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        },
+        "after": {
+          "creates": 217,
+          "transfers": [
+            2,
+            1460832,
+            32
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 222,
+          "transfers": [
+            2,
+            1460832,
+            32
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        },
+        "after": {
+          "creates": 222,
+          "transfers": [
+            2,
+            1460832,
+            32
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_cubemap_adjustments": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 216,
+          "transfers": [
+            4,
+            1899264,
+            64
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        },
+        "after": {
+          "creates": 216,
+          "transfers": [
+            4,
+            1899264,
+            64
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 221,
+          "transfers": [
+            4,
+            1899264,
+            64
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        },
+        "after": {
+          "creates": 221,
+          "transfers": [
+            4,
+            1899264,
+            64
+          ],
+          "resources": [
+            6,
+            6,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_materials_envmaps_bpcem": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 208,
+          "transfers": [
+            6,
+            20392,
+            96
+          ],
+          "resources": [
+            2,
+            4,
+            1
+          ]
+        },
+        "after": {
+          "creates": 208,
+          "transfers": [
+            6,
+            20392,
+            96
+          ],
+          "resources": [
+            2,
+            4,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 213,
+          "transfers": [
+            6,
+            20392,
+            96
+          ],
+          "resources": [
+            2,
+            4,
+            1
+          ]
+        },
+        "after": {
+          "creates": 213,
+          "transfers": [
+            6,
+            20392,
+            96
+          ],
+          "resources": [
+            2,
+            4,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_materials_alphahash": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 134,
+          "transfers": [
+            2,
+            78864,
+            32
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 134,
+          "transfers": [
+            2,
+            78864,
+            32
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 142,
+          "transfers": [
+            2,
+            78864,
+            32
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 142,
+          "transfers": [
+            2,
+            78864,
+            32
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_postprocessing_ca": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 274,
+          "transfers": [
+            12,
+            229072,
+            192
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 274,
+          "transfers": [
+            12,
+            229072,
+            192
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 287,
+          "transfers": [
+            12,
+            229072,
+            192
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 287,
+          "transfers": [
+            12,
+            229072,
+            192
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    ]
+  },
+  "gpuWork": [
+    {
+      "kind": "cubemap_mix",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 46356,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 8,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 46356,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 8,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "cubemap_adjustments",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 11904,
+            "instances": 1
+          },
+          {
+            "vertices": 11904,
+            "instances": 1
+          },
+          {
+            "vertices": 46356,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 11904,
+            "instances": 1
+          },
+          {
+            "vertices": 11904,
+            "instances": 1
+          },
+          {
+            "vertices": 46356,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "materials_envmaps_bpcem",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 600,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 600,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "materials_alphahash",
+      "reference": {
+        "passes": 26,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 544,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 17,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          },
+          {
+            "vertices": 960,
+            "instances": 27
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 2400,
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "postprocessing_ca",
+      "reference": {
+        "passes": 3,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 24,
+            "instances": 1
+          },
+          {
+            "vertices": 24,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 84,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 200,
+            "instances": 1
+          },
+          {
+            "vertices": 768,
+            "instances": 1
+          },
+          {
+            "vertices": 768,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 3072,
+            "instances": 1
+          },
+          {
+            "vertices": 3072,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 2320,
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 24,
+            "instances": 1
+          },
+          {
+            "vertices": 24,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 48,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 84,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 96,
+            "instances": 1
+          },
+          {
+            "vertices": 200,
+            "instances": 1
+          },
+          {
+            "vertices": 768,
+            "instances": 1
+          },
+          {
+            "vertices": 768,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 2880,
+            "instances": 1
+          },
+          {
+            "vertices": 3072,
+            "instances": 1
+          },
+          {
+            "vertices": 3072,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 7308,
+        "largeUniformBytes": 0
+      }
+    }
+  ],
+  "timingParity": false,
+  "validation": {
+    "browserRegressionTests": 123,
+    "nativeGpuTests": 15,
+    "clippy": [
+      "native all-targets",
+      "wasm32"
+    ],
+    "imageStates": 71,
+    "finalLayerCaptureChecks": 2,
+    "dpr2Checks": 6,
+    "publishedPathChecks": 5
+  },
+  "dpr2": {
+    "images": {
+      "webgpu_cubemap_mix": [
+        {
+          "state": 0,
+          "fraction": 5.626678466796875e-05,
+          "meanError": 0.1454655329386393
+        },
+        {
+          "state": 1,
+          "fraction": 5.245208740234375e-05,
+          "meanError": 0.19029744466145834
+        },
+        {
+          "state": 2,
+          "fraction": 5.14984130859375e-05,
+          "meanError": 0.12322171529134114
+        },
+        {
+          "state": 3,
+          "fraction": 7.05718994140625e-05,
+          "meanError": 0.10832150777180989
+        },
+        {
+          "state": 4,
+          "fraction": 8.7738037109375e-05,
+          "meanError": 0.11311721801757812
+        },
+        {
+          "state": 5,
+          "fraction": 8.678436279296875e-05,
+          "meanError": 0.11421426137288411
+        },
+        {
+          "state": 6,
+          "fraction": 6.67572021484375e-05,
+          "meanError": 0.11306953430175781
+        },
+        {
+          "state": 7,
+          "fraction": 8.0078125e-05,
+          "meanError": 0.10421875
+        }
+      ],
+      "webgpu_materials_envmaps_bpcem": [
+        {
+          "state": 0,
+          "fraction": 0.0009946823120117188,
+          "meanError": 0.04858112335205078
+        },
+        {
+          "state": 1,
+          "fraction": 0.0009946823120117188,
+          "meanError": 0.04858112335205078
+        },
+        {
+          "state": 2,
+          "fraction": 0.0009946823120117188,
+          "meanError": 0.04858112335205078
+        },
+        {
+          "state": 3,
+          "fraction": 0.0009946823120117188,
+          "meanError": 0.04858112335205078
+        },
+        {
+          "state": 4,
+          "fraction": 0.0012025833129882812,
+          "meanError": 0.04775396982828776
+        },
+        {
+          "state": 5,
+          "fraction": 0.0009946823120117188,
+          "meanError": 0.04858112335205078
+        },
+        {
+          "state": 6,
+          "fraction": 0.0009632110595703125,
+          "meanError": 0.046234448750813804
+        },
+        {
+          "state": 7,
+          "fraction": 0.0010519027709960938,
+          "meanError": 0.04446125030517578
+        },
+        {
+          "state": 8,
+          "fraction": 0.00144195556640625,
+          "meanError": 0.04379558563232422
+        },
+        {
+          "state": 9,
+          "fraction": 0.0013971328735351562,
+          "meanError": 0.04584821065266927
+        },
+        {
+          "state": 10,
+          "fraction": 0.001338958740234375,
+          "meanError": 0.0446923573811849
+        },
+        {
+          "state": 11,
+          "fraction": 0.0014486312866210938,
+          "meanError": 0.04483572642008463
+        },
+        {
+          "state": 12,
+          "fraction": 0.001232421875,
+          "meanError": 0.03237272135416667
+        }
+      ],
+      "webgpu_postprocessing_ca": [
+        {
+          "state": 0,
+          "fraction": 2.6702880859375e-05,
+          "meanError": 0.00027879079182942707
+        },
+        {
+          "state": 1,
+          "fraction": 2.86102294921875e-06,
+          "meanError": 0.00011030832926432292
+        },
+        {
+          "state": 2,
+          "fraction": 2.002716064453125e-05,
+          "meanError": 0.0001719792683919271
+        },
+        {
+          "state": 3,
+          "fraction": 9.5367431640625e-07,
+          "meanError": 7.279713948567708e-05
+        },
+        {
+          "state": 4,
+          "fraction": 1.9073486328125e-06,
+          "meanError": 0.007194836934407552
+        },
+        {
+          "state": 5,
+          "fraction": 1.621246337890625e-05,
+          "meanError": 0.0002924601236979167
+        },
+        {
+          "state": 6,
+          "fraction": 9.5367431640625e-07,
+          "meanError": 3.8464864095052086e-05
+        },
+        {
+          "state": 7,
+          "fraction": 2.86102294921875e-06,
+          "meanError": 7.152557373046875e-05
+        },
+        {
+          "state": 8,
+          "fraction": 1.239776611328125e-05,
+          "meanError": 0.0001789728800455729
+        },
+        {
+          "state": 9,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.0002425511678059896
+        },
+        {
+          "state": 10,
+          "fraction": 2.86102294921875e-06,
+          "meanError": 8.742014567057292e-05
+        },
+        {
+          "state": 11,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.0001675287882486979
+        },
+        {
+          "state": 12,
+          "fraction": 5.7220458984375e-06,
+          "meanError": 0.0001395543416341146
+        },
+        {
+          "state": 13,
+          "fraction": 6.67572021484375e-06,
+          "meanError": 0.00025908152262369793
+        },
+        {
+          "state": 14,
+          "fraction": 2.384185791015625e-05,
+          "meanError": 0.00036334991455078125
+        },
+        {
+          "state": 15,
+          "fraction": 4.00543212890625e-05,
+          "meanError": 0.0005359649658203125
+        },
+        {
+          "state": 16,
+          "fraction": 2.734375e-05,
+          "meanError": 0.00036295572916666665
+        }
+      ]
+    },
+    "residency": {
+      "webgpu_cubemap_mix": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 217,
+            "transfers": [
+              2,
+              1460832,
+              32
+            ],
+            "resources": [
+              6,
+              6,
+              1
+            ]
+          },
+          "after": {
+            "creates": 217,
+            "transfers": [
+              2,
+              1460832,
+              32
+            ],
+            "resources": [
+              6,
+              6,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 222,
+            "transfers": [
+              2,
+              1460832,
+              32
+            ],
+            "resources": [
+              6,
+              6,
+              1
+            ]
+          },
+          "after": {
+            "creates": 222,
+            "transfers": [
+              2,
+              1460832,
+              32
+            ],
+            "resources": [
+              6,
+              6,
+              1
+            ]
+          }
+        }
+      ],
+      "webgpu_materials_envmaps_bpcem": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 207,
+            "transfers": [
+              6,
+              20392,
+              96
+            ],
+            "resources": [
+              2,
+              4,
+              1
+            ]
+          },
+          "after": {
+            "creates": 207,
+            "transfers": [
+              6,
+              20392,
+              96
+            ],
+            "resources": [
+              2,
+              4,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 212,
+            "transfers": [
+              6,
+              20392,
+              96
+            ],
+            "resources": [
+              2,
+              4,
+              1
+            ]
+          },
+          "after": {
+            "creates": 212,
+            "transfers": [
+              6,
+              20392,
+              96
+            ],
+            "resources": [
+              2,
+              4,
+              1
+            ]
+          }
+        }
+      ],
+      "webgpu_postprocessing_ca": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 274,
+            "transfers": [
+              12,
+              229072,
+              192
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 274,
+            "transfers": [
+              12,
+              229072,
+              192
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 287,
+            "transfers": [
+              12,
+              229072,
+              192
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 287,
+            "transfers": [
+              12,
+              229072,
+              192
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

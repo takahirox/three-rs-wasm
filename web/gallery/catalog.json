@@ -15551,7 +15551,7 @@
     {
       "id": "webgpu_cubemap_adjustments",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_adjustments.html",
       "source_sha256": "a7e8627932b78aa64996458b5a2d49eab27980cb5a49cedd239f4a9ca6fa51a0",
@@ -15583,7 +15583,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 104,
+        "source": "src/browser/tsl_environment.rs",
+        "test": "tests/browser/tsl-environment.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -15643,7 +15650,7 @@
     {
       "id": "webgpu_cubemap_mix",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_mix.html",
       "source_sha256": "050116afa3e799f695261720a45a636a3108d23f6f0ca95342884efb77f2c169",
@@ -15675,7 +15682,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 103,
+        "source": "src/browser/tsl_environment.rs",
+        "test": "tests/browser/tsl-environment.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -18765,7 +18779,7 @@
     {
       "id": "webgpu_materials_alphahash",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_alphahash.html",
       "source_sha256": "dd1f9525c62ac7c2aabe5db456f98ac4d92dc8907718d1c59ddabdb4a6cb0a7c",
@@ -18809,7 +18823,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 106,
+        "source": "src/browser/tsl_environment.rs",
+        "test": "tests/browser/tsl-environment.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",
@@ -19009,7 +19030,7 @@
     {
       "id": "webgpu_materials_envmaps_bpcem",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_envmaps_bpcem.html",
       "source_sha256": "1405f10c8a13989143ccb33829c332c56f394866007cf664b95866ba474cfded",
@@ -19051,7 +19072,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 105,
+        "source": "src/browser/tsl_environment.rs",
+        "test": "tests/browser/tsl-environment.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/RectAreaLightHelper.js",
@@ -22222,7 +22250,7 @@
     {
       "id": "webgpu_postprocessing_ca",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ca.html",
       "source_sha256": "d865664a8bd2343f41e458beeaf188d48356883ecea06d2fcdb96c4217517eb0",
@@ -22294,7 +22322,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 107,
+        "source": "src/browser/tsl_environment.rs",
+        "test": "tests/browser/tsl-environment.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",

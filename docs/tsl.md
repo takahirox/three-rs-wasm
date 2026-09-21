@@ -430,3 +430,42 @@ It checks GPU geometry workload, attribute residency and stable resource counts.
 scene capture. Results are recorded in [the comparison report](tsl-next-comparison.json).
 Inspector styling and frame-time parity remain outside these checks; the gallery
 entries retain their partial-port designation.
+
+## Environment graphs, alpha hashing and chromatic aberration
+
+Runtime IDs 103–107 add `webgpu_cubemap_mix`, `webgpu_cubemap_adjustments`,
+`webgpu_materials_envmaps_bpcem`, `webgpu_materials_alphahash` and
+`webgpu_postprocessing_ca`.
+
+`SurfaceNodes::environment` supplies linear HDR radiance for PBR lighting.
+`environment_direction()` and `environment_roughness()` expose the current
+radiance/irradiance sampling context. Explicit `environment::reflect_vector()`
+uses the resolved material normal without the default roughness bending;
+`material_normal_world()` includes normal maps. `environment::pmrem` samples
+resident cube-UV atlases, and `parallax_correct` intersects reflected rays with
+the environment box. `EnvironmentMap::prefilter` prepares an atlas once;
+`from_cube_hdr` accepts six image faces and `from_cube_scene` captures a scene
+through a GPU CubeCamera. Both use GPU padding and convolution.
+
+`surface::alpha_hash` implements the derivative-scaled Wyman hash/discard test
+on the GPU. The gallery combines it with 27 native instances and the existing
+SSAA pass. `display::chromatic_aberration` independently offsets RGB samples
+from a resident postprocessing texture. HDR values survive the intermediate
+sRGB conversion; clamping happens only at final display output.
+
+The original-script fixture preserves the official `time` node's render-group
+update frequency. For Cubemap Adjustments it also places scene-node controls
+in that group: r186's `NodeMaterialObserver.containsNode` inspects material
+properties but misses `scene.environmentNode`, leaving those controls stale
+on stationary meshes. This fixture correction changes uniform refresh only,
+not shader expressions, textures or PMREM generation. Other adaptations seed
+random initial data, supply the test clock and capture Inspector controls.
+
+Image, interaction and GPU residency/workload evidence is in
+[the environment comparison report](tsl-environment-comparison.json).
+Inspector appearance and GPU frame-time equivalence remain unclaimed.
+
+Ordinary JPEG textures use browser color management, including the Adobe RGB
+profile in the BPCEM floor's roughness image. glTF retains its separate,
+profile-independent decoding path. Ignoring that profile changed roughness
+values and therefore both direct lighting and blurred reflections.

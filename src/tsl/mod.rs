@@ -136,6 +136,7 @@ enum Expr {
     PositionLocal,
     NormalWorld,
     SurfaceVector(&'static str),
+    EnvironmentParameter(bool),
     PositionWorld,
     ViewZ,
     Output,
@@ -205,6 +206,18 @@ pub fn storage_element(binding: usize, index: Node) -> Node {
 }
 pub fn position_local() -> Node {
     Node::new(Expr::PositionLocal)
+}
+/// World-space sampling direction within `SurfaceNodes.environment`.
+pub fn environment_direction() -> Node {
+    Node::new(Expr::EnvironmentParameter(true))
+}
+/// BRDF sampling roughness within `SurfaceNodes.environment`.
+pub fn environment_roughness() -> Node {
+    Node::new(Expr::EnvironmentParameter(false))
+}
+/// Material color including texture and instance color, before lighting.
+pub fn base_color() -> Node {
+    Node::new(Expr::BaseColor)
 }
 pub fn tangent_view() -> Node {
     Node::new(Expr::SurfaceVector("tangent.xyz"))
@@ -641,6 +654,7 @@ struct Compiler {
     texture_types: Vec<Type>,
     buffers: Vec<Type>,
     depth: bool,
+    environment: bool,
     body: String,
     values: HashMap<usize, (Type, String)>,
     functions: HashMap<String, String>,
@@ -653,6 +667,7 @@ impl Compiler {
             texture_types: vec![Type::Texture; textures],
             buffers: vec![],
             depth: false,
+            environment: false,
             body: String::new(),
             values: HashMap::new(),
             functions: HashMap::new(),
@@ -737,6 +752,19 @@ impl Compiler {
                         )
                     },
                 )
+            }
+            Expr::EnvironmentParameter(direction) => {
+                if !self.environment {
+                    return Err(Error::Invalid("TSL environment parameter stage"));
+                }
+                if *direction {
+                    (
+                        Type::Vec3,
+                        "normalize((transpose(u.view)*vec4(environment_direction,0.0)).xyz)".into(),
+                    )
+                } else {
+                    (Type::Float, "environment_roughness".into())
+                }
             }
             Expr::SurfaceVector(field) => {
                 if !matches!(self.stage, Stage::Fragment | Stage::Output) {
@@ -1334,3 +1362,5 @@ pub mod volume;
 pub mod sampling;
 
 pub mod dof;
+
+pub mod environment;

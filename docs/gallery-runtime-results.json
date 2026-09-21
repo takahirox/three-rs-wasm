@@ -8609,7 +8609,7 @@
       "id": "webgpu_cubemap_adjustments",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_adjustments.html",
       "source_sha256": "a7e8627932b78aa64996458b5a2d49eab27980cb5a49cedd239f4a9ca6fa51a0",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_cubemap_adjustments",
         "source_sha256": "a7e8627932b78aa64996458b5a2d49eab27980cb5a49cedd239f4a9ca6fa51a0",
@@ -8661,7 +8661,7 @@
       "id": "webgpu_cubemap_mix",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_mix.html",
       "source_sha256": "050116afa3e799f695261720a45a636a3108d23f6f0ca95342884efb77f2c169",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_cubemap_mix",
         "source_sha256": "050116afa3e799f695261720a45a636a3108d23f6f0ca95342884efb77f2c169",
@@ -10144,7 +10144,7 @@
       "id": "webgpu_materials_alphahash",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_alphahash.html",
       "source_sha256": "dd1f9525c62ac7c2aabe5db456f98ac4d92dc8907718d1c59ddabdb4a6cb0a7c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_materials_alphahash",
         "source_sha256": "dd1f9525c62ac7c2aabe5db456f98ac4d92dc8907718d1c59ddabdb4a6cb0a7c",
@@ -10273,7 +10273,7 @@
       "id": "webgpu_materials_envmaps_bpcem",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_envmaps_bpcem.html",
       "source_sha256": "1405f10c8a13989143ccb33829c332c56f394866007cf664b95866ba474cfded",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_materials_envmaps_bpcem",
         "source_sha256": "1405f10c8a13989143ccb33829c332c56f394866007cf664b95866ba474cfded",
@@ -11690,7 +11690,7 @@
       "id": "webgpu_postprocessing_ca",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ca.html",
       "source_sha256": "d865664a8bd2343f41e458beeaf188d48356883ecea06d2fcdb96c4217517eb0",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_ca",
         "source_sha256": "d865664a8bd2343f41e458beeaf188d48356883ecea06d2fcdb96c4217517eb0",

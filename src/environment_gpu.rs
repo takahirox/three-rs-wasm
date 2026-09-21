@@ -277,3 +277,214 @@ impl EnvironmentMap {
         })
     }
 }
+
+impl EnvironmentMap {
+    /// Prepare six linear HDR faces (+X,-X,+Y,-Y,+Z,-Z) entirely on the GPU.
+    /// `rgba` stores all faces consecutively; no mip or filtering work runs on CPU.
+    pub fn from_cube_hdr(
+        renderer: &crate::renderer::Renderer,
+        size: u32,
+        rgba: &[half::f16],
+    ) -> Result<Self> {
+        let device = &renderer.device;
+        let queue = &renderer.queue;
+        if size < 16
+            || !size.is_power_of_two()
+            || size > device.limits().max_texture_dimension_2d / 4
+            || rgba.len() != size as usize * size as usize * 24
+        {
+            return Err(Error::Invalid("HDR cube dimensions/data"));
+        }
+        let cube = device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("HDR cube source"),
+            size: wgpu::Extent3d {
+                width: size,
+                height: size,
+                depth_or_array_layers: 6,
+            },
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::Rgba16Float,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        });
+        queue.write_texture(
+            cube.as_image_copy(),
+            bytemuck::cast_slice(rgba),
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(size * 8),
+                rows_per_image: Some(size),
+            },
+            cube.size(),
+        );
+        let cube = cube.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::Cube),
+            ..Default::default()
+        });
+        Self::from_cube_view(renderer, size, &cube)
+    }
+    fn from_cube_view(
+        renderer: &crate::renderer::Renderer,
+        size: u32,
+        cube: &wgpu::TextureView,
+    ) -> Result<Self> {
+        let device = &renderer.device;
+        let queue = &renderer.queue;
+        let atlas = device
+            .create_texture(&wgpu::TextureDescriptor {
+                label: Some("cube PMREM source"),
+                size: wgpu::Extent3d {
+                    width: 3 * size.max(112),
+                    height: 4 * size,
+                    depth_or_array_layers: 1,
+                },
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: wgpu::TextureFormat::Rgba16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::STORAGE_BINDING,
+                view_formats: &[],
+            })
+            .create_view(&Default::default());
+        let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("cube to PMREM"),
+            source: wgpu::ShaderSource::Wgsl(
+                format!(
+                    "{}\n{}",
+                    include_str!("shaders/cube_uv.wgsl"),
+                    include_str!("shaders/cube_to_pmrem.wgsl")
+                )
+                .into(),
+            ),
+        });
+        let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+            label: Some("cube to PMREM"),
+            layout: None,
+            module: &module,
+            entry_point: Some("main"),
+            compilation_options: Default::default(),
+            cache: None,
+        });
+        let params = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: None,
+            contents: bytemuck::cast_slice(&[size, 0, 0, 0, 0, 0, 0, 0]),
+            usage: wgpu::BufferUsages::UNIFORM,
+        });
+        let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: None,
+            layout: &pipeline.get_bind_group_layout(0),
+            entries: &[
+                wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: wgpu::BindingResource::TextureView(cube),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 1,
+                    resource: wgpu::BindingResource::Sampler(&sampler),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 2,
+                    resource: wgpu::BindingResource::TextureView(&atlas),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 3,
+                    resource: params.as_entire_binding(),
+                },
+            ],
+        });
+        let mut encoder = device.create_command_encoder(&Default::default());
+        {
+            let mut pass = encoder.begin_compute_pass(&Default::default());
+            pass.set_pipeline(&pipeline);
+            pass.set_bind_group(0, &bindings, &[]);
+            pass.dispatch_workgroups((3 * size).div_ceil(8), (2 * size).div_ceil(8), 1);
+        }
+        queue.submit([encoder.finish()]);
+        Ok(Self {
+            width: 3 * size.max(112),
+            height: 4 * size,
+            rgba: vec![],
+            gpu: Some(filter(device, queue, atlas, size.ilog2(), true, 0.0)?),
+        })
+    }
+}
+
+impl EnvironmentMap {
+    /// Capture a CubeCamera at a world-space origin, then generate its PMREM.
+    /// The six render passes, cube-UV padding and convolution stay on the GPU.
+    pub fn from_cube_scene(
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        position: crate::math::Vector3,
+        near: f64,
+        far: f64,
+        size: u32,
+    ) -> Result<Self> {
+        use crate::{camera::*, math::*, renderer::*, scene::*};
+        if !position.is_finite()
+            || !near.is_finite()
+            || !far.is_finite()
+            || near <= 0.0
+            || far <= near
+            || size < 16
+            || !size.is_power_of_two()
+            || size > renderer.device.limits().max_texture_dimension_2d / 4
+        {
+            return Err(Error::Invalid("cube capture camera/size"));
+        }
+        let mut target = RenderTarget::with_options(
+            &renderer.device,
+            size,
+            size,
+            RenderTargetOptions {
+                depth: 6,
+                format: wgpu::TextureFormat::Rgba16Float,
+                ..Default::default()
+            },
+        )?;
+        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 90.0,
+            aspect: 1.0,
+            near,
+            far,
+            ..Default::default()
+        })));
+        scene.get_mut(camera)?.position = position;
+        // CubeCamera uses negative FOV; reversing its up vectors is equivalent.
+        let result = (|| {
+            for (i, (direction, up)) in [
+                (Vector3::NEG_X, Vector3::Y),
+                (Vector3::X, Vector3::Y),
+                (Vector3::Y, Vector3::NEG_Z),
+                (Vector3::NEG_Y, Vector3::Z),
+                (Vector3::Z, Vector3::Y),
+                (Vector3::NEG_Z, Vector3::Y),
+            ]
+            .into_iter()
+            .enumerate()
+            {
+                scene.get_mut(camera)?.up = up;
+                scene.look_at(camera, position + direction)?;
+                target.set_layer(i as u32)?;
+                renderer.render(scene, camera, &target)?;
+            }
+            Self::from_cube_view(
+                renderer,
+                size,
+                &target.texture.create_view(&wgpu::TextureViewDescriptor {
+                    dimension: Some(wgpu::TextureViewDimension::Cube),
+                    ..Default::default()
+                }),
+            )
+        })();
+        scene.dispose(camera)?;
+        result
+    }
+}

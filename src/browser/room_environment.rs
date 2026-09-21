@@ -1,5 +1,6 @@
 //! Pinned r186 RoomEnvironment: one-time GPU cubemap capture, not a baked image.
-use super::*;
+use crate::{Result, geometry::*, material::*, math::*, renderer::*, scene::*};
+use std::sync::Arc;
 pub(super) fn environment(r: &Renderer) -> Result<Arc<crate::environment::EnvironmentMap>> {
     let mut s = Scene::new();
     s.background = Color::BLACK;

@@ -244,6 +244,16 @@ pub(super) async fn load_asset(url: &str) -> Result<(gltf::Gltf, Vec<Vec<u8>>, V
 // GLTFLoader does, for JPEG normal maps; keep lossless images on the Rust path
 // to preserve RGB under transparent pixels without a canvas premultiply roundtrip.
 pub(super) async fn decode_image(bytes: &[u8]) -> Result<crate::material::Texture> {
+    decode_browser_image(bytes, web_sys::ColorSpaceConversion::None).await
+}
+/// Match TextureLoader's HTML image color management; glTF ignores ICC profiles.
+pub(super) async fn decode_texture_image(bytes: &[u8]) -> Result<crate::material::Texture> {
+    decode_browser_image(bytes, web_sys::ColorSpaceConversion::Default).await
+}
+async fn decode_browser_image(
+    bytes: &[u8],
+    conversion: web_sys::ColorSpaceConversion,
+) -> Result<crate::material::Texture> {
     use crate::material::Texture;
     if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
         return Texture::from_basis_compressed(bytes.to_vec(), true);
@@ -261,7 +271,7 @@ pub(super) async fn decode_image(bytes: &[u8]) -> Result<crate::material::Textur
     parts.push(&js_sys::Uint8Array::from(bytes));
     let blob = web_sys::Blob::new_with_u8_array_sequence(&parts).map_err(fail)?;
     let options = web_sys::ImageBitmapOptions::new();
-    options.set_color_space_conversion(web_sys::ColorSpaceConversion::None);
+    options.set_color_space_conversion(conversion);
     options.set_premultiply_alpha(web_sys::PremultiplyAlpha::None);
     let bitmap: web_sys::ImageBitmap = JsFuture::from(
         web_sys::window()
