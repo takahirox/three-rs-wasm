@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    TslLighting(Box<super::tsl_lighting::Demo>),
     TslEnvironment(Box<super::tsl_environment::Demo>),
     TslNext(Box<super::tsl_next::Demo>),
     TslExtended(Box<super::tsl_extended::Demo>),
@@ -54,6 +55,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            108..=112 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
+                near: 0.1,
+                far: 100.0,
+                elapsed: 0.0,
+                content: Content::TslLighting(Box::new(
+                    super::tsl_lighting::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             103..=107 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -520,6 +530,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::TslLighting(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -668,6 +681,9 @@ impl Demo {
         }
     }
     pub fn select(&mut self, scene: &mut Scene, cam: Object3D, x: f64, y: f64) -> Result<()> {
+        if let Content::TslLighting(demo) = &mut self.content {
+            demo.select(scene, cam, x, y)?;
+        }
         if let Content::TslSurface(demo) = &mut self.content {
             demo.select(scene, cam, x, y)?;
         }
@@ -729,6 +745,9 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
+        if let Content::TslLighting(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -781,6 +800,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::TslLighting(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -811,6 +833,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a TSL example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::TslLighting(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::TslEnvironment(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -857,6 +882,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::TslLighting(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

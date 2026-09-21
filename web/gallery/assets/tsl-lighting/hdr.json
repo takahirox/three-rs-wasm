@@ -1,0 +1,18 @@
+[
+  {
+    "source": "textures/equirectangular/spruit_sunrise_2k.hdr.jpg",
+    "source_sha256": "867a853b9076fd7e6a6e0f38ca5f613ff6bbc672191720bf24af828e6384b62d",
+    "file": "spruit_sunrise_2k.hdr.jpg.rgba16f.png",
+    "sha256": "df9a58014c0dce66949dcee66597df67ad59a5101295ca6ab480cacf3afe3498",
+    "width": 2048,
+    "height": 1024
+  },
+  {
+    "source": "textures/equirectangular/ice_planet_close.jpg",
+    "source_sha256": "7131d86aace1de0d48ef952b3565cc01581a78543cda95f2ab2345c28ae35006",
+    "file": "ice_planet_close.jpg.rgba16f.png",
+    "sha256": "664e55c07cad888a73927af4358205548f4eb0049110be2aa8c2275c2a5c0335",
+    "width": 2048,
+    "height": 1024
+  }
+]

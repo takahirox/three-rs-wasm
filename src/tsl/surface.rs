@@ -16,6 +16,8 @@ pub struct SurfaceNodes {
     pub roughness: Option<Node>,
     pub metalness: Option<Node>,
     pub emissive: Option<Node>,
+    /// Baked indirect diffuse irradiance (linear RGB), before the Lambert BRDF.
+    pub light_map: Option<Node>,
     /// Phong RGB specular color and shininess in W.
     pub specular: Option<Node>,
 }
@@ -38,6 +40,7 @@ impl SurfaceNodes {
             ("roughness", &self.roughness, Type::Float),
             ("metalness", &self.metalness, Type::Float),
             ("emissive", &self.emissive, Type::Vec3),
+            ("light_map", &self.light_map, Type::Vec3),
             ("specular", &self.specular, Type::Vec4),
         ] {
             if let Some(node) = node {

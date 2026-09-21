@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 103 partial Rust ports; 494 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 108 partial Rust ports; 489 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_pmrem_cubemap | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_pmrem_scene | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_lightmap | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_dof_basic | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_lensflare | `tests/browser/tsl-lighting.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_anamorphic | `tests/browser/tsl-extended.spec.js` | GPUインスタンス変形、HDR高輝度抽出と横方向フィルタ、5段ブルーム。 |
 | webgpu_tsl_earth | `tests/browser/tsl-extended.spec.js` | 昼夜テクスチャ、GPUバンプマップ、大気のフレネル表現。 |
 | webgpu_occlusion | `tests/browser/tsl-extended.spec.js` | GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。 |

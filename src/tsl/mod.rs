@@ -146,6 +146,7 @@ enum Expr {
     ScreenSize,
     Uniform(usize, Type),
     Uv,
+    Uv1,
     Position,
     Normal,
     Vector(Type, Vec<Node>),
@@ -259,6 +260,10 @@ pub fn uvec2(x: Node, y: Node) -> Node {
 }
 pub fn float(value: f32) -> Node {
     Node::new(Expr::Constant(value))
+}
+/// Secondary geometry UV channel, available in material fragment graphs.
+pub fn uv1() -> Node {
+    Node::new(Expr::Uv1)
 }
 pub fn uv() -> Node {
     Node::new(Expr::Uv)
@@ -851,6 +856,19 @@ impl Compiler {
                 };
                 (*ty, format!("{prefix}[{i}].{}", &"xyzw"[..ty.lanes()]))
             }
+            Expr::Uv1 => (
+                Type::Vec2,
+                match self.stage {
+                    Stage::Fragment => "surface.uv1",
+                    Stage::Output => "fragment_surface.uv1",
+                    _ => {
+                        return Err(Error::Invalid(
+                            "TSL secondary UV requires a material fragment stage",
+                        ));
+                    }
+                }
+                .into(),
+            ),
             Expr::Uv if self.stage == Stage::Compute => {
                 return Err(Error::Invalid("TSL UV is unavailable in this stage"));
             }

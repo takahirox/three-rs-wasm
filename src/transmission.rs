@@ -29,6 +29,10 @@ impl MipChain {
             generator,
         }
     }
+    pub fn matches(&self, target: &RenderTarget) -> bool {
+        self.texture.size() == target.texture.size()
+            && self.texture.format() == target.texture.format()
+    }
     pub fn update(&self, device: &wgpu::Device, queue: &wgpu::Queue, target: &RenderTarget) {
         let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
             label: Some("transmission mip generation"),

@@ -89,3 +89,33 @@ pub fn chromatic_aberration(
         green.swizzle("w"),
     )
 }
+
+/// r186 boxBlur. Kernel size and separation are runtime GPU inputs; the input
+/// must contain straight alpha unless `premultiplied_alpha` is requested.
+pub fn box_blur(
+    texture: Texture,
+    coordinate: Node,
+    size: Node,
+    separation: Node,
+    premultiplied_alpha: Node,
+) -> Node {
+    WgslFn::new("tsl_box_blur",r#"
+fn tsl_box_blur(t:texture_2d<f32>,s:sampler,p:vec2<f32>,size:f32,separation:f32,premultiplied:bool)->vec4<f32>{
+ let radius=max(i32(size),0);let step=vec2(max(separation,1.0))/vec2<f32>(textureDimensions(t));var sum=vec4(0.0);var count=0.0;
+ for(var i= -radius;i<=radius;i++){for(var j= -radius;j<=radius;j++){
+ var sample=textureSampleLevel(t,s,p+vec2<f32>(f32(i),f32(j))*step,0.0);if premultiplied{sample=vec4(sample.rgb*sample.a,sample.a);}sum+=sample;count+=1.0;
+ }}sum/=count;if premultiplied{sum=vec4(sum.rgb/max(sum.a,1e-6),sum.a);}return sum;
+}"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Float,Type::Float,Type::Bool],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,size,separation,premultiplied_alpha])
+}
+
+/// r186 lensflare ghost sampling. Render this at the chosen downsampled size;
+/// options are (threshold, sample count, spacing, attenuation exponent).
+pub fn lensflare(texture: Texture, coordinate: Node, tint: Node, options: Node) -> Node {
+    WgslFn::new("tsl_lensflare",r#"
+fn tsl_lensflare(t:texture_2d<f32>,s:sampler,p:vec2<f32>,tint:vec3<f32>,options:vec4<f32>)->vec4<f32>{
+ let uv=vec2(1.0)-p;let ghost=(vec2(0.5)-uv)*options.z;var result=vec4(0.0,0.0,0.0,1.0);
+ for(var i=0;i<i32(options.y);i++) {let sample_uv=fract(uv+ghost*f32(i));let weight=pow(1.0-distance(sample_uv,vec2(0.5)),options.w);
+ let color=max(textureSampleLevel(t,s,sample_uv,0.0).rgb-vec3(options.x),vec3(0.0))*tint*weight;result+=vec4(color,1.0);}
+ return result;
+}"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec3,Type::Vec4],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,tint,options])
+}

@@ -469,3 +469,38 @@ Ordinary JPEG textures use browser color management, including the Adobe RGB
 profile in the BPCEM floor's roughness image. glTF retains its separate,
 profile-independent decoding path. Ignoring that profile changed roughness
 values and therefore both direct lighting and blurred reflections.
+
+## PMREM, lightmaps and depth/bloom effects
+
+The additional ports are `webgpu_pmrem_cubemap`, `webgpu_pmrem_scene`,
+`webgpu_materials_lightmap`, `webgpu_postprocessing_dof_basic`, and
+`webgpu_postprocessing_lensflare`.
+
+- `uv1()` reads the secondary geometry UV channel in material fragment graphs.
+  `SurfaceNodes::light_map` supplies linear baked irradiance before diffuse
+  BRDF evaluation. It remains distinct from emission and direct lighting.
+- `display::box_blur` runs the original square sampling kernel on the GPU,
+  including optional premultiplied-alpha filtering. DoF Basic combines this
+  with the scene's resident depth attachment, world-space click-to-focus,
+  Neutral tone mapping and FXAA after sRGB conversion.
+- `display::lensflare` samples the original thresholded, weighted ghosts.
+  The example uses emissive MRT, five-level HDR Bloom, quarter-resolution
+  RGBA8 flare target, a full-resolution HDR RTT copy, and two full-resolution
+  HDR Gaussian passes. Their
+  direction multiplier is 8 and their default sigma is 4.
+- PMREM Cubemap uses six original Pisa HDR faces. PMREM Scene captures the
+  six colored spheres and Park3Med background on the GPU, then samples the
+  resulting atlas with adjustable roughness. Background cube sampling uses
+  explicit level zero, matching the official background-node context.
+
+The camera near/far values remain those of each original example during
+Orbit updates. This matters for depth reconstruction and close-up viewing.
+The two UltraHDR assets use lossless half-float PNG containers; their pixels
+are decoded offline by the pinned official loader, never tone-mapped to LDR.
+To regenerate, run `python3 tools/tsl/prepare-lighting.py`, start
+`python3 tools/serve.py`, then run `node tools/tsl/prepare-lighting-hdr.mjs`.
+
+Validation: `tests/tsl_lighting_gpu.rs` and
+`tests/browser/tsl-lighting.spec.js`; recorded comparisons are in
+[tsl-lighting-comparison.json](tsl-lighting-comparison.json).
+Inspector appearance and hardware timing equivalence remain unclaimed.

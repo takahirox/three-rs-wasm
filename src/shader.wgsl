@@ -275,7 +275,7 @@ var<private> fragment_emissive:vec3<f32>;
     }
     return color;
 }
-struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,}
+struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,}
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
         for(var i=0u;i<12u;i++) {
@@ -332,7 +332,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
     var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
-    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular));
+    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0)));
     n=surface.normal;fragment_normal=n;fragment_emissive=surface.emissive;
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
     let roughness=min(max(surface.roughness,0.0525)+geometry_roughness,1.0);
@@ -384,7 +384,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         indirect_energy=vec3(1.0)-(film_d*dfg.x+f90*dfg.y+multiscattering(film_d,dfg,f90));
         direct_energy=vec3(1.0)+f0*(1.0/(dfg.x+dfg.y)-1.0);
     }
-    var result=indirect_energy*diffuse*u.ambient.xyz/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
+    var result=indirect_energy*diffuse*(u.ambient.xyz+surface.light_map)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
     sheen_light+=u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);

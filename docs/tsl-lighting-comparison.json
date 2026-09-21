@@ -1,0 +1,1857 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "backend": "Chrome WebGPU / Metal",
+  "threshold": {
+    "perChannel": 6,
+    "pixelFraction": 0.005
+  },
+  "referenceAdaptations": [
+    "Controlled time, Inspector control capture and viewport layout; original scripts and shader expressions.",
+    "Tween clock tied to fixture time for deterministic click-to-focus."
+  ],
+  "images": {
+    "webgpu_pmrem_scene": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.00811004638671875
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.00811004638671875
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.00811004638671875
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.00811004638671875
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.009064992268880209
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.00751495361328125
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.00811004638671875
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.005652109781901042
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.0056610107421875
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.005358378092447917
+      },
+      {
+        "state": 10,
+        "fraction": 0,
+        "meanError": 0.004563802083333333
+      }
+    ],
+    "webgpu_materials_lightmap": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.019907633463541668
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.019907633463541668
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.019907633463541668
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.019907633463541668
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.042659759521484375
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.021523793538411457
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.020345052083333332
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.020610809326171875
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.020610809326171875
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.01810546875
+      }
+    ],
+    "webgpu_postprocessing_lensflare": [
+      {
+        "state": 0,
+        "fraction": 0,
+        "meanError": 0.17431131998697916
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.17431131998697916
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.17431131998697916
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.17431131998697916
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.11292775472005208
+      },
+      {
+        "state": 5,
+        "fraction": 0,
+        "meanError": 0.2537345886230469
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.17906570434570312
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.22390365600585938
+      },
+      {
+        "state": 8,
+        "fraction": 0,
+        "meanError": 0.2929191589355469
+      },
+      {
+        "state": 9,
+        "fraction": 0,
+        "meanError": 0.21766535441080728
+      },
+      {
+        "state": 10,
+        "fraction": 0,
+        "meanError": 0.2915611267089844
+      },
+      {
+        "state": 11,
+        "fraction": 0.001209259033203125,
+        "meanError": 0.32881418863932294
+      },
+      {
+        "state": 12,
+        "fraction": 0,
+        "meanError": 0.26886876424153644
+      },
+      {
+        "state": 13,
+        "fraction": 0,
+        "meanError": 0.2688611348470052
+      },
+      {
+        "state": 14,
+        "fraction": 0,
+        "meanError": 0.2755442708333333
+      }
+    ],
+    "webgpu_pmrem_cubemap": [
+      {
+        "state": 0,
+        "fraction": 0.00018310546875,
+        "meanError": 0.42687098185221356
+      },
+      {
+        "state": 1,
+        "fraction": 0,
+        "meanError": 0.4237709045410156
+      },
+      {
+        "state": 2,
+        "fraction": 0,
+        "meanError": 0.4237709045410156
+      },
+      {
+        "state": 3,
+        "fraction": 0,
+        "meanError": 0.4237709045410156
+      },
+      {
+        "state": 4,
+        "fraction": 0,
+        "meanError": 0.3497200012207031
+      },
+      {
+        "state": 5,
+        "fraction": 3.814697265625e-06,
+        "meanError": 0.35286839803059894
+      },
+      {
+        "state": 6,
+        "fraction": 0,
+        "meanError": 0.3444811503092448
+      },
+      {
+        "state": 7,
+        "fraction": 0,
+        "meanError": 0.32973046875
+      }
+    ],
+    "webgpu_postprocessing_dof_basic": [
+      {
+        "state": 0,
+        "fraction": 5.7220458984375e-05,
+        "meanError": 0.0018094380696614583
+      },
+      {
+        "state": 1,
+        "fraction": 6.103515625e-05,
+        "meanError": 0.0019632975260416665
+      },
+      {
+        "state": 2,
+        "fraction": 6.103515625e-05,
+        "meanError": 0.0018946329752604167
+      },
+      {
+        "state": 3,
+        "fraction": 5.7220458984375e-05,
+        "meanError": 0.0018208821614583333
+      },
+      {
+        "state": 4,
+        "fraction": 0.0001678466796875,
+        "meanError": 0.004062652587890625
+      },
+      {
+        "state": 5,
+        "fraction": 0.000133514404296875,
+        "meanError": 0.0038083394368489585
+      },
+      {
+        "state": 6,
+        "fraction": 0.000148773193359375,
+        "meanError": 0.00374603271484375
+      },
+      {
+        "state": 7,
+        "fraction": 8.7738037109375e-05,
+        "meanError": 0.003387451171875
+      },
+      {
+        "state": 8,
+        "fraction": 0.0012054443359375,
+        "meanError": 0.033687591552734375
+      },
+      {
+        "state": 9,
+        "fraction": 0.000858306884765625,
+        "meanError": 0.02153778076171875
+      },
+      {
+        "state": 10,
+        "fraction": 0.000286102294921875,
+        "meanError": 0.009005228678385416
+      },
+      {
+        "state": 11,
+        "fraction": 0.00026171875,
+        "meanError": 0.005623697916666667
+      }
+    ]
+  },
+  "residency": {
+    "webgpu_postprocessing_dof_basic": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 357,
+          "transfers": [
+            25,
+            2131584,
+            9984
+          ],
+          "resources": [
+            4,
+            4,
+            1
+          ]
+        },
+        "after": {
+          "creates": 357,
+          "transfers": [
+            25,
+            2131584,
+            9984
+          ],
+          "resources": [
+            4,
+            4,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 395,
+          "transfers": [
+            25,
+            2131584,
+            9984
+          ],
+          "resources": [
+            4,
+            4,
+            1
+          ]
+        },
+        "after": {
+          "creates": 395,
+          "transfers": [
+            25,
+            2131584,
+            9984
+          ],
+          "resources": [
+            4,
+            4,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_materials_lightmap": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 123,
+          "transfers": [
+            2,
+            59232,
+            32
+          ],
+          "resources": [
+            4,
+            8,
+            0
+          ]
+        },
+        "after": {
+          "creates": 123,
+          "transfers": [
+            2,
+            59232,
+            32
+          ],
+          "resources": [
+            4,
+            8,
+            0
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 128,
+          "transfers": [
+            2,
+            59232,
+            32
+          ],
+          "resources": [
+            4,
+            8,
+            0
+          ]
+        },
+        "after": {
+          "creates": 128,
+          "transfers": [
+            2,
+            59232,
+            32
+          ],
+          "resources": [
+            4,
+            8,
+            0
+          ]
+        }
+      }
+    ],
+    "webgpu_pmrem_scene": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 248,
+          "transfers": [
+            3,
+            980464,
+            48
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 248,
+          "transfers": [
+            3,
+            980464,
+            48
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 253,
+          "transfers": [
+            3,
+            980464,
+            48
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 253,
+          "transfers": [
+            3,
+            980464,
+            48
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_postprocessing_lensflare": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 245,
+          "transfers": [
+            8,
+            6257600,
+            128
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 245,
+          "transfers": [
+            8,
+            6257600,
+            128
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 303,
+          "transfers": [
+            8,
+            6257600,
+            128
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 303,
+          "transfers": [
+            8,
+            6257600,
+            128
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    ],
+    "webgpu_pmrem_cubemap": [
+      {
+        "resize": false,
+        "before": {
+          "creates": 227,
+          "transfers": [
+            1,
+            434768,
+            16
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 227,
+          "transfers": [
+            1,
+            434768,
+            16
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "resize": true,
+        "before": {
+          "creates": 232,
+          "transfers": [
+            1,
+            434768,
+            16
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        },
+        "after": {
+          "creates": 232,
+          "transfers": [
+            1,
+            434768,
+            16
+          ],
+          "resources": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    ]
+  },
+  "workload": [
+    {
+      "kind": "pmrem_cubemap",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "pmrem_scene",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "materials_lightmap",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 2688,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 2688,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "postprocessing_dof_basic",
+      "reference": {
+        "passes": 25,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 10638,
+            "instances": 1
+          },
+          {
+            "vertices": 75222,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 14016,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_1_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer32_object_(vertex,fragment,compute)",
+            "size": 304,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_3_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_5_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_3_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_5_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_3_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_5_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer67_object_(vertex,fragment,compute)",
+            "size": 496,
+            "bytes": 128
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_3_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_5_(vertex)",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_0_(fragment)",
+            "size": 96,
+            "bytes": 96
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 15,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 12,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 54,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 216,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 1536,
+            "instances": 1
+          },
+          {
+            "vertices": 10638,
+            "instances": 1
+          },
+          {
+            "vertices": 75222,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 6080,
+        "attributeWrites": [
+          {
+            "label": "skin/morph input",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "skin/morph input",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "skin/morph input",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "skin/morph input",
+            "size": 1216,
+            "bytes": 1216
+          },
+          {
+            "label": "skin/morph input",
+            "size": 1216,
+            "bytes": 1216
+          }
+        ],
+        "uniformBytes": 2224,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 124
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 176
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "postprocessing_lensflare",
+      "reference": {
+        "passes": 19,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 960,
+            "instances": 1
+          },
+          {
+            "vertices": 15924,
+            "instances": 1
+          },
+          {
+            "vertices": 8040,
+            "instances": 1
+          },
+          {
+            "vertices": 70230,
+            "instances": 1
+          },
+          {
+            "vertices": 20934,
+            "instances": 1
+          },
+          {
+            "vertices": 40002,
+            "instances": 1
+          },
+          {
+            "vertices": 3750,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 160,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer57_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer57_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer59_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer59_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer61_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer61_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer63_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer63_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer65_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBuffer65_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 8
+          },
+          {
+            "label": "bindingBufferundefined_UniformBuffer_4_(fragment)",
+            "size": 80,
+            "bytes": 80
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 19,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 360,
+            "instances": 1
+          },
+          {
+            "vertices": 960,
+            "instances": 1
+          },
+          {
+            "vertices": 3750,
+            "instances": 1
+          },
+          {
+            "vertices": 8040,
+            "instances": 1
+          },
+          {
+            "vertices": 15924,
+            "instances": 1
+          },
+          {
+            "vertices": 20934,
+            "instances": 1
+          },
+          {
+            "vertices": 40002,
+            "instances": 1
+          },
+          {
+            "vertices": 70230,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    }
+  ],
+  "limitations": [
+    "Deterministic GPU workload/upload/allocation checks; no CPU/GPU timing parity claim.",
+    "Fullscreen background triangles replace upstream background spheres in PMREM Cubemap and Lensflares.",
+    "Bone matrices use storage buffers in the port and uniform buffers in Three.js. Geometry/joint weights/morph inputs remain resident."
+  ]
+}

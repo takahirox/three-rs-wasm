@@ -138,6 +138,12 @@ pub struct Renderer {
     scene_draw_slots: RefCell<HashMap<u32, (std::sync::Weak<()>, DrawSlots)>>,
     present_slots: RefCell<Vec<(wgpu::Texture, crate::draw_gpu::Slot)>>,
 }
+#[derive(Clone, Copy, PartialEq)]
+enum ScenePass {
+    All,
+    Opaque,
+    Transparent,
+}
 type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
     key: (Object3D, usize, bool),
@@ -670,9 +676,13 @@ impl Renderer {
         queries: Option<&crate::occlusion::OcclusionQueries>,
     ) -> Result<()> {
         let mut needs_transmission = false;
+        let mut has_hooks = false;
         for root in scene.roots() {
             for handle in scene.traverse(root, true)? {
-                if let NodeKind::Mesh(mesh) = &scene.get(handle)?.kind {
+                let node = scene.get(handle)?;
+                has_hooks |=
+                    node.render_hooks.before.is_some() || node.render_hooks.after.is_some();
+                if let NodeKind::Mesh(mesh) = &node.kind {
                     needs_transmission |= mesh
                         .materials
                         .iter()
@@ -680,7 +690,38 @@ impl Renderer {
                 }
             }
         }
-        if needs_transmission {
+        // HDR postprocessing targets can retain opaque color/depth and snapshot
+        // it directly, like WebGPU's viewport texture. Preserve the existing
+        // path for encoded outputs and special render hooks/occlusion queries.
+        let reuse_opaque = needs_transmission
+            && target.options.format == wgpu::TextureFormat::Rgba16Float
+            && !target.options.encode_srgb
+            && target.dimension == wgpu::TextureDimension::D2
+            && target.texture.depth_or_array_layers() == 1
+            && (target.options.samples <= 1
+                || (target.options.resolve_color_buffer
+                    && target.options.store_multisampled_color_buffer
+                    && target.options.store_multisampled_depth_buffer
+                    && target.options.store_multisampled_stencil_buffer))
+            && !has_hooks
+            && queries.is_none();
+        if reuse_opaque {
+            self.render_inner(scene, camera, target, ScenePass::Opaque, None, None)?;
+            let mut mips = self.transmission_mips.borrow_mut();
+            if mips.as_ref().is_none_or(|m| !m.matches(target)) {
+                *mips = Some(crate::transmission::MipChain::new(&self.device, target));
+            }
+            let mips = mips.as_ref().unwrap();
+            mips.update(&self.device, &self.queue, target);
+            self.render_inner(
+                scene,
+                camera,
+                target,
+                ScenePass::Transparent,
+                Some(&mips.view),
+                None,
+            )?;
+        } else if needs_transmission {
             let mut cached = self.transmission_target.borrow_mut();
             if cached.as_ref().is_none_or(|t| {
                 t.width != target.width
@@ -697,21 +738,33 @@ impl Renderer {
                         ..Default::default()
                     },
                 )?);
-                *self.transmission_mips.borrow_mut() = Some(crate::transmission::MipChain::new(
-                    &self.device,
-                    cached.as_ref().unwrap(),
-                ));
             }
             let background = cached.as_mut().expect("transmission target");
             background.viewport = target.viewport;
             background.scissor = target.scissor;
-            self.render_inner(scene, camera, background, true, None, None)?;
+            self.render_inner(scene, camera, background, ScenePass::Opaque, None, None)?;
+            if self
+                .transmission_mips
+                .borrow()
+                .as_ref()
+                .is_none_or(|m| !m.matches(background))
+            {
+                *self.transmission_mips.borrow_mut() =
+                    Some(crate::transmission::MipChain::new(&self.device, background));
+            }
             let mips = self.transmission_mips.borrow();
             let mips = mips.as_ref().expect("transmission mip chain");
             mips.update(&self.device, &self.queue, background);
-            self.render_inner(scene, camera, target, false, Some(&mips.view), queries)?
+            self.render_inner(
+                scene,
+                camera,
+                target,
+                ScenePass::All,
+                Some(&mips.view),
+                queries,
+            )?
         } else {
-            self.render_inner(scene, camera, target, false, None, queries)?
+            self.render_inner(scene, camera, target, ScenePass::All, None, queries)?
         }
         self.draw_slots
             .borrow_mut()
@@ -733,10 +786,12 @@ impl Renderer {
         scene: &mut Scene,
         camera: Object3D,
         target: &RenderTarget,
-        opaque_only: bool,
+        phase: ScenePass,
         transmission_view: Option<&wgpu::TextureView>,
         queries: Option<&crate::occlusion::OcclusionQueries>,
     ) -> Result<()> {
+        let opaque_only = phase == ScenePass::Opaque;
+        let resume = phase == ScenePass::Transparent;
         let valid_rectangle = |r: [u32; 4]| {
             r[2] > 0
                 && r[3] > 0
@@ -1043,10 +1098,9 @@ impl Renderer {
                     return Err(Error::Invalid("group material index"));
                 };
                 let properties = material.properties();
-                if opaque_only
-                    && (properties.transparent
-                        || matches!(material,Material::Physical(m) if m.transmission>0.0))
-                {
+                let transparent = properties.transparent
+                    || matches!(material,Material::Physical(m) if m.transmission>0.0);
+                if (opaque_only && transparent) || (resume && !transparent) {
                     continue;
                 }
                 if !properties.visible {
@@ -1665,7 +1719,7 @@ impl Renderer {
                             None
                         },
                         ops: wgpu::Operations {
-                            load: if target.options.load_color {
+                            load: if resume || target.options.load_color {
                                 wgpu::LoadOp::Load
                             } else {
                                 wgpu::LoadOp::Clear(if i == 0 {
@@ -1697,7 +1751,11 @@ impl Renderer {
                     wgpu::RenderPassDepthStencilAttachment {
                         view,
                         depth_ops: target.options.depth_buffer.then_some(wgpu::Operations {
-                            load: wgpu::LoadOp::Clear(1.0),
+                            load: if resume {
+                                wgpu::LoadOp::Load
+                            } else {
+                                wgpu::LoadOp::Clear(1.0)
+                            },
                             store: if target.options.samples > 1
                                 && !target.options.store_multisampled_depth_buffer
                             {
@@ -1707,7 +1765,11 @@ impl Renderer {
                             },
                         }),
                         stencil_ops: target.options.stencil_buffer.then_some(wgpu::Operations {
-                            load: wgpu::LoadOp::Clear(0),
+                            load: if resume {
+                                wgpu::LoadOp::Load
+                            } else {
+                                wgpu::LoadOp::Clear(0)
+                            },
                             store: if target.options.samples > 1
                                 && !target.options.store_multisampled_stencil_buffer
                             {
@@ -1726,7 +1788,7 @@ impl Renderer {
             if let Some([x, y, w, h]) = target.scissor {
                 pass.set_scissor_rect(x, y, w, h);
             }
-            if let Some((pipeline, bindings)) = &background {
+            if let Some((pipeline, bindings)) = background.as_ref().filter(|_| !resume) {
                 pass.set_pipeline(pipeline);
                 pass.set_bind_group(0, bindings, &[]);
                 pass.draw(0..3, 0..1);

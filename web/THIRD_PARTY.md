@@ -365,3 +365,25 @@ its second environment reuses the HDRI Skies asset credited above. The two helme
 examples reuse the existing DamagedHelmet model and its attribution above.
 Alpha hashing translates the MIT Three.js `getAlphaHashThreshold.js` (Wyman 2017);
 box projection and chromatic aberration translate the corresponding MIT TSL nodes.
+
+### TSL PMREM, lightmap, depth of field and lens flares
+
+`gallery/assets/tsl-lighting/` retains the pinned r186 `Park3Med` cubemap,
+`models/json/lightmap/` scene and textures, `bath_day.glb`,
+`space_ship_hallway.glb`, and their two UltraHDR environments.
+
+- [Bath day](https://skfb.ly/opNFG) by [Stan.St](https://sketchfab.com/stanst),
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- [Space Ship Hallway](https://skfb.ly/6SqUF) by
+  [yeeyeeman](https://sketchfab.com/yeeyeeman),
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- Ice Planet Close from [Space Spheremaps](https://www.spacespheremaps.com/planetary-spheremaps/).
+- Spruit Sunrise environment from [Poly Haven](https://polyhaven.com/a/spruit_sunrise).
+
+`prepare-lighting.py` copies source assets without modification. The
+`*.rgba16f.png` files losslessly pack the official `UltraHDRLoader` half-float
+bit patterns into 16-bit PNG channels. They are data containers, not display
+images. `prepare-lighting-hdr.mjs` regenerates them using the local pinned
+reference and records source/output hashes in `hdr.json`. Runtime PMREM and
+all effects are computed by Rust/WebGPU. Box blur and lensflare shaders
+translate the MIT Three.js r186 TSL nodes.

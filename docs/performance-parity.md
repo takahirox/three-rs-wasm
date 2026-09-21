@@ -24,7 +24,7 @@ be enforced deterministically in CI. Do not relax visual tolerances to gain spee
 | Point Lights demo | Original displacement translated to WGSL, static per-face data in GPU storage. CPU updates light positions/time only. Adapted material remains an appearance limitation. |
 | Wide/dashed lines | Resident endpoint geometry; GPU near-plane clipping, screen-width expansion and dash masking. Camera/width changes do not rebuild or upload geometry. Rounded joins remain missing. |
 | Geometry buffers | Resident cache keyed by source ownership and attribute versions. Renderer culling bounds are cached by geometry ownership and position/morph versions, avoiding per-frame deep copies and vertex scans. Reupload only after actual source changes. Upload callbacks now run on uploads, not on every draw. |
-| Shadow/transmission targets | Reused between frames, reallocated when dimensions/layer/sample requirements change. Opaque and final transmission passes retain independent draw slots; refraction mip views, bindings and pipeline are retained across frames. |
+| Shadow/transmission targets | Reused between frames, reallocated when dimensions/layer/sample requirements change. HDR targets with retained color/depth snapshot opaque rendering into the GPU mip chain and resume with transparent/transmissive meshes, avoiding repeated opaque geometry. Encoded outputs, hooks and occlusion queries retain the existing separate opaque pass. Refraction mip views, bindings and pipeline remain resident. |
 | Per-draw resources | Color, shadow and presentation passes reuse uniform and instance buffers and bind groups; changed contents use queue writes. Resource/layout changes rebuild bindings and removed draw slots are released. Robot browser tests enforce zero steady-state allocations, including after resize. HDR backgrounds and fullscreen effects reuse their uniform buffers and bindings too. Shadow atlas views are retained with their texture. Indirect command buffers are reused until their size changes. |
 | Static geometry merging utility | NOT BatchedMesh parity. CPU merge is suitable for one-time static preprocessing only; dynamic GPU batching/culling remains unsupported. |
 | KTX2/Basis textures | Browser glTF imports retain Basis payloads and transcode all supplied mips to supported ETC2, BC7 or UASTC ASTC 4×4 blocks at first upload; blocks remain GPU resident. The compressed glTF example is compared against the official WebGPU texture formats, mip counts and upload bytes. Unsupported GPU formats produce an error. `compression::decode_basis` remains an explicit RGBA decode utility, not a compressed-rendering parity path. Compressed physical-extension texture arrays are not yet supported. |
@@ -202,3 +202,20 @@ All 123 browser regression checks, 15 native GPU checks, six DPR 2 checks and
 five packaged-site startup checks pass. Two additional checks verify the final
 layered capture and workload implementation. Maximum differing-pixel fractions
 are 0.322% at DPR 1 and 0.145% at DPR 2; timing parity remains unmeasured.
+
+## PMREM, lightmap, DoF and lensflare ports
+
+The five additions retain static geometry, shader pipelines, bindings and render
+targets across warmed animation and resize cycles. Browser checks compare original
+mesh draw counts and enforce zero geometry/joint-weight/morph-source uploads.
+Bath Day uploads only five 19-joint bone palettes (6,080 bytes/frame); skinning stays
+in the vertex shader. Its opaque snapshot removes 11 redundant scene draws, leaving
+39 scene draws, matching Three.js. PMREM Cubemap and Lensflares use a fullscreen
+background triangle instead of the original 5,952-index sky sphere.
+
+Lensflares preserves the original emissive MRT, five-level HDR Bloom, quarter-size
+RGBA8 flare target, full-size HDR RTT copy and two full-size Gaussian passes (19
+render passes including presentation, matching the reference). DoF keeps the
+original GPU box kernel, depth-based mixing and FXAA. These are workload/residency
+checks, not CPU/GPU timing parity measurements. See
+[recorded comparisons](tsl-lighting-comparison.json).

@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_pmrem_cubemap': {'example':108,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_pmrem_scene': {'example':109,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_materials_lightmap': {'example':110,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_dof_basic': {'example':111,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_lensflare': {'example':112,'source':'src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+
  'webgpu_postprocessing_anamorphic': {'example':87,'source':'src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPUインスタンス変形、HDR高輝度抽出と横方向フィルタ、5段ブルーム。']},
  'webgpu_tsl_earth': {'example':88,'source':'src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['昼夜テクスチャ、GPUバンプマップ、大気のフレネル表現。']},
  'webgpu_occlusion': {'example':89,'source':'src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。']},
