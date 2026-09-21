@@ -273,3 +273,29 @@ fn tsl_bump_normal(d:vec2<f32>,position:vec3<f32>,normal:vec3<f32>)->vec3<f32>{
     .expect("static bump mapping")
     .call(&[differences, position_world(), normal_world()])
 }
+
+/// Offset UVs in the tangent plane using the normalized view direction, as in
+/// Three.js parallaxUV. Geometry must provide tangents (compute once at upload).
+pub fn parallax_uv(coordinate: Node, scale: Node) -> Node {
+    coordinate
+        - vec2(
+            position_view_direction().dot(tangent_view()),
+            position_view_direction().dot(bitangent_view()),
+        ) * scale
+}
+/// Photoshop-style overlay blend in linear working color space.
+pub fn blend_overlay(base: Node, blend: Node) -> Node {
+    WgslFn::new("tsl_blend_overlay", "fn tsl_blend_overlay(a:vec3<f32>,b:vec3<f32>)->vec3<f32>{return select(1.0-2.0*(1.0-a)*(1.0-b),2.0*a*b,a<vec3(0.5));}", &[Type::Vec3,Type::Vec3],Type::Vec3).unwrap().call(&[base,blend])
+}
+
+/// Derivative-based parallax for geometry without vertex tangents. `normal` is
+/// the material's view-space normal, while `geometry_uv` is the original UV set.
+/// Matches r186's shared normal-map context: the UV derivatives, bitangent and
+/// normalization factor come from the geometric normal; the tangent's first
+/// cross product uses the mapped normal when color nodes are evaluated.
+pub fn parallax_uv_frame(coordinate: Node, scale: Node, normal: Node, geometry_uv: Node) -> Node {
+    WgslFn::new("tsl_parallax_frame",r#"
+fn tsl_parallax_frame(uv:vec2<f32>,scale:vec2<f32>,normal:vec3<f32>,base:vec2<f32>,world:vec3<f32>,gn:vec3<f32>)->vec2<f32>{
+ let p=(u.view*vec4(world,1.0)).xyz;let n=normalize((u.view*vec4(gn,0.0)).xyz);let q0=dpdx(p);let q1=-dpdy(p);let st0=dpdx(base);let st1=-dpdy(base);let first=cross(q1,n);let second=cross(n,q0);let t=first*st0.x+second*st1.x;let b=first*st0.y+second*st1.y;let det=max(dot(t,t),dot(b,b));let factor=select(inverseSqrt(max(det,1e-30)),0.0,det==0.0);let mapped_t=(cross(q1,normal)*st0.x+second*st1.x)*factor;let direction=normalize(-p);return uv-vec2(dot(direction,mapped_t),dot(direction,b*factor))*scale;
+}"#,&[Type::Vec2,Type::Vec2,Type::Vec3,Type::Vec2,Type::Vec3,Type::Vec3],Type::Vec2).unwrap().call(&[coordinate,scale,normal,geometry_uv,position_world(),normal_world()])
+}

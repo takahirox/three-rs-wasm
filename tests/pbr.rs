@@ -141,6 +141,7 @@ fn pbr_features_have_independent_visible_effects() {
         })
         .collect();
     scene.environment = Some(Arc::new(EnvironmentMap {
+        gpu: None,
         width: 64,
         height: 32,
         rgba,
@@ -251,6 +252,7 @@ fn environment_replacements_release_owners_without_refiltering_unchanged_frames(
     scene.background_environment = true;
     for i in 0..20 {
         let image = Arc::new(EnvironmentMap {
+            gpu: None,
             width: 64,
             height: 32,
             rgba: vec![half::f16::from_f32(1.0 + i as f32 / 20.0); 64 * 32 * 4],

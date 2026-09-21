@@ -31,7 +31,7 @@ fn background_color(in:Out)->vec3<f32> {
  let direction=normalize((u.camera*vec4(view.xyz/view.w,0.0)).xyz);
  let c=cos(u.options.x);let s=sin(u.options.x);let d=vec3(c*direction.x-s*direction.z,direction.y,s*direction.x+c*direction.z);
  if u.options.w>0.5 {return textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x;}
- if u.options.y==0.0 {return sharp_background(d)*u.intensity.x;}
+ if u.options.y==0.0 && u.options.w>=0.0 {return sharp_background(d)*u.intensity.x;}
  let filtered=vec3(d.x,-d.y,d.z);
  let mip=clamp(roughness_mip(u.options.y),-2.0,u.options.z);let lo=floor(mip);
  return mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip))*u.intensity.x;

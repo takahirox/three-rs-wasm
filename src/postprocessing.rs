@@ -27,7 +27,7 @@ impl Effect {
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, textures, None, None).await
+        Self::build(renderer, format, wgsl, textures, None, None, None).await
     }
     /// Fullscreen pass with an explicit blend state (for GPU accumulation).
     pub async fn with_blend(
@@ -36,7 +36,7 @@ impl Effect {
         wgsl: &str,
         blend: wgpu::BlendState,
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, &[], Some(blend), None).await
+        Self::build(renderer, format, wgsl, &[], Some(blend), None, None).await
     }
     /// Fullscreen effect with a single-sampled depth view at group 1 binding 0.
     /// Use textureLoad for exact depth reads; no depth copy or CPU readback.
@@ -46,7 +46,16 @@ impl Effect {
         wgsl: &str,
         depth: &wgpu::TextureView,
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, &[], None, Some((depth, false))).await
+        Self::build(
+            renderer,
+            format,
+            wgsl,
+            &[],
+            None,
+            Some((depth, false)),
+            None,
+        )
+        .await
     }
     /// Sample an MSAA depth attachment directly on the GPU (sample index is chosen by WGSL).
     pub async fn with_multisampled_depth(
@@ -55,7 +64,7 @@ impl Effect {
         wgsl: &str,
         depth: &wgpu::TextureView,
     ) -> Result<Self> {
-        Self::build(renderer, format, wgsl, &[], None, Some((depth, true))).await
+        Self::build(renderer, format, wgsl, &[], None, Some((depth, true)), None).await
     }
     pub fn set_depth(&mut self, renderer: &Renderer, depth: &wgpu::TextureView) -> Result<()> {
         if !self.has_depth {
@@ -64,6 +73,34 @@ impl Effect {
         self.textures = extra_bindings(&renderer.device, &self.texture_layout, &[], Some(depth));
         Ok(())
     }
+    /// Explicit texture view dimensions for native volume/cube effect inputs.
+    pub async fn with_texture_dimensions(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        textures: &[(
+            &wgpu::TextureView,
+            &wgpu::Sampler,
+            wgpu::TextureViewDimension,
+        )],
+    ) -> Result<Self> {
+        let pairs = textures
+            .iter()
+            .map(|(v, s, _)| (*v, *s))
+            .collect::<Vec<_>>();
+        let dimensions = textures.iter().map(|(_, _, d)| *d).collect::<Vec<_>>();
+        Self::build(
+            renderer,
+            format,
+            wgsl,
+            &pairs,
+            None,
+            None,
+            Some(&dimensions),
+        )
+        .await
+    }
+    #[allow(clippy::too_many_arguments)]
     async fn build(
         renderer: &Renderer,
         format: wgpu::TextureFormat,
@@ -71,6 +108,7 @@ impl Effect {
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
         blend: Option<wgpu::BlendState>,
         depth: Option<(&wgpu::TextureView, bool)>,
+        dimensions: Option<&[wgpu::TextureViewDimension]>,
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
@@ -132,7 +170,8 @@ impl Effect {
                             visibility: wgpu::ShaderStages::FRAGMENT,
                             ty: wgpu::BindingType::Texture {
                                 sample_type: wgpu::TextureSampleType::Float { filterable: true },
-                                view_dimension: wgpu::TextureViewDimension::D2,
+                                view_dimension: dimensions
+                                    .map_or(wgpu::TextureViewDimension::D2, |d| d[i]),
                                 multisampled: false,
                             },
                             count: None,

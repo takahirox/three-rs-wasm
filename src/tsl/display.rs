@@ -57,3 +57,16 @@ pub fn premultiplied_srgb(color: Node) -> Node {
         alpha,
     )
 }
+
+/// r186 Sobel edge magnitude. Pass display-encoded input when matching
+/// sobel(renderOutput(scenePass)); only the eight nonzero kernel taps are read.
+pub fn sobel(texture: Texture, coordinate: Node, inverse_size: Node) -> Node {
+    WgslFn::new("tsl_sobel",r#"
+fn tsl_sobel(t:texture_2d<f32>,s:sampler,p:vec2<f32>,d:vec2<f32>)->vec4<f32>{
+ let l=vec3(0.2126,0.7152,0.0722);
+ let a=dot(textureSample(t,s,p+d*vec2(-1.0,-1.0)).rgb,l);let b=dot(textureSample(t,s,p+d*vec2(0.0,-1.0)).rgb,l);let c=dot(textureSample(t,s,p+d*vec2(1.0,-1.0)).rgb,l);
+ let e=dot(textureSample(t,s,p+d*vec2(-1.0,0.0)).rgb,l);let f=dot(textureSample(t,s,p+d*vec2(1.0,0.0)).rgb,l);
+ let g=dot(textureSample(t,s,p+d*vec2(-1.0,1.0)).rgb,l);let h=dot(textureSample(t,s,p+d*vec2(0.0,1.0)).rgb,l);let i=dot(textureSample(t,s,p+d*vec2(1.0,1.0)).rgb,l);
+ let x=-a-2.0*e-g+c+2.0*f+i;let y=-a-2.0*b-c+g+2.0*h+i;return vec4(vec3(sqrt(x*x+y*y)),1.0);
+}"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec2],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,inverse_size])
+}

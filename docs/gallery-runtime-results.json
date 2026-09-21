@@ -9105,7 +9105,7 @@
       "id": "webgpu_instance_path",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_path.html",
       "source_sha256": "011c4302c5e101a237381eddbf061061e654aa3362da107b93c8122d1ee4f109",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_instance_path",
         "source_sha256": "011c4302c5e101a237381eddbf061061e654aa3362da107b93c8122d1ee4f109",
@@ -11016,7 +11016,7 @@
       "id": "webgpu_parallax_uv",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_parallax_uv.html",
       "source_sha256": "7deb584bfe2d231cc168a23850b21e463cdd8f3d5b0f9d2b0d9b799e13c4a40a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_parallax_uv",
         "source_sha256": "7deb584bfe2d231cc168a23850b21e463cdd8f3d5b0f9d2b0d9b799e13c4a40a",
@@ -11289,7 +11289,7 @@
       "id": "webgpu_postprocessing_3dlut",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_3dlut.html",
       "source_sha256": "c00d72b3dd99b8f6f0904ebdf2c09e4c040e2ab581962c585ee97e3a190cb6ae",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_3dlut",
         "source_sha256": "c00d72b3dd99b8f6f0904ebdf2c09e4c040e2ab581962c585ee97e3a190cb6ae",
@@ -11852,7 +11852,7 @@
       "id": "webgpu_postprocessing_smaa",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_smaa.html",
       "source_sha256": "a1c8413fe392721ea7ec02495566b0fd3e6e6e78c03963d1ee4151acc889b15b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_smaa",
         "source_sha256": "a1c8413fe392721ea7ec02495566b0fd3e6e6e78c03963d1ee4151acc889b15b",
@@ -11879,7 +11879,7 @@
       "id": "webgpu_postprocessing_sobel",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_sobel.html",
       "source_sha256": "bd26aa35991789cdfbb375325485076377fee266b8b2eae7d0bb88874637aa85",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_sobel",
         "source_sha256": "bd26aa35991789cdfbb375325485076377fee266b8b2eae7d0bb88874637aa85",

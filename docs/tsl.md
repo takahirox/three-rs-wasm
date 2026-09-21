@@ -396,3 +396,37 @@ not insert an intermediate copy. `tests/browser/tsl-extended.spec.js` compares t
 original scripts, GUI controls, camera movement and resize, and checks residency
 and draw/dispatch workloads. GPU timing parity is not inferred from these checks.
 Inspector presentation remains adapted, and entries remain marked partial ports.
+
+## Path instances, image filters, 3D LUT and parallax
+
+Runtime IDs 98–102 add the r186 WebGPU examples `instance_path`,
+`postprocessing_sobel`, `postprocessing_smaa`, `postprocessing_3dlut` and
+`parallax_uv`. The original controls, assets, camera interaction and animation
+are ported through Rust/Wasm; Three.js is used only by the independent reference
+fixtures and offline path preparation.
+
+- `display::sobel` evaluates luminance gradients in the fragment shader.
+- `smaa::SmaaPass` implements the original three-stage SMAA 1x Medium filter,
+  using the original area/search lookup tables and resident intermediate targets.
+- `lut::Lut3D` reads normalized `.CUBE`, `.3dl` and horizontal/vertical PNG
+  strips; its effect uses a native GPU 3D texture and trilinear sampling.
+  Linear-to-sRGB conversion can be fused into the same grading pass.
+- `surface::parallax_uv` uses geometry tangents; `parallax_uv_frame` matches
+  r186's shared derivative/normal-map context for geometry without tangents.
+  `blend_overlay` supplies the ice surface's linear-color overlay operation.
+- `EnvironmentMap::from_scene` captures six views and prefilters their HDR
+  CubeUV atlas entirely on the GPU. Capture runs when the environment is created
+  or explicitly refreshed, never as a CPU readback in the frame loop.
+
+The path example retains 1,000 GPU instances; the smoke uses GPU vertex
+animation and two-sided transparent rendering. LUT selection reuses nine
+resident tables. `tools/tsl/prepare.py` also runs `prepare-next.py`, which copies
+pinned assets, extracts SMAA tables and generates the static heart path.
+
+`tests/browser/tsl-next.spec.js` compares the unchanged original shaders at
+fixed times, parameter settings, camera orbit/pan/zoom and resized viewports.
+It checks GPU geometry workload, attribute residency and stable resource counts.
+`tests/tsl_next_gpu.rs` covers LUT parsing/interpolation, Sobel edges and GPU
+scene capture. Results are recorded in [the comparison report](tsl-next-comparison.json).
+Inspector styling and frame-time parity remain outside these checks; the gallery
+entries retain their partial-port designation.

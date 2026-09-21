@@ -2,7 +2,7 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 93 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 98 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
@@ -27,8 +27,8 @@ Counts overlap and describe the sampled execution, not all possible branches.
 
 | Prerequisite | Examples |
 | --- | ---: |
-| Material type: MeshPhongMaterial | 98 |
 | Shadow maps | 98 |
+| Material type: MeshPhongMaterial | 98 |
 | Light type: HemisphereLight | 81 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |

@@ -1,0 +1,1279 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "date": "2026-09-21",
+  "examples": [
+    {
+      "id": "webgpu_instance_path",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_path.html",
+      "runtime": 98,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0.000194549560546875,
+          "meanError": 0.09288406372070312
+        },
+        {
+          "state": 1,
+          "fraction": 0.00025177001953125,
+          "meanError": 0.09337234497070312
+        },
+        {
+          "state": 2,
+          "fraction": 0.000156402587890625,
+          "meanError": 0.09064737955729167
+        },
+        {
+          "state": 3,
+          "fraction": 0.00011444091796875,
+          "meanError": 0.09064229329427083
+        },
+        {
+          "state": 4,
+          "fraction": 0.00087738037109375,
+          "meanError": 0.10391743977864583
+        },
+        {
+          "state": 5,
+          "fraction": 0.00064849853515625,
+          "meanError": 0.10270436604817708
+        },
+        {
+          "state": 6,
+          "fraction": 0.000247955322265625,
+          "meanError": 0.09664535522460938
+        },
+        {
+          "state": 7,
+          "fraction": 0.00014453125,
+          "meanError": 0.09703125
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 141,
+            "transfers": [
+              3,
+              7208,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 141,
+            "transfers": [
+              3,
+              7208,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 146,
+            "transfers": [
+              3,
+              7208,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 146,
+            "transfers": [
+              3,
+              7208,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ],
+      "gpu_work": {
+        "kind": "instance_path",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 5952,
+              "instances": 1
+            },
+            {
+              "vertices": 60,
+              "instances": 1000
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 60,
+              "instances": 1000
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0
+        }
+      }
+    },
+    {
+      "id": "webgpu_postprocessing_sobel",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_sobel.html",
+      "runtime": 99,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.000774383544921875
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.000774383544921875
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.000774383544921875
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.000774383544921875
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.00131988525390625
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.000774383544921875
+        },
+        {
+          "state": 6,
+          "fraction": 0.000682830810546875,
+          "meanError": 0.026153564453125
+        },
+        {
+          "state": 7,
+          "fraction": 0.000400543212890625,
+          "meanError": 0.01727294921875
+        },
+        {
+          "state": 8,
+          "fraction": 9.1552734375e-05,
+          "meanError": 0.004398345947265625
+        },
+        {
+          "state": 9,
+          "fraction": 8.984375e-05,
+          "meanError": 0.004328125
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 143,
+            "transfers": [
+              2,
+              7241376,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 143,
+            "transfers": [
+              2,
+              7241376,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 156,
+            "transfers": [
+              2,
+              7241376,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          },
+          "after": {
+            "creates": 156,
+            "transfers": [
+              2,
+              7241376,
+              32
+            ],
+            "resources": [
+              1,
+              1,
+              1
+            ]
+          }
+        }
+      ],
+      "gpu_work": {
+        "kind": "postprocessing_sobel",
+        "reference": {
+          "passes": 3,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 273648,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0
+        },
+        "rust": {
+          "passes": 4,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 273648,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 0,
+          "largeUniformBytes": 0
+        }
+      }
+    },
+    {
+      "id": "webgpu_postprocessing_smaa",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_smaa.html",
+      "runtime": 100,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.0022722880045572915
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.0024121602376302085
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.0023676554361979165
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0030988057454427085
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0018564860026041667
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.002437591552734375
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.002437591552734375
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.002437591552734375
+        },
+        {
+          "state": 8,
+          "fraction": 7.8125e-05,
+          "meanError": 0.0035533854166666665
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 74,
+            "transfers": [
+              2,
+              4272,
+              16
+            ],
+            "resources": [
+              2,
+              4,
+              0
+            ]
+          },
+          "after": {
+            "creates": 74,
+            "transfers": [
+              2,
+              4272,
+              16
+            ],
+            "resources": [
+              2,
+              4,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 88,
+            "transfers": [
+              2,
+              4272,
+              16
+            ],
+            "resources": [
+              2,
+              4,
+              0
+            ]
+          },
+          "after": {
+            "creates": 88,
+            "transfers": [
+              2,
+              4272,
+              16
+            ],
+            "resources": [
+              2,
+              4,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_work": {
+        "kind": "postprocessing_smaa",
+        "reference": {
+          "passes": 5,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 72,
+              "instances": 1
+            },
+            {
+              "vertices": 36,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 128,
+          "largeUniformBytes": 0
+        },
+        "rust": {
+          "passes": 5,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 72,
+              "instances": 1
+            },
+            {
+              "vertices": 36,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 368,
+          "largeUniformBytes": 0
+        }
+      },
+      "dpr2": {
+        "image_states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.0020580291748046875
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.002159754435221354
+          },
+          {
+            "state": 2,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 0.002173741658528646
+          },
+          {
+            "state": 3,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 0.0025625228881835938
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.001900037129720052
+          },
+          {
+            "state": 5,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0022357304890950522
+          },
+          {
+            "state": 6,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0022357304890950522
+          },
+          {
+            "state": 7,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0022357304890950522
+          },
+          {
+            "state": 8,
+            "fraction": 2.5390625e-05,
+            "meanError": 0.002318033854166667
+          }
+        ],
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 74,
+              "transfers": [
+                2,
+                4272,
+                16
+              ],
+              "resources": [
+                2,
+                4,
+                0
+              ]
+            },
+            "after": {
+              "creates": 74,
+              "transfers": [
+                2,
+                4272,
+                16
+              ],
+              "resources": [
+                2,
+                4,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 88,
+              "transfers": [
+                2,
+                4272,
+                16
+              ],
+              "resources": [
+                2,
+                4,
+                0
+              ]
+            },
+            "after": {
+              "creates": 88,
+              "transfers": [
+                2,
+                4272,
+                16
+              ],
+              "resources": [
+                2,
+                4,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgpu_postprocessing_3dlut",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_3dlut.html",
+      "runtime": 101,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024473826090494793
+        },
+        {
+          "state": 1,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024168650309244793
+        },
+        {
+          "state": 2,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024197896321614582
+        },
+        {
+          "state": 3,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024225870768229168
+        },
+        {
+          "state": 4,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.010506947835286459
+        },
+        {
+          "state": 5,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.18973668416341147
+        },
+        {
+          "state": 6,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024321238199869793
+        },
+        {
+          "state": 7,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.027250925699869793
+        },
+        {
+          "state": 8,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.028156280517578125
+        },
+        {
+          "state": 9,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.028102874755859375
+        },
+        {
+          "state": 10,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.026509602864583332
+        },
+        {
+          "state": 11,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.028561909993489582
+        },
+        {
+          "state": 12,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.025074005126953125
+        },
+        {
+          "state": 13,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0121917724609375
+        },
+        {
+          "state": 14,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0238800048828125
+        },
+        {
+          "state": 15,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024321238199869793
+        },
+        {
+          "state": 16,
+          "fraction": 0.000125885009765625,
+          "meanError": 0.056996663411458336
+        },
+        {
+          "state": 17,
+          "fraction": 8.392333984375e-05,
+          "meanError": 0.044742584228515625
+        },
+        {
+          "state": 18,
+          "fraction": 4.9591064453125e-05,
+          "meanError": 0.035321553548177086
+        },
+        {
+          "state": 19,
+          "fraction": 3.515625e-05,
+          "meanError": 0.025326822916666665
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 106,
+            "transfers": [
+              2,
+              207392,
+              32
+            ],
+            "resources": [
+              2,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 106,
+            "transfers": [
+              2,
+              207392,
+              32
+            ],
+            "resources": [
+              2,
+              3,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 115,
+            "transfers": [
+              2,
+              207392,
+              32
+            ],
+            "resources": [
+              2,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 115,
+            "transfers": [
+              2,
+              207392,
+              32
+            ],
+            "resources": [
+              2,
+              3,
+              0
+            ]
+          }
+        }
+      ],
+      "gpu_work": {
+        "kind": "postprocessing_3dlut",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 4824,
+              "instances": 1
+            },
+            {
+              "vertices": 6144,
+              "instances": 1
+            },
+            {
+              "vertices": 6144,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 16,
+          "largeUniformBytes": 0
+        },
+        "rust": {
+          "passes": 3,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 4824,
+              "instances": 1
+            },
+            {
+              "vertices": 6144,
+              "instances": 1
+            },
+            {
+              "vertices": 6144,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 4,
+          "largeUniformBytes": 0
+        }
+      },
+      "dpr2": {
+        "image_states": [
+          {
+            "state": 0,
+            "fraction": 1.621246337890625e-05,
+            "meanError": 0.024573326110839844
+          },
+          {
+            "state": 1,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.02437559763590495
+          },
+          {
+            "state": 2,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.024204254150390625
+          },
+          {
+            "state": 3,
+            "fraction": 1.621246337890625e-05,
+            "meanError": 0.02430566151936849
+          },
+          {
+            "state": 4,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.010394732157389322
+          },
+          {
+            "state": 5,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.190122922261556
+          },
+          {
+            "state": 6,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.0243838628133138
+          },
+          {
+            "state": 7,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.02702045440673828
+          },
+          {
+            "state": 8,
+            "fraction": 1.430511474609375e-05,
+            "meanError": 0.027576446533203125
+          },
+          {
+            "state": 9,
+            "fraction": 1.430511474609375e-05,
+            "meanError": 0.02875232696533203
+          },
+          {
+            "state": 10,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.02655633290608724
+          },
+          {
+            "state": 11,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.029069900512695312
+          },
+          {
+            "state": 12,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.02455584208170573
+          },
+          {
+            "state": 13,
+            "fraction": 1.1444091796875e-05,
+            "meanError": 0.012228965759277344
+          },
+          {
+            "state": 14,
+            "fraction": 1.049041748046875e-05,
+            "meanError": 0.024019559224446613
+          },
+          {
+            "state": 15,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.0243838628133138
+          },
+          {
+            "state": 16,
+            "fraction": 0.00011157989501953125,
+            "meanError": 0.07597033182779948
+          },
+          {
+            "state": 17,
+            "fraction": 6.961822509765625e-05,
+            "meanError": 0.039947191874186196
+          },
+          {
+            "state": 18,
+            "fraction": 4.482269287109375e-05,
+            "meanError": 0.03630510965983073
+          },
+          {
+            "state": 19,
+            "fraction": 3.61328125e-05,
+            "meanError": 0.027817708333333333
+          }
+        ],
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 106,
+              "transfers": [
+                2,
+                207392,
+                32
+              ],
+              "resources": [
+                2,
+                3,
+                0
+              ]
+            },
+            "after": {
+              "creates": 106,
+              "transfers": [
+                2,
+                207392,
+                32
+              ],
+              "resources": [
+                2,
+                3,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 115,
+              "transfers": [
+                2,
+                207392,
+                32
+              ],
+              "resources": [
+                2,
+                3,
+                0
+              ]
+            },
+            "after": {
+              "creates": 115,
+              "transfers": [
+                2,
+                207392,
+                32
+              ],
+              "resources": [
+                2,
+                3,
+                0
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "webgpu_parallax_uv",
+      "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_parallax_uv.html",
+      "runtime": 102,
+      "image_states": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.14713160196940103
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.14631779988606772
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.14719390869140625
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.14636739095052084
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.15596516927083334
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.13667805989583334
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.14662043253580728
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.14601898193359375
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.14662043253580728
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.1478424072265625
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.14693578084309897
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.15318934122721353
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.15412775675455728
+        },
+        {
+          "state": 13,
+          "fraction": 0,
+          "meanError": 0.15361531575520834
+        },
+        {
+          "state": 14,
+          "fraction": 0,
+          "meanError": 0.1503125
+        }
+      ],
+      "residency": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 139,
+            "transfers": [
+              1,
+              6048,
+              16
+            ],
+            "resources": [
+              2,
+              6,
+              1
+            ]
+          },
+          "after": {
+            "creates": 139,
+            "transfers": [
+              1,
+              6048,
+              16
+            ],
+            "resources": [
+              2,
+              6,
+              1
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 144,
+            "transfers": [
+              1,
+              6048,
+              16
+            ],
+            "resources": [
+              2,
+              6,
+              1
+            ]
+          },
+          "after": {
+            "creates": 144,
+            "transfers": [
+              1,
+              6048,
+              16
+            ],
+            "resources": [
+              2,
+              6,
+              1
+            ]
+          }
+        }
+      ],
+      "gpu_work": {
+        "kind": "parallax_uv",
+        "reference": {
+          "passes": 2,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 5952,
+              "instances": 1
+            },
+            {
+              "vertices": 192,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 192,
+          "largeUniformBytes": 0
+        },
+        "rust": {
+          "passes": 2,
+          "dispatches": [],
+          "draws": [
+            {
+              "vertices": 192,
+              "instances": 1
+            }
+          ],
+          "indirect": 0,
+          "attributeBytes": 0,
+          "attributeWrites": [],
+          "uniformBytes": 408,
+          "largeUniformBytes": 0
+        }
+      },
+      "dpr2": {
+        "image_states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.14771048227945963
+          },
+          {
+            "state": 1,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.1481936772664388
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.1474453608194987
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.14655303955078125
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.1557133992513021
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.13632742563883463
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.1462551752726237
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.1465142567952474
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.1462551752726237
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.14944585164388022
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0.1473201115926107
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.15332825978597006
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0.15311495463053384
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 0.15309524536132812
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 0.15075130208333334
+          }
+        ],
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 139,
+              "transfers": [
+                1,
+                6048,
+                16
+              ],
+              "resources": [
+                2,
+                6,
+                1
+              ]
+            },
+            "after": {
+              "creates": 139,
+              "transfers": [
+                1,
+                6048,
+                16
+              ],
+              "resources": [
+                2,
+                6,
+                1
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 144,
+              "transfers": [
+                1,
+                6048,
+                16
+              ],
+              "resources": [
+                2,
+                6,
+                1
+              ]
+            },
+            "after": {
+              "creates": 144,
+              "transfers": [
+                1,
+                6048,
+                16
+              ],
+              "resources": [
+                2,
+                6,
+                1
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "validation": {
+    "image_examples": 5,
+    "image_states": 62,
+    "threshold_per_channel": 6,
+    "max_different_pixel_fraction": 0.005,
+    "observed_max_different_pixel_fraction": 0.00087738037109375,
+    "native_gpu_regression_tests": 18,
+    "browser_tests_including_regressions": 23,
+    "hidpi_dpr": 2,
+    "hidpi_tests": 6,
+    "timing_parity_claimed": false
+  },
+  "notes": [
+    "Pinned upstream scripts and shaders with fixed time and seeded initial data. Parameters, orbit, pan, wheel and resize are exercised. SMAA has no camera controls.",
+    "Scene geometry counts match the original, excluding its 5952-index background sphere in favor of the Rust fullscreen background. Raw draw/pass/uniform counts are retained.",
+    "All five warmed Rust workloads upload zero vertex/index/storage-attribute bytes and reuse GPU resources, including after resize.",
+    "The LUT color conversion is fused into grading. Sobel and LUT retain one additional fullscreen presentation pass compared with the original. This report does not establish frame-time parity.",
+    "Scene images hide the adapted Inspector/notice UI. All five entries remain partial ports."
+  ]
+}

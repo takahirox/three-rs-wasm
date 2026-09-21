@@ -155,3 +155,22 @@ The browser regression suite passes 164 tests, with two additional checks for
 continuous layer updates and GPU workloads. Native GPU regression passes 27
 tests, and six image/residency checks also pass at DPR 2. All twenty warmed
 Rust workloads upload zero vertex/index/storage-attribute bytes.
+
+## Five additional TSL examples (runtime IDs 98–102)
+
+Instance Path, Sobel, SMAA, 3D LUT and Parallax UV use GPU vertex/fragment work,
+resident textures/instance attributes and the original scene geometry counts.
+RoomEnvironment is captured and prefiltered once on the GPU with its six boxes
+in one instanced draw. Smoke draws back and front faces separately, as upstream.
+SMAA retains all three filter stages and original lookup textures. The nine LUTs
+are native 3D textures; color conversion and grading share one fullscreen pass.
+
+[Recorded comparisons](tsl-next-comparison.json) cover 62 image states, GUI
+parameters, camera orbit/pan/wheel and resize. All pass the unchanged 6/255 and
+0.5% pixel thresholds (largest differing-pixel fraction: 0.088%). The five steady
+workloads upload zero vertex/index/storage-attribute bytes and allocate no new
+GPU resources after warm-up. Twenty-three browser checks (including existing
+PBR/gallery regressions), eighteen native GPU checks, and six DPR 2 image/residency
+checks pass. Sobel and LUT still have an additional fullscreen presentation pass;
+pass counts and uniform bytes are reported explicitly. GPU frame-time parity and
+Inspector styling parity are not claimed, and entries remain partial ports.

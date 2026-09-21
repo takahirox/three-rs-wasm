@@ -5,6 +5,8 @@ pub struct EnvironmentMap {
     pub width: u32,
     pub height: u32,
     pub rgba: Vec<half::f16>,
+    /// A resident scene capture; when present no CPU pixel upload is needed.
+    pub gpu: Option<PrefilteredEnvironment>,
 }
 impl EnvironmentMap {
     /// Decode an LDR equirectangular texture into the linear environment format.
@@ -34,6 +36,7 @@ impl EnvironmentMap {
             width: texture.width,
             height: texture.height,
             rgba,
+            gpu: None,
         })
     }
     pub fn from_hdr(bytes: &[u8]) -> Result<Self> {
@@ -57,6 +60,17 @@ impl EnvironmentMap {
             width: image.width(),
             height: image.height(),
             rgba,
+            gpu: None,
         })
     }
+}
+
+/// GPU-only prefiltered scene lighting. Views keep their backing textures alive.
+#[derive(Clone, Debug)]
+pub struct PrefilteredEnvironment {
+    pub(crate) view: wgpu::TextureView,
+    pub(crate) source: wgpu::TextureView,
+    pub(crate) sampler: wgpu::Sampler,
+    pub(crate) max_mip: f32,
+    pub(crate) source_is_cube_uv: bool,
 }

@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body>
+<script type="module">
+// Original scripts and shaders. Only seeded initial data, time, GUI capture and layout are adapted.
+import * as THREE from 'three/webgpu';
+import {uniform,range as originalRange} from 'three/tsl';
+const id=new URLSearchParams(location.search).get('id');
+if(!['webgpu_instance_path','webgpu_postprocessing_sobel','webgpu_postprocessing_smaa','webgpu_postprocessing_3dlut','webgpu_parallax_uv'].includes(id))throw Error('invalid fixture');
+window.fixtureTime=uniform(0);window.fixtureSeconds=0;window.fixtureControls=[];
+let rangeSeed=186;
+window.fixtureRange=(...args)=>{const node=originalRange(...args),setup=node.setup;const initial=rangeSeed++;node.setup=function(builder){let seed=initial;const old=Math.random;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};try{return setup.call(this,builder);}finally{Math.random=old;}};return node;};
+let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);
+THREE.DefaultLoadingManager.itemStart=(...args)=>{pending++;start(...args);};
+THREE.DefaultLoadingManager.itemEnd=(...args)=>{end(...args);pending--;};
+THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};(window.references??=[]).push(window.reference);};
+const source=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){const gui={add(object,key){const item={object,key,callback:null,name(){return this;},step(){return this;},listen(){return this;},onChange(fn){this.callback=fn;return this;},setValue(value){if(this.object[this.key]?.isColor)this.object[this.key].set(value);else this.object[this.key]=value;this.callback?.(value);return this;}};fixtureControls.push(item);return item;},addFolder(){return this;},addColor(object,key){return this.add(object,key);}};return gui;}}`)
+.replace(/\w+\.inspector = new Inspector\(\);/g,'window.fixtureInspector=new Inspector();').replace(/\w+\.inspector.createParameters/g,'fixtureInspector.createParameters')
+.replace(/import \{([^}]*)\} from 'three\/tsl';/g,(_,names)=>`import {${names.split(',').filter(x=>!['time','range'].includes(x.trim())).join(',')}} from 'three/tsl';`)
+.replace('timer.getElapsed()', 'window.fixtureSeconds').replace('timer.getDelta()', '(window.fixtureSeconds - (window.fixturePrevious ?? 0))').replaceAll('Math.random()','fixtureRandom()').replaceAll('THREE.MathUtils.randFloat(', 'fixtureRandFloat(').replaceAll('.random()', '.set(fixtureRandom(),fixtureRandom(),fixtureRandom())').replaceAll('Date.now()','(window.fixtureSeconds*1000)').replaceAll('performance.now()','(window.fixtureSeconds*1000)')
+.replaceAll("'./textures/","'/.cache/three-r186/examples/textures/").replaceAll("'./models/","'/.cache/three-r186/examples/models/").replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/").replaceAll("'luts/","'/.cache/three-r186/examples/luts/").replaceAll('`luts/', '`/.cache/three-r186/examples/luts/');
+module=module.replaceAll('TSL.time','window.fixtureTime').replace('eval( jsCode )( TSL )','eval( jsCode )( {...TSL,time:window.fixtureTime} )');
+module=module.replaceAll('controls.update();','controls.update(window.fixtureDelta??0);').replaceAll('child.rotation.x += 0.005','child.rotation.x=window.fixtureSeconds*.3').replaceAll('child.rotation.y += 0.01','child.rotation.y=window.fixtureSeconds*.6');
+module='function fixtureRandFloat(a,b){return a+(b-a)*fixtureRandom();}const time=window.fixtureTime,range=window.fixtureRange;let fixtureSeed=186;function fixtureRandom(){fixtureSeed=(Math.imul(fixtureSeed,1664525)+1013904223)>>>0;return fixtureSeed/4294967296;}\n'+module;
+await import(URL.createObjectURL(new Blob([module],{type:'text/javascript'})));
+while(!window.reference)await new Promise(r=>setTimeout(r,10));while(pending)await new Promise(r=>setTimeout(r,10));for(const ref of references)await ref.renderer.init();
+window.fixtureFrames=0;window.renderFixture=async(t=0)=>{fixtureFrames++;window.fixtureDelta=t-(window.fixtureSeconds??0);fixtureTime.value=t;window.fixtureSeconds=t;for(const ref of references){ref.renderer._nodes.nodeFrame.update();await ref.callback(t*1000);await ref.renderer.backend.device.queue.onSubmittedWorkDone();}window.fixturePrevious=t;};
+window.fixtureParameter=(index,value)=>fixtureControls[index].setValue(id==='webgpu_postprocessing_3dlut'&&index===0?Object.keys(lutNames)[value]:value);
+const lutNames={'Bourbon 64.CUBE':0,'Chemical 168.CUBE':0,'Clayton 33.CUBE':0,'Cubicle 99.CUBE':0,'Remy 24.CUBE':0,'Presetpro-Cinematic.3dl':0,'NeutralLUT':0,'B&WLUT':0,'NightLUT':0};
+await renderFixture();for(const ref of references)ref.renderer.domElement.dataset.ready='true';
+</script></body></html>

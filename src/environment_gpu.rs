@@ -1,16 +1,14 @@
 use crate::{Error, Result, environment::EnvironmentMap};
 use wgpu::util::DeviceExt;
-pub(crate) struct GpuEnvironment {
-    pub view: wgpu::TextureView,
-    pub source: wgpu::TextureView,
-    pub sampler: wgpu::Sampler,
-    pub max_mip: f32,
-}
+pub(crate) type GpuEnvironment = crate::environment::PrefilteredEnvironment;
 pub(crate) fn build(
     device: &wgpu::Device,
     queue: &wgpu::Queue,
     image: &EnvironmentMap,
 ) -> Result<GpuEnvironment> {
+    if let Some(gpu) = &image.gpu {
+        return Ok(gpu.clone());
+    }
     if image.width < 64
         || image.height == 0
         || image.rgba.len() != image.width as usize * image.height as usize * 4
@@ -19,8 +17,7 @@ pub(crate) fn build(
     {
         return Err(Error::Invalid("HDR dimensions"));
     }
-    let max_mip = (image.width / 4).ilog2();
-    let cube_size = 1 << max_mip;
+
     let texture = device.create_texture(&wgpu::TextureDescriptor {
         label: Some("HDR equirectangular"),
         size: wgpu::Extent3d {
@@ -46,6 +43,17 @@ pub(crate) fn build(
         texture.size(),
     );
     let source = texture.create_view(&Default::default());
+    filter(device, queue, source, (image.width / 4).ilog2(), false, 0.0)
+}
+fn filter(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    source: wgpu::TextureView,
+    max_mip: u32,
+    captured: bool,
+    sigma: f32,
+) -> Result<GpuEnvironment> {
+    let cube_size = 1 << max_mip;
     let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
         mag_filter: wgpu::FilterMode::Linear,
         min_filter: wgpu::FilterMode::Linear,
@@ -102,72 +110,90 @@ pub(crate) fn build(
     let layout = pipeline.get_bind_group_layout(0);
     let levels = max_mip - 4 + 1 + 6;
     let mut encoder = device.create_command_encoder(&Default::default());
-    for level in 0..levels {
+    let passes: Vec<(u32, u32)> = if captured {
+        let mut p = vec![(0, 3)];
+        if sigma > 0.0 {
+            p.extend([(0, 4), (0, 5)]);
+        }
+        p.extend((1..levels).flat_map(|l| [(l, 1), (l, 2)]));
+        p
+    } else {
+        (0..levels)
+            .flat_map(|l| {
+                if l == 0 {
+                    vec![(0, 0)]
+                } else {
+                    vec![(l, 1), (l, 2)]
+                }
+            })
+            .collect()
+    };
+    for (level, mode) in passes {
         let size = 1 << max_mip.saturating_sub(level).max(4);
         let target = level as f32 / (levels - 1) as f32;
         let previous = level.saturating_sub(1) as f32 / (levels - 1) as f32;
         let roughness = (target * target - previous * previous).sqrt() * target * 1.25;
-        for &mode in if level == 0 {
-            &[0u32][..]
-        } else {
-            &[1u32, 2][..]
-        } {
-            // WGSL vec3 pad starts at offset 32; reserve 48 bytes.
-            let data = [
-                size,
-                level,
-                max_mip,
-                mode,
-                roughness.to_bits(),
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-            ];
-            let uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("PMREM parameters"),
-                contents: bytemuck::cast_slice(&data),
-                usage: wgpu::BufferUsages::UNIFORM,
-            });
-            let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
-                label: Some("PMREM"),
-                layout: &layout,
-                entries: &[
-                    wgpu::BindGroupEntry {
-                        binding: 0,
-                        resource: wgpu::BindingResource::TextureView(match mode {
-                            0 => &source,
-                            1 => &view,
-                            _ => &temporary_view,
-                        }),
-                    },
-                    wgpu::BindGroupEntry {
-                        binding: 1,
-                        resource: wgpu::BindingResource::Sampler(&sampler),
-                    },
-                    wgpu::BindGroupEntry {
-                        binding: 2,
-                        resource: wgpu::BindingResource::TextureView(if mode == 1 {
-                            &temporary_view
-                        } else {
-                            &view
-                        }),
-                    },
-                    wgpu::BindGroupEntry {
-                        binding: 3,
-                        resource: uniform.as_entire_binding(),
-                    },
-                ],
-            });
-            {
-                let mut pass = encoder.begin_compute_pass(&Default::default());
-                pass.set_pipeline(&pipeline);
-                pass.set_bind_group(0, &bindings, &[]);
-                pass.dispatch_workgroups((size * 3).div_ceil(8), (size * 2).div_ceil(8), 1);
-            }
+        // WGSL vec3 pad starts at offset 32; reserve 48 bytes.
+        let data = [
+            size,
+            level,
+            max_mip,
+            mode,
+            if mode >= 4 {
+                (sigma / std::f32::consts::SQRT_2).to_bits()
+            } else {
+                roughness.to_bits()
+            },
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ];
+        let uniform = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("PMREM parameters"),
+            contents: bytemuck::cast_slice(&data),
+            usage: wgpu::BufferUsages::UNIFORM,
+        });
+        let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: Some("PMREM"),
+            layout: &layout,
+            entries: &[
+                wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: wgpu::BindingResource::TextureView(match mode {
+                        0 | 3 => &source,
+                        4 => &view,
+                        5 => &temporary_view,
+                        1 => &view,
+                        _ => &temporary_view,
+                    }),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 1,
+                    resource: wgpu::BindingResource::Sampler(&sampler),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 2,
+                    resource: wgpu::BindingResource::TextureView(if mode == 1 || mode == 4 {
+                        &temporary_view
+                    } else {
+                        &view
+                    }),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 3,
+                    resource: uniform.as_entire_binding(),
+                },
+            ],
+        });
+        {
+            let mut pass = encoder.begin_compute_pass(&Default::default());
+            pass.set_pipeline(&pipeline);
+            pass.set_bind_group(0, &bindings, &[]);
+            pass.dispatch_workgroups((size * 3).div_ceil(8), (size * 2).div_ceil(8), 1);
         }
     }
     queue.submit([encoder.finish()]);
@@ -176,5 +202,78 @@ pub(crate) fn build(
         source,
         sampler,
         max_mip: max_mip as f32,
+        source_is_cube_uv: captured,
     })
+}
+
+impl EnvironmentMap {
+    /// Capture six GPU views and prefilter them for image-based lighting. CPU
+    /// readback is never used. Call again only when the source scene changes.
+    pub fn from_scene(
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        size: u32,
+        sigma: f32,
+    ) -> Result<Self> {
+        use crate::{camera::*, math::*, renderer::*, scene::*};
+        if size < 16
+            || !size.is_power_of_two()
+            || size > renderer.device.limits().max_texture_dimension_2d / 4
+            || !sigma.is_finite()
+            || sigma < 0.0
+        {
+            return Err(Error::Invalid("environment capture size/sigma"));
+        }
+        let mut target = RenderTarget::with_options(
+            &renderer.device,
+            3 * size.max(112),
+            4 * size,
+            RenderTargetOptions {
+                format: wgpu::TextureFormat::Rgba16Float,
+                ..Default::default()
+            },
+        )?;
+        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 90.0,
+            aspect: 1.0,
+            near: 0.1,
+            far: 100.0,
+            ..Default::default()
+        })));
+        let result = (|| {
+            for (i, (direction, up)) in [
+                (Vector3::X, Vector3::Y),
+                (-Vector3::Y, Vector3::Z),
+                (Vector3::Z, Vector3::Y),
+                (-Vector3::X, Vector3::Y),
+                (Vector3::Y, -Vector3::Z),
+                (-Vector3::Z, Vector3::Y),
+            ]
+            .into_iter()
+            .enumerate()
+            {
+                scene.get_mut(camera)?.up = up;
+                scene.look_at(camera, direction)?;
+                target.viewport = [(i as u32 % 3) * size, (i as u32 / 3) * size, size, size];
+                target.scissor = Some(target.viewport);
+                target.set_load_color(i > 0);
+                renderer.render(scene, camera, &target)?;
+            }
+            filter(
+                &renderer.device,
+                &renderer.queue,
+                target.view.clone(),
+                size.ilog2(),
+                true,
+                sigma.min(std::f32::consts::PI),
+            )
+        })();
+        scene.dispose(camera)?;
+        Ok(Self {
+            width: 3 * size.max(112),
+            height: 4 * size,
+            rgba: vec![],
+            gpu: Some(result?),
+        })
+    }
 }

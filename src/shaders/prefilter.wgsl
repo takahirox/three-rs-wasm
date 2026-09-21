@@ -10,6 +10,11 @@ fn main(@builtin(global_invocation_id) id:vec3<u32>){
  let uv=(vec2<f32>(id.xy%vec2(p.size))+vec2(0.5)-1.0)/(f32(p.size)-2.0);
  let direction=face_direction(uv,face);let n=vec3(direction.x,-direction.y,direction.z);var result=vec3(0.0);
  if p.mode==0u {result=textureSampleLevel(source,linear_sampler,equirect_uv(n),0.0).rgb;}
+ else if p.mode==3u {result=textureSampleLevel(source,linear_sampler,(vec2<f32>(id.xy)+0.5)/vec2<f32>(textureDimensions(source)),0.0).rgb;}
+ else if p.mode>=4u {
+  let up=select(vec3(1.0,0.0,0.0),vec3(0.0,0.0,1.0),abs(n.z)<0.999);let tangent=normalize(cross(up,n));let bitangent=cross(n,tangent);let sigma=p.roughness;let thetaMax=min(sigma*3.0,3.14159265359);let truncation=1.0-exp(-0.5*thetaMax*thetaMax/(sigma*sigma));var weight=0.0;
+  for(var i=0u;i<20u;i++){let theta=sigma*sqrt(-2.0*log(1.0-(f32(i)+0.5)/20.0*truncation));let phi=f32(i)*2.399963229728653;let direction=n*cos(theta)+(tangent*cos(phi)+bitangent*sin(phi))*sin(theta);let w=sin(theta)/theta;result+=textureSampleLevel(source,linear_sampler,cube_uv(direction,f32(p.max_mip),f32(p.max_mip)),0.0).rgb*w;weight+=w;}result/=weight;
+ }
  else if p.mode==2u {result=textureSampleLevel(source,linear_sampler,cube_uv(n,f32(p.max_mip)-f32(p.level),f32(p.max_mip)),0.0).rgb;}
  else {
   let level=f32(p.max_mip)-f32(p.level)+1.0;

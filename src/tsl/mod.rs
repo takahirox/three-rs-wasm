@@ -135,6 +135,7 @@ enum Expr {
     StorageElement(usize, Node),
     PositionLocal,
     NormalWorld,
+    SurfaceVector(&'static str),
     PositionWorld,
     ViewZ,
     Output,
@@ -204,6 +205,15 @@ pub fn storage_element(binding: usize, index: Node) -> Node {
 }
 pub fn position_local() -> Node {
     Node::new(Expr::PositionLocal)
+}
+pub fn tangent_view() -> Node {
+    Node::new(Expr::SurfaceVector("tangent.xyz"))
+}
+pub fn bitangent_view() -> Node {
+    Node::new(Expr::SurfaceVector("bitangent"))
+}
+pub fn position_view_direction() -> Node {
+    Node::new(Expr::SurfaceVector("view_position"))
 }
 pub fn normal_world() -> Node {
     Node::new(Expr::NormalWorld)
@@ -728,6 +738,23 @@ impl Compiler {
                     },
                 )
             }
+            Expr::SurfaceVector(field) => {
+                if !matches!(self.stage, Stage::Fragment | Stage::Output) {
+                    return Err(Error::Invalid("TSL surface vector stage"));
+                }
+                let surface = if self.stage == Stage::Output {
+                    "fragment_surface"
+                } else {
+                    "surface"
+                };
+                (
+                    Type::Vec3,
+                    format!(
+                        "{}normalize({surface}.{field})",
+                        if *field == "view_position" { "-" } else { "" }
+                    ),
+                )
+            }
             Expr::LitProperty(name, ty) => {
                 if self.stage != Stage::Output {
                     return Err(Error::Invalid("TSL material output property stage"));
@@ -1213,6 +1240,8 @@ pub fn rgb_shift(texture: Texture, coordinate: Node, amount: Node, angle: Node) 
 pub mod compute;
 
 pub mod display;
+pub mod lut;
+pub mod smaa;
 
 pub mod bloom;
 pub mod sprites;

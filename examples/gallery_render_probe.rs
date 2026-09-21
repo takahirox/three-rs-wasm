@@ -228,6 +228,7 @@ fn import(snapshot: Snapshot) -> Result<(Scene, Object3D)> {
             return Err(Error::Invalid("captured environment"));
         }
         scene.environment = Some(Arc::new(EnvironmentMap {
+            gpu: None,
             width: env.width,
             height: env.height,
             rgba: env.rgba.into_iter().map(half::f16::from_f32).collect(),

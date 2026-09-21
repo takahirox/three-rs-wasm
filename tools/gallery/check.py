@@ -18,6 +18,7 @@ assets.update({f'cube_m0{level}_c0{face}.jpg':f'examples/textures/cube/angus/cub
 assets.update({f'castle-{face}.jpg':f'examples/textures/cube/SwedishRoyalCastle/{face}.jpg' for face in ['px','nx','py','ny','pz','nz']})
 assets.update({name:f'examples/textures/planets/{name}' for name in ['earth_day_4096.jpg','earth_night_4096.jpg','earth_bump_roughness_clouds_4096.jpg']})
 assets.update({'spiritedaway.ktx2':'examples/textures/spiritedaway.ktx2','blossom.png':'examples/textures/sprites/blossom.png'})
+assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-next')) for path in (ROOT/'web/gallery/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['path.json','smaa-area.png','smaa-search.png']})
 extra_assets={'web/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
 with tarfile.open(ARCHIVE) as tar:

@@ -792,7 +792,9 @@ impl Renderer {
                     [
                         scene.environment_rotation,
                         scene.background_blur,
-                        if scene.background_equirectangular {
+                        if env.source_is_cube_uv {
+                            -1.0
+                        } else if scene.background_equirectangular {
                             1.0
                         } else {
                             0.0
