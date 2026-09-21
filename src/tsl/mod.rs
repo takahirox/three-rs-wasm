@@ -135,6 +135,9 @@ enum Expr {
     StorageElement(usize, Node),
     PositionLocal,
     NormalWorld,
+    NormalLocal,
+    FragmentDepth,
+    ProjectionPosition,
     SurfaceVector(&'static str),
     EnvironmentParameter(bool),
     PositionWorld,
@@ -228,6 +231,21 @@ pub fn bitangent_view() -> Node {
 }
 pub fn position_view_direction() -> Node {
     Node::new(Expr::SurfaceVector("view_position"))
+}
+/// Local-space interpolated normal.
+pub fn normal_view_geometry() -> Node {
+    Node::new(Expr::SurfaceVector("normal"))
+}
+pub fn normal_local() -> Node {
+    Node::new(Expr::NormalLocal)
+}
+/// Fragment depth in WebGPU zero-to-one clip space.
+pub fn fragment_depth() -> Node {
+    Node::new(Expr::FragmentDepth)
+}
+/// Camera projection of the local position (homogeneous w = 1).
+pub fn projection_position() -> Node {
+    Node::new(Expr::ProjectionPosition)
 }
 pub fn normal_world() -> Node {
     Node::new(Expr::NormalWorld)
@@ -701,6 +719,26 @@ impl Compiler {
             return Ok(value.clone());
         }
         let (ty, expression) = match &*node.0 {
+            Expr::FragmentDepth => {
+                if self.stage != Stage::Fragment {
+                    return Err(Error::Invalid("TSL fragment depth stage"));
+                }
+                (Type::Float, "surface.clip.z".into())
+            }
+            Expr::NormalLocal => match self.stage {
+                Stage::Vertex => (Type::Vec3, "normal".into()),
+                Stage::Fragment => (Type::Vec3, "surface.local_normal".into()),
+                _ => return Err(Error::Invalid("TSL local normal stage")),
+            },
+            Expr::ProjectionPosition => {
+                if self.stage != Stage::Fragment {
+                    return Err(Error::Invalid("TSL projected position stage"));
+                }
+                (
+                    Type::Vec3,
+                    "(u.projection*vec4(surface.local_position,1.0)).xyz".into(),
+                )
+            }
             Expr::Output => {
                 if self.stage != Stage::Output {
                     return Err(Error::Invalid("TSL output stage"));
@@ -1388,3 +1426,15 @@ pub mod viewport;
 pub mod fsr1;
 
 pub mod oit;
+
+pub mod lines;
+
+/// Discard fragments at or below a node-controlled alpha threshold.
+pub fn alpha_test(color: Node, threshold: Node) -> Node {
+    WgslFn::new("tsl_alpha_test", "fn tsl_alpha_test(c:vec4<f32>,threshold:f32)->vec4<f32>{if c.a<=threshold {discard;}return c;}",&[Type::Vec4,Type::Float],Type::Vec4).unwrap().call(&[color,threshold])
+}
+
+/// Decode an sRGB RGB value to the linear working color space.
+pub fn srgb_to_linear(color: Node) -> Node {
+    WgslFn::new("tsl_srgb_to_linear", "fn tsl_srgb_to_linear(c:vec3<f32>)->vec3<f32>{return select(c*0.0773993808,pow(c*0.9478672986+vec3(0.0521327014),vec3(2.4)),c>vec3(0.04045));}", &[Type::Vec3], Type::Vec3).unwrap().call(&[color])
+}

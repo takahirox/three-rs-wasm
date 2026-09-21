@@ -594,3 +594,28 @@ OIT currently uses a separate final composite and canvas presentation (one extra
 fullscreen pass). Toon light updates use the renderer's existing per-draw uniform
 layout, so uniform transfer bytes exceed Three.js render-group updates. Both are
 recorded rather than treated as timing parity; static geometry remains resident.
+
+## Materials, contact shadows and instanced lines
+
+The next five pinned r186 ports are `webgpu_materials`, `webgpu_sandbox`,
+`webgpu_shadow_contact`, `webgpu_lines_fat`, and `webgpu_lines_fat_wireframe`.
+They add local/view normal accessors, projected local position, fragment depth,
+node-driven alpha testing and sRGB-to-linear conversion. The sandbox retains
+native one-pixel WebGPU points and GPU vertex-texture displacement.
+
+`tsl::lines::LineSegments` owns one resident segment buffer shared by specialized
+`LineOptions` materials. Each segment is an 18-index instanced ribbon; vertex
+shaders expand it, trim it near the camera, and interpolate colors/distances.
+Fragment shaders implement round caps, dashes and alpha-to-coverage. Width can
+use logical pixels or world units. The current projection path supports standard
+perspective/orthographic projections and rigid camera transforms. The examples
+render both main and inset viewports from the same resident data.
+
+The pinned materials example's final `Loop` produces a zero `DiffuseColor` in
+Three.js's generated shader. Its black teapot is retained; this does not imply
+a general Rust `Loop` node API. The line example has an upstream control bug:
+a zero `dashOffset` becomes a shader literal and GUI changes do not invalidate it.
+The reference fixture adds `matLine.needsUpdate = true` in that callback, so the
+port's functioning offset control is compared with the original shader after
+invalidation. Other changes to the reference are deterministic initial data,
+time, UI capture and layout. No screenshot is used as rendered scene content.

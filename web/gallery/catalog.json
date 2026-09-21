@@ -18237,7 +18237,7 @@
     {
       "id": "webgpu_lines_fat_wireframe",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat_wireframe.html",
       "source_sha256": "bd61bcf02a5922cf1bb02e9601fb6af7c3126669bdf3028cd4e2c61fa6f80d33",
@@ -18299,7 +18299,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 127,
+        "source": "src/browser/tsl_primitives.rs",
+        "test": "tests/browser/tsl-primitives.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -18312,7 +18319,7 @@
     {
       "id": "webgpu_lines_fat",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat.html",
       "source_sha256": "7aafdd399284210f429d8b833355aa3a295086ed986e81ff1cb381dd8db99989",
@@ -18358,7 +18365,15 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 126,
+        "source": "src/browser/tsl_primitives.rs",
+        "test": "tests/browser/tsl-primitives.spec.js",
+        "limitations": [
+          "公式r186のdash offset更新不備は修正して比較。",
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
@@ -18747,7 +18762,7 @@
     {
       "id": "webgpu_materials",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials.html",
       "source_sha256": "649e8c7ad38b14f05e0da6e5c61ccb3bdda5439109470f69c470c464d3da3441",
@@ -18781,7 +18796,15 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 123,
+        "source": "src/browser/tsl_primitives.rs",
+        "test": "tests/browser/tsl-primitives.spec.js",
+        "limitations": [
+          "r186公式のLoop出力が黒になる挙動を維持。汎用Loopノードは未対応。",
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/geometries/TeapotGeometry.js",
@@ -24190,7 +24213,7 @@
     {
       "id": "webgpu_sandbox",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sandbox.html",
       "source_sha256": "1dcbadd7e09e025e3f4c096a126098b9c75c7e78c44c8f8f2674ce13d0ec39a7",
@@ -24222,7 +24245,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 124,
+        "source": "src/browser/tsl_primitives.rs",
+        "test": "tests/browser/tsl-primitives.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/loaders/KTX2Loader.js",
@@ -24330,7 +24360,7 @@
     {
       "id": "webgpu_shadow_contact",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadow_contact.html",
       "source_sha256": "d6e8a01f7afbf115728df3fcc8db444e642be058714a0ac9e662f53d4f727da9",
@@ -24394,7 +24424,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 125,
+        "source": "src/browser/tsl_primitives.rs",
+        "test": "tests/browser/tsl-primitives.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

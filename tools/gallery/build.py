@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_materials': {'example':123,'source':'src/browser/tsl_primitives.rs','test':'tests/browser/tsl-primitives.spec.js','limitations':['r186公式のLoop出力が黒になる挙動を維持。汎用Loopノードは未対応。','Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_sandbox': {'example':124,'source':'src/browser/tsl_primitives.rs','test':'tests/browser/tsl-primitives.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_shadow_contact': {'example':125,'source':'src/browser/tsl_primitives.rs','test':'tests/browser/tsl-primitives.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_lines_fat': {'example':126,'source':'src/browser/tsl_primitives.rs','test':'tests/browser/tsl-primitives.spec.js','limitations':['公式r186のdash offset更新不備は修正して比較。','Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_lines_fat_wireframe': {'example':127,'source':'src/browser/tsl_primitives.rs','test':'tests/browser/tsl-primitives.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+
  'webgpu_materials_sss': {'example':118,'source':'src/browser/tsl_materials.rs','test':'tests/browser/tsl-materials.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_materials_toon': {'example':119,'source':'src/browser/tsl_materials.rs','test':'tests/browser/tsl-materials.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_skinning_instancing': {'example':120,'source':'src/browser/tsl_materials.rs','test':'tests/browser/tsl-materials.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},

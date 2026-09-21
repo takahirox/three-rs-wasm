@@ -212,6 +212,7 @@ var<private> vertex_instance_index:u32;
 var<private> fragment_position_world:vec3<f32>;
 var<private> fragment_view_z:f32;
 struct VertexOut {
+    @location(11) local_normal:vec3<f32>,
     @location(10) local_position:vec3<f32>,
     @builtin(position) clip: vec4<f32>, @location(0) position: vec3<f32>,
     @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32>, @location(3) color: vec4<f32>, @location(4) tangent:vec4<f32>, @location(5) bitangent:vec3<f32>, @location(6) view_position:vec3<f32>,@location(7) uv1:vec2<f32>,@location(8) line_distance:f32, @location(9) @interpolate(flat) instance_index:u32,
@@ -225,7 +226,7 @@ var<private> tsl_vertex_index:u32;
     let position=(instance*vec4(deform(animated.position,animated.normal,uv),1.0)).xyz;
     let cofactor=mat3x3(cross(i1.xyz,i2.xyz),cross(i2.xyz,i0.xyz),cross(i0.xyz,i1.xyz));
     let instance_normal=select(animated.normal,normalize(cofactor*animated.normal),INSTANCED);
-    var out:VertexOut;out.local_position=position;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
+    var out:VertexOut;out.local_normal=animated.normal;out.local_position=position;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
     if u.point.z>0.0 {
         var size=u.point.z;if u.point.w>0.0 {size*=u.point.y*0.5/out.clip.w;}
         out.clip=vec4(out.clip.xy+corner*size/u.point.xy*out.clip.w,out.clip.zw);

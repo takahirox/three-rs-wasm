@@ -1,0 +1,2134 @@
+{
+  "baseline": "Three.js r186 148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "threshold": {
+    "maxChannelError": 6,
+    "maxDifferentPixelFraction": 0.005
+  },
+  "fixtureChanges": [
+    "Seeded initial rotations and points; fixed time at 60 Hz for frame-increment animation; GUI capture and layout.",
+    "Fix upstream dashOffset GUI callback by setting matLine.needsUpdate = true, since zero offset is compiled as a literal."
+  ],
+  "notes": [
+    "Pinned materials Loop output is black in the official shader; it is not counted as a general Loop API port.",
+    "Same GPU geometry/instancing workloads except solid inset sphere replaced by a quad and two back-facing floor depth draws omitted.",
+    "Core updates larger per-draw uniform blocks; counts below do not establish CPU/GPU timing equivalence."
+  ],
+  "images": {
+    "dpr1": {
+      "tsl-primitives-TSL-primitives-official-rendering-materials": [
+        {
+          "state": 0,
+          "fraction": 3.814697265625e-05,
+          "meanError": 0.042566935221354164
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.031177520751953125
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.031060536702473957
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.029032389322916668
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.03270572916666667
+        }
+      ],
+      "tsl-primitives-TSL-primitives-official-rendering-lines-fat": [
+        {
+          "state": 0,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.013829549153645834
+        },
+        {
+          "state": 1,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.013829549153645834
+        },
+        {
+          "state": 2,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.013829549153645834
+        },
+        {
+          "state": 3,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.013829549153645834
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 3.0517578125e-05
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 1.9073486328125e-05
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 3.0517578125e-05
+        },
+        {
+          "state": 7,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.013829549153645834
+        },
+        {
+          "state": 8,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.015237172444661459
+        },
+        {
+          "state": 9,
+          "fraction": 0.000446319580078125,
+          "meanError": 0.018137613932291668
+        },
+        {
+          "state": 10,
+          "fraction": 1.9073486328125e-05,
+          "meanError": 0.025028228759765625
+        },
+        {
+          "state": 11,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024934132893880207
+        },
+        {
+          "state": 12,
+          "fraction": 3.4332275390625e-05,
+          "meanError": 0.026125590006510418
+        },
+        {
+          "state": 13,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.011867523193359375
+        },
+        {
+          "state": 14,
+          "fraction": 0.000446319580078125,
+          "meanError": 0.018137613932291668
+        },
+        {
+          "state": 15,
+          "fraction": 7.2479248046875e-05,
+          "meanError": 0.020047505696614582
+        },
+        {
+          "state": 16,
+          "fraction": 0.000438690185546875,
+          "meanError": 0.0176544189453125
+        },
+        {
+          "state": 17,
+          "fraction": 0,
+          "meanError": 3.0517578125e-05
+        },
+        {
+          "state": 18,
+          "fraction": 0.000438690185546875,
+          "meanError": 0.0176544189453125
+        },
+        {
+          "state": 19,
+          "fraction": 0.000408172607421875,
+          "meanError": 0.017673492431640625
+        },
+        {
+          "state": 20,
+          "fraction": 0.00048828125,
+          "meanError": 0.018524169921875
+        },
+        {
+          "state": 21,
+          "fraction": 0.000476837158203125,
+          "meanError": 0.01703643798828125
+        },
+        {
+          "state": 22,
+          "fraction": 0.0004609375,
+          "meanError": 0.010604166666666666
+        }
+      ],
+      "tsl-primitives-TSL-primiti-a750e-ndering-lines-fat-wireframe": [
+        {
+          "state": 0,
+          "fraction": 8.0108642578125e-05,
+          "meanError": 0.00098419189453125
+        },
+        {
+          "state": 1,
+          "fraction": 8.0108642578125e-05,
+          "meanError": 0.00098419189453125
+        },
+        {
+          "state": 2,
+          "fraction": 8.0108642578125e-05,
+          "meanError": 0.00098419189453125
+        },
+        {
+          "state": 3,
+          "fraction": 8.0108642578125e-05,
+          "meanError": 0.00098419189453125
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 5,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.002353668212890625
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 7,
+          "fraction": 8.0108642578125e-05,
+          "meanError": 0.00098419189453125
+        },
+        {
+          "state": 8,
+          "fraction": 0.000102996826171875,
+          "meanError": 0.0017038981119791667
+        },
+        {
+          "state": 9,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.0013224283854166667
+        },
+        {
+          "state": 10,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0004984537760416666
+        },
+        {
+          "state": 11,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0009511311848958334
+        },
+        {
+          "state": 12,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.000843048095703125
+        },
+        {
+          "state": 13,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0009511311848958334
+        },
+        {
+          "state": 14,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0007006327311197916
+        },
+        {
+          "state": 15,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0012067159016927083
+        },
+        {
+          "state": 16,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.0003102620442708333
+        },
+        {
+          "state": 17,
+          "fraction": 3.90625e-06,
+          "meanError": 0.00044921875
+        }
+      ],
+      "tsl-primitives-TSL-primiti-95702-al-rendering-shadow-contact": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.006422678629557292
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.012769063313802084
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.010278065999348959
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.002132415771484375
+        },
+        {
+          "state": 4,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0022214253743489585
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.0020434061686197915
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0032869974772135415
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.0021349589029947915
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.005491892496744792
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.0034421284993489585
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.00356292724609375
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.0034421284993489585
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.003818511962890625
+        },
+        {
+          "state": 13,
+          "fraction": 0,
+          "meanError": 0.0038464864095052085
+        },
+        {
+          "state": 14,
+          "fraction": 0,
+          "meanError": 0.003326416015625
+        },
+        {
+          "state": 15,
+          "fraction": 0,
+          "meanError": 0.0036028645833333334
+        }
+      ],
+      "tsl-primitives-TSL-primitives-official-rendering-sandbox": [
+        {
+          "state": 0,
+          "fraction": 0.002773284912109375,
+          "meanError": 0.049580891927083336
+        },
+        {
+          "state": 1,
+          "fraction": 0.002773284912109375,
+          "meanError": 0.049588521321614586
+        },
+        {
+          "state": 2,
+          "fraction": 0.002773284912109375,
+          "meanError": 0.0496063232421875
+        },
+        {
+          "state": 3,
+          "fraction": 0.002773284912109375,
+          "meanError": 0.049652099609375
+        },
+        {
+          "state": 4,
+          "fraction": 0.00221484375,
+          "meanError": 0.03877994791666667
+        }
+      ]
+    },
+    "dpr2": {
+      "tsl-primitives-TSL-primitives-official-rendering-materials": [
+        {
+          "state": 0,
+          "fraction": 4.1961669921875e-05,
+          "meanError": 0.02755451202392578
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.018265724182128906
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.017450968424479168
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.01687335968017578
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0.0192373046875
+        }
+      ],
+      "tsl-primitives-TSL-primitives-official-rendering-lines-fat": [
+        {
+          "state": 0,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.013364791870117188
+        },
+        {
+          "state": 1,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.013364791870117188
+        },
+        {
+          "state": 2,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.013364791870117188
+        },
+        {
+          "state": 3,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.013364791870117188
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 1.3987223307291666e-05
+        },
+        {
+          "state": 5,
+          "fraction": 3.814697265625e-06,
+          "meanError": 0.00041039784749348957
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 1.3987223307291666e-05
+        },
+        {
+          "state": 7,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.013364791870117188
+        },
+        {
+          "state": 8,
+          "fraction": 1.33514404296875e-05,
+          "meanError": 0.014655431111653646
+        },
+        {
+          "state": 9,
+          "fraction": 0.00017547607421875,
+          "meanError": 0.01581732432047526
+        },
+        {
+          "state": 10,
+          "fraction": 1.239776611328125e-05,
+          "meanError": 0.02432727813720703
+        },
+        {
+          "state": 11,
+          "fraction": 1.71661376953125e-05,
+          "meanError": 0.02480316162109375
+        },
+        {
+          "state": 12,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.024704933166503906
+        },
+        {
+          "state": 13,
+          "fraction": 1.430511474609375e-05,
+          "meanError": 0.012412389119466146
+        },
+        {
+          "state": 14,
+          "fraction": 0.00017547607421875,
+          "meanError": 0.01581732432047526
+        },
+        {
+          "state": 15,
+          "fraction": 6.4849853515625e-05,
+          "meanError": 0.021468480428059895
+        },
+        {
+          "state": 16,
+          "fraction": 0.00017833709716796875,
+          "meanError": 0.015502293904622396
+        },
+        {
+          "state": 17,
+          "fraction": 0,
+          "meanError": 1.3987223307291666e-05
+        },
+        {
+          "state": 18,
+          "fraction": 0.00017833709716796875,
+          "meanError": 0.015502293904622396
+        },
+        {
+          "state": 19,
+          "fraction": 0.000179290771484375,
+          "meanError": 0.015291213989257812
+        },
+        {
+          "state": 20,
+          "fraction": 0.0001926422119140625,
+          "meanError": 0.015796343485514324
+        },
+        {
+          "state": 21,
+          "fraction": 0.00018596649169921875,
+          "meanError": 0.015121777852376303
+        },
+        {
+          "state": 22,
+          "fraction": 0.0002001953125,
+          "meanError": 0.0091240234375
+        }
+      ],
+      "tsl-primitives-TSL-primiti-a750e-ndering-lines-fat-wireframe": [
+        {
+          "state": 0,
+          "fraction": 4.673004150390625e-05,
+          "meanError": 0.001240094502766927
+        },
+        {
+          "state": 1,
+          "fraction": 4.673004150390625e-05,
+          "meanError": 0.001240094502766927
+        },
+        {
+          "state": 2,
+          "fraction": 4.673004150390625e-05,
+          "meanError": 0.001240094502766927
+        },
+        {
+          "state": 3,
+          "fraction": 4.673004150390625e-05,
+          "meanError": 0.001240094502766927
+        },
+        {
+          "state": 4,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 5,
+          "fraction": 1.52587890625e-05,
+          "meanError": 0.0027818679809570312
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0
+        },
+        {
+          "state": 7,
+          "fraction": 4.673004150390625e-05,
+          "meanError": 0.001240094502766927
+        },
+        {
+          "state": 8,
+          "fraction": 5.435943603515625e-05,
+          "meanError": 0.0009091695149739584
+        },
+        {
+          "state": 9,
+          "fraction": 7.62939453125e-06,
+          "meanError": 0.00033346811930338543
+        },
+        {
+          "state": 10,
+          "fraction": 1.049041748046875e-05,
+          "meanError": 0.00033346811930338543
+        },
+        {
+          "state": 11,
+          "fraction": 8.58306884765625e-06,
+          "meanError": 0.000499725341796875
+        },
+        {
+          "state": 12,
+          "fraction": 2.86102294921875e-06,
+          "meanError": 0.0006017684936523438
+        },
+        {
+          "state": 13,
+          "fraction": 8.58306884765625e-06,
+          "meanError": 0.000499725341796875
+        },
+        {
+          "state": 14,
+          "fraction": 2.288818359375e-05,
+          "meanError": 0.0015894571940104167
+        },
+        {
+          "state": 15,
+          "fraction": 1.1444091796875e-05,
+          "meanError": 0.0006262461344401041
+        },
+        {
+          "state": 16,
+          "fraction": 1.621246337890625e-05,
+          "meanError": 0.0009307861328125
+        },
+        {
+          "state": 17,
+          "fraction": 1.3671875e-05,
+          "meanError": 0.0010172526041666667
+        }
+      ],
+      "tsl-primitives-TSL-primiti-95702-al-rendering-shadow-contact": [
+        {
+          "state": 0,
+          "fraction": 0,
+          "meanError": 0.006537119547526042
+        },
+        {
+          "state": 1,
+          "fraction": 0,
+          "meanError": 0.012885411580403646
+        },
+        {
+          "state": 2,
+          "fraction": 0,
+          "meanError": 0.010478337605794271
+        },
+        {
+          "state": 3,
+          "fraction": 0,
+          "meanError": 0.0020405451456705728
+        },
+        {
+          "state": 4,
+          "fraction": 1.049041748046875e-05,
+          "meanError": 0.0022401809692382812
+        },
+        {
+          "state": 5,
+          "fraction": 0,
+          "meanError": 0.00201416015625
+        },
+        {
+          "state": 6,
+          "fraction": 0,
+          "meanError": 0.0033092498779296875
+        },
+        {
+          "state": 7,
+          "fraction": 0,
+          "meanError": 0.002024968465169271
+        },
+        {
+          "state": 8,
+          "fraction": 0,
+          "meanError": 0.005471547444661458
+        },
+        {
+          "state": 9,
+          "fraction": 0,
+          "meanError": 0.003314336140950521
+        },
+        {
+          "state": 10,
+          "fraction": 0,
+          "meanError": 0.0033998489379882812
+        },
+        {
+          "state": 11,
+          "fraction": 0,
+          "meanError": 0.003314336140950521
+        },
+        {
+          "state": 12,
+          "fraction": 0,
+          "meanError": 0.0037784576416015625
+        },
+        {
+          "state": 13,
+          "fraction": 0,
+          "meanError": 0.003761927286783854
+        },
+        {
+          "state": 14,
+          "fraction": 0,
+          "meanError": 0.0035610198974609375
+        },
+        {
+          "state": 15,
+          "fraction": 0,
+          "meanError": 0.0038440755208333332
+        }
+      ],
+      "tsl-primitives-TSL-primitives-official-rendering-sandbox": [
+        {
+          "state": 0,
+          "fraction": 0.0013895034790039062,
+          "meanError": 0.04163837432861328
+        },
+        {
+          "state": 1,
+          "fraction": 0.0013895034790039062,
+          "meanError": 0.04169750213623047
+        },
+        {
+          "state": 2,
+          "fraction": 0.0013895034790039062,
+          "meanError": 0.04178905487060547
+        },
+        {
+          "state": 3,
+          "fraction": 0.0013895034790039062,
+          "meanError": 0.041861534118652344
+        },
+        {
+          "state": 4,
+          "fraction": 0.0011103515625,
+          "meanError": 0.032867838541666666
+        }
+      ]
+    }
+  },
+  "residency": {
+    "dpr1": {
+      "tsl-primitives-TSL-primitives-GPU-residency-lines-fat": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 81,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 81,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 89,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 89,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primiti-11ab3-sidency-lines-fat-wireframe": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 80,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 80,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 88,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 88,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-materials": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 204,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 204,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 209,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 209,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-sandbox": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 109,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          },
+          "after": {
+            "creates": 109,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 114,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          },
+          "after": {
+            "creates": 114,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-shadow-contact": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 90,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 90,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 95,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 95,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    },
+    "dpr2": {
+      "tsl-primitives-TSL-primitives-GPU-residency-lines-fat": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 81,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 81,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 89,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 89,
+            "transfers": [
+              3,
+              62496,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primiti-11ab3-sidency-lines-fat-wireframe": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 80,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 80,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 88,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 88,
+            "transfers": [
+              4,
+              39456,
+              48
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-materials": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 204,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 204,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 209,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          },
+          "after": {
+            "creates": 209,
+            "transfers": [
+              2,
+              1184384,
+              32
+            ],
+            "resources": [
+              1,
+              3,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-sandbox": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 109,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          },
+          "after": {
+            "creates": 109,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 114,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          },
+          "after": {
+            "creates": 114,
+            "transfers": [
+              6,
+              517920,
+              96
+            ],
+            "resources": [
+              1,
+              5,
+              0
+            ]
+          }
+        }
+      ],
+      "tsl-primitives-TSL-primitives-GPU-residency-shadow-contact": [
+        {
+          "resize": false,
+          "before": {
+            "creates": 90,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 90,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "resize": true,
+          "before": {
+            "creates": 95,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          },
+          "after": {
+            "creates": 95,
+            "transfers": [
+              5,
+              672664,
+              80
+            ],
+            "resources": [
+              1,
+              1,
+              0
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "gpuWork": [
+    {
+      "kind": "materials",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 164,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 1428,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer1_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer4_render_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer6_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer3_object_(vertex,fragment,compute)",
+            "size": 160,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer12_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer10_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer10_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer18_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer27_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer33_render_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBuffer33_render_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer34_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer24_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer36_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer30_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer43_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer40_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer40_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer45_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer49_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer51_object_(vertex,fragment,compute)",
+            "size": 112,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 164,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          },
+          {
+            "vertices": 61776,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 74672,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 348
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "sandbox",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 1000,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 68,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 144,
+            "bytes": 4
+          },
+          {
+            "label": "bindingBuffer1_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 1000,
+            "instances": 1
+          },
+          {
+            "vertices": 24192,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 4376,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "shadow_contact",
+      "reference": {
+        "passes": 6,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 36864,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36864,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 528,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer1_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer4_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer1_object_(vertex,fragment,compute)",
+            "size": 80,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer12_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer12_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 48
+          },
+          {
+            "label": "bindingBuffer15_object_(vertex,fragment,compute)",
+            "size": 128,
+            "bytes": 64
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 5,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 36,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 60,
+            "instances": 1
+          },
+          {
+            "vertices": 36864,
+            "instances": 1
+          },
+          {
+            "vertices": 36864,
+            "instances": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 26232,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 4372
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "lines_fat",
+      "reference": {
+        "passes": 6,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 18,
+            "instances": 767
+          },
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 18,
+            "instances": 767
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 288,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 80
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 80
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 3,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 18,
+            "instances": 767
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 18,
+            "instances": 767
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 10496,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 5248
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 5248
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "lines_fat_wireframe",
+      "reference": {
+        "passes": 6,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 18,
+            "instances": 120
+          },
+          {
+            "vertices": 5952,
+            "instances": 1
+          },
+          {
+            "vertices": 18,
+            "instances": 120
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 288,
+        "uniformWrites": [
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 80
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 64
+          },
+          {
+            "label": "bindingBuffer0_render_(vertex,fragment,compute)",
+            "size": 288,
+            "bytes": 80
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 3,
+        "dispatches": [],
+        "draws": [
+          {
+            "vertices": 18,
+            "instances": 120
+          },
+          {
+            "vertices": 6,
+            "instances": 1
+          },
+          {
+            "vertices": 18,
+            "instances": 120
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 10496,
+        "uniformWrites": [
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 5248
+          },
+          {
+            "label": "resident draw data",
+            "size": 6480,
+            "bytes": 5248
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    }
+  ]
+}

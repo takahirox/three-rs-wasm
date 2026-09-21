@@ -12,7 +12,7 @@ with tarfile.open(ROOT/f'.cache/three-{COMMIT}.tar.gz') as tar:
     # on a clean checkout, including transitive addon/decoder dependencies.
     for entry in tar:
         path=entry.name.split('/',1)[-1]
-        if entry.isfile() and (path.startswith('src/') or path.startswith('examples/jsm/') or path=='package.json' or path in ['examples/models/fbx/stanford-bunny.fbx','examples/fonts/gentilis_regular.typeface.json','examples/models/fbx/bunny_thickness.jpg','examples/models/gltf/ferrari.glb','examples/models/gltf/ferrari_ao.png','examples/textures/equirectangular/blouberg_sunrise_2_1k.hdr']):
+        if entry.isfile() and (path.startswith('src/') or path.startswith('examples/jsm/') or path=='package.json' or path in ['examples/textures/alphaMap.jpg','examples/textures/ktx2/2d_uastc.ktx2','examples/models/fbx/stanford-bunny.fbx','examples/fonts/gentilis_regular.typeface.json','examples/models/fbx/bunny_thickness.jpg','examples/models/gltf/ferrari.glb','examples/models/gltf/ferrari_ao.png','examples/textures/equirectangular/blouberg_sunrise_2_1k.hdr']):
             destination=ROOT/'.cache/three-r186'/path
             destination.parent.mkdir(parents=True,exist_ok=True)
             destination.write_bytes(tar.extractfile(entry).read())
@@ -71,3 +71,5 @@ subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-lighting.py')], check=Tru
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-viewport.py')], check=True)
 
 subprocess.run(['node', str(ROOT/'tools/tsl/prepare-materials.mjs')], check=True)
+
+subprocess.run(['node', str(ROOT/'tools/tsl/prepare-primitives.mjs')], check=True)

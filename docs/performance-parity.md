@@ -267,3 +267,28 @@ attachments; its final composite and canvas presentation are currently separate
 of per-draw uniform updates versus the original's 76 shared bytes in the measured
 frame. These costs are recorded; no CPU/GPU timing equivalence is claimed.
 See [raw image metrics and grouped GPU workloads](tsl-materials-comparison.json).
+
+### Material, contact shadow and instanced line ports
+
+The material and sandbox scenes retain all geometry and textures on the GPU;
+vertex displacement samples the transition texture in the vertex shader.
+Sandbox points use native one-pixel primitives, matching the original workload.
+Contact shadows use one 512-square depth-color pass and two separable Gaussian
+passes. Two floor draws with no front-facing fragments are omitted from the
+shadow pass. Fat lines use the original 18-index geometry per instance in both
+viewports (767 Hilbert segments or 120 icosahedron edges). The solid inset
+background uses a six-index quad instead of the official 5,952-index sphere.
+Eight line shader programs share one segment buffer and are prepared at startup.
+Render pipelines are cached on first use of each variant/target configuration;
+subsequent control changes reuse them. Unused shader variants are prepared eagerly.
+
+Appearance, control and resize comparisons, GPU pass/draw workloads and
+steady-state residency are recorded in `tsl-primitives-comparison.json`.
+These are workload measurements, not claims of CPU/GPU timing parity.
+In the measured animated frame, Core's per-draw uniform blocks still upload
+more data than Three.js's split/shared uniforms: materials 74,672 vs 1,428 bytes,
+sandbox 4,376 vs 68, contact shadows 26,232 vs 528, and each line scene 10,496 vs
+288. Geometry/instance/texture uploads remain zero. The port uses 2/2/5/3/3 render
+passes respectively versus 2/2/6/6/6; contact shadows fold the explicit clear into
+the depth pass, and line viewports share a final presentation. These differences
+are retained in the report rather than interpreted as timing equivalence.

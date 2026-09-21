@@ -1,0 +1,20 @@
+[
+  {
+    "file": "alphaMap.jpg",
+    "source": "textures/alphaMap.jpg",
+    "sha256": "fb4abdb14c18946bbfdc55b92ae7090781499e728ccb460fdd9c514470545dcb"
+  },
+  {
+    "file": "2d_uastc.ktx2",
+    "source": "textures/ktx2/2d_uastc.ktx2",
+    "sha256": "21b6912cae1f074ae3eda1b751f43c36eafc7eb83f3af71f85bba2ccbafce125"
+  },
+  {
+    "file": "lines.json",
+    "sha256": "2cffbd6800d54d3cc88f63343af0a7bad8c441f44d53e5135b8e01f4f66a9b30"
+  },
+  {
+    "file": "helper.json",
+    "sha256": "a8ed431c97df79c058054d3b46b439ead456150d886ec44242476eaf7db2d077"
+  }
+]
