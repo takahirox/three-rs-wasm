@@ -122,8 +122,10 @@ fn gpu_skin_and_morph_match_cpu_oracle_with_shadows_without_vertex_reuploads() {
                 node.morph_weights = weights;
             }
             let bad = actual
-                .chunks_exact(4)
-                .zip(reference.chunks_exact(4))
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .zip(reference.as_chunks::<4>().0.iter())
                 .filter(|(a, b)| (0..3).any(|c| a[c].abs_diff(b[c]) > 3))
                 .count();
             assert!(
@@ -228,8 +230,10 @@ fn sparse_morph_streams_match_cpu_without_allocating_absent_attributes() {
         oracle.render(&mut scene, camera, &target).unwrap();
         let expected = oracle.read_rgba(&target).unwrap();
         let different = actual
-            .chunks_exact(4)
-            .zip(expected.chunks_exact(4))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .zip(expected.as_chunks::<4>().0.iter())
             .filter(|(a, b)| (0..3).any(|c| a[c].abs_diff(b[c]) > 3))
             .count();
         assert!(

@@ -146,7 +146,7 @@ fn hdr_storage_read_write_preserves_negative_values_and_ping_pong() {
     let dummy = RenderTarget::new(&r.device, 1, 1).unwrap();
     effect.apply(&r, &dummy, None, &output).unwrap();
     let bytes = r.read_rgba(&output).unwrap();
-    for pixel in bytes.chunks_exact(4) {
+    for pixel in bytes.as_chunks::<4>().0 {
         assert!(pixel[0].abs_diff(64) <= 1, "{pixel:?}");
         assert!(pixel[1].abs_diff(128) <= 1, "{pixel:?}");
     }
@@ -198,7 +198,9 @@ fn native_shader_points_draw_resident_instances_without_billboard_expansion() {
     let pixels = r.read_rgba(&target).unwrap();
     assert_eq!(
         pixels
-            .chunks_exact(4)
+            .as_chunks::<4>()
+            .0
+            .iter()
             .filter(|p| p[0] > 250 && p[1] == 0 && p[2] == 0)
             .count(),
         3

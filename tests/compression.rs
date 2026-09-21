@@ -11,7 +11,7 @@ fn original_ktx2_etc1s_and_uastc_decode_to_visible_rgba() {
             image.rgba.len(),
             image.width as usize * image.height as usize * 4
         );
-        assert!(image.rgba.chunks_exact(4).any(|p| p[0] > 128));
+        assert!(image.rgba.as_chunks::<4>().0.iter().any(|p| p[0] > 128));
         assert_eq!((image.width, image.height), (40, 40));
         let first = &image.rgba[..4];
         assert!(

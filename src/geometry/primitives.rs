@@ -438,7 +438,7 @@ impl PolyhedronGeometry {
         }
         let mut positions = Vec::new();
         let columns = detail as usize + 1;
-        for face in indices.chunks_exact(3) {
+        for face in indices.as_chunks::<3>().0.iter() {
             let [a, b, c] = [
                 vertices[face[0] as usize],
                 vertices[face[1] as usize],
@@ -474,7 +474,7 @@ impl PolyhedronGeometry {
             }
         }
         let mut m = MeshData::default();
-        for face in positions.chunks_exact(3) {
+        for face in positions.as_chunks::<3>().0.iter() {
             let center = (face[0] + face[1] + face[2]) / 3.0;
             let azimuth = center.z.atan2(-center.x);
             let mut uv = face

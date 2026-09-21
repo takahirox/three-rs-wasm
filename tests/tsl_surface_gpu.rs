@@ -330,18 +330,28 @@ fn bloom_threshold_and_strength_apply_to_hdr_input() {
         r.read_rgba(&target).unwrap()
     };
     let bright = read(&mut bloom);
-    assert!(bright.chunks_exact(4).all(|p| (70..=80).contains(&p[0])));
+    assert!(
+        bright
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .all(|p| (70..=80).contains(&p[0]))
+    );
     bloom.strength = 0.0;
     assert!(
         read(&mut bloom)
-            .chunks_exact(4)
+            .as_chunks::<4>()
+            .0
+            .iter()
             .all(|p| p[..3] == [0, 0, 0])
     );
     bloom.strength = 1.0;
     bloom.threshold = 0.2;
     assert!(
         read(&mut bloom)
-            .chunks_exact(4)
+            .as_chunks::<4>()
+            .0
+            .iter()
             .all(|p| p[..3] == [0, 0, 0])
     );
 }

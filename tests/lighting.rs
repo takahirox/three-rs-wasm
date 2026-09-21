@@ -65,8 +65,10 @@ fn directional_spot_and_point_shadows_respect_cast_and_receive() {
         renderer.render(&mut scene, camera, &target).unwrap();
         assert_eq!(shadowed, renderer.read_rgba(&target).unwrap());
         let darker = unshadowed
-            .chunks_exact(4)
-            .zip(shadowed.chunks_exact(4))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .zip(shadowed.as_chunks::<4>().0.iter())
             .filter(|(a, b)| a[0] > b[0].saturating_add(40))
             .count();
         assert!(
@@ -155,5 +157,10 @@ fn legacy_lights_and_fog_follow_linear_radiometry() {
     if let NodeKind::Mesh(m) = &mut scene.get_mut(mesh).unwrap().kind {
         m.materials[0] = Arc::new(Material::Normal(MeshNormalMaterial::default()));
     }
-    assert_eq!(sample(&mut scene), [188, 188, 255]);
+    // NormalMaterial encodes linear (0.5, 0.5, 1). Metal and software Vulkan
+    // quantize the sRGB midpoint (187.516...) to adjacent 8-bit values.
+    let normal = sample(&mut scene);
+    assert!((187..=188).contains(&normal[0]), "{normal:?}");
+    assert_eq!(normal[1], normal[0]);
+    assert_eq!(normal[2], 255);
 }

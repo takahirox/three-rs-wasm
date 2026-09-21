@@ -82,8 +82,8 @@ impl OcclusionQueries {
                     let mut values = HashMap::new();
                     {
                         let data = staging.slice(..objects.len() as u64 * 8).get_mapped_range();
-                        for (object, bytes) in objects.iter().zip(data.chunks_exact(8)) {
-                            let occluded = u64::from_le_bytes(bytes.try_into().unwrap()) == 0;
+                        for (object, bytes) in objects.iter().zip(data.as_chunks::<8>().0.iter()) {
+                            let occluded = u64::from_le_bytes(*bytes) == 0;
                             values
                                 .entry(*object)
                                 .and_modify(|v| *v &= occluded)

@@ -108,7 +108,7 @@ fn ssaa_accumulates_gpu_samples_and_restores_camera_even_on_error() {
         );
         let pixels = r.read_rgba(&output).unwrap();
         assert!(
-            pixels.chunks_exact(4).all(|p| p[0] == 0
+            pixels.as_chunks::<4>().0.iter().all(|p| p[0] == 0
                 && p[1] == 0
                 && p[2].abs_diff(64) <= 1
                 && p[3].abs_diff(64) <= 1)

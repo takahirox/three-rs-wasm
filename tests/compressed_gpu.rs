@@ -27,7 +27,13 @@ fn compressed_mips_render_and_remain_resident() {
         let target = RenderTarget::new(&renderer.device, 32, 32).unwrap();
         renderer.render(&mut scene, camera, &target).unwrap();
         let image = renderer.read_rgba(&target).unwrap();
-        assert!(image.chunks_exact(4).any(|p| p[0] > 128 && p[1] > 80));
+        assert!(
+            image
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .any(|p| p[0] > 128 && p[1] > 80)
+        );
         let counts = renderer.resource_counts();
         renderer.render(&mut scene, camera, &target).unwrap();
         assert_eq!(renderer.resource_counts(), counts);
@@ -64,7 +70,7 @@ fn reinhard_maps_hdr_after_resolve_without_changing_legacy_aces_selection() {
         ToneMapping::Reinhard,
     );
     let pixels = renderer.read_rgba(&output).unwrap();
-    for p in pixels.chunks_exact(4) {
+    for p in pixels.as_chunks::<4>().0 {
         for (value, expected) in p[..3].iter().zip([231u8, 188, 124]) {
             assert!(value.abs_diff(expected) <= 1, "{p:?}");
         }

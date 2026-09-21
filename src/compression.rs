@@ -127,7 +127,9 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
             }
             "OCTAHEDRAL" | "QUATERNION" if stride == 8 => {
                 let mut values = output
-                    .chunks_exact(2)
+                    .as_chunks::<2>()
+                    .0
+                    .iter()
                     .map(|v| i16::from_le_bytes([v[0], v[1]]))
                     .collect::<Vec<_>>();
                 if ext["filter"] == "QUATERNION" {
@@ -135,17 +137,19 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
                 } else {
                     optimesh::vertexfilter::decode_filter_oct16(&mut values);
                 }
-                for (out, v) in output.chunks_exact_mut(2).zip(values) {
+                for (out, v) in output.as_chunks_mut::<2>().0.iter_mut().zip(values) {
                     out.copy_from_slice(&v.to_le_bytes());
                 }
             }
             "EXPONENTIAL" if stride.is_multiple_of(4) => {
                 let mut values = output
-                    .chunks_exact(4)
-                    .map(|v| u32::from_le_bytes(v.try_into().unwrap()))
+                    .as_chunks::<4>()
+                    .0
+                    .iter()
+                    .map(|v| u32::from_le_bytes(*v))
                     .collect::<Vec<_>>();
                 optimesh::vertexfilter::decode_filter_exp(&mut values);
-                for (out, v) in output.chunks_exact_mut(4).zip(values) {
+                for (out, v) in output.as_chunks_mut::<4>().0.iter_mut().zip(values) {
                     out.copy_from_slice(&v.to_le_bytes());
                 }
             }

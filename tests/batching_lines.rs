@@ -152,6 +152,11 @@ fn nonindexed_wireframe_draws_edges_without_filling_triangle() {
     renderer.render(&mut scene, camera, &target).unwrap();
     let pixels = renderer.read_rgba(&target).unwrap();
     assert_eq!(pixels[(16 * 32 + 16) * 4], 0);
-    let visible = pixels.chunks_exact(4).filter(|p| p[0] > 128).count();
+    let visible = pixels
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .filter(|p| p[0] > 128)
+        .count();
     assert!((40..100).contains(&visible));
 }

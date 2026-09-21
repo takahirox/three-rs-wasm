@@ -152,7 +152,15 @@ fn render_material_reference_cases() {
             false,
         );
         let pixels = renderer.read_rgba(&output).unwrap();
-        assert!(pixels.chunks_exact(4).filter(|p| p[0] > 20).count() > 1000);
+        assert!(
+            pixels
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .filter(|p| p[0] > 20)
+                .count()
+                > 1000
+        );
         image::save_buffer(
             format!(".cache/core-materials/{name}.png"),
             &pixels,

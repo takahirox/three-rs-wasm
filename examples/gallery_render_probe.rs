@@ -378,12 +378,16 @@ fn render(
     );
     let pixels = renderer.read_rgba(&output)?;
     let colored = pixels
-        .chunks_exact(4)
+        .as_chunks::<4>()
+        .0
+        .iter()
         .filter(|p| p[0] != p[1] || p[1] != p[2])
         .count();
     image::save_buffer(path, &pixels, 256, 256, image::ColorType::Rgba8)?;
     let distinct = pixels
-        .chunks_exact(4)
+        .as_chunks::<4>()
+        .0
+        .iter()
         .map(|p| [p[0], p[1], p[2]])
         .collect::<std::collections::HashSet<_>>()
         .len();

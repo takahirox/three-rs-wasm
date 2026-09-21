@@ -79,7 +79,9 @@ fn sprite_attributes_billboard_from_two_camera_axes_and_discard_node_alpha() {
     assert!(
         r.read_rgba(&target)
             .unwrap()
-            .chunks_exact(4)
+            .as_chunks::<4>()
+            .0
+            .iter()
             .all(|p| p[..3] == [0, 0, 0])
     );
     assert_eq!(uploads, r.transfer_counts());
@@ -129,7 +131,7 @@ fn afterimage_retains_decays_thresholds_and_clears_resized_history() {
             &output.texture.create_view(&Default::default()),
             wgpu::TextureFormat::Rgba8Unorm,
         );
-        for pixel in r.read_rgba(&output).unwrap().chunks_exact(4) {
+        for pixel in r.read_rgba(&output).unwrap().as_chunks::<4>().0 {
             for (actual, expected) in pixel[..3].iter().zip(expected) {
                 assert!(actual.abs_diff(expected) <= 1, "{pixel:?} vs {expected}");
             }
