@@ -24,6 +24,7 @@ mod tsl_examples;
 mod tsl_extended;
 mod tsl_filters;
 mod tsl_lighting;
+mod tsl_materials;
 mod tsl_next;
 mod tsl_particles;
 mod tsl_passes;
@@ -163,7 +164,7 @@ impl State {
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
         let format = if [
-            16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111,
+            16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118, 120,
         ]
         .contains(&self.example)
         {
@@ -181,7 +182,7 @@ impl State {
             }
             _ => &self.target,
         };
-        if [50, 54, 55, 57, 58].contains(&self.example) {
+        if [50, 54, 55, 57, 58, 118, 120].contains(&self.example) {
             self.renderer.blit_premultiplied_srgb(
                 presentation,
                 &view,
@@ -791,7 +792,7 @@ impl BrowserApp {
                             7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
                             52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
-                            117,
+                            117, 120, 121,
                         ]
                         .contains(&example)
                         {
@@ -827,7 +828,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=117).contains(&example) {
+            if (7..=122).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

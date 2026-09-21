@@ -277,7 +277,7 @@ var<private> fragment_emissive:vec3<f32>;
     }
     return color;
 }
-struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,backdrop:vec4<f32>,}
+struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,backdrop:vec4<f32>,thickness_color:vec3<f32>,thickness:vec4<f32>,thickness_scale:f32,}
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
         for(var i=0u;i<12u;i++) {
@@ -307,7 +307,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if u.maps.y<0.5 {base.a=1.0;}
     if material_kind()==5.0 {let shaded=shade(in,base);if ALPHA_MASK && shaded.a<=u.pbr.w {discard;}return apply_fog(shaded,-in.view_position.z);}
     fragment_diffuse=base;
-    if material_kind()<0.5 {let surf=transform_surface(in,LitSurface(vec3(0.0),0.0,0.0,vec3(0.0),vec4(0.0),vec3(0.0),vec4(0.0,0.0,0.0,-1.0)));if surf.backdrop.a>=0.0 {base=vec4(mix(base.rgb,surf.backdrop.rgb,surf.backdrop.a),base.a);}return apply_fog(base,-in.view_position.z);}
+    if material_kind()<0.5 {let surf=transform_surface(in,LitSurface(vec3(0.0),0.0,0.0,vec3(0.0),vec4(0.0),vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0));if surf.backdrop.a>=0.0 {base=vec4(mix(base.rgb,surf.backdrop.rgb,surf.backdrop.a),base.a);}return apply_fog(base,-in.view_position.z);}
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;
     let v=normalize(-in.view_position);
@@ -334,7 +334,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
     var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
-    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0),vec4(0.0,0.0,0.0,-1.0)));
+    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0));
     n=surface.normal;fragment_normal=n;fragment_emissive=surface.emissive;
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
     let roughness=min(max(surface.roughness,0.0525)+geometry_roughness,1.0);
@@ -451,6 +451,10 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             attenuation*=select(smoothstep(outer,max(inner,outer+0.000001),cone),select(0.0,1.0,cone>=outer),inner==outer);
         }
         if RECEIVE_SHADOW {attenuation*=shadow_visibility(i,in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));}
+        let scattering_half=normalize(light+n*surface.thickness.x);
+        let scattering_dot=pow(clamp(dot(v,-scattering_half),0.0,1.0),surface.thickness.w)*surface.thickness_scale;
+        let scattering=(scattering_dot+surface.thickness.y)*surface.thickness_color*surface.thickness.z*u.light_color[i].xyz*attenuation;
+        total_diffuse+=scattering;result+=scattering;
         let h=normalize(light+v);let nl=clamp(dot(n,light),0.0,1.0);let nv=clamp(dot(n,v),0.0,1.0);
         let nh=clamp(dot(n,h),0.0,1.0);let vh=clamp(dot(v,h),0.0,1.0);
         if material_kind()==6.0 {

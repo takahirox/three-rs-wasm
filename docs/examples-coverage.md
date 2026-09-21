@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 113 partial Rust ports; 484 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 118 partial Rust ports; 479 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_materials_sss | `tests/browser/tsl-materials.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_toon | `tests/browser/tsl-materials.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_skinning_instancing | `tests/browser/tsl-materials.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_oit | `tests/browser/tsl-materials.spec.js` | 最終合成とcanvas表示が別パス（公式より1パス多い）。 Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_envmaps_groundprojected | `tests/browser/tsl-materials.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_backdrop | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_backdrop_area | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_refraction | `tests/browser/tsl-viewport.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |

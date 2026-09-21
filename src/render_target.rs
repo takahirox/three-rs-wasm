@@ -4,6 +4,10 @@ use crate::{Error, Result};
 pub struct RenderTargetOptions {
     /// Preserve attachment color between scene passes (e.g. scissored views).
     pub load_color: bool,
+    /// Preserve a shared depth attachment between passes.
+    pub load_depth: bool,
+    /// Per-attachment clear colors; empty uses scene background / transparent black.
+    pub clear_colors: Vec<wgpu::Color>,
     pub samples: u32,
     pub count: u32,
     pub depth: u32,
@@ -28,6 +32,8 @@ impl Default for RenderTargetOptions {
     fn default() -> Self {
         Self {
             load_color: false,
+            load_depth: false,
+            clear_colors: Vec::new(),
             samples: 0,
             count: 1,
             depth: 1,

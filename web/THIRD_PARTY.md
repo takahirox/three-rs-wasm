@@ -402,3 +402,15 @@ original keyframe example. Lucy is the Stanford 3D Scanning Repository model
 included in Three.js. The floor normal map is the original refraction asset.
 Viewport, hash blur, soft-particle and FSR1 shaders translate the MIT Three.js
 r186 nodes (`FSR1Node.js`, `hashBlur.js`, `SoftParticles.js`).
+
+### TSL SSS, Toon, instancing, OIT and grounded environment
+
+`gallery/assets/tsl-materials/` contains the pinned Three.js r186 bunny thickness
+texture, Ferrari glTF and AO texture, and Blouberg Sunrise HDR panorama. The
+Stanford bunny FBX and Gentilis typeface geometry are losslessly converted to
+static binary attributes by `tools/tsl/prepare-materials.mjs`; `geometry.json`
+records source/output hashes. The originals remain attributed as in the Three.js
+examples (Stanford 3D Scanning Repository, [Ferrari by vicent091036](https://sketchfab.com/models/57bf6cc56931426e87494f554df1dab6), and the
+[Poly Haven Blouberg Sunrise panorama](https://polyhaven.com/a/blouberg_sunrise_2)).
+Michelle reuses the original asset and credits above. SSS, Toon outline,
+GroundedSkybox and weighted OIT translate the MIT-licensed r186 node sources.

@@ -547,3 +547,50 @@ spot target has an identity world transform.
 See [the comparison report](tsl-viewport-comparison.json) and
 `tests/browser/tsl-viewport.spec.js`. Inspector styling and frame-time equivalence
 remain unclaimed.
+
+## SSS, Toon, instanced skinning, OIT and grounded environments
+
+Runtime IDs 118–122 port `webgpu_materials_sss`, `webgpu_materials_toon`,
+`webgpu_skinning_instancing`, `webgpu_oit`, and
+`webgpu_materials_envmaps_groundprojected` from the pinned r186 scripts.
+
+- `SurfaceNodes` thickness inputs extend physical direct lighting with the
+  original inexpensive SSS term. The bunny keeps its original thickness texture;
+  five controls change distortion, ambient, attenuation, power and scale.
+- `surface::toon_outline` expands back-facing vertices in clip space. The 216
+  spheres keep their individual gradient textures/materials and outline draws;
+  the four text labels preserve the original font geometry.
+- Thirty Michelle instances share the animated bone palette. Skinning and instance
+  transforms execute in the vertex shader; random attributes stay on the GPU.
+  Two 21-tap Gaussian passes use sample-zero MSAA depth to vary blur radius.
+  Transparent background and premultiplied display conversion preserve blur edges.
+- `tsl::oit` supplies the official weighted MRT outputs and blending/composite
+  graphs. Attachment-specific blend modes and clear colors, with shared loaded
+  depth, allow one RGBA16F accumulation target and one R8 revealage target. The
+  opaque knot writes depth once. Transparent geometry cannot overwrite it.
+  Controls switch to ordinary sorted transparency and adjust opacity.
+- `environment::ground_projected_normal` intersects the camera ray with the
+  sphere/ground disk. `GpuTexture::from_equirectangular` converts the HDR panorama
+  into a resident cube on the GPU. The Ferrari retains its physical paint, glass,
+  wheels, ambient shadow and PMREM lighting. Grounded/environment switching and
+  the original Orbit limits are preserved.
+
+`tools/tsl/prepare-materials.mjs` uses the pinned FBX and font loaders to convert
+static attributes to lossless little-endian float/index buffers. This reduces
+asset transfer size without baking lighting, animation or rendered frames.
+`geometry.json` records source/output SHA-256 hashes. Images, HDR and glTF are
+copied unchanged; Michelle is shared with the preceding batch.
+
+The original-script fixture fixes time and random seeds and removes Inspector UI.
+OIT auto-rotation is paused for paired camera comparisons; the gallery retains
+its original frame-based rotation and damping. Resize comparisons warm both
+pipelines after their targets change. Native GPU tests exercise back-lit SSS and
+OIT draw-order reversal with opaque occlusion. Browser tests compare animation,
+controls, Orbit input, resize, resident allocations and original GPU workloads.
+Inspector styling and hardware timing parity remain unclaimed.
+
+Measurements: [tsl-materials-comparison.json](tsl-materials-comparison.json).
+OIT currently uses a separate final composite and canvas presentation (one extra
+fullscreen pass). Toon light updates use the renderer's existing per-draw uniform
+layout, so uniform transfer bytes exceed Three.js render-group updates. Both are
+recorded rather than treated as timing parity; static geometry remains resident.

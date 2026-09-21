@@ -253,3 +253,17 @@ browser regression checks, ten DPR 2 checks, twenty native GPU checks and six
 packaged-site startup checks pass. The ordinary-material four-texture regression
 also verifies that adding viewport nodes does not reduce the existing texture
 budget for materials that do not use them.
+
+## TSL materials and transparency batch
+
+The five r186 ports added at runtime IDs 118–122 pass fixed-time image comparisons
+at DPR 1 and 2, including controls, camera input and resize. Native tests verify
+back-lit SSS and weighted OIT draw-order reversal with shared opaque depth.
+All five retain warmed GPU resources and static geometry during animation.
+Michelle's 30 instances share one 4,160-byte bone palette; Three.js transfers it
+as uniforms and Rust as storage. OIT keeps separate accumulation/revealage
+attachments; its final composite and canvas presentation are currently separate
+(one more fullscreen pass than Three.js). Animated Toon lighting uses 5,660 bytes
+of per-draw uniform updates versus the original's 76 shared bytes in the measured
+frame. These costs are recorded; no CPU/GPU timing equivalence is claimed.
+See [raw image metrics and grouped GPU workloads](tsl-materials-comparison.json).

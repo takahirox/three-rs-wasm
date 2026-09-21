@@ -533,3 +533,134 @@ fn compressed_texture_layers(
         texture,
     })
 }
+
+impl GpuTexture {
+    /// Convert a linear HDR panorama into six resident cube faces on the GPU.
+    /// The source uses top-left image coordinates. Cube sampling uses the usual
+    /// WebGPU direction convention, without Three.js's extra environment X flip.
+    pub async fn from_equirectangular(
+        renderer: &crate::renderer::Renderer,
+        source: &wgpu::TextureView,
+        size: u32,
+    ) -> Result<Self> {
+        use wgpu::util::DeviceExt;
+        let d = &renderer.device;
+        if size == 0 || size > d.limits().max_texture_dimension_2d {
+            return Err(Error::Invalid("cube size"));
+        }
+        let texture = d.create_texture(&wgpu::TextureDescriptor {
+            label: Some("HDR panorama cube"),
+            size: wgpu::Extent3d {
+                width: size,
+                height: size,
+                depth_or_array_layers: 6,
+            },
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::Rgba16Float,
+            usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
+            view_formats: &[],
+        });
+        let sampler = d.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        let module=d.create_shader_module(wgpu::ShaderModuleDescriptor{label:Some("panorama cube conversion"),source:wgpu::ShaderSource::Wgsl(r#"
+@group(0) @binding(0) var image:texture_2d<f32>;
+@group(0) @binding(1) var image_sampler:sampler;
+@group(0) @binding(2) var<uniform> face:vec4<u32>;
+struct V{@builtin(position) p:vec4<f32>,@location(0) uv:vec2<f32>}
+@vertex fn vs(@builtin(vertex_index) i:u32)->V{let p=array<vec2<f32>,3>(vec2(-1.0,-1.0),vec2(3.0,-1.0),vec2(-1.0,3.0));var v:V;v.p=vec4(p[i],0.0,1.0);v.uv=p[i]*vec2(0.5,-0.5)+0.5;return v;}
+@fragment fn fs(v:V)->@location(0) vec4<f32>{let p=v.uv*2.0-1.0;var dir=vec3(1.0,-p.y,-p.x);
+switch face.x{case 1u:{dir=vec3(-1.0,-p.y,p.x);}case 2u:{dir=vec3(p.x,1.0,p.y);}case 3u:{dir=vec3(p.x,-1.0,-p.y);}case 4u:{dir=vec3(p.x,-p.y,1.0);}case 5u:{dir=vec3(-p.x,-p.y,-1.0);}default:{}}
+dir=normalize(dir);let uv=vec2(atan2(dir.z,dir.x)*0.15915494309189535+0.5,0.5-asin(clamp(dir.y,-1.0,1.0))*0.3183098861837907);return textureSampleLevel(image,image_sampler,uv,0.0);}
+"#.into())});
+        let pipeline = d.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("panorama cube conversion"),
+            layout: None,
+            vertex: wgpu::VertexState {
+                module: &module,
+                entry_point: Some("vs"),
+                compilation_options: Default::default(),
+                buffers: &[],
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &module,
+                entry_point: Some("fs"),
+                compilation_options: Default::default(),
+                targets: &[Some(wgpu::ColorTargetState {
+                    format: wgpu::TextureFormat::Rgba16Float,
+                    blend: None,
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+            }),
+            primitive: Default::default(),
+            depth_stencil: None,
+            multisample: Default::default(),
+            multiview: None,
+            cache: None,
+        });
+        let mut encoder = d.create_command_encoder(&Default::default());
+        for i in 0..6 {
+            let face = d.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("cube face"),
+                contents: bytemuck::cast_slice(&[i, 0u32, 0, 0]),
+                usage: wgpu::BufferUsages::UNIFORM,
+            });
+            let bindings = d.create_bind_group(&wgpu::BindGroupDescriptor {
+                label: None,
+                layout: &pipeline.get_bind_group_layout(0),
+                entries: &[
+                    wgpu::BindGroupEntry {
+                        binding: 0,
+                        resource: wgpu::BindingResource::TextureView(source),
+                    },
+                    wgpu::BindGroupEntry {
+                        binding: 1,
+                        resource: wgpu::BindingResource::Sampler(&sampler),
+                    },
+                    wgpu::BindGroupEntry {
+                        binding: 2,
+                        resource: face.as_entire_binding(),
+                    },
+                ],
+            });
+            let view = texture.create_view(&wgpu::TextureViewDescriptor {
+                dimension: Some(wgpu::TextureViewDimension::D2),
+                base_array_layer: i,
+                array_layer_count: Some(1),
+                ..Default::default()
+            });
+            let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("panorama cube face"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: &view,
+                    resolve_target: None,
+                    depth_slice: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                depth_stencil_attachment: None,
+                timestamp_writes: None,
+                occlusion_query_set: None,
+            });
+            pass.set_pipeline(&pipeline);
+            pass.set_bind_group(0, &bindings, &[]);
+            pass.draw(0..3, 0..1);
+        }
+        renderer.queue.submit(Some(encoder.finish()));
+        let view = texture.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::Cube),
+            ..Default::default()
+        });
+        Ok(Self {
+            texture,
+            view,
+            sampler,
+        })
+    }
+}

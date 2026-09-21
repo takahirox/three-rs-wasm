@@ -19106,7 +19106,7 @@
     {
       "id": "webgpu_materials_envmaps_groundprojected",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_envmaps_groundprojected.html",
       "source_sha256": "5a2be2b9fd75ca1b4018adf36fc59da5d8801a76ecdcf87d1374d1cd8bb5f05b",
@@ -19170,7 +19170,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 122,
+        "source": "src/browser/tsl_materials.rs",
+        "test": "tests/browser/tsl-materials.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -19425,7 +19432,7 @@
     {
       "id": "webgpu_materials_sss",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_sss.html",
       "source_sha256": "ab08c2d266994a4798f093263e035704eb9d2cf9704588a5f8ed89a773dfb835",
@@ -19467,7 +19474,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 118,
+        "source": "src/browser/tsl_materials.rs",
+        "test": "tests/browser/tsl-materials.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -19598,7 +19612,7 @@
     {
       "id": "webgpu_materials_toon",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_toon.html",
       "source_sha256": "8ea6e01ec9b7288be3138177184e7b2cafa7ad7ffd0ade0d14cd73812c9a2bc1",
@@ -19652,7 +19666,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 119,
+        "source": "src/browser/tsl_materials.rs",
+        "test": "tests/browser/tsl-materials.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TextGeometry.js",
@@ -20548,7 +20569,7 @@
     {
       "id": "webgpu_oit",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_oit.html",
       "source_sha256": "8d655ba1e4589ed71d39dddb52f689915366e0976114d4044eaa0d941d46a388",
@@ -20598,7 +20619,15 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 121,
+        "source": "src/browser/tsl_materials.rs",
+        "test": "tests/browser/tsl-materials.spec.js",
+        "limitations": [
+          "最終合成とcanvas表示が別パス（公式より1パス多い）。",
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -25009,7 +25038,7 @@
     {
       "id": "webgpu_skinning_instancing",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_instancing.html",
       "source_sha256": "7a99b27c8cd71a466600fda94f7f2ba0bb843df2dca3b833d46085a2ffb379e6",
@@ -25049,7 +25078,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 120,
+        "source": "src/browser/tsl_materials.rs",
+        "test": "tests/browser/tsl-materials.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/loaders/GLTFLoader.js",
         "three/addons/tsl/display/GaussianBlurNode.js",

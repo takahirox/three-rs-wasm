@@ -31,3 +31,12 @@ pub fn material_normal_world() -> Node {
 fn tsl_material_normal_world(n:vec3<f32>)->vec3<f32>{return normalize((transpose(u.view)*vec4(n,0.0)).xyz);}
 "#,&[Type::Vec3],Type::Vec3).unwrap().call(&[normal_view()])
 }
+
+/// r186 GroundedSkybox: intersect the camera ray with a sphere clipped by a disk.
+pub fn ground_projected_normal(position: Node, camera: Node, radius: Node, height: Node) -> Node {
+    WgslFn::new("tsl_ground_projected",r#"
+fn tsl_ground_projected(position:vec3<f32>,camera:vec3<f32>,radius:f32,height:f32)->vec3<f32>{
+ let p=normalize(position-camera);let cam=camera-vec3(0.0,height,0.0);let b=dot(cam,p);let c=dot(cam,cam)-radius*radius;let h=b*b-c;
+ var projected=vec3(0.0,1.0,0.0);if h>=0.0{let intersection=sqrt(h)-b;if intersection>0.0{var disk=1e6;if p.y<=0.0{let o=cam+vec3(0.0,height,0.0);let t=-o.y/p.y;let q=o+p*t;if dot(q,q)<radius*radius{disk=t;}}projected=(cam+p*min(intersection,disk))/radius;}}return projected;
+}"#,&[Type::Vec3,Type::Vec3,Type::Float,Type::Float],Type::Vec3).unwrap().call(&[position,camera,radius,height])
+}

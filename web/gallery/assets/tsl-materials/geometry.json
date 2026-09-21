@@ -1,0 +1,14 @@
+[
+  {
+    "file": "bunny.bin",
+    "source": "models/fbx/stanford-bunny.fbx",
+    "sha256": "c6d5d5b98db93c6e4debbe81736129b57a05b6ea268c97a3691bfc2eb13c4b9e",
+    "source_sha256": "d93bc888e6bd7d205792a90ac21443286eb189bc15f56326b3b8becff17665e5"
+  },
+  {
+    "file": "labels.bin",
+    "source": "fonts/gentilis_regular.typeface.json",
+    "sha256": "4e481aba37acf2b63c4a121f6f5af6a3f7113f987c94a1e1017c7cb6b7160433",
+    "source_sha256": "7ed95f2faa30f59dbe7cfb145b97c42a6ba1188cd2eec01ca61485e8c83ee9de"
+  }
+]

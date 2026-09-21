@@ -13,6 +13,11 @@ pub struct SurfaceNodes {
     pub output: Option<Node>,
     /// Replace/mix diffuse lighting with framebuffer RGB; W is the mix factor.
     pub backdrop: Option<Node>,
+    /// RGB transmission tint for the r186 inexpensive subsurface scattering model.
+    pub thickness_color: Option<Node>,
+    /// Distortion, ambient scattering, attenuation and power.
+    pub thickness: Option<Node>,
+    pub thickness_scale: Option<Node>,
     pub color: Option<Node>,
     pub normal: Option<Node>,
     pub roughness: Option<Node>,
@@ -39,6 +44,9 @@ impl SurfaceNodes {
         let mut assignments = String::new();
         for (name, node, expected) in [
             ("backdrop", &self.backdrop, Type::Vec4),
+            ("thickness_color", &self.thickness_color, Type::Vec3),
+            ("thickness", &self.thickness, Type::Vec4),
+            ("thickness_scale", &self.thickness_scale, Type::Float),
             ("normal", &self.normal, Type::Vec3),
             ("roughness", &self.roughness, Type::Float),
             ("metalness", &self.metalness, Type::Float),
@@ -337,4 +345,35 @@ pub fn alpha_hash(opacity: Node, position: Node, enabled: Node) -> Node {
     )
     .unwrap()
     .call(&[opacity, position, enabled])
+}
+
+/// Back-face hull used by r186 ToonOutlinePassNode. Draw immediately before the
+/// corresponding toon mesh, sharing its geometry and transform.
+pub async fn toon_outline(
+    renderer: &Renderer,
+    color: Node,
+    thickness: f32,
+) -> Result<ShaderMaterial> {
+    let source = NodeMaterial::new(color).wgsl(0)?;
+    let program = ShaderProgram::with_projection(
+        renderer,
+        &source,
+        &[],
+        &[],
+        r#"
+fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{
+ var result=surface;
+ let mv=u.view*u.model;
+ let normal=normalize((transpose(mv)*vec4(surface.normal,0.0)).xyz);
+ let p=u.projection*mv*vec4(position,1.0);
+ let q=u.projection*mv*vec4(position-normal,1.0);
+ result.clip=p+normalize(p-q)*u.custom[15].x*p.w;
+ return result;
+}"#,
+    )
+    .await?;
+    let mut material = ShaderMaterial::new(Arc::new(program));
+    material.properties.side = crate::material::Side::Back;
+    material.uniforms[15][0] = thickness;
+    Ok(material)
 }

@@ -22,6 +22,7 @@ assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-environment')) for path in (ROOT/'web/gallery/assets/tsl-environment').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file() and not path.name.endswith('.rgba16f.png') and path.name != 'hdr.json'})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-viewport')) for path in (ROOT/'web/gallery/assets/tsl-viewport').rglob('*') if path.is_file()})
+assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-materials')) for path in (ROOT/'web/gallery/assets/tsl-materials').rglob('*') if path.is_file() and path.suffix not in ['.bin','.json']})
 extra_assets={'web/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
 with tarfile.open(ARCHIVE) as tar:
@@ -60,3 +61,9 @@ for record in json.loads((ROOT/'web/gallery/assets/tsl-lighting/hdr.json').read_
  root=ROOT/'web/gallery/assets/tsl-lighting'
  assert hashlib.sha256((root/record['source']).read_bytes()).hexdigest()==record['source_sha256']
  assert hashlib.sha256((root/record['file']).read_bytes()).hexdigest()==record['sha256']
+
+for record in json.loads((ROOT/'web/gallery/assets/tsl-materials/geometry.json').read_text()):
+ assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-materials'/record['file']).read_bytes()).hexdigest()==record['sha256']
+ with tarfile.open(ARCHIVE) as tar:
+  entry=next(e for e in tar if e.name.split('/',1)[-1]=='examples/'+record['source'])
+  assert hashlib.sha256(tar.extractfile(entry).read()).hexdigest()==record['source_sha256']

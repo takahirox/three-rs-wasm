@@ -1,0 +1,1316 @@
+{
+  "reference": "Three.js r186 (148ef33ecb6d2502ff796d4554abd1549c95d519)",
+  "image_policy": {
+    "max_channel_error": 6,
+    "max_differing_pixel_fraction": 0.005
+  },
+  "examples": {
+    "webgpu_materials_envmaps_groundprojected": {
+      "dpr1": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0.0001373291015625,
+            "meanError": 0.5579808553059896
+          },
+          {
+            "state": 1,
+            "fraction": 0.0001373291015625,
+            "meanError": 0.5579808553059896
+          },
+          {
+            "state": 2,
+            "fraction": 0.0001373291015625,
+            "meanError": 0.5579808553059896
+          },
+          {
+            "state": 3,
+            "fraction": 0.0001373291015625,
+            "meanError": 0.5579808553059896
+          },
+          {
+            "state": 4,
+            "fraction": 0.000141143798828125,
+            "meanError": 0.58013916015625
+          },
+          {
+            "state": 5,
+            "fraction": 0.0001373291015625,
+            "meanError": 0.5579808553059896
+          },
+          {
+            "state": 6,
+            "fraction": 0.00037384033203125,
+            "meanError": 0.5460917154947916
+          },
+          {
+            "state": 7,
+            "fraction": 0.00037384033203125,
+            "meanError": 0.5460917154947916
+          },
+          {
+            "state": 8,
+            "fraction": 0.000377655029296875,
+            "meanError": 0.5520044962565104
+          },
+          {
+            "state": 9,
+            "fraction": 0.0002890625,
+            "meanError": 0.5762252604166667
+          }
+        ],
+        "max_fraction": 0.000377655029296875,
+        "artifacts": ".cache/verification/tsl-materials-final/tsl-materials-TSL-material-931c3-als-envmaps-groundprojected"
+      },
+      "dpr2": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.5559250513712565
+          },
+          {
+            "state": 1,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.5559250513712565
+          },
+          {
+            "state": 2,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.5559250513712565
+          },
+          {
+            "state": 3,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.5559250513712565
+          },
+          {
+            "state": 4,
+            "fraction": 0.0001010894775390625,
+            "meanError": 0.5788224538167318
+          },
+          {
+            "state": 5,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.5559250513712565
+          },
+          {
+            "state": 6,
+            "fraction": 0.000125885009765625,
+            "meanError": 0.5417744318644205
+          },
+          {
+            "state": 7,
+            "fraction": 0.000125885009765625,
+            "meanError": 0.5417744318644205
+          },
+          {
+            "state": 8,
+            "fraction": 0.00013828277587890625,
+            "meanError": 0.5452788670857748
+          },
+          {
+            "state": 9,
+            "fraction": 0.0001328125,
+            "meanError": 0.5703844401041667
+          }
+        ],
+        "max_fraction": 0.00013828277587890625,
+        "artifacts": ".cache/verification/tsl-materials-dpr2/tsl-materials-TSL-material-931c3-als-envmaps-groundprojected"
+      }
+    },
+    "webgpu_oit": {
+      "dpr1": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.010101318359375
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.010101318359375
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.010101318359375
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.010101318359375
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.006328582763671875
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.008982340494791666
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.010237375895182291
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.010999043782552084
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.016888936360677082
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.017347971598307293
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0.014644622802734375
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.009024739583333333
+          }
+        ],
+        "max_fraction": 0,
+        "artifacts": ".cache/verification/tsl-materials-final/tsl-materials-TSL-materials-official-rendering-oit"
+      },
+      "dpr2": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.010118484497070312
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.010118484497070312
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.010118484497070312
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.010118484497070312
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.006393750508626302
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.00895531972249349
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.010247548421223959
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.011092503865559896
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.016837437947591145
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.017294883728027344
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0.015900611877441406
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.009947916666666667
+          }
+        ],
+        "max_fraction": 0,
+        "artifacts": ".cache/verification/tsl-materials-dpr2/tsl-materials-TSL-materials-official-rendering-oit"
+      }
+    },
+    "webgpu_skinning_instancing": {
+      "dpr1": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 2.6702880859375e-05,
+            "meanError": 0.0014546712239583333
+          },
+          {
+            "state": 1,
+            "fraction": 3.0517578125e-05,
+            "meanError": 0.001522064208984375
+          },
+          {
+            "state": 2,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.001190185546875
+          },
+          {
+            "state": 3,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.001476287841796875
+          },
+          {
+            "state": 4,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.00121307373046875
+          },
+          {
+            "state": 5,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.00121307373046875
+          },
+          {
+            "state": 6,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.00121307373046875
+          },
+          {
+            "state": 7,
+            "fraction": 1.171875e-05,
+            "meanError": 0.0008333333333333334
+          }
+        ],
+        "max_fraction": 3.0517578125e-05,
+        "artifacts": ".cache/verification/tsl-materials-final/tsl-materials-TSL-material-d2835-ndering-skinning-instancing"
+      },
+      "dpr2": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.001319567362467448
+          },
+          {
+            "state": 1,
+            "fraction": 2.574920654296875e-05,
+            "meanError": 0.001377105712890625
+          },
+          {
+            "state": 2,
+            "fraction": 3.0517578125e-05,
+            "meanError": 0.0012788772583007812
+          },
+          {
+            "state": 3,
+            "fraction": 1.33514404296875e-05,
+            "meanError": 0.0012118021647135417
+          },
+          {
+            "state": 4,
+            "fraction": 5.7220458984375e-06,
+            "meanError": 0.0008703867594401041
+          },
+          {
+            "state": 5,
+            "fraction": 5.7220458984375e-06,
+            "meanError": 0.0008703867594401041
+          },
+          {
+            "state": 6,
+            "fraction": 5.7220458984375e-06,
+            "meanError": 0.0008703867594401041
+          },
+          {
+            "state": 7,
+            "fraction": 4.8828125e-06,
+            "meanError": 0.00066015625
+          }
+        ],
+        "max_fraction": 3.0517578125e-05,
+        "artifacts": ".cache/verification/tsl-materials-dpr2/tsl-materials-TSL-material-d2835-ndering-skinning-instancing"
+      }
+    },
+    "webgpu_materials_sss": {
+      "dpr1": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.00019200642903645834
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.00023778279622395834
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.00022125244140625
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.000247955322265625
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.00018819173177083334
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.00019073486328125
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.00020726521809895834
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.00019582112630208334
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.00018437703450520834
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.000141143798828125
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0.00013224283854166666
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.00012969970703125
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 8.333333333333333e-05
+          }
+        ],
+        "max_fraction": 0,
+        "artifacts": ".cache/verification/tsl-materials-final/tsl-materials-TSL-materials-official-rendering-materials-sss"
+      },
+      "dpr2": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.00020885467529296875
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.000232696533203125
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.000240325927734375
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.00022761027018229166
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0002177556355794271
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0001735687255859375
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0002231597900390625
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.00019518534342447916
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.0002040863037109375
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.00013637542724609375
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0.00013860066731770834
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.00013033548990885416
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 8.88671875e-05
+          }
+        ],
+        "max_fraction": 0,
+        "artifacts": ".cache/verification/tsl-materials-dpr2/tsl-materials-TSL-materials-official-rendering-materials-sss"
+      }
+    },
+    "webgpu_materials_toon": {
+      "dpr1": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.004725138346354167
+          },
+          {
+            "state": 1,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.004952748616536458
+          },
+          {
+            "state": 2,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.005009969075520833
+          },
+          {
+            "state": 3,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.0045928955078125
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.005433400472005208
+          },
+          {
+            "state": 5,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.005448659261067708
+          },
+          {
+            "state": 6,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.004862467447916667
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.0030221354166666665
+          }
+        ],
+        "max_fraction": 1.52587890625e-05,
+        "artifacts": ".cache/verification/tsl-materials-final/tsl-materials-TSL-material-7839c-al-rendering-materials-toon"
+      },
+      "dpr2": {
+        "states": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.004151344299316406
+          },
+          {
+            "state": 1,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.004549662272135417
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.004498481750488281
+          },
+          {
+            "state": 3,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0041815439860026045
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0052038828531901045
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.005147616068522136
+          },
+          {
+            "state": 6,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0048783620198567705
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.0029593098958333335
+          }
+        ],
+        "max_fraction": 9.5367431640625e-07,
+        "artifacts": ".cache/verification/tsl-materials-dpr2/tsl-materials-TSL-material-7839c-al-rendering-materials-toon"
+      }
+    }
+  },
+  "limitations": [
+    "No CPU/GPU timing parity claim.",
+    "Inspector styling is not reproduced.",
+    "OIT composite and canvas presentation are separate passes (one more fullscreen pass than the original).",
+    "Toon shares scene light values through per-draw uniforms, so animated-light uniform transfers exceed Three.js render-group transfers."
+  ],
+  "gpu_work": [
+    {
+      "kind": "materials_sss",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 336,
+            "count": 2
+          },
+          {
+            "instances": 1,
+            "vertices": 91014,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 112,
+        "uniformWrites": [
+          {
+            "bytes": 48,
+            "label": "bindingBuffer3_object_(vertex,fragment,compute)",
+            "size": 272,
+            "count": 1
+          },
+          {
+            "bytes": 64,
+            "label": "bindingBuffer3_object_(vertex,fragment,compute)",
+            "size": 272,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 336,
+            "count": 2
+          },
+          {
+            "instances": 1,
+            "vertices": 91014,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 176,
+        "uniformWrites": [
+          {
+            "bytes": 176,
+            "label": "resident draw data",
+            "size": 6480,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "materials_toon",
+      "reference": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 336,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 2880,
+            "count": 432
+          },
+          {
+            "instances": 1,
+            "vertices": 4008,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4152,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6576,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6720,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 76,
+        "uniformWrites": [
+          {
+            "bytes": 12,
+            "label": "bindingBuffer10_render_(vertex,fragment,compute)",
+            "size": 192,
+            "count": 1
+          },
+          {
+            "bytes": 64,
+            "label": "bindingBuffer0_object_(vertex,fragment,compute)",
+            "size": 80,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 2,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 336,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 2880,
+            "count": 432
+          },
+          {
+            "instances": 1,
+            "vertices": 4008,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4152,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6576,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6720,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 5660,
+        "uniformWrites": [
+          {
+            "bytes": 12,
+            "label": "resident draw data",
+            "size": 6480,
+            "count": 436
+          },
+          {
+            "bytes": 428,
+            "label": "resident draw data",
+            "size": 6480,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "skinning_instancing",
+      "reference": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 1
+          },
+          {
+            "instances": 30,
+            "vertices": 84318,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 7044,
+        "uniformWrites": [
+          {
+            "bytes": 4,
+            "label": "bindingBuffer1_render_(vertex,fragment,compute)",
+            "size": 240,
+            "count": 1
+          },
+          {
+            "bytes": 480,
+            "label": "bindingBufferundefined_UniformBuffer_2_(fragment)",
+            "size": 480,
+            "count": 1
+          },
+          {
+            "bytes": 480,
+            "label": "bindingBufferundefined_UniformBuffer_3_(fragment)",
+            "size": 480,
+            "count": 1
+          },
+          {
+            "bytes": 4160,
+            "label": "bindingBufferundefined_UniformBuffer_0_(vertex)",
+            "size": 4160,
+            "count": 1
+          },
+          {
+            "bytes": 1920,
+            "label": "bindingBufferundefined_UniformBuffer_1_(vertex)",
+            "size": 1920,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 1
+          },
+          {
+            "instances": 30,
+            "vertices": 84318,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 4160,
+        "attributeWrites": [
+          {
+            "bytes": 4160,
+            "label": "skin/morph input",
+            "size": 4160,
+            "count": 1
+          }
+        ],
+        "uniformBytes": 4,
+        "uniformWrites": [
+          {
+            "bytes": 4,
+            "label": "resident draw data",
+            "size": 6480,
+            "count": 1
+          }
+        ],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "oit",
+      "reference": {
+        "passes": 3,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 6
+          },
+          {
+            "instances": 1,
+            "vertices": 2880,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 24576,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 4,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 6
+          },
+          {
+            "instances": 1,
+            "vertices": 2880,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 24576,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    },
+    {
+      "kind": "materials_envmaps_groundprojected",
+      "reference": {
+        "passes": 13,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 10470,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 168,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 1266,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 11016,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 27360,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 3600,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 1920,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 654,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 5436,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4254,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 9762,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 65880,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 1572,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 29268,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 3444,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 57,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 12330,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 24432,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 16896,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 324,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 1512,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 241698,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 138,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 59817,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 157602,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 55704,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4704,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 216,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 41760,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 17340,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 16032,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 36060,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 42516,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 26856,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      },
+      "rust": {
+        "passes": 13,
+        "dispatches": [],
+        "draws": [
+          {
+            "instances": 1,
+            "vertices": 10470,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 168,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 1266,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 11016,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 27360,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 3600,
+            "count": 4
+          },
+          {
+            "instances": 1,
+            "vertices": 1920,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 654,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 5436,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4254,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 9762,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 65880,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 1572,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 29268,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 3444,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 57,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 12330,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 24432,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 16896,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 324,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 1512,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 241698,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 138,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 59817,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 157602,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 55704,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 4704,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 216,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 41760,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 17340,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 16032,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 36060,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 42516,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 26856,
+            "count": 1
+          },
+          {
+            "instances": 1,
+            "vertices": 6,
+            "count": 1
+          }
+        ],
+        "indirect": 0,
+        "attributeBytes": 0,
+        "attributeWrites": [],
+        "uniformBytes": 0,
+        "uniformWrites": [],
+        "largeUniformBytes": 0
+      }
+    }
+  ],
+  "gpu_work_artifacts": ".cache/verification/tsl-materials-regression/tsl-materials-TSL-material-a6d37-oad-and-resident-attributes",
+  "validation": {
+    "new_browser": 11,
+    "dpr2_browser": 10,
+    "published_layout": 6,
+    "native_gpu_regression": 13,
+    "clippy": [
+      "native all-targets",
+      "wasm"
+    ],
+    "geometry_residency": "No additional GPU resources or static geometry transfers during repeated warmed animation cycles, before and after resize.",
+    "additional_browser_regression": 6
+  }
+}
