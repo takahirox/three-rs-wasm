@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 148 partial Rust ports; 445 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 153 partial Rust ports; 440 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_furnace_test | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
+| webgl_geometry_convex | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
+| webgl_geometry_nurbs | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
+| webgl_geometry_text_shapes | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
+| webgl_geometry_text_stroke | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
 | webgpu_materials_arrays | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_clipping | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_materials_texture_manualmipmap | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |

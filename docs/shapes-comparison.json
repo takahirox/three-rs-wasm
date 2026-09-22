@@ -1,0 +1,2085 @@
+{
+  "reference": "Three.js r186; Furnace uses official WebGPU, geometry examples use official WebGL",
+  "channel_threshold": 6,
+  "fraction_limit_without_msaa": 0.005,
+  "fraction_limit_with_msaa": {
+    "furnace_test": 0.005,
+    "geometry_convex": 0.005,
+    "geometry_nurbs": 0.02,
+    "geometry_text_shapes": 0.02,
+    "geometry_text_stroke": 0.022
+  },
+  "mean_error_limit": 0.6,
+  "validation": {
+    "dpr1": "19 tests passed",
+    "dpr2": "19 tests passed",
+    "published_new_examples_and_entry": "6 tests passed",
+    "clippy_and_fmt": "passed"
+  },
+  "measurements": [
+    {
+      "dpr": 1,
+      "comparisons": {
+        "shapes-Shapes-official-ren-5bfc7-metry-text-stroke-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.00118255615234375
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.000354766845703125
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-ren-86310-metry-text-shapes-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.015289306640625,
+            "meanError": 0.4698994954427083
+          },
+          {
+            "state": 1,
+            "fraction": 0.015289306640625,
+            "meanError": 0.4698994954427083
+          },
+          {
+            "state": 2,
+            "fraction": 0.015289306640625,
+            "meanError": 0.4698994954427083
+          },
+          {
+            "state": 3,
+            "fraction": 0.015289306640625,
+            "meanError": 0.4698994954427083
+          },
+          {
+            "state": 4,
+            "fraction": 0.016269683837890625,
+            "meanError": 0.5092544555664062
+          },
+          {
+            "state": 5,
+            "fraction": 0.0166015625,
+            "meanError": 0.5187479654947916
+          },
+          {
+            "state": 6,
+            "fraction": 0.01564788818359375,
+            "meanError": 0.48963165283203125
+          },
+          {
+            "state": 7,
+            "fraction": 0.01448046875,
+            "meanError": 0.4485442708333333
+          }
+        ],
+        "shapes-Shapes-official-ren-be33d-metry-text-stroke-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.017353057861328125,
+            "meanError": 0.5419349670410156
+          },
+          {
+            "state": 1,
+            "fraction": 0.017353057861328125,
+            "meanError": 0.5419349670410156
+          },
+          {
+            "state": 2,
+            "fraction": 0.017353057861328125,
+            "meanError": 0.5419349670410156
+          },
+          {
+            "state": 3,
+            "fraction": 0.017353057861328125,
+            "meanError": 0.5419349670410156
+          },
+          {
+            "state": 4,
+            "fraction": 0.015697479248046875,
+            "meanError": 0.4926160176595052
+          },
+          {
+            "state": 5,
+            "fraction": 0.016017913818359375,
+            "meanError": 0.5060373942057291
+          },
+          {
+            "state": 6,
+            "fraction": 0.014568328857421875,
+            "meanError": 0.4601325988769531
+          },
+          {
+            "state": 7,
+            "fraction": 0.0114453125,
+            "meanError": 0.3629205729166667
+          }
+        ],
+        "shapes-Shapes-official-ren-e38bd-metry-text-shapes-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0.000408172607421875,
+            "meanError": 0.054752349853515625
+          },
+          {
+            "state": 1,
+            "fraction": 0.000408172607421875,
+            "meanError": 0.054752349853515625
+          },
+          {
+            "state": 2,
+            "fraction": 0.000408172607421875,
+            "meanError": 0.054752349853515625
+          },
+          {
+            "state": 3,
+            "fraction": 0.000408172607421875,
+            "meanError": 0.054752349853515625
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.00023651123046875
+          },
+          {
+            "state": 6,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.000591278076171875
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-rendering-furnace-test-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.029795328776041668
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-rendering-furnace-test-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.030606587727864582
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-convex-samples-1": [
+          {
+            "state": 0,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.0014139811197916667
+          },
+          {
+            "state": 1,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.0009829203287760417
+          },
+          {
+            "state": 2,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.0014826456705729167
+          },
+          {
+            "state": 3,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.0013300577799479167
+          },
+          {
+            "state": 4,
+            "fraction": 1.9073486328125e-05,
+            "meanError": 0.001369476318359375
+          },
+          {
+            "state": 5,
+            "fraction": 1.52587890625e-05,
+            "meanError": 0.0007998148600260416
+          },
+          {
+            "state": 6,
+            "fraction": 2.6702880859375e-05,
+            "meanError": 0.0017954508463541667
+          },
+          {
+            "state": 7,
+            "fraction": 1.171875e-05,
+            "meanError": 0.0008333333333333334
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-convex-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.003711700439453125,
+            "meanError": 0.08610916137695312
+          },
+          {
+            "state": 1,
+            "fraction": 0.00394439697265625,
+            "meanError": 0.0874621073404948
+          },
+          {
+            "state": 2,
+            "fraction": 0.003742218017578125,
+            "meanError": 0.0901947021484375
+          },
+          {
+            "state": 3,
+            "fraction": 0.0037994384765625,
+            "meanError": 0.09221394856770833
+          },
+          {
+            "state": 4,
+            "fraction": 0.00302886962890625,
+            "meanError": 0.07662709554036458
+          },
+          {
+            "state": 5,
+            "fraction": 0.003131866455078125,
+            "meanError": 0.0790417989095052
+          },
+          {
+            "state": 6,
+            "fraction": 0.002613067626953125,
+            "meanError": 0.0702069600423177
+          },
+          {
+            "state": 7,
+            "fraction": 0.002234375,
+            "meanError": 0.0564765625
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-nurbs-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0.00107574462890625,
+            "meanError": 0.023995717366536457
+          },
+          {
+            "state": 1,
+            "fraction": 0.00107574462890625,
+            "meanError": 0.023995717366536457
+          },
+          {
+            "state": 2,
+            "fraction": 0.00107574462890625,
+            "meanError": 0.023995717366536457
+          },
+          {
+            "state": 3,
+            "fraction": 0.00107574462890625,
+            "meanError": 0.023995717366536457
+          },
+          {
+            "state": 4,
+            "fraction": 0.001007080078125,
+            "meanError": 0.030124664306640625
+          },
+          {
+            "state": 5,
+            "fraction": 0.00182421875,
+            "meanError": 0.05205078125
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-nurbs-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.01409912109375,
+            "meanError": 0.3614705403645833
+          },
+          {
+            "state": 1,
+            "fraction": 0.01409912109375,
+            "meanError": 0.3614705403645833
+          },
+          {
+            "state": 2,
+            "fraction": 0.01409912109375,
+            "meanError": 0.3614705403645833
+          },
+          {
+            "state": 3,
+            "fraction": 0.01409912109375,
+            "meanError": 0.3614705403645833
+          },
+          {
+            "state": 4,
+            "fraction": 0.01660919189453125,
+            "meanError": 0.4024238586425781
+          },
+          {
+            "state": 5,
+            "fraction": 0.01388671875,
+            "meanError": 0.34742838541666665
+          }
+        ]
+      },
+      "workload": [
+        {
+          "kind": "furnace_test",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 2880,
+                "instances": 1,
+                "draws": 121
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 2880,
+                "instances": 1,
+                "draws": 121
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_convex",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 6,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 108,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 120,
+                "instances": 1,
+                "draws": 1
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 6,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 108,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 120,
+                "instances": 1,
+                "draws": 1
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_nurbs",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 20,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 201,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2400,
+                "instances": 1,
+                "draws": 6
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 20,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 201,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2400,
+                "instances": 1,
+                "draws": 6
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_text_shapes",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 5,
+                "instances": 1,
+                "draws": 6
+              },
+              {
+                "vertices": 9,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 13,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 50,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 55,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 56,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 90,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 97,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 105,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 109,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 147,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 204,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 267,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 6423,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 5,
+                "instances": 1,
+                "draws": 6
+              },
+              {
+                "vertices": 9,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 13,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 50,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 55,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 56,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 90,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 97,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 105,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 109,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 147,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 204,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 267,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 6423,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_text_stroke",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 360,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 408,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 504,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 516,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 522,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 528,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 588,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 606,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 624,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 648,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 666,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 720,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 738,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 780,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 816,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 876,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 1068,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 1140,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1422,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1536,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1686,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1716,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1728,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1770,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1788,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1944,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2124,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 2784,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3318,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3324,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 4137,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 4710,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 6432,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 12822,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 13056,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 360,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 408,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 504,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 516,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 522,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 528,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 588,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 606,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 624,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 648,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 666,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 720,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 738,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 780,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 816,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 876,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 1068,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 1140,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1422,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1536,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1686,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1716,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1728,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1770,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1788,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1944,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2124,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 2784,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3318,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3324,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 4137,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 4710,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 6432,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 12822,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 13056,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "dpr": 2,
+      "comparisons": {
+        "shapes-Shapes-official-ren-5bfc7-metry-text-stroke-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 1.9073486328125e-06,
+            "meanError": 0.0001834233601888021
+          },
+          {
+            "state": 5,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 0.000354766845703125
+          },
+          {
+            "state": 6,
+            "fraction": 1.9073486328125e-06,
+            "meanError": 0.0002956390380859375
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-ren-86310-metry-text-shapes-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.0075664520263671875,
+            "meanError": 0.230863889058431
+          },
+          {
+            "state": 1,
+            "fraction": 0.0075664520263671875,
+            "meanError": 0.230863889058431
+          },
+          {
+            "state": 2,
+            "fraction": 0.0075664520263671875,
+            "meanError": 0.230863889058431
+          },
+          {
+            "state": 3,
+            "fraction": 0.0075664520263671875,
+            "meanError": 0.230863889058431
+          },
+          {
+            "state": 4,
+            "fraction": 0.008397102355957031,
+            "meanError": 0.2621183395385742
+          },
+          {
+            "state": 5,
+            "fraction": 0.00836944580078125,
+            "meanError": 0.26014868418375653
+          },
+          {
+            "state": 6,
+            "fraction": 0.007956504821777344,
+            "meanError": 0.24666595458984375
+          },
+          {
+            "state": 7,
+            "fraction": 0.007587890625,
+            "meanError": 0.2340361328125
+          }
+        ],
+        "shapes-Shapes-official-ren-be33d-metry-text-stroke-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.008331298828125,
+            "meanError": 0.2614908218383789
+          },
+          {
+            "state": 1,
+            "fraction": 0.008331298828125,
+            "meanError": 0.2614908218383789
+          },
+          {
+            "state": 2,
+            "fraction": 0.008331298828125,
+            "meanError": 0.2614908218383789
+          },
+          {
+            "state": 3,
+            "fraction": 0.008331298828125,
+            "meanError": 0.2614908218383789
+          },
+          {
+            "state": 4,
+            "fraction": 0.007770538330078125,
+            "meanError": 0.24644088745117188
+          },
+          {
+            "state": 5,
+            "fraction": 0.007710456848144531,
+            "meanError": 0.2445796330769857
+          },
+          {
+            "state": 6,
+            "fraction": 0.007580757141113281,
+            "meanError": 0.24019940694173178
+          },
+          {
+            "state": 7,
+            "fraction": 0.006109375,
+            "meanError": 0.192748046875
+          }
+        ],
+        "shapes-Shapes-official-ren-e38bd-metry-text-shapes-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0.00023937225341796875,
+            "meanError": 0.0298004150390625
+          },
+          {
+            "state": 1,
+            "fraction": 0.00023937225341796875,
+            "meanError": 0.0298004150390625
+          },
+          {
+            "state": 2,
+            "fraction": 0.00023937225341796875,
+            "meanError": 0.0298004150390625
+          },
+          {
+            "state": 3,
+            "fraction": 0.00023937225341796875,
+            "meanError": 0.0298004150390625
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 5.91278076171875e-05
+          },
+          {
+            "state": 7,
+            "fraction": 9.765625e-07,
+            "meanError": 6.0546875e-05
+          }
+        ],
+        "shapes-Shapes-official-rendering-furnace-test-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 1.71661376953125e-05,
+            "meanError": 0.03367487589518229
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-rendering-furnace-test-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.03384590148925781
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-convex-samples-1": [
+          {
+            "state": 0,
+            "fraction": 1.1444091796875e-05,
+            "meanError": 0.0010204315185546875
+          },
+          {
+            "state": 1,
+            "fraction": 5.7220458984375e-06,
+            "meanError": 0.0007473627726236979
+          },
+          {
+            "state": 2,
+            "fraction": 5.7220458984375e-06,
+            "meanError": 0.0008249282836914062
+          },
+          {
+            "state": 3,
+            "fraction": 8.58306884765625e-06,
+            "meanError": 0.0007098515828450521
+          },
+          {
+            "state": 4,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.0005448659261067709
+          },
+          {
+            "state": 5,
+            "fraction": 6.67572021484375e-06,
+            "meanError": 0.0007918675740559896
+          },
+          {
+            "state": 6,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.0005887349446614584
+          },
+          {
+            "state": 7,
+            "fraction": 4.8828125e-06,
+            "meanError": 0.00041861979166666664
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-convex-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.0018644332885742188,
+            "meanError": 0.043274879455566406
+          },
+          {
+            "state": 1,
+            "fraction": 0.00194549560546875,
+            "meanError": 0.04276148478190104
+          },
+          {
+            "state": 2,
+            "fraction": 0.0018472671508789062,
+            "meanError": 0.04442723592122396
+          },
+          {
+            "state": 3,
+            "fraction": 0.0018978118896484375,
+            "meanError": 0.04612890879313151
+          },
+          {
+            "state": 4,
+            "fraction": 0.00146484375,
+            "meanError": 0.03692785898844401
+          },
+          {
+            "state": 5,
+            "fraction": 0.0014829635620117188,
+            "meanError": 0.03722190856933594
+          },
+          {
+            "state": 6,
+            "fraction": 0.0014905929565429688,
+            "meanError": 0.037523905436197914
+          },
+          {
+            "state": 7,
+            "fraction": 0.001140625,
+            "meanError": 0.029021484375
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-nurbs-samples-1": [
+          {
+            "state": 0,
+            "fraction": 0.0006341934204101562,
+            "meanError": 0.013568560282389322
+          },
+          {
+            "state": 1,
+            "fraction": 0.0006341934204101562,
+            "meanError": 0.013568560282389322
+          },
+          {
+            "state": 2,
+            "fraction": 0.0006341934204101562,
+            "meanError": 0.013568560282389322
+          },
+          {
+            "state": 3,
+            "fraction": 0.0006341934204101562,
+            "meanError": 0.013568560282389322
+          },
+          {
+            "state": 4,
+            "fraction": 0.00040340423583984375,
+            "meanError": 0.015797932942708332
+          },
+          {
+            "state": 5,
+            "fraction": 0.0011748046875,
+            "meanError": 0.031001302083333335
+          }
+        ],
+        "shapes-Shapes-official-rendering-geometry-nurbs-samples-4": [
+          {
+            "state": 0,
+            "fraction": 0.007538795471191406,
+            "meanError": 0.1873133977254232
+          },
+          {
+            "state": 1,
+            "fraction": 0.007538795471191406,
+            "meanError": 0.1873133977254232
+          },
+          {
+            "state": 2,
+            "fraction": 0.007538795471191406,
+            "meanError": 0.1873133977254232
+          },
+          {
+            "state": 3,
+            "fraction": 0.007538795471191406,
+            "meanError": 0.1873133977254232
+          },
+          {
+            "state": 4,
+            "fraction": 0.008693695068359375,
+            "meanError": 0.211759885152181
+          },
+          {
+            "state": 5,
+            "fraction": 0.00773828125,
+            "meanError": 0.18683072916666665
+          }
+        ]
+      },
+      "workload": [
+        {
+          "kind": "furnace_test",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 2880,
+                "instances": 1,
+                "draws": 121
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 2880,
+                "instances": 1,
+                "draws": 121
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_convex",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 6,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 108,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 120,
+                "instances": 1,
+                "draws": 1
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 6,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 108,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 120,
+                "instances": 1,
+                "draws": 1
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_nurbs",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 20,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 201,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2400,
+                "instances": 1,
+                "draws": 6
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 20,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 201,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2400,
+                "instances": 1,
+                "draws": 6
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_text_shapes",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 5,
+                "instances": 1,
+                "draws": 6
+              },
+              {
+                "vertices": 9,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 13,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 50,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 55,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 56,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 90,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 97,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 105,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 109,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 147,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 204,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 267,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 6423,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 5,
+                "instances": 1,
+                "draws": 6
+              },
+              {
+                "vertices": 9,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 13,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 50,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 55,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 56,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 90,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 97,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 105,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 109,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 147,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 204,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 267,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 6423,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          }
+        },
+        {
+          "kind": "geometry_text_stroke",
+          "reference": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 360,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 408,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 504,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 516,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 522,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 528,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 588,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 606,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 624,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 648,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 666,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 720,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 738,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 780,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 816,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 876,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 1068,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 1140,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1422,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1536,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1686,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1716,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1728,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1770,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1788,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1944,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2124,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 2784,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3318,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3324,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 4137,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 4710,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 6432,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 12822,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 13056,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          },
+          "rust": {
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "draws": [
+              {
+                "vertices": 360,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 408,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 504,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 516,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 522,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 528,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 588,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 606,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 624,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 648,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 666,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 720,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 738,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 780,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 816,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 876,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 1068,
+                "instances": 1,
+                "draws": 4
+              },
+              {
+                "vertices": 1140,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1422,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1536,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1686,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1716,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1728,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 1770,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1788,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 1944,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 2124,
+                "instances": 1,
+                "draws": 3
+              },
+              {
+                "vertices": 2784,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3318,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 3324,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 4137,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 4710,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 6432,
+                "instances": 1,
+                "draws": 1
+              },
+              {
+                "vertices": 12822,
+                "instances": 1,
+                "draws": 2
+              },
+              {
+                "vertices": 13056,
+                "instances": 1,
+                "draws": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

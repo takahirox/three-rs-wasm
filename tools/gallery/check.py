@@ -93,3 +93,8 @@ assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).
 
 for record in json.loads((ROOT/"web/gallery/assets/material-textures/manifest.json").read_text())["files"]:
  assert hashlib.sha256((ROOT/"web/gallery/assets/material-textures"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+
+for record in json.loads((ROOT/"web/gallery/assets/shapes/manifest.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/gallery/assets/shapes"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+ if "source_sha256" in record:
+  assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["source_sha256"]

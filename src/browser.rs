@@ -19,6 +19,7 @@ mod material_textures;
 mod point_lights;
 mod robot;
 mod room_environment;
+mod shapes;
 mod tsl_compute;
 mod tsl_environment;
 mod tsl_examples;
@@ -168,7 +169,7 @@ impl State {
         // Raw/encoded targets contain display values; the CRT example requests linear output.
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
-            120, 126, 127,
+            120, 126, 127, 154, 155, 156, 157,
         ]
         .contains(&self.example)
         {
@@ -833,8 +834,8 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: [16, 28, 90].contains(&example),
-                        format: if [16, 27, 28, 90].contains(&example) {
+                        encode_srgb: [16, 28, 90, 154, 155, 156, 157].contains(&example),
+                        format: if [16, 27, 28, 90, 154, 155, 156, 157].contains(&example) {
                             wgpu::TextureFormat::Rgba8Unorm
                         } else {
                             wgpu::TextureFormat::Rgba16Float
@@ -861,7 +862,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=152).contains(&example) {
+            if (7..=157).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1018,7 +1019,7 @@ impl BrowserApp {
                         return;
                     }
                     // These official static scenes render only on load, input and resize.
-                    if !([16, 28, 38].contains(&state.example)
+                    if !([16, 28, 38, 153, 156, 157].contains(&state.example)
                         || state.paused && state.example >= 39)
                     {
                         state.request_render();

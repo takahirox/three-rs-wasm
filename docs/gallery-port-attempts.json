@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 443,
-    "runnable-partial": 148,
+    "blocked-at-port-review": 438,
+    "runnable-partial": 153,
     "excluded": 14,
     "requires-feature-review": 2
   },
@@ -2080,10 +2080,10 @@
     },
     {
       "id": "webgl_geometry_convex",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_convex.html",
       "source_sha256": "f0793807bde99bb16fa436f316846b0b462c0cb1ad6b7c0b15d577806eafcd28",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shapes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -2490,10 +2490,10 @@
     },
     {
       "id": "webgl_geometry_nurbs",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_nurbs.html",
       "source_sha256": "941f3d5658ad7567b61c815e800ababfc133b6c4b90f37b3ef3619ab21a643ae",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shapes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -3071,10 +3071,10 @@
     },
     {
       "id": "webgl_geometry_text_shapes",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text_shapes.html",
       "source_sha256": "0468d42e536566602bdd72162738238c1bdd3ac0463c29bd2fa88e80b68a1249",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shapes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -3107,10 +3107,10 @@
     },
     {
       "id": "webgl_geometry_text_stroke",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text_stroke.html",
       "source_sha256": "3110bd4c88d46084a779703454cc24fc4fcc243bb5253ff049c2969ededaf9b7",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shapes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -23427,10 +23427,10 @@
     },
     {
       "id": "webgpu_furnace_test",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_furnace_test.html",
       "source_sha256": "be671eda614cb44aa03d07cff4308b194f8a0f64dbda7469866064ec6fad5de9",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shapes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

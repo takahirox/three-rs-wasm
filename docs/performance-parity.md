@@ -352,3 +352,16 @@ geometry draws match the original; total render-pass counts do not exceed it.
 The reference fixture advances Three.js's node frame on each callback to avoid
 accidentally measuring cached shadows. This is workload evidence, not GPU timing
 parity. See [implementation and validation](material-textures.md).
+
+### Furnace and fixed geometry
+
+The furnace/convex/NURBS/text batch compares 121, 4, 8, 28 and 58 geometry draws,
+respectively, with the actual official renderer. The four WebGL-only examples
+retain their individual objects and original static geometry indices. Only
+WebGL point primitives are normalized to six-vertex WebGPU billboards in the
+workload comparison; the shader computes their screen-space size. All five
+perform zero warmed static-geometry/texture uploads and preserve GPU resource
+counts through animation, controls and resize. Furnace and both text examples
+are explicitly tested to remain idle until interaction or resize. Fixed addon
+generated assets are disclosed in [shapes.md](shapes.md); this is not complete
+font/NURBS/convex addon coverage or a GPU timing-parity claim.

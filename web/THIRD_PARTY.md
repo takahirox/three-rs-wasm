@@ -482,3 +482,13 @@ its original example credits the painting's Wikipedia page. The static paper
 geometry and manual mip pixels are generated from the corresponding example
 algorithms. `manifest.json` records the source revision and file hashes;
 `tools/gallery/prepare-materials.py` reproduces these assets.
+
+The shapes batch adapts r186 `webgpu_furnace_test.html` and
+`webgl_geometry_{convex,nurbs,text_shapes,text_stroke}.html` (Three.js
+contributors, MIT). `web/gallery/assets/shapes/` stores fixed geometry generated
+by `tools/gallery/prepare-shapes.mjs`, with source and output hashes in
+`manifest.json`. Convex hulls, NURBS samples, font contours and SVG strokes use
+the pinned Three.js addon algorithms during preparation. The runtime does not
+include those JavaScript addons. `disc.png` comes from the original example.
+The generated text contains outlines from Helvetiker and M PLUS Rounded 1c;
+their notices accompany the assets as `LICENSE-HELVETIKER` and `LICENSE-MPLUS`.

@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_clipping':'webgpu_clipping','webgl_materials_texture_manualmipmap':'webgpu_materials_texture_manualmipmap','webgl_materials_texture_anisotropy':'webgpu_textures_anisotropy','webgl_materials_texture_partialupdate':'webgpu_textures_partialupdate','webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_furnace_test': {'example':153,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
+ 'webgl_geometry_convex': {'example':154,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
+ 'webgl_geometry_nurbs': {'example':155,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
+ 'webgl_geometry_text_shapes': {'example':156,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
+ 'webgl_geometry_text_stroke': {'example':157,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
+
  'webgpu_materials_arrays': {'example':148,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_clipping': {'example':149,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_materials_texture_manualmipmap': {'example':150,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},

@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    Shapes(Box<super::shapes::Demo>),
     MaterialTextures(Box<super::material_textures::Demo>),
     TslProcedural(Box<super::tsl_procedural::Demo>),
     TslPrimitives(Box<super::tsl_primitives::Demo>),
@@ -68,6 +69,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            153..=157 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Shapes(Box::new(
+                    super::shapes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             148..=152 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -589,6 +599,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::Shapes(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -910,6 +923,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::Shapes(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -958,6 +974,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a TSL example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::Shapes(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::MaterialTextures(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1022,6 +1041,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::Shapes(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

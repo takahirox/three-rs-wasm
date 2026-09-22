@@ -1,0 +1,65 @@
+[
+  {
+    "file": "convex.bin",
+    "source": "examples/webgl_geometry_convex.html",
+    "source_sha256": "f0793807bde99bb16fa436f316846b0b462c0cb1ad6b7c0b15d577806eafcd28",
+    "sha256": "8052997cb9dc5029a575bf67e1882114bb6120bc3da0eaa083551b0c0cbbf885"
+  },
+  {
+    "file": "convex.json",
+    "source": "examples/webgl_geometry_convex.html",
+    "source_sha256": "f0793807bde99bb16fa436f316846b0b462c0cb1ad6b7c0b15d577806eafcd28",
+    "sha256": "474e35de8c736ee20dc6a351c519d8a4959837430a0174a2365dbeebe7c30851"
+  },
+  {
+    "file": "nurbs.bin",
+    "source": "examples/webgl_geometry_nurbs.html",
+    "source_sha256": "941f3d5658ad7567b61c815e800ababfc133b6c4b90f37b3ef3619ab21a643ae",
+    "sha256": "d2fc36f872ea6110ed86a2721b59773e4506ed07f6fdfe8a265796e97f59ce33"
+  },
+  {
+    "file": "nurbs.json",
+    "source": "examples/webgl_geometry_nurbs.html",
+    "source_sha256": "941f3d5658ad7567b61c815e800ababfc133b6c4b90f37b3ef3619ab21a643ae",
+    "sha256": "97af19c63f07ee181993a61363f1d78d7d13083977ce0c0ec5bd9dc088693204"
+  },
+  {
+    "file": "text_shapes.bin",
+    "source": "examples/webgl_geometry_text_shapes.html",
+    "source_sha256": "0468d42e536566602bdd72162738238c1bdd3ac0463c29bd2fa88e80b68a1249",
+    "sha256": "bee732732b8b8da774301dc7011d29b876a2b9e9361ad65d5b4662d03fbbbf42"
+  },
+  {
+    "file": "text_shapes.json",
+    "source": "examples/webgl_geometry_text_shapes.html",
+    "source_sha256": "0468d42e536566602bdd72162738238c1bdd3ac0463c29bd2fa88e80b68a1249",
+    "sha256": "5a2fdf6c726c8c1abfd10485707d431e1f5096cafdb254a3a63cbd07b14487aa"
+  },
+  {
+    "file": "text_stroke.bin",
+    "source": "examples/webgl_geometry_text_stroke.html",
+    "source_sha256": "3110bd4c88d46084a779703454cc24fc4fcc243bb5253ff049c2969ededaf9b7",
+    "sha256": "67c61a676d8fa40d63c24e7a63deec3b456b172e14c5a3ac124e5d3cea2de086"
+  },
+  {
+    "file": "text_stroke.json",
+    "source": "examples/webgl_geometry_text_stroke.html",
+    "source_sha256": "3110bd4c88d46084a779703454cc24fc4fcc243bb5253ff049c2969ededaf9b7",
+    "sha256": "aad8a05b64ac0143405e8a34d862a0b5e207d1fe04fb96e1878977371cd41357"
+  },
+  {
+    "file": "disc.png",
+    "source": "examples/textures/sprites/disc.png",
+    "sha256": "1f3816715f028ac32065a10f40f5ef218b4efc67eb46f0d908a8d503f25b69cb"
+  },
+  {
+    "file": "LICENSE-HELVETIKER",
+    "source": "examples/fonts/LICENSE",
+    "sha256": "35e8279356d7890871c4fce804d157e3f21456a7311ef2caab5cb4705c71b6bd"
+  },
+  {
+    "file": "LICENSE-MPLUS",
+    "source": "examples/fonts/MPLUSRounded1c/OFL.txt",
+    "sha256": "76efb90a3bf8d7d91a3498d15fb409ee59ff43b0bf614b4afa0a947b6d7c75d3"
+  }
+]

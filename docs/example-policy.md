@@ -62,3 +62,8 @@ The material/texture batch also prefers `webgpu_clipping`,
 `webgpu_materials_texture_manualmipmap`, `webgpu_textures_anisotropy` and
 `webgpu_textures_partialupdate` over their reviewed WebGL counterparts.
 The dedicated comparison fixture executes the pinned WebGPU scripts.
+
+The WebGL-only NURBS/text batch records matched MSAA-on/off comparisons in
+[shapes.md](shapes.md). Its three scoped MSAA allowances require the ordinary
+threshold with MSAA off as a separate regression check; they do not relax
+geometry, controls, residency or workload checks.
