@@ -903,7 +903,17 @@ fn orthographic_specular_and_tsl_view_direction_do_not_depend_on_camera_distance
         Arc::new(PlaneGeometry::build(3., 3., 1, 1).unwrap()),
         Arc::new(Material::Phong(m)),
     )));
-    let out = RenderTarget::new(&r.device, 32, 32).unwrap();
+    // Test linear shading/vector values, independent of backend sRGB encoding.
+    let out = RenderTarget::with_options(
+        &r.device,
+        32,
+        32,
+        RenderTargetOptions {
+            format: wgpu::TextureFormat::Rgba8Unorm,
+            ..Default::default()
+        },
+    )
+    .unwrap();
     let mut reference = None;
     for z in [2., 4., 10.] {
         s.get_mut(c).unwrap().position.z = z;
@@ -932,7 +942,7 @@ fn orthographic_specular_and_tsl_view_direction_do_not_depend_on_camera_distance
     r.render(&mut s, c, &out).unwrap();
     let image = r.read_rgba(&out).unwrap();
     for pixel in image.as_chunks::<4>().0 {
-        assert_eq!(*pixel, [188, 188, 255, 255]);
+        assert_eq!(*pixel, [128, 128, 255, 255]);
     }
 }
 
