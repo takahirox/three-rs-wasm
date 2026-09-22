@@ -67,3 +67,8 @@ The WebGL-only NURBS/text batch records matched MSAA-on/off comparisons in
 [shapes.md](shapes.md). Its three scoped MSAA allowances require the ordinary
 threshold with MSAA off as a separate regression check; they do not relax
 geometry, controls, residency or workload checks.
+
+The WebGL-only buffer-particle batch records point-primitive and dense-line MSAA
+exceptions in [buffer-particles.md](buffer-particles.md). Original-backend images
+remain required, along with ordinary-threshold quad/WebGPU diagnostic comparisons.
+The adapted fixtures are not official WebGPU examples and are not gallery entries.

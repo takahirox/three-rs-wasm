@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['webgl_buffergeometry_points','webgl_buffergeometry_points_interleaved','webgl_buffergeometry_custom_attributes_particles','webgl_buffergeometry_instancing_billboards','webgl_buffergeometry_selective_draw'].includes(id))throw Error('invalid fixture');
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info'))document.body.appendChild(document.importNode(node,true));
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
+.replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+// Diagnostic only: replace native point rasterization with equivalent GPU quads.
+// Normal acceptance runs execute the original Points draw unchanged.
+if(new URLSearchParams(location.search).has('pointQuads')){
+ window.pointQuadMesh=(geometry,material)=>{
+  const g=new THREE.InstancedBufferGeometry(),plane=new THREE.PlaneGeometry(1,1);
+  g.index=plane.index;g.attributes.position=plane.attributes.position;
+  for(const [src,dst] of [['position','center'],['color','color']]){const a=geometry.attributes[src];g.setAttribute(dst,new THREE.InstancedBufferAttribute(Float32Array.from({length:a.count*3},(_,i)=>[a.getX(i/3|0),a.getY(i/3|0),a.getZ(i/3|0)][i%3]),3));}
+  g.instanceCount=geometry.attributes.position.count;
+  material.onBeforeCompile=shader=>{
+   shader.uniforms.pointViewport={value:(window.pointQuadViewport=new THREE.Vector2(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio))};
+   shader.vertexShader='attribute vec3 center; uniform vec2 pointViewport;\n'+shader.vertexShader.replace('#include <begin_vertex>','vec3 transformed=center;').replace('#include <fog_vertex>','#include <fog_vertex>\n gl_Position.xy += position.xy * gl_PointSize * 2.0 / pointViewport * gl_Position.w;');
+  };
+  const mesh=new THREE.Mesh(g,material);mesh.frustumCulled=false;return mesh;
+ };
+ source=source.replace('new THREE.Points( geometry, material )','window.pointQuadMesh( geometry, material )');
+}
+// Diagnostic only: identical line geometry/visibility with the official WebGPU backend.
+if(new URLSearchParams(location.search).has('webgpuLines')){
+ source="import {attribute} from 'three/tsl';\n"+source;
+ source=source.replaceAll('THREE.WebGLRenderer','THREE.WebGPURenderer')
+  .replace(/const shaderMaterial = new THREE.ShaderMaterial\( \{[\s\S]*?\} \);/,"const shaderMaterial = new THREE.LineBasicNodeMaterial();shaderMaterial.colorNode=attribute('vertColor','vec3');shaderMaterial.opacityNode=attribute('visible','float');shaderMaterial.alphaTest=0.5;")
+  .replace('renderer.setPixelRatio(', 'renderer.outputColorSpace=THREE.LinearSRGBColorSpace;renderer.setPixelRatio(');
+}
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{fixtureSeconds=t;window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes)reference.renderer._nodes.nodeFrame.update();if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>document.getElementById(i?'showAllLines':'hideLines').click();await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

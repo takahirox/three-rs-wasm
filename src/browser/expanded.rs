@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    BufferParticles(Box<super::buffer_particles::Demo>),
     Shapes(Box<super::shapes::Demo>),
     MaterialTextures(Box<super::material_textures::Demo>),
     TslProcedural(Box<super::tsl_procedural::Demo>),
@@ -69,6 +70,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            158..=162 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::BufferParticles(Box::new(
+                    super::buffer_particles::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             153..=157 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -599,6 +609,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::BufferParticles(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Shapes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -914,6 +927,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::BufferParticles(demo) = &mut self.content {
+            demo.prepare(renderer)?;
+        }
         if let Content::TslCompute(demo) = &mut self.content {
             demo.prepare(scene, camera, aspect)?;
         }
@@ -923,6 +939,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::BufferParticles(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::Shapes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -973,7 +992,17 @@ impl Demo {
         }
         Err(crate::Error::Invalid("not a TSL example"))
     }
+    pub fn status(&self) -> String {
+        if let Content::BufferParticles(demo) = &self.content {
+            demo.status()
+        } else {
+            String::new()
+        }
+    }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::BufferParticles(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::Shapes(demo) = &mut self.content {
             demo.seek(seconds);
         }

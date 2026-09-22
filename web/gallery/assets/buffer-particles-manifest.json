@@ -1,0 +1,12 @@
+[
+  {
+    "file": "spark1.png",
+    "source": "examples/textures/sprites/spark1.png",
+    "sha256": "2f5195c64dbf2216fa5b9ac8d334536dca11bf04fedeac4ffd68d94e0bfefb91"
+  },
+  {
+    "file": "circle.png",
+    "source": "examples/textures/sprites/circle.png",
+    "sha256": "05fff2c8a01602cd4d8099cf456386ab28498093d084d5ca3805d16ebc71d3f8"
+  }
+]

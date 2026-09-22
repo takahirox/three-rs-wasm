@@ -4,6 +4,7 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod buffer_particles;
 mod expanded;
 mod expanded_geometry_colors;
 mod expanded_indexed;
@@ -169,7 +170,7 @@ impl State {
         // Raw/encoded targets contain display values; the CRT example requests linear output.
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
-            120, 126, 127, 154, 155, 156, 157,
+            120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162,
         ]
         .contains(&self.example)
         {
@@ -339,6 +340,15 @@ impl BrowserApp {
         state.scene.environment_rotation = rotation;
         state.scene.background_blur = blur.clamp(0.0, 1.0);
         state.scene.background_environment = background;
+    }
+    pub fn gallery_status(&self) -> String {
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
+            &self.state.borrow().gallery_scene
+        {
+            demo.status()
+        } else {
+            String::new()
+        }
     }
     pub fn gallery_dragging(&self, value: bool) {
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
@@ -826,7 +836,8 @@ impl BrowserApp {
                             7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
                             52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
-                            117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147,
+                            117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
+                            161,
                         ]
                         .contains(&example)
                         {
@@ -835,7 +846,9 @@ impl BrowserApp {
                             4
                         },
                         encode_srgb: [16, 28, 90, 154, 155, 156, 157].contains(&example),
-                        format: if [16, 27, 28, 90, 154, 155, 156, 157].contains(&example) {
+                        format: if [16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162]
+                            .contains(&example)
+                        {
                             wgpu::TextureFormat::Rgba8Unorm
                         } else {
                             wgpu::TextureFormat::Rgba16Float
@@ -862,7 +875,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=157).contains(&example) {
+            if (7..=162).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

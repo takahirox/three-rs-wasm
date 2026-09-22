@@ -492,3 +492,11 @@ the pinned Three.js addon algorithms during preparation. The runtime does not
 include those JavaScript addons. `disc.png` comes from the original example.
 The generated text contains outlines from Helvetiker and M PLUS Rounded 1c;
 their notices accompany the assets as `LICENSE-HELVETIKER` and `LICENSE-MPLUS`.
+
+The buffer-particle examples adapt pinned r186
+`webgl_buffergeometry_{points,points_interleaved,custom_attributes_particles,instancing_billboards,selective_draw}.html`
+(Three.js contributors, MIT). `web/gallery/assets/spark1.png` and the reused
+`circle.png` come from `examples/textures/sprites/`; their original bytes and
+source paths are recorded in `buffer-particles-manifest.json`.
+`tools/tsl/prepare.py` extracts them from the pinned archive. The selective-draw
+example credits [Callum](https://callum.com) in the original.

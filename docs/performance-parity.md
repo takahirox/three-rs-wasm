@@ -365,3 +365,10 @@ counts through animation, controls and resize. Furnace and both text examples
 are explicitly tested to remain idle until interaction or resize. Fixed addon
 generated assets are disclosed in [shapes.md](shapes.md); this is not complete
 font/NURBS/convex addon coverage or a GPU timing-parity claim.
+
+The [buffer-particle examples](buffer-particles.md) retain 500,000 / 100,000 /
+75,000 instances or 20,000 native lines in one scene draw. Typed resident storage
+preserves packed byte colors without per-particle quad attribute duplication.
+Tests enforce exact particle storage sizes, zero steady-state geometry/texture
+transfers and no warmed GPU resource creation, including after resize. Explicit
+line visibility edits upload only their mask and retain the full draw workload.

@@ -20,10 +20,15 @@
   ],
   "webgl / advanced": [
     "webgl_buffergeometry",
+    "webgl_buffergeometry_custom_attributes_particles",
     "webgl_buffergeometry_indexed",
+    "webgl_buffergeometry_instancing_billboards",
     "webgl_buffergeometry_lines",
     "webgl_buffergeometry_lines_indexed",
-    "webgl_buffergeometry_rawshader"
+    "webgl_buffergeometry_points",
+    "webgl_buffergeometry_points_interleaved",
+    "webgl_buffergeometry_rawshader",
+    "webgl_buffergeometry_selective_draw"
   ],
   "webgpu": [
     "webgpu_backdrop",

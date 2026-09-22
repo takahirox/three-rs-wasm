@@ -44,6 +44,12 @@ FEATURES = {
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
 WEBGPU_EQUIVALENTS = {'webgl_clipping':'webgpu_clipping','webgl_materials_texture_manualmipmap':'webgpu_materials_texture_manualmipmap','webgl_materials_texture_anisotropy':'webgpu_textures_anisotropy','webgl_materials_texture_partialupdate':'webgpu_textures_partialupdate','webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgl_buffergeometry_points': {'example':158,'source':'src/browser/buffer_particles.rs','test':'tests/browser/buffer-particles.spec.js','limitations':['Stats表示は未移植。点はGPUインスタンシングで展開。WebGL点ラスタライズ差を別途検証。性能の完全な同等性は未保証。']},
+ 'webgl_buffergeometry_points_interleaved': {'example':159,'source':'src/browser/buffer_particles.rs','test':'tests/browser/buffer-particles.spec.js','limitations':['Stats表示は未移植。圧縮色の16-byte GPUレコードを使用。汎用InterleavedBuffer APIの移植ではありません。WebGL点ラスタライズ差と性能の完全な同等性は未保証。']},
+ 'webgl_buffergeometry_custom_attributes_particles': {'example':160,'source':'src/browser/buffer_particles.rs','test':'tests/browser/buffer-particles.spec.js','limitations':['Stats表示は未移植。点サイズのアニメーションをGPUへ移植。性能の完全な同等性は未保証。']},
+ 'webgl_buffergeometry_instancing_billboards': {'example':161,'source':'src/browser/buffer_particles.rs','test':'tests/browser/buffer-particles.spec.js','limitations':['Stats表示は未移植。75,000個の六角形をGPUインスタンシングで描画。性能の完全な同等性は未保証。']},
+ 'webgl_buffergeometry_selective_draw': {'example':162,'source':'src/browser/buffer_particles.rs','test':'tests/browser/buffer-particles.spec.js','limitations':['Stats・操作UI外観は未一致。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。']},
+
  'webgpu_furnace_test': {'example':153,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
  'webgl_geometry_convex': {'example':154,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},
  'webgl_geometry_nurbs': {'example':155,'source':'src/browser/shapes.rs','test':'tests/browser/shapes.spec.js','limitations':['性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。']},

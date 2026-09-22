@@ -1,0 +1,1585 @@
+{
+  "baseline": "Three.js r186",
+  "source_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "chrome": "153.0.8010.53",
+  "difference_threshold": 6,
+  "notes": [
+    "Raw WebGL images are retained alongside separate GPU-quad / WebGPU line diagnostics.",
+    "Storage/draw/residency measurements do not establish GPU timing parity."
+  ],
+  "runs": [
+    {
+      "dpr": 1,
+      "visual": [
+        {
+          "case": "buffer-particles-Buffer-pa-0a713-ncing-billboards-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.001041412353515625,
+              "meanError": 0.16678746541341147
+            },
+            {
+              "state": 1,
+              "fraction": 0.00162506103515625,
+              "meanError": 0.17230097452799478
+            },
+            {
+              "state": 2,
+              "fraction": 0.001194000244140625,
+              "meanError": 0.11766942342122395
+            },
+            {
+              "state": 3,
+              "fraction": 0.00109100341796875,
+              "meanError": 0.07052103678385417
+            },
+            {
+              "state": 4,
+              "fraction": 0.0004296875,
+              "meanError": 0.09402994791666666
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-1bdc6-points-samples-1-pointQuads",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.003269195556640625,
+              "meanError": 0.1349334716796875
+            },
+            {
+              "state": 1,
+              "fraction": 0.003448486328125,
+              "meanError": 0.13859939575195312
+            },
+            {
+              "state": 2,
+              "fraction": 0.00336456298828125,
+              "meanError": 0.10927708943684895
+            },
+            {
+              "state": 3,
+              "fraction": 0.00328826904296875,
+              "meanError": 0.10751851399739583
+            },
+            {
+              "state": 4,
+              "fraction": 0.0028125,
+              "meanError": 0.08816666666666667
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-1fe3f-ibutes-particles-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.002262115478515625,
+              "meanError": 0.5582237243652344
+            },
+            {
+              "state": 1,
+              "fraction": 0.002117156982421875,
+              "meanError": 0.5573577880859375
+            },
+            {
+              "state": 2,
+              "fraction": 0.002201080322265625,
+              "meanError": 0.5566520690917969
+            },
+            {
+              "state": 3,
+              "fraction": 0.002033233642578125,
+              "meanError": 0.5638249715169271
+            },
+            {
+              "state": 4,
+              "fraction": 0.0022734375,
+              "meanError": 0.4796575520833333
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-3a6bc-leaved-samples-1-pointQuads",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.003261566162109375,
+              "meanError": 0.13471603393554688
+            },
+            {
+              "state": 1,
+              "fraction": 0.00344085693359375,
+              "meanError": 0.13840484619140625
+            },
+            {
+              "state": 2,
+              "fraction": 0.00335693359375,
+              "meanError": 0.10973485310872395
+            },
+            {
+              "state": 3,
+              "fraction": 0.003330230712890625,
+              "meanError": 0.1084124247233073
+            },
+            {
+              "state": 4,
+              "fraction": 0.00283984375,
+              "meanError": 0.08887239583333334
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-5a2e1-rendering-points-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.025867462158203125,
+              "meanError": 1.0635401407877605
+            },
+            {
+              "state": 1,
+              "fraction": 0.026599884033203125,
+              "meanError": 1.0126088460286458
+            },
+            {
+              "state": 2,
+              "fraction": 0.02756500244140625,
+              "meanError": 0.9342168172200521
+            },
+            {
+              "state": 3,
+              "fraction": 0.02759552001953125,
+              "meanError": 0.9058443705240885
+            },
+            {
+              "state": 4,
+              "fraction": 0.02127734375,
+              "meanError": 0.6910794270833334
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-92e42--draw-samples-4-webgpuLines",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 1,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 2,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 3,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 4,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 5,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 6,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 7,
+              "fraction": 0,
+              "meanError": 0
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-a3d94-g-selective-draw-samples-4-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.09601593017578125,
+              "meanError": 1.3002840677897136
+            },
+            {
+              "state": 1,
+              "fraction": 0.09481048583984375,
+              "meanError": 1.2766354878743489
+            },
+            {
+              "state": 2,
+              "fraction": 0.09128570556640625,
+              "meanError": 1.2296536763509114
+            },
+            {
+              "state": 3,
+              "fraction": 0.09276199340820312,
+              "meanError": 1.2168286641438801
+            },
+            {
+              "state": 4,
+              "fraction": 0.10814285278320312,
+              "meanError": 1.508819580078125
+            },
+            {
+              "state": 5,
+              "fraction": 0.1219482421875,
+              "meanError": 1.8282063802083333
+            },
+            {
+              "state": 6,
+              "fraction": 0.09296035766601562,
+              "meanError": 1.230608622233073
+            },
+            {
+              "state": 7,
+              "fraction": 0.052390625,
+              "meanError": 0.69456640625
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-d7bdf-g-selective-draw-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.000102996826171875,
+              "meanError": 0.004993438720703125
+            },
+            {
+              "state": 1,
+              "fraction": 0.0001068115234375,
+              "meanError": 0.00640106201171875
+            },
+            {
+              "state": 2,
+              "fraction": 0.000125885009765625,
+              "meanError": 0.007582346598307292
+            },
+            {
+              "state": 3,
+              "fraction": 9.1552734375e-05,
+              "meanError": 0.00441741943359375
+            },
+            {
+              "state": 4,
+              "fraction": 0.0001068115234375,
+              "meanError": 0.00473785400390625
+            },
+            {
+              "state": 5,
+              "fraction": 9.918212890625e-05,
+              "meanError": 0.007643381754557292
+            },
+            {
+              "state": 6,
+              "fraction": 0.000141143798828125,
+              "meanError": 0.0038274129231770835
+            },
+            {
+              "state": 7,
+              "fraction": 0.00012109375,
+              "meanError": 0.0054375
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-e0b09-ints-interleaved-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.025859832763671875,
+              "meanError": 1.0616912841796875
+            },
+            {
+              "state": 1,
+              "fraction": 0.026592254638671875,
+              "meanError": 1.0126953125
+            },
+            {
+              "state": 2,
+              "fraction": 0.027660369873046875,
+              "meanError": 0.9367688496907552
+            },
+            {
+              "state": 3,
+              "fraction": 0.028076171875,
+              "meanError": 0.9121309916178385
+            },
+            {
+              "state": 4,
+              "fraction": 0.021671875,
+              "meanError": 0.6963893229166667
+            }
+          ]
+        }
+      ],
+      "residency": [
+        {
+          "case": "buffer-particles-Buffer-pa-a0791-custom-attributes-particles",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 40,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 40,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 44,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 44,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-a5a3d-esidency-points-interleaved",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-b8b79-PU-residency-selective-draw",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 37,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 37,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-c9138-dency-instancing-billboards",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 41,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 41,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 45,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 45,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-particles-GPU-residency-points",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "gpu-work": [
+        {
+          "kind": "points",
+          "reference": {
+            "draws": [
+              {
+                "count": 3000000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 500000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              12000000
+            ]
+          }
+        },
+        {
+          "kind": "points_interleaved",
+          "reference": {
+            "draws": [
+              {
+                "count": 3000000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 500000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              8000000
+            ]
+          }
+        },
+        {
+          "kind": "custom_attributes_particles",
+          "reference": {
+            "draws": [
+              {
+                "count": 600000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 100000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              1200000
+            ]
+          }
+        },
+        {
+          "kind": "instancing_billboards",
+          "reference": {
+            "draws": [
+              {
+                "count": 18,
+                "instances": 75000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 18,
+                "instances": 75000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              900000
+            ]
+          }
+        },
+        {
+          "kind": "selective_draw",
+          "reference": {
+            "draws": [
+              {
+                "count": 40000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 40000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              80000
+            ]
+          }
+        }
+      ],
+      "visibility": {
+        "reference": [
+          4930,
+          8736,
+          0
+        ],
+        "rust": [
+          4930,
+          8736,
+          0
+        ]
+      }
+    },
+    {
+      "dpr": 2,
+      "visual": [
+        {
+          "case": "buffer-particles-Buffer-pa-0a713-ncing-billboards-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.0006237030029296875,
+              "meanError": 0.06624348958333333
+            },
+            {
+              "state": 1,
+              "fraction": 0.0013360977172851562,
+              "meanError": 0.08717886606852214
+            },
+            {
+              "state": 2,
+              "fraction": 0.0009374618530273438,
+              "meanError": 0.04974524180094401
+            },
+            {
+              "state": 3,
+              "fraction": 0.0009870529174804688,
+              "meanError": 0.0218960444132487
+            },
+            {
+              "state": 4,
+              "fraction": 0.00021484375,
+              "meanError": 0.0368671875
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-1bdc6-points-samples-1-pointQuads",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.0016107559204101562,
+              "meanError": 0.06304200490315755
+            },
+            {
+              "state": 1,
+              "fraction": 0.0015354156494140625,
+              "meanError": 0.058983167012532554
+            },
+            {
+              "state": 2,
+              "fraction": 0.0016574859619140625,
+              "meanError": 0.05564181009928385
+            },
+            {
+              "state": 3,
+              "fraction": 0.0016393661499023438,
+              "meanError": 0.05172570546468099
+            },
+            {
+              "state": 4,
+              "fraction": 0.001294921875,
+              "meanError": 0.039219401041666664
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-1fe3f-ibutes-particles-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.0006694793701171875,
+              "meanError": 0.23821640014648438
+            },
+            {
+              "state": 1,
+              "fraction": 0.0006151199340820312,
+              "meanError": 0.23749542236328125
+            },
+            {
+              "state": 2,
+              "fraction": 0.0006570816040039062,
+              "meanError": 0.240476926167806
+            },
+            {
+              "state": 3,
+              "fraction": 0.0006055831909179688,
+              "meanError": 0.23981030782063803
+            },
+            {
+              "state": 4,
+              "fraction": 0.0008828125,
+              "meanError": 0.3274264322916667
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-3a6bc-leaved-samples-1-pointQuads",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.0016088485717773438,
+              "meanError": 0.06279214223225911
+            },
+            {
+              "state": 1,
+              "fraction": 0.0015430450439453125,
+              "meanError": 0.058906237284342446
+            },
+            {
+              "state": 2,
+              "fraction": 0.0016584396362304688,
+              "meanError": 0.05576801300048828
+            },
+            {
+              "state": 3,
+              "fraction": 0.0016727447509765625,
+              "meanError": 0.052086194356282554
+            },
+            {
+              "state": 4,
+              "fraction": 0.0013115234375,
+              "meanError": 0.03954752604166667
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-5a2e1-rendering-points-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.014378547668457031,
+              "meanError": 0.5768054326375326
+            },
+            {
+              "state": 1,
+              "fraction": 0.013134002685546875,
+              "meanError": 0.4964758555094401
+            },
+            {
+              "state": 2,
+              "fraction": 0.013615608215332031,
+              "meanError": 0.4538583755493164
+            },
+            {
+              "state": 3,
+              "fraction": 0.013738632202148438,
+              "meanError": 0.45186805725097656
+            },
+            {
+              "state": 4,
+              "fraction": 0.0110087890625,
+              "meanError": 0.35334505208333333
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-92e42--draw-samples-4-webgpuLines",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 1,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 2,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 3,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 4,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 5,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 6,
+              "fraction": 0,
+              "meanError": 0
+            },
+            {
+              "state": 7,
+              "fraction": 0,
+              "meanError": 0
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-a3d94-g-selective-draw-samples-4-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.11901092529296875,
+              "meanError": 1.821886698404948
+            },
+            {
+              "state": 1,
+              "fraction": 0.11720561981201172,
+              "meanError": 1.8443984985351562
+            },
+            {
+              "state": 2,
+              "fraction": 0.11583995819091797,
+              "meanError": 1.8054218292236328
+            },
+            {
+              "state": 3,
+              "fraction": 0.1245269775390625,
+              "meanError": 1.9189481735229492
+            },
+            {
+              "state": 4,
+              "fraction": 0.13715553283691406,
+              "meanError": 2.3327805201212564
+            },
+            {
+              "state": 5,
+              "fraction": 0.14508533477783203,
+              "meanError": 2.7597777048746743
+            },
+            {
+              "state": 6,
+              "fraction": 0.12607383728027344,
+              "meanError": 1.9407625198364258
+            },
+            {
+              "state": 7,
+              "fraction": 0.0740498046875,
+              "meanError": 1.0572548828125
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-d7bdf-g-selective-draw-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 4.100799560546875e-05,
+              "meanError": 0.0026184717814127603
+            },
+            {
+              "state": 1,
+              "fraction": 4.00543212890625e-05,
+              "meanError": 0.002278010050455729
+            },
+            {
+              "state": 2,
+              "fraction": 5.53131103515625e-05,
+              "meanError": 0.002940495808919271
+            },
+            {
+              "state": 3,
+              "fraction": 3.528594970703125e-05,
+              "meanError": 0.0021839141845703125
+            },
+            {
+              "state": 4,
+              "fraction": 4.57763671875e-05,
+              "meanError": 0.003716150919596354
+            },
+            {
+              "state": 5,
+              "fraction": 4.1961669921875e-05,
+              "meanError": 0.0035273234049479165
+            },
+            {
+              "state": 6,
+              "fraction": 4.482269287109375e-05,
+              "meanError": 0.0028104782104492188
+            },
+            {
+              "state": 7,
+              "fraction": 4.58984375e-05,
+              "meanError": 0.0032666015625
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-e0b09-ints-interleaved-samples-1-",
+          "states": [
+            {
+              "state": 0,
+              "fraction": 0.014374732971191406,
+              "meanError": 0.5756823221842448
+            },
+            {
+              "state": 1,
+              "fraction": 0.013162612915039062,
+              "meanError": 0.4964059193929036
+            },
+            {
+              "state": 2,
+              "fraction": 0.013667106628417969,
+              "meanError": 0.45489343007405597
+            },
+            {
+              "state": 3,
+              "fraction": 0.013920783996582031,
+              "meanError": 0.4550183614095052
+            },
+            {
+              "state": 4,
+              "fraction": 0.01118359375,
+              "meanError": 0.35604850260416665
+            }
+          ]
+        }
+      ],
+      "residency": [
+        {
+          "case": "buffer-particles-Buffer-pa-a0791-custom-attributes-particles",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 40,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 40,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 44,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 44,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-a5a3d-esidency-points-interleaved",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-b8b79-PU-residency-selective-draw",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 37,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 37,
+                "transfers": [
+                  1,
+                  3200000,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-pa-c9138-dency-instancing-billboards",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 41,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 41,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 45,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 45,
+                "transfers": [
+                  1,
+                  712,
+                  16
+                ],
+                "resources": [
+                  1,
+                  2,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "case": "buffer-particles-Buffer-particles-GPU-residency-points",
+          "checks": [
+            {
+              "resize": false,
+              "before": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 32,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            },
+            {
+              "resize": true,
+              "before": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              },
+              "after": {
+                "creates": 36,
+                "transfers": [
+                  1,
+                  344,
+                  16
+                ],
+                "resources": [
+                  1,
+                  1,
+                  0
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "gpu-work": [
+        {
+          "kind": "points",
+          "reference": {
+            "draws": [
+              {
+                "count": 3000000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 500000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              12000000
+            ]
+          }
+        },
+        {
+          "kind": "points_interleaved",
+          "reference": {
+            "draws": [
+              {
+                "count": 3000000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 500000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              8000000
+            ]
+          }
+        },
+        {
+          "kind": "custom_attributes_particles",
+          "reference": {
+            "draws": [
+              {
+                "count": 600000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 6,
+                "instances": 100000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              1200000
+            ]
+          }
+        },
+        {
+          "kind": "instancing_billboards",
+          "reference": {
+            "draws": [
+              {
+                "count": 18,
+                "instances": 75000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 18,
+                "instances": 75000
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              900000
+            ]
+          }
+        },
+        {
+          "kind": "selective_draw",
+          "reference": {
+            "draws": [
+              {
+                "count": 40000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": []
+          },
+          "rust": {
+            "draws": [
+              {
+                "count": 40000,
+                "instances": 1
+              }
+            ],
+            "attributeBytes": 0,
+            "textureBytes": 0,
+            "attributeBuffers": [
+              80000
+            ]
+          }
+        }
+      ],
+      "visibility": {
+        "reference": [
+          4930,
+          8736,
+          0
+        ],
+        "rust": [
+          4930,
+          8736,
+          0
+        ]
+      }
+    }
+  ]
+}

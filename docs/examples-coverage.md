@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 153 partial Rust ports; 440 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 158 partial Rust ports; 435 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_buffergeometry_points | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。点はGPUインスタンシングで展開。WebGL点ラスタライズ差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_points_interleaved | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。圧縮色の16-byte GPUレコードを使用。汎用InterleavedBuffer APIの移植ではありません。WebGL点ラスタライズ差と性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_custom_attributes_particles | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。点サイズのアニメーションをGPUへ移植。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_instancing_billboards | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。75,000個の六角形をGPUインスタンシングで描画。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_selective_draw | `tests/browser/buffer-particles.spec.js` | Stats・操作UI外観は未一致。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgpu_furnace_test | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
 | webgl_geometry_convex | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |
 | webgl_geometry_nurbs | `tests/browser/shapes.spec.js` | 性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。 |

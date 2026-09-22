@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 438,
-    "runnable-partial": 153,
+    "blocked-at-port-review": 433,
+    "runnable-partial": 158,
     "excluded": 14,
     "requires-feature-review": 2
   },
@@ -16874,10 +16874,10 @@
     },
     {
       "id": "webgl_buffergeometry_custom_attributes_particles",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_custom_attributes_particles.html",
       "source_sha256": "83097a9599d17b6609bb4ad10b25136ea4b6378a74174152f20448bf53496ecb",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/buffer-particles.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17081,10 +17081,10 @@
     },
     {
       "id": "webgl_buffergeometry_instancing_billboards",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_instancing_billboards.html",
       "source_sha256": "e8db25806997271bf21769007435b59d870afeb410a98a64de7dbf9e71ec84b0",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/buffer-particles.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17184,10 +17184,10 @@
     },
     {
       "id": "webgl_buffergeometry_points",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_points.html",
       "source_sha256": "ab181dd67b2e7199f062af3d83a62f425a493c88afeb3751c83d55ac5304e52f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/buffer-particles.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17213,10 +17213,10 @@
     },
     {
       "id": "webgl_buffergeometry_points_interleaved",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_points_interleaved.html",
       "source_sha256": "4351a7405346edf378b97a562d415b39cf11986881858bb9718e2bf7d11c1fbe",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/buffer-particles.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17271,10 +17271,10 @@
     },
     {
       "id": "webgl_buffergeometry_selective_draw",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_selective_draw.html",
       "source_sha256": "dd296807eef9f4720d3a79736d5f545f2351b34170f6ec25e36a4151a3924447",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/buffer-particles.spec.js",
       "blockers": [
         {
           "kind": "core-api",
