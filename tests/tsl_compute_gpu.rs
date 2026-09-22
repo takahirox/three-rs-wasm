@@ -292,7 +292,9 @@ fn sampled_texture_drives_resident_storage_updates() {
         mip_level_count: 1,
         sample_count: 1,
         dimension: wgpu::TextureDimension::D2,
-        format: wgpu::TextureFormat::Rgba8Unorm,
+        // Half-float endpoints keep the 0.5 interpolation oracle exact across
+        // backends; UNORM filtering may quantize it to 128/255 (Mesa).
+        format: wgpu::TextureFormat::Rgba16Float,
         usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
         view_formats: &[],
     });
@@ -324,8 +326,8 @@ fn sampled_texture_drives_resident_storage_updates() {
     ))
     .unwrap();
     for (step, bytes) in [
-        [0, 0, 0, 255, 255, 0, 0, 255],
-        [255, 0, 0, 255, 0, 0, 0, 255],
+        [0u16, 0, 0, 0x3c00, 0x3c00, 0, 0, 0x3c00],
+        [0x3c00, 0, 0, 0x3c00, 0, 0, 0, 0x3c00],
     ]
     .iter()
     .enumerate()
@@ -337,10 +339,10 @@ fn sampled_texture_drives_resident_storage_updates() {
                 origin: wgpu::Origin3d::ZERO,
                 aspect: wgpu::TextureAspect::All,
             },
-            bytes,
+            bytemuck::cast_slice(bytes),
             wgpu::TexelCopyBufferLayout {
                 offset: 0,
-                bytes_per_row: Some(8),
+                bytes_per_row: Some(16),
                 rows_per_image: Some(1),
             },
             texture.size(),
