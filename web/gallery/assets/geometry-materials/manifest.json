@@ -1,0 +1,26 @@
+[
+  {
+    "file": "wireframe.bin",
+    "source": "examples/models/json/WaltHeadLo_buffergeometry.json",
+    "source_sha256": "7fbdd9db5849c7bef4db31e4d883f5ac722f3fdfeb617347825c4e0e659a3a35",
+    "sha256": "b7c66afdbf28e27bb0ff7d8d0d2b9a4a9bf7fa0c96ae0d0123a62ac51ba0963f"
+  },
+  {
+    "file": "pressure.bin",
+    "source": "examples/models/json/pressure.json",
+    "source_sha256": "07f6e031d4268c2c86c54622b276526843cd6c5f110365cd56a3662bb3aad096",
+    "sha256": "1274c2782d72fd69722eb66e1ceb639ae32932459f122b6c43c69592cb4cbefe"
+  },
+  {
+    "file": "lut.bin",
+    "source": "examples/jsm/math/Lut.js",
+    "source_sha256": "04d047d96f17302f2d7a20f439c0583a3e037bc0e7e40c276c1dee618dc9533c",
+    "sha256": "3bca4da76921cb017fadd1a6444e8d4ea83e74bd551524dd7b9956240e315cf5"
+  },
+  {
+    "file": "lut.rgba",
+    "source": "examples/jsm/math/Lut.js",
+    "source_sha256": "04d047d96f17302f2d7a20f439c0583a3e037bc0e7e40c276c1dee618dc9533c",
+    "sha256": "4b749019716a40a6d5b4d962a0e6e931b98d6e1e8d5e843b3b08ccaeec323c38"
+  }
+]

@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${(id.startsWith('webgpu_')||new URLSearchParams(location.search).has('gpuBump'))?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['webgpu_materials_basic', 'webgpu_materials_envmaps', 'webgpu_materials_displacementmap', 'webgl_materials_bumpmap', 'webgl_materials_blending'].includes(id))throw Error('invalid fixture');
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);let depth=0;r.render=(s,c)=>{if(depth===0){window.reference={renderer:r,scene:s,camera:c};s.traverse(o=>{if(o.isMesh&&o.material&&!Array.isArray(o.material))o.material.name="fixture-scene";});}depth++;try{return draw(s,c);}finally{depth--;}};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info'))document.body.appendChild(document.importNode(node,true));
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace('new THREE.WebGPURenderer()', 'new THREE.WebGPURenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import \{ GUI \}[^;]*;/,`class GUI{add(o,k,options){const item={onChange(fn){this.callback=fn;return this;},step(){return this;},name(){return this;},setValue(v){o[k]=Array.isArray(options)?options[Number(v)]:typeof options==='object'?Object.values(options)[Number(v)]:v;this.callback?.(o[k]);}};fixtureControls.push(item);return item;}addColor(o,k){return this.add(o,k);}open(){}}`)
+.replace(/import \{ Inspector \}[^;]*;/,`class Inspector{createParameters(){return new GUI();}} class GUI{add(o,k,options){const item={onChange(fn){this.callback=fn;return this;},step(){return this;},name(){return this;},setValue(v){o[k]=Array.isArray(options)?options[Number(v)]:typeof options==='object'?Object.values(options)[Number(v)]:v;this.callback?.(o[k]);}};fixtureControls.push(item);return item;}addColor(o,k){return this.add(o,k);}open(){}}`)
+.replace('renderer.inspector = new Inspector();','window.fixtureInspector=new Inspector();').replaceAll('renderer.inspector.createParameters','fixtureInspector.createParameters')
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
+.replaceAll("'./textures/","'/.cache/three-r186/examples/textures/").replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+// Normalize frame-based animation to the source's nominal 60 Hz.
+if(id==='webgpu_materials_displacementmap')source=source.replace('function render() {','function render() {r=window.fixtureSeconds*0.6;');
+if(id==='webgpu_materials_envmaps')source=source.replaceAll('+= 0.001','+= window.fixtureDelta*0.06');
+if(new URLSearchParams(location.search).has('gpuBump'))source=source.replaceAll('THREE.WebGLRenderer','THREE.WebGPURenderer');
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{window.fixtureDelta=t-fixtureSeconds;fixtureSeconds=t;if(window.reference?.renderer._nodes)reference.renderer._nodes.nodeFrame.update();if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

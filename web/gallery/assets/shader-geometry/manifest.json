@@ -1,0 +1,23 @@
+[
+  {
+    "file": "cube.json",
+    "source": "examples/webgl_buffergeometry_instancing_interleaved.html",
+    "source_sha256": "5998700f98e8a22888c354f9119409bed8a13dcaebcecd6887a2d719f66e8047",
+    "sha256": "b41b4808278f067995be3fcdd3f9bda531a91d1afc77bb401222d5d438cccef6"
+  },
+  {
+    "file": "crate.gif",
+    "source": "examples/textures/crate.gif",
+    "sha256": "a890f0a89eadc083cb39bfbe597c1395d7acf47a19f673b5643d4a9c174ea52f"
+  },
+  {
+    "file": "checker.jpg",
+    "source": "examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg",
+    "sha256": "d7547036c6221a840b80ce11138dc2c1a26df2630419217234c479b00e50a119"
+  },
+  {
+    "file": "grass.jpg",
+    "source": "examples/textures/terrain/grasslight-big.jpg",
+    "sha256": "23bd506b94e40a9de435375c2be6280eb088dc637fb64c331e325c7472f47177"
+  }
+]

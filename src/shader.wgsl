@@ -406,9 +406,10 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         indirect_energy=vec3(1.0)-(film_d*dfg.x+f90*dfg.y+multiscattering(film_d,dfg,f90));
         direct_energy=vec3(1.0)+f0*(1.0/(dfg.x+dfg.y)-1.0);
     }
-    var result=indirect_energy*diffuse*(u.ambient.xyz+surface.light_map)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
+    var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
+    var result=ao*indirect_energy*diffuse*(u.ambient.xyz+surface.light_map)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
     var total_diffuse=result-surface.emissive;
-    sheen_light+=u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
+    sheen_light+=ao*u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);
         let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,nv),0.0).rg;
@@ -424,7 +425,6 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         }
         let radiance=environment_sample(normalize(mix(reflect(-v,radiance_normal),radiance_normal,pow(roughness,4.0))),roughness);
         let irradiance=environment_sample(n,1.0);
-        var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
         let specular_ao=clamp(pow(nv+ao,exp2(-16.0*roughness-1.0))-1.0+ao,0.0,1.0);
         let sheen_comp=1.0-sheen_max*sheen_albedo(nv,sheenrough);
         total_diffuse+=diffuse*(1.0-sd-md)*irradiance*ao*sheen_comp;
@@ -457,7 +457,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         }
         if light_type(i)==3.0 {
             let weight=dot(n,light)*0.5+0.5;
-            let hemi=indirect_energy*diffuse*mix(u.light_params[i].xyz,light_color,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
+            let hemi=ao*indirect_energy*diffuse*mix(u.light_params[i].xyz,light_color,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
             continue;
         }
         if light_type(i)>0.5 {

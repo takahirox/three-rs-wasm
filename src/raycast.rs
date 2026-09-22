@@ -119,7 +119,14 @@ impl Raycaster {
                         if n.instances.is_empty() {
                             node.raycast(self, h, &mut hits)?;
                         } else {
-                            for (index, instance) in n.instances.iter().enumerate() {
+                            let count = n
+                                .geometry()
+                                .map(|g| n.draw_instance_count(g))
+                                .transpose()?
+                                .unwrap_or(0);
+                            for (index, instance) in
+                                n.instances.iter().take(count as usize).enumerate()
+                            {
                                 node.matrix_world = n.matrix_world * instance.matrix;
                                 let start = hits.len();
                                 node.raycast(self, h, &mut hits)?;
@@ -146,7 +153,7 @@ impl Raycast for Node {
         let Some(geometry) = self.geometry() else {
             return Ok(());
         };
-        if geometry.vertex_count() == 0 {
+        if geometry.vertex_count() == 0 || self.draw_instance_count(geometry)? == 0 {
             return Ok(());
         }
         if self.matrix_world.determinant() == 0.0 {

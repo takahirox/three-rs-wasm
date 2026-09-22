@@ -14,9 +14,12 @@ const {NURBSVolume}=await import('../../.cache/three-r186/examples/jsm/curves/NU
 const {ParametricGeometry}=await import('../../.cache/three-r186/examples/jsm/geometries/ParametricGeometry.js');
 const root=new URL('../../.cache/three-r186/examples/',import.meta.url),out=new URL('../../web/gallery/assets/shapes/',import.meta.url);await mkdir(out,{recursive:true});
 const sha=x=>createHash('sha256').update(x).digest('hex'),manifest=[];
-for(const kind of ['convex','nurbs','text_shapes','text_stroke']){
+for(const kind of ['convex','nurbs','text_shapes','text_stroke','shapes']){
  const source=`webgl_geometry_${kind}.html`,html=await readFile(new URL(source,root),'utf8');const group=new THREE.Group();
- if(kind==='convex'){
+ if(kind==='shapes'){
+  const body=html.slice(html.indexOf('function addShape('),html.indexOf('renderer = new THREE.WebGLRenderer'));
+  Function('THREE','group','texture',body)(THREE,group,new THREE.Texture());
+ }else if(kind==='convex'){
   const body=html.slice(html.indexOf('let dodecahedronGeometry ='),html.indexOf("window.addEventListener( 'resize'"));
   Function('THREE','BufferGeometryUtils','ConvexGeometry','group','texture',body)(THREE,BufferGeometryUtils,ConvexGeometry,group,new THREE.Texture());
  }else if(kind==='nurbs'){
@@ -34,7 +37,7 @@ for(const kind of ['convex','nurbs','text_shapes','text_stroke']){
  const metadata=[];
  for(const n of objects){const g=n.geometry,v=g.attributes.position.count;uint(v);uint(g.index?.count??0);for(const [name,size]of [['position',3],['normal',3],['uv',2]])floats(g.attributes[name]?Array.from(g.attributes[name].array):Array(v*size).fill(0));if(g.index)for(const i of g.index.array)uint(i);
   const p=new THREE.Vector3(),q=new THREE.Quaternion(),s=new THREE.Vector3();n.matrixWorld.decompose(p,q,s);const m=n.material;
-  metadata.push({kind:n.isPoints?'points':n.isLine?'line':'mesh',position:p.toArray(),quaternion:q.toArray(),scale:s.toArray(),color:m.color.toArray(),opacity:m.opacity,transparent:m.transparent,double:m.side===THREE.DoubleSide,lambert:!!m.isMeshLambertMaterial,map:!!m.map});
+  metadata.push({kind:n.isPoints?'points':n.isLine?'line':'mesh',position:p.toArray(),quaternion:q.toArray(),scale:s.toArray(),color:m.color.toArray(),opacity:m.opacity,transparent:m.transparent,double:m.side===THREE.DoubleSide,lambert:!!m.isMeshLambertMaterial,phong:!!m.isMeshPhongMaterial,size:m.size??1,map:!!m.map});
  }
  for(const [file,data]of [[kind+'.bin',Buffer.concat(words)],[kind+'.json',JSON.stringify(metadata)+'\n']]){await writeFile(new URL(file,out),data);manifest.push({file,source:'examples/'+source,source_sha256:sha(html),sha256:sha(data)});}
 }

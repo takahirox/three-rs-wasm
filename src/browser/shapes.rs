@@ -17,7 +17,14 @@ struct Object {
     transparent: bool,
     double: bool,
     lambert: bool,
+    #[serde(default)]
+    phong: bool,
+    #[serde(default = "one")]
+    size: f64,
     map: bool,
+}
+fn one() -> f64 {
+    1.
 }
 pub(super) struct Demo {
     id: u32,
@@ -32,6 +39,7 @@ pub(super) struct Demo {
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, id: u32, r: &Renderer) -> Result<Self> {
         let (fov, near, far, position) = match id {
+            175 => (50., 1., 1000., Vector3::new(0., 150., 500.)),
             153 => (40., 1., 30., Vector3::new(0., 0., 18.)),
             154 => (40., 1., 1000., Vector3::new(15., 20., 30.)),
             155 => (50., 1., 2000., Vector3::new(0., 150., 750.)),
@@ -56,7 +64,7 @@ impl Demo {
             (position.y / position.length()).asin(),
             1.8,
         );
-        if id != 155 {
+        if id != 155 && id != 175 {
             s.look_at(c, Vector3::ZERO)?;
         }
         let root = s.insert(NodeKind::Group);
@@ -97,6 +105,7 @@ impl Demo {
             }
         } else {
             let kind = match id {
+                175 => "shapes",
                 154 => "convex",
                 155 => "nurbs",
                 156 => "text_shapes",
@@ -110,7 +119,7 @@ impl Demo {
             if geometries.len() != data.len() {
                 return Err(Error::Invalid("shape geometry metadata"));
             }
-            let map = if id <= 155 {
+            let map = if id <= 155 || id == 175 {
                 let path = if id == 154 {
                     format!("{ASSETS}/disc.png")
                 } else {
@@ -118,6 +127,11 @@ impl Demo {
                 };
                 let mut t = decode_texture_image(&fetch(&path).await?).await?;
                 t.mipmap_filter = Some(Filter::Linear);
+                if id == 175 {
+                    t.wrap_s = Wrapping::Repeat;
+                    t.wrap_t = Wrapping::Repeat;
+                    t.repeat = Vector2::splat(0.008);
+                }
                 if id == 155 {
                     t.anisotropy = 16;
                     t.wrap_s = Wrapping::Repeat;
@@ -132,10 +146,15 @@ impl Demo {
                     g.delete_attribute("uv");
                 }
                 let mut m = match o.kind.as_str() {
-                    "points" => Material::Points(PointsMaterial::default()),
+                    "points" => Material::Points(PointsMaterial {
+                        size: o.size,
+                        ..Default::default()
+                    }),
                     "line" => Material::Line(LineBasicMaterial::default()),
                     _ => {
-                        if o.lambert {
+                        if o.phong {
+                            Material::Phong(MeshPhongMaterial::default())
+                        } else if o.lambert {
                             Material::Lambert(MeshLambertMaterial::default())
                         } else {
                             Material::Basic(MeshBasicMaterial::default())
@@ -150,7 +169,7 @@ impl Demo {
                 if o.map {
                     p.map = map.clone();
                 }
-                if o.kind == "points" {
+                if o.kind == "points" && id != 175 {
                     p.alpha_test = 0.5;
                 }
                 let g = Arc::new(g);
@@ -219,6 +238,16 @@ impl Demo {
             } else {
                 s.background = Color::from_hex(0xf0f0f0);
             }
+            if id == 175 {
+                s.get_mut(root)?.position.y = 50.;
+                let light = s.insert(NodeKind::Light(Light::Point {
+                    color: Color::WHITE,
+                    intensity: 2.5,
+                    distance: 0.,
+                    decay: 0.,
+                }));
+                s.add(c, light)?;
+            }
             if id == 155 {
                 s.get_mut(root)?.position.y = 50.;
                 s.insert(NodeKind::Light(Light::Ambient {
@@ -249,7 +278,7 @@ impl Demo {
         if animate {
             self.time += delta;
         }
-        if self.id == 154 || self.id >= 156 {
+        if self.id == 154 || (156..=157).contains(&self.id) {
             self.viewer.update(s, c)?;
             if let NodeKind::Camera(Camera::Perspective(p)) = &mut s.get_mut(c)?.kind {
                 p.near = 1.;
@@ -259,7 +288,7 @@ impl Demo {
         if self.id == 154 {
             s.get_mut(self.root)?.quaternion = Quaternion::from_rotation_y(self.time * 0.3);
         }
-        if self.id == 155 {
+        if self.id == 155 || self.id == 175 {
             self.rotation += (self.target_rotation - self.rotation) * 0.05;
             s.get_mut(self.root)?.quaternion = Quaternion::from_rotation_y(self.rotation);
         }
@@ -287,7 +316,7 @@ impl Demo {
         if self.id == 153 {
             return Ok(());
         }
-        if self.id == 155 {
+        if self.id == 155 || self.id == 175 {
             if !pan && w == 0. {
                 self.target_rotation += dx * 0.02;
             }

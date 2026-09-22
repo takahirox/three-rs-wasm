@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('gpuGeometry')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['webgl_buffergeometry_attributes_none', 'webgl_buffergeometry_attributes_integer', 'webgl_buffergeometry_instancing', 'webgl_buffergeometry_instancing_interleaved', 'webgl_materials_modified'].includes(id))throw Error('invalid fixture');
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info'))document.body.appendChild(document.importNode(node,true));
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import \{ GUI \}[^;]*;/,`class GUI{add(o,k){const item={onChange(fn){this.callback=fn;return this;},step(){return this;},name(){return this;},setValue(v){o[k]=v;this.callback?.(v);}};fixtureControls.push(item);return item;}open(){}}`)
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
+.replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+if(id==='webgl_points_waves')source=source.replace('function render() {','function render() { count=window.fixtureSeconds*6;');
+// Diagnostic only: retain the original scene and attributes, compile the raw material to TSL.
+if(new URLSearchParams(location.search).has('gpuGeometry')){
+ const {wgslFn,vertexIndex,varying,vec4,attribute,texture}=await import('three/tsl');
+ window.geometryMaterial=(geometry,original)=>{
+  const m=new THREE.MeshBasicNodeMaterial({side:THREE.DoubleSide,fog:false});
+  if(id==='webgl_buffergeometry_attributes_none'){
+   geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(30000*3),3));
+   const hash=wgslFn('fn hash_u(v:u32)->u32{var x=v;x+=x<<10u;x^=x>>6u;x+=x<<3u;x^=x>>11u;x+=x<<15u;return x;}');
+   const noise=wgslFn('fn noise_u(i:f32,c:f32)->f32{return bitcast<f32>((hash_u(bitcast<u32>(i)^hash_u(bitcast<u32>(c)))&0x007fffffu)|0x3f800000u)-1.0;}',[hash]);
+   const rand=wgslFn('fn random_v(i:u32)->vec3<f32>{return vec3(noise_u(f32(i),0.0),noise_u(f32(i),1.0),noise_u(f32(i),2.0));}',[noise]);
+   const position=wgslFn('fn procedural_pos(i:u32)->vec3<f32>{return random_v(i/3u)*2.0-1.0+(random_v(i)*2.0-1.0)/64.0;}',[rand]);
+   m.positionNode=position(vertexIndex);
+   m.colorNode=varying(rand(vertexIndex.div(3).toUint()).mul(.75).add(.25));
+  }else{
+   const index=attribute('textureIndex','int');const maps=original.uniforms.uTextures.value.map(t=>texture(t));
+   m.colorNode=index.equal(0).select(maps[0],index.equal(1).select(maps[1],maps[2]));
+  }
+  return m;
+ };
+ source=source.replaceAll('THREE.WebGLRenderer','THREE.WebGPURenderer').replace('mesh = new THREE.Mesh( geometry, material );','mesh = new THREE.Mesh( geometry, window.geometryMaterial(geometry,material) );').replace('renderer.setPixelRatio(', 'renderer.outputColorSpace=THREE.LinearSRGBColorSpace;scene.background.convertLinearToSRGB();renderer.setPixelRatio(');
+}
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{fixtureSeconds=t;for(const v of window.pointQuadViewports??[])v.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes)reference.renderer._nodes.nodeFrame.update();if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

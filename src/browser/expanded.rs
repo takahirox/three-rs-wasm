@@ -4,6 +4,10 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    EnvironmentMaterials(Box<super::environment_materials::Demo>),
+    GeometryMaterials(Box<super::geometry_materials::Demo>),
+    ShaderGeometry(Box<super::shader_geometry::Demo>),
+    PointClouds(Box<super::point_clouds::Demo>),
     BufferParticles(Box<super::buffer_particles::Demo>),
     Shapes(Box<super::shapes::Demo>),
     MaterialTextures(Box<super::material_textures::Demo>),
@@ -70,6 +74,44 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            178..=182 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::EnvironmentMaterials(Box::new(
+                    super::environment_materials::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            173 | 176 | 177 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::GeometryMaterials(Box::new(
+                    super::geometry_materials::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            168..=172 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ShaderGeometry(Box::new(
+                    super::shader_geometry::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            163..=167 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::PointClouds(Box::new(
+                    super::point_clouds::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             158..=162 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -79,7 +121,7 @@ impl Demo {
                     super::buffer_particles::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            153..=157 => Ok(Self {
+            153..=157 | 175 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 5000.,
@@ -88,7 +130,7 @@ impl Demo {
                     super::shapes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            148..=152 => Ok(Self {
+            148..=152 | 174 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 5000.,
@@ -609,6 +651,18 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GeometryMaterials(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShaderGeometry(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PointClouds(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::BufferParticles(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -812,6 +866,12 @@ impl Demo {
         Ok(())
     }
     pub fn pointer(&mut self, x: f64, y: f64) {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            demo.pointer(x, y);
+        }
+        if let Content::PointClouds(demo) = &mut self.content {
+            demo.pointer(x, y);
+        }
         if let Content::TslCompute(demo) = &mut self.content {
             demo.pointer(x, y);
         }
@@ -927,6 +987,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            demo.prepare(scene, camera, aspect)?;
+        }
         if let Content::BufferParticles(demo) = &mut self.content {
             demo.prepare(renderer)?;
         }
@@ -939,6 +1002,18 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GeometryMaterials(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShaderGeometry(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PointClouds(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::BufferParticles(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1000,6 +1075,18 @@ impl Demo {
         }
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GeometryMaterials(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShaderGeometry(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PointClouds(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::BufferParticles(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1070,6 +1157,15 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::EnvironmentMaterials(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GeometryMaterials(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShaderGeometry(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::Shapes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

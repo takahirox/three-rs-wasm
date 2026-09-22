@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 158 partial Rust ports; 435 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 178 partial Rust ports; 413 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,17 +12,17 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 385 |
+| Full camera controls: pan, touch, damping and control variants | 383 |
 | Programmable materials / TSL equivalents | 219 |
 | Phong, Lambert, normal, depth, toon and matcap materials | 178 |
 | Inspector and per-example GUI parity | 175 |
-| Additional procedural geometry builders | 174 |
+| Additional procedural geometry builders | 173 |
 | Shadow maps and shadow filtering | 130 |
 | Hemisphere/spot/area lights, light probes and baking | 123 |
 | Postprocessing passes and temporal history | 103 |
 | Distance and height fog | 93 |
 | Wireframe materials and scene helpers | 91 |
-| Additional loaders and compressed assets | 85 |
+| Additional loaders and compressed assets | 84 |
 | Instance transforms and batched drawing | 75 |
 | Animation mixer and skeletal animation | 48 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 47 |
@@ -44,6 +44,26 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_buffergeometry_attributes_none | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_attributes_integer | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_instancing | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_instancing_interleaved | `tests/browser/shader-geometry.spec.js` | 5000個の回転は共通クォータニオンと常駐行列を使いGPUで計算。汎用InterleavedBuffer APIの移植ではありません。Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
+| webgl_materials_modified | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
+| webgl_materials_wireframe | `tests/browser/geometry-materials.spec.js` | Stats・操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_texture_filters | `tests/browser/geometry-materials.spec.js` | Stats・操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_geometry_shapes | `tests/browser/geometry-materials.spec.js` | 固定Shape・Extrudeジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。Stats・操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_geometry_colors_lookuptable | `tests/browser/geometry-materials.spec.js` | 圧力モデルとLUTは事前生成。色選択はGPUで実行。Stats・操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_uint | `tests/browser/geometry-materials.spec.js` | Stats・操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_materials_basic | `tests/browser/environment-materials.spec.js` | Stats・Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_materials_envmaps | `tests/browser/environment-materials.spec.js` | Stats・Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_materials_displacementmap | `tests/browser/environment-materials.spec.js` | 固定OBJ形状は公式から事前生成。実行時のOBJLoader移植ではありません。Stats・Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_bumpmap | `tests/browser/environment-materials.spec.js` | WebGLとのバンプ微分・フィルタリングの描画差を別途検証。Stats・Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_blending | `tests/browser/environment-materials.spec.js` | Stats・Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_points_billboards | `tests/browser/point-clouds.spec.js` | Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。 |
+| webgl_points_sprites | `tests/browser/point-clouds.spec.js` | WebGL点プリミティブとのラスタライズ差を別途検証。Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。 |
+| webgl_points_waves | `tests/browser/point-clouds.spec.js` | Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。 |
+| webgl_custom_attributes_points | `tests/browser/point-clouds.spec.js` | Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。 |
+| webgl_custom_attributes_points3 | `tests/browser/point-clouds.spec.js` | 固定BoxLineGeometryは公式から事前生成。Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_points | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。点はGPUインスタンシングで展開。WebGL点ラスタライズ差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_points_interleaved | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。圧縮色の16-byte GPUレコードを使用。汎用InterleavedBuffer APIの移植ではありません。WebGL点ラスタライズ差と性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_custom_attributes_particles | `tests/browser/buffer-particles.spec.js` | Stats表示は未移植。点サイズのアニメーションをGPUへ移植。性能の完全な同等性は未保証。 |

@@ -1,0 +1,148 @@
+[
+  {
+    "file": "textures/cube/pisa/px.png",
+    "source": "examples/textures/cube/pisa/px.png",
+    "sha256": "11d859640e7da526ac0654dbfa1cc18f40dd8fc100db197730485218a7c9d24d"
+  },
+  {
+    "file": "textures/cube/pisa/nx.png",
+    "source": "examples/textures/cube/pisa/nx.png",
+    "sha256": "cf01cfc9a168e7c71bf66d0bed8dcad3a4fd353f528e73caaba62d1a097c49a1"
+  },
+  {
+    "file": "textures/cube/pisa/py.png",
+    "source": "examples/textures/cube/pisa/py.png",
+    "sha256": "b34a1cec12e62327c9555ca9f82a38bea73f519915e1368fa69bbd51c82ec712"
+  },
+  {
+    "file": "textures/cube/pisa/ny.png",
+    "source": "examples/textures/cube/pisa/ny.png",
+    "sha256": "61a94678f04f9853509d7a864fd839cf688c6705ee9df02fc4e42bfca858270b"
+  },
+  {
+    "file": "textures/cube/pisa/pz.png",
+    "source": "examples/textures/cube/pisa/pz.png",
+    "sha256": "bd528b739e9e0ea6c1e8627e949caa950991719069c983e8abdc3a8640039667"
+  },
+  {
+    "file": "textures/cube/pisa/nz.png",
+    "source": "examples/textures/cube/pisa/nz.png",
+    "sha256": "e5c1774f9a41d8124f8f223c9810e95d277f256104f8aee57ad2e5ef73a64424"
+  },
+  {
+    "file": "textures/cube/Bridge2/posx.jpg",
+    "source": "examples/textures/cube/Bridge2/posx.jpg",
+    "sha256": "bfea380ae3b2f2b44d3040c9fe7a8f3e325450a12b7a0f29561b5ca175f1a250"
+  },
+  {
+    "file": "textures/cube/Bridge2/negx.jpg",
+    "source": "examples/textures/cube/Bridge2/negx.jpg",
+    "sha256": "047052e77f698a819903f1d2fe27b40ee56930150fc38913da7e1c58e8dcae70"
+  },
+  {
+    "file": "textures/cube/Bridge2/posy.jpg",
+    "source": "examples/textures/cube/Bridge2/posy.jpg",
+    "sha256": "cc467777340037ee8f95460b19772a8ae6a71c125af1714bfd408db2c1c33d98"
+  },
+  {
+    "file": "textures/cube/Bridge2/negy.jpg",
+    "source": "examples/textures/cube/Bridge2/negy.jpg",
+    "sha256": "52b4b95125c777d48ac9ea568d79d55fd3fb62e24a7da37600720cdddb7ab333"
+  },
+  {
+    "file": "textures/cube/Bridge2/posz.jpg",
+    "source": "examples/textures/cube/Bridge2/posz.jpg",
+    "sha256": "d56085e5da2e8f2cee13694519ed153995045f5a11b1d41d25be70380cf15548"
+  },
+  {
+    "file": "textures/cube/Bridge2/negz.jpg",
+    "source": "examples/textures/cube/Bridge2/negz.jpg",
+    "sha256": "1bc79f442f31931576d734565821b41b331a017dd86f2ac6a60ac6d3bbbbe6ba"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/px.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/px.jpg",
+    "sha256": "10a786132bc7eef6b142bd0d4b00ea94ffc1a1bfccfb1a6ec0baedf966d80734"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/nx.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/nx.jpg",
+    "sha256": "53a8d90cea6bab188d462c44676b84e5993424e465785c93829d810bbf7c5076"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/py.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/py.jpg",
+    "sha256": "8b88f7f9af85fa5b442f28fb27532e534a197aba68ae60548bf4b3750f0d50f0"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/ny.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/ny.jpg",
+    "sha256": "17953cc33b9fec703c286266d4aca6033d758edd17ba0384fb3ebd7630085fd4"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/pz.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/pz.jpg",
+    "sha256": "cc9252ba994a79c320ac4aed03aac9000f810c1358179e70a69b598d56e129db"
+  },
+  {
+    "file": "textures/cube/SwedishRoyalCastle/nz.jpg",
+    "source": "examples/textures/cube/SwedishRoyalCastle/nz.jpg",
+    "sha256": "10149242ae21ba4c00663a0673f01a6722da63f201511fdc01941930d800ccff"
+  },
+  {
+    "file": "models/obj/ninja/normal.png",
+    "source": "examples/models/obj/ninja/normal.png",
+    "sha256": "aa147cbb271787f793b437607b076fb170555f3f8dc3c392cc29910ca7a63d49"
+  },
+  {
+    "file": "models/obj/ninja/ao.jpg",
+    "source": "examples/models/obj/ninja/ao.jpg",
+    "sha256": "004c1b0c9829fd5c25d413fce2ff0224e5e62f17f8064af9e34d9c2887e6b41b"
+  },
+  {
+    "file": "models/obj/ninja/displacement.jpg",
+    "source": "examples/models/obj/ninja/displacement.jpg",
+    "sha256": "5da43d969f6c178b1d2d819c5da523c66432a24f351d80afc88b1ada5f2c3f3b"
+  },
+  {
+    "file": "models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
+    "source": "examples/models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
+    "sha256": "937dea3ab1adea4624c9743ea0653fcb022235e6dcdebfb6e739b93f9d2a5cef"
+  },
+  {
+    "file": "textures/sprite0.jpg",
+    "source": "examples/textures/sprite0.jpg",
+    "sha256": "1dad128859c53e70eb0fe6e0291192787a5f1c08613b5e44b52e89fcf29750cb"
+  },
+  {
+    "file": "textures/sprite0.png",
+    "source": "examples/textures/sprite0.png",
+    "sha256": "79592d002649e69628ed7ea9dc79ab911c43dded78c716362742e225acec32fb"
+  },
+  {
+    "file": "textures/lensflare/lensflare0.png",
+    "source": "examples/textures/lensflare/lensflare0.png",
+    "sha256": "5266c28e6597607f5646801469a7a08f98b4eddd358cef1824745698671802b8"
+  },
+  {
+    "file": "textures/lensflare/lensflare0_alpha.png",
+    "source": "examples/textures/lensflare/lensflare0_alpha.png",
+    "sha256": "5f632ba4d17b6645b665c06eba4e57eaee39099009e9322ed58269ad88fc0365"
+  },
+  {
+    "file": "textures/2294472375_24a3b8ef46_o.jpg",
+    "source": "examples/textures/2294472375_24a3b8ef46_o.jpg",
+    "sha256": "3efa22071f3f84ec26248ee58aa05aba635a0a9d810bca93da5a94f33e907524"
+  },
+  {
+    "file": "textures/uv_grid_opengl.jpg",
+    "source": "examples/textures/uv_grid_opengl.jpg",
+    "sha256": "909d9a1eb2a5d5de9d221a5e8de4e9119d409decddf522d48896bd51523d354d"
+  },
+  {
+    "file": "ninja.bin",
+    "source": "examples/models/obj/ninja/ninjaHead_Low.obj",
+    "source_sha256": "07819eacecae77a8539fbaf673d9a0908ec2e6383d1b6cedd94544b2a2f2c53b",
+    "sha256": "3ae0d4c6406ed061913c80bcf6e91fbd67f109841515e08e19ed22f3f5e6103f"
+  }
+]

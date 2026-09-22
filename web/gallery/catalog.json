@@ -1327,7 +1327,7 @@
     {
       "id": "webgl_geometry_colors_lookuptable",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_colors_lookuptable.html",
       "source_sha256": "4ca93c7951d82af5015a0a7427a5ebfc72fdefa2e0d348ca93768525b97f292e",
@@ -1355,7 +1355,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 176,
+        "source": "src/browser/geometry_materials.rs",
+        "test": "tests/browser/geometry-materials.spec.js",
+        "limitations": [
+          "圧力モデルとLUTは事前生成。色選択はGPUで実行。Stats・操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -1747,7 +1754,7 @@
     {
       "id": "webgl_geometry_shapes",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_shapes.html",
       "source_sha256": "8c29395a7d7f3eca80383bff1a260408edf26a64ef9426af32e2de60f536b051",
@@ -1785,7 +1792,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 175,
+        "source": "src/browser/shapes.rs",
+        "test": "tests/browser/geometry-materials.spec.js",
+        "limitations": [
+          "固定Shape・Extrudeジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。Stats・操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -5934,7 +5948,7 @@
     {
       "id": "webgl_materials_blending",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_blending.html",
       "source_sha256": "1cea23c77de561d18886dfe3612b7907276c9f46d08a2286b971bde5c6739df6",
@@ -5964,7 +5978,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 182,
+        "source": "src/browser/environment_materials.rs",
+        "test": "tests/browser/environment-materials.spec.js",
+        "limitations": [
+          "Stats・Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -6015,7 +6036,7 @@
     {
       "id": "webgl_materials_bumpmap",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_bumpmap.html",
       "source_sha256": "619b576992f4ab8e96247b5289ad7c9e4f2861ed274353d556063ac48ff455a9",
@@ -6065,7 +6086,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 181,
+        "source": "src/browser/environment_materials.rs",
+        "test": "tests/browser/environment-materials.spec.js",
+        "limitations": [
+          "WebGLとのバンプ微分・フィルタリングの描画差を別途検証。Stats・Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -6395,8 +6423,8 @@
     {
       "id": "webgl_materials_displacementmap",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_materials_displacementmap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_displacementmap.html",
       "source_sha256": "c65e1d2aff2975307afae8c5ecd0a85a6211244bd0263555981cc7b0ad2cf5bd",
       "requirements": {
@@ -6428,13 +6456,14 @@
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/libs/stats.module.js",
         "three/addons/loaders/OBJLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_materials_displacementmap"
     },
     {
       "id": "webgl_materials_envmaps",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_materials_envmaps",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps.html",
       "source_sha256": "3b4e3e45ce13320ef29776ad1f1c41efd137e70842c9cc008922f60030c38dd4",
       "requirements": {
@@ -6460,7 +6489,8 @@
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js"
-      ]
+      ],
+      "preferred_example": "webgpu_materials_envmaps"
     },
     {
       "id": "webgl_materials_envmaps_exr",
@@ -7052,7 +7082,7 @@
     {
       "id": "webgl_materials_texture_filters",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_filters.html",
       "source_sha256": "d6ce875f22df04b91e87151119fc6e8553522e8db3f321dd00850fa1ed3fcd06",
@@ -7074,7 +7104,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 174,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/geometry-materials.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -7317,7 +7354,7 @@
     {
       "id": "webgl_materials_wireframe",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_wireframe.html",
       "source_sha256": "dfa6aeb93154b75d965cfd3fa4d870f6db90a2bec1f3bda76fcb504cbe8f364b",
@@ -7367,7 +7404,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 173,
+        "source": "src/browser/geometry_materials.rs",
+        "test": "tests/browser/geometry-materials.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -8358,7 +8402,7 @@
     {
       "id": "webgl_points_billboards",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_billboards.html",
       "source_sha256": "c26f1566bc4a027afd79202f6caee8abe3079cd6037fda281bf31c69f19f6faf",
@@ -8370,7 +8414,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 163,
+        "source": "src/browser/point_clouds.rs",
+        "test": "tests/browser/point-clouds.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -8429,7 +8480,7 @@
     {
       "id": "webgl_points_sprites",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_sprites.html",
       "source_sha256": "5b3ebd2e90db97b173fbd86e831aa5dd533e53cd7e86f8cb0ea971597e28a5de",
@@ -8447,7 +8498,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 164,
+        "source": "src/browser/point_clouds.rs",
+        "test": "tests/browser/point-clouds.spec.js",
+        "limitations": [
+          "WebGL点プリミティブとのラスタライズ差を別途検証。Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -8457,7 +8515,7 @@
     {
       "id": "webgl_points_waves",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_points_waves.html",
       "source_sha256": "7ec4a045d0f2034e593b10a9449b916e02e44f6996391c8496c8bfe60452e7f5",
@@ -8469,7 +8527,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 165,
+        "source": "src/browser/point_clouds.rs",
+        "test": "tests/browser/point-clouds.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11278,7 +11343,7 @@
     {
       "id": "webgl_buffergeometry_attributes_integer",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_attributes_integer.html",
       "source_sha256": "efc4c6de529bdcb3b8c0f98d2edcb4ce5a73cf835ecd549a3def1adc6b7b207b",
@@ -11296,7 +11361,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 169,
+        "source": "src/browser/shader_geometry.rs",
+        "test": "tests/browser/shader-geometry.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -11304,7 +11376,7 @@
     {
       "id": "webgl_buffergeometry_attributes_none",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_attributes_none.html",
       "source_sha256": "d5d13458ca905ce2c50170b9c34b0808571cb9a9e324da4f98c965f8600f15fb",
@@ -11322,7 +11394,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 168,
+        "source": "src/browser/shader_geometry.rs",
+        "test": "tests/browser/shader-geometry.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -11473,7 +11552,7 @@
     {
       "id": "webgl_buffergeometry_instancing",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_instancing.html",
       "source_sha256": "e26c4b93f76503b7baffed2a61a9082dfd18b9996e5ca03b578687d250efc095",
@@ -11485,7 +11564,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 170,
+        "source": "src/browser/shader_geometry.rs",
+        "test": "tests/browser/shader-geometry.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -11529,7 +11615,7 @@
     {
       "id": "webgl_buffergeometry_instancing_interleaved",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_instancing_interleaved.html",
       "source_sha256": "5998700f98e8a22888c354f9119409bed8a13dcaebcecd6887a2d719f66e8047",
@@ -11541,7 +11627,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 171,
+        "source": "src/browser/shader_geometry.rs",
+        "test": "tests/browser/shader-geometry.spec.js",
+        "limitations": [
+          "5000個の回転は共通クォータニオンと常駐行列を使いGPUで計算。汎用InterleavedBuffer APIの移植ではありません。Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11715,7 +11808,7 @@
     {
       "id": "webgl_buffergeometry_uint",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_uint.html",
       "source_sha256": "a638b634348ecbd8f4c5fcf0889d04dab6c950e652569cab2486429f206dc457",
@@ -11733,7 +11826,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 177,
+        "source": "src/browser/geometry_materials.rs",
+        "test": "tests/browser/geometry-materials.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11834,7 +11934,7 @@
     {
       "id": "webgl_custom_attributes_points",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes_points.html",
       "source_sha256": "5316fb3913d1c75d097c1be1808d0ad6cfe3a093da4bd4a7e511f20794245445",
@@ -11852,7 +11952,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 166,
+        "source": "src/browser/point_clouds.rs",
+        "test": "tests/browser/point-clouds.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11883,7 +11990,7 @@
     {
       "id": "webgl_custom_attributes_points3",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes_points3.html",
       "source_sha256": "c77afb177de54ada7f0a58bb8c9c1198d96aaa114dbaac456e3fdc0210bebcfc",
@@ -11895,7 +12002,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 167,
+        "source": "src/browser/point_clouds.rs",
+        "test": "tests/browser/point-clouds.spec.js",
+        "limitations": [
+          "固定BoxLineGeometryは公式から事前生成。Stats・操作UI外観は未一致。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -12143,7 +12257,7 @@
     {
       "id": "webgl_materials_modified",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_modified.html",
       "source_sha256": "902d2c154d8c2cb8b84b75333c9b5f9aa28540bec31c51e957e57f8806b8e303",
@@ -12165,7 +12279,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 172,
+        "source": "src/browser/shader_geometry.rs",
+        "test": "tests/browser/shader-geometry.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -19072,7 +19193,7 @@
     {
       "id": "webgpu_materials_basic",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_basic.html",
       "source_sha256": "e1156cbd7c1b5f3250a0f7fa5dc364d92d9330f2bb7ca96ddcfa243d61dbf353",
@@ -19088,7 +19209,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 178,
+        "source": "src/browser/environment_materials.rs",
+        "test": "tests/browser/environment-materials.spec.js",
+        "limitations": [
+          "Stats・Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/webgpu"
@@ -19129,7 +19257,7 @@
     {
       "id": "webgpu_materials_displacementmap",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_displacementmap.html",
       "source_sha256": "1ce5a292571df8b0afa731ef608705e48f942f2729a34d656554c3e9df3a9113",
@@ -19165,7 +19293,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 180,
+        "source": "src/browser/environment_materials.rs",
+        "test": "tests/browser/environment-materials.spec.js",
+        "limitations": [
+          "固定OBJ形状は公式から事前生成。実行時のOBJLoader移植ではありません。Stats・Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -19324,7 +19459,7 @@
     {
       "id": "webgpu_materials_envmaps",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_envmaps.html",
       "source_sha256": "1dd791707cee269e27b98ad081ea019f1f2e36ea42874aaf04d26b506d1ef395",
@@ -19356,7 +19491,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 179,
+        "source": "src/browser/environment_materials.rs",
+        "test": "tests/browser/environment-materials.spec.js",
+        "limitations": [
+          "Stats・Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

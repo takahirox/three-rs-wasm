@@ -394,3 +394,62 @@ fn ldr_environment_linearizes_rgb_but_preserves_alpha() {
     texture.rgba.pop();
     assert!(EnvironmentMap::from_texture(&texture).is_err());
 }
+
+#[test]
+fn ao_occludes_indirect_light_without_occluding_emission_or_direct_light() {
+    use three_rs_wasm::math::*;
+    let renderer = pollster::block_on(Renderer::new()).unwrap();
+    let target = RenderTarget::new(&renderer.device, 16, 16).unwrap();
+    for light in [
+        Light::Ambient {
+            color: Color::WHITE,
+            intensity: 2.0,
+        },
+        Light::Hemisphere {
+            sky: Color::WHITE,
+            ground: Color::WHITE,
+            intensity: 2.0,
+        },
+        Light::Directional {
+            color: Color::WHITE,
+            intensity: 2.0,
+            target: Vector3::ZERO,
+        },
+    ] {
+        let direct = matches!(light, Light::Directional { .. });
+        let mut scene = Scene::new();
+        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
+            PerspectiveCamera::default(),
+        )));
+        scene.get_mut(camera).unwrap().position.z = 3.0;
+        let lamp = scene.insert(NodeKind::Light(light));
+        scene.get_mut(lamp).unwrap().position.z = 3.0;
+        let mut material = MeshStandardMaterial {
+            emissive: Color::linear(0.02, 0.0, 0.0),
+            ..Default::default()
+        };
+        material.occlusion_map = Some(Arc::new(
+            Texture::from_rgba(1, 1, vec![0, 255, 255, 255], false).unwrap(),
+        ));
+        let geometry = Arc::new(PlaneGeometry::build(2.0, 2.0, 1, 1).unwrap());
+        let mut pixels = Vec::new();
+        for strength in [0.0, 1.0] {
+            material.occlusion_strength = strength;
+            let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+                geometry.clone(),
+                Arc::new(Material::Standard(material.clone())),
+            )));
+            renderer.render(&mut scene, camera, &target).unwrap();
+            let image = renderer.read_rgba(&target).unwrap();
+            pixels.push(image[(8 * 16 + 8) * 4..(8 * 16 + 8) * 4 + 3].to_vec());
+            scene.dispose(mesh).unwrap();
+        }
+        if direct {
+            assert_eq!(pixels[0], pixels[1]);
+        } else {
+            assert!(pixels[0][1] > 20);
+            assert_eq!(pixels[1][1], 0, "black AO removes indirect green light");
+            assert!(pixels[1][0] > 0, "emission survives black AO");
+        }
+    }
+}

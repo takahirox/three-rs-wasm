@@ -500,3 +500,13 @@ The buffer-particle examples adapt pinned r186
 source paths are recorded in `buffer-particles-manifest.json`.
 `tools/tsl/prepare.py` extracts them from the pinned archive. The selective-draw
 example credits [Callum](https://callum.com) in the original.
+
+The `gallery/assets/point-clouds`, `shader-geometry`, `geometry-materials` and
+`environment-materials` assets come from the pinned Three.js r186 repository.
+Their manifests record source paths and SHA-256 hashes; the accompanying
+`tools/gallery/prepare-*.mjs` scripts reproduce static geometry conversions.
+The ninja head is credited by the original example to AMD GPU MeshMapper.
+Lee Perry-Smith's head and displacement texture retain the attribution and
+license in `models/LeePerrySmith_License.txt`. Point/snowflake sprites, cube maps,
+blend textures, Walt head and pressure geometry retain the upstream example
+attributions and are distributed alongside `LICENSE-THREE`.

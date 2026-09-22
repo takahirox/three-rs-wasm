@@ -731,6 +731,29 @@ impl GpuTexture {
         source: &wgpu::TextureView,
         size: u32,
     ) -> Result<Self> {
+        Self::from_equirectangular_with_format(
+            renderer,
+            source,
+            size,
+            wgpu::TextureFormat::Rgba16Float,
+        )
+        .await
+    }
+    /// Convert a panorama to a cube with an explicit output format.
+    /// An sRGB target preserves the quantization of an image-based cube render target.
+    pub async fn from_equirectangular_with_format(
+        renderer: &crate::renderer::Renderer,
+        source: &wgpu::TextureView,
+        size: u32,
+        format: wgpu::TextureFormat,
+    ) -> Result<Self> {
+        if !matches!(
+            format,
+            wgpu::TextureFormat::Rgba8UnormSrgb | wgpu::TextureFormat::Rgba16Float
+        ) {
+            return Err(Error::Invalid("panorama cube format"));
+        }
+
         use wgpu::util::DeviceExt;
         let d = &renderer.device;
         if size == 0 || size > d.limits().max_texture_dimension_2d {
@@ -746,7 +769,7 @@ impl GpuTexture {
             mip_level_count: 1,
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
-            format: wgpu::TextureFormat::Rgba16Float,
+            format,
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
             view_formats: &[],
         });
@@ -779,7 +802,7 @@ dir=normalize(dir);let uv=vec2(atan2(dir.z,dir.x)*0.15915494309189535+0.5,0.5-as
                 entry_point: Some("fs"),
                 compilation_options: Default::default(),
                 targets: &[Some(wgpu::ColorTargetState {
-                    format: wgpu::TextureFormat::Rgba16Float,
+                    format,
                     blend: None,
                     write_mask: wgpu::ColorWrites::ALL,
                 })],

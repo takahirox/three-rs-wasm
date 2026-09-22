@@ -197,6 +197,11 @@ pub struct Node {
     /// Empty uses the ordinary mesh path. Instanced transforms must be invertible
     /// and have positive determinant (as with Three.js InstancedMesh).
     pub instances: Vec<Instance>,
+    /// Active prefix of resident instances. None draws the full capacity.
+    /// Changing this count does not mutate or re-upload the geometry.
+    /// Direct draws only; indirect commands own their instance counts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instance_count: Option<u32>,
     pub user_data: serde_json::Map<String, serde_json::Value>,
     #[serde(skip)]
     parent: Option<Object3D>,
@@ -231,6 +236,7 @@ impl Default for Node {
             morph_weights: Vec::new(),
             skin: None,
             instances: Vec::new(),
+            instance_count: None,
             user_data: Default::default(),
             parent: None,
             children: Vec::new(),
@@ -238,6 +244,25 @@ impl Default for Node {
     }
 }
 impl Node {
+    pub(crate) fn draw_instance_count(&self, geometry: &BufferGeometry) -> Result<u32> {
+        if self.instance_count.is_some()
+            && (geometry.indirect.is_some() || geometry.gpu_indirect.is_some())
+        {
+            return Err(Error::Invalid(
+                "instance count override requires direct drawing",
+            ));
+        }
+        let capacity = if self.instances.is_empty() {
+            geometry.instance_count.unwrap_or(1)
+        } else {
+            self.instances.len() as u32
+        };
+        let count = self.instance_count.unwrap_or(capacity);
+        if count > capacity {
+            return Err(Error::Invalid("instance count exceeds capacity"));
+        }
+        Ok(count)
+    }
     pub fn parent(&self) -> Option<Object3D> {
         self.parent
     }

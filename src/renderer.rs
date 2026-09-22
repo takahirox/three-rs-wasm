@@ -1635,11 +1635,7 @@ impl Renderer {
                         start as u32 * 6..end.saturating_sub(1) as u32 * 6
                     };
                 }
-                draw.instances = if n.instances.is_empty() {
-                    geometry.instance_count.unwrap_or(1)
-                } else {
-                    n.instances.len() as u32
-                };
+                draw.instances = n.draw_instance_count(geometry)?;
                 draw.indices = gpu_geometry.indices;
                 if let Some(commands) = &geometry.indirect {
                     let command_size = if geometry.index.is_some() { 5 } else { 4 };

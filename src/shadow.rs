@@ -498,11 +498,7 @@ impl ShadowRenderer {
                         instance_buffer,
                         bind,
                         start as u32..end as u32,
-                        if node.instances.is_empty() {
-                            g.instance_count.unwrap_or(1)
-                        } else {
-                            instances.len() as u32
-                        },
+                        node.draw_instance_count(g)?,
                         side + if node.instances.is_empty() { 3 } else { 0 },
                         material.shadow_program.clone(),
                     ));

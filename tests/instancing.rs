@@ -46,4 +46,36 @@ fn instance_transforms_colors_and_ray_ids_agree() {
     let hits = ray.intersect_object(&scene, mesh, false).unwrap();
     assert!(!hits.is_empty());
     assert!(hits.iter().all(|h| h.instance_index == Some(1)));
+    let transfers = renderer.transfer_counts();
+    for count in [1, 0, 2, 1, 2] {
+        scene.get_mut(mesh).unwrap().instance_count = Some(count);
+        renderer.render(&mut scene, camera, &target).unwrap();
+        let pixels = renderer.read_rgba(&target).unwrap();
+        assert_eq!(pixels[(16 * 64 + 16) * 4], if count > 0 { 255 } else { 0 });
+        assert_eq!(
+            pixels[(16 * 64 + 48) * 4 + 1],
+            if count > 1 { 255 } else { 0 }
+        );
+        assert_eq!(
+            ray.intersect_object(&scene, mesh, false)
+                .unwrap()
+                .is_empty(),
+            count < 2
+        );
+        assert_eq!(
+            renderer.transfer_counts(),
+            transfers,
+            "count changes must not upload geometry or instance data"
+        );
+    }
+    scene.get_mut(mesh).unwrap().instance_count = Some(3);
+    assert!(renderer.render(&mut scene, camera, &target).is_err());
+    scene.get_mut(mesh).unwrap().instance_count = Some(1);
+    if let NodeKind::Mesh(m) = &mut scene.get_mut(mesh).unwrap().kind {
+        Arc::make_mut(&mut m.geometry).indirect = Some(vec![6, 2, 0, 0, 0]);
+    }
+    assert!(
+        renderer.render(&mut scene, camera, &target).is_err(),
+        "indirect commands own their count"
+    );
 }

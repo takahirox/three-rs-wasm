@@ -64,7 +64,7 @@ impl Demo {
         match id {
             148 => d.solids(s, c).await?,
             149 => d.clipping(s, c)?,
-            150 | 151 => d.paired = Some(paired::Pair::new(r, id == 151).await?),
+            150 | 151 | 174 => d.paired = Some(paired::Pair::new(r, id == 151, id == 174).await?),
             152 => {
                 camera(s, c, 70., 0.01, 10.)?;
                 s.get_mut(c)?.position.z = 2.;

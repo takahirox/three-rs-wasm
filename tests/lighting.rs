@@ -76,6 +76,20 @@ fn directional_spot_and_point_shadows_respect_cast_and_receive() {
             "only {darker} shadow pixels for {:?}",
             scene.get(lamp).unwrap().kind
         );
+        scene.get_mut(caster).unwrap().instance_count = Some(0);
+        renderer.render(&mut scene, camera, &target).unwrap();
+        let zero_instances = renderer.read_rgba(&target).unwrap();
+        scene.get_mut(caster).unwrap().instance_count = None;
+        scene.get_mut(caster).unwrap().visible = false;
+        renderer.render(&mut scene, camera, &target).unwrap();
+        assert_eq!(
+            zero_instances,
+            renderer.read_rgba(&target).unwrap(),
+            "zero instances also remove the shadow"
+        );
+        scene.get_mut(caster).unwrap().visible = true;
+        renderer.render(&mut scene, camera, &target).unwrap();
+        assert_eq!(shadowed, renderer.read_rgba(&target).unwrap());
         scene.get_mut(receiver).unwrap().receive_shadow = false;
         renderer.render(&mut scene, camera, &target).unwrap();
         assert_eq!(unshadowed, renderer.read_rgba(&target).unwrap());

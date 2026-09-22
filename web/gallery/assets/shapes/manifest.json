@@ -9,7 +9,7 @@
     "file": "convex.json",
     "source": "examples/webgl_geometry_convex.html",
     "source_sha256": "f0793807bde99bb16fa436f316846b0b462c0cb1ad6b7c0b15d577806eafcd28",
-    "sha256": "474e35de8c736ee20dc6a351c519d8a4959837430a0174a2365dbeebe7c30851"
+    "sha256": "ca828b749bde626358ca12c9f00137236b25a51349b133bf98338c8fb64f973a"
   },
   {
     "file": "nurbs.bin",
@@ -21,7 +21,7 @@
     "file": "nurbs.json",
     "source": "examples/webgl_geometry_nurbs.html",
     "source_sha256": "941f3d5658ad7567b61c815e800ababfc133b6c4b90f37b3ef3619ab21a643ae",
-    "sha256": "97af19c63f07ee181993a61363f1d78d7d13083977ce0c0ec5bd9dc088693204"
+    "sha256": "9d026a09d2acc534ea90cd17d8f1e81976d172c65bd1b985b192548288eb722f"
   },
   {
     "file": "text_shapes.bin",
@@ -33,7 +33,7 @@
     "file": "text_shapes.json",
     "source": "examples/webgl_geometry_text_shapes.html",
     "source_sha256": "0468d42e536566602bdd72162738238c1bdd3ac0463c29bd2fa88e80b68a1249",
-    "sha256": "5a2fdf6c726c8c1abfd10485707d431e1f5096cafdb254a3a63cbd07b14487aa"
+    "sha256": "c486b55dbb31c9681d77d29c88097772f4f3c77d24c10241b886fbaf317b3655"
   },
   {
     "file": "text_stroke.bin",
@@ -45,7 +45,19 @@
     "file": "text_stroke.json",
     "source": "examples/webgl_geometry_text_stroke.html",
     "source_sha256": "3110bd4c88d46084a779703454cc24fc4fcc243bb5253ff049c2969ededaf9b7",
-    "sha256": "aad8a05b64ac0143405e8a34d862a0b5e207d1fe04fb96e1878977371cd41357"
+    "sha256": "2ac15a69d36eea0154b70bc7074a7ef10ba1dfdf6165378faf54b66341475940"
+  },
+  {
+    "file": "shapes.bin",
+    "source": "examples/webgl_geometry_shapes.html",
+    "source_sha256": "8c29395a7d7f3eca80383bff1a260408edf26a64ef9426af32e2de60f536b051",
+    "sha256": "0c49e43523df838644a7af638026078ccaed8682b5955658feea3dee1a2e0c02"
+  },
+  {
+    "file": "shapes.json",
+    "source": "examples/webgl_geometry_shapes.html",
+    "source_sha256": "8c29395a7d7f3eca80383bff1a260408edf26a64ef9426af32e2de60f536b051",
+    "sha256": "fc449c03635a2da36c7cae655b3a38579e8263ffe32c1cbb8153bd9b869bb5d0"
   },
   {
     "file": "disc.png",

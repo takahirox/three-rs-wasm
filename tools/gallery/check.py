@@ -102,3 +102,9 @@ for record in json.loads((ROOT/"web/gallery/assets/shapes/manifest.json").read_t
 for record in json.loads((ROOT/"web/gallery/assets/buffer-particles-manifest.json").read_text()):
  assert hashlib.sha256((ROOT/"web/gallery/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
  assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]
+
+for folder in ['point-clouds','shader-geometry','geometry-materials','environment-materials']:
+ for record in json.loads((ROOT/'web/gallery/assets'/folder/'manifest.json').read_text()):
+  assert hashlib.sha256((ROOT/'web/gallery/assets'/folder/record['file']).read_bytes()).hexdigest()==record['sha256']
+  expected=record.get('source_sha256',record['sha256'])
+  assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==expected

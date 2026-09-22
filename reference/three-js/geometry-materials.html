@@ -1,0 +1,59 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('gpuGeometry')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['webgl_materials_wireframe', 'webgl_materials_texture_filters', 'webgl_geometry_shapes', 'webgl_geometry_colors_lookuptable', 'webgl_buffergeometry_uint'].includes(id))throw Error('invalid fixture');
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};if(window.gpuMaterialScene){if(!window.fixtureGpuReady)return;gpuMaterialScene(s);}return draw(s,c);};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info'))document.body.appendChild(document.importNode(node,true));
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import \{ GUI \}[^;]*;/,`class GUI{add(o,k,options){const item={onChange(fn){this.callback=fn;return this;},step(){return this;},name(){return this;},setValue(v){o[k]=Array.isArray(options)?options[Number(v)]:v;this.callback?.(o[k]);}};fixtureControls.push(item);return item;}open(){}}`)
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
+.replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+if(id==='webgl_points_waves')source=source.replace('function render() {','function render() { count=window.fixtureSeconds*6;');
+if(id==='webgl_materials_wireframe'||id==='webgl_geometry_colors_lookuptable')source+='\nwindow.fixtureCallback=render;';
+// The pinned filter example is not responsive. Resize is a separate port extension probe.
+if(id==='webgl_materials_texture_filters')source=source.replaceAll('const SCREEN_','let SCREEN_')+'\naddEventListener("resize",()=>{SCREEN_WIDTH=innerWidth;SCREEN_HEIGHT=innerHeight;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});';
+// Diagnostic only: identical geometry and material equations on the WebGPU backend.
+if(new URLSearchParams(location.search).has('gpuGeometry')){
+ const {wgslFn,attribute,uniform,frontFacing,output,workingToColorSpace,vec4,vec3,mix,smoothstep,positionView,positionGeometry,modelViewMatrix,cameraProjectionMatrix,viewportSize,float}=await import('three/tsl');
+ const converted=new WeakMap(),updates=[];
+ window.gpuMaterialScene=scene=>{
+  if(!scene.userData.gpuReady){
+   scene.userData.gpuReady=true;scene.background?.convertLinearToSRGB();scene.fog=null;
+   scene.traverse(o=>{if(!o.material)return;
+    const original=o.material;
+    if(o.isPoints){
+     const g=new THREE.InstancedBufferGeometry(),plane=new THREE.PlaneGeometry(1,1);g.index=plane.index;g.attributes.position=plane.attributes.position;g.setAttribute('center',new THREE.InstancedBufferAttribute(o.geometry.attributes.position.array,3));g.instanceCount=o.geometry.attributes.position.count;
+     const m=new THREE.MeshBasicNodeMaterial({color:original.color});const view=modelViewMatrix.mul(vec4(attribute('center','vec3'),1));const clip=cameraProjectionMatrix.mul(view);const size=float(original.size).mul(viewportSize.y).mul(.5).div(view.z.negate());m.vertexNode=vec4(clip.xy.add(positionGeometry.xy.mul(size).mul(2).div(viewportSize).mul(clip.w)),clip.zw);m.outputNode=workingToColorSpace(output,THREE.SRGBColorSpace);o.geometry=g;o.material=m;o.isPoints=false;o.isMesh=true;o.frustumCulled=false;return;
+    }
+    let m=converted.get(original);if(!m){
+     if(original.isShaderMaterial){
+      m=new THREE.MeshBasicNodeMaterial({side:THREE.DoubleSide,alphaToCoverage:true});m.uniforms=original.uniforms;const thickness=uniform(original.uniforms.thickness.value);updates.push(()=>thickness.value=original.uniforms.thickness.value);
+      const edge=wgslFn('fn edge_color(center:vec3<f32>,thickness:f32,front:bool)->vec4<f32>{let width=fwidth(center);let edge=smoothstep((thickness-1.0)*width,thickness*width,center);return vec4(select(vec3(0.4,0.4,0.5),vec3(0.9,0.9,1.0),front),1.0-min(min(edge.x,edge.y),edge.z));}');m.fragmentNode=edge(attribute('center','vec3'),thickness,frontFacing);
+     }else{
+      const C=original.isMeshPhongMaterial?THREE.MeshPhongNodeMaterial:original.isPointsMaterial?THREE.PointsNodeMaterial:original.isLineBasicMaterial?THREE.LineBasicNodeMaterial:THREE.MeshBasicNodeMaterial;
+      m=new C().copy(original);m.fog=false;const encoded=workingToColorSpace(output,THREE.SRGBColorSpace);
+      m.outputNode=id==='webgl_buffergeometry_uint'?vec4(mix(encoded.rgb,vec3(5/255),smoothstep(2000,3500,positionView.z.negate())),output.a):encoded;
+     }
+     converted.set(original,m);
+    }o.material=m;
+   });
+  }
+  for(const update of updates)update();
+ };
+ source=source.replaceAll('THREE.WebGLRenderer','THREE.WebGPURenderer').replace('renderer.setPixelRatio(', 'renderer.outputColorSpace=THREE.LinearSRGBColorSpace;renderer.setPixelRatio(');
+}
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();window.fixtureGpuReady=true;
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{fixtureSeconds=t;for(const v of window.pointQuadViewports??[])v.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes)reference.renderer._nodes.nodeFrame.update();if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

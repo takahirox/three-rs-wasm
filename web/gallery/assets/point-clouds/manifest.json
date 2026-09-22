@@ -1,0 +1,43 @@
+[
+  {
+    "file": "frame.bin",
+    "source": "examples/webgl_custom_attributes_points3.html",
+    "source_sha256": "c77afb177de54ada7f0a58bb8c9c1198d96aaa114dbaac456e3fdc0210bebcfc",
+    "sha256": "5666fcd0fa1be351f6c353ff5186c428ac35070b085d4aac946a80070e8f56e9"
+  },
+  {
+    "file": "disc.png",
+    "source": "examples/textures/sprites/disc.png",
+    "sha256": "1f3816715f028ac32065a10f40f5ef218b4efc67eb46f0d908a8d503f25b69cb"
+  },
+  {
+    "file": "ball.png",
+    "source": "examples/textures/sprites/ball.png",
+    "sha256": "a92f288322780b6ddb938cec753a73098595b4ce83b6e068777f026ba3198e12"
+  },
+  {
+    "file": "snowflake1.png",
+    "source": "examples/textures/sprites/snowflake1.png",
+    "sha256": "7b0c12c16b37b0d03e73009da109e97cdfdd1f40f047fd025c80954a8422d220"
+  },
+  {
+    "file": "snowflake2.png",
+    "source": "examples/textures/sprites/snowflake2.png",
+    "sha256": "0396d0c5f997fc830cecd62d6e554611e7ee747906413d19cfc94e4e2900161e"
+  },
+  {
+    "file": "snowflake3.png",
+    "source": "examples/textures/sprites/snowflake3.png",
+    "sha256": "57d673741e314cbb727a9eebf545397a8fac6dc8156bf9489adcf3fa1a877065"
+  },
+  {
+    "file": "snowflake4.png",
+    "source": "examples/textures/sprites/snowflake4.png",
+    "sha256": "4f0b530617e0dae36ff8ca955d0567327001df407875668a1b6822e99913dd8f"
+  },
+  {
+    "file": "snowflake5.png",
+    "source": "examples/textures/sprites/snowflake5.png",
+    "sha256": "af708f228db2fce1dcc1c85bf80e83c077821ecf20db6fa8cd655a8929ad1ec6"
+  }
+]

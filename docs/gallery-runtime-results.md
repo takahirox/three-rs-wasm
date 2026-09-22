@@ -2,12 +2,12 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 158 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 178 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 556 |
-| excluded | 14 |
+| runtime-prerequisite | 554 |
+| excluded | 16 |
 | rust-static-frame-rendered | 34 |
 | rust-empty-frame | 3 |
 
@@ -216,8 +216,8 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_materials_cubemap_refraction](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_refraction.html) | runtime-prerequisite | Material type: MeshPhongMaterial |
 | [webgl_materials_cubemap_mipmaps](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_mipmaps.html) | runtime-prerequisite | Unlit environment reflection/refraction; Multiple material environments |
 | [webgl_materials_cubemap_render_to_mipmaps](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_render_to_mipmaps.html) | runtime-prerequisite | Unlit environment reflection/refraction; Multiple material environments |
-| [webgl_materials_displacementmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_displacementmap.html) | runtime-prerequisite | Material map: displacementMap |
-| [webgl_materials_envmaps](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps.html) | runtime-prerequisite | Unlit environment reflection/refraction |
+| [webgl_materials_displacementmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_displacementmap.html) | excluded |  |
+| [webgl_materials_envmaps](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps.html) | excluded |  |
 | [webgl_materials_envmaps_exr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_exr.html) | runtime-prerequisite | Independent background and lighting environments |
 | [webgl_materials_envmaps_groundprojected](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_groundprojected.html) | runtime-prerequisite | Physical material extension: transmission; Physical material extension: clearcoat; Blend mode: 4; Premultiplied alpha material |
 | [webgl_materials_envmaps_hdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_hdr.html) | runtime-prerequisite | Independent background and lighting environments |

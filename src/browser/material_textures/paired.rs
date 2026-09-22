@@ -7,7 +7,7 @@ pub(super) struct Pair {
     pub output: RenderTarget,
 }
 impl Pair {
-    pub async fn new(r: &Renderer, anisotropy: bool) -> Result<Self> {
+    pub async fn new(r: &Renderer, anisotropy: bool, filters: bool) -> Result<Self> {
         let painting = if anisotropy {
             None
         } else {
@@ -54,6 +54,28 @@ impl Pair {
                 let mut m = MeshPhongMaterial::default();
                 m.properties.map = Some(Arc::new(t));
                 mesh(&mut s, geometry.clone(), Material::Phong(m))
+            } else if filters {
+                let mut rgba = Vec::with_capacity(128 * 128 * 4);
+                for y in 0..128 {
+                    for x in 0..128 {
+                        let v = if (x < 64) == (y < 64) { 255 } else { 68 };
+                        rgba.extend([v, v, v, 255]);
+                    }
+                }
+                let mut t = Texture::from_rgba(128, 128, rgba, true)?;
+                t.wrap_s = Wrapping::Repeat;
+                t.wrap_t = Wrapping::Repeat;
+                t.repeat = Vector2::splat(1000.);
+                t.filter = if i == 0 {
+                    Filter::Linear
+                } else {
+                    Filter::Nearest
+                };
+                t.mipmap_filter = if i == 0 { Some(Filter::Linear) } else { None };
+                let mut m = MeshBasicMaterial::default();
+                m.properties.color = Color::from_hex(if i == 0 { 0xffffff } else { 0xffccaa });
+                m.properties.map = Some(Arc::new(t));
+                mesh(&mut s, geometry.clone(), Material::Basic(m))
             } else {
                 let bytes = fetch(&format!("{ASSETS}/manual-mips.rgba")).await?;
                 let mut offset = 0;
@@ -112,7 +134,11 @@ impl Pair {
                 };
                 // r186 WebGPU samples generated mips for LinearFilter, but
                 // emits a level-zero textureLoad for NearestFilter.
-                t.mipmap_filter = if i == 0 { Some(Filter::Nearest) } else { None };
+                t.mipmap_filter = if i == 0 && !filters {
+                    Some(Filter::Nearest)
+                } else {
+                    None
+                };
                 let mut m = MeshBasicMaterial::default();
                 m.properties.map = Some(Arc::new(t));
                 m.properties.color = Color::from_hex(if i == 0 { 0xffffff } else { 0xffccaa });
@@ -132,6 +158,25 @@ impl Pair {
                 n.quaternion = Quaternion::from_rotation_x(-std::f64::consts::FRAC_PI_2);
                 s.get_mut(floor)?.position.y = -1.117 * h / 2.;
             }
+            if filters {
+                s.fog = None;
+                let output=WgslFn::new("filter_output","fn filter_output(c:vec4<f32>)->vec4<f32>{return vec4(srgb_output(c.rgb)*(1.0-smoothstep(1500.0,4000.0,fragment_view_z)),c.a);}",&[Type::Vec4],Type::Vec4)?.call(&[tsl::output()]);
+                let program = Arc::new(
+                    SurfaceNodes {
+                        output: Some(output),
+                        ..Default::default()
+                    }
+                    .build(r, &[], &[])
+                    .await?,
+                );
+                for h in s.handles().collect::<Vec<_>>() {
+                    if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {
+                        Arc::make_mut(&mut m.materials[0])
+                            .properties_mut()
+                            .vertex_program = Some(program.clone());
+                    }
+                }
+            }
             scenes.push(s);
             cameras.push(c);
         }
@@ -146,6 +191,11 @@ impl Pair {
                 1,
                 RenderTargetOptions {
                     samples: 4,
+                    format: if filters {
+                        wgpu::TextureFormat::Rgba8Unorm
+                    } else {
+                        wgpu::TextureFormat::Rgba16Float
+                    },
                     ..Default::default()
                 },
             )?,
