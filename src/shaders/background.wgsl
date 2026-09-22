@@ -28,7 +28,9 @@ fn sharp_background(d:vec3<f32>)->vec3<f32> {
 }
 fn background_color(in:Out)->vec3<f32> {
  let view=u.inverse_projection*vec4(in.ndc,1.0,1.0);
- let direction=normalize((u.camera*vec4(view.xyz/view.w,0.0)).xyz);
+ // An oblique near plane can put the far clip point behind infinity (w < 0).
+ // Its homogeneous xyz still describes the forward camera ray.
+ let direction=normalize((u.camera*vec4(view.xyz,0.0)).xyz);
  let c=cos(u.options.x);let s=sin(u.options.x);let d=vec3(c*direction.x-s*direction.z,direction.y,s*direction.x+c*direction.z);
  if u.options.w>0.5 {return textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x;}
  if u.options.y==0.0 && u.options.w>=0.0 {return sharp_background(d)*u.intensity.x;}

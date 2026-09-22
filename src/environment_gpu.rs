@@ -286,44 +286,24 @@ impl EnvironmentMap {
         size: u32,
         rgba: &[half::f16],
     ) -> Result<Self> {
-        let device = &renderer.device;
-        let queue = &renderer.queue;
+        let cube = crate::texture_gpu::GpuTexture::from_cube_hdr(renderer, size, rgba)?;
+        Self::from_cube_texture(renderer, &cube)
+    }
+    /// Prefilter a resident HDR cube, sharing the original upload with a sky.
+    pub fn from_cube_texture(
+        renderer: &crate::renderer::Renderer,
+        cube: &crate::texture_gpu::GpuTexture,
+    ) -> Result<Self> {
+        let size = cube.texture.width();
         if size < 16
             || !size.is_power_of_two()
-            || size > device.limits().max_texture_dimension_2d / 4
-            || rgba.len() != size as usize * size as usize * 24
+            || size > renderer.device.limits().max_texture_dimension_2d / 4
+            || cube.texture.height() != size
+            || cube.texture.depth_or_array_layers() != 6
         {
-            return Err(Error::Invalid("HDR cube dimensions/data"));
+            return Err(Error::Invalid("PMREM cube dimensions"));
         }
-        let cube = device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("HDR cube source"),
-            size: wgpu::Extent3d {
-                width: size,
-                height: size,
-                depth_or_array_layers: 6,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: wgpu::TextureFormat::Rgba16Float,
-            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
-            view_formats: &[],
-        });
-        queue.write_texture(
-            cube.as_image_copy(),
-            bytemuck::cast_slice(rgba),
-            wgpu::TexelCopyBufferLayout {
-                offset: 0,
-                bytes_per_row: Some(size * 8),
-                rows_per_image: Some(size),
-            },
-            cube.size(),
-        );
-        let cube = cube.create_view(&wgpu::TextureViewDescriptor {
-            dimension: Some(wgpu::TextureViewDimension::Cube),
-            ..Default::default()
-        });
-        Self::from_cube_view(renderer, size, &cube)
+        Self::from_cube_view(renderer, size, &cube.view)
     }
     fn from_cube_view(
         renderer: &crate::renderer::Renderer,

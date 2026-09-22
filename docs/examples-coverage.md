@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 123 partial Rust ports; 474 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 143 partial Rust ports; 454 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,26 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_upscaling_taau | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_motion_blur | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_traa | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_retroreflection | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_particles_rain | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_particles_snow | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_pixel | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 公式と同じく描画解像度はDPR 1。 |
+| webgpu_reflection_blurred | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_compute_audio | `tests/browser/tsl-audio.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_reflection | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_mirror | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_shadowmap | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_multiple_rendertargets_readback | `tests/browser/tsl-procedural.spec.js` | 非同期GPU readbackにより結果の表示まで数フレームかかる場合があります。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_procedural_terrain | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_angular_slicing | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_tsl_wood | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 公式と同じく描画解像度はDPR 1。 |
+| webgpu_skinning_points | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_reflection_roughness | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materialx_noise | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_portal | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_materials | `tests/browser/tsl-primitives.spec.js` | r186公式のLoop出力が黒になる挙動を維持。汎用Loopノードは未対応。 Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_sandbox | `tests/browser/tsl-primitives.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_shadow_contact | `tests/browser/tsl-primitives.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |

@@ -1,5 +1,6 @@
 use super::*;
 use crate::animation::{Clip, Interpolation, Property, Track};
+#[derive(Clone)]
 struct NodeData {
     name: String,
     matrix: Matrix4,
@@ -8,10 +9,12 @@ struct NodeData {
     weights: Vec<f64>,
     instances: Vec<crate::scene::Instance>,
 }
+#[derive(Clone)]
 struct SkinData {
     joints: Vec<usize>,
     inverse: Vec<Matrix4>,
 }
+#[derive(Clone)]
 struct Channel {
     node: usize,
     property: Property,
@@ -19,6 +22,7 @@ struct Channel {
     values: Vec<Vec<f64>>,
     interpolation: Interpolation,
 }
+#[derive(Clone)]
 pub struct AnimatedGltf {
     pub bounds: Box3,
     pub triangles: usize,

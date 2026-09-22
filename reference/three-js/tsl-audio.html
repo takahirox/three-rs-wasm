@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden}canvas{display:block}#info{display:none}</style>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body><div id="overlay"><button id="startButton">Play</button></div><script type="module">
+import * as THREE from 'three/webgpu';
+window.fixtureControls=[];
+THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};};
+const source=await(await fetch('/.cache/three-r186/examples/webgpu_compute_audio.html')).text();
+let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){return {add(object,key){const item={setValue(value){object[key]=value;},name(){return this;}};fixtureControls.push(item);return item;}};}}`)
+.replace('renderer.inspector = new Inspector();','window.fixtureInspector=new Inspector();').replace('renderer.inspector.createParameters','fixtureInspector.createParameters')
+.replace("'sounds/", "'/.cache/three-r186/examples/sounds/")
+.replace('currentAudio = source;', 'currentAudio = source;window.fixturePlays=(window.fixturePlays||0)+1;')
+.replace('playAudioBuffer();\n\n\t\t\t}', 'window.fixturePlay=playAudioBuffer;playAudioBuffer();\n\n\t\t\t}');
+await import(URL.createObjectURL(new Blob([module],{type:'text/javascript'})));
+while(!window.reference||!window.fixturePlays)await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async()=>{await reference.callback();await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);
+await renderFixture();document.querySelector('canvas').dataset.ready='true';
+</script></body></html>

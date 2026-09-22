@@ -14143,7 +14143,7 @@
     {
       "id": "webgpu_compute_audio",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_audio.html",
       "source_sha256": "336896c350e1af5b7c2beb4d5fafa78ddfff59de598ac31cfeccf629134d7bdb",
@@ -14201,7 +14201,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 139,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-audio.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/tsl",
@@ -14687,7 +14694,7 @@
     {
       "id": "webgpu_compute_particles_rain",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_particles_rain.html",
       "source_sha256": "f2402656d58a7914cb1bc46ea4062e28da64dd9b3b14df0e362a351d09675da3",
@@ -14755,7 +14762,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 143,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -14767,7 +14781,7 @@
     {
       "id": "webgpu_compute_particles_snow",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_particles_snow.html",
       "source_sha256": "5d2ed47859fb8ab158cf665dda8ce7ece28c03cfb76525b76f7d6241d3727d54",
@@ -14875,7 +14889,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 142,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TeapotGeometry.js",
@@ -19365,7 +19386,7 @@
     {
       "id": "webgpu_materials_retroreflection",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_retroreflection.html",
       "source_sha256": "8bbf671c2a3ae50537d8a99b250b8d2071027ebb5387733a27997533cb79fd67",
@@ -19441,7 +19462,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 144,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -19735,7 +19763,7 @@
     {
       "id": "webgpu_materialx_noise",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materialx_noise.html",
       "source_sha256": "ae216156c1715c74ca8408a965132ca44727bd17da38bad0e18768beb046020a",
@@ -19777,7 +19805,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 129,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TextGeometry.js",
@@ -19848,7 +19883,7 @@
     {
       "id": "webgpu_mirror",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_mirror.html",
       "source_sha256": "69dd13b9910a656261db79a3c412d7c2871435e6e2c3428315a7715c80055e88",
@@ -19908,7 +19943,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 137,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -20379,7 +20421,7 @@
     {
       "id": "webgpu_multiple_rendertargets_readback",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_rendertargets_readback.html",
       "source_sha256": "ccf663fff33558219d8d169fbe8b7e88e41a98cf2624a20c50ee24a905946ece",
@@ -20417,7 +20459,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 135,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "非同期GPU readbackにより結果の表示まで数フレームかかる場合があります。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -21149,7 +21198,7 @@
     {
       "id": "webgpu_portal",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_portal.html",
       "source_sha256": "f5bfa131eec9690266917eea8b9be9b44aecc94ea0a970cd36c0e61cdb732fba",
@@ -21199,7 +21248,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 128,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -22450,7 +22506,7 @@
     {
       "id": "webgpu_postprocessing_motion_blur",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_motion_blur.html",
       "source_sha256": "4963f048270665a1a7468b58f4dc982b89e068045f841c40c662335b3fb6af7e",
@@ -22544,7 +22600,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 147,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -22664,7 +22727,7 @@
     {
       "id": "webgpu_postprocessing_pixel",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_pixel.html",
       "source_sha256": "a22eb6ad4007788f91fd8faa8b1d4dab46e4a464124efeb0f48574d03f44ae2c",
@@ -22746,7 +22809,15 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 141,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。",
+          "公式と同じく描画解像度はDPR 1。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -23530,7 +23601,7 @@
     {
       "id": "webgpu_postprocessing_traa",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_traa.html",
       "source_sha256": "9cbb61d209eb11a6beda5538c4dc5f343ff24cfe9ca5e842cd6917503bef76b1",
@@ -23576,7 +23647,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 145,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/TRAANode.js",
@@ -23806,7 +23884,7 @@
     {
       "id": "webgpu_reflection",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_reflection.html",
       "source_sha256": "513993894ba8102b87dea8401bd9ef1abb5b1641e239435395106ce048194e44",
@@ -23882,7 +23960,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 138,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -23895,7 +23980,7 @@
     {
       "id": "webgpu_reflection_blurred",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_reflection_blurred.html",
       "source_sha256": "9eba0273bea0871f8ff5bba9f36a12f9266f197a06727daee1c867c5e102569f",
@@ -23945,7 +24030,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 140,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -23958,7 +24050,7 @@
     {
       "id": "webgpu_reflection_roughness",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_reflection_roughness.html",
       "source_sha256": "180828c90e5b9e8561b987f27d35a72828d40e645e9e37c9996757a3a9077144",
@@ -23990,7 +24082,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 130,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -24443,7 +24542,7 @@
     {
       "id": "webgpu_shadowmap",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap.html",
       "source_sha256": "e287522aa4fe4dc8b96244566cae1e87c658608020d84eaa61e522426a94b959",
@@ -24525,7 +24624,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 136,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -25255,7 +25361,7 @@
     {
       "id": "webgpu_skinning_points",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_points.html",
       "source_sha256": "f32e2dbc858958b8b6cfbdabbfe3951e6c2451355c475908a627d859f3c757d7",
@@ -25317,7 +25423,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 131,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/loaders/GLTFLoader.js",
         "three/tsl",
@@ -25849,7 +25962,7 @@
     {
       "id": "webgpu_tsl_angular_slicing",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_angular_slicing.html",
       "source_sha256": "15435015fb7420114ec6250cd22c16ffd5f48fc5057fc62caf23a720d3fd8a57",
@@ -25909,7 +26022,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 133,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26332,7 +26452,7 @@
     {
       "id": "webgpu_tsl_procedural_terrain",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_procedural_terrain.html",
       "source_sha256": "35e95b85ea85dd03662d6ce1b6ef5cd7d6fc8498119b37fd14f1c2cfcfd3a888",
@@ -26388,7 +26508,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 134,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26728,7 +26855,7 @@
     {
       "id": "webgpu_tsl_wood",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_wood.html",
       "source_sha256": "6fe0498a453db2076947143dc0162884d24da4ae8a3af77ef3fe40ee5dc668be",
@@ -26780,7 +26907,15 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 132,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。",
+          "公式と同じく描画解像度はDPR 1。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/capabilities/WebGPU.js",
@@ -26873,7 +27008,7 @@
     {
       "id": "webgpu_upscaling_taau",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_upscaling_taau.html",
       "source_sha256": "bab2b78ac7b6aeb2c155373a96db4b6b208687be1fbfc63fe16089e508d80a17",
@@ -26927,7 +27062,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 146,
+        "source": "src/browser/tsl_procedural.rs",
+        "test": "tests/browser/tsl-procedural.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",

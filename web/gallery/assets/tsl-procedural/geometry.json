@@ -1,0 +1,20 @@
+[
+  {
+    "file": "noise-labels.bin",
+    "source": "fonts/helvetiker_regular.typeface.json",
+    "sha256": "2d337187d3aafab1f2bd0060a7f50191f861643ba38b2f04497ed74528ae9dd6",
+    "source_sha256": "d5c5467690f74061179a292af83bd85c4c551e0f106b2af99714f11184c96981"
+  },
+  {
+    "file": "wood-geometry.bin",
+    "sha256": "fab53e5a00fd458c206ae4dbeaacfe8c8c3cf1ac31c764a5670af8661b90b815",
+    "source": "jsm/materials/WoodNodeMaterial.js",
+    "source_sha256": "28c01478b126747083a4b7f14ae545e5e174f11f71eb75722588146b0fe9496a"
+  },
+  {
+    "file": "wood-presets.json",
+    "sha256": "b77ece8f579d175ff46e09fb3c4201ca637b50e5fa4013d8559384b9c61f6d26",
+    "source": "jsm/materials/WoodNodeMaterial.js",
+    "source_sha256": "28c01478b126747083a4b7f14ae545e5e174f11f71eb75722588146b0fe9496a"
+  }
+]

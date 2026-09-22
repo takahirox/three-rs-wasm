@@ -34,7 +34,7 @@ impl UvInterpolation {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ShaderProgram {
     pub(crate) id: u64,
     pub(crate) outputs: u32,
@@ -43,8 +43,56 @@ pub struct ShaderProgram {
     pub(crate) module: wgpu::ShaderModule,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
+    binding_counts: (usize, usize),
 }
 impl ShaderProgram {
+    /// Replace resources after render-target resize without recompiling the
+    /// shader or changing its pipeline identity. Types must match the original
+    /// layout; the GPU validates resource types when creating the bind group.
+    pub fn rebind(
+        &mut self,
+        renderer: &Renderer,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<()> {
+        if self.binding_counts != (buffers.len(), textures.len()) {
+            return Err(crate::Error::Invalid("shader binding count"));
+        }
+        let entries: Vec<_> = buffers
+            .iter()
+            .enumerate()
+            .map(|(i, b)| wgpu::BindGroupEntry {
+                binding: i as u32,
+                resource: b.buffer.as_entire_binding(),
+            })
+            .chain(
+                textures
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(i, (view, sampler))| {
+                        let binding = (buffers.len() + i * 2) as u32;
+                        [
+                            wgpu::BindGroupEntry {
+                                binding,
+                                resource: wgpu::BindingResource::TextureView(view),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: binding + 1,
+                                resource: wgpu::BindingResource::Sampler(sampler),
+                            },
+                        ]
+                    }),
+            )
+            .collect();
+        self.bindings = renderer
+            .device
+            .create_bind_group(&wgpu::BindGroupDescriptor {
+                label: Some("rebound shader resources"),
+                layout: &self.layout,
+                entries: &entries,
+            });
+        Ok(())
+    }
     /// Provide `deform(position,normal,uv)->vec3<f32>` and
     /// `shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>`.
     /// `u.custom` holds 16 application vec4s. Optional group 1 buffers are
@@ -190,6 +238,32 @@ impl ShaderProgram {
         .await
     }
     #[allow(clippy::too_many_arguments)]
+    pub(crate) async fn with_surface_texture_types(
+        renderer: &Renderer,
+        wgsl: &str,
+        surface: &str,
+        output: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        dimensions: &[wgpu::TextureViewDimension],
+        sample_types: &[wgpu::TextureSampleType],
+    ) -> Result<Self> {
+        Self::build(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            output,
+            DEFAULT_PROJECTION,
+            surface,
+            dimensions,
+            sample_types,
+            None,
+            None,
+        )
+        .await
+    }
+    #[allow(clippy::too_many_arguments)]
     pub(crate) async fn with_mrt(
         renderer: &Renderer,
         wgsl: &str,
@@ -246,6 +320,24 @@ impl ShaderProgram {
                 include_str!("shader.wgsl")
             )
         );
+        if projection.contains("fn project_motion(") {
+            source.push_str("\nvar<private> tsl_motion_original_position:vec3<f32>;\n");
+            source = source.replace(
+                "tsl_vertex_index=vertex;",
+                "tsl_vertex_index=vertex;tsl_motion_original_position=input_position;",
+            );
+            source = source.replace("struct VertexOut {", "struct VertexOut { @location(12) motion_current:vec4<f32>, @location(13) motion_previous:vec4<f32>,");
+        }
+        if wgsl.contains("fn transform_light_color(") {
+            source=source.replacen("fn transform_light_color(surface:VertexOut,tsl_light_index:u32,tsl_light_color:vec3<f32>)->vec3<f32>{return tsl_light_color;}","",1);
+        }
+        if wgsl.contains("fn transform_vertex_normal(") {
+            source = source.replacen(
+                "fn transform_vertex_normal(normal:vec3<f32>)->vec3<f32>{return normal;}",
+                "",
+                1,
+            );
+        }
         if !wgsl.contains("fn environment_sample(") {
             source.push_str(DEFAULT_ENVIRONMENT);
         }
@@ -371,6 +463,7 @@ impl ShaderProgram {
             module,
             layout,
             bindings,
+            binding_counts: (buffers.len(), textures.len()),
         })
     }
 }

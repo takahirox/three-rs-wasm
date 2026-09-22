@@ -15,6 +15,7 @@ pub mod camera;
 mod clipping;
 pub mod compression;
 pub mod compute;
+pub mod compute_skinning;
 pub mod curve;
 pub mod deformation;
 mod deformation_gpu;
@@ -31,6 +32,7 @@ pub mod mipmap;
 mod physical_maps;
 pub mod postprocessing;
 pub mod raycast;
+pub mod reflection;
 pub mod render_target;
 pub mod renderer;
 pub mod scene;
@@ -63,3 +65,7 @@ mod background;
 pub mod occlusion;
 
 mod viewport;
+
+pub mod sun_shadow;
+
+pub mod readback;

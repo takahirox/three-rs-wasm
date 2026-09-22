@@ -36,3 +36,24 @@ investigation reports retain their original measurements and scope.
 The newly added `webgpu_loader_gltf_compressed` and
 `webgpu_loader_gltf_dispersion` also supersede their corresponding official
 WebGL examples; those WebGL entries are excluded from the port inventory.
+
+## Retroreflective Materials: stochastic reflection
+
+The r186 WebGPU scene uses 32 pseudorandom `hashBlur` samples. At DPR 2, changing
+only the original shader's two reflection UV components by one Float32 ULP
+produces up to 0.524% pixels differing by more than 6/255. The port's measured
+maximum is 0.824%; its 3×3 averaged comparison remains below 0.087%. This is a
+precision-sensitive sampling comparison, not permission to omit reflective
+materials, reduce the 32 samples, lower resolution or remove surface detail.
+
+For this example at DPR > 1 only, require all three bounds: raw differing pixels
+at most 1%, raw mean absolute channel error at most 0.5/255, and at most 0.1%
+differing pixels after 3×3 averaging (still a 6/255 channel threshold). Preserve
+raw images and both metrics. DPR 1 and every other example retain their existing
+thresholds. Controls, camera motion, resize and GPU residency are still tested.
+
+The one-ULP experiment is recorded in
+[retroreflection-precision.json](retroreflection-precision.json). With the local
+server running, reproduce it with `node tools/tsl/check-retro-precision.mjs`.
+This diagnostic patches only shaders inside its own browser session; acceptance
+comparisons use the unmodified pinned reference shaders.

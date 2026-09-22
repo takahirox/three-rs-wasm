@@ -278,3 +278,94 @@ fn mip_generator_filters_hdr_storage_on_gpu_and_reuses_bindings() {
         assert!(px[1].abs_diff(128) <= 1);
     }
 }
+
+#[test]
+fn sampled_texture_drives_resident_storage_updates() {
+    let r = pollster::block_on(Renderer::new()).unwrap();
+    let texture = r.device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("compute sampling oracle"),
+        size: wgpu::Extent3d {
+            width: 2,
+            height: 1,
+            depth_or_array_layers: 1,
+        },
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: wgpu::TextureFormat::Rgba8Unorm,
+        usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+        view_formats: &[],
+    });
+    let sampler = r.device.create_sampler(&wgpu::SamplerDescriptor {
+        mag_filter: wgpu::FilterMode::Linear,
+        min_filter: wgpu::FilterMode::Linear,
+        ..Default::default()
+    });
+    let view = texture.create_view(&Default::default());
+    let output = GpuBuffer::zeroed(&r, 3 * 4, BufferAccess::ReadWrite).unwrap();
+    let coordinate = vec2(
+        instance_index().to_float() * float(0.25) + float(0.25),
+        float(0.5),
+    );
+    let stores = [BufferStore {
+        binding: 0,
+        index: instance_index(),
+        value: storage_element(0, instance_index())
+            + Texture::External(0)
+                .sample_level(coordinate.clone(), float(0.))
+                .x(),
+    }];
+    let kernel = pollster::block_on(BufferCompute::with_textures(
+        &r,
+        3,
+        &[(&output, Type::Float)],
+        &stores,
+        &[(&view, &sampler)],
+    ))
+    .unwrap();
+    for (step, bytes) in [
+        [0, 0, 0, 255, 255, 0, 0, 255],
+        [255, 0, 0, 255, 0, 0, 0, 255],
+    ]
+    .iter()
+    .enumerate()
+    {
+        r.queue.write_texture(
+            wgpu::TexelCopyTextureInfo {
+                texture: &texture,
+                mip_level: 0,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            bytes,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(8),
+                rows_per_image: Some(1),
+            },
+            texture.size(),
+        );
+        kernel.dispatch(&r).unwrap();
+        let bytes = output.read(&r).unwrap();
+        let actual: &[f32] = bytemuck::cast_slice(&bytes);
+        let expected = if step == 0 { [0., 0.5, 1.] } else { [1.; 3] };
+        for (a, e) in actual.iter().zip(expected) {
+            assert!((a - e).abs() < 1e-6, "{actual:?}");
+        }
+    }
+    let invalid = [BufferStore {
+        binding: 0,
+        index: instance_index(),
+        value: Texture::External(0).sample(coordinate).x(),
+    }];
+    assert!(
+        pollster::block_on(BufferCompute::with_textures(
+            &r,
+            3,
+            &[(&output, Type::Float)],
+            &invalid,
+            &[(&view, &sampler)]
+        ))
+        .is_err()
+    );
+}

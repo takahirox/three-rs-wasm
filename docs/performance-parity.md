@@ -292,3 +292,48 @@ sandbox 4,376 vs 68, contact shadows 26,232 vs 528, and each line scene 10,496 v
 passes respectively versus 2/2/6/6/6; contact shadows fold the explicit clear into
 the depth pass, and line viewports share a final presentation. These differences
 are retained in the report rather than interpreted as timing equivalence.
+
+### Procedural materials, GPU particles and temporal rendering (IDs 128–147)
+
+Twenty additional r186 examples use Rust TSL graphs and resident WebGPU resources.
+The batch covers Portal, MaterialX noise, rough/blurred/recursive reflections,
+compute skinning points, procedural wood/terrain/angular slicing, MRT readback,
+shadow maps, tree reflection, compute audio, pixelation, snow, rain,
+retroreflection, TRAA, TAAU and motion blur. Static geometry and textures are
+prepared once. Snow/rain simulation, instanced tree deformation, material noise,
+skinning and motion-vector generation execute on the GPU.
+
+The comparison report `tsl-procedural-comparison.json` records images at DPR 1/2,
+controls, orbit/pan/zoom, resize, resident resources and original/port GPU workloads.
+Temporal scenes also compare 60 consecutive animated frames, sampling frames
+1, 16 and 60. TRAA/TAAU fixed-pose comparisons warm 128 frames to align history;
+the fixture advances one reference frame for each Rust input/resize redraw so
+Halton phases agree. This does not assert identical initial history before the
+original renderer initializes its camera projection. Native tests separately
+check HDR history initialization, resize, and previous camera/skin/morph motion.
+The independently measured Retro DPR 2 noise tolerance is in `example-policy.md`.
+
+Animated storage uploads contain only bone palettes (and previous poses where
+required): Portal 17,152 bytes, compute points and blurred reflection 4,160 each,
+motion blur 17,152, TAAU 32,768. All other measured frames upload zero geometry or
+instance bytes. TAAU resolution changes allocate new history/input targets;
+subsequent animation and parameter use at each resolution retain resources.
+Compute snow dispatches 1,563 groups, rain 782, and compute skinning points 256.
+Audio dispatches 5,614 groups and reads back 1,436,968 bytes per play, matching the
+original. Its playback, delay samples and analyser image are tested separately.
+MRT's selected 512-square attachment intentionally makes a 1,048,576-byte GPU to
+CPU to texture round trip, as the official readback example does.
+
+Pass/draw counts match closely, with separate presentation passes in TRAA,
+retroreflection, tree reflection, snow and terrain. Rain uses an additional draw;
+several other ports remove redundant background geometry or copies. Core's shared
+per-draw uniform blocks remain larger than Three.js's split uniforms: TAAU uploads
+334,800 vs 42,984 bytes, MaterialX noise 98,132 vs 2,432, and snow 107,612 vs 260
+in the measured animated frame. The shadow atlas allocates layers at the largest
+map size even when individual lights use smaller viewports. These overheads are
+recorded rather than treated as timing or memory equivalence. These entries remain
+partial ports; no measured CPU/GPU frame-time parity is claimed.
+
+Core temporal APIs accept explicit current/previous transforms. The gallery
+adapter preserves r186 TAAU's jittered current velocity, unused zero lock history,
+and constant sharpness behavior; see `tsl.md` and `taau-r186-velocity.json`.

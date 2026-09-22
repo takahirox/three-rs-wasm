@@ -57,6 +57,43 @@ impl Effect {
         )
         .await
     }
+    /// Bind filterable color/normal inputs followed by a raw depth attachment.
+    /// Depth occupies group 1 binding `2 * textures.len()`.
+    pub async fn with_depth_and_textures(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        depth: &wgpu::TextureView,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
+        Self::build(
+            renderer,
+            format,
+            wgsl,
+            textures,
+            None,
+            Some((depth, false)),
+            None,
+        )
+        .await
+    }
+    pub fn set_depth_and_textures(
+        &mut self,
+        renderer: &Renderer,
+        depth: &wgpu::TextureView,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<()> {
+        if !self.has_depth || textures.len() != self.texture_count {
+            return Err(Error::Invalid("effect depth/texture bindings"));
+        }
+        self.textures = extra_bindings(
+            &renderer.device,
+            &self.texture_layout,
+            textures,
+            Some(depth),
+        );
+        Ok(())
+    }
     /// Sample an MSAA depth attachment directly on the GPU (sample index is chosen by WGSL).
     pub async fn with_multisampled_depth(
         renderer: &Renderer,
@@ -67,7 +104,7 @@ impl Effect {
         Self::build(renderer, format, wgsl, &[], None, Some((depth, true)), None).await
     }
     pub fn set_depth(&mut self, renderer: &Renderer, depth: &wgpu::TextureView) -> Result<()> {
-        if !self.has_depth {
+        if !self.has_depth || self.texture_count != 0 {
             return Err(Error::Invalid("effect has no depth binding"));
         }
         self.textures = extra_bindings(&renderer.device, &self.texture_layout, &[], Some(depth));
@@ -188,7 +225,7 @@ impl Effect {
                     depth
                         .iter()
                         .map(|(_, multisampled)| wgpu::BindGroupLayoutEntry {
-                            binding: 0,
+                            binding: (textures.len() * 2) as u32,
                             visibility: wgpu::ShaderStages::FRAGMENT,
                             ty: wgpu::BindingType::Texture {
                                 sample_type: wgpu::TextureSampleType::Depth,
@@ -427,7 +464,7 @@ fn extra_bindings(
                 ]
             })
             .chain(depth.into_iter().map(|view| wgpu::BindGroupEntry {
-                binding: 0,
+                binding: (textures.len() * 2) as u32,
                 resource: wgpu::BindingResource::TextureView(view),
             }))
             .collect::<Vec<_>>(),

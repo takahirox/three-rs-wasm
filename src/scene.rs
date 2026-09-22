@@ -96,6 +96,11 @@ pub struct Points {
 }
 #[derive(Clone, Debug, Serialize)]
 pub enum Light {
+    /// Direction from world position toward the origin, with two stabilized cascades.
+    Sun {
+        color: Color,
+        intensity: f64,
+    },
     RectArea {
         color: Color,
         intensity: f64,

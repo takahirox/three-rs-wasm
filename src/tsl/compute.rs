@@ -165,7 +165,18 @@ impl BufferCompute {
         buffers: &[(&GpuBuffer, Type)],
         stores: &[BufferStore],
     ) -> Result<Self> {
-        Self::build(renderer, count, buffers, stores, false).await
+        Self::build(renderer, count, buffers, stores, false, &[]).await
+    }
+    /// Update persistent storage using sampled 2D attachments. Compute samples
+    /// must specify an explicit mip level (typically zero for collision maps).
+    pub async fn with_textures(
+        renderer: &Renderer,
+        count: u32,
+        buffers: &[(&GpuBuffer, Type)],
+        stores: &[BufferStore],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
+        Self::build(renderer, count, buffers, stores, false, textures).await
     }
     /// Simultaneous cross-invocation updates within a single workgroup (up to 64 elements).
     /// Storage reads finish before any stores, with a uniform storage barrier.
@@ -178,7 +189,7 @@ impl BufferCompute {
         if count > 64 {
             return Err(Error::Invalid("single workgroup snapshot count"));
         }
-        Self::build(renderer, count, buffers, stores, true).await
+        Self::build(renderer, count, buffers, stores, true, &[]).await
     }
     async fn build(
         renderer: &Renderer,
@@ -186,6 +197,7 @@ impl BufferCompute {
         buffers: &[(&GpuBuffer, Type)],
         stores: &[BufferStore],
         barrier: bool,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
         if count == 0
             || count.div_ceil(64)
@@ -212,11 +224,13 @@ impl BufferCompute {
             .iter()
             .map(|(b, _)| matches!(b.access, BufferAccess::ReadWrite))
             .collect();
-        let source = buffer_store_source(count, &types, &writable, stores, barrier)?;
+        let source =
+            buffer_store_source(count, &types, &writable, stores, barrier, textures.len())?;
         let uniforms = GpuBuffer::zeroed(renderer, 256, BufferAccess::Uniform)?;
         let mut refs = vec![&uniforms];
         refs.extend(buffers.iter().map(|(b, _)| *b));
-        let kernel = ComputeKernel::new(renderer, &source, &refs).await?;
+        let kernel =
+            ComputeKernel::with_sampled_textures(renderer, &source, &refs, textures).await?;
         Ok(Self {
             kernel,
             uniforms,
@@ -237,7 +251,7 @@ pub fn buffer_store_wgsl(
     writable: &[bool],
     stores: &[BufferStore],
 ) -> Result<String> {
-    buffer_store_source(count, types, writable, stores, false)
+    buffer_store_source(count, types, writable, stores, false, 0)
 }
 fn buffer_store_source(
     count: u32,
@@ -245,12 +259,14 @@ fn buffer_store_source(
     writable: &[bool],
     stores: &[BufferStore],
     barrier: bool,
+    textures: usize,
 ) -> Result<String> {
     validate_storage_types(types)?;
     if count == 0 || types.len() != writable.len() || stores.is_empty() {
         return Err(Error::Invalid("TSL buffer compute layout"));
     }
-    let mut c = Compiler::new(Stage::Compute, 0);
+    let mut c = Compiler::new(Stage::Compute, textures);
+    c.sampled_compute = true;
     c.buffers = types.to_vec();
     let mut writes = String::new();
     for s in stores {
@@ -279,6 +295,7 @@ fn buffer_store_source(
         .join("\n");
     let mut functions: Vec<_> = c.functions.values().cloned().collect();
     functions.sort();
+    let declarations = format!("{declarations}\n{}", texture_declarations(textures));
     let workgroup = if barrier { count } else { 64 };
     let guard = if barrier {
         String::new()

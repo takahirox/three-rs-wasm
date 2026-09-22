@@ -10,7 +10,7 @@ python3 tools/core/prepare_ltc.py --check
 cargo fmt --all -- --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
-cargo test --locked --test animation --test gpu_deformation --test gltf_animation --test materials --test lighting --test programming --test tsl --test tsl_gpu --test tsl_particles_gpu --test tsl_surface_gpu --test tsl_primitives_gpu --test tsl_materials_gpu --test tsl_extended_gpu --test tsl_compute_gpu --test instancing --test batching_lines --test render_state --test compression --test compressed_gpu
+cargo test --locked --test animation --test gpu_deformation --test gltf_animation --test materials --test lighting --test programming --test tsl --test tsl_gpu --test tsl_particles_gpu --test tsl_surface_gpu --test tsl_primitives_gpu --test tsl_materialx_gpu --test compute_skinning --test reflection --test sun_shadow --test readback --test tsl_shadow --test tsl_temporal --test tsl_materials_gpu --test tsl_extended_gpu --test tsl_compute_gpu --test instancing --test batching_lines --test render_state --test compression --test compressed_gpu
 wasm-pack build --target web --out-dir web/pkg --release --no-typescript
 npx playwright test --config playwright.core.config.js
 echo 'Core semantic/GPU/reference/browser checks: PASS (see docs/core-expansion.md for limits)'

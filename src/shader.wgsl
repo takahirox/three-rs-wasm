@@ -24,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -164,10 +164,12 @@ fn ltc_evaluate(n:vec3<f32>,v:vec3<f32>,p:vec3<f32>,inverse:mat3x3<f32>,rect:arr
  let form=ltc_edge(a,b)+ltc_edge(b,c)+ltc_edge(c,d)+ltc_edge(d,a);let length=length(form);
  return max((length*length+form.z)/(length+1.0),0.0);
 }
+fn shadow_map_uv(i:u32,uv:vec2<f32>)->vec2<f32>{let halfTexel=0.5/vec2<f32>(textureDimensions(shadow_atlas));return clamp(uv,halfTexel,vec2(u.shadow_filters[i].z)-halfTexel);}
 fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     let settings=u.shadow_params[i];
     if settings.x==0.0 || u.flags.y==0.0 {return 1.0;}
     var layer=u32(settings.x)-1u;
+    if settings.w>1.5 {return sun_shadow_visibility(i,position,normal);}
     if settings.w>0.5 {
         let d=position-u.light_position[i].xyz;let a=abs(d);
         if a.x>=a.y && a.x>=a.z {layer+=select(1u,0u,d.x>=0.0);}
@@ -175,15 +177,15 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
         else {layer+=select(5u,4u,d.z>=0.0);}
     }
     let projected=u.shadow_matrices[layer]*vec4(position+normal*settings.z,1.0);
-    let ndc=projected.xyz/projected.w;let uv=ndc.xy*vec2(0.5,-0.5)+0.5;
+    let ndc=projected.xyz/projected.w;var uv=ndc.xy*vec2(0.5,-0.5)+0.5;
     if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z<0.0 || ndc.z>1.0 {return 1.0;}
-    let radius=u.shadow_filters[i].x;
-    let texel=vec2(radius)/vec2<f32>(textureDimensions(shadow_atlas));
-    var visibility=0.0;
-    for(var y=-1;y<=1;y++) {for(var x=-1;x<=1;x++) {
-        visibility+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,uv+vec2(f32(x),f32(y))*texel,i32(layer),ndc.z+settings.y);
-    }}
-    return visibility/9.0;
+    uv*=u.shadow_filters[i].z;
+    let size=vec2<f32>(textureDimensions(shadow_atlas));
+    if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
+    let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
+    var value=0.0;
+    for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*u.shadow_filters[i].x/size;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
+    return value*0.2;
 }
 fn default_environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32> {
  let world=normalize((transpose(u.view)*vec4(direction,0.0)).xyz);
@@ -208,6 +210,7 @@ fn ggx(alpha:f32,nl:f32,nv:f32,nh:f32)->f32 {
  let visibility=0.5/max(nl*sqrt(nv*nv*(1.0-a2)+a2)+nv*sqrt(nl*nl*(1.0-a2)+a2),0.000001);
  return distribution*visibility;
 }
+fn transform_vertex_normal(normal:vec3<f32>)->vec3<f32>{return normal;}
 var<private> vertex_instance_index:u32;
 var<private> fragment_position_world:vec3<f32>;
 var<private> fragment_view_z:f32;
@@ -224,9 +227,10 @@ var<private> tsl_vertex_index:u32;
     let animated=skin_morph(select(vertex,u32(tangent.z),u.line[0].x>0.0),input_position,normal,color,tangent);
     var instance=mat4x4<f32>(vec4(1.0,0.0,0.0,0.0),vec4(0.0,1.0,0.0,0.0),vec4(0.0,0.0,1.0,0.0),vec4(0.0,0.0,0.0,1.0));if INSTANCED {instance=mat4x4(i0,i1,i2,i3);}
     let position=(instance*vec4(deform(animated.position,animated.normal,uv),1.0)).xyz;
+    let deformed_normal=transform_vertex_normal(animated.normal);
     let cofactor=mat3x3(cross(i1.xyz,i2.xyz),cross(i2.xyz,i0.xyz),cross(i0.xyz,i1.xyz));
     let instance_normal=select(animated.normal,normalize(cofactor*animated.normal),INSTANCED);
-    var out:VertexOut;out.local_normal=animated.normal;out.local_position=position;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
+    var out:VertexOut;out.local_normal=deformed_normal;out.local_position=position;out.instance_index=instance_index;let model_view=u.view*u.model;out.view_position=(model_view*vec4(position,1.0)).xyz;out.clip=u.projection*vec4(out.view_position,1.0);out.position=(u.model*vec4(position,1.0)).xyz;
     if u.point.z>0.0 {
         var size=u.point.z;if u.point.w>0.0 {size*=u.point.y*0.5/out.clip.w;}
         out.clip=vec4(out.clip.xy+corner*size/u.point.xy*out.clip.w,out.clip.zw);
@@ -278,7 +282,7 @@ var<private> fragment_emissive:vec3<f32>;
     }
     return color;
 }
-struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,backdrop:vec4<f32>,thickness_color:vec3<f32>,thickness:vec4<f32>,thickness_scale:f32,}
+struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,backdrop:vec4<f32>,thickness_color:vec3<f32>,thickness:vec4<f32>,thickness_scale:f32,shadow_position:vec3<f32>,}
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
         for(var i=0u;i<12u;i++) {
@@ -288,7 +292,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
             extension_lod[i]=0.5*log2(max(max(dot(dx,dx),dot(dy,dy)),1e-10));
         }
     }
-    let q0=dpdx(in.view_position);let q1=-dpdy(in.view_position);let normal_uv=select(in.uv,map_uv(2u,in),u.maps.x>0.5);let st0=dpdx(normal_uv);let st1=-dpdy(normal_uv);
+    let q0=dpdx(in.view_position);let q1=-dpdy(in.view_position);var normal_uv=select(in.uv,map_uv(2u,in),u.maps.x>0.5);if u.uv_transforms[6u].w>0.5 {normal_uv.y=1.0-normal_uv.y;}let st0=dpdx(normal_uv);let st1=-dpdy(normal_uv);
     var geometry_normal=normalize(in.normal);
     if u.flags.x>0.5 {geometry_normal=normalize(cross(q0,q1));}
     let view_normal=geometry_normal;
@@ -308,10 +312,10 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if u.maps.y<0.5 {base.a=1.0;}
     if material_kind()==5.0 {let shaded=shade(in,base);if ALPHA_MASK && shaded.a<=u.pbr.w {discard;}return apply_fog(shaded,-in.view_position.z);}
     fragment_diffuse=base;
-    if material_kind()<0.5 {let surf=transform_surface(in,LitSurface(vec3(0.0),0.0,0.0,vec3(0.0),vec4(0.0),vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0));if surf.backdrop.a>=0.0 {base=vec4(mix(base.rgb,surf.backdrop.rgb,surf.backdrop.a),base.a);}return apply_fog(base,-in.view_position.z);}
+    if material_kind()<0.5 {let surf=transform_surface(in,LitSurface(vec3(0.0),0.0,0.0,vec3(0.0),vec4(0.0),vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0,in.position));if surf.backdrop.a>=0.0 {base=vec4(mix(base.rgb,surf.backdrop.rgb,surf.backdrop.a),base.a);}return apply_fog(max(base,vec4(0.0)),-in.view_position.z);}
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;
-    let v=normalize(-in.view_position);
+    let v=select(normalize(-in.view_position),vec3(0.0,0.0,1.0),u.projection[3][3]!=0.0);
     if NORMAL_MAP && u.maps.x>0.5 {
         var t:vec3<f32>;var b:vec3<f32>;
         if abs(in.tangent.w)>0.5 {t=normalize(in.tangent.xyz);b=normalize(in.bitangent);}
@@ -335,7 +339,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
     var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}
-    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0));
+    let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0,in.position));
     n=surface.normal;fragment_normal=n;fragment_emissive=surface.emissive;
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
     let roughness=min(max(surface.roughness,0.0525)+geometry_roughness,1.0);
@@ -358,7 +362,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     var cc=0.0;if PHYSICAL {cc=u.physical[0].x*extension_sample(0u,in).r;}let ccrough=min(max(u.physical[0].y*extension_sample(1u,in).g,0.0525)+geometry_roughness,1.0);
     var sheen=vec3(0.0);if PHYSICAL {sheen=u.physical[1].rgb*extension_sample(3u,in).rgb;}let sheen_max=max(sheen.r,max(sheen.g,sheen.b));let sheenrough=max(u.physical[0].z*extension_sample(4u,in).a,0.07);
     var coat_n=geometry_normal*face;
-    let coat_uv=extension_uv(2u,in);let coat_st0=dpdx(coat_uv);let coat_st1=-dpdy(coat_uv);
+    var coat_uv=extension_uv(2u,in);if u.extension_matrices[6u].w>0.5 {coat_uv.y=1.0-coat_uv.y;}let coat_st0=dpdx(coat_uv);let coat_st1=-dpdy(coat_uv);
     if PHYSICAL && u.extension_sizes[2].x>0.0 {
         var t=normalize(in.tangent.xyz);var b=normalize(in.bitangent);
         if abs(in.tangent.w)<0.5 {
@@ -417,6 +421,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         }
     }
     for(var i=0u;i<light_count();i++) {
+        let light_color=transform_light_color(in,i,u.light_color[i].xyz);
         var light=(u.view*vec4(u.light_position[i].xyz,0.0)).xyz;var attenuation=1.0;
         if light_type(i)==4.0 {
             if material_kind()!=1.0 {continue;}
@@ -426,18 +431,18 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             let uv=ltc_uv(n,v,roughness);let t1=textureSample(ltc_tables,ltc_sampler,uv,0);let t2=textureSample(ltc_tables,ltc_sampler,uv,1);
             let inverse=mat3x3(vec3(t1.x,0.0,t1.y),vec3(0.0,1.0,0.0),vec3(t1.z,0.0,t1.w));
             let identity=mat3x3(vec3(1.0,0.0,0.0),vec3(0.0,1.0,0.0),vec3(0.0,0.0,1.0));
-            total_diffuse+=u.light_color[i].xyz*diffuse*ltc_evaluate(n,v,in.view_position,identity,rect);
-            result+=u.light_color[i].xyz*((f0*t2.x+(vec3(f90)-f0)*t2.y)*ltc_evaluate(n,v,in.view_position,inverse,rect)+diffuse*ltc_evaluate(n,v,in.view_position,identity,rect));
+            total_diffuse+=light_color*diffuse*ltc_evaluate(n,v,in.view_position,identity,rect);
+            result+=light_color*((f0*t2.x+(vec3(f90)-f0)*t2.y)*ltc_evaluate(n,v,in.view_position,inverse,rect)+diffuse*ltc_evaluate(n,v,in.view_position,identity,rect));
                 let uvcc=ltc_uv(coat_n,v,ccrough);let a=textureSample(ltc_tables,ltc_sampler,uvcc,0);let b=textureSample(ltc_tables,ltc_sampler,uvcc,1);
             if cc>0.0 {
                 let inversecc=mat3x3(vec3(a.x,0.0,a.y),vec3(0.0,1.0,0.0),vec3(a.z,0.0,a.w));
-                coat+=u.light_color[i].xyz*(0.04*b.x+0.96*b.y)*ltc_evaluate(coat_n,v,in.view_position,inversecc,rect);
+                coat+=light_color*(0.04*b.x+0.96*b.y)*ltc_evaluate(coat_n,v,in.view_position,inversecc,rect);
             }
             continue;
         }
         if light_type(i)==3.0 {
             let weight=dot(n,light)*0.5+0.5;
-            let hemi=indirect_energy*diffuse*mix(u.light_params[i].xyz,u.light_color[i].xyz,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
+            let hemi=indirect_energy*diffuse*mix(u.light_params[i].xyz,light_color,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
             continue;
         }
         if light_type(i)>0.5 {
@@ -451,10 +456,10 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             let cone=dot(light,direction);let outer=u.light_params[i].z;let inner=u.light_params[i].w;
             attenuation*=select(smoothstep(outer,max(inner,outer+0.000001),cone),select(0.0,1.0,cone>=outer),inner==outer);
         }
-        if RECEIVE_SHADOW {attenuation*=shadow_visibility(i,in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));}
+        if RECEIVE_SHADOW {attenuation*=shadow_visibility(i,surface.shadow_position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));}
         let scattering_half=normalize(light+n*surface.thickness.x);
         let scattering_dot=pow(clamp(dot(v,-scattering_half),0.0,1.0),surface.thickness.w)*surface.thickness_scale;
-        let scattering=(scattering_dot+surface.thickness.y)*surface.thickness_color*surface.thickness.z*u.light_color[i].xyz*attenuation;
+        let scattering=(scattering_dot+surface.thickness.y)*surface.thickness_color*surface.thickness.z*light_color*attenuation;
         total_diffuse+=scattering;result+=scattering;
         let h=normalize(light+v);let nl=clamp(dot(n,light),0.0,1.0);let nv=clamp(dot(n,v),0.0,1.0);
         let nh=clamp(dot(n,h),0.0,1.0);let vh=clamp(dot(v,h),0.0,1.0);
@@ -462,7 +467,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             let coordinate=dot(n,light)*0.5+0.5;let width=fwidth(coordinate)*0.5;
             let gradient=textureSampleLevel(mr_map,mr_sampler,vec2(coordinate,0.0),0.0).r;
             let toon=select(mix(0.7,1.0,smoothstep(0.7-width,0.7+width,coordinate)),gradient,u.custom[0].x>0.5);
-            let d=diffuse*u.light_color[i].xyz*attenuation*toon/3.14159265359;total_diffuse+=d;result+=d;continue;
+            let d=diffuse*light_color*attenuation*toon/3.14159265359;total_diffuse+=d;result+=d;continue;
         }
         if material_kind()>=2.0 {
             var brdf=diffuse/3.14159265359;
@@ -470,8 +475,8 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
                 let fresnel=surface.specular.rgb+(vec3(1.0)-surface.specular.rgb)*exp2((-5.55473*vh-6.98316)*vh);
                 brdf+=fresnel*(surface.specular.w+2.0)/(8.0*3.14159265359)*pow(nh,surface.specular.w)*mr.r;
             }
-            total_diffuse+=diffuse/3.14159265359*u.light_color[i].xyz*attenuation*nl;
-            result+=brdf*u.light_color[i].xyz*attenuation*nl;
+            total_diffuse+=diffuse/3.14159265359*light_color*attenuation*nl;
+            result+=brdf*light_color*attenuation*nl;
             continue;
         }
         let alpha=roughness*roughness;let a2=alpha*alpha;let denom=nh*nh*(a2-1.0)+1.0;
@@ -488,12 +493,33 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             visibility=0.5/max(gv+gl,0.000001);
         }
         let fresnel=mix(f0+(vec3(f90)-f0)*exp2((-5.55473*vh-6.98316)*vh),film_f,film);
-        let irradiance=u.light_color[i].xyz*attenuation*nl;
+        let irradiance=light_color*attenuation*nl;
         let sheen_comp=1.0-sheen_max*max(sheen_albedo(nv,sheenrough),sheen_albedo(nl,sheenrough));
         var diffuse_energy=vec3(1.0);
         if u.physical[3].z>0.5 { diffuse_energy=vec3(1.0)-(dielectric+(vec3(f90)-dielectric)*exp2((-5.55473*vh-6.98316)*vh)); }
+        var specular_brdf=fresnel*distribution*visibility;
+        if PHYSICAL && u.physical[3].w>0.0 {
+            let retro_v=reflect(-v,n);let retro_h=normalize(light+retro_v);
+            let retro_nv=clamp(dot(n,retro_v),0.0,1.0);let retro_nh=clamp(dot(n,retro_h),0.0,1.0);let retro_vh=clamp(dot(retro_v,retro_h),0.0,1.0);
+            let retro_denom=retro_nh*retro_nh*(a2-1.0)+1.0;
+            var retro_distribution=a2/(3.14159265359*retro_denom*retro_denom);
+            var retro_visibility=0.5/max(nl*sqrt(retro_nv*retro_nv*(1.0-a2)+a2)+retro_nv*sqrt(nl*nl*(1.0-a2)+a2),0.000001);
+            if anisotropy>0.0 {
+                let at=mix(alpha,1.0,anisotropy*anisotropy);let ab=alpha;
+                let projected=vec3(ab*dot(anisotropy_t,retro_h),at*dot(anisotropy_b,retro_h),at*ab*retro_nh);
+                let w2=at*ab/max(dot(projected,projected),0.00000001);
+                retro_distribution=at*ab*w2*w2/3.14159265359;
+                let gv=nl*length(vec3(at*dot(anisotropy_t,retro_v),ab*dot(anisotropy_b,retro_v),retro_nv));
+                let gl=retro_nv*length(vec3(at*dot(anisotropy_t,light),ab*dot(anisotropy_b,light),nl));
+                retro_visibility=0.5/max(gv+gl,0.000001);
+            }
+            let retro_weight=exp2((-5.55473*retro_vh-6.98316)*retro_vh);
+            let retro_f=mix(f0+(vec3(f90)-f0)*retro_weight,film_f,film);
+            specular_brdf=mix(specular_brdf,retro_f*retro_distribution*retro_visibility,u.physical[3].w);
+            if u.physical[3].z>0.5 {diffuse_energy=mix(diffuse_energy,vec3(1.0)-(dielectric+(vec3(f90)-dielectric)*retro_weight),u.physical[3].w);}
+        }
         total_diffuse+=diffuse_energy*diffuse/3.14159265359*irradiance*sheen_comp;
-        result+=(diffuse_energy*diffuse/3.14159265359+direct_energy*fresnel*distribution*visibility)*irradiance*sheen_comp;
+        result+=(diffuse_energy*diffuse/3.14159265359+direct_energy*specular_brdf)*irradiance*sheen_comp;
         if sheen_max>0.0 {
             let inv=1.0/(sheenrough*sheenrough);let charlie=(2.0+inv)*pow(max(1.0-nh*nh,0.0078125),inv*0.5)/(2.0*3.14159265359);
             let neubelt=clamp(1.0/(4.0*max(nl+nv-nl*nv,0.000001)),0.0,1.0);
@@ -502,7 +528,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         if cc>0.0 {
             let coatnl=clamp(dot(coat_n,light),0.0,1.0);let coatnv=clamp(dot(coat_n,v),0.0,1.0);let coatnh=clamp(dot(coat_n,h),0.0,1.0);
             let coatf=0.04+0.96*exp2((-5.55473*vh-6.98316)*vh);
-            coat+=vec3(coatf*ggx(ccrough*ccrough,coatnl,coatnv,coatnh))*u.light_color[i].xyz*attenuation*coatnl;
+            coat+=vec3(coatf*ggx(ccrough*ccrough,coatnl,coatnv,coatnh))*light_color*attenuation*coatnl;
         }
     }
     if transmission>0.0 {
@@ -519,5 +545,30 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     if surface.backdrop.a>=0.0 {result+=mix(total_diffuse,surface.backdrop.rgb,surface.backdrop.a)-total_diffuse;}
     result+=sheen_light;
     if cc>0.0 {let nv=clamp(dot(coat_n,v),0.0,1.0);let fcc=0.04+0.96*exp2((-5.55473*nv-6.98316)*nv);result=result*(1.0-cc*fcc)+coat*cc;}
-    return apply_fog(vec4(result,base.a),-in.view_position.z);
+    return apply_fog(max(vec4(result,base.a),vec4(0.0)),-in.view_position.z);
 }
+
+// r186 SunShadowNode: two view-depth cascades with five rotated Vogel PCF taps.
+fn sun_cascade_sample(i:u32,layer:u32,position:vec3<f32>,normal:vec3<f32>,inset:f32)->f32 {
+ let settings=u.shadow_params[i];
+ let projected=u.shadow_matrices[layer]*vec4(position+normal*settings.z,1.0);
+ let ndc=projected.xyz/projected.w;
+ var uv=(ndc.xy*vec2(0.5,-0.5)+0.5)*(1.0-2.0*inset)+inset;
+ if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z>1.0 {return 1.0;}
+ uv*=u.shadow_filters[i].z;
+    let size=vec2<f32>(textureDimensions(shadow_atlas));
+ if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
+ let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
+ // Original atlas is 2 tiles wide: the scalar filter radius uses its width.
+ let scale=u.shadow_filters[i].x/vec2<f32>(textureDimensions(shadow_atlas))*vec2(1.0,0.5);
+ var value=0.0;
+ for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*scale;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
+ return value*0.2;
+}
+fn sun_shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
+ let depth=-(u.view*vec4(position,1.0)).z;var value=1.0;
+ for(var j=1;j>=0;j--){let range=u.shadow_cascades[i*2u+u32(j)];if depth>=range.x && depth<range.y {let sample=sun_cascade_sample(i,u32(u.shadow_params[i].x)-1u+u32(j),position,normal,range.w);value=mix(sample,value,smoothstep(range.z,range.y,depth));}}
+ return value;
+}
+
+fn transform_light_color(surface:VertexOut,tsl_light_index:u32,tsl_light_color:vec3<f32>)->vec3<f32>{return tsl_light_color;}

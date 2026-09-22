@@ -1,0 +1,59 @@
+{
+  "threeRevision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "viewport": [
+    512,
+    512
+  ],
+  "inputResolution": [
+    256,
+    256
+  ],
+  "sampleTexel": [
+    128,
+    128
+  ],
+  "time": 0,
+  "description": "Five consecutive stationary frames after initial render. Current NDC includes negative current projection jitter; previous projection is unjittered. Each value is read directly from the original RGBA16F velocity MRT.",
+  "samples": [
+    {
+      "values": [
+        0.001953125,
+        0.0013017654418945312,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        -0.0019521713256835938,
+        -0.0030364990234375,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0.0029277801513671875,
+        -0.00043392181396484375,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        -0.0009760856628417969,
+        0.0021686553955078125,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0.0009760856628417969,
+        -0.0021686553955078125,
+        0,
+        1
+      ]
+    }
+  ]
+}

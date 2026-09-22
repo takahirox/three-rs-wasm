@@ -14,7 +14,7 @@ const hash=data=>createHash('sha256').update(data).digest('hex');
 try {
  const page=await browser.newPage();
  await page.goto('http://127.0.0.1:8173/reference/three-js/tsl-environment.html?id=webgpu_cubemap_mix');
- for(const name of ['spruit_sunrise_2k.hdr.jpg','ice_planet_close.jpg']) {
+ for(const name of ['spruit_sunrise_2k.hdr.jpg','ice_planet_close.jpg','royal_esplanade_2k.hdr.jpg']) {
   const image=await page.evaluate(async name=>{
    const {UltraHDRLoader}=await import('/.cache/three-r186/examples/jsm/loaders/UltraHDRLoader.js');
    const texture=await new UltraHDRLoader().loadAsync('/web/gallery/assets/tsl-lighting/textures/equirectangular/'+name);

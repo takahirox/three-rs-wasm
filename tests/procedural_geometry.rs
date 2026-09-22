@@ -86,3 +86,27 @@ fn procedural_meshes_match_pinned_three() {
         }
     }
 }
+
+#[test]
+fn sphere_segment_keeps_the_open_latitude_ring() {
+    let g = three_rs_wasm::geometry::SphereGeometry::with_angles(
+        15.,
+        24,
+        24,
+        std::f64::consts::FRAC_PI_2,
+        std::f64::consts::TAU,
+        0.,
+        120_f64.to_radians(),
+    )
+    .unwrap();
+    assert_eq!(g.index.as_ref().unwrap().len(), 3384);
+    let p = &g.attributes["position"];
+    let uv = &g.attributes["uv"];
+    assert_eq!(p.count(), 625);
+    for i in 600..625 {
+        assert!((p.vector3(i).unwrap().y + 7.5).abs() < 1e-5);
+        assert_eq!(uv.get_component(i, 1).unwrap(), 0.);
+    }
+    assert_eq!(uv.get_component(600, 0).unwrap(), 0.);
+    assert_eq!(uv.get_component(624, 0).unwrap(), 1.);
+}

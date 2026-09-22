@@ -20,7 +20,7 @@ const ASSETS: &str = "/web/gallery/assets/tsl-materials";
 fn mesh(s: &mut Scene, g: Arc<BufferGeometry>, m: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(g, Arc::new(m))))
 }
-fn geometries(bytes: &[u8]) -> Result<Vec<BufferGeometry>> {
+pub(super) fn geometries(bytes: &[u8]) -> Result<Vec<BufferGeometry>> {
     let (words, remainder) = bytes.as_chunks::<4>();
     if !remainder.is_empty() {
         return Err(Error::Invalid("geometry byte length"));

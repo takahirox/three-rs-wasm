@@ -90,6 +90,7 @@ impl GpuBuffer {
 pub struct ComputeKernel {
     pipeline: wgpu::ComputePipeline,
     bindings: wgpu::BindGroup,
+    sampled: Option<wgpu::BindGroup>,
 }
 impl ComputeKernel {
     /// WGSL uses group 0, consecutive bindings matching `buffers`, and `main`.
@@ -138,6 +139,30 @@ impl ComputeKernel {
             wgpu::StorageTextureAccess,
             wgpu::TextureViewDimension,
         )],
+    ) -> Result<Self> {
+        Self::build(renderer, wgsl, buffers, textures, &[]).await
+    }
+    /// Read sampled 2D textures in group 1 (texture/sampler pairs). Buffer
+    /// bindings remain in group 0; both binding groups stay resident.
+    pub async fn with_sampled_textures(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        sampled: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
+        Self::build(renderer, wgsl, buffers, &[], sampled).await
+    }
+    async fn build(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(
+            &wgpu::TextureView,
+            wgpu::TextureFormat,
+            wgpu::StorageTextureAccess,
+            wgpu::TextureViewDimension,
+        )],
+        sampled: &[(&wgpu::TextureView, &wgpu::Sampler)],
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
@@ -200,13 +225,70 @@ impl ComputeKernel {
                 }))
                 .collect::<Vec<_>>(),
         });
+        let sampled_layout = (!sampled.is_empty()).then(|| {
+            device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                label: Some("compute sampled textures"),
+                entries: &sampled
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(i, _)| {
+                        [
+                            wgpu::BindGroupLayoutEntry {
+                                binding: (i * 2) as u32,
+                                visibility: wgpu::ShaderStages::COMPUTE,
+                                ty: wgpu::BindingType::Texture {
+                                    sample_type: wgpu::TextureSampleType::Float {
+                                        filterable: true,
+                                    },
+                                    view_dimension: wgpu::TextureViewDimension::D2,
+                                    multisampled: false,
+                                },
+                                count: None,
+                            },
+                            wgpu::BindGroupLayoutEntry {
+                                binding: (i * 2 + 1) as u32,
+                                visibility: wgpu::ShaderStages::COMPUTE,
+                                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                                count: None,
+                            },
+                        ]
+                    })
+                    .collect::<Vec<_>>(),
+            })
+        });
+        let sampled = sampled_layout.as_ref().map(|layout| {
+            device.create_bind_group(&wgpu::BindGroupDescriptor {
+                label: Some("compute sampled textures"),
+                layout,
+                entries: &sampled
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(i, (view, sampler))| {
+                        [
+                            wgpu::BindGroupEntry {
+                                binding: (i * 2) as u32,
+                                resource: wgpu::BindingResource::TextureView(view),
+                            },
+                            wgpu::BindGroupEntry {
+                                binding: (i * 2 + 1) as u32,
+                                resource: wgpu::BindingResource::Sampler(sampler),
+                            },
+                        ]
+                    })
+                    .collect::<Vec<_>>(),
+            })
+        });
+        let mut layouts = vec![&layout];
+        if let Some(layout) = sampled_layout.as_ref() {
+            layouts.push(layout);
+        }
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("application compute"),
             source: wgpu::ShaderSource::Wgsl(wgsl.into()),
         });
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: None,
-            bind_group_layouts: &[&layout],
+            bind_group_layouts: &layouts,
             push_constant_ranges: &[],
         });
         let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
@@ -220,7 +302,11 @@ impl ComputeKernel {
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }
-        Ok(Self { pipeline, bindings })
+        Ok(Self {
+            pipeline,
+            bindings,
+            sampled,
+        })
     }
     pub fn dispatch(&self, renderer: &Renderer, workgroups: [u32; 3]) -> Result<()> {
         if workgroups.iter().any(|&n| {
@@ -236,6 +322,9 @@ impl ComputeKernel {
             let mut pass = encoder.begin_compute_pass(&Default::default());
             pass.set_pipeline(&self.pipeline);
             pass.set_bind_group(0, &self.bindings, &[]);
+            if let Some(bindings) = &self.sampled {
+                pass.set_bind_group(1, bindings, &[]);
+            }
             pass.dispatch_workgroups(workgroups[0], workgroups[1], workgroups[2]);
         }
         renderer.queue.submit([encoder.finish()]);

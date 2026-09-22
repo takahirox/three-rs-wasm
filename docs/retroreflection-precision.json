@@ -1,0 +1,72 @@
+{
+  "upstream": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "example": "webgpu_materials_retroreflection",
+  "dpr": 2,
+  "viewport": [
+    512,
+    512
+  ],
+  "diagnostic": "Original Three.js versus the same shader with +1 Float32 ULP on each hashBlur UV component",
+  "results": [
+    {
+      "state": 0,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.10877545674641927
+    },
+    {
+      "state": 1,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.10877545674641927
+    },
+    {
+      "state": 2,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.10877545674641927
+    },
+    {
+      "state": 3,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.10877545674641927
+    },
+    {
+      "state": 4,
+      "fraction": 0.0010738372802734375,
+      "meanError": 0.07892767588297527
+    },
+    {
+      "state": 5,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.10877545674641927
+    },
+    {
+      "state": 6,
+      "fraction": 0.0017070770263671875,
+      "meanError": 0.0882708231608073
+    },
+    {
+      "state": 7,
+      "fraction": 0.0052394866943359375,
+      "meanError": 0.14540799458821616
+    },
+    {
+      "state": 8,
+      "fraction": 0.0030670166015625,
+      "meanError": 0.13203557332356772
+    },
+    {
+      "state": 9,
+      "fraction": 0.0031728744506835938,
+      "meanError": 0.13005892435709634
+    },
+    {
+      "state": 10,
+      "fraction": 0.00275421142578125,
+      "meanError": 0.12550067901611328
+    },
+    {
+      "state": 11,
+      "fraction": 0.00210546875,
+      "meanError": 0.09564518229166667
+    }
+  ]
+}

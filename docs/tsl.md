@@ -619,3 +619,98 @@ The reference fixture adds `matLine.needsUpdate = true` in that callback, so the
 port's functioning offset control is compared with the original shader after
 invalidation. Other changes to the reference are deterministic initial data,
 time, UI capture and layout. No screenshot is used as rendered scene content.
+
+## Procedural materials, planar reflection and compute skinning
+
+The procedural examples translate pinned r186 node graphs into GPU WGSL.
+`tsl::materialx` provides separate 2D/3D Perlin, cell, Worley and fractal
+kernels; native tests compare their output against saved official GPU samples.
+`tsl::wood::WoodNodes` uses the official presets and shader equations. The
+pinned wood example's descending `mapRange` clamp and captured clearcoat node
+are retained, including their upstream control behavior.
+
+`reflection::planar_camera` reflects the camera and adds an oblique near plane.
+Reflection Roughness uses a resident half-resolution HDR target, GPU mipmaps
+and bicubic LOD sampling. Composed reflection cameras preserve the incoming
+projection, including a previous bounce; the camera oracle runs the pinned
+ReflectorNode itself without rasterization.
+`compute_skinning::ComputeSkinning` writes world positions and displacement to
+resident GPU storage. Per-frame CPU work uploads bone palettes; it does not
+skin vertices. Morph-target meshes are rejected explicitly by this API.
+
+`Light::Sun` fits two stabilized shadow cascades to the view camera, with the
+r186 practical split, overlap fade and five-sample PCF. Directional and spot
+shadows also use the r186 Vogel PCF; basic nearest depth comparison is optional. A shadow node graph can
+provide GPU displacement and a binary fragment mask via
+`tsl::surface::shadow_program`. `shadow_program_with_storage` also accepts
+read-only GPU storage, including per-instance displacement shared with a color
+pass. These APIs do not imply arbitrary textured or translucent shadow support.
+`Shadow::map_size` optionally sets a per-light resolution; omitted values inherit
+the scene default. Atlas packing preserves each light’s PCF texel size.
+`SurfaceNodes::vertex_normal` evaluates local normals in the vertex stage and
+shares expressions with displacement. The interpolated normal is available as
+`normal_local()` in the fragment stage.
+
+Official image comparisons and warm GPU resource-residency checks are in
+`tests/browser/tsl-procedural.spec.js`. Passing those checks is not a claim of
+CPU/GPU timing equivalence.
+
+`readback::RgbaReadback` asynchronously copies a selected RGBA8 MRT attachment
+through a reusable, padded staging buffer. Native callers poll the device;
+browser completion callbacks request presentation without blocking. The MRT
+readback example intentionally uploads the returned bytes into a DataTexture,
+matching the original GPU-to-CPU-to-GPU path.
+
+
+`SurfaceNodes::light_color` transforms a listed light’s linear RGB per fragment,
+before attenuation and shadows. `light_index()` and `light_color()` are valid
+only in that graph. The scene’s separate ambient term is unaffected.
+`build_with_texture_types` binds explicitly typed surface inputs, including raw
+GPU depth attachments. `depth_effect_with_textures` combines depth with sampled
+color/normal attachments for fullscreen effects; `tsl::pixelation` uses these
+inputs to implement the r186 depth and normal outline rules.
+Orthographic shading and `position_view_direction()` use parallel view rays.
+
+`BufferCompute::with_textures` reads sampled 2D GPU textures while updating
+resident storage buffers. Compute sampling requires an explicit mip level.
+No CPU readback is needed for collision maps. `BufferReadback` separately provides
+asynchronous copies of aligned storage-buffer ranges, used by the audio example
+to pass GPU-processed samples to Web Audio. Frequency analysis remains Web Audio
+work, as in the original; its small spectrum texture is updated for visualization.
+
+`SurfaceNodes::normal` accepts a view-space normal. Use
+`surface::transform_normal_to_view(local_normal)` to include the inverse-transpose
+model transform and camera view; this also supports nonuniform model scale.
+`MeshPhysicalMaterial::retroreflectivity` blends direct GGX reflection toward the
+light source using r186's reflected view direction, including anisotropic GGX and
+the corresponding diffuse Fresnel energy. It defaults to zero; indirect lighting
+is unchanged, matching the official material.
+
+`tsl::motion::MotionVectors` compiles current/previous clip coordinates in the
+vertex shader, interpolating them before the fragment-stage NDC subtraction.
+`PreviousPose` uploads only previous bone palettes and morph weights, and reuses
+Core's resident influence/morph storage to evaluate the previous deformation on
+the GPU. Call its update once per animation frame; custom displacement requires
+its own previous parameters. These are not CPU skinning or vertex-readback APIs.
+
+`tsl::temporal::TemporalAA` owns linear RGBA16F resolve/history textures and a
+previous Depth32Float buffer. It implements r186 TRAA variance clipping, depth
+reprojection, subpixel correction, luminance weighting and the 32-step Halton
+sequence. `TemporalAA::upscaling` adds TAAU's nine-tap Gaussian reconstruction and
+separate input/output resolutions; use `set_output_size` before applying it.
+The caller supplies an MRT containing beauty and NDC velocity. MSAA, logarithmic
+and reversed depth are outside this API's scope. RCAS sharpening reuses
+`tsl::fsr1::rcas`; `display::motion_blur` preserves r186's 17/16 default sample gain.
+
+The pinned TAAU example has two relevant upstream behaviors. VelocityNode compiles
+before the unjittered projection override is installed, so its current clip uses
+camera jitter while its previous clip uses the unjittered projection. The example
+adapter preserves this behavior; ordinary MotionVectors callers can supply fully
+unjittered matrices. Also, TAAU seeds a second history attachment for feature locks,
+but only copies the resolve's color attachment back afterwards. That lock input
+stays zero; this port omits its unused texture, preserving the shader result.
+
+The TAAU example also constructs SharpenNode with the number `0.2`. r186 turns
+that into a ConstNode; the GUI changes its value without invalidating the
+compiled material, leaving sharpening at 0.2. The adapter retains this behavior,
+while the reusable RCAS API still accepts dynamic uniform nodes.

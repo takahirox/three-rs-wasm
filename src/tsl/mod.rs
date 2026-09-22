@@ -134,6 +134,7 @@ enum Expr {
     VertexIndex,
     StorageElement(usize, Node),
     PositionLocal,
+    MotionVector,
     NormalWorld,
     NormalLocal,
     FragmentDepth,
@@ -145,6 +146,7 @@ enum Expr {
     Output,
     BaseColor,
     LitProperty(&'static str, Type),
+    LightProperty(&'static str, Type),
     ScreenCoordinate,
     ScreenSize,
     Uniform(usize, Type),
@@ -262,6 +264,14 @@ pub fn emissive() -> Node {
 }
 pub fn position_world() -> Node {
     Node::new(Expr::PositionWorld)
+}
+/// Current light's index in a surface light-color graph.
+pub fn light_index() -> Node {
+    Node::new(Expr::LightProperty("tsl_light_index", Type::Uint))
+}
+/// Current light's linear color/intensity before distance and shadow attenuation.
+pub fn light_color() -> Node {
+    Node::new(Expr::LightProperty("tsl_light_color", Type::Vec3))
 }
 pub fn view_z() -> Node {
     Node::new(Expr::ViewZ)
@@ -416,6 +426,10 @@ impl Node {
     }
     pub fn to_float(&self) -> Self {
         self.unary("f32")
+    }
+    /// WGSL scalar conversion: finite floats truncate toward zero and saturate.
+    pub fn to_uint(&self) -> Self {
+        self.unary("u32")
     }
 }
 macro_rules! operator {
@@ -628,7 +642,11 @@ fn effect_source(color: &Node, textures: usize, depth: bool) -> Result<String> {
     Ok(format!(
         "{}\n{functions}\nfn effect(uv:vec2<f32>)->vec4<f32>{{\n{}return {value};\n}}",
         if depth {
-            "@group(1) @binding(0) var tsl_depth:texture_depth_2d;".into()
+            format!(
+                "{}\n@group(1) @binding({}) var tsl_depth:texture_depth_2d;",
+                texture_declarations(textures),
+                textures * 2
+            )
         } else {
             texture_declarations(textures)
         },
@@ -678,6 +696,8 @@ struct Compiler {
     buffers: Vec<Type>,
     depth: bool,
     environment: bool,
+    lighting: bool,
+    sampled_compute: bool,
     body: String,
     values: HashMap<usize, (Type, String)>,
     functions: HashMap<String, String>,
@@ -691,6 +711,8 @@ impl Compiler {
             buffers: vec![],
             depth: false,
             environment: false,
+            lighting: false,
+            sampled_compute: false,
             body: String::new(),
             values: HashMap::new(),
             functions: HashMap::new(),
@@ -707,7 +729,9 @@ impl Compiler {
             Texture::Input if self.stage == Stage::Effect => {
                 Ok(("input_texture".into(), "input_sampler".into()))
             }
-            Texture::External(i) if self.stage != Stage::Compute && i < self.textures => {
+            Texture::External(i)
+                if (self.stage != Stage::Compute || self.sampled_compute) && i < self.textures =>
+            {
                 Ok((format!("tsl_texture_{i}"), format!("tsl_sampler_{i}")))
             }
             _ => Err(Error::Invalid("TSL texture binding for this stage")),
@@ -776,6 +800,12 @@ impl Compiler {
                 }
                 (ty, format!("tsl_attribute_{i}[{value}]"))
             }
+            Expr::MotionVector => {
+                if self.stage != Stage::Output {
+                    return Err(Error::Invalid("motion output stage"));
+                }
+                (Type::Vec2,"(surface.motion_current.xy/surface.motion_current.w-surface.motion_previous.xy/surface.motion_previous.w)".into())
+            }
             Expr::PositionLocal | Expr::NormalWorld => {
                 if !matches!(self.stage, Stage::Fragment | Stage::Output) {
                     return Err(Error::Invalid("TSL fragment attribute stage"));
@@ -820,11 +850,20 @@ impl Compiler {
                 };
                 (
                     Type::Vec3,
-                    format!(
-                        "{}normalize({surface}.{field})",
-                        if *field == "view_position" { "-" } else { "" }
-                    ),
+                    if *field == "view_position" {
+                        format!(
+                            "select(-normalize({surface}.{field}),vec3(0.0,0.0,1.0),u.projection[3][3]!=0.0)"
+                        )
+                    } else {
+                        format!("normalize({surface}.{field})")
+                    },
                 )
+            }
+            Expr::LightProperty(name, ty) => {
+                if !self.lighting {
+                    return Err(Error::Invalid("TSL light input outside light-color graph"));
+                }
+                (*ty, (*name).into())
             }
             Expr::LitProperty(name, ty) => {
                 if self.stage != Stage::Output {
@@ -987,7 +1026,19 @@ impl Compiler {
                 if *op == "fwidth" && !matches!(self.stage, Stage::Fragment | Stage::Effect) {
                     return Err(Error::Invalid("TSL derivative stage"));
                 }
-                if *op == "f32" {
+                if *op == "u32" {
+                    if ![Type::Float, Type::Bool, Type::Uint].contains(&t) {
+                        return Err(Error::Invalid("TSL uint conversion"));
+                    }
+                    (
+                        Type::Uint,
+                        match t {
+                            Type::Bool => format!("select(0u,1u,{v})"),
+                            Type::Float => format!("u32({v})"),
+                            _ => v,
+                        },
+                    )
+                } else if *op == "f32" {
                     if ![Type::Float, Type::Bool, Type::Uint].contains(&t) {
                         return Err(Error::Invalid("TSL float conversion"));
                     }
@@ -1039,8 +1090,10 @@ impl Compiler {
                         format!("{op}({},{})", a.1, b.1),
                     )
                 } else if ["==", ">", "<"].contains(op) {
-                    if a.0 != Type::Float || b.0 != Type::Float {
-                        return Err(Error::Invalid("TSL comparison requires scalars"));
+                    if a.0 != b.0 || !matches!(a.0, Type::Float | Type::Uint) {
+                        return Err(Error::Invalid(
+                            "TSL comparison requires matching numeric scalars",
+                        ));
                     }
                     (Type::Bool, format!("({} {op} {})", a.1, b.1))
                 } else {
@@ -1143,7 +1196,7 @@ impl Compiler {
                 {
                     return Err(Error::Invalid("TSL 2D sample requires a 2D texture"));
                 }
-                if self.stage == Stage::Vertex && args.len() != 2 {
+                if matches!(self.stage, Stage::Vertex | Stage::Compute) && args.len() != 2 {
                     return Err(Error::Invalid("TSL vertex texture requires explicit level"));
                 }
                 let mut values = Vec::new();
@@ -1428,6 +1481,7 @@ pub mod fsr1;
 pub mod oit;
 
 pub mod lines;
+pub mod materialx;
 
 /// Discard fragments at or below a node-controlled alpha threshold.
 pub fn alpha_test(color: Node, threshold: Node) -> Node {
@@ -1438,3 +1492,39 @@ pub fn alpha_test(color: Node, threshold: Node) -> Node {
 pub fn srgb_to_linear(color: Node) -> Node {
     WgslFn::new("tsl_srgb_to_linear", "fn tsl_srgb_to_linear(c:vec3<f32>)->vec3<f32>{return select(c*0.0773993808,pow(c*0.9478672986+vec3(0.0521327014),vec3(2.4)),c>vec3(0.04045));}", &[Type::Vec3], Type::Vec3).unwrap().call(&[color])
 }
+
+pub mod wood;
+
+/// Fragment face orientation, including double-sided material output graphs.
+pub fn front_facing() -> Node {
+    WgslFn::new(
+        "tsl_front_facing",
+        "fn tsl_front_facing()->bool{return fragment_front;}",
+        &[],
+        Type::Bool,
+    )
+    .unwrap()
+    .call(&[])
+}
+
+/// Fullscreen graph reading a depth attachment and additional color/normal textures.
+pub async fn depth_effect_with_textures(
+    renderer: &Renderer,
+    format: wgpu::TextureFormat,
+    color: &Node,
+    depth: &wgpu::TextureView,
+    textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+) -> Result<Effect> {
+    Effect::with_depth_and_textures(
+        renderer,
+        format,
+        &effect_source(color, textures.len(), true)?,
+        depth,
+        textures,
+    )
+    .await
+}
+pub mod pixelation;
+
+pub mod motion;
+pub mod temporal;

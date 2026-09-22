@@ -1,0 +1,7 @@
+{
+  "file": "reflection-tree.bin",
+  "count": 7350,
+  "source": "examples/webgpu_reflection.html",
+  "source_sha256": "513993894ba8102b87dea8401bd9ef1abb5b1641e239435395106ce048194e44",
+  "sha256": "7c1be5cf1a63acec5c8f9e40edfec9991543e38ade2f81e8e246cdcd85d3b2ab"
+}

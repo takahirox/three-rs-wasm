@@ -57,3 +57,16 @@ pub fn cube(texture: Texture, direction: Node) -> Node {
 pub fn volume(texture: Texture, coordinate: Node) -> Node {
     WgslFn::new("tsl_sample_volume", "fn tsl_sample_volume(t:texture_3d<f32>,s:sampler,p:vec3<f32>)->vec4<f32>{return textureSample(t,s,p);}", &[Type::Texture3D,Type::Sampler,Type::Vec3], Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate])
 }
+
+/// Four bilinear taps per level, interpolated between neighboring mip levels.
+/// The input texture must have a mip chain and a linear sampler.
+pub fn texture_bicubic_level(texture: Texture, coordinate: Node, level: Node) -> Node {
+    WgslFn::new(
+        "tsl_bicubic",
+        include_str!("bicubic.wgsl"),
+        &[Type::Texture, Type::Sampler, Type::Vec2, Type::Float],
+        Type::Vec4,
+    )
+    .unwrap()
+    .call(&[texture.node(), texture.sampler(), coordinate, level])
+}

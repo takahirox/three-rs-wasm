@@ -10,6 +10,61 @@ pub struct GpuTexture {
     pub sampler: wgpu::Sampler,
 }
 impl GpuTexture {
+    /// Upload linear HDR faces in +X,-X,+Y,-Y,+Z,-Z order, retaining the cube
+    /// for direct sky sampling as well as PMREM prefiltering. No mip generation.
+    pub fn from_cube_hdr(
+        renderer: &crate::renderer::Renderer,
+        size: u32,
+        rgba: &[half::f16],
+    ) -> Result<Self> {
+        let device = &renderer.device;
+        let queue = &renderer.queue;
+        if size == 0
+            || size > device.limits().max_texture_dimension_2d
+            || rgba.len() != size as usize * size as usize * 24
+        {
+            return Err(Error::Invalid("HDR cube dimensions/data"));
+        }
+        let cube = device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("HDR cube source"),
+            size: wgpu::Extent3d {
+                width: size,
+                height: size,
+                depth_or_array_layers: 6,
+            },
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::Rgba16Float,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        });
+        queue.write_texture(
+            cube.as_image_copy(),
+            bytemuck::cast_slice(rgba),
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(size * 8),
+                rows_per_image: Some(size),
+            },
+            cube.size(),
+        );
+        let view = cube.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::Cube),
+            ..Default::default()
+        });
+        let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        Ok(Self {
+            texture: cube,
+            view,
+            sampler,
+        })
+    }
+
     /// Upload +X,-X,+Y,-Y,+Z,-Z cube faces and generate their mip chains on the GPU.
     pub fn from_cube_rgba(
         renderer: &crate::renderer::Renderer,

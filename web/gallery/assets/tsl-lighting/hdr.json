@@ -14,5 +14,13 @@
     "sha256": "664e55c07cad888a73927af4358205548f4eb0049110be2aa8c2275c2a5c0335",
     "width": 2048,
     "height": 1024
+  },
+  {
+    "source": "textures/equirectangular/royal_esplanade_2k.hdr.jpg",
+    "source_sha256": "b05a664c5fb022ddc6104f253a6684570e99876d30b41a220c8dea4482df6d64",
+    "file": "royal_esplanade_2k.hdr.jpg.rgba16f.png",
+    "sha256": "e61cd69aab3d58345c8276922f12d960c11bef4f16e3d180eb7fb1e455433036",
+    "width": 2048,
+    "height": 1024
   }
 ]

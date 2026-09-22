@@ -119,3 +119,14 @@ fn tsl_lensflare(t:texture_2d<f32>,s:sampler,p:vec2<f32>,tint:vec3<f32>,options:
  return result;
 }"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec3,Type::Vec4],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,tint,options])
 }
+
+/// r186 MotionBlur: one center sample plus `samples` offset samples, divided by
+/// `samples` (including the original 17/16 gain for the default 16). Motion is
+/// supplied in NDC by the example, without an additional UV conversion.
+pub fn motion_blur(texture: Texture, coordinate: Node, velocity: Node, samples: Node) -> Node {
+    WgslFn::new("tsl_motion_blur",r#"
+fn tsl_motion_blur(t:texture_2d<f32>,s:sampler,p:vec2<f32>,velocity:vec2<f32>,samples:u32)->vec4<f32>{
+ let count=max(samples,2u);let f=f32(count);var color=textureSample(t,s,p);
+ for(var i=1u;i<=count;i++){let offset=velocity*(f32(i)/(f-1.0)-0.5);color+=textureSampleLevel(t,s,p+offset,0.0);}return color/f;
+}"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec2,Type::Uint],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,velocity,samples])
+}

@@ -688,6 +688,33 @@ impl BoxGeometry {
 pub struct SphereGeometry;
 impl SphereGeometry {
     pub fn build(radius: f64, width_segments: u32, height_segments: u32) -> Result<BufferGeometry> {
+        Self::with_angles(
+            radius,
+            width_segments,
+            height_segments,
+            0.,
+            std::f64::consts::TAU,
+            0.,
+            std::f64::consts::PI,
+        )
+    }
+    /// Sphere segment with the r186 pole UV and triangle conventions.
+    pub fn with_angles(
+        radius: f64,
+        width_segments: u32,
+        height_segments: u32,
+        phi_start: f64,
+        phi_length: f64,
+        theta_start: f64,
+        theta_length: f64,
+    ) -> Result<BufferGeometry> {
+        if ![radius, phi_start, phi_length, theta_start, theta_length]
+            .iter()
+            .all(|v| v.is_finite())
+        {
+            return Err(Error::Invalid("sphere parameters"));
+        }
+        let theta_end = (theta_start + theta_length).min(std::f64::consts::PI);
         let width_segments = width_segments.max(3);
         let height_segments = height_segments.max(2);
         let mut p = Vec::new();
@@ -696,17 +723,17 @@ impl SphereGeometry {
         let mut indices = Vec::new();
         for y in 0..=height_segments {
             let v = y as f64 / height_segments as f64;
-            let offset = if y == 0 {
+            let offset = if y == 0 && theta_start == 0. {
                 0.5 / width_segments as f64
-            } else if y == height_segments {
+            } else if y == height_segments && theta_end == std::f64::consts::PI {
                 -0.5 / width_segments as f64
             } else {
                 0.0
             };
             for x in 0..=width_segments {
                 let u = x as f64 / width_segments as f64;
-                let phi = u * std::f64::consts::TAU;
-                let theta = v * std::f64::consts::PI;
+                let phi = phi_start + u * phi_length;
+                let theta = theta_start + v * theta_length;
                 let position = Vector3::new(
                     -radius * phi.cos() * theta.sin(),
                     radius * theta.cos(),
@@ -723,10 +750,10 @@ impl SphereGeometry {
                 let a = b + 1;
                 let c = b + width_segments + 1;
                 let d = c + 1;
-                if y != 0 {
+                if y != 0 || theta_start > 0. {
                     indices.extend([a, b, d]);
                 }
-                if y != height_segments - 1 {
+                if y != height_segments - 1 || theta_end < std::f64::consts::PI {
                     indices.extend([b, c, d]);
                 }
             }

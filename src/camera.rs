@@ -38,6 +38,13 @@ pub struct PerspectiveCamera {
     pub film_gauge: f64,
     pub film_offset: f64,
     pub view: Option<ViewOffset>,
+    /// Optional near clipping plane in camera space, for planar reflections.
+    /// Positive plane distances are retained. Uses WebGPU's zero-to-one depth.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oblique_clip_plane: Option<Vector4>,
+    /// Explicit projection for composed/recursive render cameras.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projection_override: Option<Matrix4>,
 }
 impl Default for PerspectiveCamera {
     fn default() -> Self {
@@ -50,11 +57,19 @@ impl Default for PerspectiveCamera {
             film_gauge: 35.0,
             film_offset: 0.0,
             view: None,
+            oblique_clip_plane: None,
+            projection_override: None,
         }
     }
 }
 impl PerspectiveCamera {
     pub fn projection_matrix(&self) -> Result<Matrix4> {
+        if let Some(matrix) = self.projection_override {
+            if !matrix.is_finite() || matrix.determinant() == 0. {
+                return Err(Error::Invalid("custom camera projection"));
+            }
+            return Ok(matrix);
+        }
         if ![
             self.fov,
             self.aspect,
@@ -92,7 +107,7 @@ impl PerspectiveCamera {
         let bottom = top - height;
         let n = self.near;
         let f = self.far;
-        Ok(Matrix4::from_cols_array(&[
+        let projection = Matrix4::from_cols_array(&[
             2.0 * n / (right - left),
             0.0,
             0.0,
@@ -113,7 +128,11 @@ impl PerspectiveCamera {
                 -f * n / (f - n)
             },
             0.0,
-        ]))
+        ]);
+        match self.oblique_clip_plane {
+            Some(plane) => crate::reflection::oblique_projection(projection, plane),
+            None => Ok(projection),
+        }
     }
     pub fn set_focal_length(&mut self, focal_length: f64) {
         self.fov = (0.5 * self.film_gauge / self.aspect.max(1.0) / focal_length)

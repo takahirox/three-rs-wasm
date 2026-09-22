@@ -1,0 +1,6 @@
+{
+  "file": "retro-base.json",
+  "sha256": "59227188a86504c0c9827dcd50f083a74d4c6a838dbb5e3da4724851ab0b78a2",
+  "source": "examples/webgpu_materials_retroreflection.html",
+  "source_sha256": "8bbf671c2a3ae50537d8a99b250b8d2071027ebb5387733a27997533cb79fd67"
+}

@@ -23,6 +23,7 @@ assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file() and not path.name.endswith('.rgba16f.png') and path.name != 'hdr.json'})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-viewport')) for path in (ROOT/'web/gallery/assets/tsl-viewport').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-materials')) for path in (ROOT/'web/gallery/assets/tsl-materials').rglob('*') if path.is_file() and path.suffix not in ['.bin','.json']})
+assets.update({'tsl-procedural/checker.png':'examples/textures/checker.png','tsl-procedural/webgpu-audio-processing.mp3':'examples/sounds/webgpu-audio-processing.mp3','tsl-procedural/FloorsCheckerboard_S_Normal.jpg':'examples/textures/floors/FloorsCheckerboard_S_Normal.jpg','tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg':'examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg','tsl-procedural/decal-diffuse.png':'examples/textures/decal/decal-diffuse.png','tsl-procedural/decal-normal.jpg':'examples/textures/decal/decal-normal.jpg','tsl-procedural/pedestrian_overpass_1k.hdr':'examples/textures/equirectangular/pedestrian_overpass_1k.hdr','tsl-procedural/san_giuseppe_bridge_2k.hdr':'examples/textures/equirectangular/san_giuseppe_bridge_2k.hdr','tsl-procedural/gears.glb':'examples/models/gltf/gears.glb','tsl-procedural/Xbot.glb':'examples/models/gltf/Xbot.glb','tsl-procedural/uv_grid_directx.jpg':'examples/textures/uv_grid_directx.jpg'})
 assets.update({'tsl-primitives/'+record['file']:'examples/'+record['source'] for record in json.loads((ROOT/'web/gallery/assets/tsl-primitives/manifest.json').read_text()) if 'source' in record})
 extra_assets={'web/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
@@ -71,3 +72,21 @@ for record in json.loads((ROOT/'web/gallery/assets/tsl-materials/geometry.json')
 
 for record in json.loads((ROOT/'web/gallery/assets/tsl-primitives/manifest.json').read_text()):
  assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-primitives'/record['file']).read_bytes()).hexdigest()==record['sha256']
+
+for record in json.loads((ROOT/"web/gallery/assets/tsl-procedural/geometry.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/gallery/assets/tsl-procedural"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+ with tarfile.open(ARCHIVE) as tar:
+  entry=next(e for e in tar if e.name.split("/",1)[-1]=="examples/"+record["source"])
+  assert hashlib.sha256(tar.extractfile(entry).read()).hexdigest()==record["source_sha256"]
+
+record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/reflection-tree.json').read_text())
+assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
+assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
+
+record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/snow-teapot-manifest.json').read_text())
+assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
+assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
+
+record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/retro-base-manifest.json').read_text())
+assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
+assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']

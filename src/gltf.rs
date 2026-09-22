@@ -5,6 +5,7 @@ use crate::{
 use std::sync::Arc;
 mod animation;
 pub use animation::{AnimatedGltf, GltfInstance, import_animated, import_animated_decoded};
+#[derive(Clone)]
 pub struct ImportedGltf {
     pub bounds: Box3,
     pub triangles: usize,

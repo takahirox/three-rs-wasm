@@ -196,7 +196,12 @@ impl RenderTarget {
                     wgpu::TextureFormat::Depth32Float
                 },
                 usage: wgpu::TextureUsages::RENDER_ATTACHMENT
-                    | wgpu::TextureUsages::TEXTURE_BINDING,
+                    | wgpu::TextureUsages::TEXTURE_BINDING
+                    | if samples == 1 && !options.stencil_buffer {
+                        wgpu::TextureUsages::COPY_SRC | wgpu::TextureUsages::COPY_DST
+                    } else {
+                        wgpu::TextureUsages::empty()
+                    },
                 view_formats: &[],
             }))
         } else {
@@ -244,6 +249,7 @@ impl RenderTarget {
             } else {
                 Some(1)
             },
+            mip_level_count: Some(1),
             ..Default::default()
         })
     }

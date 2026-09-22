@@ -92,6 +92,7 @@ struct Uniforms {
     shadow_matrices: [[f32; 16]; 48],
     shadow_params: [[f32; 4]; 8],
     shadow_filters: [[f32; 4]; 8],
+    shadow_cascades: [[f32; 4]; 16],
     custom: [[f32; 4]; 16],
     clipping: crate::clipping::Clipping,
     physical: [[f32; 4]; 4],
@@ -113,7 +114,7 @@ pub struct Renderer {
     layout: wgpu::BindGroupLayout,
     viewport_layout: wgpu::BindGroupLayout,
     shader: wgpu::ShaderModule,
-    shadows: crate::shadow::ShadowRenderer,
+    pub(crate) shadows: crate::shadow::ShadowRenderer,
     geometry: RefCell<crate::geometry_gpu::Cache>,
     deformation: RefCell<crate::deformation_gpu::Cache>,
     pipelines: RefCell<HashMap<PipelineKey, wgpu::RenderPipeline>>,
@@ -923,6 +924,13 @@ impl Renderer {
                     shadow_lights.push(h);
                 }
                 match light {
+                    Light::Sun { color, intensity } => {
+                        let d = n.world_position().normalize_or_zero();
+                        light_position[light_count] = d.extend(0.).as_vec4().to_array();
+                        light_color[light_count] =
+                            (color.0 * *intensity).extend(1.).as_vec4().to_array();
+                        light_count += 1;
+                    }
                     Light::RectArea {
                         color,
                         intensity,
@@ -1042,6 +1050,8 @@ impl Renderer {
             scene,
             &visible,
             &shadow_lights,
+            camera_data,
+            camera_world,
             &mut self.geometry.borrow_mut(),
             &mut self.deformation.borrow_mut(),
         )?;
@@ -1242,6 +1252,7 @@ impl Renderer {
                             [column[0] as f32, column[1] as f32, column[2] as f32, 0.0]
                         });
                         columns[2][3] = t.tex_coord as f32;
+                        columns[0][3] = f32::from(t.flip_y);
                         columns
                     } else {
                         [
@@ -1272,6 +1283,7 @@ impl Renderer {
                                 m.sheen_roughness,
                                 m.anisotropy,
                                 m.anisotropy_rotation,
+                                m.retroreflectivity,
                             ]
                             .iter()
                             .all(|v| v.is_finite())
@@ -1299,7 +1311,7 @@ impl Renderer {
                                     m.anisotropy_rotation as f32,
                                     1.0,
                                     f32::from(m.base.energy_conservation),
-                                    0.0,
+                                    m.retroreflectivity.clamp(0.0, 1.0) as f32,
                                 ],
                             ]
                         }
@@ -1530,6 +1542,7 @@ impl Renderer {
                     shadow_matrices: shadows.matrices,
                     shadow_params: shadows.params,
                     shadow_filters: shadows.filters,
+                    shadow_cascades: shadows.cascades,
                 };
                 if let Some(selected) = &properties.lights {
                     u.ambient = [0.0; 4];
@@ -1553,6 +1566,8 @@ impl Renderer {
                             u.light_direction[count] = light_direction[index];
                             u.shadow_params[count] = shadows.params[index];
                             u.shadow_filters[count] = shadows.filters[index];
+                            u.shadow_cascades[count * 2] = shadows.cascades[index * 2];
+                            u.shadow_cascades[count * 2 + 1] = shadows.cascades[index * 2 + 1];
 
                             count += 1;
                         }

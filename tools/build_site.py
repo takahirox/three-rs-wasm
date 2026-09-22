@@ -15,7 +15,7 @@ def main():
     if SITE.exists():
         shutil.rmtree(SITE)
     files = subprocess.check_output(
-        ["git", "ls-files", "-z", "web", "LICENSE", "LICENSE-THREE"], cwd=ROOT
+        ["git", "ls-files", "-z", "web", "LICENSE", "LICENSE-THREE", "LICENSE-MATERIALX"], cwd=ROOT
     ).decode().split("\0")
     for source in [ROOT / name for name in files if name] + bundle:
         target = SITE / source.relative_to(ROOT)

@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js"}}</script>
+<script type="module">
+// Numerical oracle: unmodified pinned MaterialX nodes, linear RGBA8 output.
+import * as THREE from 'three/webgpu';
+import * as T from 'three/tsl';
+const renderer=new THREE.WebGPURenderer();await renderer.init();
+const target=new THREE.RenderTarget(32,32,{type:THREE.UnsignedByteType,depthBuffer:false});
+const material=new THREE.MeshBasicNodeMaterial();
+const quad=new THREE.QuadMesh(material);
+const xy=T.vec2(T.uv().x.mul(7).sub(3.2),T.uv().y.mul(5).sub(2.6));
+window.results=[];
+for(const dim of [2,3]){
+ const p=dim===2?xy:T.vec3(xy,-.72);
+ const values=[T.mx_noise_float(p).mul(.5).add(.5),T.mx_noise_vec3(p),T.mx_cell_noise_float(p),T.mx_fractal_noise_vec3(T.vec3(p),3,2,.5),dim===2?T.mx_worley_noise_float_2d(p,1,0):T.mx_worley_noise_float_3d(p,1,0),dim===2?T.mx_worley_noise_float_2d(p,1,1):T.mx_worley_noise_float_3d(p,1,1),T.mx_worley_noise_vec3(p,1,1)];
+ for(let kind=0;kind<values.length;kind++){
+  material.colorNode=T.vec4(T.vec3(values[kind]),1);material.needsUpdate=true;renderer.setRenderTarget(target);quad.render(renderer);
+  const data=await renderer.readRenderTargetPixelsAsync(target,0,0,32,32);
+  results.push({dim,kind,bytes:Array.from({length:32},(_,y)=>Array.from(data.slice(y*256,y*256+128))).flat()});
+ }
+}
+window.done=true;
+</script>

@@ -192,6 +192,9 @@ pub struct MaterialProperties {
     /// Draw transparent double-sided surfaces once (ShaderMaterial defaults to true).
     pub force_single_pass: bool,
     pub side: Side,
+    /// Override shadow caster faces; None uses the opposite of the visible side.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shadow_side: Option<Side>,
     pub depth_test: bool,
     pub depth_write: bool,
     pub visible: bool,
@@ -219,6 +222,9 @@ pub struct MaterialProperties {
     #[serde(skip)]
     /// Optional vertex/output hooks; output-only programs retain standard lighting.
     pub vertex_program: Option<Arc<crate::shader::ShaderProgram>>,
+    /// GPU displacement/mask for shadow depth passes; shares vertex_uniforms.
+    #[serde(skip)]
+    pub shadow_program: Option<Arc<crate::shadow::ShadowProgram>>,
     pub vertex_uniforms: [[f32; 4]; 16],
 }
 impl Default for MaterialProperties {
@@ -231,6 +237,7 @@ impl Default for MaterialProperties {
             transparent: false,
             force_single_pass: false,
             side: Side::Front,
+            shadow_side: None,
             depth_test: true,
             depth_write: true,
             visible: true,
@@ -249,6 +256,7 @@ impl Default for MaterialProperties {
             color_write: true,
             map: None,
             vertex_program: None,
+            shadow_program: None,
             vertex_uniforms: [[0.0; 4]; 16],
         }
     }
@@ -356,6 +364,8 @@ pub struct MeshDepthMaterial {
 /// Layered PBR with independent base and extension texture maps.
 #[derive(Clone, Debug, Serialize)]
 pub struct MeshPhysicalMaterial {
+    /// Blend the direct specular lobe toward the light source (r186 retroreflection).
+    pub retroreflectivity: f64,
     pub base: MeshStandardMaterial,
     pub ior: f64,
     pub specular_color: Color,
@@ -392,6 +402,7 @@ pub struct MeshPhysicalMaterial {
 impl Default for MeshPhysicalMaterial {
     fn default() -> Self {
         Self {
+            retroreflectivity: 0.0,
             base: Default::default(),
             ior: 1.5,
             specular_color: Color::WHITE,

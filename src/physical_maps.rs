@@ -32,7 +32,13 @@ impl MapUniforms {
                         column.x,
                         column.y,
                         column.z,
-                        if c == 2 { t.tex_coord as f32 } else { 0.0 },
+                        if c == 2 {
+                            t.tex_coord as f32
+                        } else if c == 0 {
+                            f32::from(t.flip_y)
+                        } else {
+                            0.0
+                        },
                     ];
                 }
                 result.sizes[i] = [

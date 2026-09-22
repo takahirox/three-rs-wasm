@@ -29,6 +29,7 @@ mod tsl_next;
 mod tsl_particles;
 mod tsl_passes;
 mod tsl_primitives;
+mod tsl_procedural;
 mod tsl_surface;
 mod tsl_viewport;
 
@@ -576,6 +577,35 @@ impl BrowserApp {
             ))
         }
     }
+    pub fn audio_play(&self) -> std::result::Result<bool, JsValue> {
+        let state = self.state.borrow();
+        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
+            return Err(JsValue::from_str("not an audio example"));
+        };
+        demo.audio()
+            .and_then(|a| a.play(&state.renderer))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
+    }
+    pub fn audio_result(&self) -> std::result::Result<Vec<f32>, JsValue> {
+        let state = self.state.borrow();
+        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
+            return Err(JsValue::from_str("not an audio example"));
+        };
+        demo.audio()
+            .and_then(|a| a.take().unwrap_or_else(|| Ok(Vec::new())))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
+    }
+    pub fn audio_spectrum(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
+            return Err(JsValue::from_str("not an audio example"));
+        };
+        demo.audio()
+            .and_then(|a| a.spectrum(&state.renderer, &bytes))
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.request_render();
+        Ok(())
+    }
     pub fn tsl_parameter(&self, index: usize, value: f32) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
@@ -794,7 +824,7 @@ impl BrowserApp {
                             7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
                             52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
-                            117, 120, 121,
+                            117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147,
                         ]
                         .contains(&example)
                         {
@@ -830,7 +860,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=127).contains(&example) {
+            if (7..=147).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
