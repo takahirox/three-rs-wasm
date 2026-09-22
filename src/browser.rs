@@ -15,6 +15,7 @@ mod gallery;
 mod gallery_scenes;
 mod gltf_examples;
 mod gltf_viewer;
+mod material_textures;
 mod point_lights;
 mod robot;
 mod room_environment;
@@ -860,7 +861,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=147).contains(&example) {
+            if (7..=152).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

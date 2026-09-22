@@ -42,8 +42,14 @@ FEATURES = {
  'dom-svg-rendering': ('CSS2D/CSS3D/SVG scene renderers', r'\b(?:CSS2DRenderer|CSS3DRenderer|SVGRenderer)\b'),
 }
 # Reviewed scene equivalents, not an automatic name-prefix heuristic.
-WEBGPU_EQUIVALENTS = {'webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
+WEBGPU_EQUIVALENTS = {'webgl_clipping':'webgpu_clipping','webgl_materials_texture_manualmipmap':'webgpu_materials_texture_manualmipmap','webgl_materials_texture_anisotropy':'webgpu_textures_anisotropy','webgl_materials_texture_partialupdate':'webgpu_textures_partialupdate','webgl_loader_gltf_compressed': 'webgpu_loader_gltf_compressed', 'webgl_loader_gltf_dispersion': 'webgpu_loader_gltf_dispersion', 'webgl_loader_gltf': 'webgpu_loader_gltf', 'webgl_morphtargets': 'webgpu_morphtargets', 'webgl_pmrem_test': 'webgpu_pmrem_test', 'webgl_pmrem_equirectangular': 'webgpu_pmrem_equirectangular', 'webgl_panorama_equirectangular': 'webgpu_equirectangular', 'webgl_lights_rectarealight': 'webgpu_lights_rectarealight'}
 PORTS = {
+ 'webgpu_materials_arrays': {'example':148,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_clipping': {'example':149,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_materials_texture_manualmipmap': {'example':150,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_textures_anisotropy': {'example':151,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+ 'webgpu_textures_partialupdate': {'example':152,'source':'src/browser/material_textures.rs','test':'tests/browser/material-textures.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
+
  'webgpu_upscaling_taau': {'example':146,'source':'src/browser/tsl_procedural.rs','test':'tests/browser/tsl-procedural.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_postprocessing_motion_blur': {'example':147,'source':'src/browser/tsl_procedural.rs','test':'tests/browser/tsl-procedural.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},
  'webgpu_postprocessing_traa': {'example':145,'source':'src/browser/tsl_procedural.rs','test':'tests/browser/tsl-procedural.spec.js','limitations':['Inspector外観と性能の完全な同等性は未保証。']},

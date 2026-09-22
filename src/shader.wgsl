@@ -299,17 +299,32 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     let derivative=max(abs(dpdx(view_normal)),abs(dpdy(view_normal)));
     var normal_sample=vec3(1.0);if NORMAL_MAP {normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;}
     var base=u.color*in.color;if COLOR_MAP {base*=textureSample(color_map,color_sampler,map_uv(0u,in));}
+    var clipping_opacity=1.0;
     if CLIPPING {
         let global=u32(u.clipping_params.x);let local=u32(u.clipping_params.y);
-        for(var i=0u;i<global;i++){if dot(u.clipping_planes[i],vec4(in.position,1.0))<0.0 {discard;}}
-        var all_outside=local>0u;
-        for(var i=global;i<global+local;i++) {let outside=dot(u.clipping_planes[i],vec4(in.position,1.0))<0.0;if outside && u.clipping_params.z==0.0 {discard;}all_outside=all_outside&&outside;}
-        if all_outside && u.clipping_params.z>0.0 {discard;}
+        if u.clipping_params.w>0.5 {
+            var intersection_opacity=1.0;
+            for(var i=0u;i<global+local;i++) {
+                let distance=dot(u.clipping_planes[i],vec4(in.position,1.0));
+                let gradient=max(fwidth(distance)*0.5,1e-8);
+                let coverage=smoothstep(-gradient,gradient,distance);
+                if i<global || u.clipping_params.z==0.0 {clipping_opacity*=coverage;}
+                else {intersection_opacity*=1.0-coverage;}
+            }
+            if local>0u && u.clipping_params.z>0.0 {clipping_opacity*=1.0-intersection_opacity;}
+            if clipping_opacity==0.0 {discard;}
+        } else {
+            for(var i=0u;i<global;i++){if dot(u.clipping_planes[i],vec4(in.position,1.0))<0.0 {discard;}}
+            var all_outside=local>0u;
+            for(var i=global;i<global+local;i++) {let outside=dot(u.clipping_planes[i],vec4(in.position,1.0))<0.0;if outside && u.clipping_params.z==0.0 {discard;}all_outside=all_outside&&outside;}
+            if all_outside && u.clipping_params.z>0.0 {discard;}
+        }
     }
     if LINE_DASH {let distance=in.line_distance*u.line[0].w+u.line[1].x;let period=u.line[0].y+u.line[0].z;if distance-floor(distance/period)*period>u.line[0].y {discard;}}
     if material_kind()!=5.0 {base=shade(in,base);}
     if ALPHA_MASK && material_kind()!=5.0 && base.a<u.pbr.w {discard;}
     if u.maps.y<0.5 {base.a=1.0;}
+    base.a*=clipping_opacity;
     if material_kind()==5.0 {let shaded=shade(in,base);if ALPHA_MASK && shaded.a<=u.pbr.w {discard;}return apply_fog(shaded,-in.view_position.z);}
     fragment_diffuse=base;
     if material_kind()<0.5 {let surf=transform_surface(in,LitSurface(vec3(0.0),0.0,0.0,vec3(0.0),vec4(0.0),vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0,in.position));if surf.backdrop.a>=0.0 {base=vec4(mix(base.rgb,surf.backdrop.rgb,surf.backdrop.a),base.a);}return apply_fog(max(base,vec4(0.0)),-in.view_position.z);}

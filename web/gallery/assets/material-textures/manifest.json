@@ -1,0 +1,30 @@
+{
+  "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "files": [
+    {
+      "file": "Carbon.png",
+      "source": "examples/textures/carbon/Carbon.png",
+      "sha256": "f5d4dd14c4b6f7548f50921e2bc75a77e2867fd93916928f60551f4857a96e06"
+    },
+    {
+      "file": "crate.gif",
+      "source": "examples/textures/crate.gif",
+      "sha256": "a890f0a89eadc083cb39bfbe597c1395d7acf47a19f673b5643d4a9c174ea52f"
+    },
+    {
+      "file": "758px-Canestra_di_frutta_(Caravaggio).jpg",
+      "source": "examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg",
+      "sha256": "3f9a556c4e12583981427e2d6b7fa268c1a46c9036a23514acd9e179c22ae37f"
+    },
+    {
+      "file": "paper-models.json",
+      "source": "examples/webgpu_materials_arrays.html",
+      "sha256": "e263e8d0164037679faaafb01ffc92af13587b72bc7661c1591f229460cdf51d"
+    },
+    {
+      "file": "manual-mips.rgba",
+      "source": "examples/webgpu_materials_texture_manualmipmap.html",
+      "sha256": "c64617fa2bd88dc967cd634fc07363602eaa7b19e6754e1dda824d6b33e5b9e5"
+    }
+  ]
+}

@@ -1544,6 +1544,9 @@ impl Renderer {
                     shadow_filters: shadows.filters,
                     shadow_cascades: shadows.cascades,
                 };
+                if target.options.samples <= 1 {
+                    u.clipping.params[3] = 0.;
+                }
                 if let Some(selected) = &properties.lights {
                     u.ambient = [0.0; 4];
                     for &light in selected {

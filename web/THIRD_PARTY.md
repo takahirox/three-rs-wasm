@@ -471,3 +471,14 @@ TRAA, TAAU and Motion Blur adapt the corresponding pinned r186 examples and
 (Three.js contributors, MIT). The unchanged `uv_grid_opengl.jpg` is copied from
 Three.js `examples/textures/`. Motion Blur reuses Xbot and the floor checker
 credited above; TAAU reuses Littlest Tokyo and its attribution listed above.
+
+The material/texture examples adapt pinned r186 `webgpu_materials_arrays.html`,
+`webgpu_clipping.html`, `webgpu_materials_texture_manualmipmap.html`,
+`webgpu_textures_anisotropy.html` and `webgpu_textures_partialupdate.html`
+(Three.js contributors, MIT). `web/gallery/assets/material-textures/` contains
+Carbon.png, crate.gif and the Caravaggio painting from their original
+`examples/textures/` paths. The painting is Caravaggio's *Basket of Fruit*;
+its original example credits the painting's Wikipedia page. The static paper
+geometry and manual mip pixels are generated from the corresponding example
+algorithms. `manifest.json` records the source revision and file hashes;
+`tools/gallery/prepare-materials.py` reproduces these assets.

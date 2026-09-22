@@ -337,3 +337,18 @@ partial ports; no measured CPU/GPU frame-time parity is claimed.
 Core temporal APIs accept explicit current/previous transforms. The gallery
 adapter preserves r186 TAAU's jittered current velocity, unused zero lock history,
 and constant sharpness behavior; see `tsl.md` and `taau-r186-velocity.json`.
+
+### Material groups, clipping and texture operations
+
+`tests/browser/material-textures.spec.js` checks five additional pinned WebGPU
+scenes. Shared paper geometry keeps its material groups as resident draws.
+Clipping executes in fragment shaders (including MSAA coverage); the clipping
+scene retains spot shadows and the two sun cascades. Scissored comparison scenes
+reuse full-size attachments and resident samplers. Partial updates upload only
+4,096 bytes and issue one 32×32 GPU texture copy per update, without replacing
+the destination texture or uploading geometry. Warmed resource counts and
+geometry transfer counts stay unchanged, including after resize. Measured
+geometry draws match the original; total render-pass counts do not exceed it.
+The reference fixture advances Three.js's node frame on each callback to avoid
+accidentally measuring cached shadows. This is workload evidence, not GPU timing
+parity. See [implementation and validation](material-textures.md).

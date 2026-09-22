@@ -90,3 +90,6 @@ assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).
 record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/retro-base-manifest.json').read_text())
 assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
 assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
+
+for record in json.loads((ROOT/"web/gallery/assets/material-textures/manifest.json").read_text())["files"]:
+ assert hashlib.sha256((ROOT/"web/gallery/assets/material-textures"/record["file"]).read_bytes()).hexdigest()==record["sha256"]

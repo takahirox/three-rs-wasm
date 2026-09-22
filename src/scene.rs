@@ -364,6 +364,8 @@ pub enum BackgroundOutput {
 #[derive(Debug)]
 pub struct Scene {
     pub clipping_planes: Vec<Plane>,
+    /// Include scene-wide clipping planes when rendering shadow maps.
+    pub clipping_shadows: bool,
     pub shadow_map_size: u32,
     pub defaults: NodeDefaults,
     id: u32,
@@ -392,6 +394,7 @@ impl Default for Scene {
         Self {
             shadow_map_size: 512,
             clipping_planes: Vec::new(),
+            clipping_shadows: true,
             defaults: Default::default(),
             id: NEXT_SCENE.fetch_add(1, Ordering::Relaxed),
             cache_owner: Arc::new(()),

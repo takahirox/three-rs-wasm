@@ -57,3 +57,8 @@ The one-ULP experiment is recorded in
 server running, reproduce it with `node tools/tsl/check-retro-precision.mjs`.
 This diagnostic patches only shaders inside its own browser session; acceptance
 comparisons use the unmodified pinned reference shaders.
+
+The material/texture batch also prefers `webgpu_clipping`,
+`webgpu_materials_texture_manualmipmap`, `webgpu_textures_anisotropy` and
+`webgpu_textures_partialupdate` over their reviewed WebGL counterparts.
+The dedicated comparison fixture executes the pinned WebGPU scripts.

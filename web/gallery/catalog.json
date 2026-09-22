@@ -704,8 +704,8 @@
     {
       "id": "webgl_clipping",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_clipping",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping.html",
       "source_sha256": "e752317dcaf15569e2eb4e7939906100771be23fe1b78e9b010bd869bb958fd6",
       "requirements": {
@@ -784,7 +784,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_clipping"
     },
     {
       "id": "webgl_clipping_advanced",
@@ -6949,8 +6950,8 @@
     {
       "id": "webgl_materials_texture_anisotropy",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_textures_anisotropy",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_anisotropy.html",
       "source_sha256": "f139a7724d0bd0bd38754e6c7dadf248c616c330590f85b20c001a95a950fe00",
       "requirements": {
@@ -6997,7 +6998,8 @@
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_textures_anisotropy"
     },
     {
       "id": "webgl_materials_texture_canvas",
@@ -7080,8 +7082,8 @@
     {
       "id": "webgl_materials_texture_manualmipmap",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_materials_texture_manualmipmap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_manualmipmap.html",
       "source_sha256": "59e775b82821b759caad44ccc2bd9976a7fd8b13928ace93ae25a0099b93742d",
       "requirements": {
@@ -7105,13 +7107,14 @@
       "port": null,
       "imports": [
         "three"
-      ]
+      ],
+      "preferred_example": "webgpu_materials_texture_manualmipmap"
     },
     {
       "id": "webgl_materials_texture_partialupdate",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_textures_partialupdate",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_partialupdate.html",
       "source_sha256": "61cf6d8f41f8408b62a9e31f22e9267877351383184ddb7961186fb2b53652bc",
       "requirements": {
@@ -7125,7 +7128,8 @@
       "port": null,
       "imports": [
         "three"
-      ]
+      ],
+      "preferred_example": "webgpu_textures_partialupdate"
     },
     {
       "id": "webgl_materials_texture_rotation",
@@ -13939,7 +13943,7 @@
     {
       "id": "webgpu_clipping",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_clipping.html",
       "source_sha256": "534446e713e23b56f319c800da38bcb04003212d0d72fd35d21dc06842777269",
@@ -14023,7 +14027,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 149,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/material-textures.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -18900,7 +18911,7 @@
     {
       "id": "webgpu_materials_arrays",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_arrays.html",
       "source_sha256": "e430462b24c8c97c78ba64a8315e141880a9aaf4295ab7b60b0a63189cba73d2",
@@ -18974,7 +18985,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 148,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/material-textures.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -19572,7 +19590,7 @@
     {
       "id": "webgpu_materials_texture_manualmipmap",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_texture_manualmipmap.html",
       "source_sha256": "37b299726ed180618f1e3159cbb178bbaa20c9ddb7f5bb504af49ea57e2ddaa9",
@@ -19594,7 +19612,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 150,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/material-textures.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -25841,7 +25866,7 @@
     {
       "id": "webgpu_textures_anisotropy",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_anisotropy.html",
       "source_sha256": "499da8d109edf5031f0a5cddc5fa84c9d92be941861f084cc135013f192cf3eb",
@@ -25885,7 +25910,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 151,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/material-textures.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -25893,7 +25925,7 @@
     {
       "id": "webgpu_textures_partialupdate",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_textures_partialupdate.html",
       "source_sha256": "1b4d684fd86e6c4d5cebcfd668fed9eaaf36843af4955ddb8410818a45e12fef",
@@ -25905,7 +25937,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 152,
+        "source": "src/browser/material_textures.rs",
+        "test": "tests/browser/material-textures.spec.js",
+        "limitations": [
+          "Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]

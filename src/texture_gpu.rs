@@ -10,6 +10,139 @@ pub struct GpuTexture {
     pub sampler: wgpu::Sampler,
 }
 impl GpuTexture {
+    /// Upload caller-provided 2D RGBA8 mip levels without regenerating them.
+    /// Level zero supplies the color space and sampler settings.
+    pub fn from_rgba_mipmaps(
+        renderer: &crate::renderer::Renderer,
+        levels: &[Texture],
+    ) -> Result<Self> {
+        let first = levels.first().ok_or(Error::Invalid("empty mip chain"))?;
+        let device = &renderer.device;
+        if first.width == 0
+            || first.height == 0
+            || first.width.max(first.height) > device.limits().max_texture_dimension_2d
+            || levels.len() > (first.width.max(first.height).ilog2() + 1) as usize
+            || levels.iter().enumerate().any(|(i, level)| {
+                level.width != (first.width >> i).max(1)
+                    || level.height != (first.height >> i).max(1)
+                    || level.srgb != first.srgb
+                    || level.rgba.len() != level.width as usize * level.height as usize * 4
+            })
+        {
+            return Err(Error::Invalid("2D mip dimensions/data/color space"));
+        }
+        let texture = device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("explicit 2D mip chain"),
+            size: wgpu::Extent3d {
+                width: first.width,
+                height: first.height,
+                depth_or_array_layers: 1,
+            },
+            mip_level_count: levels.len() as u32,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: if first.srgb {
+                wgpu::TextureFormat::Rgba8UnormSrgb
+            } else {
+                wgpu::TextureFormat::Rgba8Unorm
+            },
+            usage: wgpu::TextureUsages::TEXTURE_BINDING
+                | wgpu::TextureUsages::COPY_SRC
+                | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        });
+        for (i, level) in levels.iter().enumerate() {
+            renderer.queue.write_texture(
+                wgpu::TexelCopyTextureInfo {
+                    texture: &texture,
+                    mip_level: i as u32,
+                    origin: wgpu::Origin3d::ZERO,
+                    aspect: wgpu::TextureAspect::All,
+                },
+                &level.rgba,
+                wgpu::TexelCopyBufferLayout {
+                    offset: 0,
+                    bytes_per_row: Some(level.width * 4),
+                    rows_per_image: Some(level.height),
+                },
+                wgpu::Extent3d {
+                    width: level.width,
+                    height: level.height,
+                    depth_or_array_layers: 1,
+                },
+            );
+        }
+        Ok(Self {
+            view: texture.create_view(&Default::default()),
+            sampler: material_sampler(device, first),
+            texture,
+        })
+    }
+    /// Copy a rectangle between resident, matching 2D textures at mip level zero.
+    /// Texture coordinates are storage coordinates; no color or Y conversion occurs.
+    pub fn copy_region_from(
+        &self,
+        renderer: &crate::renderer::Renderer,
+        source: &Self,
+        source_origin: [u32; 2],
+        destination_origin: [u32; 2],
+        size: [u32; 2],
+    ) -> Result<()> {
+        let valid = |t: &wgpu::Texture, origin: [u32; 2]| {
+            t.dimension() == wgpu::TextureDimension::D2
+                && t.depth_or_array_layers() == 1
+                && t.sample_count() == 1
+                && origin[0]
+                    .checked_add(size[0])
+                    .is_some_and(|x| x <= t.width())
+                && origin[1]
+                    .checked_add(size[1])
+                    .is_some_and(|y| y <= t.height())
+        };
+        if size.contains(&0)
+            || !valid(&source.texture, source_origin)
+            || !valid(&self.texture, destination_origin)
+            || source.texture == self.texture
+            || source.texture.format() != self.texture.format()
+            || !matches!(
+                self.texture.format(),
+                wgpu::TextureFormat::Rgba8Unorm
+                    | wgpu::TextureFormat::Rgba8UnormSrgb
+                    | wgpu::TextureFormat::Rgba16Float
+                    | wgpu::TextureFormat::Rgba32Float
+            )
+            || !source
+                .texture
+                .usage()
+                .contains(wgpu::TextureUsages::COPY_SRC)
+            || !self.texture.usage().contains(wgpu::TextureUsages::COPY_DST)
+        {
+            return Err(Error::Invalid("texture copy format/range/usage"));
+        }
+        let info = |texture, origin: [u32; 2]| wgpu::TexelCopyTextureInfo {
+            texture,
+            mip_level: 0,
+            origin: wgpu::Origin3d {
+                x: origin[0],
+                y: origin[1],
+                z: 0,
+            },
+            aspect: wgpu::TextureAspect::All,
+        };
+        let mut encoder = renderer.device.create_command_encoder(&Default::default());
+        encoder.copy_texture_to_texture(
+            info(&source.texture, source_origin),
+            info(&self.texture, destination_origin),
+            wgpu::Extent3d {
+                width: size[0],
+                height: size[1],
+                depth_or_array_layers: 1,
+            },
+        );
+        renderer.queue.submit([encoder.finish()]);
+        Ok(())
+    }
+
     /// Upload linear HDR faces in +X,-X,+Y,-Y,+Z,-Z order, retaining the cube
     /// for direct sky sampling as well as PMREM prefiltering. No mip generation.
     pub fn from_cube_hdr(

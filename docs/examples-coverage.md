@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-10 excluded for explicit WebGL APIs or equivalent WebGPU examples; 597 retained. 143 partial Rust ports; 454 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+14 excluded for explicit WebGL APIs or equivalent WebGPU examples; 593 retained. 148 partial Rust ports; 445 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,21 +12,21 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 386 |
+| Full camera controls: pan, touch, damping and control variants | 385 |
 | Programmable materials / TSL equivalents | 219 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 180 |
-| Additional procedural geometry builders | 175 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 178 |
 | Inspector and per-example GUI parity | 175 |
-| Shadow maps and shadow filtering | 131 |
-| Hemisphere/spot/area lights, light probes and baking | 124 |
+| Additional procedural geometry builders | 174 |
+| Shadow maps and shadow filtering | 130 |
+| Hemisphere/spot/area lights, light probes and baking | 123 |
 | Postprocessing passes and temporal history | 103 |
-| Distance and height fog | 95 |
+| Distance and height fog | 93 |
 | Wireframe materials and scene helpers | 91 |
 | Additional loaders and compressed assets | 85 |
 | Instance transforms and batched drawing | 75 |
 | Animation mixer and skeletal animation | 48 |
-| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 48 |
-| Canvas, HTML, video and partial texture updates | 48 |
+| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 47 |
+| Canvas, HTML, video and partial texture updates | 46 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
 | GPU compute and storage buffers | 30 |
@@ -36,7 +36,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | CSS2D/CSS3D/SVG scene renderers | 11 |
 | Morph target animation | 10 |
 | Wide / dashed line rendering | 8 |
-| Clipping planes and stencil operations | 7 |
+| Clipping planes and stencil operations | 6 |
 | Spatial audio and audio analysis | 6 |
 | Stereo, anaglyph and parallax-barrier effects | 3 |
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_materials_arrays | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_clipping | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_materials_texture_manualmipmap | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_textures_anisotropy | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_textures_partialupdate | `tests/browser/material-textures.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_upscaling_taau | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_motion_blur | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_traa | `tests/browser/tsl-procedural.spec.js` | Inspector外観と性能の完全な同等性は未保証。 |
