@@ -510,3 +510,7 @@ Lee Perry-Smith's head and displacement texture retain the attribution and
 license in `models/LeePerrySmith_License.txt`. Point/snowflake sprites, cube maps,
 blend textures, Walt head and pressure geometry retain the upstream example
 attributions and are distributed alongside `LICENSE-THREE`.
+
+The raw shader and interactive examples add no assets. `webgl_interactive_points`
+reuses `gallery/assets/point-clouds/disc.png`, the unmodified r186
+`examples/textures/sprites/disc.png`.

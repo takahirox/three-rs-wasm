@@ -10,7 +10,10 @@
     "webgl_geometry_shapes",
     "webgl_geometry_text_shapes",
     "webgl_geometry_text_stroke",
+    "webgl_interactive_cubes",
+    "webgl_interactive_cubes_ortho",
     "webgl_interactive_lines",
+    "webgl_interactive_points",
     "webgl_interactive_raycasting_points",
     "webgl_lines_colors",
     "webgl_lines_dashed",
@@ -25,7 +28,11 @@
     "webgl_morphtargets_sphere",
     "webgl_points_billboards",
     "webgl_points_sprites",
-    "webgl_points_waves"
+    "webgl_points_waves",
+    "webgl_shader"
+  ],
+  "webgl / postprocessing": [
+    "webgl_postprocessing_procedural"
   ],
   "webgl / advanced": [
     "webgl_buffergeometry",

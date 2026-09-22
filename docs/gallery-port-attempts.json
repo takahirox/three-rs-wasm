@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 411,
-    "runnable-partial": 178,
+    "blocked-at-port-review": 406,
+    "runnable-partial": 183,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -3654,10 +3654,10 @@
     },
     {
       "id": "webgl_interactive_cubes",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes.html",
       "source_sha256": "665b23cfd57c4363ae69d86cfbe9e07b15438f93d875ee48005b36e4a4908390",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-shaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3754,10 +3754,10 @@
     },
     {
       "id": "webgl_interactive_cubes_ortho",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_ortho.html",
       "source_sha256": "a91c33252326f0caa79147c992c56774818425f698a3fb8936ed912063d364ce",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-shaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3793,10 +3793,10 @@
     },
     {
       "id": "webgl_interactive_points",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_points.html",
       "source_sha256": "4b9bfec1d4ef700daf5bb52d65a1712df265576910561534d8fc14b5f533bf12",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-shaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -12845,10 +12845,10 @@
     },
     {
       "id": "webgl_shader",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader.html",
       "source_sha256": "18ee0c55d395c7707dbe8f66112b2cfa1d774bfa107f2f7eddfb23c755346b56",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-shaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -15915,10 +15915,10 @@
     },
     {
       "id": "webgl_postprocessing_procedural",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_procedural.html",
       "source_sha256": "85ef7347b0d7d202a2ea790d7590e1861e13f9ed830480ad1f6c47cc64e6f514",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-shaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",

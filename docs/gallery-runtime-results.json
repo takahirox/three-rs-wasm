@@ -1268,7 +1268,7 @@
       "id": "webgl_interactive_cubes",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes.html",
       "source_sha256": "665b23cfd57c4363ae69d86cfbe9e07b15438f93d875ee48005b36e4a4908390",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_interactive_cubes",
         "source_sha256": "665b23cfd57c4363ae69d86cfbe9e07b15438f93d875ee48005b36e4a4908390",
@@ -1320,7 +1320,7 @@
       "id": "webgl_interactive_cubes_ortho",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_ortho.html",
       "source_sha256": "a91c33252326f0caa79147c992c56774818425f698a3fb8936ed912063d364ce",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_interactive_cubes_ortho",
         "source_sha256": "a91c33252326f0caa79147c992c56774818425f698a3fb8936ed912063d364ce",
@@ -1376,7 +1376,7 @@
       "id": "webgl_interactive_points",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_points.html",
       "source_sha256": "4b9bfec1d4ef700daf5bb52d65a1712df265576910561534d8fc14b5f533bf12",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_interactive_points",
         "source_sha256": "4b9bfec1d4ef700daf5bb52d65a1712df265576910561534d8fc14b5f533bf12",
@@ -5146,7 +5146,7 @@
       "id": "webgl_shader",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader.html",
       "source_sha256": "18ee0c55d395c7707dbe8f66112b2cfa1d774bfa107f2f7eddfb23c755346b56",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_shader",
         "source_sha256": "18ee0c55d395c7707dbe8f66112b2cfa1d774bfa107f2f7eddfb23c755346b56",
@@ -6100,7 +6100,7 @@
       "id": "webgl_postprocessing_procedural",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_procedural.html",
       "source_sha256": "85ef7347b0d7d202a2ea790d7590e1861e13f9ed830480ad1f6c47cc64e6f514",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_procedural",
         "source_sha256": "85ef7347b0d7d202a2ea790d7590e1861e13f9ed830480ad1f6c47cc64e6f514",

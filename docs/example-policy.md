@@ -72,3 +72,10 @@ The WebGL-only buffer-particle batch records point-primitive and dense-line MSAA
 exceptions in [buffer-particles.md](buffer-particles.md). Original-backend images
 remain required, along with ordinary-threshold quad/WebGPU diagnostic comparisons.
 The adapted fixtures are not official WebGPU examples and are not gallery entries.
+
+The WebGL-only raw shader and raycast batch ([interactive-shaders.md](interactive-shaders.md))
+bounds only the two 4× MSAA cube comparisons, and requires per-pixel matches
+with MSAA off. Hashed procedural noise is compared by distribution only at
+resized non-power-of-two heights. That check also requires a recorded one-ULP
+`vUv` experiment showing the original itself changes most pixels. Its
+power-of-two states must match per pixel.

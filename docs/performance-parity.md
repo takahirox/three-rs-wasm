@@ -372,3 +372,16 @@ preserves packed byte colors without per-particle quad attribute duplication.
 Tests enforce exact particle storage sizes, zero steady-state geometry/texture
 transfers and no warmed GPU resource creation, including after resize. Explicit
 line visibility edits upload only their mask and retain the full draw workload.
+
+### Raw shader and raycast selection
+
+The [shader, procedural noise and interactive cube/point ports](interactive-shaders.md)
+match the original draw counts: one fullscreen draw per shader scene,
+569 / 1,999 frustum-culled cube draws and one instanced draw of 1,538 sprites.
+The 2,000 cubes keep individual meshes and materials, as the original does;
+hover highlights change only material uniforms. Point sizes live in a resident
+storage buffer, written only when the selection changes. The per-frame raycasts
+are the original's own CPU queries, not per-vertex rendering work. After a warm
+pass, the scenes make zero geometry and texture uploads. Warmed time, control,
+pointer and resize cycles create no GPU resources. Per-cube draw records are
+created once, when a cube first enters the frustum. No GPU timing parity is claimed.

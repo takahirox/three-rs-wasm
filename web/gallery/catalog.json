@@ -2440,7 +2440,7 @@
     {
       "id": "webgl_interactive_cubes",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes.html",
       "source_sha256": "665b23cfd57c4363ae69d86cfbe9e07b15438f93d875ee48005b36e4a4908390",
@@ -2452,7 +2452,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 185,
+        "source": "src/browser/interactive_shaders.rs",
+        "test": "tests/browser/interactive-shaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。フレーム毎0.1°のカメラ回転を60fps相当の時間基準で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -2504,7 +2511,7 @@
     {
       "id": "webgl_interactive_cubes_ortho",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_ortho.html",
       "source_sha256": "a91c33252326f0caa79147c992c56774818425f698a3fb8936ed912063d364ce",
@@ -2516,7 +2523,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 186,
+        "source": "src/browser/interactive_shaders.rs",
+        "test": "tests/browser/interactive-shaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。フレーム毎0.1°のカメラ回転を60fps相当の時間基準で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -2546,7 +2560,7 @@
     {
       "id": "webgl_interactive_points",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_points.html",
       "source_sha256": "4b9bfec1d4ef700daf5bb52d65a1712df265576910561534d8fc14b5f533bf12",
@@ -2558,7 +2572,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 187,
+        "source": "src/browser/interactive_shaders.rs",
+        "test": "tests/browser/interactive-shaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。点はGPUインスタンシングで展開し、レイキャストはCPU上の常駐位置で実行。フレーム毎の回転を60fps相当の時間基準で再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -9059,7 +9080,7 @@
     {
       "id": "webgl_shader",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader.html",
       "source_sha256": "18ee0c55d395c7707dbe8f66112b2cfa1d774bfa107f2f7eddfb23c755346b56",
@@ -9071,7 +9092,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 183,
+        "source": "src/browser/interactive_shaders.rs",
+        "test": "tests/browser/interactive-shaders.spec.js",
+        "limitations": [
+          "GLSLフラグメントをWGSLへ逐語移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -10830,7 +10858,7 @@
     {
       "id": "webgl_postprocessing_procedural",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_procedural.html",
       "source_sha256": "85ef7347b0d7d202a2ea790d7590e1861e13f9ed830480ad1f6c47cc64e6f514",
@@ -10850,7 +10878,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 184,
+        "source": "src/browser/interactive_shaders.rs",
+        "test": "tests/browser/interactive-shaders.spec.js",
+        "limitations": [
+          "Stats・操作UI外観は未一致。非2冪の高さへのリサイズ時はハッシュ雑音を1 ULP実験と分布で比較。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",

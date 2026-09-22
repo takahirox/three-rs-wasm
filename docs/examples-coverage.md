@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 178 partial Rust ports; 413 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 183 partial Rust ports; 408 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_shader | `tests/browser/interactive-shaders.spec.js` | GLSLフラグメントをWGSLへ逐語移植。性能の完全な同等性は未保証。 |
+| webgl_postprocessing_procedural | `tests/browser/interactive-shaders.spec.js` | Stats・操作UI外観は未一致。非2冪の高さへのリサイズ時はハッシュ雑音を1 ULP実験と分布で比較。性能の完全な同等性は未保証。 |
+| webgl_interactive_cubes | `tests/browser/interactive-shaders.spec.js` | Stats表示は未移植。フレーム毎0.1°のカメラ回転を60fps相当の時間基準で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_interactive_cubes_ortho | `tests/browser/interactive-shaders.spec.js` | Stats表示は未移植。フレーム毎0.1°のカメラ回転を60fps相当の時間基準で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_interactive_points | `tests/browser/interactive-shaders.spec.js` | Stats表示は未移植。点はGPUインスタンシングで展開し、レイキャストはCPU上の常駐位置で実行。フレーム毎の回転を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_attributes_none | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_attributes_integer | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_instancing | `tests/browser/shader-geometry.spec.js` | Stats・操作UI外観は未一致。静的属性はGPUに保持。性能の完全な同等性は未保証。 |

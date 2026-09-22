@@ -18,6 +18,7 @@ mod gallery_scenes;
 mod geometry_materials;
 mod gltf_examples;
 mod gltf_viewer;
+mod interactive_shaders;
 mod material_textures;
 mod point_clouds;
 mod point_lights;
@@ -175,7 +176,7 @@ impl State {
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
-            168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
+            168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187,
         ]
         .contains(&self.example)
         {
@@ -842,7 +843,7 @@ impl BrowserApp {
                             52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
-                            161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182,
+                            161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                         ]
                         .contains(&example)
                         {
@@ -850,11 +851,12 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: [16, 28, 90, 154, 155, 156, 157, 175, 176, 181]
+                        encode_srgb: [16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186]
                             .contains(&example),
                         format: if [
                             16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
                             165, 166, 167, 168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
+                            183, 184, 185, 186, 187,
                         ]
                         .contains(&example)
                         {
@@ -884,7 +886,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=182).contains(&example) {
+            if (7..=187).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
