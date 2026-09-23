@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 183 partial Rust ports; 408 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 188 partial Rust ports; 403 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_instancing_raycast | `tests/browser/interactive-objects.spec.js` | Stats・操作UI外観は未一致。OrbitControlsのドラッグ回転・減衰をRustで再現（キーボード操作は未移植）。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_math_orientation_transform | `tests/browser/interactive-objects.spec.js` | 操作UI外観は未一致。WebGLとのワイヤーフレームMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_panorama_cube | `tests/browser/interactive-objects.spec.js` | OrbitControlsのドラッグ回転・減衰をRustで再現（キーボード操作は未移植）。性能の完全な同等性は未保証。 |
+| webgl_materials_texture_canvas | `tests/browser/interactive-objects.spec.js` | フレーム毎の回転を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |
+| webgl_raycaster_sprite | `tests/browser/interactive-objects.spec.js` | OrbitControlsの回転・パン・ホイールズームをRustで再現（キーボード・タッチ操作の完全一致は未検証）。性能の完全な同等性は未保証。 |
 | webgl_shader | `tests/browser/interactive-shaders.spec.js` | GLSLフラグメントをWGSLへ逐語移植。性能の完全な同等性は未保証。 |
 | webgl_postprocessing_procedural | `tests/browser/interactive-shaders.spec.js` | Stats・操作UI外観は未一致。非2冪の高さへのリサイズ時はハッシュ雑音を1 ULP実験と分布で比較。性能の完全な同等性は未保証。 |
 | webgl_interactive_cubes | `tests/browser/interactive-shaders.spec.js` | Stats表示は未移植。フレーム毎0.1°のカメラ回転を60fps相当の時間基準で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |

@@ -108,3 +108,7 @@ for folder in ['point-clouds','shader-geometry','geometry-materials','environmen
   assert hashlib.sha256((ROOT/'web/gallery/assets'/folder/record['file']).read_bytes()).hexdigest()==record['sha256']
   expected=record.get('source_sha256',record['sha256'])
   assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==expected
+
+for record in json.loads((ROOT/"web/gallery/assets/interactive-objects-manifest.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/gallery/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+ assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]

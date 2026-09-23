@@ -1,0 +1,1874 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/interactive-objects.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Intera-0dc32-cy-materials-texture-canvas": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-11aa9-nstancing-raycast-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01049041748046875,
+      "meanError": 0.26947784423828125
+     },
+     {
+      "state": 1,
+      "fraction": 0.01049041748046875,
+      "meanError": 0.26947784423828125
+     },
+     {
+      "state": 2,
+      "fraction": 0.01049041748046875,
+      "meanError": 0.26947784423828125
+     },
+     {
+      "state": 3,
+      "fraction": 0.01049041748046875,
+      "meanError": 0.26947784423828125
+     },
+     {
+      "state": 4,
+      "fraction": 0.008014678955078125,
+      "meanError": 0.21118927001953125
+     },
+     {
+      "state": 5,
+      "fraction": 0.01049041748046875,
+      "meanError": 0.26947784423828125
+     },
+     {
+      "state": 6,
+      "fraction": 0.0105743408203125,
+      "meanError": 0.2743848164876302
+     },
+     {
+      "state": 7,
+      "fraction": 0.01061248779296875,
+      "meanError": 0.27648035685221356
+     },
+     {
+      "state": 8,
+      "fraction": 0.0106964111328125,
+      "meanError": 0.27896372477213544
+     },
+     {
+      "state": 9,
+      "fraction": 0.01071929931640625,
+      "meanError": 0.2799949645996094
+     },
+     {
+      "state": 10,
+      "fraction": 0.0111083984375,
+      "meanError": 0.3009478251139323
+     },
+     {
+      "state": 11,
+      "fraction": 0.008875,
+      "meanError": 0.24226041666666667
+     }
+    ]
+   },
+   "Intera-163f8--math-orientation-transform": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 52,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 52,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-4790e-ing-panorama-cube-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.006350199381510417
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.022614796956380207
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0527734375
+     }
+    ]
+   },
+   "Intera-4834e-GPU-residency-panorama-cube": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-6714d-ntation-transform-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00235748291015625,
+      "meanError": 0.21799596150716147
+     },
+     {
+      "state": 1,
+      "fraction": 0.00235748291015625,
+      "meanError": 0.21590296427408853
+     },
+     {
+      "state": 2,
+      "fraction": 0.002349853515625,
+      "meanError": 0.21859105428059897
+     },
+     {
+      "state": 3,
+      "fraction": 0.002361297607421875,
+      "meanError": 0.21063359578450522
+     },
+     {
+      "state": 4,
+      "fraction": 0.002361297607421875,
+      "meanError": 0.21063359578450522
+     },
+     {
+      "state": 5,
+      "fraction": 0.002353668212890625,
+      "meanError": 0.21175384521484375
+     },
+     {
+      "state": 6,
+      "fraction": 0.00235748291015625,
+      "meanError": 0.22138595581054688
+     },
+     {
+      "state": 7,
+      "fraction": 0.00235748291015625,
+      "meanError": 0.22138595581054688
+     },
+     {
+      "state": 8,
+      "fraction": 0.00177734375,
+      "meanError": 0.16720963541666667
+     }
+    ]
+   },
+   "Intera-6f975-nstancing-raycast-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00025177001953125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00025177001953125
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00025177001953125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00025177001953125
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.000202178955078125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00025177001953125
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0002530415852864583
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.0002530415852864583
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0002568562825520833
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.0002593994140625
+     },
+     {
+      "state": 10,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0003712972005208333
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.00013151041666666666
+     }
+    ]
+   },
+   "Intera-6fb6e-ntation-transform-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.08582687377929688,
+      "meanError": 2.094476064046224
+     },
+     {
+      "state": 1,
+      "fraction": 0.08584976196289062,
+      "meanError": 2.092961629231771
+     },
+     {
+      "state": 2,
+      "fraction": 0.08592605590820312,
+      "meanError": 2.094031016031901
+     },
+     {
+      "state": 3,
+      "fraction": 0.08582305908203125,
+      "meanError": 2.0935452779134116
+     },
+     {
+      "state": 4,
+      "fraction": 0.08582305908203125,
+      "meanError": 2.0935452779134116
+     },
+     {
+      "state": 5,
+      "fraction": 0.08576583862304688,
+      "meanError": 2.092926025390625
+     },
+     {
+      "state": 6,
+      "fraction": 0.08591461181640625,
+      "meanError": 2.096599578857422
+     },
+     {
+      "state": 7,
+      "fraction": 0.08591461181640625,
+      "meanError": 2.096599578857422
+     },
+     {
+      "state": 8,
+      "fraction": 0.0636171875,
+      "meanError": 1.52501953125
+     }
+    ]
+   },
+   "Intera-71f92--raycaster-sprite-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Intera-8cdf0-esidency-instancing-raycast": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-9ae7d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "instancing_raycast",
+      "reference": {
+       "draws": [
+        {
+         "count": 960,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 960,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "math_orientation_transform",
+      "reference": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "panorama_cube",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "materials_texture_canvas",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "raycaster_sprite",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Intera-a1206-ls-texture-canvas-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00006866455078125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0000859375
+     }
+    ]
+   },
+   "Intera-a28ea-ls-texture-canvas-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0.000598907470703125,
+      "meanError": 0.0381011962890625
+     },
+     {
+      "state": 2,
+      "fraction": 0.0019073486328125,
+      "meanError": 0.12138748168945312
+     },
+     {
+      "state": 3,
+      "fraction": 0.002262115478515625,
+      "meanError": 0.143951416015625
+     },
+     {
+      "state": 4,
+      "fraction": 0.002262115478515625,
+      "meanError": 0.14402008056640625
+     },
+     {
+      "state": 5,
+      "fraction": 0.00174609375,
+      "meanError": 0.1111796875
+     }
+    ]
+   },
+   "Intera-c0109--residency-raycaster-sprite": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 61,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 61,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-c62e4--raycaster-sprite-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.040372212727864586
+     },
+     {
+      "state": 1,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.040372212727864586
+     },
+     {
+      "state": 2,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.040372212727864586
+     },
+     {
+      "state": 3,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.06328328450520833
+     },
+     {
+      "state": 4,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.040287017822265625
+     },
+     {
+      "state": 5,
+      "fraction": 0.001888275146484375,
+      "meanError": 0.040372212727864586
+     },
+     {
+      "state": 6,
+      "fraction": 0.001628875732421875,
+      "meanError": 0.034940083821614586
+     },
+     {
+      "state": 7,
+      "fraction": 0.00154876708984375,
+      "meanError": 0.033223470052083336
+     },
+     {
+      "state": 8,
+      "fraction": 0.00173187255859375,
+      "meanError": 0.03717041015625
+     },
+     {
+      "state": 9,
+      "fraction": 0.00199609375,
+      "meanError": 0.042756510416666664
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Intera-0dc32-cy-materials-texture-canvas": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-11aa9-nstancing-raycast-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0051860809326171875,
+      "meanError": 0.13491344451904297
+     },
+     {
+      "state": 1,
+      "fraction": 0.0051860809326171875,
+      "meanError": 0.13491344451904297
+     },
+     {
+      "state": 2,
+      "fraction": 0.0051860809326171875,
+      "meanError": 0.13491344451904297
+     },
+     {
+      "state": 3,
+      "fraction": 0.0051860809326171875,
+      "meanError": 0.13491344451904297
+     },
+     {
+      "state": 4,
+      "fraction": 0.003971099853515625,
+      "meanError": 0.10621929168701172
+     },
+     {
+      "state": 5,
+      "fraction": 0.0051860809326171875,
+      "meanError": 0.13491344451904297
+     },
+     {
+      "state": 6,
+      "fraction": 0.005232810974121094,
+      "meanError": 0.13756529490152994
+     },
+     {
+      "state": 7,
+      "fraction": 0.00525665283203125,
+      "meanError": 0.13863722483317056
+     },
+     {
+      "state": 8,
+      "fraction": 0.0052852630615234375,
+      "meanError": 0.1394170125325521
+     },
+     {
+      "state": 9,
+      "fraction": 0.005291938781738281,
+      "meanError": 0.14009412129720053
+     },
+     {
+      "state": 10,
+      "fraction": 0.0055675506591796875,
+      "meanError": 0.15039380391438803
+     },
+     {
+      "state": 11,
+      "fraction": 0.004431640625,
+      "meanError": 0.1206025390625
+     }
+    ]
+   },
+   "Intera-163f8--math-orientation-transform": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 52,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 52,
+       "transfers": [
+        3,
+        194128,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-4790e-ing-panorama-cube-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0009864171346028645
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0015128453572591145
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0016982421875
+     }
+    ]
+   },
+   "Intera-4834e-GPU-residency-panorama-cube": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-6714d-ntation-transform-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11673482259114583
+     },
+     {
+      "state": 1,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11567846934000652
+     },
+     {
+      "state": 2,
+      "fraction": 0.0012035369873046875,
+      "meanError": 0.11692142486572266
+     },
+     {
+      "state": 3,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11281617482503255
+     },
+     {
+      "state": 4,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11281617482503255
+     },
+     {
+      "state": 5,
+      "fraction": 0.0012063980102539062,
+      "meanError": 0.11356639862060547
+     },
+     {
+      "state": 6,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11849657694498698
+     },
+     {
+      "state": 7,
+      "fraction": 0.0012073516845703125,
+      "meanError": 0.11849657694498698
+     },
+     {
+      "state": 8,
+      "fraction": 0.000962890625,
+      "meanError": 0.09372526041666666
+     }
+    ]
+   },
+   "Intera-6f975-nstancing-raycast-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00047588348388671875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00047588348388671875
+     },
+     {
+      "state": 2,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00047588348388671875
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00047588348388671875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0001659393310546875
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00047588348388671875
+     },
+     {
+      "state": 6,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0004800160725911458
+     },
+     {
+      "state": 7,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00048224131266276043
+     },
+     {
+      "state": 8,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0004838307698567708
+     },
+     {
+      "state": 9,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0004857381184895833
+     },
+     {
+      "state": 10,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.00036080678304036457
+     },
+     {
+      "state": 11,
+      "fraction": 9.765625e-7,
+      "meanError": 0.00018912760416666665
+     }
+    ]
+   },
+   "Intera-6fb6e-ntation-transform-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.050853729248046875,
+      "meanError": 1.2802025477091472
+     },
+     {
+      "state": 1,
+      "fraction": 0.05085182189941406,
+      "meanError": 1.2786798477172852
+     },
+     {
+      "state": 2,
+      "fraction": 0.05084419250488281,
+      "meanError": 1.2783584594726562
+     },
+     {
+      "state": 3,
+      "fraction": 0.050835609436035156,
+      "meanError": 1.2790724436442058
+     },
+     {
+      "state": 4,
+      "fraction": 0.050835609436035156,
+      "meanError": 1.2790724436442058
+     },
+     {
+      "state": 5,
+      "fraction": 0.050830841064453125,
+      "meanError": 1.2797972361246746
+     },
+     {
+      "state": 6,
+      "fraction": 0.05087852478027344,
+      "meanError": 1.280838966369629
+     },
+     {
+      "state": 7,
+      "fraction": 0.05087852478027344,
+      "meanError": 1.280838966369629
+     },
+     {
+      "state": 8,
+      "fraction": 0.0387509765625,
+      "meanError": 0.9655035807291666
+     }
+    ]
+   },
+   "Intera-71f92--raycaster-sprite-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0001621246337890625
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Intera-8cdf0-esidency-instancing-raycast": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        76800,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-9ae7d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "instancing_raycast",
+      "reference": {
+       "draws": [
+        {
+         "count": 960,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 960,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "math_orientation_transform",
+      "reference": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "panorama_cube",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "materials_texture_canvas",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "raycaster_sprite",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Intera-a1206-ls-texture-canvas-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00023555755615234375
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0000205078125
+     }
+    ]
+   },
+   "Intera-a28ea-ls-texture-canvas-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0.00030803680419921875,
+      "meanError": 0.01959705352783203
+     },
+     {
+      "state": 2,
+      "fraction": 0.0009613037109375,
+      "meanError": 0.06118583679199219
+     },
+     {
+      "state": 3,
+      "fraction": 0.001125335693359375,
+      "meanError": 0.07161617279052734
+     },
+     {
+      "state": 4,
+      "fraction": 0.001125335693359375,
+      "meanError": 0.07185173034667969
+     },
+     {
+      "state": 5,
+      "fraction": 0.000880859375,
+      "meanError": 0.0560703125
+     }
+    ]
+   },
+   "Intera-c0109--residency-raycaster-sprite": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 61,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 61,
+       "transfers": [
+        3,
+        1032,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Intera-c62e4--raycaster-sprite-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.0203091303507487
+     },
+     {
+      "state": 1,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.0203091303507487
+     },
+     {
+      "state": 2,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.0203091303507487
+     },
+     {
+      "state": 3,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.031948089599609375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.020163218180338543
+     },
+     {
+      "state": 5,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.0203091303507487
+     },
+     {
+      "state": 6,
+      "fraction": 0.000804901123046875,
+      "meanError": 0.017240524291992188
+     },
+     {
+      "state": 7,
+      "fraction": 0.0007953643798828125,
+      "meanError": 0.01700146993001302
+     },
+     {
+      "state": 8,
+      "fraction": 0.0008792877197265625,
+      "meanError": 0.01883252461751302
+     },
+     {
+      "state": 9,
+      "fraction": 0.001,
+      "meanError": 0.021290364583333332
+     }
+    ]
+   }
+  }
+ }
+}

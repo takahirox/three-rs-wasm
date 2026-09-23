@@ -514,3 +514,8 @@ attributions and are distributed alongside `LICENSE-THREE`.
 The raw shader and interactive examples add no assets. `webgl_interactive_points`
 reuses `gallery/assets/point-clouds/disc.png`, the unmodified r186
 `examples/textures/sprites/disc.png`.
+
+`gallery/assets/sun_temple_stripe.jpg`, used by `webgl_panorama_cube`, is the
+unmodified r186 `examples/textures/cube/sun_temple_stripe.jpg`. Its source path
+and SHA-256 hash are in `interactive-objects-manifest.json`; it is distributed
+alongside `LICENSE-THREE` with the upstream example attribution.

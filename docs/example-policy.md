@@ -79,3 +79,7 @@ with MSAA off. Hashed procedural noise is compared by distribution only at
 resized non-power-of-two heights. That check also requires a recorded one-ULP
 `vUv` experiment showing the original itself changes most pixels. Its
 power-of-two states must match per pixel.
+
+The WebGL-only picking and canvas batch ([interactive-objects.md](interactive-objects.md))
+bounds only the instancing and orientation-wireframe 4× MSAA comparisons. The
+same scenes must match within the ordinary threshold with MSAA off.

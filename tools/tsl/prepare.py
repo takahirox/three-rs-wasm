@@ -33,6 +33,8 @@ with tarfile.open(ROOT/f'.cache/three-{COMMIT}.tar.gz') as tar:
             (folder/Path(path).name).write_bytes(data)
         if path.endswith('/head256x256x109.zip'):
             (ROOT/'web/gallery/assets/head256x256x109.raw').write_bytes(zipfile.ZipFile(io.BytesIO(data)).read('head256x256x109'))
+        if path.endswith('/sun_temple_stripe.jpg'):
+            (ROOT/'web/gallery/assets/sun_temple_stripe.jpg').write_bytes(data)
         if path.endswith('/spark1.png'):
             (ROOT/'web/gallery/assets/spark1.png').write_bytes(data)
         if path.endswith('/checker.png'):

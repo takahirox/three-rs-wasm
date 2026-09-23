@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 406,
-    "runnable-partial": 183,
+    "blocked-at-port-review": 401,
+    "runnable-partial": 188,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -3456,10 +3456,10 @@
     },
     {
       "id": "webgl_instancing_raycast",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_raycast.html",
       "source_sha256": "9f5488f1c20afcb93a09c8ab6e4440ab681ce706c8ce904e46b2c51a40cad3cd",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-objects.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -10098,10 +10098,10 @@
     },
     {
       "id": "webgl_materials_texture_canvas",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_canvas.html",
       "source_sha256": "55d945e495a55dc385532f35521b5d595cff8b5787c152495c96c12d347ef960",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-objects.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -10764,10 +10764,10 @@
     },
     {
       "id": "webgl_math_orientation_transform",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_orientation_transform.html",
       "source_sha256": "c9922d30273b58b1744fef5f4034c760de981f9ab28b641421ef0addcb7a0c56",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-objects.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -11928,10 +11928,10 @@
     },
     {
       "id": "webgl_panorama_cube",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_panorama_cube.html",
       "source_sha256": "51e6540b54d9ba41d9c0b5e2f0fcfcd0c6eb2c660aaa0fdb544f43b26f0ed03a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-objects.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -12442,10 +12442,10 @@
     },
     {
       "id": "webgl_raycaster_sprite",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_sprite.html",
       "source_sha256": "4c33f7db6a19eba628803e57461dc3fc59bb39214f35cd7ad79bf1a74e68ff7a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-objects.spec.js",
       "blockers": [
         {
           "kind": "core-api",

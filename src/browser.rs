@@ -18,6 +18,7 @@ mod gallery_scenes;
 mod geometry_materials;
 mod gltf_examples;
 mod gltf_viewer;
+mod interactive_objects;
 mod interactive_shaders;
 mod material_textures;
 mod point_clouds;
@@ -176,7 +177,8 @@ impl State {
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
-            168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187,
+            168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188,
+            189, 190, 191, 192,
         ]
         .contains(&self.example)
         {
@@ -457,6 +459,19 @@ impl BrowserApp {
         } = &mut *state;
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
             demo.select(scene, *camera, x, y)
+                .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        }
+        Ok(())
+    }
+    /// Drawing-canvas pointer input: 0 down, 1 move, 2 up or leave (offset coordinates).
+    pub fn gallery_draw(&self, kind: u32, x: f64, y: f64) -> std::result::Result<(), JsValue> {
+        if !x.is_finite() || !y.is_finite() {
+            return Err(JsValue::from_str("drawing coordinates"));
+        }
+        let mut state = self.state.borrow_mut();
+        state.request_render();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.draw(kind, x, y)
                 .map_err(|e| JsValue::from_str(&e.to_string()))?;
         }
         Ok(())
@@ -844,6 +859,7 @@ impl BrowserApp {
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
+                            190,
                         ]
                         .contains(&example)
                         {
@@ -851,12 +867,14 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: [16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186]
-                            .contains(&example),
+                        encode_srgb: [
+                            16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191,
+                        ]
+                        .contains(&example),
                         format: if [
                             16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
                             165, 166, 167, 168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
-                            183, 184, 185, 186, 187,
+                            183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
                         ]
                         .contains(&example)
                         {
@@ -886,7 +904,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=187).contains(&example) {
+            if (7..=192).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

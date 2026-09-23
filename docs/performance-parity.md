@@ -385,3 +385,15 @@ are the original's own CPU queries, not per-vertex rendering work. After a warm
 pass, the scenes make zero geometry and texture uploads. Warmed time, control,
 pointer and resize cycles create no GPU resources. Per-cube draw records are
 created once, when a cube first enters the frustum. No GPU timing parity is claimed.
+
+### Instanced and sprite picking, orientation, atlas and canvas texture
+
+The [picking, orientation, panorama and canvas-texture ports](interactive-objects.md)
+match the original draws: one instanced draw of 1,000 icosahedra, three
+orientation meshes, six atlas faces, one canvas cube and three sprites. Hover
+recoloring changes resident instance colors or sprite uniforms only. Picking
+uses the original's CPU queries. Canvas strokes are copied into the resident
+texture on the GPU, and its mipmaps are regenerated in place. After a warm
+pass, the scenes make zero geometry, attribute and texture uploads. Warmed
+control, hover, drawing, drag and resize cycles create no GPU resources. No GPU
+timing parity is claimed.
