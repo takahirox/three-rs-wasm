@@ -3149,7 +3149,7 @@
       "id": "webgl_loader_texture_tga",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_tga.html",
       "source_sha256": "71ada14e4ae1f42fc9c95af6820cc70349255d17db431a6bd1cccd40a0f2ebf5",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_texture_tga",
         "source_sha256": "71ada14e4ae1f42fc9c95af6820cc70349255d17db431a6bd1cccd40a0f2ebf5",
@@ -3313,7 +3313,7 @@
       "id": "webgl_loader_xyz",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_xyz.html",
       "source_sha256": "1f6893f73bfc106d64df9758d9b61a54cc092318b0ca830f11f79286b938755e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_xyz",
         "source_sha256": "1f6893f73bfc106d64df9758d9b61a54cc092318b0ca830f11f79286b938755e",
@@ -4256,7 +4256,7 @@
       "id": "webgl_math_obb",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_obb.html",
       "source_sha256": "e13fcaabb7b4a8a1e088757a9d8ac019e4ab67d0eb8335bf7687b7dd4c31a65c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_math_obb",
         "source_sha256": "e13fcaabb7b4a8a1e088757a9d8ac019e4ab67d0eb8335bf7687b7dd4c31a65c",
@@ -4704,7 +4704,7 @@
       "id": "webgl_multiple_views",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_views.html",
       "source_sha256": "8a4de78b3dca79d6dbb1075c573da54399547fed18fb6f950c1f3aad0a373142",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_multiple_views",
         "source_sha256": "8a4de78b3dca79d6dbb1075c573da54399547fed18fb6f950c1f3aad0a373142",
@@ -6834,7 +6834,7 @@
       "id": "webgl_custom_attributes_points2",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes_points2.html",
       "source_sha256": "f8550792d1801617a32520bfbeb22d443dcca9ce8143c6b1e0e98c9199eaaf51",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_custom_attributes_points2",
         "source_sha256": "f8550792d1801617a32520bfbeb22d443dcca9ce8143c6b1e0e98c9199eaaf51",

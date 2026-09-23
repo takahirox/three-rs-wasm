@@ -1,0 +1,3606 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/views-loaders.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255. ulpFraction compares the original with its camera moved by one Float32 ULP.",
+ "runs": {
+  "dpr1": {
+   "Views-and-lo-10460-endering-math-obb-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01506805419921875,
+      "meanError": 0.47901662190755206
+     },
+     {
+      "state": 1,
+      "fraction": 0.014923095703125,
+      "meanError": 0.45028432210286456
+     },
+     {
+      "state": 2,
+      "fraction": 0.015838623046875,
+      "meanError": 0.48446400960286456
+     },
+     {
+      "state": 3,
+      "fraction": 0.01556396484375,
+      "meanError": 0.4739939371744792
+     },
+     {
+      "state": 4,
+      "fraction": 0.017162322998046875,
+      "meanError": 0.5123494466145834
+     },
+     {
+      "state": 5,
+      "fraction": 0.016170501708984375,
+      "meanError": 0.4849205017089844
+     },
+     {
+      "state": 6,
+      "fraction": 0.01556396484375,
+      "meanError": 0.4739939371744792
+     },
+     {
+      "state": 7,
+      "fraction": 0.0189208984375,
+      "meanError": 0.6424039204915365
+     },
+     {
+      "state": 8,
+      "fraction": 0.0157265625,
+      "meanError": 0.52735546875
+     }
+    ]
+   },
+   "Views-and-lo-1598b-oader-texture-tga-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000431060791015625,
+      "meanError": 0.008168538411458334
+     },
+     {
+      "state": 1,
+      "fraction": 0.00089263916015625,
+      "meanError": 0.02408599853515625
+     },
+     {
+      "state": 2,
+      "fraction": 0.00089263916015625,
+      "meanError": 0.02408599853515625
+     },
+     {
+      "state": 3,
+      "fraction": 0.00078582763671875,
+      "meanError": 0.022374471028645832
+     },
+     {
+      "state": 4,
+      "fraction": 0.0007421875,
+      "meanError": 0.019057291666666667
+     }
+    ]
+   },
+   "Views-and-lo-249de-ng-multiple-views-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.016231536865234375,
+      "meanError": 0.40046437581380206
+     },
+     {
+      "state": 1,
+      "fraction": 0.016231536865234375,
+      "meanError": 0.40046437581380206
+     },
+     {
+      "state": 2,
+      "fraction": 0.016231536865234375,
+      "meanError": 0.40046437581380206
+     },
+     {
+      "state": 3,
+      "fraction": 0.016231536865234375,
+      "meanError": 0.40046437581380206
+     },
+     {
+      "state": 4,
+      "fraction": 0.015583038330078125,
+      "meanError": 0.37743886311848956
+     },
+     {
+      "state": 5,
+      "fraction": 0.015228271484375,
+      "meanError": 0.3703295389811198
+     },
+     {
+      "state": 6,
+      "fraction": 0.0160675048828125,
+      "meanError": 0.3910662333170573
+     },
+     {
+      "state": 7,
+      "fraction": 0.015819549560546875,
+      "meanError": 0.39124806722005206
+     },
+     {
+      "state": 8,
+      "fraction": 0.01662109375,
+      "meanError": 0.41619140625
+     }
+    ]
+   },
+   "Views-and-lo-2bacf-ng-multiple-views-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00115966796875,
+      "meanError": 0.09355545043945312
+     },
+     {
+      "state": 1,
+      "fraction": 0.00115966796875,
+      "meanError": 0.09355545043945312
+     },
+     {
+      "state": 2,
+      "fraction": 0.00115966796875,
+      "meanError": 0.09355545043945312
+     },
+     {
+      "state": 3,
+      "fraction": 0.00115966796875,
+      "meanError": 0.09355545043945312
+     },
+     {
+      "state": 4,
+      "fraction": 0.00113677978515625,
+      "meanError": 0.09180959065755208
+     },
+     {
+      "state": 5,
+      "fraction": 0.00113677978515625,
+      "meanError": 0.08953221638997395
+     },
+     {
+      "state": 6,
+      "fraction": 0.001285552978515625,
+      "meanError": 0.10289764404296875
+     },
+     {
+      "state": 7,
+      "fraction": 0.001468658447265625,
+      "meanError": 0.12887954711914062
+     },
+     {
+      "state": 8,
+      "fraction": 0.0015703125,
+      "meanError": 0.1433046875
+     }
+    ]
+   },
+   "Views-and-lo-4d8ed-y-custom-attributes-points2": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 42,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 42,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 46,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 46,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-lo-5871a--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "multiple_views",
+      "reference": {
+       "draws": [
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "math_obb",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "custom_attributes_points2",
+      "reference": {
+       "draws": [
+        {
+         "count": 18720,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 3120
+        }
+       ],
+       "attributeBytes": 24960,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "loader_xyz",
+      "reference": {
+       "draws": [
+        {
+         "count": 1206,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1206,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "loader_texture_tga",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Views-and-lo-72206-endering-math-obb-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0007870992024739584
+     },
+     {
+      "state": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.0002988179524739583
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.00064849853515625
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0.000873565673828125,
+      "meanError": 0.12490208943684895
+     },
+     {
+      "state": 8,
+      "fraction": 0.0006953125,
+      "meanError": 0.09845833333333333
+     }
+    ]
+   },
+   "Views-and-lo-7421a-dering-loader-xyz-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000095367431640625,
+      "meanError": 0.024318695068359375
+     },
+     {
+      "state": 1,
+      "fraction": 0.000072479248046875,
+      "meanError": 0.018482208251953125
+     },
+     {
+      "state": 2,
+      "fraction": 0.00006866455078125,
+      "meanError": 0.01750946044921875
+     },
+     {
+      "state": 3,
+      "fraction": 0.00008392333984375,
+      "meanError": 0.02140045166015625
+     },
+     {
+      "state": 4,
+      "fraction": 0.00007421875,
+      "meanError": 0.01892578125
+     }
+    ]
+   },
+   "Views-and-lo-9a531-dering-loader-xyz-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000965118408203125,
+      "meanError": 0.061702728271484375
+     },
+     {
+      "state": 1,
+      "fraction": 0.00084686279296875,
+      "meanError": 0.05413055419921875
+     },
+     {
+      "state": 2,
+      "fraction": 0.00084686279296875,
+      "meanError": 0.054157257080078125
+     },
+     {
+      "state": 3,
+      "fraction": 0.000888824462890625,
+      "meanError": 0.05681610107421875
+     },
+     {
+      "state": 4,
+      "fraction": 0.0009453125,
+      "meanError": 0.0607109375
+     }
+    ]
+   },
+   "Views-and-lo-a1108-oader-texture-tga-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0027147928873697915
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.012006123860677084
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.012006123860677084
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.011255900065104166
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00948828125
+     }
+    ]
+   },
+   "Views-and-lo-ac7b6-ttributes-points2-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000431060791015625,
+      "meanError": 0.07717641194661458,
+      "ulpFraction": 0,
+      "ulpMeanError": 0.00015767415364583334
+     },
+     {
+      "state": 1,
+      "fraction": 0.011745452880859375,
+      "meanError": 0.4334729512532552,
+      "ulpFraction": 0.017017364501953125,
+      "ulpMeanError": 0.5068270365397135
+     },
+     {
+      "state": 2,
+      "fraction": 0.000812530517578125,
+      "meanError": 0.0789655049641927,
+      "ulpFraction": 0.000030517578125,
+      "ulpMeanError": 0.0004399617513020833
+     },
+     {
+      "state": 3,
+      "fraction": 0.00089263916015625,
+      "meanError": 0.08199183146158855,
+      "ulpFraction": 0.0011444091796875,
+      "ulpMeanError": 0.04207611083984375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0007421875,
+      "meanError": 0.0602578125,
+      "ulpFraction": 0.00155859375,
+      "ulpMeanError": 0.03899088541666667
+     }
+    ]
+   },
+   "Views-and-lo-d3f06-esidency-loader-texture-tga": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 54,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 54,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 59,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 59,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-loader-xyz": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-math-obb": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 524,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 524,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 537,
+       "transfers": [
+        2,
+        4272,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 537,
+       "transfers": [
+        2,
+        4272,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-multiple-views": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 107,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 107,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Views-and-lo-10460-endering-math-obb-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.007588386535644531,
+      "meanError": 0.2398357391357422
+     },
+     {
+      "state": 1,
+      "fraction": 0.0074310302734375,
+      "meanError": 0.22690518697102866
+     },
+     {
+      "state": 2,
+      "fraction": 0.007885932922363281,
+      "meanError": 0.24033228556315103
+     },
+     {
+      "state": 3,
+      "fraction": 0.007857322692871094,
+      "meanError": 0.23749287923177084
+     },
+     {
+      "state": 4,
+      "fraction": 0.008688926696777344,
+      "meanError": 0.2576150894165039
+     },
+     {
+      "state": 5,
+      "fraction": 0.008164405822753906,
+      "meanError": 0.24272950490315756
+     },
+     {
+      "state": 6,
+      "fraction": 0.007857322692871094,
+      "meanError": 0.23749287923177084
+     },
+     {
+      "state": 7,
+      "fraction": 0.009381294250488281,
+      "meanError": 0.3181883494059245
+     },
+     {
+      "state": 8,
+      "fraction": 0.0077353515625,
+      "meanError": 0.261642578125
+     }
+    ]
+   },
+   "Views-and-lo-1598b-oader-texture-tga-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00017642974853515625,
+      "meanError": 0.0045363108317057295
+     },
+     {
+      "state": 1,
+      "fraction": 0.00041675567626953125,
+      "meanError": 0.008690198262532553
+     },
+     {
+      "state": 2,
+      "fraction": 0.00041675567626953125,
+      "meanError": 0.008690198262532553
+     },
+     {
+      "state": 3,
+      "fraction": 0.00035572052001953125,
+      "meanError": 0.008544603983561197
+     },
+     {
+      "state": 4,
+      "fraction": 0.0002978515625,
+      "meanError": 0.007855143229166667
+     }
+    ]
+   },
+   "Views-and-lo-249de-ng-multiple-views-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.008970260620117188,
+      "meanError": 0.21988519032796225
+     },
+     {
+      "state": 1,
+      "fraction": 0.008970260620117188,
+      "meanError": 0.21988519032796225
+     },
+     {
+      "state": 2,
+      "fraction": 0.008970260620117188,
+      "meanError": 0.21988519032796225
+     },
+     {
+      "state": 3,
+      "fraction": 0.008970260620117188,
+      "meanError": 0.21988519032796225
+     },
+     {
+      "state": 4,
+      "fraction": 0.008540153503417969,
+      "meanError": 0.20779736836751303
+     },
+     {
+      "state": 5,
+      "fraction": 0.008257865905761719,
+      "meanError": 0.20209852854410806
+     },
+     {
+      "state": 6,
+      "fraction": 0.008946418762207031,
+      "meanError": 0.21994940439860025
+     },
+     {
+      "state": 7,
+      "fraction": 0.008819580078125,
+      "meanError": 0.22012615203857422
+     },
+     {
+      "state": 8,
+      "fraction": 0.0092177734375,
+      "meanError": 0.22921614583333333
+     }
+    ]
+   },
+   "Views-and-lo-2bacf-ng-multiple-views-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0008420944213867188,
+      "meanError": 0.06657695770263672
+     },
+     {
+      "state": 1,
+      "fraction": 0.0008420944213867188,
+      "meanError": 0.06657695770263672
+     },
+     {
+      "state": 2,
+      "fraction": 0.0008420944213867188,
+      "meanError": 0.06657695770263672
+     },
+     {
+      "state": 3,
+      "fraction": 0.0008420944213867188,
+      "meanError": 0.06657695770263672
+     },
+     {
+      "state": 4,
+      "fraction": 0.0009202957153320312,
+      "meanError": 0.07575289408365886
+     },
+     {
+      "state": 5,
+      "fraction": 0.0008802413940429688,
+      "meanError": 0.07216548919677734
+     },
+     {
+      "state": 6,
+      "fraction": 0.00101470947265625,
+      "meanError": 0.08636697133382161
+     },
+     {
+      "state": 7,
+      "fraction": 0.0009374618530273438,
+      "meanError": 0.08021736145019531
+     },
+     {
+      "state": 8,
+      "fraction": 0.0010009765625,
+      "meanError": 0.08803255208333334
+     }
+    ]
+   },
+   "Views-and-lo-4d8ed-y-custom-attributes-points2": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 42,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 42,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 46,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 46,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-lo-5871a--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "multiple_views",
+      "reference": {
+       "draws": [
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 240,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "math_obb",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "custom_attributes_points2",
+      "reference": {
+       "draws": [
+        {
+         "count": 18720,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 3120
+        }
+       ],
+       "attributeBytes": 24960,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "loader_xyz",
+      "reference": {
+       "draws": [
+        {
+         "count": 1206,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1206,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "loader_texture_tga",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Views-and-lo-72206-endering-math-obb-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.000029246012369791668
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0000209808349609375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0.0000057220458984375,
+      "meanError": 0.0004863739013671875
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0.0004425048828125,
+      "meanError": 0.0630483627319336
+     },
+     {
+      "state": 8,
+      "fraction": 0.0003701171875,
+      "meanError": 0.05181640625
+     }
+    ]
+   },
+   "Views-and-lo-7421a-dering-loader-xyz-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000438690185546875,
+      "meanError": 0.011186599731445312
+     },
+     {
+      "state": 1,
+      "fraction": 0.000034332275390625,
+      "meanError": 0.008754730224609375
+     },
+     {
+      "state": 2,
+      "fraction": 0.0000457763671875,
+      "meanError": 0.0116729736328125
+     },
+     {
+      "state": 3,
+      "fraction": 0.00004863739013671875,
+      "meanError": 0.012402534484863281
+     },
+     {
+      "state": 4,
+      "fraction": 0.0000341796875,
+      "meanError": 0.0087158203125
+     }
+    ]
+   },
+   "Views-and-lo-9a531-dering-loader-xyz-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000324249267578125,
+      "meanError": 0.020721435546875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00028514862060546875,
+      "meanError": 0.01821422576904297
+     },
+     {
+      "state": 2,
+      "fraction": 0.0003414154052734375,
+      "meanError": 0.021811485290527344
+     },
+     {
+      "state": 3,
+      "fraction": 0.00037860870361328125,
+      "meanError": 0.02418804168701172
+     },
+     {
+      "state": 4,
+      "fraction": 0.0002998046875,
+      "meanError": 0.0191552734375
+     }
+    ]
+   },
+   "Views-and-lo-a1108-oader-texture-tga-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0025046666463216147
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0031267801920572915
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0031267801920572915
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0034243265787760415
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0036223958333333334
+     }
+    ]
+   },
+   "Views-and-lo-ac7b6-ttributes-points2-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00026035308837890625,
+      "meanError": 0.04570611317952474,
+      "ulpFraction": 0,
+      "ulpMeanError": 0.00011507670084635417
+     },
+     {
+      "state": 1,
+      "fraction": 0.0010919570922851562,
+      "meanError": 0.0547021230061849,
+      "ulpFraction": 0.0014562606811523438,
+      "ulpMeanError": 0.028191566467285156
+     },
+     {
+      "state": 2,
+      "fraction": 0.000270843505859375,
+      "meanError": 0.04084459940592448,
+      "ulpFraction": 0.000019073486328125,
+      "ulpMeanError": 0.0005826950073242188
+     },
+     {
+      "state": 3,
+      "fraction": 0.00024890899658203125,
+      "meanError": 0.039191881815592446,
+      "ulpFraction": 0,
+      "ulpMeanError": 0.00014400482177734375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0002626953125,
+      "meanError": 0.033658203125,
+      "ulpFraction": 0.0000029296875,
+      "ulpMeanError": 0.00017220052083333334
+     }
+    ]
+   },
+   "Views-and-lo-d3f06-esidency-loader-texture-tga": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 54,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 54,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 59,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 59,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-loader-xyz": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        96480,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-math-obb": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 524,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 524,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 537,
+       "transfers": [
+        2,
+        4272,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 537,
+       "transfers": [
+        2,
+        4272,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Views-and-loaders-GPU-residency-multiple-views": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 107,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 107,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        8,
+        121544,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   }
+  }
+ }
+}

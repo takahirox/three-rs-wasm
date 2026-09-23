@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    ViewsLoaders(Box<super::views_loaders::Demo>),
     InteractiveScenes(Box<super::interactive_scenes::Demo>),
     InteractiveObjects(Box<super::interactive_objects::Demo>),
     InteractiveShaders(Box<super::interactive_shaders::Demo>),
@@ -77,6 +78,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            198..=202 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ViewsLoaders(Box::new(
+                    super::views_loaders::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             193..=197 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -684,6 +694,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -877,6 +890,9 @@ impl Demo {
         }
     }
     pub fn select(&mut self, scene: &mut Scene, cam: Object3D, x: f64, y: f64) -> Result<()> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            return demo.select(scene, cam, x, y);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.select(scene, cam, x, y);
         }
@@ -896,6 +912,10 @@ impl Demo {
         x: f64,
         y: f64,
     ) -> Result<bool> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            demo.gpu_pointer(x, y);
+            return Ok(false);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.gpu_pointer(scene, cam, x, y);
         }
@@ -974,6 +994,9 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1022,6 +1045,11 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::ViewsLoaders(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::InteractiveScenes(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -1049,6 +1077,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            demo.prepare(renderer, scene, camera)?;
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1171,6 +1202,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1262,6 +1296,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::ViewsLoaders(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 193 partial Rust ports; 398 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 198 partial Rust ports; 393 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_multiple_views | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。フレーム毎のカメラ移動を60fps相当の時間基準で再現。シザー付きクリアを各ビューの全画面背景三角形で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_math_obb | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。OBB衝突判定とレイ判定をRustへ移植。OrbitControlsのキーボード操作は未移植。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_custom_attributes_points2 | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。毎フレームのCPU深度ソート結果とサイズのみ常駐GPUバッファへ書き込み（原本と同じ）。精度依存の1状態は原本の1 ULP感度で比較。性能の完全な同等性は未保証。 |
+| webgl_loader_xyz | `tests/browser/views-loaders.spec.js` | XYZローダーをRustで再現。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_tga | `tests/browser/views-loaders.spec.js` | TGALoaderのデコードをRustへ移植。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。 |
 | webgl_interactive_voxelpainter | `tests/browser/interactive-scenes.spec.js` | Shiftキーはkeydown/keyupで追跡。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_interactive_buffergeometry | `tests/browser/interactive-scenes.spec.js` | Stats表示は未移植。ヒット時のみ4頂点の線ジオメトリを更新（原本と同じ）。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_clipping_intersection | `tests/browser/interactive-scenes.spec.js` | 操作UI外観は未一致。OrbitControlsの回転・ズームをRustで再現（キーボード操作は未移植）。WebGLとのMSAA/alpha to coverage差を別途検証。性能の完全な同等性は未保証。 |

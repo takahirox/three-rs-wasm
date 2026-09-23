@@ -525,3 +525,9 @@ is the unmodified r186 `examples/textures/square-outline-textured.png`. Its sour
 path and SHA-256 hash are in `interactive-scenes-manifest.json`; it is distributed
 alongside `LICENSE-THREE`. The custom-blending example reuses the environment
 materials copy of `lensflare0_alpha.png`.
+
+`gallery/assets/helix_201.xyz`, `crate_grey8.tga` and `crate_color8.tga` are the
+unmodified r186 `examples/models/xyz/helix_201.xyz` and
+`examples/textures/crate_{grey8,color8}.tga`. Their source paths and SHA-256
+hashes are in `views-loaders-manifest.json`; they are distributed alongside
+`LICENSE-THREE`. The sorted-points example reuses `point-clouds/disc.png`.

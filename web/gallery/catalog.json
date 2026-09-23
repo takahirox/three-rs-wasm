@@ -5596,7 +5596,7 @@
     {
       "id": "webgl_loader_texture_tga",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_tga.html",
       "source_sha256": "71ada14e4ae1f42fc9c95af6820cc70349255d17db431a6bd1cccd40a0f2ebf5",
@@ -5622,7 +5622,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 202,
+        "source": "src/browser/views_loaders.rs",
+        "test": "tests/browser/views-loaders.spec.js",
+        "limitations": [
+          "TGALoaderのデコードをRustへ移植。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5804,7 +5811,7 @@
     {
       "id": "webgl_loader_xyz",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_xyz.html",
       "source_sha256": "1f6893f73bfc106d64df9758d9b61a54cc092318b0ca830f11f79286b938755e",
@@ -5820,7 +5827,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 201,
+        "source": "src/browser/views_loaders.rs",
+        "test": "tests/browser/views-loaders.spec.js",
+        "limitations": [
+          "XYZローダーをRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/XYZLoader.js"
@@ -7565,7 +7579,7 @@
     {
       "id": "webgl_math_obb",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_obb.html",
       "source_sha256": "e13fcaabb7b4a8a1e088757a9d8ac019e4ab67d0eb8335bf7687b7dd4c31a65c",
@@ -7599,7 +7613,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 199,
+        "source": "src/browser/views_loaders.rs",
+        "test": "tests/browser/views-loaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。OBB衝突判定とレイ判定をRustへ移植。OrbitControlsのキーボード操作は未移植。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -8389,7 +8410,7 @@
     {
       "id": "webgl_multiple_views",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_views.html",
       "source_sha256": "8a4de78b3dca79d6dbb1075c573da54399547fed18fb6f950c1f3aad0a373142",
@@ -8431,7 +8452,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 198,
+        "source": "src/browser/views_loaders.rs",
+        "test": "tests/browser/views-loaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。フレーム毎のカメラ移動を60fps相当の時間基準で再現。シザー付きクリアを各ビューの全画面背景三角形で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -12073,7 +12101,7 @@
     {
       "id": "webgl_custom_attributes_points2",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes_points2.html",
       "source_sha256": "f8550792d1801617a32520bfbeb22d443dcca9ce8143c6b1e0e98c9199eaaf51",
@@ -12085,7 +12113,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 200,
+        "source": "src/browser/views_loaders.rs",
+        "test": "tests/browser/views-loaders.spec.js",
+        "limitations": [
+          "Stats表示は未移植。毎フレームのCPU深度ソート結果とサイズのみ常駐GPUバッファへ書き込み（原本と同じ）。精度依存の1状態は原本の1 ULP感度で比較。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",

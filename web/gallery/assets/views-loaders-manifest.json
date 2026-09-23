@@ -1,0 +1,17 @@
+[
+ {
+  "file": "helix_201.xyz",
+  "source": "examples/models/xyz/helix_201.xyz",
+  "sha256": "489c27c4b619c9a47c15df62ebb7a5474791a7ae85f0c9c3f8323a9504288519"
+ },
+ {
+  "file": "crate_grey8.tga",
+  "source": "examples/textures/crate_grey8.tga",
+  "sha256": "6ae83da1bc71f79c03b8bf87bfff664a8b81847297806bb2cf12ef96d29588fa"
+ },
+ {
+  "file": "crate_color8.tga",
+  "source": "examples/textures/crate_color8.tga",
+  "sha256": "b3c7ca4ea77ecd215f086dc5bea152e183e202c108aa77982130efa3eaed8d9d"
+ }
+]

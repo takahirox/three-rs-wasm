@@ -88,3 +88,9 @@ The WebGL-only voxel, picking, clipping, comparison and blending batch
 ([interactive-scenes.md](interactive-scenes.md)) bounds only 4× MSAA comparisons
 of line, dense-edge and alpha-to-coverage edges. All five scenes match within
 the ordinary threshold with MSAA off.
+
+The WebGL-only viewport, OBB, sorted-points and loader batch
+([views-loaders.md](views-loaders.md)) bounds only two 4× MSAA wireframe or
+edge comparisons. It also bounds one precision-sensitive sorted-points state
+by the original's own measured one-ULP camera sensitivity. All other states
+keep the ordinary threshold.

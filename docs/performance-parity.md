@@ -408,3 +408,13 @@ original's CPU queries. Only the hovered triangle's 4-vertex outline is
 rewritten, as in the original. The two comparison scenes render into one target
 with scissor rectangles. The voxel and clipping scenes stay idle until input or
 resize. Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Multiple views, OBB, sorted points and the XYZ/TGA loaders
+
+The [viewport, OBB, sorted-points and loader ports](views-loaders.md) match the
+original draws: 27 viewport draws, 100 boxes, 3,120 sorted point billboards, 201
+XYZ billboards and two crates. OBB collisions and the point depth sort are the
+original's CPU work. The sorted points keep positions and colors resident and
+write only 8 bytes of order and size per point each frame. After a warm pass,
+the other scenes make no geometry or texture uploads. Warmed cycles create no
+GPU resources. No GPU timing parity is claimed.
