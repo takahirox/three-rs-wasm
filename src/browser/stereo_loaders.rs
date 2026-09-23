@@ -261,11 +261,10 @@ fn lzf(input: &[u8], out_len: usize) -> Result<Vec<u8>> {
             if op + len + 2 > out_len || reference < 0 || reference as usize >= op {
                 return Err(bad());
             }
-            let mut reference = reference as usize;
-            for _ in 0..len + 2 {
+            // Byte by byte: a back-reference may overlap the bytes it produces.
+            for reference in reference as usize..reference as usize + len + 2 {
                 out[op] = out[reference];
                 op += 1;
-                reference += 1;
             }
         }
     }
