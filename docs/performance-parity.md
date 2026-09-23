@@ -397,3 +397,14 @@ texture on the GPU, and its mipmaps are regenerated in place. After a warm
 pass, the scenes make zero geometry, attribute and texture uploads. Warmed
 control, hover, drawing, drag and resize cycles create no GPU resources. No GPU
 timing parity is claimed.
+
+### Voxel painting, triangle picking, clipping, comparison and custom blending
+
+The [voxel, picking, clipping, comparison and blending ports](interactive-scenes.md)
+match the original draws: the grid and rollover, the 5,000-triangle mesh and its
+outline, fifteen clipped spheres, the two comparison meshes, and 132 blend and
+label quads. Voxels share one geometry and one material. Picking uses the
+original's CPU queries. Only the hovered triangle's 4-vertex outline is
+rewritten, as in the original. The two comparison scenes render into one target
+with scissor rectangles. The voxel and clipping scenes stay idle until input or
+resize. Warmed cycles create no GPU resources. No GPU timing parity is claimed.

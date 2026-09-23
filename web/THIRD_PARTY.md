@@ -519,3 +519,9 @@ reuses `gallery/assets/point-clouds/disc.png`, the unmodified r186
 unmodified r186 `examples/textures/cube/sun_temple_stripe.jpg`. Its source path
 and SHA-256 hash are in `interactive-objects-manifest.json`; it is distributed
 alongside `LICENSE-THREE` with the upstream example attribution.
+
+`gallery/assets/square-outline-textured.png`, used by `webgl_interactive_voxelpainter`,
+is the unmodified r186 `examples/textures/square-outline-textured.png`. Its source
+path and SHA-256 hash are in `interactive-scenes-manifest.json`; it is distributed
+alongside `LICENSE-THREE`. The custom-blending example reuses the environment
+materials copy of `lensflare0_alpha.png`.

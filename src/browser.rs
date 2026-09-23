@@ -19,6 +19,7 @@ mod geometry_materials;
 mod gltf_examples;
 mod gltf_viewer;
 mod interactive_objects;
+mod interactive_scenes;
 mod interactive_shaders;
 mod material_textures;
 mod point_clouds;
@@ -178,7 +179,7 @@ impl State {
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
             168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188,
-            189, 190, 191, 192,
+            189, 190, 191, 192, 193, 194, 195, 196, 197,
         ]
         .contains(&self.example)
         {
@@ -476,6 +477,25 @@ impl BrowserApp {
         }
         Ok(())
     }
+    /// Keyboard state for examples that track modifier keys (keyCode, pressed).
+    pub fn gallery_key(&self, code: u32, down: bool) {
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
+            &mut self.state.borrow_mut().gallery_scene
+        {
+            demo.key(code, down);
+        }
+    }
+    /// Comparison slider position in CSS pixels.
+    pub fn gallery_slider(&self, x: f64) {
+        if !x.is_finite() {
+            return;
+        }
+        let mut state = self.state.borrow_mut();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
+            demo.slider(x);
+        }
+        state.request_render();
+    }
     pub fn gallery_pointer(&self, x: f64, y: f64) {
         if !x.is_finite() || !y.is_finite() {
             return;
@@ -484,6 +504,7 @@ impl BrowserApp {
         let width = state.canvas.client_width() as f64;
         let height = state.canvas.client_height() as f64;
         let is_rtt = [39, 55, 56].contains(&state.example);
+        let mut redraw = false;
         let State {
             renderer,
             scene,
@@ -493,8 +514,12 @@ impl BrowserApp {
             ..
         } = &mut *state;
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            if let Err(e) = demo.gpu_pointer(renderer, scene, *camera, x, y) {
-                let _ = canvas.set_attribute("data-error", &e.to_string());
+            match demo.gpu_pointer(renderer, scene, *camera, x, y) {
+                Ok(true) => redraw = true,
+                Ok(false) => {}
+                Err(e) => {
+                    let _ = canvas.set_attribute("data-error", &e.to_string());
+                }
             }
             if is_rtt {
                 demo.pointer(x, y);
@@ -503,6 +528,10 @@ impl BrowserApp {
             }
         } else if let Some(demo) = gallery_scene {
             demo.pointer(x, y);
+        }
+        // On-demand scenes redraw when the pointer moves something.
+        if redraw {
+            state.request_render();
         }
     }
     /// Animation clips available in the active gallery scene.
@@ -859,7 +888,7 @@ impl BrowserApp {
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
-                            190,
+                            190, 197,
                         ]
                         .contains(&example)
                         {
@@ -869,12 +898,14 @@ impl BrowserApp {
                         },
                         encode_srgb: [
                             16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191,
+                            193, 194, 195, 196,
                         ]
                         .contains(&example),
                         format: if [
                             16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
                             165, 166, 167, 168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
-                            183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+                            183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
+                            197,
                         ]
                         .contains(&example)
                         {
@@ -904,7 +935,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=192).contains(&example) {
+            if (7..=197).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1061,7 +1092,7 @@ impl BrowserApp {
                         return;
                     }
                     // These official static scenes render only on load, input and resize.
-                    if !([16, 28, 38, 153, 156, 157].contains(&state.example)
+                    if !([16, 28, 38, 153, 156, 157, 193, 195].contains(&state.example)
                         || state.paused && state.example >= 39)
                     {
                         state.request_render();

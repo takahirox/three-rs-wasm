@@ -1181,6 +1181,7 @@ impl Renderer {
 
                 let gpu_geometry = self.geometry.borrow_mut().get(
                     &self.device,
+                    &self.queue,
                     geometry,
                     properties.vertex_colors,
                     is_points,
@@ -1544,7 +1545,9 @@ impl Renderer {
                     shadow_filters: shadows.filters,
                     shadow_cascades: shadows.cascades,
                 };
-                if target.options.samples <= 1 {
+                // WebGL keeps the ALPHA_TO_COVERAGE clipping shader without MSAA: edge
+                // fragments with nonzero clip opacity survive. WebGPU outputs clip hard.
+                if target.options.samples <= 1 && !target.options.encode_srgb {
                     u.clipping.params[3] = 0.;
                 }
                 if let Some(selected) = &properties.lights {

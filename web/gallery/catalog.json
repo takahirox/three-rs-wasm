@@ -875,7 +875,7 @@
     {
       "id": "webgl_clipping_intersection",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping_intersection.html",
       "source_sha256": "6fdd5071b3f92616d9ec9d5f7d4d963a72480d6c6f5252c8545426b64545aa0d",
@@ -909,7 +909,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 195,
+        "source": "src/browser/interactive_scenes.rs",
+        "test": "tests/browser/interactive-scenes.spec.js",
+        "limitations": [
+          "操作UI外観は未一致。OrbitControlsの回転・ズームをRustで再現（キーボード操作は未移植）。WebGLとのMSAA/alpha to coverage差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2420,7 +2427,7 @@
     {
       "id": "webgl_interactive_buffergeometry",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_buffergeometry.html",
       "source_sha256": "86e1204da36571b57ebc5e157dad1ba63e849d99444c30f620347526b26b0be2",
@@ -2438,7 +2445,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 194,
+        "source": "src/browser/interactive_scenes.rs",
+        "test": "tests/browser/interactive-scenes.spec.js",
+        "limitations": [
+          "Stats表示は未移植。ヒット時のみ4頂点の線ジオメトリを更新（原本と同じ）。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -2617,7 +2631,7 @@
     {
       "id": "webgl_interactive_voxelpainter",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_voxelpainter.html",
       "source_sha256": "dec8afd0c945a59e0b333751930ea4bb2e60c7e44946f6ccb67aa38aafe00a9f",
@@ -2635,7 +2649,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 193,
+        "source": "src/browser/interactive_scenes.rs",
+        "test": "tests/browser/interactive-scenes.spec.js",
+        "limitations": [
+          "Shiftキーはkeydown/keyupで追跡。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -6021,7 +6042,7 @@
     {
       "id": "webgl_materials_blending_custom",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_blending_custom.html",
       "source_sha256": "c4025f8196aba3b87023a44e8513b2d07bbfaa3009266a092057fa23951e7f86",
@@ -6055,7 +6076,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 197,
+        "source": "src/browser/interactive_scenes.rs",
+        "test": "tests/browser/interactive-scenes.spec.js",
+        "limitations": [
+          "操作UI外観は未一致。min/maxのブレンド係数はWebGPU仕様によりOne（GLでは無視される）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js"
@@ -8311,7 +8339,7 @@
     {
       "id": "webgl_multiple_scenes_comparison",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_scenes_comparison.html",
       "source_sha256": "784961d69233c8625fac9180a9db1601235eb4d0bc797151d756fe4385a6d996",
@@ -8345,7 +8373,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 196,
+        "source": "src/browser/interactive_scenes.rs",
+        "test": "tests/browser/interactive-scenes.spec.js",
+        "limitations": [
+          "シザー付きクリアを右シーンの全画面背景三角形で再現。WebGLとのMSAA差を別途検証。OrbitControlsの回転・パン・ズームをRustで再現（キーボード操作は未移植）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js"

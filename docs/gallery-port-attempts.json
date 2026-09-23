@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 401,
-    "runnable-partial": 188,
+    "blocked-at-port-review": 396,
+    "runnable-partial": 193,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -1389,10 +1389,10 @@
     },
     {
       "id": "webgl_clipping_intersection",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping_intersection.html",
       "source_sha256": "6fdd5071b3f92616d9ec9d5f7d4d963a72480d6c6f5252c8545426b64545aa0d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-scenes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3608,10 +3608,10 @@
     },
     {
       "id": "webgl_interactive_buffergeometry",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_buffergeometry.html",
       "source_sha256": "86e1204da36571b57ebc5e157dad1ba63e849d99444c30f620347526b26b0be2",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-scenes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3832,10 +3832,10 @@
     },
     {
       "id": "webgl_interactive_voxelpainter",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_voxelpainter.html",
       "source_sha256": "dec8afd0c945a59e0b333751930ea4bb2e60c7e44946f6ccb67aa38aafe00a9f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-scenes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -8676,10 +8676,10 @@
     },
     {
       "id": "webgl_materials_blending_custom",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_blending_custom.html",
       "source_sha256": "c4025f8196aba3b87023a44e8513b2d07bbfaa3009266a092057fa23951e7f86",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-scenes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -11801,10 +11801,10 @@
     },
     {
       "id": "webgl_multiple_scenes_comparison",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_scenes_comparison.html",
       "source_sha256": "784961d69233c8625fac9180a9db1601235eb4d0bc797151d756fe4385a6d996",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/interactive-scenes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

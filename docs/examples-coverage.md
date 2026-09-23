@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 188 partial Rust ports; 403 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 193 partial Rust ports; 398 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_interactive_voxelpainter | `tests/browser/interactive-scenes.spec.js` | Shiftキーはkeydown/keyupで追跡。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_interactive_buffergeometry | `tests/browser/interactive-scenes.spec.js` | Stats表示は未移植。ヒット時のみ4頂点の線ジオメトリを更新（原本と同じ）。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_clipping_intersection | `tests/browser/interactive-scenes.spec.js` | 操作UI外観は未一致。OrbitControlsの回転・ズームをRustで再現（キーボード操作は未移植）。WebGLとのMSAA/alpha to coverage差を別途検証。性能の完全な同等性は未保証。 |
+| webgl_multiple_scenes_comparison | `tests/browser/interactive-scenes.spec.js` | シザー付きクリアを右シーンの全画面背景三角形で再現。WebGLとのMSAA差を別途検証。OrbitControlsの回転・パン・ズームをRustで再現（キーボード操作は未移植）。性能の完全な同等性は未保証。 |
+| webgl_materials_blending_custom | `tests/browser/interactive-scenes.spec.js` | 操作UI外観は未一致。min/maxのブレンド係数はWebGPU仕様によりOne（GLでは無視される）。性能の完全な同等性は未保証。 |
 | webgl_instancing_raycast | `tests/browser/interactive-objects.spec.js` | Stats・操作UI外観は未一致。OrbitControlsのドラッグ回転・減衰をRustで再現（キーボード操作は未移植）。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_math_orientation_transform | `tests/browser/interactive-objects.spec.js` | 操作UI外観は未一致。WebGLとのワイヤーフレームMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_panorama_cube | `tests/browser/interactive-objects.spec.js` | OrbitControlsのドラッグ回転・減衰をRustで再現（キーボード操作は未移植）。性能の完全な同等性は未保証。 |

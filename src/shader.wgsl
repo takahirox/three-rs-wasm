@@ -260,10 +260,15 @@ fn map_uv(index:u32,surface:VertexOut)->vec2<f32> {
  return (mat3x3(t[start].xyz,t[start+1u].xyz,t[start+2u].xyz)*vec3(uv,1.0)).xy;
 }
 fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {
+    // WebGL's in-shader output applies fog_fragment after colorspace_fragment.
+    if ENCODE_SRGB {return color;}
+    return fog_mix(color,depth,u.fog_color.rgb);
+}
+fn fog_mix(color:vec4<f32>,depth:f32,fog:vec3<f32>)->vec4<f32> {
     var factor=0.0;
     if u.fog_params.x==1.0 {factor=smoothstep(u.fog_params.y,u.fog_params.z,depth);}
     if u.fog_params.x==2.0 {factor=1.0-exp(-u.fog_params.y*u.fog_params.y*depth*depth);}
-    return vec4(mix(color.rgb,u.fog_color.rgb,factor),color.a);
+    return vec4(mix(color.rgb,fog,factor),color.a);
 }
 var<private> fragment_surface:VertexOut;
 var<private> fragment_front:bool;
@@ -278,7 +283,8 @@ var<private> fragment_emissive:vec3<f32>;
     if ENCODE_SRGB {
         var rgb=color.rgb;
         if u.output.y>0.5 {rgb=tone_output(rgb,u.output.x,u.output.y);}
-        return vec4(srgb_output(rgb),color.a);
+        // Its fog color uniform is also converted to the output color space.
+        return fog_mix(vec4(srgb_output(rgb),color.a),-in.view_position.z,srgb_output(u.fog_color.rgb));
     }
     return color;
 }

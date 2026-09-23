@@ -367,7 +367,7 @@ impl ShadowRenderer {
                     ));
                 }
                 let g = &mesh.geometry;
-                let gpu = geometry_cache.get(device, g, false, false, false, None)?;
+                let gpu = geometry_cache.get(device, queue, g, false, false, false, None)?;
                 let deformation = deformation_cache.get(device, queue, scene, handle)?;
                 let groups = if mesh.materials.len() > 1 {
                     g.groups.clone()

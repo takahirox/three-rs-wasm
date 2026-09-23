@@ -4,7 +4,6 @@ use std::{
     collections::HashMap,
     sync::{Arc, Weak},
 };
-use wgpu::util::DeviceExt;
 #[derive(Clone)]
 pub(crate) struct Buffers {
     pub vertices: wgpu::Buffer,
@@ -67,9 +66,11 @@ impl Cache {
         );
         Ok(sphere)
     }
+    #[allow(clippy::too_many_arguments)]
     pub fn get(
         &mut self,
         device: &wgpu::Device,
+        queue: &wgpu::Queue,
         geometry: &Arc<BufferGeometry>,
         vertex_colors: bool,
         is_points: bool,
@@ -226,11 +227,13 @@ impl Cache {
             }
         }
         let vertex_bytes = bytemuck::cast_slice(&vertices);
-        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("resident vertices"),
-            contents: vertex_bytes,
-            usage: wgpu::BufferUsages::VERTEX,
-        });
+        let vertex_buffer = upload(
+            device,
+            queue,
+            "resident vertices",
+            vertex_bytes,
+            wgpu::BufferUsages::VERTEX,
+        );
         let indices = if wide.is_some() {
             None
         } else if wireframe {
@@ -261,11 +264,13 @@ impl Cache {
             None
         };
         let index_buffer = indices.as_ref().map(|indices| {
-            device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("resident indices"),
-                contents: bytemuck::cast_slice(indices),
-                usage: wgpu::BufferUsages::INDEX,
-            })
+            upload(
+                device,
+                queue,
+                "resident indices",
+                bytemuck::cast_slice(indices),
+                wgpu::BufferUsages::INDEX,
+            )
         });
         for a in geometry.attributes.values() {
             a.notify_uploaded();
@@ -287,4 +292,31 @@ impl Cache {
         );
         Ok(buffers)
     }
+}
+
+/// Queue uploads, not mapped-at-creation buffers: WebGPU's mapped range holds a
+/// Wasm memory view until unmap, which allocator growth can detach.
+fn upload(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    label: &str,
+    bytes: &[u8],
+    usage: wgpu::BufferUsages,
+) -> wgpu::Buffer {
+    let size =
+        (bytes.len() as u64).div_ceil(wgpu::COPY_BUFFER_ALIGNMENT) * wgpu::COPY_BUFFER_ALIGNMENT;
+    let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+        label: Some(label),
+        size: size.max(wgpu::COPY_BUFFER_ALIGNMENT),
+        usage: usage | wgpu::BufferUsages::COPY_DST,
+        mapped_at_creation: false,
+    });
+    if bytes.len() as u64 == size {
+        queue.write_buffer(&buffer, 0, bytes);
+    } else {
+        let mut padded = bytes.to_vec();
+        padded.resize(size as usize, 0);
+        queue.write_buffer(&buffer, 0, &padded);
+    }
+    buffer
 }

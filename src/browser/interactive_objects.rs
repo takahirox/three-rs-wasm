@@ -24,7 +24,7 @@ fn random_color(seed: &mut u32) -> Color {
     Color::from_hex((random(seed) * 16777215.).floor() as u32)
 }
 /// OrbitControls state and update step, expressed in CSS pixels.
-struct Orbit {
+pub(super) struct Orbit {
     target: Vector3,
     theta: f64,
     phi: f64,
@@ -37,7 +37,12 @@ struct Orbit {
     distance: (f64, f64),
 }
 impl Orbit {
-    fn new(position: Vector3, damping: bool, rotate_speed: f64, distance: (f64, f64)) -> Self {
+    pub(super) fn new(
+        position: Vector3,
+        damping: bool,
+        rotate_speed: f64,
+        distance: (f64, f64),
+    ) -> Self {
         let radius = position.length();
         Self {
             target: Vector3::ZERO,
@@ -52,10 +57,10 @@ impl Orbit {
             distance,
         }
     }
-    fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
+    pub(super) fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
         self.delta -= Vector2::new(dx, dy) * self.rotate_speed * TAU / height.max(1.);
     }
-    fn dolly(&mut self, wheel: f64) {
+    pub(super) fn dolly(&mut self, wheel: f64) {
         let scale = 0.95f64.powf((wheel * 0.01).abs());
         if wheel < 0. {
             self.scale *= scale;
@@ -63,13 +68,20 @@ impl Orbit {
             self.scale /= scale;
         }
     }
-    fn pan(&mut self, camera: &crate::scene::Node, fov: f64, dx: f64, dy: f64, height: f64) {
+    pub(super) fn pan(
+        &mut self,
+        camera: &crate::scene::Node,
+        fov: f64,
+        dx: f64,
+        dy: f64,
+        height: f64,
+    ) {
         let distance = self.radius * (fov / 2.).to_radians().tan();
         let m = Matrix4::from_quat(camera.quaternion);
         self.pan += m.x_axis.truncate() * (-2. * dx * distance / height.max(1.))
             + m.y_axis.truncate() * (2. * dy * distance / height.max(1.));
     }
-    fn update(&mut self) {
+    pub(super) fn update(&mut self) {
         let f = if self.damping { 0.05 } else { 1. };
         self.theta += self.delta.x * f;
         self.phi = (self.phi + self.delta.y * f)
@@ -86,7 +98,7 @@ impl Orbit {
         }
         self.scale = 1.;
     }
-    fn apply(&self, s: &mut Scene, c: Object3D) -> Result<()> {
+    pub(super) fn apply(&self, s: &mut Scene, c: Object3D) -> Result<()> {
         let (sp, cp) = self.phi.sin_cos();
         let (st, ct) = self.theta.sin_cos();
         s.get_mut(c)?.position = self.target + Vector3::new(sp * st, cp, sp * ct) * self.radius;

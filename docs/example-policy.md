@@ -83,3 +83,8 @@ power-of-two states must match per pixel.
 The WebGL-only picking and canvas batch ([interactive-objects.md](interactive-objects.md))
 bounds only the instancing and orientation-wireframe 4× MSAA comparisons. The
 same scenes must match within the ordinary threshold with MSAA off.
+
+The WebGL-only voxel, picking, clipping, comparison and blending batch
+([interactive-scenes.md](interactive-scenes.md)) bounds only 4× MSAA comparisons
+of line, dense-edge and alpha-to-coverage edges. All five scenes match within
+the ordinary threshold with MSAA off.
