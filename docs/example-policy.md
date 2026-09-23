@@ -105,3 +105,10 @@ The WebGL-only stereo-effect and loader batch
 
 The stereo and ImageBitmap scenes match within the ordinary threshold with MSAA
 off.
+
+The WebGL-only controls, camera-helper, custom-attribute and draw-range batch
+([controls-attributes.md](controls-attributes.md)) bounds only 4× MSAA
+comparisons: silhouettes, wireframes and one-pixel points, and the dense
+additive draw-range lines. The draw-range scene must keep the original's mean
+level in every state. All five scenes match within the ordinary threshold with
+MSAA off.

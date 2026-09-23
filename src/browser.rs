@@ -5,6 +5,7 @@ use crate::{
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
 mod buffer_particles;
+mod controls_attributes;
 mod environment_materials;
 mod expanded;
 mod expanded_geometry_colors;
@@ -182,7 +183,7 @@ impl State {
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
             168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188,
             189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
-            206, 207,
+            206, 207, 208, 209, 210, 211, 212,
         ]
         .contains(&self.example)
         {
@@ -891,7 +892,7 @@ impl BrowserApp {
                             91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
-                            190, 197, 200, 203, 204, 205,
+                            190, 197, 200, 203, 204, 205, 211,
                         ]
                         .contains(&example)
                         {
@@ -902,13 +903,15 @@ impl BrowserApp {
                         encode_srgb: [
                             16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191,
                             193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204, 205, 206, 207,
+                            208, 209, 210, 212,
                         ]
                         .contains(&example),
                         format: if [
                             16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
                             165, 166, 167, 168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
                             183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
-                            197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207,
+                            197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+                            211, 212,
                         ]
                         .contains(&example)
                         {
@@ -938,7 +941,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=207).contains(&example) {
+            if (7..=212).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

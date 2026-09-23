@@ -434,3 +434,21 @@ parsed and uploaded once and stay resident across file switches; the original
 re-uploads on every switch. After a warm pass, no scene makes geometry or
 texture uploads. Warmed cycles create no GPU resources. No GPU timing parity is
 claimed.
+
+### Orbit/map controls, camera helpers, custom attributes and draw ranges
+
+The [controls, camera-helper, custom-attribute and draw-range ports](controls-attributes.md)
+match the original draws: one instanced draw of 500 meshes per controls scene,
+eight camera-view draws, the displaced sphere, and the BoxHelper, 500 point
+billboards and connected segments.
+
+- **Camera helpers.** Unprojected on the GPU from resident NDC points, instead
+  of the original's per-frame CPU rewrite.
+- **Custom attributes.** Writes only its displacement attribute each frame,
+  33,540 bytes, as the original.
+- **Draw range.** Keeps the original's CPU particle and connection work. It
+  writes 104,800 bytes in the measured frame, against the original's
+  24,012,000.
+
+The other scenes make no geometry uploads after a warm pass. Warmed cycles
+create no GPU resources. No GPU timing parity is claimed.

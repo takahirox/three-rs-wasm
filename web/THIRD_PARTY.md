@@ -538,3 +538,7 @@ and `examples/textures/planets/earth_atmos_2048.jpg`. Their source paths and
 SHA-256 hashes are in `stereo-loaders-manifest.json`; they are distributed
 alongside `LICENSE-THREE`. The stereo examples reuse the retained
 `tsl-lighting` Park3Med and `environment-materials` Pisa cube maps.
+
+`gallery/assets/water.jpg` is the unmodified r186 `examples/textures/water.jpg`.
+Its source path and SHA-256 hash are in `controls-attributes-manifest.json`; it
+is distributed alongside `LICENSE-THREE`.

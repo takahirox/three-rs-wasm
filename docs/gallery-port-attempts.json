@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 386,
-    "runnable-partial": 203,
+    "blocked-at-port-review": 381,
+    "runnable-partial": 208,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -1004,10 +1004,10 @@
     },
     {
       "id": "webgl_camera",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html",
       "source_sha256": "a97d4efbc7b530844793187301eca9e68572d78e01c3723704b2624d010b8b87",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/controls-attributes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -16913,10 +16913,10 @@
     },
     {
       "id": "webgl_buffergeometry_drawrange",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_drawrange.html",
       "source_sha256": "943ded3f7eab696cdb76af7b2b44c7560e010b8f8f836ad450035aeb56375efe",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/controls-attributes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17375,10 +17375,10 @@
     },
     {
       "id": "webgl_custom_attributes",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes.html",
       "source_sha256": "ff29b98376651e2b6342f930e09c3c52ffc12cb4091158fe5cd436fa25ae2811",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/controls-attributes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43311,10 +43311,10 @@
     },
     {
       "id": "misc_controls_map",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_map.html",
       "source_sha256": "5825939f33e558830cda6b3162ed97d5b502503eb300fccb8565c92ee68112ce",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/controls-attributes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43381,10 +43381,10 @@
     },
     {
       "id": "misc_controls_orbit",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_orbit.html",
       "source_sha256": "8306652ef227f92be38219cc2a9c09f5ef4f9d77dce84a6641358bfe53aec405",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/controls-attributes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

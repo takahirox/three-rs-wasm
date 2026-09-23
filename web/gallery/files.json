@@ -1,6 +1,7 @@
 {
   "webgl": [
     "webgl_animation_skinning_morph",
+    "webgl_camera",
     "webgl_clipping_intersection",
     "webgl_effects_anaglyph",
     "webgl_effects_parallaxbarrier",
@@ -58,6 +59,7 @@
     "webgl_buffergeometry_attributes_integer",
     "webgl_buffergeometry_attributes_none",
     "webgl_buffergeometry_custom_attributes_particles",
+    "webgl_buffergeometry_drawrange",
     "webgl_buffergeometry_indexed",
     "webgl_buffergeometry_instancing",
     "webgl_buffergeometry_instancing_billboards",
@@ -69,6 +71,7 @@
     "webgl_buffergeometry_rawshader",
     "webgl_buffergeometry_selective_draw",
     "webgl_buffergeometry_uint",
+    "webgl_custom_attributes",
     "webgl_custom_attributes_points",
     "webgl_custom_attributes_points2",
     "webgl_custom_attributes_points3",
@@ -209,5 +212,9 @@
     "webgpu_upscaling_taau",
     "webgpu_volume_cloud",
     "webgpu_volume_perlin"
+  ],
+  "misc": [
+    "misc_controls_map",
+    "misc_controls_orbit"
   ]
 }

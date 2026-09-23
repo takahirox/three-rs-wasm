@@ -246,7 +246,7 @@
       "id": "webgl_camera",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html",
       "source_sha256": "a97d4efbc7b530844793187301eca9e68572d78e01c3723704b2624d010b8b87",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_camera",
         "source_sha256": "a97d4efbc7b530844793187301eca9e68572d78e01c3723704b2624d010b8b87",
@@ -6430,7 +6430,7 @@
       "id": "webgl_buffergeometry_drawrange",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_drawrange.html",
       "source_sha256": "943ded3f7eab696cdb76af7b2b44c7560e010b8f8f836ad450035aeb56375efe",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_buffergeometry_drawrange",
         "source_sha256": "943ded3f7eab696cdb76af7b2b44c7560e010b8f8f836ad450035aeb56375efe",
@@ -6757,7 +6757,7 @@
       "id": "webgl_custom_attributes",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes.html",
       "source_sha256": "ff29b98376651e2b6342f930e09c3c52ffc12cb4091158fe5cd436fa25ae2811",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_custom_attributes",
         "source_sha256": "ff29b98376651e2b6342f930e09c3c52ffc12cb4091158fe5cd436fa25ae2811",
@@ -15322,7 +15322,7 @@
       "id": "misc_controls_map",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_map.html",
       "source_sha256": "5825939f33e558830cda6b3162ed97d5b502503eb300fccb8565c92ee68112ce",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_map",
         "source_sha256": "5825939f33e558830cda6b3162ed97d5b502503eb300fccb8565c92ee68112ce",
@@ -15350,7 +15350,7 @@
       "id": "misc_controls_orbit",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_orbit.html",
       "source_sha256": "8306652ef227f92be38219cc2a9c09f5ef4f9d77dce84a6641358bfe53aec405",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_orbit",
         "source_sha256": "8306652ef227f92be38219cc2a9c09f5ef4f9d77dce84a6641358bfe53aec405",

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 203 partial Rust ports; 388 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 208 partial Rust ports; 383 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| misc_controls_orbit | `tests/browser/controls-attributes.spec.js` | OrbitControls（減衰・極角制限・地面平面パン）をRustで再現。キーボード操作とカーソル形状は未移植。性能の完全な同等性は未保証。 |
+| misc_controls_map | `tests/browser/controls-attributes.spec.js` | MapControls（左ドラッグのパン・右ドラッグの回転・zoomToCursor・screenSpacePanning）をRustで再現。タッチ操作は未検証。性能の完全な同等性は未保証。 |
+| webgl_camera | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。2つのビューポートとO/Pキー切替を再現。性能の完全な同等性は未保証。 |
+| webgl_custom_attributes | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。毎フレームのCPUノイズ・HSL変化を60fps相当の時間基準で再現し、変位属性のみ常駐GPUバッファへ書き込み（原本と同じ）。性能の完全な同等性は未保証。 |
+| webgl_buffergeometry_drawrange | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。毎フレームの粒子移動と接続線の探索は原本と同じCPU処理で、60fps相当の時間基準で再現。更新分のみ常駐GPUバッファへ書き込み。性能の完全な同等性は未保証。 |
 | webgl_effects_stereo | `tests/browser/stereo-loaders.spec.js` | StereoCamera・StereoEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |
 | webgl_effects_anaglyph | `tests/browser/stereo-loaders.spec.js` | AnaglyphEffect（frameCorners・色行列合成）をRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲットを色行列で増幅する差を別途上限で検証。性能の完全な同等性は未保証。 |
 | webgl_effects_parallaxbarrier | `tests/browser/stereo-loaders.spec.js` | ParallaxBarrierEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲット由来の差を別途上限で検証。性能の完全な同等性は未保証。 |

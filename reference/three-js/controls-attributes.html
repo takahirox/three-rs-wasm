@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['misc_controls_orbit','misc_controls_map','webgl_camera','webgl_custom_attributes','webgl_buffergeometry_drawrange'].includes(id))throw Error('invalid fixture');
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info'))document.body.appendChild(document.importNode(node,true));
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import \{ GUI \}[^;]*;/,`class GUI{constructor(){fixtureControls.length=0;}add(o,k){const item={onChange(fn){this.callback=fn;return this;},name(){return this;},step(){return this;},setValue(v){o[k]=v;this.callback?.(v);}};fixtureControls.push(item);return item;}addColor(o,k){const item={onChange(fn){this.callback=fn;return this;},setValue(v){const c=o[k];c.r=((v>>16)&255)/255;c.g=((v>>8)&255)/255;c.b=(v&255)/255;this.callback?.(c);}};fixtureControls.push(item);return item;}open(){}destroy(){}}`)
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
+.replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+// Example-clock timers.
+window.fixtureTimers=[];window.fixtureTimeout=(fn,ms)=>fixtureTimers.push({at:(window.fixtureNow??0)+ms,fn});
+window.runFixtureTimers=now=>{for(;;){const next=fixtureTimers.filter(x=>x.at<=now).sort((a,b)=>a.at-b.at)[0];if(!next)break;fixtureTimers.splice(fixtureTimers.indexOf(next),1);window.fixtureNow=next.at;next.fn();}window.fixtureNow=now;};
+// MathUtils.randFloatSpread draws Math.random inside three: use the seeded stream.
+source=source.replaceAll('THREE.MathUtils.randFloatSpread( 2000 )','( 2000 * ( 0.5 - fixtureRandom() ) )');
+// Per-frame CPU work runs as 60 fps steps of example time, as in the Rust ports.
+if(id==='webgl_custom_attributes')source=source.replace(/uniforms\[ 'color' \]\.value\.offsetHSL[\s\S]*?(?=sphere\.geometry\.attributes)/,"for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++){uniforms['color'].value.offsetHSL(0.0005,0,0);for(let i=0;i<displacement.length;i++){noise[i]+=0.5*(0.5-fixtureRandom());noise[i]=THREE.MathUtils.clamp(noise[i],-5,5);}}\nfor(let i=0;i<displacement.length;i++){displacement[i]=Math.sin(0.1*i+time);displacement[i]+=noise[i];}\n");
+if(id==='webgl_buffergeometry_drawrange')source=source.replace('function animate() {','function animate() {for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)fixtureUpdate();render();stats.update();}function fixtureUpdate() {').replace(/pointCloud\.geometry\.attributes\.position\.needsUpdate = true;\s*render\(\);\s*stats\.update\(\);/,'pointCloud.geometry.attributes.position.needsUpdate = true;');
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{fixtureSeconds=t;window.fixtureStep=(t-(window.fixtureLast??t))*60;window.fixtureLast=t;runFixtureTimers(t*1000);while(pending)await new Promise(r=>setTimeout(r,10));for(const v of window.pointQuadViewports??[])v.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes)reference.renderer._nodes.nodeFrame.update();if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>

@@ -590,7 +590,7 @@
     {
       "id": "webgl_camera",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html",
       "source_sha256": "a97d4efbc7b530844793187301eca9e68572d78e01c3723704b2624d010b8b87",
@@ -614,7 +614,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 210,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "Stats表示は未移植。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。2つのビューポートとO/Pキー切替を再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -11611,7 +11618,7 @@
     {
       "id": "webgl_buffergeometry_drawrange",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_buffergeometry_drawrange.html",
       "source_sha256": "943ded3f7eab696cdb76af7b2b44c7560e010b8f8f836ad450035aeb56375efe",
@@ -11647,7 +11654,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 212,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "Stats表示は未移植。毎フレームの粒子移動と接続線の探索は原本と同じCPU処理で、60fps相当の時間基準で再現。更新分のみ常駐GPUバッファへ書き込み。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -12042,7 +12056,7 @@
     {
       "id": "webgl_custom_attributes",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes.html",
       "source_sha256": "ff29b98376651e2b6342f930e09c3c52ffc12cb4091158fe5cd436fa25ae2811",
@@ -12054,7 +12068,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 211,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "Stats表示は未移植。毎フレームのCPUノイズ・HSL変化を60fps相当の時間基準で再現し、変位属性のみ常駐GPUバッファへ書き込み（原本と同じ）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -32179,7 +32200,7 @@
     {
       "id": "misc_controls_map",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_map.html",
       "source_sha256": "5825939f33e558830cda6b3162ed97d5b502503eb300fccb8565c92ee68112ce",
@@ -32213,7 +32234,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 209,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "MapControls（左ドラッグのパン・右ドラッグの回転・zoomToCursor・screenSpacePanning）をRustで再現。タッチ操作は未検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/MapControls.js",
@@ -32223,7 +32251,7 @@
     {
       "id": "misc_controls_orbit",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_orbit.html",
       "source_sha256": "8306652ef227f92be38219cc2a9c09f5ef4f9d77dce84a6641358bfe53aec405",
@@ -32263,7 +32291,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 208,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "OrbitControls（減衰・極角制限・地面平面パン）をRustで再現。キーボード操作とカーソル形状は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js"
