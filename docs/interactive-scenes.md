@@ -49,8 +49,17 @@ inventory, so each is compared against the original WebGL renderer.
     and its position is not changed by resize, as in the original.
 - **Custom blending.** The alpha channel reuses the color factors and equation,
   as with CustomBlending. WebGPU requires One factors for Min/Max, which GL
-  ignores for those equations. The labels, the checker and its scroll reuse the
+  ignores for those equations. The labels, the checker and its scroll follow the
   `webgl_materials_blending` port.
+  - The planes and labels are built-in `MeshBasicMaterial` maps on an encoded
+    target. All 110 blend states share one shader, and all labels share one
+    pipeline.
+  - Blend state is part of a WebGPU pipeline, so the scene needs one pipeline per
+    combination, as Three.js's WebGPU renderer would. That comes to 121
+    pipelines and 5 shader modules.
+  - A first version built one custom program per texture: 163 pipelines and 27
+    modules. On CI's software GPU that was still compiling when the next test
+    began.
 
 ### WebGL output path
 

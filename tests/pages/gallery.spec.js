@@ -30,6 +30,9 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     const onDemand = [16, 28, 38, 153, 156, 157, 193, 195].includes(entry.port.example);
     await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(onDemand ? 0 : 2);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
+    // data-frames counts submissions. A screenshot waits for an actually presented
+    // frame, so pipeline compilation finishes inside this test on software GPUs.
+    await page.screenshot({timeout: 90000});
     if (entry.port.example === 4) {
       await viewer.locator('#model').selectOption('5');
       await expect(viewer.locator('#asset-status')).toHaveText('', {timeout: 90000});

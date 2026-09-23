@@ -2,7 +2,6 @@
 //! comparison and custom blending from the pinned WebGL examples.
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::interactive_objects::Orbit;
-use crate::tsl::Node;
 use crate::{
     Error, Result,
     attribute::BufferAttribute,
@@ -22,9 +21,6 @@ use wasm_bindgen::JsCast;
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
-}
-fn call(name: &str, source: &str, args: &[Type], out: Type, nodes: &[Node]) -> Result<Node> {
-    Ok(WgslFn::new(name, source, args, out)?.call(nodes))
 }
 fn positions(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
@@ -136,22 +132,6 @@ fn label(text: &str, background: &str) -> Result<crate::material::Texture> {
     let mut t = crate::material::Texture::from_rgba(128, 32, data, true)?;
     t.mipmap_filter = Some(Filter::Linear);
     Ok(t)
-}
-/// Unlit textured material whose display (sRGB) output feeds fixed-function blending.
-async fn blend_material(r: &Renderer, t: &GpuTexture) -> Result<ShaderMaterial> {
-    let tex = tsl::Texture::External(0).sample(vec2(uv().x(), float(1.) - uv().y()));
-    let rgb = call(
-        "blend_encode",
-        "fn blend_encode(c:vec3<f32>)->vec3<f32>{return srgb_output(c);}",
-        &[Type::Vec3],
-        Type::Vec3,
-        &[tex.clone().rgb()],
-    )?;
-    let mut m = NodeMaterial::new(vec4(rgb, tex.swizzle("w")))
-        .build(r, &[(&t.view, &t.sampler)])
-        .await?;
-    m.properties.transparent = true;
-    Ok(m)
 }
 const SRC: [wgpu::BlendFactor; 11] = {
     use wgpu::BlendFactor as F;
@@ -503,8 +483,12 @@ impl Demo {
         .await?;
         t.srgb = true;
         t.mipmap_filter = Some(Filter::Linear);
-        let texture = r.upload_texture(&Arc::new(t))?;
-        let base = blend_material(r, &texture).await?;
+        // Built-in MeshBasicMaterial maps on a WebGL-style encoded target: one shader
+        // for every blend state and one pipeline shared by all labels, as Three's
+        // renderers build them, instead of a custom program per texture.
+        let mut base = MeshBasicMaterial::default();
+        base.properties.map = Some(Arc::new(t));
+        base.properties.transparent = true;
         let (g1, g2) = (
             Arc::new(PlaneGeometry::build(100., 100., 1, 1)?),
             Arc::new(PlaneGeometry::build(100., 25., 1, 1)?),
@@ -516,7 +500,7 @@ impl Demo {
                 m.properties.blending = Some(custom_blend(src, dst, 0));
                 let h = s.insert(NodeKind::Mesh(Mesh::new(
                     g1.clone(),
-                    Arc::new(Material::Shader(m)),
+                    Arc::new(Material::Basic(m)),
                 )));
                 let y = (i as f64 - 5.) * 110. + 50.;
                 s.get_mut(h)?.position = Vector3::new((j as f64 - 5.5) * 110., -y, 0.);
@@ -528,11 +512,12 @@ impl Demo {
             (&SRC_NAMES[..10], "rgba( 150, 0, 0, 1 )", false),
         ] {
             for (k, name) in names.iter().enumerate() {
-                let t = r.upload_texture(&Arc::new(label(name, color)?))?;
-                let m = blend_material(r, &t).await?;
+                let mut m = MeshBasicMaterial::default();
+                m.properties.map = Some(Arc::new(label(name, color)?));
+                m.properties.transparent = true;
                 let h = s.insert(NodeKind::Mesh(Mesh::new(
                     g2.clone(),
-                    Arc::new(Material::Shader(m)),
+                    Arc::new(Material::Basic(m)),
                 )));
                 s.get_mut(h)?.position = if horizontal {
                     Vector3::new((k as f64 - 5.5) * 110., -(-500. - 70.), 0.)
@@ -565,14 +550,8 @@ impl Demo {
             uv().x() * float(64.) - uniform(0, Type::Float) * float(0.16),
             (float(1.) - uv().y()) * float(32.) + uniform(0, Type::Float) * float(0.08),
         );
-        let color = call(
-            "blend_background",
-            "fn blend_background(c:vec4<f32>)->vec4<f32>{return vec4(srgb_output(c.rgb),c.a);}",
-            &[Type::Vec4],
-            Type::Vec4,
-            &[tsl::Texture::External(0).sample(coordinate)],
-        )?;
-        let graph = NodeMaterial::new(color);
+        // The encoded target converts this linear sample like WebGL's background.
+        let graph = NodeMaterial::new(tsl::Texture::External(0).sample(coordinate));
         let mut m = ShaderMaterial::new(Arc::new(
             ShaderProgram::with_projection(
                 r,
