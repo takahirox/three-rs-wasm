@@ -94,3 +94,14 @@ The WebGL-only viewport, OBB, sorted-points and loader batch
 edge comparisons. It also bounds one precision-sensitive sorted-points state
 by the original's own measured one-ULP camera sensitivity. All other states
 keep the ordinary threshold.
+
+The WebGL-only stereo-effect and loader batch
+([stereo-loaders.md](stereo-loaders.md)) bounds four cases:
+
+- the anaglyph and parallax composites of 8-bit linear eye targets;
+- the PCD points, where the original departs from the exact square coverage the
+  suite computes and the port matches;
+- one 4× MSAA edge comparison.
+
+The stereo and ImageBitmap scenes match within the ordinary threshold with MSAA
+off.

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 198 partial Rust ports; 393 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 203 partial Rust ports; 388 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_effects_stereo | `tests/browser/stereo-loaders.spec.js` | StereoCamera・StereoEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |
+| webgl_effects_anaglyph | `tests/browser/stereo-loaders.spec.js` | AnaglyphEffect（frameCorners・色行列合成）をRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲットを色行列で増幅する差を別途上限で検証。性能の完全な同等性は未保証。 |
+| webgl_effects_parallaxbarrier | `tests/browser/stereo-loaders.spec.js` | ParallaxBarrierEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲット由来の差を別途上限で検証。性能の完全な同等性は未保証。 |
+| webgl_loader_pcd | `tests/browser/stereo-loaders.spec.js` | PCDLoader（ascii・binary・LZF圧縮）をRustで再現。読み込んだ点群はGPUに常駐させ再選択時に再利用。WebGLの点ラスタライズ差は厳密な被覆計算との比較で別途検証。操作UI外観は未一致。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_imagebitmap | `tests/browser/stereo-loaders.spec.js` | 6個の立方体は1つのテクスチャを共有（原本は同じ画像を6回読み込み）。setTimeoutを例のクロックで再現。性能の完全な同等性は未保証。 |
 | webgl_multiple_views | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。フレーム毎のカメラ移動を60fps相当の時間基準で再現。シザー付きクリアを各ビューの全画面背景三角形で再現。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_math_obb | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。OBB衝突判定とレイ判定をRustへ移植。OrbitControlsのキーボード操作は未移植。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。 |
 | webgl_custom_attributes_points2 | `tests/browser/views-loaders.spec.js` | Stats表示は未移植。毎フレームのCPU深度ソート結果とサイズのみ常駐GPUバッファへ書き込み（原本と同じ）。精度依存の1状態は原本の1 ULP感度で比較。性能の完全な同等性は未保証。 |

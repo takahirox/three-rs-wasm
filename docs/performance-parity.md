@@ -418,3 +418,19 @@ original's CPU work. The sorted points keep positions and colors resident and
 write only 8 bytes of order and size per point each frame. After a warm pass,
 the other scenes make no geometry or texture uploads. Warmed cycles create no
 GPU resources. No GPU timing parity is claimed.
+
+### Stereo effects and the PCD/ImageBitmap loaders
+
+The [stereo-effect and loader ports](stereo-loaders.md) match the original
+draws:
+
+- 126, 230 and 231 culled sky-box and sphere draws for the stereo, anaglyph and
+  parallax scenes, whose 500 spheres share one geometry and one material;
+- one draw of 59,750 PCD point billboards;
+- seven ImageBitmap draws.
+
+The anaglyph and parallax eye targets are rebuilt only on resize. PCD clouds are
+parsed and uploaded once and stay resident across file switches; the original
+re-uploads on every switch. After a warm pass, no scene makes geometry or
+texture uploads. Warmed cycles create no GPU resources. No GPU timing parity is
+claimed.

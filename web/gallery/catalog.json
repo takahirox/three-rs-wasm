@@ -1089,7 +1089,7 @@
     {
       "id": "webgl_effects_anaglyph",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_anaglyph.html",
       "source_sha256": "9f26032747380b3f82cdb9ee7f201de10dd32db91c5306c62ea8eb6aad735681",
@@ -1105,7 +1105,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 204,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/stereo-loaders.spec.js",
+        "limitations": [
+          "AnaglyphEffect（frameCorners・色行列合成）をRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲットを色行列で増幅する差を別途上限で検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/effects/AnaglyphEffect.js"
@@ -1146,7 +1153,7 @@
     {
       "id": "webgl_effects_parallaxbarrier",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_parallaxbarrier.html",
       "source_sha256": "dcc2b4064201d6e68e5e60fbeda8d127017955edd41683e6cc05b3f04da6114f",
@@ -1162,7 +1169,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 205,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/stereo-loaders.spec.js",
+        "limitations": [
+          "ParallaxBarrierEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。8bit線形の目用ターゲット由来の差を別途上限で検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/effects/ParallaxBarrierEffect.js"
@@ -1171,7 +1185,7 @@
     {
       "id": "webgl_effects_stereo",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_stereo.html",
       "source_sha256": "0db6b652663646a2566e08d7c4fcb194bc014a5a1c10eba997e90728ce496953",
@@ -1187,7 +1201,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 203,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/stereo-loaders.spec.js",
+        "limitations": [
+          "StereoCamera・StereoEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/effects/StereoEffect.js"
@@ -4729,7 +4750,7 @@
     {
       "id": "webgl_loader_imagebitmap",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_imagebitmap.html",
       "source_sha256": "3616505634c77365a36f6d7a4c6445357df244df8aa14daa13509a827ec33d24",
@@ -4751,7 +4772,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 207,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/stereo-loaders.spec.js",
+        "limitations": [
+          "6個の立方体は1つのテクスチャを共有（原本は同じ画像を6回読み込み）。setTimeoutを例のクロックで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -5098,7 +5126,7 @@
     {
       "id": "webgl_loader_pcd",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_pcd.html",
       "source_sha256": "4189452a6878da428b231a975fda7d58eabdda08125397e5112a9ca40bbd14c6",
@@ -5120,7 +5148,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 206,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/stereo-loaders.spec.js",
+        "limitations": [
+          "PCDLoader（ascii・binary・LZF圧縮）をRustで再現。読み込んだ点群はGPUに常駐させ再選択時に再利用。WebGLの点ラスタライズ差は厳密な被覆計算との比較で別途検証。操作UI外観は未一致。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

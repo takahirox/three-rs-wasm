@@ -1,0 +1,27 @@
+[
+ {
+  "file": "pcd/ascii/simple.pcd",
+  "source": "examples/models/pcd/ascii/simple.pcd",
+  "sha256": "eaba763d849fd6caf9a0addd39c54596f40abdac463cb1891cec36aa18b44832"
+ },
+ {
+  "file": "pcd/binary/Zaghetto.pcd",
+  "source": "examples/models/pcd/binary/Zaghetto.pcd",
+  "sha256": "0efcd6f363c852571e00cfca44fbd2e760df31b9bccb754d2dc27ba225d998ab"
+ },
+ {
+  "file": "pcd/binary/Zaghetto_8bit.pcd",
+  "source": "examples/models/pcd/binary/Zaghetto_8bit.pcd",
+  "sha256": "4ecba445d8e0d1e9b7662c30ca48ca2c5e4922b11792c2f974e7fed80cc79edb"
+ },
+ {
+  "file": "pcd/binary_compressed/pcl_logo.pcd",
+  "source": "examples/models/pcd/binary_compressed/pcl_logo.pcd",
+  "sha256": "2ce168facd97d70cac3c3a3c0f0035d4eb29a886447c04274b778414860e93d4"
+ },
+ {
+  "file": "earth_atmos_2048.jpg",
+  "source": "examples/textures/planets/earth_atmos_2048.jpg",
+  "sha256": "2faa400d1eade3bc44caf6750d1b772bd9bbb6d87362c02bc7c3304e78fa0a9d"
+ }
+]

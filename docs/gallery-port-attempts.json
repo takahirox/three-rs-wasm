@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 391,
-    "runnable-partial": 198,
+    "blocked-at-port-review": 386,
+    "runnable-partial": 203,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -1665,10 +1665,10 @@
     },
     {
       "id": "webgl_effects_anaglyph",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_anaglyph.html",
       "source_sha256": "9f26032747380b3f82cdb9ee7f201de10dd32db91c5306c62ea8eb6aad735681",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/stereo-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -1748,10 +1748,10 @@
     },
     {
       "id": "webgl_effects_parallaxbarrier",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_parallaxbarrier.html",
       "source_sha256": "dcc2b4064201d6e68e5e60fbeda8d127017955edd41683e6cc05b3f04da6114f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/stereo-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -1788,10 +1788,10 @@
     },
     {
       "id": "webgl_effects_stereo",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_stereo.html",
       "source_sha256": "0db6b652663646a2566e08d7c4fcb194bc014a5a1c10eba997e90728ce496953",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/stereo-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -6840,10 +6840,10 @@
     },
     {
       "id": "webgl_loader_imagebitmap",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_imagebitmap.html",
       "source_sha256": "3616505634c77365a36f6d7a4c6445357df244df8aa14daa13509a827ec33d24",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/stereo-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7369,10 +7369,10 @@
     },
     {
       "id": "webgl_loader_pcd",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_pcd.html",
       "source_sha256": "4189452a6878da428b231a975fda7d58eabdda08125397e5112a9ca40bbd14c6",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/stereo-loaders.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

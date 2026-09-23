@@ -531,3 +531,10 @@ unmodified r186 `examples/models/xyz/helix_201.xyz` and
 `examples/textures/crate_{grey8,color8}.tga`. Their source paths and SHA-256
 hashes are in `views-loaders-manifest.json`; they are distributed alongside
 `LICENSE-THREE`. The sorted-points example reuses `point-clouds/disc.png`.
+
+`gallery/assets/pcd/{ascii/simple,binary/Zaghetto,binary/Zaghetto_8bit,binary_compressed/pcl_logo}.pcd`
+and `earth_atmos_2048.jpg` are the unmodified r186 `examples/models/pcd/` files
+and `examples/textures/planets/earth_atmos_2048.jpg`. Their source paths and
+SHA-256 hashes are in `stereo-loaders-manifest.json`; they are distributed
+alongside `LICENSE-THREE`. The stereo examples reuse the retained
+`tsl-lighting` Park3Med and `environment-materials` Pisa cube maps.

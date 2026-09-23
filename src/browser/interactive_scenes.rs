@@ -48,14 +48,19 @@ fn hsl(h: f64, s: f64, l: f64) -> [f64; 3] {
     let h = h.rem_euclid(1.);
     [hue(p, q, h + 1. / 3.), hue(p, q, h), hue(p, q, h - 1. / 3.)]
 }
-/// `GridHelper( size, divisions )` with its default colors.
-fn grid_helper(size: f64, divisions: u32) -> Result<Line> {
+/// `GridHelper( size, divisions, color1, color2 )`: color1 marks the center lines.
+pub(super) fn grid_helper(
+    size: f64,
+    divisions: u32,
+    center_color: u32,
+    color: u32,
+) -> Result<Line> {
     let (center, step, half) = (divisions / 2, size / divisions as f64, size / 2.);
     let (mut vertices, mut colors) = (vec![], vec![]);
     let mut k = -half;
     for i in 0..=divisions {
         vertices.extend([-half, 0., k, half, 0., k, k, 0., -half, k, 0., half].map(|v| v as f32));
-        let c = Color::from_hex(if i == center { 0x444444 } else { 0x888888 }).0;
+        let c = Color::from_hex(if i == center { center_color } else { color }).0;
         for _ in 0..4 {
             colors.extend(c.to_array().map(|v| v as f32));
         }
@@ -291,7 +296,7 @@ impl Demo {
                 m.properties.color = Color::from_hex(0xfeb74c);
                 m.properties.map = Some(Arc::new(map));
                 d.voxel = Some((box50, Arc::new(Material::Lambert(m))));
-                s.insert(NodeKind::Line(grid_helper(1000., 20)?));
+                s.insert(NodeKind::Line(grid_helper(1000., 20, 0x444444, 0x888888)?));
                 let mut g = PlaneGeometry::build(1000., 1000., 1, 1)?;
                 g.rotate_x(-FRAC_PI_2)?;
                 let mut m = MeshBasicMaterial::default();

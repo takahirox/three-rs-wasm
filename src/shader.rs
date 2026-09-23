@@ -192,6 +192,35 @@ impl ShaderProgram {
         )
         .await
     }
+    /// A custom vertex projection with explicitly typed (e.g. cube) texture views.
+    #[cfg(target_arch = "wasm32")]
+    pub(crate) async fn with_projection_and_dimensions(
+        renderer: &Renderer,
+        wgsl: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        dimensions: &[wgpu::TextureViewDimension],
+        projection: &str,
+    ) -> Result<Self> {
+        let sample_types =
+            vec![wgpu::TextureSampleType::Float { filterable: true }; dimensions.len()];
+        if dimensions.len() != textures.len() {
+            return Err(Error::Invalid("shader texture dimensions"));
+        }
+        Self::build(
+            renderer,
+            wgsl,
+            &[],
+            textures,
+            DEFAULT_OUTPUT,
+            projection,
+            DEFAULT_SURFACE,
+            dimensions,
+            &sample_types,
+            None,
+            None,
+        )
+        .await
+    }
     pub(crate) async fn with_projection(
         renderer: &Renderer,
         wgsl: &str,
