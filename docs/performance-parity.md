@@ -469,3 +469,17 @@ one resident geometry, as the original merges it. The LOD field prepares every
 level's draw data in one startup pass, so flying through it creates no GPU
 resources. After a warm pass, no scene uploads geometry or texture data.
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Noise terrain and the GCode, VOX and OBJ/MTL loaders
+
+The [terrain and loader ports](terrain-loaders.md) match the original draws:
+
+- one 390,150-index terrain draw, plus the raycast cone;
+- two GCode line draws;
+- one greedy-meshed VOX draw;
+- 13 OBJ material-group draws.
+
+The raycast uses the original's per-move CPU query. GCode files are parsed once
+per asset and stay resident; the original re-parses on every switch. After a
+warm pass, no scene uploads geometry or texture data. Warmed cycles create no
+GPU resources. No GPU timing parity is claimed.

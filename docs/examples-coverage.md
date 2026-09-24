@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 213 partial Rust ports; 378 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 218 partial Rust ports; 373 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_geometry_terrain | `tests/browser/terrain-loaders.spec.js` | ImprovedNoise地形と原本の正弦乱数、Canvas2Dでの陰影テクスチャ拡大をRustで再現。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_geometry_terrain_raycast | `tests/browser/terrain-loaders.spec.js` | 地形とテクスチャ生成をRustで再現。ポインタ移動ごとのCPUレイキャスト（原本と同じ）で円錐を面法線へ向ける。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_gcode | `tests/browser/terrain-loaders.spec.js` | GCodeLoaderの解析をRustで再現し、各ファイルの線分は一度だけ構築して常駐（原本は切替ごとに再解析）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_vox | `tests/browser/terrain-loaders.spec.js` | VOXLoaderのチャンク解析と貪欲メッシュ化、パレット色をRustで再現。性能の完全な同等性は未保証。 |
+| webgl_loader_obj | `tests/browser/terrain-loaders.spec.js` | OBJLoader（オブジェクト・usemtlグループ）とMTLLoader（Kd・Ks・Ns・map_Kd）をRustで再現。同じ画像は1回だけ読み込み共有。性能の完全な同等性は未保証。 |
 | webgl_loader_texture_hdr | `tests/browser/trackball-sprites.spec.js` | HDRLoaderのRGBEデコードと半精度変換（切り捨て）をRustで再現。Reinhardトーンマッピングと露出を再現し、変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_geometry_minecraft | `tests/browser/trackball-sprites.spec.js` | ImprovedNoiseの地形と面の結合をRustで再現し、1つの常駐ジオメトリで描画（原本と同じ）。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | misc_controls_trackball | `tests/browser/trackball-sprites.spec.js` | TrackballControls（回転・ズーム・パンの減衰、A/S/Dキー、正射影カメラ切替）をRustで再現。更新は60fps相当の時間ステップ。タッチ操作とmultiTouchRollは未検証。Stats表示は未移植。性能の完全な同等性は未保証。 |

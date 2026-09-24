@@ -45,8 +45,8 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_geometry_shapes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_shapes.html) | runnable-partial | tests/browser/geometry-materials.spec.js |
 | [webgl_geometry_spline_editor](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_spline_editor.html) | blocked-at-port-review | SpotLight; ShadowMaterial; GridHelper; TransformControls |
 | [webgl_geometry_teapot](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_teapot.html) | blocked-at-port-review | CubeTextureLoader; MeshPhongMaterial; MeshLambertMaterial; TeapotGeometry |
-| [webgl_geometry_terrain](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain.html) | blocked-at-port-review | FogExp2; CanvasTexture; FirstPersonControls; ImprovedNoise |
-| [webgl_geometry_terrain_raycast](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain_raycast.html) | blocked-at-port-review | CanvasTexture; ConeGeometry; MeshNormalMaterial; ImprovedNoise |
+| [webgl_geometry_terrain](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain.html) | runnable-partial | tests/browser/terrain-loaders.spec.js |
+| [webgl_geometry_terrain_raycast](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain_raycast.html) | runnable-partial | tests/browser/terrain-loaders.spec.js |
 | [webgl_geometry_text](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text.html) | blocked-at-port-review | Fog; MeshPhongMaterial; FontLoader; TextGeometry |
 | [webgl_geometry_text_shapes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text_shapes.html) | runnable-partial | tests/browser/shapes.spec.js |
 | [webgl_geometry_text_stroke](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text_stroke.html) | runnable-partial | tests/browser/shapes.spec.js |
@@ -94,7 +94,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_draco](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_draco.html) | blocked-at-port-review | DRACOLoader; Fog; MeshLambertMaterial; HemisphereLight |
 | [webgl_loader_fbx](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_fbx.html) | blocked-at-port-review | LoadingManager; Fog; HemisphereLight; SunLight |
 | [webgl_loader_fbx_nurbs](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_fbx_nurbs.html) | blocked-at-port-review | GridHelper; FBXLoader |
-| [webgl_loader_gcode](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gcode.html) | blocked-at-port-review | GCodeLoader |
+| [webgl_loader_gcode](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gcode.html) | runnable-partial | tests/browser/terrain-loaders.spec.js |
 | [webgl_loader_gltf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf.html) | excluded | AnimationMixer |
 | [webgl_loader_gltf_animation_pointer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_animation_pointer.html) | blocked-at-port-review | PMREMGenerator; RoomEnvironment; DRACOLoader; KTX2Loader |
 | [webgl_loader_gltf_progressive_lod](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_progressive_lod.html) | blocked-at-port-review | Fog; HDRLoader; AnimationMixer |
@@ -115,7 +115,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_md2_control](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_md2_control.html) | blocked-at-port-review | Fog; SunLight; MeshPhongMaterial; MD2CharacterComplex |
 | [webgl_loader_mdd](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_mdd.html) | blocked-at-port-review | MDDLoader; MeshNormalMaterial; AnimationMixer |
 | [webgl_loader_nrrd](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_nrrd.html) | blocked-at-port-review | HemisphereLight; NRRDLoader; BoxHelper; TrackballControls |
-| [webgl_loader_obj](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_obj.html) | blocked-at-port-review | MTLLoader; OBJLoader |
+| [webgl_loader_obj](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_obj.html) | runnable-partial | tests/browser/terrain-loaders.spec.js |
 | [webgl_loader_pcd](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_pcd.html) | runnable-partial | tests/browser/stereo-loaders.spec.js |
 | [webgl_loader_pdb](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_pdb.html) | blocked-at-port-review | PDBLoader; CSS2DRenderer; TrackballControls; MeshPhongMaterial |
 | [webgl_loader_ply](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ply.html) | blocked-at-port-review | Fog; MeshPhongMaterial; PLYLoader; HemisphereLight |
@@ -133,7 +133,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_texture_tiff](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_tiff.html) | blocked-at-port-review | TIFFLoader |
 | [webgl_loader_ttf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ttf.html) | blocked-at-port-review | Fog; MeshPhongMaterial; TTFLoader; Font |
 | [webgl_loader_usdz](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_usdz.html) | blocked-at-port-review | HDRLoader; USDLoader |
-| [webgl_loader_vox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vox.html) | blocked-at-port-review | HemisphereLight; VOXLoader |
+| [webgl_loader_vox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vox.html) | runnable-partial | tests/browser/terrain-loaders.spec.js |
 | [webgl_loader_vrml](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vrml.html) | blocked-at-port-review | VRMLLoader |
 | [webgl_loader_xyz](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_xyz.html) | runnable-partial | tests/browser/views-loaders.spec.js |
 | [webgl_lod](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |

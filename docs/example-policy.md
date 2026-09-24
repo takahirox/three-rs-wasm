@@ -123,3 +123,9 @@ threshold with MSAA off.
 favor of their ported WebGPU equivalents.
 `webgl_buffergeometry_glbufferattribute` remains excluded as a WebGL-specific
 API.
+
+The WebGL-only terrain, GCode, VOX and OBJ batch
+([terrain-loaders.md](terrain-loaders.md)) bounds only 4× MSAA comparisons of
+silhouettes and the dense GCode lines. The GCode scene must keep the original's
+mean level in every state. All five scenes match within the ordinary threshold
+with MSAA off.

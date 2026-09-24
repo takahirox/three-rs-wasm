@@ -1,0 +1,1856 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/terrain-loaders.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255. meanLevel is the mean RGB level of the port and of the original.",
+ "runs": {
+  "dpr1": {
+   "Terrain-1593d-ency-webgl-geometry-terrain": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 41,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 41,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-23f48-y-terrain-raycast-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00713348388671875,
+      "meanError": 0.17866643269856772
+     },
+     {
+      "state": 1,
+      "fraction": 0.007373809814453125,
+      "meanError": 0.1881256103515625
+     },
+     {
+      "state": 2,
+      "fraction": 0.007205963134765625,
+      "meanError": 0.1806920369466146
+     },
+     {
+      "state": 3,
+      "fraction": 0.00130462646484375,
+      "meanError": 0.0629730224609375
+     },
+     {
+      "state": 4,
+      "fraction": 0.001194000244140625,
+      "meanError": 0.04560089111328125
+     },
+     {
+      "state": 5,
+      "fraction": 0.001033782958984375,
+      "meanError": 0.03948338826497396
+     },
+     {
+      "state": 6,
+      "fraction": 0.00184375,
+      "meanError": 0.06590234375
+     }
+    ]
+   },
+   "Terrain-2755c--webgl-loader-obj-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001941680908203125,
+      "meanError": 0.03308232625325521
+     },
+     {
+      "state": 1,
+      "fraction": 0.002498626708984375,
+      "meanError": 0.04524358113606771
+     },
+     {
+      "state": 2,
+      "fraction": 0.0030059814453125,
+      "meanError": 0.055844624837239586
+     },
+     {
+      "state": 3,
+      "fraction": 0.001979827880859375,
+      "meanError": 0.0380706787109375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0015234375,
+      "meanError": 0.031296875
+     }
+    ]
+   },
+   "Terrain-420aa-ebgl-loader-gcode-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000240325927734375,
+      "meanError": 0.0402069091796875,
+      "meanLevel": [
+       21.134891510009766,
+       21.134891510009766
+      ]
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0,
+      "meanLevel": [
+       0.0609588623046875,
+       0.0609588623046875
+      ]
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0,
+      "meanLevel": [
+       0.0609588623046875,
+       0.0609588623046875
+      ]
+     },
+     {
+      "state": 3,
+      "fraction": 0.000240325927734375,
+      "meanError": 0.0402069091796875,
+      "meanLevel": [
+       21.134891510009766,
+       21.134891510009766
+      ]
+     },
+     {
+      "state": 4,
+      "fraction": 0.000396728515625,
+      "meanError": 0.06711959838867188,
+      "meanLevel": [
+       21.30706787109375,
+       21.306743621826172
+      ]
+     },
+     {
+      "state": 5,
+      "fraction": 0.000579833984375,
+      "meanError": 0.09792327880859375,
+      "meanLevel": [
+       29.266090393066406,
+       29.266090393066406
+      ]
+     },
+     {
+      "state": 6,
+      "fraction": 0.00035546875,
+      "meanError": 0.0604296875,
+      "meanLevel": [
+       18.80791015625,
+       18.80791015625
+      ]
+     }
+    ]
+   },
+   "Terrain-8c6f9--webgl-loader-vox-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0011660257975260417
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 1.6530354817708332e-05
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 6.993611653645833e-05
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00010808308919270833
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 6.901041666666667e-05
+     }
+    ]
+   },
+   "Terrain-90e63--residency-webgl-loader-obj": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 149,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 149,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 154,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 154,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-93ec7-y-terrain-raycast-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00197601318359375,
+      "meanError": 0.062427520751953125
+     },
+     {
+      "state": 1,
+      "fraction": 0.002162933349609375,
+      "meanError": 0.07094828287760417
+     },
+     {
+      "state": 2,
+      "fraction": 0.00202178955078125,
+      "meanError": 0.06447982788085938
+     },
+     {
+      "state": 3,
+      "fraction": 0.00051116943359375,
+      "meanError": 0.04094060262044271
+     },
+     {
+      "state": 4,
+      "fraction": 0.000423431396484375,
+      "meanError": 0.022500356038411457
+     },
+     {
+      "state": 5,
+      "fraction": 0.00032806396484375,
+      "meanError": 0.016905466715494793
+     },
+     {
+      "state": 6,
+      "fraction": 0.00058984375,
+      "meanError": 0.032690104166666664
+     }
+    ]
+   },
+   "Terrain-a5067-gl-geometry-terrain-raycast": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-b27ea--geometry-terrain-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.30468495686848956
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.30468495686848956
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.30847422281901044
+     },
+     {
+      "state": 3,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.32107798258463544
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.3301493326822917
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.3446795145670573
+     },
+     {
+      "state": 6,
+      "fraction": 2.288818359375e-05,
+      "meanError": 0.3629302978515625
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.41852083333333334
+     }
+    ]
+   },
+   "Terrain-c76dc--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_geometry_terrain",
+      "reference": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_terrain_raycast",
+      "reference": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        },
+        {
+         "count": 18,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        },
+        {
+         "count": 18,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_gcode",
+      "reference": {
+       "draws": [
+        {
+         "count": 27116,
+         "instances": 1
+        },
+        {
+         "count": 102172,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 102172,
+         "instances": 1
+        },
+        {
+         "count": 27116,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_vox",
+      "reference": {
+       "draws": [
+        {
+         "count": 33144,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 33144,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_obj",
+      "reference": {
+       "draws": [
+        {
+         "count": 1296,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 426,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1248,
+         "instances": 1
+        },
+        {
+         "count": 1251,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 6810,
+         "instances": 1
+        },
+        {
+         "count": 2211,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6810,
+         "instances": 1
+        },
+        {
+         "count": 2211,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 426,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1296,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 1248,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 1251,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Terrain-db23d-esidency-webgl-loader-gcode": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 63,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 63,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-e77cc--webgl-loader-vox-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.018634796142578125,
+      "meanError": 0.2713368733723958
+     },
+     {
+      "state": 1,
+      "fraction": 0.0102996826171875,
+      "meanError": 0.16829808553059897
+     },
+     {
+      "state": 2,
+      "fraction": 0.01232147216796875,
+      "meanError": 0.20328394571940103
+     },
+     {
+      "state": 3,
+      "fraction": 0.01296234130859375,
+      "meanError": 0.20469284057617188
+     },
+     {
+      "state": 4,
+      "fraction": 0.01031640625,
+      "meanError": 0.15750260416666667
+     }
+    ]
+   },
+   "Terrain-eb604--residency-webgl-loader-vox": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-eecb3-ebgl-loader-gcode-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.03057098388671875,
+      "meanError": 1.0953521728515625,
+      "meanLevel": [
+       21.062994639078777,
+       21.064619700113933
+      ]
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.0008900960286458334,
+      "meanLevel": [
+       0.054021199544270836,
+       0.054097493489583336
+      ]
+     },
+     {
+      "state": 2,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.0008900960286458334,
+      "meanLevel": [
+       0.054021199544270836,
+       0.054097493489583336
+      ]
+     },
+     {
+      "state": 3,
+      "fraction": 0.03057098388671875,
+      "meanError": 1.0953521728515625,
+      "meanLevel": [
+       21.062994639078777,
+       21.064619700113933
+      ]
+     },
+     {
+      "state": 4,
+      "fraction": 0.074462890625,
+      "meanError": 3.0943921407063804,
+      "meanLevel": [
+       21.300660451253254,
+       21.308868408203125
+      ]
+     },
+     {
+      "state": 5,
+      "fraction": 0.109771728515625,
+      "meanError": 4.3491770426432295,
+      "meanLevel": [
+       29.252974192301433,
+       29.252513885498047
+      ]
+     },
+     {
+      "state": 6,
+      "fraction": 0.0641875,
+      "meanError": 2.6768125,
+      "meanLevel": [
+       18.805236979166665,
+       18.793703125
+      ]
+     }
+    ]
+   },
+   "Terrain-fbd9e--webgl-loader-obj-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.001689910888671875
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0019772847493489585
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0019404093424479167
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0013669331868489583
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0015546875
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Terrain-1593d-ency-webgl-geometry-terrain": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 41,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 41,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        1,
+        6803480,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-23f48-y-terrain-raycast-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.002864837646484375,
+      "meanError": 0.07260481516520183
+     },
+     {
+      "state": 1,
+      "fraction": 0.003082275390625,
+      "meanError": 0.08186944325764973
+     },
+     {
+      "state": 2,
+      "fraction": 0.0029239654541015625,
+      "meanError": 0.07475757598876953
+     },
+     {
+      "state": 3,
+      "fraction": 0.0005102157592773438,
+      "meanError": 0.03276411692301432
+     },
+     {
+      "state": 4,
+      "fraction": 0.00041675567626953125,
+      "meanError": 0.015079180399576822
+     },
+     {
+      "state": 5,
+      "fraction": 0.00047206878662109375,
+      "meanError": 0.015172004699707031
+     },
+     {
+      "state": 6,
+      "fraction": 0.0006630859375,
+      "meanError": 0.02363671875
+     }
+    ]
+   },
+   "Terrain-2755c--webgl-loader-obj-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0010099411010742188,
+      "meanError": 0.016147931416829426
+     },
+     {
+      "state": 1,
+      "fraction": 0.0013246536254882812,
+      "meanError": 0.022382100423177082
+     },
+     {
+      "state": 2,
+      "fraction": 0.0014286041259765625,
+      "meanError": 0.025128682454427082
+     },
+     {
+      "state": 3,
+      "fraction": 0.00125885009765625,
+      "meanError": 0.022893905639648438
+     },
+     {
+      "state": 4,
+      "fraction": 0.0010234375,
+      "meanError": 0.018845377604166668
+     }
+    ]
+   },
+   "Terrain-420aa-ebgl-loader-gcode-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.03161430358886719,
+      "meanLevel": [
+       17.881131172180176,
+       17.881455421447754
+      ]
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0,
+      "meanLevel": [
+       0.030884742736816406,
+       0.030884742736816406
+      ]
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0,
+      "meanLevel": [
+       0.030884742736816406,
+       0.030884742736816406
+      ]
+     },
+     {
+      "state": 3,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.03161430358886719,
+      "meanLevel": [
+       17.881131172180176,
+       17.881455421447754
+      ]
+     },
+     {
+      "state": 4,
+      "fraction": 0.0004100799560546875,
+      "meanError": 0.0684976577758789,
+      "meanLevel": [
+       18.843908309936523,
+       18.844151496887207
+      ]
+     },
+     {
+      "state": 5,
+      "fraction": 0.0004634857177734375,
+      "meanError": 0.07749557495117188,
+      "meanLevel": [
+       21.781363487243652,
+       21.78152561187744
+      ]
+     },
+     {
+      "state": 6,
+      "fraction": 0.000318359375,
+      "meanError": 0.05345703125,
+      "meanLevel": [
+       14.5491943359375,
+       14.5490283203125
+      ]
+     }
+    ]
+   },
+   "Terrain-8c6f9--webgl-loader-vox-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.00016276041666666666
+     },
+     {
+      "state": 1,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.00011603037516276042
+     },
+     {
+      "state": 2,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.00018215179443359375
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.00039132436116536457
+     },
+     {
+      "state": 4,
+      "fraction": 9.765625e-07,
+      "meanError": 5.989583333333333e-05
+     }
+    ]
+   },
+   "Terrain-90e63--residency-webgl-loader-obj": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 149,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 149,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 154,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 154,
+       "transfers": [
+        14,
+        1200960,
+        224
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-93ec7-y-terrain-raycast-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0006628036499023438,
+      "meanError": 0.02448113759358724
+     },
+     {
+      "state": 1,
+      "fraction": 0.0008487701416015625,
+      "meanError": 0.03292973836263021
+     },
+     {
+      "state": 2,
+      "fraction": 0.0007076263427734375,
+      "meanError": 0.026513417561848957
+     },
+     {
+      "state": 3,
+      "fraction": 0.00026798248291015625,
+      "meanError": 0.025297800699869793
+     },
+     {
+      "state": 4,
+      "fraction": 0.00018215179443359375,
+      "meanError": 0.006951332092285156
+     },
+     {
+      "state": 5,
+      "fraction": 0.00022602081298828125,
+      "meanError": 0.007544517517089844
+     },
+     {
+      "state": 6,
+      "fraction": 0.0002607421875,
+      "meanError": 0.010223307291666667
+     }
+    ]
+   },
+   "Terrain-a5067-gl-geometry-terrain-raycast": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        2,
+        6804752,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-b27ea--geometry-terrain-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.3044840494791667
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.3044840494791667
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.3082723617553711
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.3209603627522786
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.3299010594685872
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.34471384684244794
+     },
+     {
+      "state": 6,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.36275164286295575
+     },
+     {
+      "state": 7,
+      "fraction": 5.859375e-06,
+      "meanError": 0.4187412109375
+     }
+    ]
+   },
+   "Terrain-c76dc--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_geometry_terrain",
+      "reference": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_terrain_raycast",
+      "reference": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        },
+        {
+         "count": 18,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 390150,
+         "instances": 1
+        },
+        {
+         "count": 18,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_gcode",
+      "reference": {
+       "draws": [
+        {
+         "count": 27116,
+         "instances": 1
+        },
+        {
+         "count": 102172,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 102172,
+         "instances": 1
+        },
+        {
+         "count": 27116,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_vox",
+      "reference": {
+       "draws": [
+        {
+         "count": 33144,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 33144,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_obj",
+      "reference": {
+       "draws": [
+        {
+         "count": 1296,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 426,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1248,
+         "instances": 1
+        },
+        {
+         "count": 1251,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 6810,
+         "instances": 1
+        },
+        {
+         "count": 2211,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6810,
+         "instances": 1
+        },
+        {
+         "count": 2211,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 426,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1296,
+         "instances": 1
+        },
+        {
+         "count": 342,
+         "instances": 1
+        },
+        {
+         "count": 1248,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 1251,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Terrain-db23d-esidency-webgl-loader-gcode": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 63,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 63,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        6,
+        10354880,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-e77cc--webgl-loader-vox-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.009313583374023438,
+      "meanError": 0.13376712799072266
+     },
+     {
+      "state": 1,
+      "fraction": 0.00505828857421875,
+      "meanError": 0.08182017008463542
+     },
+     {
+      "state": 2,
+      "fraction": 0.005635261535644531,
+      "meanError": 0.09169228871663411
+     },
+     {
+      "state": 3,
+      "fraction": 0.006069183349609375,
+      "meanError": 0.09485117594401042
+     },
+     {
+      "state": 4,
+      "fraction": 0.0048828125,
+      "meanError": 0.07694498697916667
+     }
+    ]
+   },
+   "Terrain-eb604--residency-webgl-loader-vox": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        1900256,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Terrain-eecb3-ebgl-loader-gcode-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.039193153381347656,
+      "meanError": 1.1840670903523762,
+      "meanLevel": [
+       17.885399500528973,
+       17.885157585144043
+      ]
+     },
+     {
+      "state": 1,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0002425511678059896,
+      "meanLevel": [
+       0.03121630350748698,
+       0.031215985616048176
+      ]
+     },
+     {
+      "state": 2,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0002425511678059896,
+      "meanLevel": [
+       0.03121630350748698,
+       0.031215985616048176
+      ]
+     },
+     {
+      "state": 3,
+      "fraction": 0.039193153381347656,
+      "meanError": 1.1840670903523762,
+      "meanLevel": [
+       17.885399500528973,
+       17.885157585144043
+      ]
+     },
+     {
+      "state": 4,
+      "fraction": 0.09013080596923828,
+      "meanError": 3.148225466410319,
+      "meanLevel": [
+       18.83864943186442,
+       18.84514617919922
+      ]
+     },
+     {
+      "state": 5,
+      "fraction": 0.10641098022460938,
+      "meanError": 3.632618268330892,
+      "meanLevel": [
+       21.782662391662598,
+       21.7839838663737
+      ]
+     },
+     {
+      "state": 6,
+      "fraction": 0.06365234375,
+      "meanError": 2.3363701171875,
+      "meanLevel": [
+       14.5409267578125,
+       14.542295572916666
+      ]
+     }
+    ]
+   },
+   "Terrain-fbd9e--webgl-loader-obj-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.0007130304972330729
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0007543563842773438
+     },
+     {
+      "state": 2,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.0008640289306640625
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.0006990432739257812
+     },
+     {
+      "state": 4,
+      "fraction": 1.953125e-06,
+      "meanError": 0.0005670572916666667
+     }
+    ]
+   }
+  }
+ }
+}

@@ -188,6 +188,9 @@ impl Controls {
             dolly_direction: Vector3::ZERO,
         }
     }
+    pub(super) fn set_target(&mut self, target: Vector3) {
+        self.target = target;
+    }
     pub(super) fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
         self.delta_theta -= TAU * dx / height;
         self.delta_phi -= TAU * dy / height;

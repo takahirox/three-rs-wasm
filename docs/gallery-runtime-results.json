@@ -941,7 +941,7 @@
       "id": "webgl_geometry_terrain",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain.html",
       "source_sha256": "3ae22ea15f1cb7042872ad07fadd9d691558165edea6cd1f8a692ff6f79b6b8f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_geometry_terrain",
         "source_sha256": "3ae22ea15f1cb7042872ad07fadd9d691558165edea6cd1f8a692ff6f79b6b8f",
@@ -966,7 +966,7 @@
       "id": "webgl_geometry_terrain_raycast",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain_raycast.html",
       "source_sha256": "f583b757839640cdb45daaf7896e656ca1bbd6fbc5fb2ab680bf9a9531725a1f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_geometry_terrain_raycast",
         "source_sha256": "f583b757839640cdb45daaf7896e656ca1bbd6fbc5fb2ab680bf9a9531725a1f",
@@ -2264,7 +2264,7 @@
       "id": "webgl_loader_gcode",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gcode.html",
       "source_sha256": "4dfd6074651e2a95658679539d869e4d92fd4c53d336ff431b201cee7f8fb642",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gcode",
         "source_sha256": "4dfd6074651e2a95658679539d869e4d92fd4c53d336ff431b201cee7f8fb642",
@@ -2765,7 +2765,7 @@
       "id": "webgl_loader_obj",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_obj.html",
       "source_sha256": "76118733c2a7e048e3380801b8a6a4e86fce09cb61c4942ddcf9001b6f5572a7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_obj",
         "source_sha256": "76118733c2a7e048e3380801b8a6a4e86fce09cb61c4942ddcf9001b6f5572a7",
@@ -3263,7 +3263,7 @@
       "id": "webgl_loader_vox",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vox.html",
       "source_sha256": "9cf4ce7a6f61c05812ff3e786b694ec70237aae1aae97ffd271a657593139dbf",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_vox",
         "source_sha256": "9cf4ce7a6f61c05812ff3e786b694ec70237aae1aae97ffd271a657593139dbf",

@@ -537,6 +537,7 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(light)?.position = Vector3::new(1., 1., 0.5).normalize();
+        self.walker.speed = 1000.;
         // FirstPersonControls._setOrientation() from the camera's initial quaternion.
         let look = s.get(c)?.quaternion * -Vector3::Z;
         self.walker.lat = 90. - look.y.clamp(-1., 1.).acos().to_degrees();
@@ -1040,19 +1041,7 @@ impl Demo {
     }
     pub fn key(&mut self, code: u32, down: bool) {
         match self.id {
-            214 => {
-                // W / ArrowUp, S / ArrowDown, A / ArrowLeft, D / ArrowRight, R, F.
-                let index = match code {
-                    87 | 38 => 0,
-                    83 | 40 => 1,
-                    65 | 37 => 2,
-                    68 | 39 => 3,
-                    82 => 4,
-                    70 => 5,
-                    _ => return,
-                };
-                self.walker.keys[index] = down;
-            }
+            214 => self.walker.key(code, down),
             215 => {
                 if let Some(t) = &mut self.trackball {
                     if !down {
@@ -1154,7 +1143,7 @@ const PERMUTATION: [u8; 256] = [
     128, 195, 78, 66, 215, 61, 156, 180,
 ];
 /// `ImprovedNoise.noise( x, y, z )`.
-fn noise(x: f64, y: f64, z: f64) -> f64 {
+pub(super) fn noise(x: f64, y: f64, z: f64) -> f64 {
     let p = |i: usize| PERMUTATION[i & 255] as usize;
     let fade = |t: f64| t * t * t * (t * (t * 6. - 15.) + 10.);
     let lerp = |a: f64, b: f64, t: f64| a + (b - a) * t;
@@ -1220,14 +1209,15 @@ fn generate_height(width: usize, height: usize, seed: &mut u32) -> Vec<f64> {
     }
     data
 }
-/// FirstPersonControls (movementSpeed 1000, lookSpeed 0.2, damping 0.1).
+/// FirstPersonControls (lookSpeed 0.2, damping 0.1) with its movementSpeed.
 #[derive(Default)]
-struct FirstPerson {
+pub(super) struct FirstPerson {
+    pub(super) speed: f64,
     velocity: Vector3,
     lon_velocity: f64,
     lat_velocity: f64,
-    lon: f64,
-    lat: f64,
+    pub(super) lon: f64,
+    pub(super) lat: f64,
     pointer: Vector2,
     down: Vector2,
     count: u32,
@@ -1235,11 +1225,11 @@ struct FirstPerson {
     pointer_forward: bool,
     pointer_backward: bool,
     /// forward, backward, left, right, up, down.
-    keys: [bool; 6],
+    pub(super) keys: [bool; 6],
 }
 impl FirstPerson {
-    fn update(&mut self, s: &mut Scene, c: Object3D, delta: f64) -> Result<()> {
-        let (speed, look, damping) = (1000., 0.2, 0.1);
+    pub(super) fn update(&mut self, s: &mut Scene, c: Object3D, delta: f64) -> Result<()> {
+        let (speed, look, damping) = (self.speed, 0.2, 0.1);
         let b = |v: bool| f64::from(u8::from(v));
         let mut drive = b(self.keys[0]) - b(self.keys[1]);
         let look_move = b(self.pointer_forward) - b(self.pointer_backward);
@@ -1287,7 +1277,20 @@ impl FirstPerson {
             position + Vector3::new(phi.sin() * theta.sin(), phi.cos(), phi.sin() * theta.cos());
         s.look_at(c, target)
     }
-    fn pointer(&mut self, kind: u32, x: f64, y: f64) {
+    /// W / ArrowUp, S / ArrowDown, A / ArrowLeft, D / ArrowRight, R, F (keyCodes).
+    pub(super) fn key(&mut self, code: u32, down: bool) {
+        let index = match code {
+            87 | 38 => 0,
+            83 | 40 => 1,
+            65 | 37 => 2,
+            68 | 39 => 3,
+            82 => 4,
+            70 => 5,
+            _ => return,
+        };
+        self.keys[index] = down;
+    }
+    pub(super) fn pointer(&mut self, kind: u32, x: f64, y: f64) {
         match kind {
             10..=19 => {
                 let idle = !self.keys[0] && !self.keys[1];

@@ -1996,7 +1996,7 @@
     {
       "id": "webgl_geometry_terrain",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain.html",
       "source_sha256": "3ae22ea15f1cb7042872ad07fadd9d691558165edea6cd1f8a692ff6f79b6b8f",
@@ -2024,7 +2024,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 218,
+        "source": "src/browser/terrain_loaders.rs",
+        "test": "tests/browser/terrain-loaders.spec.js",
+        "limitations": [
+          "ImprovedNoise地形と原本の正弦乱数、Canvas2Dでの陰影テクスチャ拡大をRustで再現。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/FirstPersonControls.js",
@@ -2035,7 +2042,7 @@
     {
       "id": "webgl_geometry_terrain_raycast",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_terrain_raycast.html",
       "source_sha256": "f583b757839640cdb45daaf7896e656ca1bbd6fbc5fb2ab680bf9a9531725a1f",
@@ -2069,7 +2076,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 219,
+        "source": "src/browser/terrain_loaders.rs",
+        "test": "tests/browser/terrain-loaders.spec.js",
+        "limitations": [
+          "地形とテクスチャ生成をRustで再現。ポインタ移動ごとのCPUレイキャスト（原本と同じ）で円錐を面法線へ向ける。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -4260,7 +4274,7 @@
     {
       "id": "webgl_loader_gcode",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gcode.html",
       "source_sha256": "4dfd6074651e2a95658679539d869e4d92fd4c53d336ff431b201cee7f8fb642",
@@ -4276,7 +4290,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 220,
+        "source": "src/browser/terrain_loaders.rs",
+        "test": "tests/browser/terrain-loaders.spec.js",
+        "limitations": [
+          "GCodeLoaderの解析をRustで再現し、各ファイルの線分は一度だけ構築して常駐（原本は切替ごとに再解析）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5103,7 +5124,7 @@
     {
       "id": "webgl_loader_obj",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_obj.html",
       "source_sha256": "76118733c2a7e048e3380801b8a6a4e86fce09cb61c4942ddcf9001b6f5572a7",
@@ -5129,7 +5150,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 222,
+        "source": "src/browser/terrain_loaders.rs",
+        "test": "tests/browser/terrain-loaders.spec.js",
+        "limitations": [
+          "OBJLoader（オブジェクト・usemtlグループ）とMTLLoader（Kd・Ks・Ns・map_Kd）をRustで再現。同じ画像は1回だけ読み込み共有。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5797,7 +5825,7 @@
     {
       "id": "webgl_loader_vox",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vox.html",
       "source_sha256": "9cf4ce7a6f61c05812ff3e786b694ec70237aae1aae97ffd271a657593139dbf",
@@ -5829,7 +5857,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 221,
+        "source": "src/browser/terrain_loaders.rs",
+        "test": "tests/browser/terrain-loaders.spec.js",
+        "limitations": [
+          "VOXLoaderのチャンク解析と貪欲メッシュ化、パレット色をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

@@ -548,3 +548,10 @@ unmodified r186 `examples/textures/` files. Their source paths and SHA-256
 hashes are in `trackball-sprites-manifest.json`; they are distributed alongside
 `LICENSE-THREE`. The sprite example reuses `sprite1.png` and the retained
 `environment-materials` `sprite0.png`.
+
+`gallery/assets/gcode/`, `vox/monu10.vox` and `obj/male02/` are the unmodified
+r186 `examples/models/gcode/`, `models/vox/monu10.vox` and `models/obj/male02/`
+files. Their source paths and SHA-256 hashes are in
+`terrain-loaders-manifest.json`; they are distributed alongside `LICENSE-THREE`.
+The male02 model is by Reallusion iClone, from Google 3D Warehouse; see
+`obj/male02/readme.txt`.
