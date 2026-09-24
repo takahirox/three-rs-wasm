@@ -6,7 +6,7 @@ const files=readFileSync('web/gallery/files.json','utf8');
 test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
  const listed=Object.values(JSON.parse(files)).flat();
  const excluded=catalog.examples.filter(e=>e.preferred_example);
- expect(excluded).toHaveLength(8);
+ expect(excluded).toHaveLength(14);
  for(const entry of excluded){
   expect(entry.status).toBe('excluded');expect(entry.port).toBeNull();
   expect(listed).not.toContain(entry.id);
@@ -56,7 +56,9 @@ test('unported examples show source evidence rather than a fake reproduction',as
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
  test.setTimeout(120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
- await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28,38,153,156,157,193,195].includes(entry.port.example) ? 0 : 2);
+ // Audio needs a user gesture before it loads, as the original's start button does.
+ if(entry.port.example===139)await viewer.getByRole('button',{name:'Play',exact:true}).click();
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28,38,153,156,157,193,195,206,213,220,224,226].includes(entry.port.example) ? 0 : 2);
  await expect(viewer.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');await expect(canvas).not.toHaveAttribute('data-error',/.+/);
  if(entry.port.example===6)await expect(canvas).toHaveAttribute('data-meshes','30');
  const rendered=entry.port.example===93?viewer.locator('canvas').nth(1):canvas;
@@ -66,7 +68,7 @@ for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime
  await page.setViewportSize({width:1000,height:700});await expect.poll(async()=>Number(await canvas.getAttribute('width'))).toBe(700);
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module'))).toBe(false);expect(errors).toEqual([]);
  if(entry.port.example===4)await viewer.locator('#model').selectOption('5');
- await page.evaluate(()=>location.hash=location.hash==='#webgl_geometry_cube'?'webgpu_pmrem_equirectangular':'webgl_geometry_cube');await expect.poll(async()=>Number(await page.frameLocator('#viewer').locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);expect(errors).toEqual([]);
+ await page.evaluate(()=>location.hash=location.hash==='#webgl_geometry_cube'?'webgpu_pmrem_equirectangular':'webgl_geometry_cube');await expect.poll(async()=>Number(await page.frameLocator('#viewer').locator('canvas').first().getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);expect(errors).toEqual([]);
 });
 test('PMREM sphere grid matches original physical materials and background node',async({page},info)=>{
  await page.setViewportSize({width:256,height:256});
