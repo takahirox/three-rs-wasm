@@ -8,7 +8,7 @@ fn bad(what: &str) -> Error {
     Error::Asset(what.to_string())
 }
 /// `parseFloat`: leading whitespace, then the longest decimal-literal prefix.
-pub(super) fn parse_float(s: &str) -> f64 {
+pub(in crate::browser) fn parse_float(s: &str) -> f64 {
     let t = s.trim_start();
     let b = t.as_bytes();
     let mut i = 0;
@@ -146,7 +146,7 @@ pub(super) fn parse_pdb(text: &str) -> Result<Molecule> {
 // ---------------------------------------------------------------- ZIP and XML
 
 /// fflate `unzipSync`: every stored or deflated entry, in central-directory order.
-pub(super) fn unzip(data: &[u8]) -> Result<Vec<(String, Vec<u8>)>> {
+pub(in crate::browser) fn unzip(data: &[u8]) -> Result<Vec<(String, Vec<u8>)>> {
     let u16_at = |o: usize| -> Result<usize> {
         data.get(o..o + 2)
             .map(|b| u16::from_le_bytes([b[0], b[1]]) as usize)
@@ -190,11 +190,11 @@ pub(super) fn unzip(data: &[u8]) -> Result<Vec<(String, Vec<u8>)>> {
     }
     Ok(files)
 }
-pub(super) enum XmlNode {
+pub(in crate::browser) enum XmlNode {
     Element(Element),
     Text(String),
 }
-pub(super) struct Element {
+pub(in crate::browser) struct Element {
     pub name: String,
     pub attributes: Vec<(String, String)>,
     pub children: Vec<XmlNode>,
@@ -272,7 +272,7 @@ fn unescape(s: &str) -> String {
     out
 }
 /// `DOMParser.parseFromString( text, 'application/xml' ).documentElement`.
-pub(super) fn parse_xml(text: &str) -> Result<Element> {
+pub(in crate::browser) fn parse_xml(text: &str) -> Result<Element> {
     let mut stack = vec![Element {
         name: String::new(),
         attributes: vec![],

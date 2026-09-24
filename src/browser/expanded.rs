@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    RefractionLoaders(Box<super::refraction_loaders::Demo>),
     HelpersFormats(Box<super::helpers_formats::Demo>),
     PickingBuffers(Box<super::picking_buffers::Demo>),
     ModelsModifiers(Box<super::models_modifiers::Demo>),
@@ -85,6 +86,16 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            238..=242 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 100000.,
+                elapsed: 0.,
+                content: Content::RefractionLoaders(Box::new(
+                    super::refraction_loaders::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
             233..=237 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -766,6 +777,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1005,6 +1019,10 @@ impl Demo {
         x: f64,
         y: f64,
     ) -> Result<bool> {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            demo.gpu_pointer(x, y);
+            return Ok(false);
+        }
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
@@ -1218,6 +1236,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            demo.prepare(scene, camera)?;
+        }
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1266,6 +1287,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1422,6 +1446,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1537,6 +1564,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::RefractionLoaders(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

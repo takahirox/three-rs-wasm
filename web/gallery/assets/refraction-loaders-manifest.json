@@ -1,0 +1,82 @@
+[
+ {
+  "file": "cube/Park3Med/px.jpg",
+  "source": "examples/textures/cube/Park3Med/px.jpg",
+  "sha256": "271ef2f791ff6b6f7e5ab45347279ac7195d5f8dab38eb08880036e4bac7d157"
+ },
+ {
+  "file": "cube/Park3Med/nx.jpg",
+  "source": "examples/textures/cube/Park3Med/nx.jpg",
+  "sha256": "6e27cd535b8ce0400dfec87298f1d7b009aeca54a69b38c8b00834c9d52ce438"
+ },
+ {
+  "file": "cube/Park3Med/py.jpg",
+  "source": "examples/textures/cube/Park3Med/py.jpg",
+  "sha256": "27588b1f84b2b7075c56681b2b4893b01ff6c81ab50638884fa9ca8e40266af1"
+ },
+ {
+  "file": "cube/Park3Med/ny.jpg",
+  "source": "examples/textures/cube/Park3Med/ny.jpg",
+  "sha256": "9c58ffbc9a0a71a61f6b71c002f9367abf3a77e01bea8c6ba7e008c01695ab90"
+ },
+ {
+  "file": "cube/Park3Med/pz.jpg",
+  "source": "examples/textures/cube/Park3Med/pz.jpg",
+  "sha256": "f97d0a20187c419622949a4bdb2afb652742bedb6924b9771d00e01d9fd428c7"
+ },
+ {
+  "file": "cube/Park3Med/nz.jpg",
+  "source": "examples/textures/cube/Park3Med/nz.jpg",
+  "sha256": "ee32866c05c8221121856b5027d52d1ce0dbcd57185c2295135a5bab656d7503"
+ },
+ {
+  "file": "cube/Park3Med/readme.txt",
+  "source": "examples/textures/cube/Park3Med/readme.txt",
+  "sha256": "cfda89f80f079cbbd93fd84057a44b13015c527c0e98c753bd24ec124c8461f3"
+ },
+ {
+  "file": "ply/ascii/dolphins.ply",
+  "source": "examples/models/ply/ascii/dolphins.ply",
+  "sha256": "1246b1050ebc1e2e6b9de796a004bd3914e525546d402a5e286fbe6f13940c8e"
+ },
+ {
+  "file": "ply/binary/Lucy100k.ply",
+  "source": "examples/models/ply/binary/Lucy100k.ply",
+  "sha256": "837f769e67155dc4a6e9a90683a61d6f6b4571a2a97d79586831011f450e66e2"
+ },
+ {
+  "file": "kmz/Box.kmz",
+  "source": "examples/models/kmz/Box.kmz",
+  "sha256": "3047740775949f2a71725af12f13f95c7d55110a940ef61c021adf9907abf17c"
+ },
+ {
+  "file": "collada/elf/Body_tex_003.jpg",
+  "source": "examples/models/collada/elf/Body_tex_003.jpg",
+  "sha256": "91ed8c79574289f8d8626273cfe950def6cadac25a5cc289a68e9f0b9f37ecab"
+ },
+ {
+  "file": "collada/elf/Face_tex_002_toObj.jpg",
+  "source": "examples/models/collada/elf/Face_tex_002_toObj.jpg",
+  "sha256": "0b41b95fa0b997eb5f73c97853f9f397dbeeb00cbacafaf87f96af6cda318625"
+ },
+ {
+  "file": "collada/elf/Hair_tex_001.jpg",
+  "source": "examples/models/collada/elf/Hair_tex_001.jpg",
+  "sha256": "0070ea64cb17de55c6c6afe7638fa141d1ea1c48b631507cf231df0577d8b4bf"
+ },
+ {
+  "file": "collada/elf/ce.jpg",
+  "source": "examples/models/collada/elf/ce.jpg",
+  "sha256": "40d6a751eb5a9484259684c081e6518bab99348f671ab7a82a9ec3d6be60ffd4"
+ },
+ {
+  "file": "collada/elf/elf.dae",
+  "source": "examples/models/collada/elf/elf.dae",
+  "sha256": "14ce50b81a4da5798a7971063c57a6421fcffe0236f64c2ab6b50de5a6d5ccd5"
+ },
+ {
+  "file": "memorial.exr",
+  "source": "examples/textures/memorial.exr",
+  "sha256": "46337f0879c25cad700c45fc92e456033d77543f18b52ff747f70ce5461ca178"
+ }
+]

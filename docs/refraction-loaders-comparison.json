@@ -1,0 +1,1620 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/refraction-loaders.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Refract-1bdc0--webgl-loader-ply-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.012912750244140625,
+      "meanError": 0.22164281209309897
+     },
+     {
+      "state": 1,
+      "fraction": 0.01508331298828125,
+      "meanError": 0.23963419596354166
+     },
+     {
+      "state": 2,
+      "fraction": 0.01364898681640625,
+      "meanError": 0.21009953816731772
+     },
+     {
+      "state": 3,
+      "fraction": 0.0172576904296875,
+      "meanError": 0.24385706583658853
+     },
+     {
+      "state": 4,
+      "fraction": 0.018436431884765625,
+      "meanError": 0.2575187683105469
+     },
+     {
+      "state": 5,
+      "fraction": 0.01371875,
+      "meanError": 0.2172578125
+     }
+    ]
+   },
+   "Refract-1d30f-gl-loader-collada-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.018787384033203125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.018957773844401043
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.01862335205078125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.017842610677083332
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.011967447916666667
+     }
+    ]
+   },
+   "Refract-239e6--webgl-loader-ply-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0079498291015625,
+      "meanError": 0.1291325887044271
+     },
+     {
+      "state": 1,
+      "fraction": 0.005733489990234375,
+      "meanError": 0.09040196736653645
+     },
+     {
+      "state": 2,
+      "fraction": 0.0036163330078125,
+      "meanError": 0.054996490478515625
+     },
+     {
+      "state": 3,
+      "fraction": 0.00493621826171875,
+      "meanError": 0.07241312662760417
+     },
+     {
+      "state": 4,
+      "fraction": 0.00446319580078125,
+      "meanError": 0.06596628824869792
+     },
+     {
+      "state": 5,
+      "fraction": 0.0052265625,
+      "meanError": 0.08615755208333334
+     }
+    ]
+   },
+   "Refract-39a30-oader-texture-exr-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Refract-5c944-idency-webgl-loader-collada": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 82,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 82,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-68fb8--residency-webgl-loader-ply": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 60,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 60,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 65,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 65,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-732b9-ubemap-refraction-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0187225341796875,
+      "meanError": 0.3887736002604167
+     },
+     {
+      "state": 1,
+      "fraction": 0.020915985107421875,
+      "meanError": 0.4263051350911458
+     },
+     {
+      "state": 2,
+      "fraction": 0.020915985107421875,
+      "meanError": 0.4263051350911458
+     },
+     {
+      "state": 3,
+      "fraction": 0.016170501708984375,
+      "meanError": 0.3852806091308594
+     },
+     {
+      "state": 4,
+      "fraction": 0.02124786376953125,
+      "meanError": 0.693169911702474
+     },
+     {
+      "state": 5,
+      "fraction": 0.021373748779296875,
+      "meanError": 0.7345059712727865
+     },
+     {
+      "state": 6,
+      "fraction": 0.01680859375,
+      "meanError": 0.6058723958333333
+     }
+    ]
+   },
+   "Refract-786ac-ubemap-refraction-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00290679931640625,
+      "meanError": 0.099456787109375
+     },
+     {
+      "state": 1,
+      "fraction": 0.004428863525390625,
+      "meanError": 0.12963740030924478
+     },
+     {
+      "state": 2,
+      "fraction": 0.004428863525390625,
+      "meanError": 0.12963740030924478
+     },
+     {
+      "state": 3,
+      "fraction": 0.00298309326171875,
+      "meanError": 0.14447911580403647
+     },
+     {
+      "state": 4,
+      "fraction": 0.00521087646484375,
+      "meanError": 0.4166514078776042
+     },
+     {
+      "state": 5,
+      "fraction": 0.005352020263671875,
+      "meanError": 0.4572703043619792
+     },
+     {
+      "state": 6,
+      "fraction": 0.00312109375,
+      "meanError": 0.37508463541666665
+     }
+    ]
+   },
+   "Refract-83075-cy-webgl-loader-texture-exr": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 32,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 32,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-9df4f--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_materials_cubemap_refraction",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_ply",
+      "reference": {
+       "draws": [
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_kmz",
+      "reference": {
+       "draws": [
+        {
+         "count": 204,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 204,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_collada",
+      "reference": {
+       "draws": [
+        {
+         "count": 1446,
+         "instances": 1
+        },
+        {
+         "count": 26478,
+         "instances": 1
+        },
+        {
+         "count": 8040,
+         "instances": 1
+        },
+        {
+         "count": 6660,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1446,
+         "instances": 1
+        },
+        {
+         "count": 26478,
+         "instances": 1
+        },
+        {
+         "count": 8040,
+         "instances": 1
+        },
+        {
+         "count": 6660,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_exr",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Refract-a2519--residency-webgl-loader-kmz": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 41,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 41,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-cb461-aterials-cubemap-refraction": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 125,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 125,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 130,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 130,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-da6f9--webgl-loader-kmz-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00330352783203125,
+      "meanError": 0.337646484375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Refract-f4400--webgl-loader-kmz-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01384735107421875,
+      "meanError": 0.14431381225585938
+     },
+     {
+      "state": 1,
+      "fraction": 0.018718719482421875,
+      "meanError": 0.1978912353515625
+     },
+     {
+      "state": 2,
+      "fraction": 0.016063690185546875,
+      "meanError": 0.1770477294921875
+     },
+     {
+      "state": 3,
+      "fraction": 0.0152587890625,
+      "meanError": 0.1698023478190104
+     },
+     {
+      "state": 4,
+      "fraction": 0.0213046875,
+      "meanError": 0.21902473958333332
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Refract-1bdc0--webgl-loader-ply-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.012370109558105469,
+      "meanError": 0.20136801401774088
+     },
+     {
+      "state": 1,
+      "fraction": 0.010021209716796875,
+      "meanError": 0.15638001759847006
+     },
+     {
+      "state": 2,
+      "fraction": 0.008908271789550781,
+      "meanError": 0.13728014628092447
+     },
+     {
+      "state": 3,
+      "fraction": 0.010909080505371094,
+      "meanError": 0.15690326690673828
+     },
+     {
+      "state": 4,
+      "fraction": 0.011575698852539062,
+      "meanError": 0.16591294606526694
+     },
+     {
+      "state": 5,
+      "fraction": 0.009216796875,
+      "meanError": 0.1515166015625
+     }
+    ]
+   },
+   "Refract-1d30f-gl-loader-collada-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.006478309631347656
+     },
+     {
+      "state": 1,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.006884256998697917
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.006295839945475261
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.006390571594238281
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007143229166666667
+     }
+    ]
+   },
+   "Refract-239e6--webgl-loader-ply-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006550788879394531,
+      "meanError": 0.10681470235188802
+     },
+     {
+      "state": 1,
+      "fraction": 0.004996299743652344,
+      "meanError": 0.07547219594319661
+     },
+     {
+      "state": 2,
+      "fraction": 0.0035810470581054688,
+      "meanError": 0.05431779225667318
+     },
+     {
+      "state": 3,
+      "fraction": 0.0047321319580078125,
+      "meanError": 0.06722354888916016
+     },
+     {
+      "state": 4,
+      "fraction": 0.0045795440673828125,
+      "meanError": 0.068756103515625
+     },
+     {
+      "state": 5,
+      "fraction": 0.00461328125,
+      "meanError": 0.07769010416666666
+     }
+    ]
+   },
+   "Refract-39a30-oader-texture-exr-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Refract-5c944-idency-webgl-loader-collada": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 82,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 82,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        1,
+        3409920,
+        16
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-68fb8--residency-webgl-loader-ply": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 60,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 60,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 65,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 65,
+       "transfers": [
+        3,
+        5289172,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-732b9-ubemap-refraction-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00890350341796875,
+      "meanError": 0.2065725326538086
+     },
+     {
+      "state": 1,
+      "fraction": 0.01096343994140625,
+      "meanError": 0.2453622817993164
+     },
+     {
+      "state": 2,
+      "fraction": 0.01096343994140625,
+      "meanError": 0.2453622817993164
+     },
+     {
+      "state": 3,
+      "fraction": 0.008420944213867188,
+      "meanError": 0.23466110229492188
+     },
+     {
+      "state": 4,
+      "fraction": 0.011419296264648438,
+      "meanError": 0.5256160100301107
+     },
+     {
+      "state": 5,
+      "fraction": 0.011595726013183594,
+      "meanError": 0.5735254287719727
+     },
+     {
+      "state": 6,
+      "fraction": 0.0100849609375,
+      "meanError": 0.5650563151041667
+     }
+    ]
+   },
+   "Refract-786ac-ubemap-refraction-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0016756057739257812,
+      "meanError": 0.06187629699707031
+     },
+     {
+      "state": 1,
+      "fraction": 0.0035858154296875,
+      "meanError": 0.10059960683186848
+     },
+     {
+      "state": 2,
+      "fraction": 0.0035858154296875,
+      "meanError": 0.10059960683186848
+     },
+     {
+      "state": 3,
+      "fraction": 0.0024003982543945312,
+      "meanError": 0.11753654479980469
+     },
+     {
+      "state": 4,
+      "fraction": 0.004199981689453125,
+      "meanError": 0.3935782114664714
+     },
+     {
+      "state": 5,
+      "fraction": 0.004608154296875,
+      "meanError": 0.4434264500935872
+     },
+     {
+      "state": 6,
+      "fraction": 0.0037998046875,
+      "meanError": 0.45133072916666667
+     }
+    ]
+   },
+   "Refract-83075-cy-webgl-loader-texture-exr": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 32,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 32,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-9df4f--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_materials_cubemap_refraction",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_ply",
+      "reference": {
+       "draws": [
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 5067,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_kmz",
+      "reference": {
+       "draws": [
+        {
+         "count": 204,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 204,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_collada",
+      "reference": {
+       "draws": [
+        {
+         "count": 1446,
+         "instances": 1
+        },
+        {
+         "count": 26478,
+         "instances": 1
+        },
+        {
+         "count": 8040,
+         "instances": 1
+        },
+        {
+         "count": 6660,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1446,
+         "instances": 1
+        },
+        {
+         "count": 26478,
+         "instances": 1
+        },
+        {
+         "count": 8040,
+         "instances": 1
+        },
+        {
+         "count": 6660,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_exr",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Refract-a2519--residency-webgl-loader-kmz": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 41,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 41,
+       "transfers": [
+        2,
+        19200,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-cb461-aterials-cubemap-refraction": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 125,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 125,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 130,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 130,
+       "transfers": [
+        2,
+        5202224,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Refract-da6f9--webgl-loader-kmz-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0016574859619140625,
+      "meanError": 0.1692352294921875
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 5.7220458984375e-06,
+      "meanError": 0.000171661376953125
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 5.7220458984375e-05
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Refract-f4400--webgl-loader-kmz-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00699615478515625,
+      "meanError": 0.08142471313476562
+     },
+     {
+      "state": 1,
+      "fraction": 0.009453773498535156,
+      "meanError": 0.09884452819824219
+     },
+     {
+      "state": 2,
+      "fraction": 0.008748054504394531,
+      "meanError": 0.09360218048095703
+     },
+     {
+      "state": 3,
+      "fraction": 0.008221626281738281,
+      "meanError": 0.0887149175008138
+     },
+     {
+      "state": 4,
+      "fraction": 0.0117314453125,
+      "meanError": 0.1220341796875
+     }
+    ]
+   }
+  }
+ }
+}

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 233 partial Rust ports; 358 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 238 partial Rust ports; 353 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_materials_cubemap_refraction | `tests/browser/refraction-loaders.spec.js` | PLYLoader（バイナリ）とcomputeVertexNormals、Phongにenvmap_fragmentの屈折（CubeRefractionMapping・MultiplyOperation）と背景キューブを加えてRustで再現。マウス追従のカメラは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_ply | `tests/browser/refraction-loaders.spec.js` | PLYLoader（ASCII・バイナリ）、フラットシェーディング、半球光と2灯の平行光源の影、線形フォグをRustで再現。影のPCFはWebGLと同じVogel円盤とIGNだが、画面座標の上下が逆のため影の縁の回転が異なる。性能の完全な同等性は未保証。 |
+| webgl_loader_kmz | `tests/browser/refraction-loaders.spec.js` | KMZLoaderのzip展開とdoc.kmlのモデル参照、ColladaLoaderの静的メッシュ・Phong材質・Z-up回転をRustで再現。変更時のみ描画。性能の完全な同等性は未保証。 |
+| webgl_loader_collada | `tests/browser/refraction-loaders.spec.js` | ColladaLoaderの静的メッシュ（polylist・材質グループ・テクスチャ・ノード行列・Z-up）をRustで再現。スキン・アニメーション・キネマティクスは未対応（このアセットは不使用）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_exr | `tests/browser/refraction-loaders.spec.js` | EXRLoaderのPIZ圧縮（ハフマン・ウェーブレット・LUT）をRustで再現し、原本の出力とバイト単位で一致を確認。Reinhardトーンマッピングとexposure操作。変更時のみ描画。性能の完全な同等性は未保証。 |
 | webgl_loader_pdb | `tests/browser/helpers-formats.spec.js` | PDBLoaderの解析、原子・結合ごとのメッシュ、CSS2DRendererのラベル配置と重なり順をRust/DOMで再現。分子ごとのメッシュは一度だけ構築して常駐（原本は切替ごとに再構築）。ラベル層の書体は原本のmain.cssと同じ指定。性能の完全な同等性は未保証。 |
 | webgl_helpers | `tests/browser/helpers-formats.spec.js` | 頂点法線・接線ヘルパー、BoxHelper、Wireframe/EdgesGeometry、PolarGrid、PointLightHelperをRustで再現。静止メッシュのヘルパー頂点は一度だけ計算して常駐（原本は毎フレーム同じ値を再計算・再送信）。性能の完全な同等性は未保証。 |
 | webgl_modifier_simplifier | `tests/browser/helpers-formats.spec.js` | SimplifyModifierをmeshoptimizer 1.1のRust移植（optimesh）で再現し、原本のwasm版と同一の結果を確認。比率ごとの結果は一度だけ構築して常駐。変更時のみ描画。性能の完全な同等性は未保証。 |

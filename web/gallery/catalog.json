@@ -3998,7 +3998,7 @@
     {
       "id": "webgl_loader_collada",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada.html",
       "source_sha256": "bbb4970bad5d35034e44dfaa529408be5462eaef71cc5732957abf41f399639e",
@@ -4014,7 +4014,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 241,
+        "source": "src/browser/refraction_loaders.rs",
+        "test": "tests/browser/refraction-loaders.spec.js",
+        "limitations": [
+          "ColladaLoaderの静的メッシュ（polylist・材質グループ・テクスチャ・ノード行列・Z-up）をRustで再現。スキン・アニメーション・キネマティクスは未対応（このアセットは不使用）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -4885,7 +4892,7 @@
     {
       "id": "webgl_loader_kmz",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_kmz.html",
       "source_sha256": "af1e01ea1dd3f22cccbdc09a572c5889338837ca7b0a043b2d98371f68d86ea2",
@@ -4907,7 +4914,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 240,
+        "source": "src/browser/refraction_loaders.rs",
+        "test": "tests/browser/refraction-loaders.spec.js",
+        "limitations": [
+          "KMZLoaderのzip展開とdoc.kmlのモデル参照、ColladaLoaderの静的メッシュ・Phong材質・Z-up回転をRustで再現。変更時のみ描画。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5339,7 +5353,7 @@
     {
       "id": "webgl_loader_ply",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ply.html",
       "source_sha256": "af54a0ced7acec9584290214972696835af2dc8dbd95be87a0762c7c131a80ad",
@@ -5391,7 +5405,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 239,
+        "source": "src/browser/refraction_loaders.rs",
+        "test": "tests/browser/refraction-loaders.spec.js",
+        "limitations": [
+          "PLYLoader（ASCII・バイナリ）、フラットシェーディング、半球光と2灯の平行光源の影、線形フォグをRustで再現。影のPCFはWebGLと同じVogel円盤とIGNだが、画面座標の上下が逆のため影の縁の回転が異なる。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -5567,7 +5588,7 @@
     {
       "id": "webgl_loader_texture_exr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_exr.html",
       "source_sha256": "e1c47f465b8a08d1536f151926101db5caaba80c3cabb8773a209033b31427fd",
@@ -5587,7 +5608,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 242,
+        "source": "src/browser/refraction_loaders.rs",
+        "test": "tests/browser/refraction-loaders.spec.js",
+        "limitations": [
+          "EXRLoaderのPIZ圧縮（ハフマン・ウェーブレット・LUT）をRustで再現し、原本の出力とバイト単位で一致を確認。Reinhardトーンマッピングとexposure操作。変更時のみ描画。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -6579,7 +6607,7 @@
     {
       "id": "webgl_materials_cubemap_refraction",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_refraction.html",
       "source_sha256": "db2a94274dc1b4092856947bd65910dbcdcf044f2442eb69d28db901f7afeb10",
@@ -6609,7 +6637,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 238,
+        "source": "src/browser/refraction_loaders.rs",
+        "test": "tests/browser/refraction-loaders.spec.js",
+        "limitations": [
+          "PLYLoader（バイナリ）とcomputeVertexNormals、Phongにenvmap_fragmentの屈折（CubeRefractionMapping・MultiplyOperation）と背景キューブを加えてRustで再現。マウス追従のカメラは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",

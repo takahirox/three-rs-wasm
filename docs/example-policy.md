@@ -147,3 +147,10 @@ The WebGL-only PDB, helpers, simplifier, AMF and TIFF batch
 silhouettes, flat facets and grid lines. With MSAA off, it bounds only the
 flat-shaded simplified head, whose facet edges take derivative normals. The PDB
 labels are part of the compared pixels.
+
+The WebGL-only refraction, PLY, KMZ, Collada and EXR batch
+([refraction-loaders.md](refraction-loaders.md)) bounds 4× MSAA comparisons of
+silhouettes, facets and grid lines. With MSAA off, it bounds only the refracted
+statues' fine environment detail, and the PLY scene's flat facets and shadow
+edges. The shadow edges differ because WebGL's `gl_FragCoord` rows are flipped
+relative to WebGPU's.

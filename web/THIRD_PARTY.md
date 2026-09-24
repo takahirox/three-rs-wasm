@@ -576,3 +576,11 @@ The instancing-performance port reuses the retained
 source paths and SHA-256 hashes are in `helpers-formats-manifest.json`; they
 are distributed alongside `LICENSE-THREE`. The helpers and simplifier ports
 reuse the retained LeePerrySmith head.
+
+`gallery/assets/cube/Park3Med/`, `ply/`, `kmz/Box.kmz`, `collada/elf/` and
+`memorial.exr` are the unmodified r186 `examples/textures/cube/Park3Med/`,
+`models/ply/`, `models/kmz/Box.kmz`, `models/collada/elf/` and
+`textures/memorial.exr` files. Their source paths and SHA-256 hashes are in
+`refraction-loaders-manifest.json`; they are distributed alongside
+`LICENSE-THREE`. The Park3Med cube is by Emil Persson (Humus) and is distributed with its
+`cube/Park3Med/readme.txt`, as its terms require.

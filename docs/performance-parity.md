@@ -531,3 +531,11 @@ rook and grid, and the three TIFF planes.
   rebuilding it.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Cube refraction, PLY, KMZ, Collada and EXR
+
+The [refraction, PLY, KMZ, Collada and EXR ports](refraction-loaders.md) match
+the original draws, including the PLY models' two shadow-map passes. No scene
+uploads geometry or texture data after a warm pass, and warmed cycles create no
+GPU resources. The EXR and TIFF decoders run once at load, on the CPU, as the
+original loaders do. No GPU timing parity is claimed.

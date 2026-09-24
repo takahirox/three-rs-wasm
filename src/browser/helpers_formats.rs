@@ -1,6 +1,6 @@
 //! The PDB molecules with their CSS2D labels, the helper objects, the mesh
 //! simplifier, the AMF loader and the TIFF loader from the pinned WebGL examples.
-mod formats;
+pub(super) mod formats;
 use super::controls_attributes::{CameraState, Controls, camera_state, viewport_css};
 use super::gltf_viewer::{fetch, load_asset};
 use super::trackball_sprites::{Mode, Trackball};

@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 356,
-    "runnable-partial": 233,
+    "blocked-at-port-review": 351,
+    "runnable-partial": 238,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -5577,10 +5577,10 @@
     },
     {
       "id": "webgl_loader_collada",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada.html",
       "source_sha256": "bbb4970bad5d35034e44dfaa529408be5462eaef71cc5732957abf41f399639e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/refraction-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -6904,10 +6904,10 @@
     },
     {
       "id": "webgl_loader_kmz",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_kmz.html",
       "source_sha256": "af1e01ea1dd3f22cccbdc09a572c5889338837ca7b0a043b2d98371f68d86ea2",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/refraction-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7483,10 +7483,10 @@
     },
     {
       "id": "webgl_loader_ply",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ply.html",
       "source_sha256": "af54a0ced7acec9584290214972696835af2dc8dbd95be87a0762c7c131a80ad",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/refraction-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7829,10 +7829,10 @@
     },
     {
       "id": "webgl_loader_texture_exr",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_exr.html",
       "source_sha256": "e1c47f465b8a08d1536f151926101db5caaba80c3cabb8773a209033b31427fd",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/refraction-loaders.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -9131,10 +9131,10 @@
     },
     {
       "id": "webgl_materials_cubemap_refraction",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_refraction.html",
       "source_sha256": "db2a94274dc1b4092856947bd65910dbcdcf044f2442eb69d28db901f7afeb10",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/refraction-loaders.spec.js",
       "blockers": [
         {
           "kind": "core-api",

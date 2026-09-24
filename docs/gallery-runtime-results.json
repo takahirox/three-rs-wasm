@@ -2097,7 +2097,7 @@
       "id": "webgl_loader_collada",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada.html",
       "source_sha256": "bbb4970bad5d35034e44dfaa529408be5462eaef71cc5732957abf41f399639e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_collada",
         "source_sha256": "bbb4970bad5d35034e44dfaa529408be5462eaef71cc5732957abf41f399639e",
@@ -2603,7 +2603,7 @@
       "id": "webgl_loader_kmz",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_kmz.html",
       "source_sha256": "af1e01ea1dd3f22cccbdc09a572c5889338837ca7b0a043b2d98371f68d86ea2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_kmz",
         "source_sha256": "af1e01ea1dd3f22cccbdc09a572c5889338837ca7b0a043b2d98371f68d86ea2",
@@ -2846,7 +2846,7 @@
       "id": "webgl_loader_ply",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ply.html",
       "source_sha256": "af54a0ced7acec9584290214972696835af2dc8dbd95be87a0762c7c131a80ad",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_ply",
         "source_sha256": "af54a0ced7acec9584290214972696835af2dc8dbd95be87a0762c7c131a80ad",
@@ -2961,7 +2961,7 @@
       "id": "webgl_loader_texture_exr",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_exr.html",
       "source_sha256": "e1c47f465b8a08d1536f151926101db5caaba80c3cabb8773a209033b31427fd",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_texture_exr",
         "source_sha256": "e1c47f465b8a08d1536f151926101db5caaba80c3cabb8773a209033b31427fd",
@@ -3612,7 +3612,7 @@
       "id": "webgl_materials_cubemap_refraction",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_refraction.html",
       "source_sha256": "db2a94274dc1b4092856947bd65910dbcdcf044f2442eb69d28db901f7afeb10",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_cubemap_refraction",
         "source_sha256": "db2a94274dc1b4092856947bd65910dbcdcf044f2442eb69d28db901f7afeb10",
