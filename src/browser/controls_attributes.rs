@@ -21,14 +21,20 @@ fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
 }
-fn call(name: &str, source: &str, args: &[Type], out: Type, nodes: &[Node]) -> Result<Node> {
+pub(super) fn call(
+    name: &str,
+    source: &str,
+    args: &[Type],
+    out: Type,
+    nodes: &[Node],
+) -> Result<Node> {
     Ok(WgslFn::new(name, source, args, out)?.call(nodes))
 }
 fn vec3s(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }
 /// `AdditiveBlending` of a non-premultiplied material: `blendFunc( SRC_ALPHA, ONE )`.
-fn additive() -> wgpu::BlendState {
+pub(super) fn additive() -> wgpu::BlendState {
     let component = wgpu::BlendComponent {
         src_factor: wgpu::BlendFactor::SrcAlpha,
         dst_factor: wgpu::BlendFactor::One,
@@ -93,7 +99,7 @@ async fn point_quads(
     s.get_mut(h)?.frustum_culled = false;
     Ok(h)
 }
-fn set_uniform(s: &mut Scene, h: Object3D, index: usize, value: [f32; 4]) -> Result<()> {
+pub(super) fn set_uniform(s: &mut Scene, h: Object3D, index: usize, value: [f32; 4]) -> Result<()> {
     let material = match &mut s.get_mut(h)?.kind {
         NodeKind::Mesh(m) => &mut m.materials[0],
         NodeKind::Line(l) => &mut l.material,
@@ -150,6 +156,109 @@ fn webgl_orthographic(l: f64, r: f64, t: f64, b: f64, near: f64, far: f64) -> Ma
         -(far + near) / p,
         1.,
     ])
+}
+/// CameraHelper: 50 vertices at fixed NDC points, unprojected on the GPU by
+/// u.custom[0..4] = camera.matrixWorld × projectionMatrixInverse.
+pub(super) async fn camera_helper(
+    r: &Renderer,
+) -> Result<(Arc<BufferGeometry>, Arc<ShaderProgram>)> {
+    let c = |x: f32, y: f32, near: bool| [x, y, if near { -1. } else { 1. }];
+    let point = |name: &str| -> [f32; 3] {
+        match name {
+            "c" => c(0., 0., true),
+            "t" => c(0., 0., false),
+            "n1" => c(-1., -1., true),
+            "n2" => c(1., -1., true),
+            "n3" => c(-1., 1., true),
+            "n4" => c(1., 1., true),
+            "f1" => c(-1., -1., false),
+            "f2" => c(1., -1., false),
+            "f3" => c(-1., 1., false),
+            "f4" => c(1., 1., false),
+            "u1" => c(0.7, 1.1, true),
+            "u2" => c(-0.7, 1.1, true),
+            "u3" => c(0., 2., true),
+            "cf1" => c(-1., 0., false),
+            "cf2" => c(1., 0., false),
+            "cf3" => c(0., -1., false),
+            "cf4" => c(0., 1., false),
+            "cn1" => c(-1., 0., true),
+            "cn2" => c(1., 0., true),
+            "cn3" => c(0., -1., true),
+            "cn4" => c(0., 1., true),
+            // "p" is never set by update(): it stays at the helper (camera) origin.
+            _ => [0., 0., 2.],
+        }
+    };
+    let (frustum, cone, up, target, cross) = (0xffaa00, 0xff0000, 0x00aaff, 0xffffff, 0x333333);
+    let lines: [(&str, &str, u32, u32); 25] = [
+        ("n1", "n2", frustum, frustum),
+        ("n2", "n4", frustum, frustum),
+        ("n4", "n3", frustum, frustum),
+        ("n3", "n1", frustum, frustum),
+        ("f1", "f2", frustum, frustum),
+        ("f2", "f4", frustum, frustum),
+        ("f4", "f3", frustum, frustum),
+        ("f3", "f1", frustum, frustum),
+        ("n1", "f1", frustum, frustum),
+        ("n2", "f2", frustum, frustum),
+        ("n3", "f3", frustum, frustum),
+        ("n4", "f4", frustum, frustum),
+        ("p", "n1", cone, cone),
+        ("p", "n2", cone, cone),
+        ("p", "n3", cone, cone),
+        ("p", "n4", cone, cone),
+        ("u1", "u2", up, up),
+        ("u2", "u3", up, up),
+        ("u3", "u1", up, up),
+        ("c", "t", target, target),
+        ("p", "c", cross, cross),
+        ("cn1", "cn2", cross, cross),
+        ("cn3", "cn4", cross, cross),
+        ("cf1", "cf2", cross, cross),
+        ("cf3", "cf4", cross, cross),
+    ];
+    let (mut positions, mut colors) = (vec![], vec![]);
+    for (a, b, ca, cb) in lines {
+        for (name, color) in [(a, ca), (b, cb)] {
+            positions.extend(point(name));
+            colors.extend(Color::from_hex(color).0.as_vec3().to_array());
+        }
+    }
+    // u.custom[4] holds the camera position for the unset "p" (z = 2) vertices.
+    let helper_projection = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;let m=mat4x4(u.custom[0],u.custom[1],u.custom[2],u.custom[3]);var world=u.custom[4].xyz;if position.z<1.5 {let p=m*vec4(position,1.0);world=p.xyz/p.w;}out.clip=u.projection*u.view*vec4(world,1.0);out.local_normal=surface.local_normal;return out;}";
+    let graph = NodeMaterial::new(vec4(normal_local(), float(1.)));
+    let program = Arc::new(
+        ShaderProgram::with_projection(r, &graph.wgsl(0)?, &[], &[], helper_projection).await?,
+    );
+    let mut g = BufferGeometry::default();
+    g.set_attribute("position", vec3s(positions)?);
+    g.set_attribute("normal", vec3s(colors)?);
+    let g = Arc::new(g);
+    Ok((g, program))
+}
+/// CameraHelper.update(): the camera's projection inverse, in f64.
+pub(super) fn update_camera_helper(
+    s: &mut Scene,
+    active: Object3D,
+    helper: Object3D,
+) -> Result<()> {
+    let projection = match &s.get(active)?.kind {
+        NodeKind::Camera(Camera::Perspective(p)) => {
+            webgl_perspective(p.fov, p.aspect, p.near, p.far)
+        }
+        NodeKind::Camera(Camera::Orthographic(o)) => {
+            webgl_orthographic(o.left, o.right, o.top, o.bottom, o.near, o.far)
+        }
+        _ => return Err(Error::Invalid("helper camera")),
+    };
+    let world = s.get(active)?.matrix_world;
+    let m = world * projection.inverse();
+    for (k, column) in m.to_cols_array().chunks(4).enumerate() {
+        set_uniform(s, helper, k, std::array::from_fn(|i| column[i] as f32))?;
+    }
+    set_uniform(s, helper, 4, world.w_axis.as_vec4().to_array())?;
+    Ok(())
 }
 /// OrbitControls (and MapControls), stepped once per animation frame like the original.
 pub(super) struct Controls {
@@ -502,81 +611,7 @@ impl Demo {
             s.get_mut(camera)?.quaternion = Quaternion::from_rotation_y(PI);
             s.add(rig, camera)?;
         }
-        // CameraHelper: 50 vertices at fixed NDC points, unprojected on the GPU by
-        // u.custom[0..4] = camera.matrixWorld × projectionMatrixInverse.
-        let c = |x: f32, y: f32, near: bool| [x, y, if near { -1. } else { 1. }];
-        let point = |name: &str| -> [f32; 3] {
-            match name {
-                "c" => c(0., 0., true),
-                "t" => c(0., 0., false),
-                "n1" => c(-1., -1., true),
-                "n2" => c(1., -1., true),
-                "n3" => c(-1., 1., true),
-                "n4" => c(1., 1., true),
-                "f1" => c(-1., -1., false),
-                "f2" => c(1., -1., false),
-                "f3" => c(-1., 1., false),
-                "f4" => c(1., 1., false),
-                "u1" => c(0.7, 1.1, true),
-                "u2" => c(-0.7, 1.1, true),
-                "u3" => c(0., 2., true),
-                "cf1" => c(-1., 0., false),
-                "cf2" => c(1., 0., false),
-                "cf3" => c(0., -1., false),
-                "cf4" => c(0., 1., false),
-                "cn1" => c(-1., 0., true),
-                "cn2" => c(1., 0., true),
-                "cn3" => c(0., -1., true),
-                "cn4" => c(0., 1., true),
-                // "p" is never set by update(): it stays at the helper (camera) origin.
-                _ => [0., 0., 2.],
-            }
-        };
-        let (frustum, cone, up, target, cross) = (0xffaa00, 0xff0000, 0x00aaff, 0xffffff, 0x333333);
-        let lines: [(&str, &str, u32, u32); 25] = [
-            ("n1", "n2", frustum, frustum),
-            ("n2", "n4", frustum, frustum),
-            ("n4", "n3", frustum, frustum),
-            ("n3", "n1", frustum, frustum),
-            ("f1", "f2", frustum, frustum),
-            ("f2", "f4", frustum, frustum),
-            ("f4", "f3", frustum, frustum),
-            ("f3", "f1", frustum, frustum),
-            ("n1", "f1", frustum, frustum),
-            ("n2", "f2", frustum, frustum),
-            ("n3", "f3", frustum, frustum),
-            ("n4", "f4", frustum, frustum),
-            ("p", "n1", cone, cone),
-            ("p", "n2", cone, cone),
-            ("p", "n3", cone, cone),
-            ("p", "n4", cone, cone),
-            ("u1", "u2", up, up),
-            ("u2", "u3", up, up),
-            ("u3", "u1", up, up),
-            ("c", "t", target, target),
-            ("p", "c", cross, cross),
-            ("cn1", "cn2", cross, cross),
-            ("cn3", "cn4", cross, cross),
-            ("cf1", "cf2", cross, cross),
-            ("cf3", "cf4", cross, cross),
-        ];
-        let (mut positions, mut colors) = (vec![], vec![]);
-        for (a, b, ca, cb) in lines {
-            for (name, color) in [(a, ca), (b, cb)] {
-                positions.extend(point(name));
-                colors.extend(Color::from_hex(color).0.as_vec3().to_array());
-            }
-        }
-        // u.custom[4] holds the camera position for the unset "p" (z = 2) vertices.
-        let helper_projection = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;let m=mat4x4(u.custom[0],u.custom[1],u.custom[2],u.custom[3]);var world=u.custom[4].xyz;if position.z<1.5 {let p=m*vec4(position,1.0);world=p.xyz/p.w;}out.clip=u.projection*u.view*vec4(world,1.0);out.local_normal=surface.local_normal;return out;}";
-        let graph = NodeMaterial::new(vec4(normal_local(), float(1.)));
-        let program = Arc::new(
-            ShaderProgram::with_projection(r, &graph.wgsl(0)?, &[], &[], helper_projection).await?,
-        );
-        let mut g = BufferGeometry::default();
-        g.set_attribute("position", vec3s(positions)?);
-        g.set_attribute("normal", vec3s(colors)?);
-        let g = Arc::new(g);
+        let (g, program) = camera_helper(r).await?;
         let mut helpers = Vec::with_capacity(2);
         for _ in 0..2 {
             let m = ShaderMaterial::new(program.clone());
@@ -882,22 +917,7 @@ impl Demo {
             (rig.perspective, rig.helpers[0])
         };
         s.update_world_matrix(active, true, false)?;
-        // CameraHelper.update(): the active camera's projection inverse, in f64.
-        let projection = match &s.get(active)?.kind {
-            NodeKind::Camera(Camera::Perspective(p)) => {
-                webgl_perspective(p.fov, p.aspect, p.near, p.far)
-            }
-            NodeKind::Camera(Camera::Orthographic(o)) => {
-                webgl_orthographic(o.left, o.right, o.top, o.bottom, o.near, o.far)
-            }
-            _ => return Err(Error::Invalid("rig camera")),
-        };
-        let world = s.get(active)?.matrix_world;
-        let m = world * projection.inverse();
-        for (k, column) in m.to_cols_array().chunks(4).enumerate() {
-            set_uniform(s, helper, k, std::array::from_fn(|i| column[i] as f32))?;
-        }
-        set_uniform(s, helper, 4, world.w_axis.as_vec4().to_array())?;
+        update_camera_helper(s, active, helper)?;
         for (h, visible) in [(rig.helpers[0], !rig.ortho), (rig.helpers[1], rig.ortho)] {
             s.get_mut(h)?.visible = visible;
         }

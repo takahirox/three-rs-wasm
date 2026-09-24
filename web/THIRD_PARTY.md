@@ -591,3 +591,12 @@ and SHA-256 hashes are in `shapes-lights-manifest.json`; they are distributed
 alongside `LICENSE-THREE`. The flamingo is by mirada from ro.me, as the example
 credits it. The cube-map heads reuse the retained `web/models/WaltHead.obj` and
 the castle cube.
+
+`gallery/assets/fonts/` holds unmodified r186 `examples/fonts/` typeface files:
+
+- the helvetiker, optimer and gentilis faces, from the MgOpen typefaces and
+  distributed with their `fonts/LICENSE`;
+- the Droid Sans and Droid Serif faces, under the Apache License 2.0 and
+  distributed with `fonts/droid/NOTICE` and `fonts/droid/README.txt`.
+
+Their source paths and SHA-256 hashes are in `text-clipping-manifest.json`.

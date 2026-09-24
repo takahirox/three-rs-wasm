@@ -159,3 +159,9 @@ The WebGL-only cube-map, STL, extrusion, spot-light and hemisphere-light batch
 ([shapes-lights.md](shapes-lights.md)) bounds only 4× MSAA comparisons of
 silhouettes and helper lines. All five scenes match within the ordinary
 threshold with MSAA off.
+
+The WebGL-only advanced-clipping, spline-tube, text, tessellation and text-line
+batch ([text-clipping.md](text-clipping.md)) bounds 4× MSAA comparisons of
+silhouettes, dense facets, line strips and the tube's wireframe. With MSAA off,
+it bounds only the spline tubes, whose wireframe relies on exact line/face
+depth ties that fall on different pixels in the WebGL and WebGPU depth paths.

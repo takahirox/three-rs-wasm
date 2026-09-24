@@ -34,7 +34,7 @@ fn vec3s(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }
 /// `Color.setHSL` in the linear working space.
-fn hsl(h: f64, s: f64, l: f64) -> Color {
+pub(super) fn hsl(h: f64, s: f64, l: f64) -> Color {
     let h = (h % 1. + 1.) % 1.;
     if s == 0. {
         return Color::linear(l, l, l);

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 243 partial Rust ports; 348 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 248 partial Rust ports; 343 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -48,6 +48,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |
 | webgl_lights_spotlights | `tests/browser/shapes-lights.spec.js` | TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。 |
+| webgl_clipping_advanced | `tests/browser/text-clipping.spec.js` | 四面体のローカルクリッピング平面（毎フレーム変換）、回転する円筒状のグローバル平面、clipShadows付きInstancedMeshとスポット光・平行光源の影、平面の可視化をRustで再現。GUIはチェックボックスで表現（Visualizeのlisten表示更新は未移植）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_geometry_extrude_splines | `tests/browser/text-clipping.spec.js` | CurveExtrasの14曲線とCatmullRom曲線、TubeGeometry（Frenetフレーム）、ワイヤーフレーム、スプラインカメラ・CameraHelper・lookAheadをRustで再現。パラメータ変更時のチューブ再生成は原本と同じくCPUで行う。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_geometry_text | `tests/browser/text-clipping.spec.js` | FontLoaderの書体JSON、ShapePath.toShapes、穴付きEarcut、ベベル付きExtrudeGeometry（TextGeometry）をRustで再現し、原本の頂点と一致を確認。10種の書体は起動時に一括取得（原本は選択時に取得）。キー入力（keydown/keypress）とドラッグ回転、4つのボタンを移植。性能の完全な同等性は未保証。 |
+| webgl_modifier_tessellation | `tests/browser/text-clipping.spec.js` | TextGeometryのcenter()、TessellateModifier、面ごとの乱数色と変位、生のShaderMaterial出力をRustで再現。変位は頂点属性として常駐。TrackballControlsは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_custom_attributes_lines | `tests/browser/text-clipping.spec.js` | TextGeometryの頂点列をLINE_STRIPで描画し、加算合成・深度テストなしの生ShaderMaterialを再現。変位属性の乱歩は原本と同じく毎フレームCPUで更新し全量を転送。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_lights_hemisphere | `tests/browser/shapes-lights.spec.js` | フラミンゴのモーフアニメーション、半球光と平行光源の影、各ヘルパー、空のグラデーションシェーダー、フォグをRustで再現。GUIのトグルはチェックボックスで表現。影の強さ（shadowIntensity）は未対応。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_materials_cubemap_refraction | `tests/browser/refraction-loaders.spec.js` | PLYLoader（バイナリ）とcomputeVertexNormals、Phongにenvmap_fragmentの屈折（CubeRefractionMapping・MultiplyOperation）と背景キューブを加えてRustで再現。マウス追従のカメラは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_ply | `tests/browser/refraction-loaders.spec.js` | PLYLoader（ASCII・バイナリ）、フラットシェーディング、半球光と2灯の平行光源の影、線形フォグをRustで再現。影のPCFはWebGLと同じVogel円盤とIGNだが、画面座標の上下が逆のため影の縁の回転が異なる。性能の完全な同等性は未保証。 |

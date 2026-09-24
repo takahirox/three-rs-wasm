@@ -797,7 +797,7 @@
     {
       "id": "webgl_clipping_advanced",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping_advanced.html",
       "source_sha256": "ea9090598a4218a2ed7d09dd02f4ce0a9d01514d09cf18375a8f9aa135f4cc9e",
@@ -871,7 +871,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 248,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "四面体のローカルクリッピング平面（毎フレーム変換）、回転する円筒状のグローバル平面、clipShadows付きInstancedMeshとスポット光・平行光源の影、平面の可視化をRustで再現。GUIはチェックボックスで表現（Visualizeのlisten表示更新は未移植）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -1647,7 +1654,7 @@
     {
       "id": "webgl_geometry_extrude_splines",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_splines.html",
       "source_sha256": "d3d7cbd515b7e5743b1bfec51272e75fa0dd622b524607621f476084c0c83588",
@@ -1703,7 +1710,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 249,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "CurveExtrasの14曲線とCatmullRom曲線、TubeGeometry（Frenetフレーム）、ワイヤーフレーム、スプラインカメラ・CameraHelper・lookAheadをRustで再現。パラメータ変更時のチューブ再生成は原本と同じくCPUで行う。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2115,7 +2129,7 @@
     {
       "id": "webgl_geometry_text",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_text.html",
       "source_sha256": "de2ab6c9f3a9a3b745e41c60ea41d642bd8ec26c42f0aa54ba324928a1805147",
@@ -2147,7 +2161,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 250,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "FontLoaderの書体JSON、ShapePath.toShapes、穴付きEarcut、ベベル付きExtrudeGeometry（TextGeometry）をRustで再現し、原本の頂点と一致を確認。10種の書体は起動時に一括取得（原本は選択時に取得）。キー入力（keydown/keypress）とドラッグ回転、4つのボタンを移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/geometries/TextGeometry.js",
@@ -8274,7 +8295,7 @@
     {
       "id": "webgl_modifier_tessellation",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_tessellation.html",
       "source_sha256": "559d7576c65db4110128b3e6f40dfbbcba2fb9ac610385ef55994ad32e1bb3ed",
@@ -8306,7 +8327,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 251,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "TextGeometryのcenter()、TessellateModifier、面ごとの乱数色と変位、生のShaderMaterial出力をRustで再現。変位は頂点属性として常駐。TrackballControlsは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -12322,7 +12350,7 @@
     {
       "id": "webgl_custom_attributes_lines",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_custom_attributes_lines.html",
       "source_sha256": "dd9ba3293b6f3e6689a35e762f74a2f0fcb28be45e4252bf9b2021c88c8b1fdb",
@@ -12350,7 +12378,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 252,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "TextGeometryの頂点列をLINE_STRIPで描画し、加算合成・深度テストなしの生ShaderMaterialを再現。変位属性の乱歩は原本と同じく毎フレームCPUで更新し全量を転送。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/geometries/TextGeometry.js",

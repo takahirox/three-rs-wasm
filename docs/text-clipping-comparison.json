@@ -1,0 +1,2600 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/text-clipping.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Text-and-cli-29ee0--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_clipping_advanced",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_extrude_splines",
+      "reference": {
+       "draws": [
+        {
+         "count": 1800,
+         "instances": 1
+        },
+        {
+         "count": 3600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1800,
+         "instances": 1
+        },
+        {
+         "count": 3600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_text",
+      "reference": {
+       "draws": [
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_tessellation",
+      "reference": {
+       "draws": [
+        {
+         "count": 32442,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 32442,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_custom_attributes_lines",
+      "reference": {
+       "draws": [
+        {
+         "count": 106572,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1278864,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 106572,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1278864,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Text-and-cli-2be6e-gl-geometry-extrude-splines": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 40,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 40,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-3b0a7--attributes-lines-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.000919342041015625
+     },
+     {
+      "state": 1,
+      "fraction": 0.000560760498046875,
+      "meanError": 0.00547027587890625
+     },
+     {
+      "state": 2,
+      "fraction": 0.000514984130859375,
+      "meanError": 0.005377451578776042
+     },
+     {
+      "state": 3,
+      "fraction": 0.000514984130859375,
+      "meanError": 0.008195241292317709
+     },
+     {
+      "state": 4,
+      "fraction": 0.00033984375,
+      "meanError": 0.004602864583333333
+     }
+    ]
+   },
+   "Text-and-cli-4dfd5-fier-tessellation-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.000457763671875
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00011189778645833333
+     },
+     {
+      "state": 2,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00048065185546875
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00011189778645833333
+     },
+     {
+      "state": 5,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0008824666341145834
+     },
+     {
+      "state": 6,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.0010846455891927083
+     },
+     {
+      "state": 7,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.000286102294921875
+     },
+     {
+      "state": 8,
+      "fraction": 7.8125e-06,
+      "meanError": 0.0007994791666666667
+     }
+    ]
+   },
+   "Text-and-cli-65d7a-y-extrude-splines-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.02651214599609375,
+      "meanError": 0.6100552876790365
+     },
+     {
+      "state": 1,
+      "fraction": 0.02651214599609375,
+      "meanError": 0.6100552876790365
+     },
+     {
+      "state": 2,
+      "fraction": 0.02651214599609375,
+      "meanError": 0.6100552876790365
+     },
+     {
+      "state": 3,
+      "fraction": 0.02651214599609375,
+      "meanError": 0.6100552876790365
+     },
+     {
+      "state": 4,
+      "fraction": 0.0332489013671875,
+      "meanError": 0.8378079732259115
+     },
+     {
+      "state": 5,
+      "fraction": 0.019161224365234375,
+      "meanError": 0.6969095865885416
+     },
+     {
+      "state": 6,
+      "fraction": 0.02108001708984375,
+      "meanError": 0.7000681559244791
+     },
+     {
+      "state": 7,
+      "fraction": 0.03240203857421875,
+      "meanError": 1.1183217366536458
+     },
+     {
+      "state": 8,
+      "fraction": 0.02065277099609375,
+      "meanError": 0.6858571370442709
+     },
+     {
+      "state": 9,
+      "fraction": 0.027523040771484375,
+      "meanError": 0.648321787516276
+     },
+     {
+      "state": 10,
+      "fraction": 0.03495025634765625,
+      "meanError": 0.8101412455240885
+     },
+     {
+      "state": 11,
+      "fraction": 0.046344757080078125,
+      "meanError": 1.0650571187337239
+     },
+     {
+      "state": 12,
+      "fraction": 0.051647186279296875,
+      "meanError": 1.2646624247233074
+     },
+     {
+      "state": 13,
+      "fraction": 0.0293731689453125,
+      "meanError": 0.7278861999511719
+     },
+     {
+      "state": 14,
+      "fraction": 0.04506683349609375,
+      "meanError": 1.0638529459635417
+     },
+     {
+      "state": 15,
+      "fraction": 0.037387847900390625,
+      "meanError": 0.8965098063151041
+     },
+     {
+      "state": 16,
+      "fraction": 0.0291328125,
+      "meanError": 0.6962369791666667
+     }
+    ]
+   },
+   "Text-and-cli-76198-clipping-advanced-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.015996297200520832
+     },
+     {
+      "state": 1,
+      "fraction": 9.918212890625e-05,
+      "meanError": 0.010494232177734375
+     },
+     {
+      "state": 2,
+      "fraction": 4.57763671875e-05,
+      "meanError": 0.015127817789713541
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.008754730224609375
+     },
+     {
+      "state": 4,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.008733113606770834
+     },
+     {
+      "state": 5,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.007795969645182292
+     },
+     {
+      "state": 6,
+      "fraction": 0.000148773193359375,
+      "meanError": 0.012503306070963541
+     },
+     {
+      "state": 7,
+      "fraction": 0.0001220703125,
+      "meanError": 0.0098724365234375
+     },
+     {
+      "state": 8,
+      "fraction": 0.000148773193359375,
+      "meanError": 0.012547810872395834
+     },
+     {
+      "state": 9,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.007815043131510416
+     },
+     {
+      "state": 10,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.008754730224609375
+     },
+     {
+      "state": 11,
+      "fraction": 4.9591064453125e-05,
+      "meanError": 0.011091868082682291
+     },
+     {
+      "state": 12,
+      "fraction": 4.1961669921875e-05,
+      "meanError": 0.010173797607421875
+     },
+     {
+      "state": 13,
+      "fraction": 3.515625e-05,
+      "meanError": 0.0123515625
+     }
+    ]
+   },
+   "Text-and-cli-76fa9-bgl-geometry-text-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00878143310546875,
+      "meanError": 0.10016250610351562
+     },
+     {
+      "state": 1,
+      "fraction": 0.00878143310546875,
+      "meanError": 0.10016250610351562
+     },
+     {
+      "state": 2,
+      "fraction": 0.007625579833984375,
+      "meanError": 0.0887921651204427
+     },
+     {
+      "state": 3,
+      "fraction": 0.008510589599609375,
+      "meanError": 0.10606002807617188
+     },
+     {
+      "state": 4,
+      "fraction": 0.007907867431640625,
+      "meanError": 0.09790547688802083
+     },
+     {
+      "state": 5,
+      "fraction": 0.007465362548828125,
+      "meanError": 0.0922253926595052
+     },
+     {
+      "state": 6,
+      "fraction": 0.00746917724609375,
+      "meanError": 0.1157239278157552
+     },
+     {
+      "state": 7,
+      "fraction": 0.008434295654296875,
+      "meanError": 0.13089116414388022
+     },
+     {
+      "state": 8,
+      "fraction": 0.00128173828125,
+      "meanError": 0.0241851806640625
+     },
+     {
+      "state": 9,
+      "fraction": 0.000762939453125,
+      "meanError": 0.013197580973307291
+     },
+     {
+      "state": 10,
+      "fraction": 0.000591278076171875,
+      "meanError": 0.010578155517578125
+     },
+     {
+      "state": 11,
+      "fraction": 0.000515625,
+      "meanError": 0.00849609375
+     }
+    ]
+   },
+   "Text-and-cli-8ec3e-y-extrude-splines-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005901336669921875,
+      "meanError": 0.3591626485188802
+     },
+     {
+      "state": 1,
+      "fraction": 0.005901336669921875,
+      "meanError": 0.3591626485188802
+     },
+     {
+      "state": 2,
+      "fraction": 0.005901336669921875,
+      "meanError": 0.3591626485188802
+     },
+     {
+      "state": 3,
+      "fraction": 0.005901336669921875,
+      "meanError": 0.3591626485188802
+     },
+     {
+      "state": 4,
+      "fraction": 0.006084442138671875,
+      "meanError": 0.3942731221516927
+     },
+     {
+      "state": 5,
+      "fraction": 0.0108642578125,
+      "meanError": 1.4359156290690105
+     },
+     {
+      "state": 6,
+      "fraction": 0.007793426513671875,
+      "meanError": 0.8756179809570312
+     },
+     {
+      "state": 7,
+      "fraction": 0.011882781982421875,
+      "meanError": 1.390411376953125
+     },
+     {
+      "state": 8,
+      "fraction": 0.0072021484375,
+      "meanError": 0.8628412882486979
+     },
+     {
+      "state": 9,
+      "fraction": 0.006328582763671875,
+      "meanError": 0.4164784749348958
+     },
+     {
+      "state": 10,
+      "fraction": 0.008358001708984375,
+      "meanError": 0.547918955485026
+     },
+     {
+      "state": 11,
+      "fraction": 0.011821746826171875,
+      "meanError": 0.7529411315917969
+     },
+     {
+      "state": 12,
+      "fraction": 0.013805389404296875,
+      "meanError": 0.9233830769856771
+     },
+     {
+      "state": 13,
+      "fraction": 0.007625579833984375,
+      "meanError": 0.5107167561848959
+     },
+     {
+      "state": 14,
+      "fraction": 0.01053619384765625,
+      "meanError": 0.6441739400227865
+     },
+     {
+      "state": 15,
+      "fraction": 0.008716583251953125,
+      "meanError": 0.5395393371582031
+     },
+     {
+      "state": 16,
+      "fraction": 0.006734375,
+      "meanError": 0.416375
+     }
+    ]
+   },
+   "Text-and-cli-93128-ncy-webgl-clipping-advanced": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 72,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 72,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-9652f-sidency-webgl-geometry-text": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 144,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 144,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 149,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 149,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-96747-bgl-custom-attributes-lines": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 32,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 32,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 37,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 37,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-c77ca--attributes-lines-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.090179443359375,
+      "meanError": 1.1582247416178386
+     },
+     {
+      "state": 1,
+      "fraction": 0.08930587768554688,
+      "meanError": 1.0089035034179688
+     },
+     {
+      "state": 2,
+      "fraction": 0.09542083740234375,
+      "meanError": 1.0620969136555989
+     },
+     {
+      "state": 3,
+      "fraction": 0.10822296142578125,
+      "meanError": 1.185534159342448
+     },
+     {
+      "state": 4,
+      "fraction": 0.07033203125,
+      "meanError": 0.7524908854166666
+     }
+    ]
+   },
+   "Text-and-cli-d1794-bgl-geometry-text-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00015385945638020834
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00015385945638020834
+     },
+     {
+      "state": 2,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.000213623046875
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0001068115234375
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 6.612141927083333e-05
+     },
+     {
+      "state": 5,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00015385945638020834
+     },
+     {
+      "state": 6,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00016276041666666666
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.00015131632486979166
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 3.5603841145833336e-05
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 1.0172526041666666e-05
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 3.814697265625e-06
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 3.90625e-06
+     }
+    ]
+   },
+   "Text-and-cli-f806d-webgl-modifier-tessellation": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 31,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 31,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-fd19b-fier-tessellation-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.062835693359375,
+      "meanError": 2.189955393473307
+     },
+     {
+      "state": 1,
+      "fraction": 0.06522750854492188,
+      "meanError": 2.288477579752604
+     },
+     {
+      "state": 2,
+      "fraction": 0.06583023071289062,
+      "meanError": 2.3241844177246094
+     },
+     {
+      "state": 3,
+      "fraction": 0.06572341918945312,
+      "meanError": 2.3247388203938804
+     },
+     {
+      "state": 4,
+      "fraction": 0.06522750854492188,
+      "meanError": 2.288477579752604
+     },
+     {
+      "state": 5,
+      "fraction": 0.06884002685546875,
+      "meanError": 1.6005020141601562
+     },
+     {
+      "state": 6,
+      "fraction": 0.07192230224609375,
+      "meanError": 1.6374181111653645
+     },
+     {
+      "state": 7,
+      "fraction": 0.07140350341796875,
+      "meanError": 1.6195004781087239
+     },
+     {
+      "state": 8,
+      "fraction": 0.05796484375,
+      "meanError": 1.3006640625
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Text-and-cli-29ee0--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_clipping_advanced",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 36,
+         "instances": 125
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_extrude_splines",
+      "reference": {
+       "draws": [
+        {
+         "count": 1800,
+         "instances": 1
+        },
+        {
+         "count": 3600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1800,
+         "instances": 1
+        },
+        {
+         "count": 3600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_text",
+      "reference": {
+       "draws": [
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 474,
+         "instances": 1
+        },
+        {
+         "count": 3402,
+         "instances": 1
+        },
+        {
+         "count": 744,
+         "instances": 1
+        },
+        {
+         "count": 5292,
+         "instances": 1
+        },
+        {
+         "count": 534,
+         "instances": 1
+        },
+        {
+         "count": 3822,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 468,
+         "instances": 1
+        },
+        {
+         "count": 3276,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 270,
+         "instances": 1
+        },
+        {
+         "count": 1974,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 492,
+         "instances": 1
+        },
+        {
+         "count": 3528,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_tessellation",
+      "reference": {
+       "draws": [
+        {
+         "count": 32442,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 32442,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_custom_attributes_lines",
+      "reference": {
+       "draws": [
+        {
+         "count": 106572,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1278864,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 106572,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1278864,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Text-and-cli-2be6e-gl-geometry-extrude-splines": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 40,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 40,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        86240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-3b0a7--attributes-lines-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.528594970703125e-05,
+      "meanError": 0.0010964075724283855
+     },
+     {
+      "state": 1,
+      "fraction": 0.00034999847412109375,
+      "meanError": 0.0052636464436848955
+     },
+     {
+      "state": 2,
+      "fraction": 0.00038242340087890625,
+      "meanError": 0.0056400299072265625
+     },
+     {
+      "state": 3,
+      "fraction": 0.000286102294921875,
+      "meanError": 0.005127271016438802
+     },
+     {
+      "state": 4,
+      "fraction": 0.000248046875,
+      "meanError": 0.0035983072916666668
+     }
+    ]
+   },
+   "Text-and-cli-4dfd5-fier-tessellation-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.049041748046875e-05,
+      "meanError": 0.0013116200764973958
+     },
+     {
+      "state": 1,
+      "fraction": 6.67572021484375e-06,
+      "meanError": 0.00093841552734375
+     },
+     {
+      "state": 2,
+      "fraction": 1.33514404296875e-05,
+      "meanError": 0.0012098948160807292
+     },
+     {
+      "state": 3,
+      "fraction": 1.33514404296875e-05,
+      "meanError": 0.0014406840006510417
+     },
+     {
+      "state": 4,
+      "fraction": 6.67572021484375e-06,
+      "meanError": 0.00093841552734375
+     },
+     {
+      "state": 5,
+      "fraction": 8.58306884765625e-06,
+      "meanError": 0.0005702972412109375
+     },
+     {
+      "state": 6,
+      "fraction": 6.67572021484375e-06,
+      "meanError": 0.0003617604573567708
+     },
+     {
+      "state": 7,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.0005677541097005209
+     },
+     {
+      "state": 8,
+      "fraction": 5.859375e-06,
+      "meanError": 0.00020540364583333334
+     }
+    ]
+   },
+   "Text-and-cli-65d7a-y-extrude-splines-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.014470100402832031,
+      "meanError": 0.34804344177246094
+     },
+     {
+      "state": 1,
+      "fraction": 0.014470100402832031,
+      "meanError": 0.34804344177246094
+     },
+     {
+      "state": 2,
+      "fraction": 0.014470100402832031,
+      "meanError": 0.34804344177246094
+     },
+     {
+      "state": 3,
+      "fraction": 0.014470100402832031,
+      "meanError": 0.34804344177246094
+     },
+     {
+      "state": 4,
+      "fraction": 0.017957687377929688,
+      "meanError": 0.46769968668619794
+     },
+     {
+      "state": 5,
+      "fraction": 0.010804176330566406,
+      "meanError": 0.41042518615722656
+     },
+     {
+      "state": 6,
+      "fraction": 0.011968612670898438,
+      "meanError": 0.42122968037923175
+     },
+     {
+      "state": 7,
+      "fraction": 0.017950057983398438,
+      "meanError": 0.6807254155476888
+     },
+     {
+      "state": 8,
+      "fraction": 0.011371612548828125,
+      "meanError": 0.36874643961588544
+     },
+     {
+      "state": 9,
+      "fraction": 0.014618873596191406,
+      "meanError": 0.3521353403727214
+     },
+     {
+      "state": 10,
+      "fraction": 0.01845550537109375,
+      "meanError": 0.4374713897705078
+     },
+     {
+      "state": 11,
+      "fraction": 0.024477005004882812,
+      "meanError": 0.5754639307657877
+     },
+     {
+      "state": 12,
+      "fraction": 0.0286407470703125,
+      "meanError": 0.7306769688924154
+     },
+     {
+      "state": 13,
+      "fraction": 0.015375137329101562,
+      "meanError": 0.39267222086588544
+     },
+     {
+      "state": 14,
+      "fraction": 0.02495288848876953,
+      "meanError": 0.5985294977823893
+     },
+     {
+      "state": 15,
+      "fraction": 0.022653579711914062,
+      "meanError": 0.5487095514933268
+     },
+     {
+      "state": 16,
+      "fraction": 0.0180224609375,
+      "meanError": 0.43264973958333336
+     }
+    ]
+   },
+   "Text-and-cli-76198-clipping-advanced-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 6.198883056640625e-05,
+      "meanError": 0.01560370127360026
+     },
+     {
+      "state": 1,
+      "fraction": 0.00010013580322265625,
+      "meanError": 0.0103759765625
+     },
+     {
+      "state": 2,
+      "fraction": 6.29425048828125e-05,
+      "meanError": 0.015529950459798178
+     },
+     {
+      "state": 3,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.008862177530924479
+     },
+     {
+      "state": 4,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.008845647176106771
+     },
+     {
+      "state": 5,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.007888476053873697
+     },
+     {
+      "state": 6,
+      "fraction": 0.00018787384033203125,
+      "meanError": 0.012993494669596354
+     },
+     {
+      "state": 7,
+      "fraction": 0.00016498565673828125,
+      "meanError": 0.010500907897949219
+     },
+     {
+      "state": 8,
+      "fraction": 0.00018787384033203125,
+      "meanError": 0.013034502665201822
+     },
+     {
+      "state": 9,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.007904688517252604
+     },
+     {
+      "state": 10,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.008862177530924479
+     },
+     {
+      "state": 11,
+      "fraction": 5.054473876953125e-05,
+      "meanError": 0.011202494303385416
+     },
+     {
+      "state": 12,
+      "fraction": 4.673004150390625e-05,
+      "meanError": 0.010647455851236979
+     },
+     {
+      "state": 13,
+      "fraction": 2.83203125e-05,
+      "meanError": 0.011818359375
+     }
+    ]
+   },
+   "Text-and-cli-76fa9-bgl-geometry-text-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004715919494628906,
+      "meanError": 0.05333296457926432
+     },
+     {
+      "state": 1,
+      "fraction": 0.004715919494628906,
+      "meanError": 0.05333296457926432
+     },
+     {
+      "state": 2,
+      "fraction": 0.0038652420043945312,
+      "meanError": 0.04639148712158203
+     },
+     {
+      "state": 3,
+      "fraction": 0.004290580749511719,
+      "meanError": 0.054160753885904946
+     },
+     {
+      "state": 4,
+      "fraction": 0.004164695739746094,
+      "meanError": 0.05234940846761068
+     },
+     {
+      "state": 5,
+      "fraction": 0.0035314559936523438,
+      "meanError": 0.04384454091389974
+     },
+     {
+      "state": 6,
+      "fraction": 0.0035333633422851562,
+      "meanError": 0.055173238118489586
+     },
+     {
+      "state": 7,
+      "fraction": 0.004137992858886719,
+      "meanError": 0.06397819519042969
+     },
+     {
+      "state": 8,
+      "fraction": 0.0006361007690429688,
+      "meanError": 0.012097676595052084
+     },
+     {
+      "state": 9,
+      "fraction": 0.0003643035888671875,
+      "meanError": 0.006346702575683594
+     },
+     {
+      "state": 10,
+      "fraction": 0.00029850006103515625,
+      "meanError": 0.005327542622884114
+     },
+     {
+      "state": 11,
+      "fraction": 0.0002294921875,
+      "meanError": 0.0040087890625
+     }
+    ]
+   },
+   "Text-and-cli-8ec3e-y-extrude-splines-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0033540725708007812,
+      "meanError": 0.21103191375732422
+     },
+     {
+      "state": 1,
+      "fraction": 0.0033540725708007812,
+      "meanError": 0.21103191375732422
+     },
+     {
+      "state": 2,
+      "fraction": 0.0033540725708007812,
+      "meanError": 0.21103191375732422
+     },
+     {
+      "state": 3,
+      "fraction": 0.0033540725708007812,
+      "meanError": 0.21103191375732422
+     },
+     {
+      "state": 4,
+      "fraction": 0.0035619735717773438,
+      "meanError": 0.2472705841064453
+     },
+     {
+      "state": 5,
+      "fraction": 0.005711555480957031,
+      "meanError": 0.7359819412231445
+     },
+     {
+      "state": 6,
+      "fraction": 0.004241943359375,
+      "meanError": 0.460598627726237
+     },
+     {
+      "state": 7,
+      "fraction": 0.008119583129882812,
+      "meanError": 0.9682998657226562
+     },
+     {
+      "state": 8,
+      "fraction": 0.0038080215454101562,
+      "meanError": 0.4449739456176758
+     },
+     {
+      "state": 9,
+      "fraction": 0.0033893585205078125,
+      "meanError": 0.2364358901977539
+     },
+     {
+      "state": 10,
+      "fraction": 0.004258155822753906,
+      "meanError": 0.28101952870686847
+     },
+     {
+      "state": 11,
+      "fraction": 0.00617218017578125,
+      "meanError": 0.40566349029541016
+     },
+     {
+      "state": 12,
+      "fraction": 0.008034706115722656,
+      "meanError": 0.5563554763793945
+     },
+     {
+      "state": 13,
+      "fraction": 0.0040130615234375,
+      "meanError": 0.27543067932128906
+     },
+     {
+      "state": 14,
+      "fraction": 0.005829811096191406,
+      "meanError": 0.3768676122029622
+     },
+     {
+      "state": 15,
+      "fraction": 0.0053730010986328125,
+      "meanError": 0.3500022888183594
+     },
+     {
+      "state": 16,
+      "fraction": 0.0041015625,
+      "meanError": 0.26391015625
+     }
+    ]
+   },
+   "Text-and-cli-93128-ncy-webgl-clipping-advanced": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 72,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 72,
+       "transfers": [
+        2,
+        2408,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-9652f-sidency-webgl-geometry-text": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 144,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 144,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 149,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 149,
+       "transfers": [
+        2,
+        2485784,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-96747-bgl-custom-attributes-lines": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 32,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 32,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 37,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 37,
+       "transfers": [
+        1,
+        8525760,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-c77ca--attributes-lines-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.08089065551757812,
+      "meanError": 1.2073125839233398
+     },
+     {
+      "state": 1,
+      "fraction": 0.08725929260253906,
+      "meanError": 1.0437135696411133
+     },
+     {
+      "state": 2,
+      "fraction": 0.09720802307128906,
+      "meanError": 1.122385025024414
+     },
+     {
+      "state": 3,
+      "fraction": 0.12064552307128906,
+      "meanError": 1.3760143915812175
+     },
+     {
+      "state": 4,
+      "fraction": 0.0817978515625,
+      "meanError": 0.9129293619791666
+     }
+    ]
+   },
+   "Text-and-cli-d1794-bgl-geometry-text-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00035063425699869793
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00035063425699869793
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00020313262939453125
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.00022125244140625
+     },
+     {
+      "state": 4,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.00018310546875
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0001522699991861979
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0002044041951497396
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.0002269744873046875
+     },
+     {
+      "state": 8,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 4.8955281575520836e-05
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 1.239776611328125e-05
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 1.1444091796875e-05
+     },
+     {
+      "state": 11,
+      "fraction": 9.765625e-07,
+      "meanError": 1.2044270833333333e-05
+     }
+    ]
+   },
+   "Text-and-cli-f806d-webgl-modifier-tessellation": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 31,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 31,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        1,
+        2595360,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Text-and-cli-fd19b-fier-tessellation-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.035254478454589844,
+      "meanError": 1.1854693094889324
+     },
+     {
+      "state": 1,
+      "fraction": 0.036080360412597656,
+      "meanError": 1.230276107788086
+     },
+     {
+      "state": 2,
+      "fraction": 0.03637981414794922,
+      "meanError": 1.2500588099161785
+     },
+     {
+      "state": 3,
+      "fraction": 0.03622722625732422,
+      "meanError": 1.2404530843098958
+     },
+     {
+      "state": 4,
+      "fraction": 0.036080360412597656,
+      "meanError": 1.230276107788086
+     },
+     {
+      "state": 5,
+      "fraction": 0.04181098937988281,
+      "meanError": 0.9353923797607422
+     },
+     {
+      "state": 6,
+      "fraction": 0.04206085205078125,
+      "meanError": 0.9261423746744791
+     },
+     {
+      "state": 7,
+      "fraction": 0.04195690155029297,
+      "meanError": 0.9302161534627279
+     },
+     {
+      "state": 8,
+      "fraction": 0.0309296875,
+      "meanError": 0.6827760416666667
+     }
+    ]
+   }
+  }
+ }
+}

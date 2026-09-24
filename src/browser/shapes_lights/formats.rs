@@ -1,7 +1,11 @@
 //! STLLoader, Earcut for simple polygons and ExtrudeGeometry, as the pinned
 //! sources compute them.
 use super::super::helpers_formats::formats::parse_float;
-use crate::{Error, Result, curve::CatmullRomCurve3, math::Vector3};
+use crate::{
+    Error, Result,
+    curve::{CatmullRomCurve3, Curve},
+    math::Vector3,
+};
 
 fn bad(what: &str) -> Error {
     Error::Asset(what.to_string())

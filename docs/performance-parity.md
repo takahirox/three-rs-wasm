@@ -553,3 +553,21 @@ ports](shapes-lights.md) match the original draws, including each shadow pass.
 
 Warmed cycles create no GPU resources, apart from the light toggles, which
 rebuild the light bindings. No GPU timing parity is claimed.
+
+### Advanced clipping, spline tubes, text, tessellated text and text lines
+
+The [advanced-clipping, spline-tube, text, tessellation and text-line
+ports](text-clipping.md) match the original draws, including the instanced
+boxes' two shadow passes.
+
+- **Setup work.** Font outlines, Earcut, extrusion, tessellation and tube
+  generation run on the CPU at setup, and on each text or tube change, as in
+  the original.
+- **Per-frame work.** The clipping planes are recomputed per frame, as in the
+  original.
+- **Uploads.** The text lines stream their displacement attribute, the same
+  1,278,864 bytes per frame the original uploads. No other scene uploads
+  geometry or texture data after a warm pass.
+
+Warmed cycles create no GPU resources. The geometry-building controls are left
+out of those cycles. No GPU timing parity is claimed.

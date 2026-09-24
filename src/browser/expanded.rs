@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    TextClipping(Box<super::text_clipping::Demo>),
     ShapesLights(Box<super::shapes_lights::Demo>),
     RefractionLoaders(Box<super::refraction_loaders::Demo>),
     HelpersFormats(Box<super::helpers_formats::Demo>),
@@ -87,6 +88,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            248..=252 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::TextClipping(Box::new(
+                    super::text_clipping::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             243..=247 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -787,6 +797,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1134,6 +1147,9 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::PickingBuffers(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1249,6 +1265,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            demo.prepare(renderer, scene, camera)?;
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1303,6 +1322,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1412,6 +1434,9 @@ impl Demo {
         }
     }
     pub fn key(&mut self, code: u32, down: bool) {
+        if let Content::TextClipping(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1443,6 +1468,10 @@ impl Demo {
         }
     }
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1472,6 +1501,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::TextClipping(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1593,6 +1625,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::TextClipping(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

@@ -20,7 +20,7 @@ impl CatmullRomCurve3 {
             curve_type: CatmullRomType::Centripetal,
         }
     }
-    pub fn point(&self, t: f64) -> Result<Vector3> {
+    fn catmull_rom_point(&self, t: f64) -> Result<Vector3> {
         let n = self.points.len();
         if n < 2 || !t.is_finite() || !(0.0..=1.0).contains(&t) {
             return Err(Error::Invalid("curve points/parameter"));
@@ -80,11 +80,25 @@ impl CatmullRomCurve3 {
             return Err(Error::Invalid("curve divisions"));
         }
         (0..=divisions)
-            .map(|i| self.point(i as f64 / divisions as f64))
+            .map(|i| self.catmull_rom_point(i as f64 / divisions as f64))
             .collect()
     }
+}
+impl CatmullRomCurve3 {
+    pub fn point(&self, t: f64) -> Result<Vector3> {
+        self.catmull_rom_point(t)
+    }
+}
+impl Curve for CatmullRomCurve3 {
+    fn point(&self, t: f64) -> Result<Vector3> {
+        self.catmull_rom_point(t)
+    }
+}
+/// Three.js `Curve`: arc-length sampling, tangents and Frenet frames over `getPoint`.
+pub trait Curve {
+    fn point(&self, t: f64) -> Result<Vector3>;
     /// `Curve.getLengths( arcLengthDivisions = 200 )`: cumulative chord lengths.
-    pub fn lengths(&self, divisions: u32) -> Result<Vec<f64>> {
+    fn lengths(&self, divisions: u32) -> Result<Vec<f64>> {
         let mut out = vec![0.0];
         let mut last = self.point(0.0)?;
         let mut sum = 0.0;
@@ -97,7 +111,7 @@ impl CatmullRomCurve3 {
         Ok(out)
     }
     /// `Curve.getUtoTmapping( u )`: the parameter at arc-length fraction u.
-    pub fn u_to_t(&self, u: f64, lengths: &[f64]) -> f64 {
+    fn u_to_t(&self, u: f64, lengths: &[f64]) -> f64 {
         let il = lengths.len();
         let target = u * lengths[il - 1];
         let (mut low, mut high) = (0i64, il as i64 - 1);
@@ -122,20 +136,20 @@ impl CatmullRomCurve3 {
         (i as f64 + (target - before) / segment) / (il - 1) as f64
     }
     /// `Curve.getSpacedPoints( divisions )`: points at equal arc-length steps.
-    pub fn spaced_points(&self, divisions: u32) -> Result<Vec<Vector3>> {
+    fn spaced_points(&self, divisions: u32) -> Result<Vec<Vector3>> {
         let lengths = self.lengths(200)?;
         (0..=divisions)
             .map(|d| self.point(self.u_to_t(d as f64 / divisions as f64, &lengths)))
             .collect()
     }
     /// `Curve.getTangent( t )`: the normalized chord across ±0.0001.
-    pub fn tangent(&self, t: f64) -> Result<Vector3> {
+    fn tangent(&self, t: f64) -> Result<Vector3> {
         let (t1, t2) = ((t - 0.0001).max(0.0), (t + 0.0001).min(1.0));
         Ok((self.point(t2)? - self.point(t1)?).normalize_or_zero())
     }
     /// `Curve.computeFrenetFrames( segments, closed )`: tangents, normals, binormals.
     #[allow(clippy::type_complexity)]
-    pub fn frenet_frames(
+    fn frenet_frames(
         &self,
         segments: u32,
         closed: bool,

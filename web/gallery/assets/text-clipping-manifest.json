@@ -1,0 +1,67 @@
+[
+ {
+  "file": "fonts/helvetiker_regular.typeface.json",
+  "source": "examples/fonts/helvetiker_regular.typeface.json",
+  "sha256": "d5c5467690f74061179a292af83bd85c4c551e0f106b2af99714f11184c96981"
+ },
+ {
+  "file": "fonts/helvetiker_bold.typeface.json",
+  "source": "examples/fonts/helvetiker_bold.typeface.json",
+  "sha256": "bd68159ee0b8d10fe24b9daa2e32f19686f9d8269a79dc8d44203a66298bfa2f"
+ },
+ {
+  "file": "fonts/optimer_regular.typeface.json",
+  "source": "examples/fonts/optimer_regular.typeface.json",
+  "sha256": "17e5e14d94d66e0e60eed3bfde403fcfa3e677f3c914e4cbed264c0c0ba95175"
+ },
+ {
+  "file": "fonts/optimer_bold.typeface.json",
+  "source": "examples/fonts/optimer_bold.typeface.json",
+  "sha256": "d690a5f45706db0c15c39313cc36f8ce62ef154c6a21923809814a89f6df7c98"
+ },
+ {
+  "file": "fonts/gentilis_regular.typeface.json",
+  "source": "examples/fonts/gentilis_regular.typeface.json",
+  "sha256": "7ed95f2faa30f59dbe7cfb145b97c42a6ba1188cd2eec01ca61485e8c83ee9de"
+ },
+ {
+  "file": "fonts/gentilis_bold.typeface.json",
+  "source": "examples/fonts/gentilis_bold.typeface.json",
+  "sha256": "c028fd9c4017e34f1bf46694e4c23479cd22b812d0308f5dfc7446412c41d88c"
+ },
+ {
+  "file": "fonts/droid/droid_sans_regular.typeface.json",
+  "source": "examples/fonts/droid/droid_sans_regular.typeface.json",
+  "sha256": "8f0570e6cbb9b0230dc8a19b1942fd414191f0f3bfc76e3f413c2f9cfccd2eac"
+ },
+ {
+  "file": "fonts/droid/droid_sans_bold.typeface.json",
+  "source": "examples/fonts/droid/droid_sans_bold.typeface.json",
+  "sha256": "ec40f077e0695e4ce9f74e9953034312eb6d1d5a9eb6c584b1eb0fd84077fb81"
+ },
+ {
+  "file": "fonts/droid/droid_serif_regular.typeface.json",
+  "source": "examples/fonts/droid/droid_serif_regular.typeface.json",
+  "sha256": "99ff855b8c18bcec3428745f576a75bfb0da5f63fe52c23f2484c2e655c2c64a"
+ },
+ {
+  "file": "fonts/droid/droid_serif_bold.typeface.json",
+  "source": "examples/fonts/droid/droid_serif_bold.typeface.json",
+  "sha256": "e9a71de592e239acc3da3601cfbad53836931f498f409ab68535140f2045f29d"
+ },
+ {
+  "file": "fonts/droid/NOTICE",
+  "source": "examples/fonts/droid/NOTICE",
+  "sha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a"
+ },
+ {
+  "file": "fonts/droid/README.txt",
+  "source": "examples/fonts/droid/README.txt",
+  "sha256": "c8b88077052fed912b3f724c0ed230c501cf4e18833af7ca44338d3cd0b093e2"
+ },
+ {
+  "file": "fonts/LICENSE",
+  "source": "examples/fonts/LICENSE",
+  "sha256": "35e8279356d7890871c4fce804d157e3f21456a7311ef2caab5cb4705c71b6bd"
+ }
+]
