@@ -33,6 +33,7 @@ mod robot;
 mod room_environment;
 mod shader_geometry;
 mod shapes;
+mod shapes_lights;
 mod stereo_loaders;
 mod teapot_data;
 mod terrain_loaders;
@@ -192,7 +193,7 @@ impl State {
             189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
             206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
             223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
-            240, 241, 242,
+            240, 241, 242, 243, 244, 245, 246, 247,
         ]
         .contains(&self.example)
         {
@@ -914,7 +915,7 @@ impl BrowserApp {
                             193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204, 205, 206, 207,
                             208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224, 225,
                             226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
-                            241,
+                            241, 243, 244, 245, 246, 247,
                         ]
                         .contains(&example),
                         format: if [
@@ -924,7 +925,7 @@ impl BrowserApp {
                             197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
                             211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
                             225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
-                            239, 240, 241, 242,
+                            239, 240, 241, 242, 243, 244, 245, 246, 247,
                         ]
                         .contains(&example)
                         {
@@ -954,7 +955,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=242).contains(&example) {
+            if (7..=247).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

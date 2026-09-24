@@ -1,0 +1,27 @@
+[
+ {
+  "file": "stl/ascii/slotted_disk.stl",
+  "source": "examples/models/stl/ascii/slotted_disk.stl",
+  "sha256": "5c0d95ca55352ccf5cca12197a5f9fa17eb2e905d1bb3a45c8ba51c9a22699a4"
+ },
+ {
+  "file": "stl/binary/pr2_head_pan.stl",
+  "source": "examples/models/stl/binary/pr2_head_pan.stl",
+  "sha256": "c4ebcc17156642a8e4df8564a09f730b54db236e783320d71af3e51de17e8315"
+ },
+ {
+  "file": "stl/binary/pr2_head_tilt.stl",
+  "source": "examples/models/stl/binary/pr2_head_tilt.stl",
+  "sha256": "4c98307430589fbb86f0310b25b1896bbb0ac4c4f5b97d9dc4f03d3250003533"
+ },
+ {
+  "file": "stl/binary/colored.stl",
+  "source": "examples/models/stl/binary/colored.stl",
+  "sha256": "0012b62d4bb485f902a972192eef29d6ce4b97a9deb2de67a02d30a5b738f461"
+ },
+ {
+  "file": "gltf/Flamingo.glb",
+  "source": "examples/models/gltf/Flamingo.glb",
+  "sha256": "9eabeb58587e4e0d11d5e23b30a26b73e4b8e6e8c83f2c36b3c5c3fe04dcf19f"
+ }
+]

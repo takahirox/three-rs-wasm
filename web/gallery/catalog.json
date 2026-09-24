@@ -1571,7 +1571,7 @@
     {
       "id": "webgl_geometry_extrude_shapes",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_shapes.html",
       "source_sha256": "afe16ab46f6e8842b40e1972169e27655ecdb4a5d08267fac74088fc6c23b00a",
@@ -1631,7 +1631,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 245,
+        "source": "src/browser/shapes_lights.rs",
+        "test": "tests/browser/shapes-lights.spec.js",
+        "limitations": [
+          "ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js"
@@ -3046,7 +3053,7 @@
     {
       "id": "webgl_lights_hemisphere",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_hemisphere.html",
       "source_sha256": "e79713c62965513d9a020de4f389314aaf6d184170ab39466becaef0af32a70c",
@@ -3100,7 +3107,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 247,
+        "source": "src/browser/shapes_lights.rs",
+        "test": "tests/browser/shapes-lights.spec.js",
+        "limitations": [
+          "フラミンゴのモーフアニメーション、半球光と平行光源の影、各ヘルパー、空のグラデーションシェーダー、フォグをRustで再現。GUIのトグルはチェックボックスで表現。影の強さ（shadowIntensity）は未対応。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -3261,7 +3275,7 @@
     {
       "id": "webgl_lights_spotlights",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlights.html",
       "source_sha256": "81fde3f358975457db976ba426fd167bae80f3c44592e6182b5cbf1dc36347e4",
@@ -3311,7 +3325,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 246,
+        "source": "src/browser/shapes_lights.rs",
+        "test": "tests/browser/shapes-lights.spec.js",
+        "limitations": [
+          "TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5422,7 +5443,7 @@
     {
       "id": "webgl_loader_stl",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_stl.html",
       "source_sha256": "9098d9547d5ccb14e4371dd7ff21ff222f4640d16cedc3151049b25803357d82",
@@ -5486,7 +5507,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 244,
+        "source": "src/browser/shapes_lights.rs",
+        "test": "tests/browser/shapes-lights.spec.js",
+        "limitations": [
+          "STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -6518,7 +6546,7 @@
     {
       "id": "webgl_materials_cubemap",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap.html",
       "source_sha256": "0553a5bf7b884d89586724825380b5a890986600eafe0836cec3504c3100ef77",
@@ -6558,7 +6586,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 243,
+        "source": "src/browser/shapes_lights.rs",
+        "test": "tests/browser/shapes-lights.spec.js",
+        "limitations": [
+          "OBJLoaderの頭部とLambertのenvmap（反射・屈折、Multiply・Mix合成）、背景キューブ、極角制限付きOrbitControlsをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

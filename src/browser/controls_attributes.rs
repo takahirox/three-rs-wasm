@@ -169,6 +169,8 @@ pub(super) struct Controls {
     pub(super) auto_rotate: Option<f64>,
     /// The camera's up: offsets are rotated into Y-up space and back.
     pub(super) up: Vector3,
+    /// minPolarAngle.
+    pub(super) min_polar: f64,
 }
 impl Controls {
     pub(super) fn new(
@@ -192,6 +194,7 @@ impl Controls {
             dolly_direction: Vector3::ZERO,
             auto_rotate: None,
             up: Vector3::Y,
+            min_polar: 0.,
         }
     }
     /// The animation loop's update(): autoRotate turns first while no pointer is active.
@@ -261,7 +264,7 @@ impl Controls {
         let f = self.damping.unwrap_or(1.);
         theta += self.delta_theta * f;
         phi += self.delta_phi * f;
-        phi = phi.min(self.max_polar).max(0.);
+        phi = phi.min(self.max_polar).max(self.min_polar);
         phi = phi.clamp(EPS, PI - EPS);
         self.target += self.pan * f;
         radius = if self.zoom_to_cursor && self.cursor_zoom {

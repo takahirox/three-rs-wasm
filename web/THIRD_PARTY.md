@@ -584,3 +584,10 @@ reuse the retained LeePerrySmith head.
 `refraction-loaders-manifest.json`; they are distributed alongside
 `LICENSE-THREE`. The Park3Med cube is by Emil Persson (Humus) and is distributed with its
 `cube/Park3Med/readme.txt`, as its terms require.
+
+`gallery/assets/stl/` and `gltf/Flamingo.glb` are the unmodified r186
+`examples/models/stl/` and `models/gltf/Flamingo.glb` files. Their source paths
+and SHA-256 hashes are in `shapes-lights-manifest.json`; they are distributed
+alongside `LICENSE-THREE`. The flamingo is by mirada from ro.me, as the example
+credits it. The cube-map heads reuse the retained `web/models/WaltHead.obj` and
+the castle cube.

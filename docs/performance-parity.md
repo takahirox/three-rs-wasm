@@ -539,3 +539,17 @@ the original draws, including the PLY models' two shadow-map passes. No scene
 uploads geometry or texture data after a warm pass, and warmed cycles create no
 GPU resources. The EXR and TIFF decoders run once at load, on the CPU, as the
 original loaders do. No GPU timing parity is claimed.
+
+### Cube-mapped heads, STL, extruded shapes, spot lights and hemisphere light
+
+The [cube-map, STL, extrusion, spot-light and hemisphere-light
+ports](shapes-lights.md) match the original draws, including each shadow pass.
+
+- **Setup work.** Extrusion, triangulation and STL parsing run once at setup,
+  on the CPU, as in the original.
+- **Per-frame work.** The spot-light tweens update three lights per frame; the
+  flamingo morphs on the GPU.
+- **Uploads.** No scene uploads geometry or texture data after a warm pass.
+
+Warmed cycles create no GPU resources, apart from the light toggles, which
+rebuild the light bindings. No GPU timing parity is claimed.

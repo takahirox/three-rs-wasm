@@ -988,7 +988,9 @@ impl Renderer {
                         if !angle.is_finite()
                             || *angle <= 0.0
                             || *angle > std::f64::consts::FRAC_PI_2
-                            || !(0.0..=1.0).contains(penumbra)
+                            // Three.js leaves penumbra unclamped: cos( angle × ( 1 − penumbra ) ).
+                            || !penumbra.is_finite()
+                            || *penumbra < 0.0
                         {
                             return Err(Error::Invalid("spot angle or penumbra"));
                         }

@@ -1,0 +1,2148 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/shapes-lights.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Shapes-and-l-064b2-lights-hemisphere-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001552581787109375,
+      "meanError": 0.027807871500651043
+     },
+     {
+      "state": 1,
+      "fraction": 0.000926971435546875,
+      "meanError": 0.018347422281901043
+     },
+     {
+      "state": 2,
+      "fraction": 0.00102996826171875,
+      "meanError": 0.019196828206380207
+     },
+     {
+      "state": 3,
+      "fraction": 0.00138092041015625,
+      "meanError": 0.024442036946614582
+     },
+     {
+      "state": 4,
+      "fraction": 0.001743316650390625,
+      "meanError": 0.053822835286458336
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 1.2715657552083333e-06
+     },
+     {
+      "state": 6,
+      "fraction": 0.00074005126953125,
+      "meanError": 0.008909861246744791
+     },
+     {
+      "state": 7,
+      "fraction": 0.00138092041015625,
+      "meanError": 0.024442036946614582
+     },
+     {
+      "state": 8,
+      "fraction": 0.000921875,
+      "meanError": 0.015744791666666667
+     }
+    ]
+   },
+   "Shapes-and-l-17a38-ncy-webgl-lights-hemisphere": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 81,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 81,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-2a0aa-lights-spotlights-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01052093505859375,
+      "meanError": 0.32086181640625
+     },
+     {
+      "state": 1,
+      "fraction": 0.017879486083984375,
+      "meanError": 0.5482826232910156
+     },
+     {
+      "state": 2,
+      "fraction": 0.012836456298828125,
+      "meanError": 0.3907737731933594
+     },
+     {
+      "state": 3,
+      "fraction": 0.0153045654296875,
+      "meanError": 0.4667205810546875
+     },
+     {
+      "state": 4,
+      "fraction": 0.0153045654296875,
+      "meanError": 0.4667205810546875
+     },
+     {
+      "state": 5,
+      "fraction": 0.01679229736328125,
+      "meanError": 0.5092913309733073
+     },
+     {
+      "state": 6,
+      "fraction": 0.01668548583984375,
+      "meanError": 0.5061442057291666
+     },
+     {
+      "state": 7,
+      "fraction": 0.0141448974609375,
+      "meanError": 0.43316014607747394
+     },
+     {
+      "state": 8,
+      "fraction": 0.01201629638671875,
+      "meanError": 0.34946441650390625
+     },
+     {
+      "state": 9,
+      "fraction": 0.014537811279296875,
+      "meanError": 0.42237218221028644
+     },
+     {
+      "state": 10,
+      "fraction": 0.0118046875,
+      "meanError": 0.3442604166666667
+     }
+    ]
+   },
+   "Shapes-and-l-5165b-ncy-webgl-lights-spotlights": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 66,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 66,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 71,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 71,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-616f8-bgl-geometry-extrude-shapes": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 50,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 50,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-7dceb-materials-cubemap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001285552978515625,
+      "meanError": 0.06856664021809895
+     },
+     {
+      "state": 1,
+      "fraction": 0.000125885009765625,
+      "meanError": 0.05273564656575521
+     },
+     {
+      "state": 2,
+      "fraction": 0.0001875,
+      "meanError": 0.04149739583333333
+     }
+    ]
+   },
+   "Shapes-and-l-9a0f2-ncy-webgl-materials-cubemap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 118,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 118,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 123,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 123,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-a309f-lights-spotlights-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.001911163330078125
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.001827239990234375
+     },
+     {
+      "state": 2,
+      "fraction": 8.7738037109375e-05,
+      "meanError": 0.001743316650390625
+     },
+     {
+      "state": 3,
+      "fraction": 8.0108642578125e-05,
+      "meanError": 0.0015856424967447917
+     },
+     {
+      "state": 4,
+      "fraction": 8.0108642578125e-05,
+      "meanError": 0.0015856424967447917
+     },
+     {
+      "state": 5,
+      "fraction": 6.103515625e-05,
+      "meanError": 0.0010592142740885417
+     },
+     {
+      "state": 6,
+      "fraction": 7.2479248046875e-05,
+      "meanError": 0.0009638468424479166
+     },
+     {
+      "state": 7,
+      "fraction": 4.1961669921875e-05,
+      "meanError": 0.0017636617024739583
+     },
+     {
+      "state": 8,
+      "fraction": 7.62939453125e-05,
+      "meanError": 0.0023066202799479165
+     },
+     {
+      "state": 9,
+      "fraction": 0.0001220703125,
+      "meanError": 0.0031534830729166665
+     },
+     {
+      "state": 10,
+      "fraction": 5.859375e-05,
+      "meanError": 0.0018125
+     }
+    ]
+   },
+   "Shapes-and-l-a4e2e-lights-hemisphere-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006580352783203125,
+      "meanError": 0.1178601582845052
+     },
+     {
+      "state": 1,
+      "fraction": 0.00539398193359375,
+      "meanError": 0.09893544514973958
+     },
+     {
+      "state": 2,
+      "fraction": 0.005702972412109375,
+      "meanError": 0.09778467814127605
+     },
+     {
+      "state": 3,
+      "fraction": 0.00634002685546875,
+      "meanError": 0.11803944905598958
+     },
+     {
+      "state": 4,
+      "fraction": 0.006610870361328125,
+      "meanError": 0.1754175821940104
+     },
+     {
+      "state": 5,
+      "fraction": 0.00147247314453125,
+      "meanError": 0.07462819417317708
+     },
+     {
+      "state": 6,
+      "fraction": 0.003021240234375,
+      "meanError": 0.07259368896484375
+     },
+     {
+      "state": 7,
+      "fraction": 0.00634002685546875,
+      "meanError": 0.11803944905598958
+     },
+     {
+      "state": 8,
+      "fraction": 0.00486328125,
+      "meanError": 0.09139453125
+     }
+    ]
+   },
+   "Shapes-and-l-b1754--residency-webgl-loader-stl": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 84,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 84,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 89,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 89,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-b90f7-materials-cubemap-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.014209747314453125,
+      "meanError": 0.26432545979817706
+     },
+     {
+      "state": 1,
+      "fraction": 0.009227752685546875,
+      "meanError": 0.22148259480794272
+     },
+     {
+      "state": 2,
+      "fraction": 0.0081640625,
+      "meanError": 0.19106510416666667
+     }
+    ]
+   },
+   "Shapes-and-l-ceb19--webgl-loader-stl-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00318145751953125,
+      "meanError": 0.055492401123046875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00244140625,
+      "meanError": 0.043263753255208336
+     },
+     {
+      "state": 2,
+      "fraction": 0.001247406005859375,
+      "meanError": 0.02599334716796875
+     },
+     {
+      "state": 3,
+      "fraction": 0.001399993896484375,
+      "meanError": 0.026758829752604168
+     },
+     {
+      "state": 4,
+      "fraction": 0.001068115234375,
+      "meanError": 0.020807902018229168
+     },
+     {
+      "state": 5,
+      "fraction": 0.0021171875,
+      "meanError": 0.03802864583333333
+     }
+    ]
+   },
+   "Shapes-and-l-d6414-ry-extrude-shapes-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0001220703125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 6.357828776041667e-06
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 6.357828776041667e-06
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 1.6530354817708332e-05
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 1.52587890625e-05
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 1.953125e-05
+     }
+    ]
+   },
+   "Shapes-and-l-d83bf--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_materials_cubemap",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_stl",
+      "reference": {
+       "draws": [
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_extrude_shapes",
+      "reference": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 1806,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 12048,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1806,
+         "instances": 1
+        },
+        {
+         "count": 12048,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_lights_spotlights",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_lights_hemisphere",
+      "reference": {
+       "draws": [
+        {
+         "count": 1626,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 5,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2688,
+         "instances": 1
+        },
+        {
+         "count": 1626,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1626,
+         "instances": 1
+        },
+        {
+         "count": 5,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2688,
+         "instances": 1
+        },
+        {
+         "count": 1626,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-dd052--webgl-loader-stl-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00672149658203125,
+      "meanError": 0.12010574340820312
+     },
+     {
+      "state": 1,
+      "fraction": 0.006038665771484375,
+      "meanError": 0.10847091674804688
+     },
+     {
+      "state": 2,
+      "fraction": 0.004848480224609375,
+      "meanError": 0.09497960408528645
+     },
+     {
+      "state": 3,
+      "fraction": 0.0049591064453125,
+      "meanError": 0.1043853759765625
+     },
+     {
+      "state": 4,
+      "fraction": 0.003589630126953125,
+      "meanError": 0.077392578125
+     },
+     {
+      "state": 5,
+      "fraction": 0.00521484375,
+      "meanError": 0.09021484375
+     }
+    ]
+   },
+   "Shapes-and-l-e6cc6-ry-extrude-shapes-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006916046142578125,
+      "meanError": 0.1088396708170573
+     },
+     {
+      "state": 1,
+      "fraction": 0.004589080810546875,
+      "meanError": 0.031106313069661457
+     },
+     {
+      "state": 2,
+      "fraction": 0.00394439697265625,
+      "meanError": 0.026311238606770832
+     },
+     {
+      "state": 3,
+      "fraction": 0.00347137451171875,
+      "meanError": 0.022083282470703125
+     },
+     {
+      "state": 4,
+      "fraction": 0.003307342529296875,
+      "meanError": 0.0209197998046875
+     },
+     {
+      "state": 5,
+      "fraction": 0.0041015625,
+      "meanError": 0.0285859375
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Shapes-and-l-064b2-lights-hemisphere-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0009860992431640625,
+      "meanError": 0.01795514424641927
+     },
+     {
+      "state": 1,
+      "fraction": 0.0007171630859375,
+      "meanError": 0.014002164204915365
+     },
+     {
+      "state": 2,
+      "fraction": 0.000812530517578125,
+      "meanError": 0.014664967854817709
+     },
+     {
+      "state": 3,
+      "fraction": 0.001003265380859375,
+      "meanError": 0.017986615498860676
+     },
+     {
+      "state": 4,
+      "fraction": 0.001308441162109375,
+      "meanError": 0.03966712951660156
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 2.5431315104166665e-06
+     },
+     {
+      "state": 6,
+      "fraction": 0.0005216598510742188,
+      "meanError": 0.0072231292724609375
+     },
+     {
+      "state": 7,
+      "fraction": 0.001003265380859375,
+      "meanError": 0.017986615498860676
+     },
+     {
+      "state": 8,
+      "fraction": 0.0006474609375,
+      "meanError": 0.01277734375
+     }
+    ]
+   },
+   "Shapes-and-l-17a38-ncy-webgl-lights-hemisphere": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 81,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 81,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        7,
+        122936,
+        75568
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-2a0aa-lights-spotlights-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005333900451660156,
+      "meanError": 0.16357549031575522
+     },
+     {
+      "state": 1,
+      "fraction": 0.009093284606933594,
+      "meanError": 0.2778116861979167
+     },
+     {
+      "state": 2,
+      "fraction": 0.0064907073974609375,
+      "meanError": 0.1963214874267578
+     },
+     {
+      "state": 3,
+      "fraction": 0.00818634033203125,
+      "meanError": 0.24759451548258463
+     },
+     {
+      "state": 4,
+      "fraction": 0.00818634033203125,
+      "meanError": 0.24759451548258463
+     },
+     {
+      "state": 5,
+      "fraction": 0.008615493774414062,
+      "meanError": 0.25988928476969403
+     },
+     {
+      "state": 6,
+      "fraction": 0.007986068725585938,
+      "meanError": 0.24196179707845053
+     },
+     {
+      "state": 7,
+      "fraction": 0.00730133056640625,
+      "meanError": 0.22240225474039713
+     },
+     {
+      "state": 8,
+      "fraction": 0.00621795654296875,
+      "meanError": 0.1799586613972982
+     },
+     {
+      "state": 9,
+      "fraction": 0.006800651550292969,
+      "meanError": 0.19657071431477866
+     },
+     {
+      "state": 10,
+      "fraction": 0.005369140625,
+      "meanError": 0.1558076171875
+     }
+    ]
+   },
+   "Shapes-and-l-5165b-ncy-webgl-lights-spotlights": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 66,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 66,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 71,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 71,
+       "transfers": [
+        3,
+        8328,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-616f8-bgl-geometry-extrude-shapes": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 50,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 50,
+       "transfers": [
+        3,
+        1126560,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-7dceb-materials-cubemap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0005598068237304688,
+      "meanError": 0.04421583811442057
+     },
+     {
+      "state": 1,
+      "fraction": 4.291534423828125e-05,
+      "meanError": 0.03690401713053385
+     },
+     {
+      "state": 2,
+      "fraction": 3.80859375e-05,
+      "meanError": 0.0276103515625
+     }
+    ]
+   },
+   "Shapes-and-l-9a0f2-ncy-webgl-materials-cubemap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 118,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 118,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 123,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 123,
+       "transfers": [
+        2,
+        3880464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-a309f-lights-spotlights-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0018911361694335938
+     },
+     {
+      "state": 1,
+      "fraction": 9.5367431640625e-06,
+      "meanError": 0.0018599828084309895
+     },
+     {
+      "state": 2,
+      "fraction": 8.96453857421875e-05,
+      "meanError": 0.0017150243123372395
+     },
+     {
+      "state": 3,
+      "fraction": 8.58306884765625e-05,
+      "meanError": 0.001633008321126302
+     },
+     {
+      "state": 4,
+      "fraction": 8.58306884765625e-05,
+      "meanError": 0.001633008321126302
+     },
+     {
+      "state": 5,
+      "fraction": 5.054473876953125e-05,
+      "meanError": 0.00098419189453125
+     },
+     {
+      "state": 6,
+      "fraction": 4.291534423828125e-05,
+      "meanError": 0.0009562174479166666
+     },
+     {
+      "state": 7,
+      "fraction": 4.57763671875e-05,
+      "meanError": 0.0016117095947265625
+     },
+     {
+      "state": 8,
+      "fraction": 7.62939453125e-05,
+      "meanError": 0.0022646586100260415
+     },
+     {
+      "state": 9,
+      "fraction": 9.441375732421875e-05,
+      "meanError": 0.0026232401529947915
+     },
+     {
+      "state": 10,
+      "fraction": 5.17578125e-05,
+      "meanError": 0.0016728515625
+     }
+    ]
+   },
+   "Shapes-and-l-a4e2e-lights-hemisphere-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0034656524658203125,
+      "meanError": 0.06084918975830078
+     },
+     {
+      "state": 1,
+      "fraction": 0.0030126571655273438,
+      "meanError": 0.05438073476155599
+     },
+     {
+      "state": 2,
+      "fraction": 0.0032243728637695312,
+      "meanError": 0.05585829416910807
+     },
+     {
+      "state": 3,
+      "fraction": 0.0034780502319335938,
+      "meanError": 0.06441529591878255
+     },
+     {
+      "state": 4,
+      "fraction": 0.0037364959716796875,
+      "meanError": 0.1004489262898763
+     },
+     {
+      "state": 5,
+      "fraction": 0.0007381439208984375,
+      "meanError": 0.03745079040527344
+     },
+     {
+      "state": 6,
+      "fraction": 0.0017518997192382812,
+      "meanError": 0.039939562479654946
+     },
+     {
+      "state": 7,
+      "fraction": 0.0034780502319335938,
+      "meanError": 0.06441529591878255
+     },
+     {
+      "state": 8,
+      "fraction": 0.002689453125,
+      "meanError": 0.050086588541666664
+     }
+    ]
+   },
+   "Shapes-and-l-b1754--residency-webgl-loader-stl": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 84,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 84,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 89,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 89,
+       "transfers": [
+        6,
+        1596824,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-b90f7-materials-cubemap-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00621795654296875,
+      "meanError": 0.135833740234375
+     },
+     {
+      "state": 1,
+      "fraction": 0.003814697265625,
+      "meanError": 0.11173343658447266
+     },
+     {
+      "state": 2,
+      "fraction": 0.003533203125,
+      "meanError": 0.095533203125
+     }
+    ]
+   },
+   "Shapes-and-l-ceb19--webgl-loader-stl-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0032100677490234375,
+      "meanError": 0.05568567911783854
+     },
+     {
+      "state": 1,
+      "fraction": 0.0023345947265625,
+      "meanError": 0.04276879628499349
+     },
+     {
+      "state": 2,
+      "fraction": 0.001220703125,
+      "meanError": 0.026083946228027344
+     },
+     {
+      "state": 3,
+      "fraction": 0.0014896392822265625,
+      "meanError": 0.027043978373209637
+     },
+     {
+      "state": 4,
+      "fraction": 0.00101470947265625,
+      "meanError": 0.02055199940999349
+     },
+     {
+      "state": 5,
+      "fraction": 0.002068359375,
+      "meanError": 0.03672786458333333
+     }
+    ]
+   },
+   "Shapes-and-l-d6414-ry-extrude-shapes-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.0001465479532877604
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 7.62939453125e-06
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 2.5431315104166665e-06
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 2.9881795247395832e-05
+     },
+     {
+      "state": 4,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 3.3696492513020836e-05
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 1.1067708333333334e-05
+     }
+    ]
+   },
+   "Shapes-and-l-d83bf--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_materials_cubemap",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        },
+        {
+         "count": 48480,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_stl",
+      "reference": {
+       "draws": [
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 864,
+         "instances": 1
+        },
+        {
+         "count": 6468,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 3156,
+         "instances": 1
+        },
+        {
+         "count": 3000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_extrude_shapes",
+      "reference": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 1806,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 12048,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1806,
+         "instances": 1
+        },
+        {
+         "count": 12048,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_lights_spotlights",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        },
+        {
+         "count": 74,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_lights_hemisphere",
+      "reference": {
+       "draws": [
+        {
+         "count": 1626,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 5,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2688,
+         "instances": 1
+        },
+        {
+         "count": 1626,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1626,
+         "instances": 1
+        },
+        {
+         "count": 5,
+         "instances": 1
+        },
+        {
+         "count": 48,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2688,
+         "instances": 1
+        },
+        {
+         "count": 1626,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Shapes-and-l-dd052--webgl-loader-stl-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004912376403808594,
+      "meanError": 0.08646742502848308
+     },
+     {
+      "state": 1,
+      "fraction": 0.004177093505859375,
+      "meanError": 0.0760955810546875
+     },
+     {
+      "state": 2,
+      "fraction": 0.0030202865600585938,
+      "meanError": 0.06125704447428385
+     },
+     {
+      "state": 3,
+      "fraction": 0.0032567977905273438,
+      "meanError": 0.06563440958658855
+     },
+     {
+      "state": 4,
+      "fraction": 0.0022029876708984375,
+      "meanError": 0.04872417449951172
+     },
+     {
+      "state": 5,
+      "fraction": 0.003642578125,
+      "meanError": 0.06443717447916666
+     }
+    ]
+   },
+   "Shapes-and-l-e6cc6-ry-extrude-shapes-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0034856796264648438,
+      "meanError": 0.055518786112467446
+     },
+     {
+      "state": 1,
+      "fraction": 0.0022859573364257812,
+      "meanError": 0.01555029551188151
+     },
+     {
+      "state": 2,
+      "fraction": 0.00189208984375,
+      "meanError": 0.012531598409016928
+     },
+     {
+      "state": 3,
+      "fraction": 0.0021085739135742188,
+      "meanError": 0.014895439147949219
+     },
+     {
+      "state": 4,
+      "fraction": 0.0020208358764648438,
+      "meanError": 0.014467239379882812
+     },
+     {
+      "state": 5,
+      "fraction": 0.0017998046875,
+      "meanError": 0.012555338541666667
+     }
+    ]
+   }
+  }
+ }
+}

@@ -154,3 +154,8 @@ silhouettes, facets and grid lines. With MSAA off, it bounds only the refracted
 statues' fine environment detail, and the PLY scene's flat facets and shadow
 edges. The shadow edges differ because WebGL's `gl_FragCoord` rows are flipped
 relative to WebGPU's.
+
+The WebGL-only cube-map, STL, extrusion, spot-light and hemisphere-light batch
+([shapes-lights.md](shapes-lights.md)) bounds only 4× MSAA comparisons of
+silhouettes and helper lines. All five scenes match within the ordinary
+threshold with MSAA off.

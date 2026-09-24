@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 238 partial Rust ports; 353 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 243 partial Rust ports; 348 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_materials_cubemap | `tests/browser/shapes-lights.spec.js` | OBJLoaderの頭部とLambertのenvmap（反射・屈折、Multiply・Mix合成）、背景キューブ、極角制限付きOrbitControlsをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |
+| webgl_lights_spotlights | `tests/browser/shapes-lights.spec.js` | TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。 |
+| webgl_lights_hemisphere | `tests/browser/shapes-lights.spec.js` | フラミンゴのモーフアニメーション、半球光と平行光源の影、各ヘルパー、空のグラデーションシェーダー、フォグをRustで再現。GUIのトグルはチェックボックスで表現。影の強さ（shadowIntensity）は未対応。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_materials_cubemap_refraction | `tests/browser/refraction-loaders.spec.js` | PLYLoader（バイナリ）とcomputeVertexNormals、Phongにenvmap_fragmentの屈折（CubeRefractionMapping・MultiplyOperation）と背景キューブを加えてRustで再現。マウス追従のカメラは60fps相当の時間ステップ。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_ply | `tests/browser/refraction-loaders.spec.js` | PLYLoader（ASCII・バイナリ）、フラットシェーディング、半球光と2灯の平行光源の影、線形フォグをRustで再現。影のPCFはWebGLと同じVogel円盤とIGNだが、画面座標の上下が逆のため影の縁の回転が異なる。性能の完全な同等性は未保証。 |
 | webgl_loader_kmz | `tests/browser/refraction-loaders.spec.js` | KMZLoaderのzip展開とdoc.kmlのモデル参照、ColladaLoaderの静的メッシュ・Phong材質・Z-up回転をRustで再現。変更時のみ描画。性能の完全な同等性は未保証。 |
