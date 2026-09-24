@@ -167,6 +167,8 @@ pub(super) struct Controls {
     dolly_direction: Vector3,
     /// autoRotate speed: update( deltaTime = null ) turns by 2π / 60 / 60 × speed.
     pub(super) auto_rotate: Option<f64>,
+    /// The camera's up: offsets are rotated into Y-up space and back.
+    pub(super) up: Vector3,
 }
 impl Controls {
     pub(super) fn new(
@@ -189,6 +191,7 @@ impl Controls {
             cursor_zoom: false,
             dolly_direction: Vector3::ZERO,
             auto_rotate: None,
+            up: Vector3::Y,
         }
     }
     /// The animation loop's update(): autoRotate turns first while no pointer is active.
@@ -244,7 +247,8 @@ impl Controls {
     /// `OrbitControls.update()` with `minPolarAngle` 0 and unbounded azimuth.
     pub(super) fn update(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
         const EPS: f64 = 0.000001;
-        let offset = s.get(c)?.position - self.target;
+        let quat = Quaternion::from_rotation_arc(self.up, Vector3::Y);
+        let offset = quat * (s.get(c)?.position - self.target);
         let mut radius = offset.length();
         let (mut theta, mut phi) = if radius == 0. {
             (0., 0.)
@@ -266,11 +270,12 @@ impl Controls {
             self.clamp(radius * self.scale)
         };
         let sin_phi_radius = phi.sin() * radius;
-        let v = Vector3::new(
-            sin_phi_radius * theta.sin(),
-            phi.cos() * radius,
-            sin_phi_radius * theta.cos(),
-        );
+        let v = quat.inverse()
+            * Vector3::new(
+                sin_phi_radius * theta.sin(),
+                phi.cos() * radius,
+                sin_phi_radius * theta.cos(),
+            );
         s.get_mut(c)?.position = self.target + v;
         s.look_at(c, self.target)?;
         if let Some(f) = self.damping {

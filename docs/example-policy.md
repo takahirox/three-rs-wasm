@@ -141,3 +141,9 @@ instancing-performance batch ([picking-buffers.md](picking-buffers.md)) bounds
 off, it bounds only the BVH scene, whose grid centre line lies exactly on a
 pixel-row boundary. The float-readback and GPU-picking examples have no resize
 handler, so their resized frames are not compared.
+
+The WebGL-only PDB, helpers, simplifier, AMF and TIFF batch
+([helpers-formats.md](helpers-formats.md)) bounds 4× MSAA comparisons of
+silhouettes, flat facets and grid lines. With MSAA off, it bounds only the
+flat-shaded simplified head, whose facet edges take derivative normals. The PDB
+labels are part of the compared pixels.

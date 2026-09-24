@@ -1,0 +1,107 @@
+[
+ {
+  "file": "pdb/Al2O3.pdb",
+  "source": "examples/models/pdb/Al2O3.pdb",
+  "sha256": "8e89ea9d163f0b1d9bb520a90787056211a15529d812063fe5af048a702244d3"
+ },
+ {
+  "file": "pdb/aspirin.pdb",
+  "source": "examples/models/pdb/aspirin.pdb",
+  "sha256": "2b720bcb8e155ad9041c98947e620e266c96770852637d7b2f1650e787acc7b2"
+ },
+ {
+  "file": "pdb/buckyball.pdb",
+  "source": "examples/models/pdb/buckyball.pdb",
+  "sha256": "07f589d83ffd751884bab39938f204f12ab75283bc9a31862eb08a254dabf7f4"
+ },
+ {
+  "file": "pdb/caf2.pdb",
+  "source": "examples/models/pdb/caf2.pdb",
+  "sha256": "fec5c7f0df920ca153b5f76b7ae7201ab4309e7e881dbe7d993c2be15b8e1672"
+ },
+ {
+  "file": "pdb/caffeine.pdb",
+  "source": "examples/models/pdb/caffeine.pdb",
+  "sha256": "f55f7c10b7dd5c80e47c9a778583c5546ed9ec877621761a5e610fffa31ff802"
+ },
+ {
+  "file": "pdb/cholesterol.pdb",
+  "source": "examples/models/pdb/cholesterol.pdb",
+  "sha256": "99299d88541923d82b659ab1d7debcad277d18698c5b0b49389fc34998d7ef1c"
+ },
+ {
+  "file": "pdb/cocaine.pdb",
+  "source": "examples/models/pdb/cocaine.pdb",
+  "sha256": "11e18b4d3aa92fa82884164445188fee7b2a1b96844585144fa953d056d11bd3"
+ },
+ {
+  "file": "pdb/cu.pdb",
+  "source": "examples/models/pdb/cu.pdb",
+  "sha256": "e9ecaf549bed768dd80cdc1ab55ae7482593e9fc228bb557d8cd925c862d9fa4"
+ },
+ {
+  "file": "pdb/cubane.pdb",
+  "source": "examples/models/pdb/cubane.pdb",
+  "sha256": "341b65ae91f61e91119e7a0469a0818abd83b6cf26d83579651a786853c867b6"
+ },
+ {
+  "file": "pdb/ethanol.pdb",
+  "source": "examples/models/pdb/ethanol.pdb",
+  "sha256": "9e8fe6787d99d6e17c0184c8f821543a9349417307fe0c1f2cc4b27651b3e390"
+ },
+ {
+  "file": "pdb/glucose.pdb",
+  "source": "examples/models/pdb/glucose.pdb",
+  "sha256": "e6893392290be8969451bee67b43e7a01e2d163f9073965a476627cf8edd829f"
+ },
+ {
+  "file": "pdb/graphite.pdb",
+  "source": "examples/models/pdb/graphite.pdb",
+  "sha256": "23ca49f73cb6163ed1a2d32ed720235ef61efc9333583e0f27ec37728ee65e90"
+ },
+ {
+  "file": "pdb/lsd.pdb",
+  "source": "examples/models/pdb/lsd.pdb",
+  "sha256": "7c4383ab0ecd025600de725c617117fa6a807b16d7d7c7eff56479c2eb05efd5"
+ },
+ {
+  "file": "pdb/lycopene.pdb",
+  "source": "examples/models/pdb/lycopene.pdb",
+  "sha256": "a47e53ed0db3daef8b3f62b3eaa3e753bbb6262f6e00ddc19dea6185145c6f39"
+ },
+ {
+  "file": "pdb/nacl.pdb",
+  "source": "examples/models/pdb/nacl.pdb",
+  "sha256": "e71dd826410f218160f2f0d155ed886dc9b8912f5a9205c05a8bd17fc68fd4b2"
+ },
+ {
+  "file": "pdb/nicotine.pdb",
+  "source": "examples/models/pdb/nicotine.pdb",
+  "sha256": "8147b117aa9695ccee04f53b419317abd3bb22539914de6f5efadc947706f8cf"
+ },
+ {
+  "file": "pdb/ybco.pdb",
+  "source": "examples/models/pdb/ybco.pdb",
+  "sha256": "95678be779e8b6cfdd8fdaec83aa6185238ef33322fa5537d14c8977e085aa38"
+ },
+ {
+  "file": "amf/rook.amf",
+  "source": "examples/models/amf/rook.amf",
+  "sha256": "59e123ec3bae184ede7beab9a7b982a9b4452c2a85c2e5abb0fa6461f932126a"
+ },
+ {
+  "file": "tiff/crate_uncompressed.tif",
+  "source": "examples/textures/tiff/crate_uncompressed.tif",
+  "sha256": "d2d64f206234f4148d7716abe8a14d47db5ecd569317e2f010eac1cf25ca2445"
+ },
+ {
+  "file": "tiff/crate_lzw.tif",
+  "source": "examples/textures/tiff/crate_lzw.tif",
+  "sha256": "d9ea5311be5df454647a6ee1f96f0bb6909c2132d7d35d3c1ab8ff93cea5cf74"
+ },
+ {
+  "file": "tiff/crate_jpeg.tif",
+  "source": "examples/textures/tiff/crate_jpeg.tif",
+  "sha256": "c8a9e0a848d6ce6ec633d3e7a12097778130e3d95ab86056c9b458e674e9b2c4"
+ }
+]

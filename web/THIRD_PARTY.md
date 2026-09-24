@@ -570,3 +570,9 @@ Pisa cube and `uv_grid_opengl.jpg`.
 `picking-buffers-manifest.json`; it is distributed alongside `LICENSE-THREE`.
 The instancing-performance port reuses the retained
 `suzanne_buffergeometry.json`.
+
+`gallery/assets/pdb/`, `amf/rook.amf` and `tiff/` are the unmodified r186
+`examples/models/pdb/`, `models/amf/rook.amf` and `textures/tiff/` files. Their
+source paths and SHA-256 hashes are in `helpers-formats-manifest.json`; they
+are distributed alongside `LICENSE-THREE`. The helpers and simplifier ports
+reuse the retained LeePerrySmith head.

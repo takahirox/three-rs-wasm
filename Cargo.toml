@@ -14,6 +14,7 @@ crate-type = ["rlib", "cdylib"]
 gltf = { version = "1.4", default-features = false, features = ["utils", "names", "extensions", "KHR_materials_unlit", "KHR_materials_emissive_strength", "KHR_materials_ior", "KHR_materials_specular", "KHR_texture_transform"] }
 draco-core = { version = "2.1.0", default-features = false, features = ["decoder", "edgebreaker_valence_decode", "legacy_bitstream_decode"] }
 optimesh = "1.1.0"
+miniz_oxide = "0.8.9"
 basisu = "0.1.0"
 glam = { version = "0.30.9", features = ["serde", "bytemuck"] }
 serde = { version = "1", features = ["derive", "rc"] }

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 228 partial Rust ports; 363 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 233 partial Rust ports; 358 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_loader_pdb | `tests/browser/helpers-formats.spec.js` | PDBLoaderの解析、原子・結合ごとのメッシュ、CSS2DRendererのラベル配置と重なり順をRust/DOMで再現。分子ごとのメッシュは一度だけ構築して常駐（原本は切替ごとに再構築）。ラベル層の書体は原本のmain.cssと同じ指定。性能の完全な同等性は未保証。 |
+| webgl_helpers | `tests/browser/helpers-formats.spec.js` | 頂点法線・接線ヘルパー、BoxHelper、Wireframe/EdgesGeometry、PolarGrid、PointLightHelperをRustで再現。静止メッシュのヘルパー頂点は一度だけ計算して常駐（原本は毎フレーム同じ値を再計算・再送信）。性能の完全な同等性は未保証。 |
+| webgl_modifier_simplifier | `tests/browser/helpers-formats.spec.js` | SimplifyModifierをmeshoptimizer 1.1のRust移植（optimesh）で再現し、原本のwasm版と同一の結果を確認。比率ごとの結果は一度だけ構築して常駐。変更時のみ描画。性能の完全な同等性は未保証。 |
+| webgl_loader_amf | `tests/browser/helpers-formats.spec.js` | AMFLoaderのzip展開・XML解析・材質と色の規則をRustで再現。Z-upのOrbitControls。変更時のみ描画。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_tiff | `tests/browser/helpers-formats.spec.js` | TIFFLoader（UTIF）の無圧縮・LZW・JPEG（pdf.jsのベースラインデコーダ）をRustで再現し、原本とバイト単位で一致を確認。変更時のみ描画。性能の完全な同等性は未保証。 |
 | webgl_loader_bvh | `tests/browser/picking-buffers.spec.js` | BVHLoaderの階層・モーション解析とAnimationMixerの線形補間／slerpFlat・ループをRustで再現。SkeletonHelperの頂点位置は原本同様に毎フレームCPUで書き込み。性能の完全な同等性は未保証。 |
 | webgl_framebuffer_texture | `tests/browser/picking-buffers.spec.js` | Gosper曲線の毎フレーム色更新（原本同様CPU→GPU）とcopyFramebufferToTexture相当のテクスチャコピー、スプライトHUDをRustで再現。選択枠はDOMで表示。性能の完全な同等性は未保証。 |
 | webgl_read_float_buffer | `tests/browser/picking-buffers.spec.js` | Float32レンダーターゲットへの描画と画面表示、マウス位置の値読み出し（非同期コピーで次フレーム以降に表示）をRustで再現。原本はリサイズ非対応のため、初期サイズを保持。Stats表示は未移植。性能の完全な同等性は未保証。 |

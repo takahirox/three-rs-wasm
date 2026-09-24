@@ -1030,6 +1030,7 @@ dependencies = [
  "half",
  "image",
  "js-sys",
+ "miniz_oxide 0.8.9",
  "optimesh",
  "pollster",
  "serde",

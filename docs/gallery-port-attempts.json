@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 361,
-    "runnable-partial": 228,
+    "blocked-at-port-review": 356,
+    "runnable-partial": 233,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -3143,10 +3143,10 @@
     },
     {
       "id": "webgl_helpers",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_helpers.html",
       "source_sha256": "8c7fe346aeb456b512ea32bdbdbe10e59a251ba4c8dbf7a26e8154ce6b961bcf",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/helpers-formats.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -5477,10 +5477,10 @@
     },
     {
       "id": "webgl_loader_amf",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_amf.html",
       "source_sha256": "46cbdd7584fd70475b5c080b228f1aa679606b73c2392a43e2665d7cd63ef53e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/helpers-formats.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7398,10 +7398,10 @@
     },
     {
       "id": "webgl_loader_pdb",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_pdb.html",
       "source_sha256": "ed16fe831ea2d161e870f594e7d4113d01aad05f7fe9f3c653d40181910f5bb6",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/helpers-formats.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -8104,10 +8104,10 @@
     },
     {
       "id": "webgl_loader_texture_tiff",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_tiff.html",
       "source_sha256": "6279a81061acb1fc20cbc261208afc02e3185be81a519c291ec29bfbdbb462f9",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/helpers-formats.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -11155,10 +11155,10 @@
     },
     {
       "id": "webgl_modifier_simplifier",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_simplifier.html",
       "source_sha256": "6ba92c0619730cd31adf350e0a584c08873e8e668b4dfbc17cc2d567de88bb83",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/helpers-formats.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

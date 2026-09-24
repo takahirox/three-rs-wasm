@@ -515,3 +515,19 @@ ports](picking-buffers.md) match the original draws and per-frame uploads:
 
 Warmed cycles create no GPU resources, apart from the instancing rebuilds. No
 GPU timing parity is claimed.
+
+### PDB molecules, helpers, simplifier, AMF and TIFF
+
+The [PDB, helpers, simplifier, AMF and TIFF ports](helpers-formats.md) match
+the original draws: 49 caffeine meshes, 13 helper draws, the two heads, the
+rook and grid, and the three TIFF planes.
+
+- **Helpers.** Computes the normal and tangent helper segments of the static
+  head once and keeps them resident. The original re-uploads the same
+  445,392 bytes every frame.
+- **Simplifier.** Runs the original's meshoptimizer 1.1 routines on the CPU,
+  once per ratio.
+- **PDB and simplifier.** Keep each molecule and ratio resident instead of
+  rebuilding it.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

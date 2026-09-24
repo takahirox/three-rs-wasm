@@ -77,6 +77,8 @@ pub(super) struct Trackball {
     pub(super) pan_speed: f64,
     /// staticMoving: no damping; each update consumes the pointer motion.
     pub(super) static_moving: bool,
+    /// minDistance and maxDistance, checked by `_checkDistances`.
+    pub(super) distance: (f64, f64),
     target: Vector3,
     eye: Vector3,
     move_prev: Vector2,
@@ -100,6 +102,7 @@ impl Trackball {
             camera,
             pan_speed: 0.3,
             static_moving: false,
+            distance: (0., f64::INFINITY),
             target: Vector3::ZERO,
             eye: Vector3::ZERO,
             move_prev: Vector2::ZERO,
@@ -238,6 +241,20 @@ impl Trackball {
             }
         }
         position = self.target + self.eye;
+        if perspective {
+            // _checkDistances
+            let (min, max) = self.distance;
+            if self.eye.length_squared() > max * max {
+                self.eye = self.eye.normalize_or_zero() * max;
+                position = self.target + self.eye;
+                self.zoom_start = self.zoom_end;
+            }
+            if self.eye.length_squared() < min * min {
+                self.eye = self.eye.normalize_or_zero() * min;
+                position = self.target + self.eye;
+                self.zoom_start = self.zoom_end;
+            }
+        }
         let n = s.get_mut(c)?;
         n.position = position;
         n.up = up;
