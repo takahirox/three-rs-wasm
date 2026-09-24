@@ -555,3 +555,12 @@ files. Their source paths and SHA-256 hashes are in
 `terrain-loaders-manifest.json`; they are distributed alongside `LICENSE-THREE`.
 The male02 model is by Reallusion iClone, from Google 3D Warehouse; see
 `obj/male02/readme.txt`.
+
+`gallery/assets/mdd/cube.mdd`, `obj/cerberus/` (Cerberus.obj and Cerberus_A.jpg),
+`3ds/portalgun/` and `gltf/Flower/` are the unmodified r186 `examples/models/`
+files. Their source paths and SHA-256 hashes are in
+`models-modifiers-manifest.json`; they are distributed alongside `LICENSE-THREE`.
+The Cerberus model is by Andrew Maximov, as credited by the Three.js examples.
+The Flower model is by Kenney (CC0 1.0), with modifications by Don McCurdy; see
+`gltf/Flower/README.md`. The teapot reuses the retained `environment-materials`
+Pisa cube and `uv_grid_opengl.jpg`.

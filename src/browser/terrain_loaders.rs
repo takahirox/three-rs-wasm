@@ -546,14 +546,14 @@ fn vox_mesh(chunk: &VoxChunk, palette: &[u32]) -> Result<BufferGeometry> {
     Ok(g)
 }
 /// A parsed OBJ object: non-indexed triangles and its material groups.
-struct ObjObject {
-    positions: Vec<f32>,
-    normals: Vec<f32>,
-    uvs: Vec<f32>,
-    groups: Vec<(String, usize, usize)>,
+pub(super) struct ObjObject {
+    pub(super) positions: Vec<f32>,
+    pub(super) normals: Vec<f32>,
+    pub(super) uvs: Vec<f32>,
+    pub(super) groups: Vec<(String, usize, usize)>,
 }
 /// OBJLoader's parser state for faces, objects and `usemtl` groups (MTL materials given).
-fn parse_obj(text: &str) -> Vec<ObjObject> {
+pub(super) fn parse_obj(text: &str) -> Vec<ObjObject> {
     struct Mat {
         name: String,
         start: usize,
@@ -847,7 +847,7 @@ impl Demo {
             shown: usize::MAX,
         };
         match id {
-            218 | 219 => d.terrain_scene(s, c)?,
+            218 | 219 => d.terrain_scene(s, c, r).await?,
             220 => {
                 for asset in GCODE_ASSETS {
                     let bytes = fetch(&format!("/web/gallery/assets/gcode/{asset}.gcode")).await?;
@@ -866,7 +866,7 @@ impl Demo {
         }
         Ok(d)
     }
-    fn terrain_scene(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
+    async fn terrain_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         // webgl_geometry_terrain seeds its own Math.random with sin( seed++ ); the raycast
         // variant draws from the page's (seeded) Math.random.
         let mut sine_seed = PI / 4.;
@@ -911,9 +911,26 @@ impl Demo {
             let mut cone = CylinderGeometry::build(0., 20., 100., 3, 1, false, 0., TAU)?;
             cone.translate(Vector3::new(0., 50., 0.))?;
             cone.rotate_x(PI / 2.)?;
+            // WebGL's MeshNormalMaterial writes packed normals without the output encoding:
+            // decode them so the encoded target stores the original's values.
+            let normal = crate::tsl::WgslFn::new(
+                "raw_normal",
+                "fn raw_normal(k:f32)->vec4<f32>{let c=normalize(fragment_surface.normal)*0.5+0.5+vec3(k);return vec4(select(pow((c+vec3(0.055))/1.055,vec3(2.4)),c/12.92,c<=vec3(0.04045)),1.0);}",
+                &[crate::tsl::Type::Float],
+                crate::tsl::Type::Vec4,
+            )?
+            .call(&[crate::tsl::float(0.)]);
+            let program = crate::shader::ShaderProgram::with_projection(
+                r,
+                &crate::tsl::NodeMaterial::new(normal).wgsl(0)?,
+                &[],
+                &[],
+                "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}",
+            )
+            .await?;
             self.helper = Some(s.insert(NodeKind::Mesh(Mesh::new(
                 Arc::new(cone),
-                Arc::new(Material::Normal(MeshNormalMaterial::default())),
+                Arc::new(Material::Shader(ShaderMaterial::new(Arc::new(program)))),
             ))));
         } else {
             s.background = Color::from_hex(0xefd1b5);

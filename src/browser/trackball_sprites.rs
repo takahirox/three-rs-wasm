@@ -65,37 +65,38 @@ fn cones(s: &mut Scene, seed: &mut u32) -> Result<()> {
     Ok(())
 }
 #[derive(Clone, Copy, PartialEq)]
-enum Mode {
+pub(super) enum Mode {
     None,
     Rotate,
     Zoom,
     Pan,
 }
 /// TrackballControls with its screen-space pointer state, stepped once per 60 fps step.
-struct Trackball {
-    camera: Object3D,
+pub(super) struct Trackball {
+    pub(super) camera: Object3D,
+    pub(super) pan_speed: f64,
     target: Vector3,
     eye: Vector3,
     move_prev: Vector2,
     move_curr: Vector2,
     last_axis: Vector3,
     last_angle: f64,
-    zoom_start: Vector2,
+    pub(super) zoom_start: Vector2,
     zoom_end: Vector2,
     pan_start: Vector2,
     pan_end: Vector2,
-    state: Mode,
-    key_state: Mode,
-    screen: Vector2,
+    pub(super) state: Mode,
+    pub(super) key_state: Mode,
+    pub(super) screen: Vector2,
 }
 impl Trackball {
     const ROTATE_SPEED: f64 = 1.0;
     const ZOOM_SPEED: f64 = 1.2;
-    const PAN_SPEED: f64 = 0.8;
     const DAMPING: f64 = 0.2;
-    fn new(s: &mut Scene, camera: Object3D, screen: Vector2) -> Result<Self> {
+    pub(super) fn new(s: &mut Scene, camera: Object3D, screen: Vector2) -> Result<Self> {
         let mut t = Self {
             camera,
+            pan_speed: 0.3,
             target: Vector3::ZERO,
             eye: Vector3::ZERO,
             move_prev: Vector2::ZERO,
@@ -114,6 +115,11 @@ impl Trackball {
         t.update(s)?;
         Ok(t)
     }
+    /// The example's `panSpeed`; TrackballControls defaults to 0.3.
+    pub(super) fn with_pan_speed(mut self, speed: f64) -> Self {
+        self.pan_speed = speed;
+        self
+    }
     fn on_screen(&self, x: f64, y: f64) -> Vector2 {
         Vector2::new(x / self.screen.x, y / self.screen.y)
     }
@@ -123,7 +129,7 @@ impl Trackball {
             (self.screen.y - 2. * y) / self.screen.x,
         )
     }
-    fn down(&mut self, button: u32, x: f64, y: f64) {
+    pub(super) fn down(&mut self, button: u32, x: f64, y: f64) {
         // mouseButtons: LEFT rotate, MIDDLE dolly, RIGHT pan.
         self.state = match button {
             0 => Mode::Rotate,
@@ -152,7 +158,7 @@ impl Trackball {
             Mode::None => {}
         }
     }
-    fn moved(&mut self, x: f64, y: f64) {
+    pub(super) fn moved(&mut self, x: f64, y: f64) {
         let state = if self.key_state != Mode::None {
             self.key_state
         } else {
@@ -165,7 +171,7 @@ impl Trackball {
             Mode::None => {}
         }
     }
-    fn update(&mut self, s: &mut Scene) -> Result<()> {
+    pub(super) fn update(&mut self, s: &mut Scene) -> Result<()> {
         let c = self.camera;
         let n = s.get(c)?;
         let (mut position, mut up) = (n.position, n.up);
@@ -213,7 +219,7 @@ impl Trackball {
                 change.x *= (o.right - o.left) / o.zoom / width;
                 change.y *= (o.top - o.bottom) / o.zoom / width;
             }
-            change *= self.eye.length() * Self::PAN_SPEED;
+            change *= self.eye.length() * self.pan_speed;
             let set_length = |v: Vector3, l: f64| v.normalize_or_zero() * l;
             let pan = set_length(self.eye.cross(up), change.x) + set_length(up, change.y);
             position += pan;
@@ -555,7 +561,7 @@ impl Demo {
         self.cameras = vec![c, orthographic];
         self.set_frustum(s)?;
         let (w, h, _) = viewport_css();
-        self.trackball = Some(Trackball::new(s, c, Vector2::new(w, h))?);
+        self.trackball = Some(Trackball::new(s, c, Vector2::new(w, h))?.with_pan_speed(0.8));
         Ok(())
     }
     fn set_frustum(&self, s: &mut Scene) -> Result<()> {
@@ -803,7 +809,8 @@ impl Demo {
                 let camera = self.cameras[usize::from(self.params[0] > 0.5)];
                 let (w, h, _) = viewport_css();
                 if self.trackball.as_ref().is_none_or(|t| t.camera != camera) {
-                    self.trackball = Some(Trackball::new(s, camera, Vector2::new(w, h))?);
+                    self.trackball =
+                        Some(Trackball::new(s, camera, Vector2::new(w, h))?.with_pan_speed(0.8));
                 }
                 // handleResize() on window resize.
                 if let Some(t) = &mut self.trackball {

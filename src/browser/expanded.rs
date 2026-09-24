@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    ModelsModifiers(Box<super::models_modifiers::Demo>),
     TerrainLoaders(Box<super::terrain_loaders::Demo>),
     TrackballSprites(Box<super::trackball_sprites::Demo>),
     ControlsAttributes(Box<super::controls_attributes::Demo>),
@@ -82,6 +83,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            223..=227 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ModelsModifiers(Box::new(
+                    super::models_modifiers::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             218..=222 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -736,6 +746,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1167,6 +1180,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            demo.prepare(scene, camera)?;
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1206,6 +1222,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1300,6 +1319,9 @@ impl Demo {
         }
     }
     pub fn key(&mut self, code: u32, down: bool) {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1319,6 +1341,10 @@ impl Demo {
         }
     }
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1332,6 +1358,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1438,6 +1467,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::ModelsModifiers(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

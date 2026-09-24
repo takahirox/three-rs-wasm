@@ -916,7 +916,7 @@
       "id": "webgl_geometry_teapot",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_teapot.html",
       "source_sha256": "92daa0b21527b7bd743c0c312e0361b7ca7e317ccb1fa282fc97914883375f91",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_geometry_teapot",
         "source_sha256": "92daa0b21527b7bd743c0c312e0361b7ca7e317ccb1fa282fc97914883375f91",
@@ -1215,7 +1215,7 @@
       "id": "webgl_instancing_scatter",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_scatter.html",
       "source_sha256": "9cf99f7c5a7bc480daffbc80ddfaa86dea3db0b48c25f4761a639f1b4e863cf1",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_instancing_scatter",
         "source_sha256": "9cf99f7c5a7bc480daffbc80ddfaa86dea3db0b48c25f4761a639f1b4e863cf1",
@@ -1934,7 +1934,7 @@
       "id": "webgl_loader_3ds",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3ds.html",
       "source_sha256": "856222fcdecd8bd11c5380e0e4d778988d6960380672148120708728777bc77a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_3ds",
         "source_sha256": "856222fcdecd8bd11c5380e0e4d778988d6960380672148120708728777bc77a",
@@ -2714,7 +2714,7 @@
       "id": "webgl_loader_mdd",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_mdd.html",
       "source_sha256": "1f2ac7b4f32ea19d433762c8cadb1e3f85bc2303fefdfb75b55ef32556ebb0ad",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_mdd",
         "source_sha256": "1f2ac7b4f32ea19d433762c8cadb1e3f85bc2303fefdfb75b55ef32556ebb0ad",
@@ -4411,7 +4411,7 @@
       "id": "webgl_modifier_edgesplit",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_edgesplit.html",
       "source_sha256": "dbb115e40909c4844f4639f2b9f411b748487cbc7aa8300908eb9cfc56a6c2ea",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_modifier_edgesplit",
         "source_sha256": "dbb115e40909c4844f4639f2b9f411b748487cbc7aa8300908eb9cfc56a6c2ea",

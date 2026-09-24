@@ -483,3 +483,18 @@ The raycast uses the original's per-move CPU query. GCode files are parsed once
 per asset and stay resident; the original re-parses on every switch. After a
 warm pass, no scene uploads geometry or texture data. Warmed cycles create no
 GPU resources. No GPU timing parity is claimed.
+
+### MDD, edge split, 3DS, teapot and instance scattering
+
+The [MDD, edge-split, 3DS, teapot and scattering ports](models-modifiers.md)
+match the original draws: one morphing box, the edge-split, 3DS and teapot
+meshes, and the torus knot with two 2,000-instance flower draws.
+
+- **MDD.** Morphs on the GPU.
+- **Edge split and teapot.** Keep every visited geometry and material
+  combination resident instead of rebuilding it.
+- **Scattering.** Keeps the original's per-frame CPU instance work. It writes
+  319,960 bytes of instance transforms and colors each frame, against the
+  original's 256,000 bytes of instance matrices.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

@@ -129,3 +129,8 @@ The WebGL-only terrain, GCode, VOX and OBJ batch
 silhouettes and the dense GCode lines. The GCode scene must keep the original's
 mean level in every state. All five scenes match within the ordinary threshold
 with MSAA off.
+
+The WebGL-only MDD, edge-split, 3DS, teapot and scattering batch
+([models-modifiers.md](models-modifiers.md)) bounds only 4× MSAA comparisons of
+silhouettes, the teapot wireframe and the scattered flowers. All five scenes
+match within the ordinary threshold with MSAA off.

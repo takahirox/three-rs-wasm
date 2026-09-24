@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 218 partial Rust ports; 373 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 223 partial Rust ports; 368 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_loader_mdd | `tests/browser/models-modifiers.spec.js` | MDDLoaderのモーフターゲットとAnimationMixerの線形補間・ループをRustで再現し、GPUでモーフ合成。性能の完全な同等性は未保証。 |
+| webgl_modifier_edgesplit | `tests/browser/models-modifiers.spec.js` | OBJLoader・mergeVertices・EdgeSplitModifierをRustで再現。パラメータの組ごとのジオメトリは一度だけ構築して常駐（原本は変更ごとに再構築）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_3ds | `tests/browser/models-modifiers.spec.js` | TDSLoaderのチャンク解析とPhongマテリアル、法線マップ、TrackballControlsをRustで再現。更新は60fps相当の時間ステップ。性能の完全な同等性は未保証。 |
+| webgl_geometry_teapot | `tests/browser/models-modifiers.spec.js` | TeapotGeometryのベジェ面分割と6種のシェーディング（反射はPhong結果に環境キューブを乗算）をRustで再現。組ごとのジオメトリは常駐。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_instancing_scatter | `tests/browser/models-modifiers.spec.js` | MeshSurfaceSamplerと毎フレームのCPUインスタンス行列更新（原本と同じ）を60fps相当の時間基準で再現。resampleボタンは未移植。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_terrain | `tests/browser/terrain-loaders.spec.js` | ImprovedNoise地形と原本の正弦乱数、Canvas2Dでの陰影テクスチャ拡大をRustで再現。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_terrain_raycast | `tests/browser/terrain-loaders.spec.js` | 地形とテクスチャ生成をRustで再現。ポインタ移動ごとのCPUレイキャスト（原本と同じ）で円錐を面法線へ向ける。OrbitControlsのキーボード操作は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_gcode | `tests/browser/terrain-loaders.spec.js` | GCodeLoaderの解析をRustで再現し、各ファイルの線分は一度だけ構築して常駐（原本は切替ごとに再解析）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |

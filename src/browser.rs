@@ -23,6 +23,7 @@ mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
 mod material_textures;
+mod models_modifiers;
 mod point_clouds;
 mod point_lights;
 mod robot;
@@ -30,6 +31,7 @@ mod room_environment;
 mod shader_geometry;
 mod shapes;
 mod stereo_loaders;
+mod teapot_data;
 mod terrain_loaders;
 mod trackball_sprites;
 mod tsl_compute;
@@ -186,6 +188,7 @@ impl State {
             168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188,
             189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
             206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+            223, 224, 225, 226, 227,
         ]
         .contains(&self.example)
         {
@@ -905,7 +908,8 @@ impl BrowserApp {
                         encode_srgb: [
                             16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191,
                             193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204, 205, 206, 207,
-                            208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222,
+                            208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224, 225,
+                            226, 227,
                         ]
                         .contains(&example),
                         format: if [
@@ -913,7 +917,8 @@ impl BrowserApp {
                             165, 166, 167, 168, 169, 170, 172, 173, 174, 175, 176, 177, 181, 182,
                             183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
                             197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
-                            211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+                            211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
+                            225, 226, 227,
                         ]
                         .contains(&example)
                         {
@@ -943,7 +948,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=222).contains(&example) {
+            if (7..=227).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1100,7 +1105,7 @@ impl BrowserApp {
                         return;
                     }
                     // These official static scenes render only on load, input and resize.
-                    if !([16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220]
+                    if !([16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226]
                         .contains(&state.example)
                         || state.paused && state.example >= 39)
                     {

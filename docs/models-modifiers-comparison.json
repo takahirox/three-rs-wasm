@@ -1,0 +1,1980 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/models-modifiers.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Models-0978b--webgl-loader-3ds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000591278076171875,
+      "meanError": 0.019331614176432293
+     },
+     {
+      "state": 1,
+      "fraction": 0.000213623046875,
+      "meanError": 0.00711822509765625
+     },
+     {
+      "state": 2,
+      "fraction": 0.00028228759765625,
+      "meanError": 0.008413950602213541
+     },
+     {
+      "state": 3,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.0018908182779947917
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0002288818359375
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00016276041666666666
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00017057291666666666
+     }
+    ]
+   },
+   "Models-1b5a9--webgl-loader-3ds-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.010021209716796875,
+      "meanError": 0.23067474365234375
+     },
+     {
+      "state": 1,
+      "fraction": 0.005329132080078125,
+      "meanError": 0.11768722534179688
+     },
+     {
+      "state": 2,
+      "fraction": 0.006008148193359375,
+      "meanError": 0.13298670450846353
+     },
+     {
+      "state": 3,
+      "fraction": 0.003635406494140625,
+      "meanError": 0.0770428975423177
+     },
+     {
+      "state": 4,
+      "fraction": 0.00267791748046875,
+      "meanError": 0.06361643473307292
+     },
+     {
+      "state": 5,
+      "fraction": 0.002689361572265625,
+      "meanError": 0.0641314188639323
+     },
+     {
+      "state": 6,
+      "fraction": 0.0033984375,
+      "meanError": 0.08924869791666666
+     }
+    ]
+   },
+   "Models-1c586--residency-webgl-loader-mdd": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-32b87-cy-webgl-instancing-scatter": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 50,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 50,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-3d929-l-geometry-teapot-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.003265380859375,
+      "meanError": 0.08230972290039062
+     },
+     {
+      "state": 1,
+      "fraction": 0.07643890380859375,
+      "meanError": 4.982822418212891
+     },
+     {
+      "state": 2,
+      "fraction": 0.008701324462890625,
+      "meanError": 0.30495452880859375
+     },
+     {
+      "state": 3,
+      "fraction": 0.003383636474609375,
+      "meanError": 0.10868072509765625
+     },
+     {
+      "state": 4,
+      "fraction": 0.004413604736328125,
+      "meanError": 0.1008148193359375
+     },
+     {
+      "state": 5,
+      "fraction": 0.00262451171875,
+      "meanError": 0.08562342325846355
+     },
+     {
+      "state": 6,
+      "fraction": 0.00217437744140625,
+      "meanError": 0.07798385620117188
+     },
+     {
+      "state": 7,
+      "fraction": 0.001834869384765625,
+      "meanError": 0.0694109598795573
+     },
+     {
+      "state": 8,
+      "fraction": 0.001834869384765625,
+      "meanError": 0.0694109598795573
+     },
+     {
+      "state": 9,
+      "fraction": 0.00142669677734375,
+      "meanError": 0.06237920125325521
+     },
+     {
+      "state": 10,
+      "fraction": 0.001384735107421875,
+      "meanError": 0.060703277587890625
+     },
+     {
+      "state": 11,
+      "fraction": 0.00220489501953125,
+      "meanError": 0.059856414794921875
+     },
+     {
+      "state": 12,
+      "fraction": 0.002368927001953125,
+      "meanError": 0.061832427978515625
+     },
+     {
+      "state": 13,
+      "fraction": 0.002689361572265625,
+      "meanError": 0.07160186767578125
+     },
+     {
+      "state": 14,
+      "fraction": 0.00205859375,
+      "meanError": 0.05378125
+     }
+    ]
+   },
+   "Models-46c98--residency-webgl-loader-3ds": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-5d9a9-nstancing-scatter-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.034702301025390625,
+      "meanError": 0.720055898030599
+     },
+     {
+      "state": 1,
+      "fraction": 0.03650665283203125,
+      "meanError": 0.7623278299967448
+     },
+     {
+      "state": 2,
+      "fraction": 0.037052154541015625,
+      "meanError": 0.7755915323893229
+     },
+     {
+      "state": 3,
+      "fraction": 0.038013458251953125,
+      "meanError": 0.7918891906738281
+     },
+     {
+      "state": 4,
+      "fraction": 0.03363800048828125,
+      "meanError": 0.7091662089029948
+     },
+     {
+      "state": 5,
+      "fraction": 0.01813507080078125,
+      "meanError": 0.36985015869140625
+     },
+     {
+      "state": 6,
+      "fraction": 0.017787933349609375,
+      "meanError": 0.35572179158528644
+     },
+     {
+      "state": 7,
+      "fraction": 0.0135390625,
+      "meanError": 0.27233203125
+     }
+    ]
+   },
+   "Models-6fe68--webgl-loader-mdd-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Models-7e872--webgl-loader-mdd-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0006561279296875,
+      "meanError": 0.022424062093098957
+     },
+     {
+      "state": 1,
+      "fraction": 0.0008087158203125,
+      "meanError": 0.0277862548828125
+     },
+     {
+      "state": 2,
+      "fraction": 0.001129150390625,
+      "meanError": 0.038970947265625
+     },
+     {
+      "state": 3,
+      "fraction": 0.0018463134765625,
+      "meanError": 0.06379954020182292
+     },
+     {
+      "state": 4,
+      "fraction": 0.00206756591796875,
+      "meanError": 0.07186508178710938
+     },
+     {
+      "state": 5,
+      "fraction": 0.000823974609375,
+      "meanError": 0.028713226318359375
+     },
+     {
+      "state": 6,
+      "fraction": 0.00090789794921875,
+      "meanError": 0.03163909912109375
+     },
+     {
+      "state": 7,
+      "fraction": 0.00071875,
+      "meanError": 0.024446614583333335
+     }
+    ]
+   },
+   "Models-7ec66-odifier-edgesplit-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.000110626220703125
+     },
+     {
+      "state": 1,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.020496368408203125
+     },
+     {
+      "state": 2,
+      "fraction": 0.000881195068359375,
+      "meanError": 0.040407816569010414
+     },
+     {
+      "state": 3,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.020496368408203125
+     },
+     {
+      "state": 4,
+      "fraction": 0.000225067138671875,
+      "meanError": 0.020787556966145832
+     },
+     {
+      "state": 5,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.020496368408203125
+     },
+     {
+      "state": 6,
+      "fraction": 0.000202178955078125,
+      "meanError": 0.020664215087890625
+     },
+     {
+      "state": 7,
+      "fraction": 0.000213623046875,
+      "meanError": 0.020809173583984375
+     },
+     {
+      "state": 8,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.021357218424479168
+     },
+     {
+      "state": 9,
+      "fraction": 0.000171661376953125,
+      "meanError": 0.026678721110026043
+     },
+     {
+      "state": 10,
+      "fraction": 0.0001171875,
+      "meanError": 0.01844921875
+     }
+    ]
+   },
+   "Models-91d07-dency-webgl-geometry-teapot": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 216,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 216,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 221,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 221,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-a1ed7-odifier-edgesplit-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006412506103515625,
+      "meanError": 0.20220565795898438
+     },
+     {
+      "state": 1,
+      "fraction": 0.005596160888671875,
+      "meanError": 0.11767323811848958
+     },
+     {
+      "state": 2,
+      "fraction": 0.00652313232421875,
+      "meanError": 0.15131123860677084
+     },
+     {
+      "state": 3,
+      "fraction": 0.005596160888671875,
+      "meanError": 0.11767323811848958
+     },
+     {
+      "state": 4,
+      "fraction": 0.005382537841796875,
+      "meanError": 0.1132799784342448
+     },
+     {
+      "state": 5,
+      "fraction": 0.005596160888671875,
+      "meanError": 0.11767323811848958
+     },
+     {
+      "state": 6,
+      "fraction": 0.005435943603515625,
+      "meanError": 0.1142260233561198
+     },
+     {
+      "state": 7,
+      "fraction": 0.005596160888671875,
+      "meanError": 0.1160113016764323
+     },
+     {
+      "state": 8,
+      "fraction": 0.004917144775390625,
+      "meanError": 0.1030108133951823
+     },
+     {
+      "state": 9,
+      "fraction": 0.005218505859375,
+      "meanError": 0.11691665649414062
+     },
+     {
+      "state": 10,
+      "fraction": 0.0048515625,
+      "meanError": 0.10268229166666666
+     }
+    ]
+   },
+   "Models-c2e48-cy-webgl-modifier-edgesplit": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 91,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 91,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 96,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 96,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-cd2fc-nstancing-scatter-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.001354217529296875
+     },
+     {
+      "state": 1,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.000919342041015625
+     },
+     {
+      "state": 2,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0008608500162760416
+     },
+     {
+      "state": 3,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.0016924540201822917
+     },
+     {
+      "state": 4,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0008405049641927084
+     },
+     {
+      "state": 5,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.000621795654296875
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0001068115234375
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 8.59375e-05
+     }
+    ]
+   },
+   "Models-cf49c--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_loader_mdd",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 16,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_edgesplit",
+      "reference": {
+       "draws": [
+        {
+         "count": 100623,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 100623,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_3ds",
+      "reference": {
+       "draws": [
+        {
+         "count": 12351,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 12351,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_teapot",
+      "reference": {
+       "draws": [
+        {
+         "count": 42840,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 42840,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_scatter",
+      "reference": {
+       "draws": [
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 114,
+         "instances": 2000
+        },
+        {
+         "count": 126,
+         "instances": 2000
+        }
+       ],
+       "attributeBytes": 256000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 126,
+         "instances": 2000
+        },
+        {
+         "count": 114,
+         "instances": 2000
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 319960,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Models-f6cbc-l-geometry-teapot-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0003509521484375
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.000972747802734375
+     },
+     {
+      "state": 2,
+      "fraction": 0.00485992431640625,
+      "meanError": 0.16199874877929688
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.000274658203125
+     },
+     {
+      "state": 4,
+      "fraction": 0.000370025634765625,
+      "meanError": 0.0388641357421875
+     },
+     {
+      "state": 5,
+      "fraction": 0.0003662109375,
+      "meanError": 0.050502777099609375
+     },
+     {
+      "state": 6,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.045176188151041664
+     },
+     {
+      "state": 7,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.04190953572591146
+     },
+     {
+      "state": 8,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.04190953572591146
+     },
+     {
+      "state": 9,
+      "fraction": 4.1961669921875e-05,
+      "meanError": 0.04129155476888021
+     },
+     {
+      "state": 10,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.040904998779296875
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.000274658203125
+     },
+     {
+      "state": 12,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.00084686279296875
+     },
+     {
+      "state": 13,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.00115966796875
+     },
+     {
+      "state": 14,
+      "fraction": 3.90625e-06,
+      "meanError": 0.0001875
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Models-0978b--webgl-loader-3ds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0001926422119140625,
+      "meanError": 0.0074774424235026045
+     },
+     {
+      "state": 1,
+      "fraction": 6.008148193359375e-05,
+      "meanError": 0.0019324620564778645
+     },
+     {
+      "state": 2,
+      "fraction": 6.389617919921875e-05,
+      "meanError": 0.0026842753092447915
+     },
+     {
+      "state": 3,
+      "fraction": 5.435943603515625e-05,
+      "meanError": 0.0016218821207682292
+     },
+     {
+      "state": 4,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.00048287709554036457
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.000400543212890625
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0004140625
+     }
+    ]
+   },
+   "Models-1b5a9--webgl-loader-3ds-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004825592041015625,
+      "meanError": 0.11108907063802083
+     },
+     {
+      "state": 1,
+      "fraction": 0.0025815963745117188,
+      "meanError": 0.05977312723795573
+     },
+     {
+      "state": 2,
+      "fraction": 0.0030279159545898438,
+      "meanError": 0.06761105855305989
+     },
+     {
+      "state": 3,
+      "fraction": 0.00270843505859375,
+      "meanError": 0.05898221333821615
+     },
+     {
+      "state": 4,
+      "fraction": 0.0015516281127929688,
+      "meanError": 0.03351434071858724
+     },
+     {
+      "state": 5,
+      "fraction": 0.0015239715576171875,
+      "meanError": 0.03283818562825521
+     },
+     {
+      "state": 6,
+      "fraction": 0.0016318359375,
+      "meanError": 0.0373095703125
+     }
+    ]
+   },
+   "Models-1c586--residency-webgl-loader-mdd": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        2064,
+        1536
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-32b87-cy-webgl-instancing-scatter": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 50,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 50,
+       "transfers": [
+        3,
+        786400,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-3d929-l-geometry-teapot-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0016231536865234375,
+      "meanError": 0.04119110107421875
+     },
+     {
+      "state": 1,
+      "fraction": 0.07543659210205078,
+      "meanError": 4.888463020324707
+     },
+     {
+      "state": 2,
+      "fraction": 0.0057964324951171875,
+      "meanError": 0.21538639068603516
+     },
+     {
+      "state": 3,
+      "fraction": 0.0016641616821289062,
+      "meanError": 0.05437660217285156
+     },
+     {
+      "state": 4,
+      "fraction": 0.0024614334106445312,
+      "meanError": 0.05734952290852865
+     },
+     {
+      "state": 5,
+      "fraction": 0.0014820098876953125,
+      "meanError": 0.05507183074951172
+     },
+     {
+      "state": 6,
+      "fraction": 0.0011396408081054688,
+      "meanError": 0.050350189208984375
+     },
+     {
+      "state": 7,
+      "fraction": 0.0009374618530273438,
+      "meanError": 0.044608751932779946
+     },
+     {
+      "state": 8,
+      "fraction": 0.0009374618530273438,
+      "meanError": 0.044608751932779946
+     },
+     {
+      "state": 9,
+      "fraction": 0.0006809234619140625,
+      "meanError": 0.04170385996500651
+     },
+     {
+      "state": 10,
+      "fraction": 0.00067138671875,
+      "meanError": 0.04085318247477213
+     },
+     {
+      "state": 11,
+      "fraction": 0.001071929931640625,
+      "meanError": 0.029539108276367188
+     },
+     {
+      "state": 12,
+      "fraction": 0.0011663436889648438,
+      "meanError": 0.030424118041992188
+     },
+     {
+      "state": 13,
+      "fraction": 0.0012464523315429688,
+      "meanError": 0.03259754180908203
+     },
+     {
+      "state": 14,
+      "fraction": 0.0009892578125,
+      "meanError": 0.0258916015625
+     }
+    ]
+   },
+   "Models-46c98--residency-webgl-loader-3ds": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        359004,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-5d9a9-nstancing-scatter-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.018019676208496094,
+      "meanError": 0.3770281473795573
+     },
+     {
+      "state": 1,
+      "fraction": 0.0188140869140625,
+      "meanError": 0.39456907908121747
+     },
+     {
+      "state": 2,
+      "fraction": 0.01933765411376953,
+      "meanError": 0.4075949986775716
+     },
+     {
+      "state": 3,
+      "fraction": 0.019698143005371094,
+      "meanError": 0.41459496815999347
+     },
+     {
+      "state": 4,
+      "fraction": 0.01772308349609375,
+      "meanError": 0.37456321716308594
+     },
+     {
+      "state": 5,
+      "fraction": 0.00942230224609375,
+      "meanError": 0.19158013661702475
+     },
+     {
+      "state": 6,
+      "fraction": 0.009219169616699219,
+      "meanError": 0.18471399943033853
+     },
+     {
+      "state": 7,
+      "fraction": 0.006970703125,
+      "meanError": 0.13981640625
+     }
+    ]
+   },
+   "Models-6fe68--webgl-loader-mdd-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Models-7e872--webgl-loader-mdd-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00031280517578125,
+      "meanError": 0.010706265767415365
+     },
+     {
+      "state": 1,
+      "fraction": 0.0004329681396484375,
+      "meanError": 0.014929453531901041
+     },
+     {
+      "state": 2,
+      "fraction": 0.000579833984375,
+      "meanError": 0.019979476928710938
+     },
+     {
+      "state": 3,
+      "fraction": 0.00092315673828125,
+      "meanError": 0.03195412953694662
+     },
+     {
+      "state": 4,
+      "fraction": 0.00103759765625,
+      "meanError": 0.03619066874186198
+     },
+     {
+      "state": 5,
+      "fraction": 0.0004138946533203125,
+      "meanError": 0.014140129089355469
+     },
+     {
+      "state": 6,
+      "fraction": 0.0004520416259765625,
+      "meanError": 0.015654881795247395
+     },
+     {
+      "state": 7,
+      "fraction": 0.000357421875,
+      "meanError": 0.012316731770833334
+     }
+    ]
+   },
+   "Models-7ec66-odifier-edgesplit-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.000118255615234375
+     },
+     {
+      "state": 1,
+      "fraction": 0.00011157989501953125,
+      "meanError": 0.011139869689941406
+     },
+     {
+      "state": 2,
+      "fraction": 0.00036716461181640625,
+      "meanError": 0.02295398712158203
+     },
+     {
+      "state": 3,
+      "fraction": 0.00011157989501953125,
+      "meanError": 0.011139869689941406
+     },
+     {
+      "state": 4,
+      "fraction": 0.00012874603271484375,
+      "meanError": 0.011658668518066406
+     },
+     {
+      "state": 5,
+      "fraction": 0.00011157989501953125,
+      "meanError": 0.011139869689941406
+     },
+     {
+      "state": 6,
+      "fraction": 0.00012683868408203125,
+      "meanError": 0.011509577433268229
+     },
+     {
+      "state": 7,
+      "fraction": 0.00012683868408203125,
+      "meanError": 0.011576016743977865
+     },
+     {
+      "state": 8,
+      "fraction": 0.00019359588623046875,
+      "meanError": 0.011664390563964844
+     },
+     {
+      "state": 9,
+      "fraction": 0.0001983642578125,
+      "meanError": 0.011619249979654947
+     },
+     {
+      "state": 10,
+      "fraction": 0.0001669921875,
+      "meanError": 0.010906901041666667
+     }
+    ]
+   },
+   "Models-91d07-dency-webgl-geometry-teapot": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 216,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 216,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 221,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 221,
+       "transfers": [
+        12,
+        16720544,
+        176
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-a1ed7-odifier-edgesplit-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0032215118408203125,
+      "meanError": 0.10275077819824219
+     },
+     {
+      "state": 1,
+      "fraction": 0.0024566650390625,
+      "meanError": 0.05453141530354818
+     },
+     {
+      "state": 2,
+      "fraction": 0.0030431747436523438,
+      "meanError": 0.0791333516438802
+     },
+     {
+      "state": 3,
+      "fraction": 0.0024566650390625,
+      "meanError": 0.05453141530354818
+     },
+     {
+      "state": 4,
+      "fraction": 0.0024127960205078125,
+      "meanError": 0.052466392517089844
+     },
+     {
+      "state": 5,
+      "fraction": 0.0024566650390625,
+      "meanError": 0.05453141530354818
+     },
+     {
+      "state": 6,
+      "fraction": 0.0024251937866210938,
+      "meanError": 0.05299218495686849
+     },
+     {
+      "state": 7,
+      "fraction": 0.00247955322265625,
+      "meanError": 0.0539086659749349
+     },
+     {
+      "state": 8,
+      "fraction": 0.0025835037231445312,
+      "meanError": 0.055679003397623696
+     },
+     {
+      "state": 9,
+      "fraction": 0.002635955810546875,
+      "meanError": 0.057656288146972656
+     },
+     {
+      "state": 10,
+      "fraction": 0.002173828125,
+      "meanError": 0.04731184895833333
+     }
+    ]
+   },
+   "Models-c2e48-cy-webgl-modifier-edgesplit": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 91,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 91,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 96,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 96,
+       "transfers": [
+        5,
+        39613260,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Models-cd2fc-nstancing-scatter-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.239776611328125e-05,
+      "meanError": 0.0009237925211588541
+     },
+     {
+      "state": 1,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.0013904571533203125
+     },
+     {
+      "state": 2,
+      "fraction": 2.193450927734375e-05,
+      "meanError": 0.0015770594278971355
+     },
+     {
+      "state": 3,
+      "fraction": 6.67572021484375e-06,
+      "meanError": 0.0007028579711914062
+     },
+     {
+      "state": 4,
+      "fraction": 2.288818359375e-05,
+      "meanError": 0.001258532206217448
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-06,
+      "meanError": 0.0006602605183919271
+     },
+     {
+      "state": 6,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.000614166259765625
+     },
+     {
+      "state": 7,
+      "fraction": 1.953125e-06,
+      "meanError": 0.0002197265625
+     }
+    ]
+   },
+   "Models-cf49c--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_loader_mdd",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 16,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_edgesplit",
+      "reference": {
+       "draws": [
+        {
+         "count": 100623,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 100623,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_3ds",
+      "reference": {
+       "draws": [
+        {
+         "count": 12351,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 12351,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_geometry_teapot",
+      "reference": {
+       "draws": [
+        {
+         "count": 42840,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 42840,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_scatter",
+      "reference": {
+       "draws": [
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 114,
+         "instances": 2000
+        },
+        {
+         "count": 126,
+         "instances": 2000
+        }
+       ],
+       "attributeBytes": 256000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 126,
+         "instances": 2000
+        },
+        {
+         "count": 114,
+         "instances": 2000
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 319960,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Models-f6cbc-l-geometry-teapot-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.000438690185546875
+     },
+     {
+      "state": 1,
+      "fraction": 1.049041748046875e-05,
+      "meanError": 0.0026750564575195312
+     },
+     {
+      "state": 2,
+      "fraction": 0.00382232666015625,
+      "meanError": 0.13909435272216797
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 0.00035858154296875
+     },
+     {
+      "state": 4,
+      "fraction": 0.00043487548828125,
+      "meanError": 0.024527549743652344
+     },
+     {
+      "state": 5,
+      "fraction": 0.0002727508544921875,
+      "meanError": 0.03778266906738281
+     },
+     {
+      "state": 6,
+      "fraction": 4.76837158203125e-05,
+      "meanError": 0.03392473856608073
+     },
+     {
+      "state": 7,
+      "fraction": 4.00543212890625e-05,
+      "meanError": 0.03112951914469401
+     },
+     {
+      "state": 8,
+      "fraction": 4.00543212890625e-05,
+      "meanError": 0.03112951914469401
+     },
+     {
+      "state": 9,
+      "fraction": 2.765655517578125e-05,
+      "meanError": 0.031401634216308594
+     },
+     {
+      "state": 10,
+      "fraction": 2.765655517578125e-05,
+      "meanError": 0.031189600626627605
+     },
+     {
+      "state": 11,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0004711151123046875
+     },
+     {
+      "state": 12,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.0011997222900390625
+     },
+     {
+      "state": 13,
+      "fraction": 1.33514404296875e-05,
+      "meanError": 0.0012531280517578125
+     },
+     {
+      "state": 14,
+      "fraction": 1.07421875e-05,
+      "meanError": 0.0008046875
+     }
+    ]
+   }
+  }
+ }
+}

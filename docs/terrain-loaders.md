@@ -35,6 +35,9 @@ inventory, so each is compared against the original WebGL renderer.
 - **Raycast.** The raycast example casts on the CPU for each pointer move, as
   the original does. The cone looks along the hit triangle's
   `Triangle.getNormal`, then moves to the hit point.
+- **Normal material.** WebGL's `MeshNormalMaterial` writes its packed normals
+  without the output encoding. The cone decodes them first, so the encoded
+  target stores the original's values.
 
 ### GCode
 
@@ -93,7 +96,7 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 | Case | DPR 1 | DPR 2 |
 | --- | --- | --- |
 | Terrain | 0.002% / 0.42 | 0.001% / 0.42 |
-| Raycast terrain, MSAA off / on | 0.216% / 0.07, 0.737% / 0.19 | 0.085% / 0.03, 0.308% / 0.08 |
+| Raycast terrain, MSAA off / on | 0.198% / 0.06, 0.719% / 0.18 | 0.066% / 0.02, 0.290% / 0.07 |
 | GCode, MSAA off / on | 0.058% / 0.10, 10.977% / 4.35 | 0.046% / 0.08, 10.641% / 3.63 |
 | VOX, MSAA off / on | 0.001% / 0.00, 1.863% / 0.27 | 0% / 0.00, 0.931% / 0.13 |
 | OBJ, MSAA off / on | 0% / 0.00, 0.301% / 0.06 | 0% / 0.00, 0.143% / 0.03 |

@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 371,
-    "runnable-partial": 218,
+    "blocked-at-port-review": 366,
+    "runnable-partial": 223,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -2777,10 +2777,10 @@
     },
     {
       "id": "webgl_geometry_teapot",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_teapot.html",
       "source_sha256": "92daa0b21527b7bd743c0c312e0361b7ca7e317ccb1fa282fc97914883375f91",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/models-modifiers.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3529,10 +3529,10 @@
     },
     {
       "id": "webgl_instancing_scatter",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_scatter.html",
       "source_sha256": "9cf99f7c5a7bc480daffbc80ddfaa86dea3db0b48c25f4761a639f1b4e863cf1",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/models-modifiers.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -5243,10 +5243,10 @@
     },
     {
       "id": "webgl_loader_3ds",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3ds.html",
       "source_sha256": "856222fcdecd8bd11c5380e0e4d778988d6960380672148120708728777bc77a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/models-modifiers.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -7202,10 +7202,10 @@
     },
     {
       "id": "webgl_loader_mdd",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_mdd.html",
       "source_sha256": "1f2ac7b4f32ea19d433762c8cadb1e3f85bc2303fefdfb75b55ef32556ebb0ad",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/models-modifiers.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -11098,10 +11098,10 @@
     },
     {
       "id": "webgl_modifier_edgesplit",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_edgesplit.html",
       "source_sha256": "dbb115e40909c4844f4639f2b9f411b748487cbc7aa8300908eb9cfc56a6c2ea",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/models-modifiers.spec.js",
       "blockers": [
         {
           "kind": "core-api",

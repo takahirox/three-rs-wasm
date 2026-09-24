@@ -1935,7 +1935,7 @@
     {
       "id": "webgl_geometry_teapot",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_teapot.html",
       "source_sha256": "92daa0b21527b7bd743c0c312e0361b7ca7e317ccb1fa282fc97914883375f91",
@@ -1985,7 +1985,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 226,
+        "source": "src/browser/models_modifiers.rs",
+        "test": "tests/browser/models-modifiers.spec.js",
+        "limitations": [
+          "TeapotGeometryのベジェ面分割と6種のシェーディング（反射はPhong結果に環境キューブを乗算）をRustで再現。組ごとのジオメトリは常駐。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2430,7 +2437,7 @@
     {
       "id": "webgl_instancing_scatter",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_scatter.html",
       "source_sha256": "9cf99f7c5a7bc480daffbc80ddfaa86dea3db0b48c25f4761a639f1b4e863cf1",
@@ -2464,7 +2471,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 227,
+        "source": "src/browser/models_modifiers.rs",
+        "test": "tests/browser/models-modifiers.spec.js",
+        "limitations": [
+          "MeshSurfaceSamplerと毎フレームのCPUインスタンス行列更新（原本と同じ）を60fps相当の時間基準で再現。resampleボタンは未移植。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -3693,7 +3707,7 @@
     {
       "id": "webgl_loader_3ds",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3ds.html",
       "source_sha256": "856222fcdecd8bd11c5380e0e4d778988d6960380672148120708728777bc77a",
@@ -3709,7 +3723,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 225,
+        "source": "src/browser/models_modifiers.rs",
+        "test": "tests/browser/models-modifiers.spec.js",
+        "limitations": [
+          "TDSLoaderのチャンク解析とPhongマテリアル、法線マップ、TrackballControlsをRustで再現。更新は60fps相当の時間ステップ。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -5047,7 +5068,7 @@
     {
       "id": "webgl_loader_mdd",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_mdd.html",
       "source_sha256": "1f2ac7b4f32ea19d433762c8cadb1e3f85bc2303fefdfb75b55ef32556ebb0ad",
@@ -5075,7 +5096,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 223,
+        "source": "src/browser/models_modifiers.rs",
+        "test": "tests/browser/models-modifiers.spec.js",
+        "limitations": [
+          "MDDLoaderのモーフターゲットとAnimationMixerの線形補間・ループをRustで再現し、GPUでモーフ合成。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/MDDLoader.js"
@@ -7964,7 +7992,7 @@
     {
       "id": "webgl_modifier_edgesplit",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_edgesplit.html",
       "source_sha256": "dbb115e40909c4844f4639f2b9f411b748487cbc7aa8300908eb9cfc56a6c2ea",
@@ -7996,7 +8024,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 224,
+        "source": "src/browser/models_modifiers.rs",
+        "test": "tests/browser/models-modifiers.spec.js",
+        "limitations": [
+          "OBJLoader・mergeVertices・EdgeSplitModifierをRustで再現。パラメータの組ごとのジオメトリは一度だけ構築して常駐（原本は変更ごとに再構築）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
