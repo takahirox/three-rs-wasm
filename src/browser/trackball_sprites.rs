@@ -75,6 +75,8 @@ pub(super) enum Mode {
 pub(super) struct Trackball {
     pub(super) camera: Object3D,
     pub(super) pan_speed: f64,
+    /// staticMoving: no damping; each update consumes the pointer motion.
+    pub(super) static_moving: bool,
     target: Vector3,
     eye: Vector3,
     move_prev: Vector2,
@@ -97,6 +99,7 @@ impl Trackball {
         let mut t = Self {
             camera,
             pan_speed: 0.3,
+            static_moving: false,
             target: Vector3::ZERO,
             eye: Vector3::ZERO,
             move_prev: Vector2::ZERO,
@@ -193,7 +196,7 @@ impl Trackball {
             up = q * up;
             self.last_axis = axis;
             self.last_angle = angle;
-        } else if self.last_angle != 0. {
+        } else if !self.static_moving && self.last_angle != 0. {
             self.last_angle *= (1. - Self::DAMPING).sqrt();
             self.eye = position - self.target;
             let q = Quaternion::from_axis_angle(self.last_axis, self.last_angle);
@@ -210,7 +213,11 @@ impl Trackball {
                 o.zoom = (o.zoom / factor).max(0.);
             }
         }
-        self.zoom_start.y += (self.zoom_end.y - self.zoom_start.y) * Self::DAMPING;
+        if self.static_moving {
+            self.zoom_start = self.zoom_end;
+        } else {
+            self.zoom_start.y += (self.zoom_end.y - self.zoom_start.y) * Self::DAMPING;
+        }
         // _panCamera
         let mut change = self.pan_end - self.pan_start;
         if change.length_squared() != 0. {
@@ -224,7 +231,11 @@ impl Trackball {
             let pan = set_length(self.eye.cross(up), change.x) + set_length(up, change.y);
             position += pan;
             self.target += pan;
-            self.pan_start += (self.pan_end - self.pan_start) * Self::DAMPING;
+            if self.static_moving {
+                self.pan_start = self.pan_end;
+            } else {
+                self.pan_start += (self.pan_end - self.pan_start) * Self::DAMPING;
+            }
         }
         position = self.target + self.eye;
         let n = s.get_mut(c)?;
@@ -246,7 +257,7 @@ struct Sprite {
 /// The sprite vertex stage of `sprite.glsl.js`: u.custom[0] = (rotation, opacity,
 /// center.x, center.y), [1] = color, [2] = uv repeat and offset, [3] = fog (near, far, on).
 /// The view depth for fog travels in local_normal.x.
-const SPRITE_VERTEX: &str = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;var mv=u.view*u.model*vec4(0.0,0.0,0.0,1.0);let scale=vec2(length(u.model[0].xyz),length(u.model[1].xyz));let aligned=(position.xy-(u.custom[0].zw-vec2(0.5)))*scale;let r=u.custom[0].x;mv=vec4(mv.xy+vec2(cos(r)*aligned.x-sin(r)*aligned.y,sin(r)*aligned.x+cos(r)*aligned.y),mv.zw);out.clip=u.projection*mv;out.local_normal=vec3(-mv.z,0.0,0.0);out.uv=surface.uv*u.custom[2].xy+u.custom[2].zw;return out;}";
+pub(super) const SPRITE_VERTEX: &str = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;var mv=u.view*u.model*vec4(0.0,0.0,0.0,1.0);let scale=vec2(length(u.model[0].xyz),length(u.model[1].xyz));let aligned=(position.xy-(u.custom[0].zw-vec2(0.5)))*scale;let r=u.custom[0].x;mv=vec4(mv.xy+vec2(cos(r)*aligned.x-sin(r)*aligned.y,sin(r)*aligned.x+cos(r)*aligned.y),mv.zw);out.clip=u.projection*mv;out.local_normal=vec3(-mv.z,0.0,0.0);out.uv=surface.uv*u.custom[2].xy+u.custom[2].zw;return out;}";
 /// The sprite HUD scene, its orthographic camera and the sprites with their centers.
 type Hud = (Scene, Object3D, Vec<(Object3D, Vector2)>);
 /// `webgl_lod`: FlyControls state.

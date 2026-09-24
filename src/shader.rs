@@ -431,6 +431,11 @@ impl ShaderProgram {
                             ty: wgpu::BindingType::Sampler(
                                 if sample_types.get(i) == Some(&wgpu::TextureSampleType::Depth) {
                                     wgpu::SamplerBindingType::Comparison
+                                } else if sample_types.get(i)
+                                    == Some(&wgpu::TextureSampleType::Float { filterable: false })
+                                {
+                                    // Float32 targets are sampled with nearest (non-filtering) samplers.
+                                    wgpu::SamplerBindingType::NonFiltering
                                 } else {
                                     wgpu::SamplerBindingType::Filtering
                                 },

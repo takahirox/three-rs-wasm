@@ -165,6 +165,8 @@ pub(super) struct Controls {
     zoom_to_cursor: bool,
     cursor_zoom: bool,
     dolly_direction: Vector3,
+    /// autoRotate speed: update( deltaTime = null ) turns by 2π / 60 / 60 × speed.
+    pub(super) auto_rotate: Option<f64>,
 }
 impl Controls {
     pub(super) fn new(
@@ -186,7 +188,15 @@ impl Controls {
             zoom_to_cursor: false,
             cursor_zoom: false,
             dolly_direction: Vector3::ZERO,
+            auto_rotate: None,
         }
+    }
+    /// The animation loop's update(): autoRotate turns first while no pointer is active.
+    pub(super) fn frame_update(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
+        if let Some(speed) = self.auto_rotate {
+            self.delta_theta -= TAU / 60. / 60. * speed;
+        }
+        self.update(s, c)
     }
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;

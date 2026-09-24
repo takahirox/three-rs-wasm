@@ -498,3 +498,20 @@ meshes, and the torus knot with two 2,000-instance flower draws.
   original's 256,000 bytes of instance matrices.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### BVH, framebuffer texture, float readback, GPU picking and instancing performance
+
+The [BVH, framebuffer-texture, float-readback, picking and instancing
+ports](picking-buffers.md) match the original draws and per-frame uploads:
+
+- **BVH.** Evaluates the clip on the CPU, as AnimationMixer does, and writes
+  the 1,344 bytes of skeleton-helper positions that the original uploads.
+- **Framebuffer texture.** Writes the original's 28,812 bytes of curve colors
+  and copies the framebuffer region on the GPU.
+- **Float readback and picking.** Read one texel each frame through a resident
+  buffer, asynchronously.
+- **Instancing performance.** Keeps the original's three methods, including
+  the NAIVE per-mesh draws, and rebuilds on every change as the original does.
+
+Warmed cycles create no GPU resources, apart from the instancing rebuilds. No
+GPU timing parity is claimed.

@@ -564,3 +564,9 @@ The Cerberus model is by Andrew Maximov, as credited by the Three.js examples.
 The Flower model is by Kenney (CC0 1.0), with modifications by Don McCurdy; see
 `gltf/Flower/README.md`. The teapot reuses the retained `environment-materials`
 Pisa cube and `uv_grid_opengl.jpg`.
+
+`gallery/assets/bvh/pirouette.bvh` is the unmodified r186
+`examples/models/bvh/pirouette.bvh`. Its source path and SHA-256 hash are in
+`picking-buffers-manifest.json`; it is distributed alongside `LICENSE-THREE`.
+The instancing-performance port reuses the retained
+`suzanne_buffergeometry.json`.

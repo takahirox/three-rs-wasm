@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 223 partial Rust ports; 368 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 228 partial Rust ports; 363 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_loader_bvh | `tests/browser/picking-buffers.spec.js` | BVHLoaderの階層・モーション解析とAnimationMixerの線形補間／slerpFlat・ループをRustで再現。SkeletonHelperの頂点位置は原本同様に毎フレームCPUで書き込み。性能の完全な同等性は未保証。 |
+| webgl_framebuffer_texture | `tests/browser/picking-buffers.spec.js` | Gosper曲線の毎フレーム色更新（原本同様CPU→GPU）とcopyFramebufferToTexture相当のテクスチャコピー、スプライトHUDをRustで再現。選択枠はDOMで表示。性能の完全な同等性は未保証。 |
+| webgl_read_float_buffer | `tests/browser/picking-buffers.spec.js` | Float32レンダーターゲットへの描画と画面表示、マウス位置の値読み出し（非同期コピーで次フレーム以降に表示）をRustで再現。原本はリサイズ非対応のため、初期サイズを保持。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_interactive_cubes_gpu | `tests/browser/picking-buffers.spec.js` | 5000個の結合ボックスとGPUピッキング（1×1のビューオフセット描画と非同期読み出し）、TrackballControlsをRustで再現。IDは整数ターゲットの代わりにFloat32ターゲットへ書き込み（5000以下で厳密）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_instancing_performance | `tests/browser/picking-buffers.spec.js` | INSTANCED・MERGED・NAIVEの3方式とcountをRustで再現し、原本同様に変更ごとに再構築。autoRotateは60fps相当の時間ステップ。GPUメモリ表示とStatsは未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_mdd | `tests/browser/models-modifiers.spec.js` | MDDLoaderのモーフターゲットとAnimationMixerの線形補間・ループをRustで再現し、GPUでモーフ合成。性能の完全な同等性は未保証。 |
 | webgl_modifier_edgesplit | `tests/browser/models-modifiers.spec.js` | OBJLoader・mergeVertices・EdgeSplitModifierをRustで再現。パラメータの組ごとのジオメトリは一度だけ構築して常駐（原本は変更ごとに再構築）。変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_loader_3ds | `tests/browser/models-modifiers.spec.js` | TDSLoaderのチャンク解析とPhongマテリアル、法線マップ、TrackballControlsをRustで再現。更新は60fps相当の時間ステップ。性能の完全な同等性は未保証。 |

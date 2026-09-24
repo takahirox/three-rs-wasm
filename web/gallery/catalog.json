@@ -1224,7 +1224,7 @@
     {
       "id": "webgl_framebuffer_texture",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_framebuffer_texture.html",
       "source_sha256": "4bf200bf1558513434abab3075a4fe09402e13bc66ad97d2d4febb5066ea91f2",
@@ -1240,7 +1240,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 229,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "Gosper曲線の毎フレーム色更新（原本同様CPU→GPU）とcopyFramebufferToTexture相当のテクスチャコピー、スプライトHUDをRustで再現。選択枠はDOMで表示。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2339,7 +2346,7 @@
     {
       "id": "webgl_instancing_performance",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_performance.html",
       "source_sha256": "241ca59d6decbeb027fb17a13a89b364c626141bbb18fabda594a832e7514e2d",
@@ -2367,7 +2374,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 232,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "INSTANCED・MERGED・NAIVEの3方式とcountをRustで再現し、原本同様に変更ごとに再構築。autoRotateは60fps相当の時間ステップ。GPUメモリ表示とStatsは未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2552,7 +2566,7 @@
     {
       "id": "webgl_interactive_cubes_gpu",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_gpu.html",
       "source_sha256": "4600fff76bad6097f29b4d7bbdfd2e36dd7527a7ce8bf98062021b5a04d1084c",
@@ -2584,7 +2598,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 231,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "5000個の結合ボックスとGPUピッキング（1×1のビューオフセット描画と非同期読み出し）、TrackballControlsをRustで再現。IDは整数ターゲットの代わりにFloat32ターゲットへ書き込み（5000以下で厳密）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -3914,7 +3935,7 @@
     {
       "id": "webgl_loader_bvh",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_bvh.html",
       "source_sha256": "f62d0300f6d1660ae1e7e5efb1998d03c3c563f598ee593e84034fe88f08794c",
@@ -3946,7 +3967,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 228,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "BVHLoaderの階層・モーション解析とAnimationMixerの線形補間／slerpFlat・ループをRustで再現。SkeletonHelperの頂点位置は原本同様に毎フレームCPUで書き込み。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -9063,7 +9091,7 @@
     {
       "id": "webgl_read_float_buffer",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_read_float_buffer.html",
       "source_sha256": "93540252e7b1472697648d4df7b5a5358c373d5a28d89f6904dfa467cfa7d79d",
@@ -9095,7 +9123,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 230,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "Float32レンダーターゲットへの描画と画面表示、マウス位置の値読み出し（非同期コピーで次フレーム以降に表示）をRustで再現。原本はリサイズ非対応のため、初期サイズを保持。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"

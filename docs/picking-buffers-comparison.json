@@ -1,0 +1,1894 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/picking-buffers.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Picking-an-066d7-read-float-buffer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0013605753580729167
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0012753804524739583
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00138092041015625
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.001476287841796875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.001331329345703125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00142669677734375
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00142669677734375
+     }
+    ]
+   },
+   "Picking-an-18c94-webgl-interactive-cubes-gpu": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 52,
+       "transfers": [
+        3,
+        20642064,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 52,
+       "transfers": [
+        3,
+        20642064,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-1eef5-ncing-performance-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.09993743896484375,
+      "meanError": 2.0542068481445312
+     },
+     {
+      "state": 1,
+      "fraction": 0.10106277465820312,
+      "meanError": 2.0850753784179688
+     },
+     {
+      "state": 2,
+      "fraction": 0.10251235961914062,
+      "meanError": 2.1173502604166665
+     },
+     {
+      "state": 3,
+      "fraction": 0.09288406372070312,
+      "meanError": 1.9333534240722656
+     },
+     {
+      "state": 4,
+      "fraction": 0.09966659545898438,
+      "meanError": 2.0668373107910156
+     },
+     {
+      "state": 5,
+      "fraction": 0.041149139404296875,
+      "meanError": 0.873382568359375
+     },
+     {
+      "state": 6,
+      "fraction": 0.036834716796875,
+      "meanError": 0.7829793294270834
+     },
+     {
+      "state": 7,
+      "fraction": 0.12945938110351562,
+      "meanError": 2.4739557902018228
+     },
+     {
+      "state": 8,
+      "fraction": 0.1455703125,
+      "meanError": 2.7762877604166665
+     }
+    ]
+   },
+   "Picking-an-2c0e4-y-webgl-framebuffer-texture": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 48,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 48,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-32ea6-ues-webgl-read-float-buffer": {
+    "values": [
+     {
+      "runtime": "reference",
+      "values": [
+       [
+        0.5009765625,
+        0.5009765625,
+        0
+       ],
+       [
+        0.1962890625,
+        0,
+        0.30000001192092896
+       ],
+       [
+        0,
+        0.4150390625,
+        0.6000000238418579
+       ],
+       [
+        0.882300615310669,
+        0.009427023120224476,
+        9.808555478230119e-05
+       ],
+       [
+        0,
+        0,
+        0.800000011920929
+       ]
+      ]
+     },
+     {
+      "runtime": "rust",
+      "values": [
+       [
+        0.5009765625,
+        0.5009765625,
+        0
+       ],
+       [
+        0.1962890625,
+        0,
+        0.30000001192092896
+       ],
+       [
+        0,
+        0.4150390625,
+        0.6000000238418579
+       ],
+       [
+        0.8823004961013794,
+        0.009427020326256752,
+        9.808553295442834e-05
+       ],
+       [
+        0,
+        0,
+        0.800000011920929
+       ]
+      ]
+     }
+    ]
+   },
+   "Picking-an-648a6-ractive-cubes-gpu-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01494598388671875,
+      "meanError": 0.28056971232096356
+     },
+     {
+      "state": 1,
+      "fraction": 0.014652252197265625,
+      "meanError": 0.2803700764973958
+     },
+     {
+      "state": 2,
+      "fraction": 0.01502227783203125,
+      "meanError": 0.284942626953125
+     },
+     {
+      "state": 3,
+      "fraction": 0.013385772705078125,
+      "meanError": 0.2599347432454427
+     },
+     {
+      "state": 4,
+      "fraction": 0.012683868408203125,
+      "meanError": 0.2549247741699219
+     },
+     {
+      "state": 5,
+      "fraction": 0.010013580322265625,
+      "meanError": 0.21016820271809897
+     },
+     {
+      "state": 6,
+      "fraction": 0.02001953125,
+      "meanError": 0.39377466837565106
+     },
+     {
+      "state": 7,
+      "fraction": 0.019500732421875,
+      "meanError": 0.39516448974609375
+     }
+    ]
+   },
+   "Picking-an-6abab--webgl-loader-bvh-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01778411865234375,
+      "meanError": 0.47219594319661456
+     },
+     {
+      "state": 1,
+      "fraction": 0.017963409423828125,
+      "meanError": 0.47720972696940106
+     },
+     {
+      "state": 2,
+      "fraction": 0.017852783203125,
+      "meanError": 0.4747123718261719
+     },
+     {
+      "state": 3,
+      "fraction": 0.017993927001953125,
+      "meanError": 0.4790941874186198
+     },
+     {
+      "state": 4,
+      "fraction": 0.01842498779296875,
+      "meanError": 0.4911333719889323
+     },
+     {
+      "state": 5,
+      "fraction": 0.01961517333984375,
+      "meanError": 0.5266380310058594
+     },
+     {
+      "state": 6,
+      "fraction": 0.019649505615234375,
+      "meanError": 0.5289993286132812
+     },
+     {
+      "state": 7,
+      "fraction": 0.018131256103515625,
+      "meanError": 0.4817759195963542
+     },
+     {
+      "state": 8,
+      "fraction": 0.0204010009765625,
+      "meanError": 0.569299062093099
+     },
+     {
+      "state": 9,
+      "fraction": 0.021373748779296875,
+      "meanError": 0.6004931131998698
+     },
+     {
+      "state": 10,
+      "fraction": 0.022125244140625,
+      "meanError": 0.6215197245279948
+     },
+     {
+      "state": 11,
+      "fraction": 0.0240859375,
+      "meanError": 0.6658671875
+     }
+    ]
+   },
+   "Picking-an-6f373-ncing-performance-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0005976359049479166
+     },
+     {
+      "state": 1,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.0009015401204427084
+     },
+     {
+      "state": 2,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0010770161946614583
+     },
+     {
+      "state": 3,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.000335693359375
+     },
+     {
+      "state": 4,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0003636678059895833
+     },
+     {
+      "state": 5,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00022379557291666666
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00011189778645833333
+     },
+     {
+      "state": 7,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0011494954427083333
+     },
+     {
+      "state": 8,
+      "fraction": 1.5625e-05,
+      "meanError": 0.0015143229166666666
+     }
+    ]
+   },
+   "Picking-an-9a787-ncy-webgl-read-float-buffer": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 57,
+       "transfers": [
+        2,
+        50824,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 57,
+       "transfers": [
+        2,
+        50824,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-9ed8f-amebuffer-texture-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.05509185791015625,
+      "meanError": 1.9736277262369792
+     },
+     {
+      "state": 1,
+      "fraction": 0.05509185791015625,
+      "meanError": 1.9736277262369792
+     },
+     {
+      "state": 2,
+      "fraction": 0.05509185791015625,
+      "meanError": 1.995953877766927
+     },
+     {
+      "state": 3,
+      "fraction": 0.05509185791015625,
+      "meanError": 1.9763590494791667
+     },
+     {
+      "state": 4,
+      "fraction": 0.06832504272460938,
+      "meanError": 2.4450098673502603
+     },
+     {
+      "state": 5,
+      "fraction": 0.074310302734375,
+      "meanError": 2.6723060607910156
+     },
+     {
+      "state": 6,
+      "fraction": 0.074310302734375,
+      "meanError": 2.6723060607910156
+     },
+     {
+      "state": 7,
+      "fraction": 0.06504296875,
+      "meanError": 2.324912760416667
+     }
+    ]
+   },
+   "Picking-an-bea17-ebgl-instancing-performance": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-dd009--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_loader_bvh",
+      "reference": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 112,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1344,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 112,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1344,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_framebuffer_texture",
+      "reference": {
+       "draws": [
+        {
+         "count": 2401,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 28812,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2401,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 28812,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_read_float_buffer",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_interactive_cubes_gpu",
+      "reference": {
+       "draws": [
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_performance",
+      "reference": {
+       "draws": [
+        {
+         "count": 2901,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2901,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Picking-an-ed46c--residency-webgl-loader-bvh": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 40,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 40,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-f34f9-ractive-cubes-gpu-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0009447733561197916
+     },
+     {
+      "state": 1,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.0013427734375
+     },
+     {
+      "state": 2,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0009447733561197916
+     },
+     {
+      "state": 3,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.002582550048828125
+     },
+     {
+      "state": 4,
+      "fraction": 2.288818359375e-05,
+      "meanError": 0.00171661376953125
+     },
+     {
+      "state": 5,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0006472269694010416
+     },
+     {
+      "state": 6,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.00217437744140625
+     },
+     {
+      "state": 7,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.00217437744140625
+     }
+    ]
+   },
+   "Picking-an-fceb0-amebuffer-texture-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.19497807820638022
+     },
+     {
+      "state": 1,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.19497807820638022
+     },
+     {
+      "state": 2,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.21586100260416666
+     },
+     {
+      "state": 3,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.19246292114257812
+     },
+     {
+      "state": 4,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0015716552734375
+     },
+     {
+      "state": 5,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.0022570292154947915
+     },
+     {
+      "state": 6,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.0022570292154947915
+     },
+     {
+      "state": 7,
+      "fraction": 1.953125e-05,
+      "meanError": 0.0030286458333333333
+     }
+    ]
+   },
+   "Picking-an-ff14f--webgl-loader-bvh-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.003711700439453125,
+      "meanError": 0.6270955403645834
+     },
+     {
+      "state": 1,
+      "fraction": 0.00370025634765625,
+      "meanError": 0.6251551310221354
+     },
+     {
+      "state": 2,
+      "fraction": 0.00370025634765625,
+      "meanError": 0.6251564025878906
+     },
+     {
+      "state": 3,
+      "fraction": 0.003704071044921875,
+      "meanError": 0.6258023579915365
+     },
+     {
+      "state": 4,
+      "fraction": 0.003704071044921875,
+      "meanError": 0.6261940002441406
+     },
+     {
+      "state": 5,
+      "fraction": 0.0037078857421875,
+      "meanError": 0.6264533996582031
+     },
+     {
+      "state": 6,
+      "fraction": 0.0037078857421875,
+      "meanError": 0.6264495849609375
+     },
+     {
+      "state": 7,
+      "fraction": 0.003704071044921875,
+      "meanError": 0.6256637573242188
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0013720194498697917
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 6.357828776041667e-06
+     },
+     {
+      "state": 11,
+      "fraction": 2.734375e-05,
+      "meanError": 0.0026627604166666666
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Picking-an-066d7-read-float-buffer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0013605753580729167
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0012753804524739583
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00138092041015625
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.001476287841796875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.001331329345703125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00142669677734375
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00142669677734375
+     }
+    ]
+   },
+   "Picking-an-18c94-webgl-interactive-cubes-gpu": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 52,
+       "transfers": [
+        3,
+        20642064,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 52,
+       "transfers": [
+        3,
+        20642064,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-1eef5-ncing-performance-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.046463966369628906,
+      "meanError": 0.9918413162231445
+     },
+     {
+      "state": 1,
+      "fraction": 0.046199798583984375,
+      "meanError": 0.9861164093017578
+     },
+     {
+      "state": 2,
+      "fraction": 0.04697227478027344,
+      "meanError": 1.0066442489624023
+     },
+     {
+      "state": 3,
+      "fraction": 0.042677879333496094,
+      "meanError": 0.9246308008829752
+     },
+     {
+      "state": 4,
+      "fraction": 0.04607200622558594,
+      "meanError": 0.9984416961669922
+     },
+     {
+      "state": 5,
+      "fraction": 0.019048690795898438,
+      "meanError": 0.4256966908772786
+     },
+     {
+      "state": 6,
+      "fraction": 0.017088890075683594,
+      "meanError": 0.3780641555786133
+     },
+     {
+      "state": 7,
+      "fraction": 0.05902576446533203,
+      "meanError": 1.1732721328735352
+     },
+     {
+      "state": 8,
+      "fraction": 0.067396484375,
+      "meanError": 1.3251761067708334
+     }
+    ]
+   },
+   "Picking-an-2c0e4-y-webgl-framebuffer-texture": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 48,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 48,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        2,
+        192424,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-32ea6-ues-webgl-read-float-buffer": {
+    "values": [
+     {
+      "runtime": "reference",
+      "values": [
+       [
+        0.5009765625,
+        0.5009765625,
+        0
+       ],
+       [
+        0.1962890625,
+        0,
+        0.30000001192092896
+       ],
+       [
+        0,
+        0.4150390625,
+        0.6000000238418579
+       ],
+       [
+        0.882300615310669,
+        0.009427023120224476,
+        9.808555478230119e-05
+       ],
+       [
+        0,
+        0,
+        0.800000011920929
+       ]
+      ]
+     },
+     {
+      "runtime": "rust",
+      "values": [
+       [
+        0.5009765625,
+        0.5009765625,
+        0
+       ],
+       [
+        0.1962890625,
+        0,
+        0.30000001192092896
+       ],
+       [
+        0,
+        0.4150390625,
+        0.6000000238418579
+       ],
+       [
+        0.8823004961013794,
+        0.009427020326256752,
+        9.808553295442834e-05
+       ],
+       [
+        0,
+        0,
+        0.800000011920929
+       ]
+      ]
+     }
+    ]
+   },
+   "Picking-an-648a6-ractive-cubes-gpu-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.007647514343261719,
+      "meanError": 0.14401753743489584
+     },
+     {
+      "state": 1,
+      "fraction": 0.007515907287597656,
+      "meanError": 0.14451313018798828
+     },
+     {
+      "state": 2,
+      "fraction": 0.0076885223388671875,
+      "meanError": 0.14632415771484375
+     },
+     {
+      "state": 3,
+      "fraction": 0.0066928863525390625,
+      "meanError": 0.12932968139648438
+     },
+     {
+      "state": 4,
+      "fraction": 0.006335258483886719,
+      "meanError": 0.12627887725830078
+     },
+     {
+      "state": 5,
+      "fraction": 0.005618095397949219,
+      "meanError": 0.1153856913248698
+     },
+     {
+      "state": 6,
+      "fraction": 0.010623931884765625,
+      "meanError": 0.20547707875569662
+     },
+     {
+      "state": 7,
+      "fraction": 0.010232925415039062,
+      "meanError": 0.20210774739583334
+     }
+    ]
+   },
+   "Picking-an-6abab--webgl-loader-bvh-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006350517272949219,
+      "meanError": 0.1724720001220703
+     },
+     {
+      "state": 1,
+      "fraction": 0.006525993347167969,
+      "meanError": 0.17768128712972006
+     },
+     {
+      "state": 2,
+      "fraction": 0.0063934326171875,
+      "meanError": 0.1742404301961263
+     },
+     {
+      "state": 3,
+      "fraction": 0.006422996520996094,
+      "meanError": 0.1749140421549479
+     },
+     {
+      "state": 4,
+      "fraction": 0.006722450256347656,
+      "meanError": 0.18405532836914062
+     },
+     {
+      "state": 5,
+      "fraction": 0.007293701171875,
+      "meanError": 0.20171260833740234
+     },
+     {
+      "state": 6,
+      "fraction": 0.0072269439697265625,
+      "meanError": 0.19960784912109375
+     },
+     {
+      "state": 7,
+      "fraction": 0.006497383117675781,
+      "meanError": 0.17712179819742838
+     },
+     {
+      "state": 8,
+      "fraction": 0.010425567626953125,
+      "meanError": 0.2901264826456706
+     },
+     {
+      "state": 9,
+      "fraction": 0.010598182678222656,
+      "meanError": 0.29648081461588544
+     },
+     {
+      "state": 10,
+      "fraction": 0.011379241943359375,
+      "meanError": 0.31849320729573566
+     },
+     {
+      "state": 11,
+      "fraction": 0.01145703125,
+      "meanError": 0.316880859375
+     }
+    ]
+   },
+   "Picking-an-6f373-ncing-performance-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.0006132125854492188
+     },
+     {
+      "state": 1,
+      "fraction": 5.7220458984375e-06,
+      "meanError": 0.00067901611328125
+     },
+     {
+      "state": 2,
+      "fraction": 5.7220458984375e-06,
+      "meanError": 0.0007518132527669271
+     },
+     {
+      "state": 3,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.00042502085367838543
+     },
+     {
+      "state": 4,
+      "fraction": 5.7220458984375e-06,
+      "meanError": 0.0005334218343098959
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.00021870930989583334
+     },
+     {
+      "state": 6,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.00026798248291015625
+     },
+     {
+      "state": 7,
+      "fraction": 1.1444091796875e-05,
+      "meanError": 0.0010852813720703125
+     },
+     {
+      "state": 8,
+      "fraction": 6.8359375e-06,
+      "meanError": 0.0007799479166666666
+     }
+    ]
+   },
+   "Picking-an-9a787-ncy-webgl-read-float-buffer": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 57,
+       "transfers": [
+        2,
+        50824,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 57,
+       "transfers": [
+        2,
+        50824,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-9ed8f-amebuffer-texture-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.03228569030761719,
+      "meanError": 1.117815335591634
+     },
+     {
+      "state": 1,
+      "fraction": 0.03228569030761719,
+      "meanError": 1.117815335591634
+     },
+     {
+      "state": 2,
+      "fraction": 0.03228569030761719,
+      "meanError": 1.1835123697916667
+     },
+     {
+      "state": 3,
+      "fraction": 0.03228569030761719,
+      "meanError": 1.1342248916625977
+     },
+     {
+      "state": 4,
+      "fraction": 0.05095100402832031,
+      "meanError": 1.7647336324055989
+     },
+     {
+      "state": 5,
+      "fraction": 0.051009178161621094,
+      "meanError": 1.766628583272298
+     },
+     {
+      "state": 6,
+      "fraction": 0.051009178161621094,
+      "meanError": 1.766628583272298
+     },
+     {
+      "state": 7,
+      "fraction": 0.053947265625,
+      "meanError": 1.8849983723958332
+     }
+    ]
+   },
+   "Picking-an-bea17-ebgl-instancing-performance": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 29,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 29,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        52004,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-dd009--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_loader_bvh",
+      "reference": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 112,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1344,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 112,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 1344,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_framebuffer_texture",
+      "reference": {
+       "draws": [
+        {
+         "count": 2401,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 28812,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2401,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 28812,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_read_float_buffer",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_interactive_cubes_gpu",
+      "reference": {
+       "draws": [
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 180000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_performance",
+      "reference": {
+       "draws": [
+        {
+         "count": 2901,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2901,
+         "instances": 1000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "Picking-an-ed46c--residency-webgl-loader-bvh": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 40,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 40,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        12480,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Picking-an-f34f9-ractive-cubes-gpu-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.430511474609375e-05,
+      "meanError": 0.0011650721232096355
+     },
+     {
+      "state": 1,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.001262982686360677
+     },
+     {
+      "state": 2,
+      "fraction": 1.239776611328125e-05,
+      "meanError": 0.000976880391438802
+     },
+     {
+      "state": 3,
+      "fraction": 2.765655517578125e-05,
+      "meanError": 0.0019852320353190103
+     },
+     {
+      "state": 4,
+      "fraction": 2.193450927734375e-05,
+      "meanError": 0.0015595753987630208
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-06,
+      "meanError": 0.0006844202677408854
+     },
+     {
+      "state": 6,
+      "fraction": 4.76837158203125e-05,
+      "meanError": 0.004340171813964844
+     },
+     {
+      "state": 7,
+      "fraction": 4.673004150390625e-05,
+      "meanError": 0.004260063171386719
+     }
+    ]
+   },
+   "Picking-an-fceb0-amebuffer-texture-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0010890960693359375,
+      "meanError": 0.15757211049397787
+     },
+     {
+      "state": 1,
+      "fraction": 0.0010890960693359375,
+      "meanError": 0.15757211049397787
+     },
+     {
+      "state": 2,
+      "fraction": 0.0010890960693359375,
+      "meanError": 0.172331174214681
+     },
+     {
+      "state": 3,
+      "fraction": 0.0010890960693359375,
+      "meanError": 0.16266441345214844
+     },
+     {
+      "state": 4,
+      "fraction": 1.621246337890625e-05,
+      "meanError": 0.0023177464803059897
+     },
+     {
+      "state": 5,
+      "fraction": 4.76837158203125e-06,
+      "meanError": 0.0005992253621419271
+     },
+     {
+      "state": 6,
+      "fraction": 4.76837158203125e-06,
+      "meanError": 0.0005992253621419271
+     },
+     {
+      "state": 7,
+      "fraction": 2.9296875e-06,
+      "meanError": 0.00046516927083333333
+     }
+    ]
+   },
+   "Picking-an-ff14f--webgl-loader-bvh-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001865386962890625,
+      "meanError": 0.3161439895629883
+     },
+     {
+      "state": 1,
+      "fraction": 0.0018634796142578125,
+      "meanError": 0.31581974029541016
+     },
+     {
+      "state": 2,
+      "fraction": 0.0018634796142578125,
+      "meanError": 0.31582101186116535
+     },
+     {
+      "state": 3,
+      "fraction": 0.0018634796142578125,
+      "meanError": 0.3158194224039714
+     },
+     {
+      "state": 4,
+      "fraction": 0.0018644332885742188,
+      "meanError": 0.3160797754923503
+     },
+     {
+      "state": 5,
+      "fraction": 0.001865386962890625,
+      "meanError": 0.3161446253458659
+     },
+     {
+      "state": 6,
+      "fraction": 0.0018663406372070312,
+      "meanError": 0.3163016637166341
+     },
+     {
+      "state": 7,
+      "fraction": 0.0018644332885742188,
+      "meanError": 0.3159777323404948
+     },
+     {
+      "state": 8,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 6.67572021484375e-05
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 3.178914388020833e-07
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 3.178914388020833e-07
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 3.255208333333333e-07
+     }
+    ]
+   }
+  }
+ }
+}

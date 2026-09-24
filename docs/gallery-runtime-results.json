@@ -571,7 +571,7 @@
       "id": "webgl_framebuffer_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_framebuffer_texture.html",
       "source_sha256": "4bf200bf1558513434abab3075a4fe09402e13bc66ad97d2d4febb5066ea91f2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_framebuffer_texture",
         "source_sha256": "4bf200bf1558513434abab3075a4fe09402e13bc66ad97d2d4febb5066ea91f2",
@@ -1162,7 +1162,7 @@
       "id": "webgl_instancing_performance",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_performance.html",
       "source_sha256": "241ca59d6decbeb027fb17a13a89b364c626141bbb18fabda594a832e7514e2d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_instancing_performance",
         "source_sha256": "241ca59d6decbeb027fb17a13a89b364c626141bbb18fabda594a832e7514e2d",
@@ -1293,7 +1293,7 @@
       "id": "webgl_interactive_cubes_gpu",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_gpu.html",
       "source_sha256": "4600fff76bad6097f29b4d7bbdfd2e36dd7527a7ce8bf98062021b5a04d1084c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_interactive_cubes_gpu",
         "source_sha256": "4600fff76bad6097f29b4d7bbdfd2e36dd7527a7ce8bf98062021b5a04d1084c",
@@ -2066,7 +2066,7 @@
       "id": "webgl_loader_bvh",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_bvh.html",
       "source_sha256": "f62d0300f6d1660ae1e7e5efb1998d03c3c563f598ee593e84034fe88f08794c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_bvh",
         "source_sha256": "f62d0300f6d1660ae1e7e5efb1998d03c3c563f598ee593e84034fe88f08794c",
@@ -5010,7 +5010,7 @@
       "id": "webgl_read_float_buffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_read_float_buffer.html",
       "source_sha256": "93540252e7b1472697648d4df7b5a5358c373d5a28d89f6904dfa467cfa7d79d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_read_float_buffer",
         "source_sha256": "93540252e7b1472697648d4df7b5a5358c373d5a28d89f6904dfa467cfa7d79d",

@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 366,
-    "runnable-partial": 223,
+    "blocked-at-port-review": 361,
+    "runnable-partial": 228,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -1828,10 +1828,10 @@
     },
     {
       "id": "webgl_framebuffer_texture",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_framebuffer_texture.html",
       "source_sha256": "4bf200bf1558513434abab3075a4fe09402e13bc66ad97d2d4febb5066ea91f2",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/picking-buffers.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3403,10 +3403,10 @@
     },
     {
       "id": "webgl_instancing_performance",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_performance.html",
       "source_sha256": "241ca59d6decbeb027fb17a13a89b364c626141bbb18fabda594a832e7514e2d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/picking-buffers.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3683,10 +3683,10 @@
     },
     {
       "id": "webgl_interactive_cubes_gpu",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_cubes_gpu.html",
       "source_sha256": "4600fff76bad6097f29b4d7bbdfd2e36dd7527a7ce8bf98062021b5a04d1084c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/picking-buffers.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -5513,10 +5513,10 @@
     },
     {
       "id": "webgl_loader_bvh",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_bvh.html",
       "source_sha256": "f62d0300f6d1660ae1e7e5efb1998d03c3c563f598ee593e84034fe88f08794c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/picking-buffers.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -12518,10 +12518,10 @@
     },
     {
       "id": "webgl_read_float_buffer",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_read_float_buffer.html",
       "source_sha256": "93540252e7b1472697648d4df7b5a5358c373d5a28d89f6904dfa467cfa7d79d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/picking-buffers.spec.js",
       "blockers": [
         {
           "kind": "core-api",

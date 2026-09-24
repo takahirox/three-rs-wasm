@@ -134,3 +134,10 @@ The WebGL-only MDD, edge-split, 3DS, teapot and scattering batch
 ([models-modifiers.md](models-modifiers.md)) bounds only 4× MSAA comparisons of
 silhouettes, the teapot wireframe and the scattered flowers. All five scenes
 match within the ordinary threshold with MSAA off.
+
+The WebGL-only BVH, framebuffer-texture, float-readback, GPU-picking and
+instancing-performance batch ([picking-buffers.md](picking-buffers.md)) bounds
+4× MSAA comparisons of lines, the dense Gosper curve and silhouettes. With MSAA
+off, it bounds only the BVH scene, whose grid centre line lies exactly on a
+pixel-row boundary. The float-readback and GPU-picking examples have no resize
+handler, so their resized frames are not compared.

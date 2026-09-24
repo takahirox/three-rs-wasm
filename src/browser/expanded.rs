@@ -4,6 +4,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    PickingBuffers(Box<super::picking_buffers::Demo>),
     ModelsModifiers(Box<super::models_modifiers::Demo>),
     TerrainLoaders(Box<super::terrain_loaders::Demo>),
     TrackballSprites(Box<super::trackball_sprites::Demo>),
@@ -83,6 +84,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            228..=232 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::PickingBuffers(Box::new(
+                    super::picking_buffers::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             223..=227 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -746,6 +756,9 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -979,6 +992,10 @@ impl Demo {
         x: f64,
         y: f64,
     ) -> Result<bool> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            demo.gpu_pointer(x, y);
+            return Ok(false);
+        }
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.pointer_move(scene, cam, x, y)?;
             return Ok(false);
@@ -1073,6 +1090,9 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::TrackballSprites(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1133,6 +1153,11 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::PickingBuffers(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::TrackballSprites(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -1180,6 +1205,9 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            demo.prepare(renderer, scene, camera)?;
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1222,6 +1250,9 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1319,6 +1350,9 @@ impl Demo {
         }
     }
     pub fn key(&mut self, code: u32, down: bool) {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1341,6 +1375,10 @@ impl Demo {
         }
     }
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1358,6 +1396,9 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1467,6 +1508,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::PickingBuffers(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
