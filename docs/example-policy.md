@@ -112,3 +112,14 @@ comparisons: silhouettes, wireframes and one-pixel points, and the dense
 additive draw-range lines. The draw-range scene must keep the original's mean
 level in every state. All five scenes match within the ordinary threshold with
 MSAA off.
+
+The WebGL-only HDR-texture, voxel-terrain, trackball, sprite and LOD batch
+([trackball-sprites.md](trackball-sprites.md)) bounds only 4× MSAA comparisons
+of silhouettes and of the dense LOD wireframes. The LOD field must keep the
+original's mean level in every state. All five scenes match within the ordinary
+threshold with MSAA off.
+
+`webgl_morphtargets` and `webgl_panorama_equirectangular` remain excluded in
+favor of their ported WebGPU equivalents.
+`webgl_buffergeometry_glbufferattribute` remains excluded as a WebGL-specific
+API.

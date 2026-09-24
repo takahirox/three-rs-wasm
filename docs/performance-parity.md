@@ -452,3 +452,20 @@ billboards and connected segments.
 
 The other scenes make no geometry uploads after a warm pass. Warmed cycles
 create no GPU resources. No GPU timing parity is claimed.
+
+### HDR texture, voxel terrain, trackball controls, sprites and LOD
+
+The [HDR, terrain, trackball, sprite and LOD ports](trackball-sprites.md)
+match the original draws:
+
+- one HDR quad;
+- one merged terrain draw of 138,084 indices;
+- one instanced draw of 500 cones;
+- 205 sprite draws;
+- 137 culled LOD level draws.
+
+The HDR texture and the terrain are uploaded once. The terrain is merged into
+one resident geometry, as the original merges it. The LOD field prepares every
+level's draw data in one startup pass, so flying through it creates no GPU
+resources. After a warm pass, no scene uploads geometry or texture data.
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

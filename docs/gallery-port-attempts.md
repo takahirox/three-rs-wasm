@@ -40,7 +40,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_geometry_cube](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_cube.html) | runnable-partial | tests/browser/migration.spec.js |
 | [webgl_geometry_extrude_shapes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_shapes.html) | blocked-at-port-review | TrackballControls; Shape; ExtrudeGeometry; MeshLambertMaterial |
 | [webgl_geometry_extrude_splines](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_splines.html) | blocked-at-port-review | MeshLambertMaterial; TubeGeometry; CameraHelper |
-| [webgl_geometry_minecraft](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_minecraft.html) | blocked-at-port-review | MeshLambertMaterial; FirstPersonControls; ImprovedNoise |
+| [webgl_geometry_minecraft](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_minecraft.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [webgl_geometry_nurbs](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_nurbs.html) | runnable-partial | tests/browser/shapes.spec.js |
 | [webgl_geometry_shapes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_shapes.html) | runnable-partial | tests/browser/geometry-materials.spec.js |
 | [webgl_geometry_spline_editor](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_spline_editor.html) | blocked-at-port-review | SpotLight; ShadowMaterial; GridHelper; TransformControls |
@@ -124,7 +124,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_texture_dds](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_dds.html) | blocked-at-port-review | DDSLoader |
 | [webgl_loader_texture_exr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_exr.html) | blocked-at-port-review | EXRLoader |
 | [webgl_loader_texture_ultrahdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ultrahdr.html) | requires-feature-review | procedural-geometry |
-| [webgl_loader_texture_hdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html) | blocked-at-port-review | HDRLoader; ReinhardToneMapping |
+| [webgl_loader_texture_hdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [webgl_loader_texture_ktx](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx.html) | blocked-at-port-review | KTXLoader |
 | [webgl_loader_texture_ktx2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx2.html) | blocked-at-port-review | KTX2Loader |
 | [webgl_loader_texture_lottie](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_lottie.html) | blocked-at-port-review | FileLoader; CanvasTexture; RoundedBoxGeometry; RoomEnvironment |
@@ -136,7 +136,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_vox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vox.html) | blocked-at-port-review | HemisphereLight; VOXLoader |
 | [webgl_loader_vrml](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vrml.html) | blocked-at-port-review | VRMLLoader |
 | [webgl_loader_xyz](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_xyz.html) | runnable-partial | tests/browser/views-loaders.spec.js |
-| [webgl_lod](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html) | blocked-at-port-review | Fog; MeshLambertMaterial; LOD; FlyControls |
+| [webgl_lod](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [webgl_marchingcubes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_marchingcubes.html) | blocked-at-port-review | MarchingCubes; CubeTextureLoader; MeshLambertMaterial; MeshPhongMaterial |
 | [webgl_materials_alphahash](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_alphahash.html) | blocked-at-port-review | InstancedMesh; RoomEnvironment; PMREMGenerator; EffectComposer |
 | [webgl_materials_blending](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_blending.html) | runnable-partial | tests/browser/environment-materials.spec.js |
@@ -222,7 +222,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_shadowmap_viewer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_viewer.html) | blocked-at-port-review | SpotLight; CameraHelper; MeshPhongMaterial; ShadowMapViewer |
 | [webgl_shadowmap_vsm](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_vsm.html) | blocked-at-port-review | Fog; SpotLight; MeshPhongMaterial |
 | [webgl_shadowmesh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmesh.html) | blocked-at-port-review | ArrowHelper; MeshLambertMaterial; ShadowMesh; MeshPhongMaterial |
-| [webgl_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sprites.html) | blocked-at-port-review | Fog; SpriteMaterial; Sprite |
+| [webgl_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sprites.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [webgl_test_memory](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_memory.html) | blocked-at-port-review | CanvasTexture |
 | [webgl_test_memory2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_memory2.html) | blocked-at-port-review | ShaderMaterial |
 | [webgl_test_wide_gamut](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_wide_gamut.html) | blocked-at-port-review | DisplayP3ColorSpace |
@@ -592,7 +592,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [misc_controls_map](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_map.html) | runnable-partial | tests/browser/controls-attributes.spec.js |
 | [misc_controls_orbit](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_orbit.html) | runnable-partial | tests/browser/controls-attributes.spec.js |
 | [misc_controls_pointerlock](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html) | blocked-at-port-review | Fog; HemisphereLight; PointerLockControls; MeshPhongMaterial |
-| [misc_controls_trackball](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html) | blocked-at-port-review | FogExp2; ConeGeometry; MeshPhongMaterial; InstancedMesh |
+| [misc_controls_trackball](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [misc_controls_transform](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_transform.html) | blocked-at-port-review | GridHelper; MeshLambertMaterial; TransformControls |
 | [misc_exporter_draco](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_draco.html) | blocked-at-port-review | Fog; DRACOExporter; HemisphereLight; MeshPhongMaterial |
 | [misc_exporter_gcode](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_gcode.html) | blocked-at-port-review | GridHelper; MeshLambertMaterial; ConeGeometry |

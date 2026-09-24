@@ -11,6 +11,7 @@
     "webgl_geometry_colors_lookuptable",
     "webgl_geometry_convex",
     "webgl_geometry_cube",
+    "webgl_geometry_minecraft",
     "webgl_geometry_nurbs",
     "webgl_geometry_shapes",
     "webgl_geometry_text_shapes",
@@ -29,8 +30,10 @@
     "webgl_loader_gltf_instancing",
     "webgl_loader_imagebitmap",
     "webgl_loader_pcd",
+    "webgl_loader_texture_hdr",
     "webgl_loader_texture_tga",
     "webgl_loader_xyz",
+    "webgl_lod",
     "webgl_materials_blending",
     "webgl_materials_blending_custom",
     "webgl_materials_bumpmap",
@@ -49,7 +52,8 @@
     "webgl_points_sprites",
     "webgl_points_waves",
     "webgl_raycaster_sprite",
-    "webgl_shader"
+    "webgl_shader",
+    "webgl_sprites"
   ],
   "webgl / postprocessing": [
     "webgl_postprocessing_procedural"
@@ -215,6 +219,7 @@
   ],
   "misc": [
     "misc_controls_map",
-    "misc_controls_orbit"
+    "misc_controls_orbit",
+    "misc_controls_trackball"
   ]
 }

@@ -813,7 +813,7 @@
       "id": "webgl_geometry_minecraft",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_minecraft.html",
       "source_sha256": "fa0a3bd983bed5911d30109c3d1e4eecacbd1de6eee81653983bd0b4d8edb77c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_geometry_minecraft",
         "source_sha256": "fa0a3bd983bed5911d30109c3d1e4eecacbd1de6eee81653983bd0b4d8edb77c",
@@ -3017,7 +3017,7 @@
       "id": "webgl_loader_texture_hdr",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html",
       "source_sha256": "6c1d4dafed6fa9ccdf4cf7d66b0d5e34242449ee6ec69a9f6009c7798d76895d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_texture_hdr",
         "source_sha256": "6c1d4dafed6fa9ccdf4cf7d66b0d5e34242449ee6ec69a9f6009c7798d76895d",
@@ -3344,7 +3344,7 @@
       "id": "webgl_lod",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html",
       "source_sha256": "c00873378be832a6742e120ccdc785abfdd542996094d0a0934af9470855e1c3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_lod",
         "source_sha256": "c00873378be832a6742e120ccdc785abfdd542996094d0a0934af9470855e1c3",
@@ -5447,7 +5447,7 @@
       "id": "webgl_sprites",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sprites.html",
       "source_sha256": "48d6ae182b791cb2539eb2569fe812d47f7c0c9e85d1111c12adbb7642d12c36",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_sprites",
         "source_sha256": "48d6ae182b791cb2539eb2569fe812d47f7c0c9e85d1111c12adbb7642d12c36",
@@ -15406,7 +15406,7 @@
       "id": "misc_controls_trackball",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html",
       "source_sha256": "e1516b48a4b50c6c5b604644414c017bc7ad1d255adc6f6c90bf8ec02025997c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_trackball",
         "source_sha256": "e1516b48a4b50c6c5b604644414c017bc7ad1d255adc6f6c90bf8ec02025997c",

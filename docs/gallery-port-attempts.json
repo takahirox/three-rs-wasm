@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 381,
-    "runnable-partial": 208,
+    "blocked-at-port-review": 376,
+    "runnable-partial": 213,
     "excluded": 16,
     "requires-feature-review": 2
   },
@@ -2447,10 +2447,10 @@
     },
     {
       "id": "webgl_geometry_minecraft",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_minecraft.html",
       "source_sha256": "fa0a3bd983bed5911d30109c3d1e4eecacbd1de6eee81653983bd0b4d8edb77c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/trackball-sprites.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7887,10 +7887,10 @@
     },
     {
       "id": "webgl_loader_texture_hdr",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html",
       "source_sha256": "6c1d4dafed6fa9ccdf4cf7d66b0d5e34242449ee6ec69a9f6009c7798d76895d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/trackball-sprites.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -8359,10 +8359,10 @@
     },
     {
       "id": "webgl_lod",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html",
       "source_sha256": "c00873378be832a6742e120ccdc785abfdd542996094d0a0934af9470855e1c3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/trackball-sprites.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -13852,10 +13852,10 @@
     },
     {
       "id": "webgl_sprites",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sprites.html",
       "source_sha256": "48d6ae182b791cb2539eb2569fe812d47f7c0c9e85d1111c12adbb7642d12c36",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/trackball-sprites.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43531,10 +43531,10 @@
     },
     {
       "id": "misc_controls_trackball",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html",
       "source_sha256": "e1516b48a4b50c6c5b604644414c017bc7ad1d255adc6f6c90bf8ec02025997c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/trackball-sprites.spec.js",
       "blockers": [
         {
           "kind": "core-api",

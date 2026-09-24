@@ -27,7 +27,7 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     const canvas = viewer.locator('canvas').first();
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.
-    const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206].includes(entry.port.example);
+    const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206, 213].includes(entry.port.example);
     await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(onDemand ? 0 : 2);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
     if (entry.port.example === 4) {

@@ -1,0 +1,17 @@
+[
+ {
+  "file": "sprite2.png",
+  "source": "examples/textures/sprite2.png",
+  "sha256": "85fbb827b321ce6238088d2a7e895c2c53c015ecb7076db855c90c0109b46707"
+ },
+ {
+  "file": "minecraft/atlas.png",
+  "source": "examples/textures/minecraft/atlas.png",
+  "sha256": "61b423997c1a5e5f9bf8684fe3caed2b238a333b894a3e37223c30327c4b0df0"
+ },
+ {
+  "file": "memorial.hdr",
+  "source": "examples/textures/memorial.hdr",
+  "sha256": "18376b9219927b363127817900b1c170a0f752f52a63f5949655b4150e35061d"
+ }
+]

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 208 partial Rust ports; 383 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 213 partial Rust ports; 378 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_loader_texture_hdr | `tests/browser/trackball-sprites.spec.js` | HDRLoaderのRGBEデコードと半精度変換（切り捨て）をRustで再現。Reinhardトーンマッピングと露出を再現し、変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_geometry_minecraft | `tests/browser/trackball-sprites.spec.js` | ImprovedNoiseの地形と面の結合をRustで再現し、1つの常駐ジオメトリで描画（原本と同じ）。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| misc_controls_trackball | `tests/browser/trackball-sprites.spec.js` | TrackballControls（回転・ズーム・パンの減衰、A/S/Dキー、正射影カメラ切替）をRustで再現。更新は60fps相当の時間ステップ。タッチ操作とmultiTouchRollは未検証。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_sprites | `tests/browser/trackball-sprites.spec.js` | SpriteMaterialの頂点処理（回転・中心・サイズ）とsRGB変換後のフォグをシェーダーで再現。フレーム毎の回転を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |
+| webgl_lod | `tests/browser/trackball-sprites.spec.js` | LODの距離選択とFlyControls（マウス位置での旋回・ボタン前後移動・キー操作）をRustで再現。性能の完全な同等性は未保証。 |
 | misc_controls_orbit | `tests/browser/controls-attributes.spec.js` | OrbitControls（減衰・極角制限・地面平面パン）をRustで再現。キーボード操作とカーソル形状は未移植。性能の完全な同等性は未保証。 |
 | misc_controls_map | `tests/browser/controls-attributes.spec.js` | MapControls（左ドラッグのパン・右ドラッグの回転・zoomToCursor・screenSpacePanning）をRustで再現。タッチ操作は未検証。性能の完全な同等性は未保証。 |
 | webgl_camera | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。2つのビューポートとO/Pキー切替を再現。性能の完全な同等性は未保証。 |

@@ -1701,7 +1701,7 @@
     {
       "id": "webgl_geometry_minecraft",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_minecraft.html",
       "source_sha256": "fa0a3bd983bed5911d30109c3d1e4eecacbd1de6eee81653983bd0b4d8edb77c",
@@ -1723,7 +1723,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 214,
+        "source": "src/browser/trackball_sprites.rs",
+        "test": "tests/browser/trackball-sprites.spec.js",
+        "limitations": [
+          "ImprovedNoiseの地形と面の結合をRustで再現し、1つの常駐ジオメトリで描画（原本と同じ）。FirstPersonControlsを再現（長さ0のフレームでは更新しない）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/FirstPersonControls.js",
@@ -5518,12 +5525,19 @@
     {
       "id": "webgl_loader_texture_hdr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html",
       "source_sha256": "6c1d4dafed6fa9ccdf4cf7d66b0d5e34242449ee6ec69a9f6009c7798d76895d",
       "requirements": {},
-      "port": null,
+      "port": {
+        "example": 213,
+        "source": "src/browser/trackball_sprites.rs",
+        "test": "tests/browser/trackball-sprites.spec.js",
+        "limitations": [
+          "HDRLoaderのRGBEデコードと半精度変換（切り捨て）をRustで再現。Reinhardトーンマッピングと露出を再現し、変更時のみ描画。操作UI外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -5885,7 +5899,7 @@
     {
       "id": "webgl_lod",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lod.html",
       "source_sha256": "c00873378be832a6742e120ccdc785abfdd542996094d0a0934af9470855e1c3",
@@ -5937,7 +5951,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 217,
+        "source": "src/browser/trackball_sprites.rs",
+        "test": "tests/browser/trackball-sprites.spec.js",
+        "limitations": [
+          "LODの距離選択とFlyControls（マウス位置での旋回・ボタン前後移動・キー操作）をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/FlyControls.js"
@@ -9848,7 +9869,7 @@
     {
       "id": "webgl_sprites",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sprites.html",
       "source_sha256": "48d6ae182b791cb2539eb2569fe812d47f7c0c9e85d1111c12adbb7642d12c36",
@@ -9860,7 +9881,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 216,
+        "source": "src/browser/trackball_sprites.rs",
+        "test": "tests/browser/trackball-sprites.spec.js",
+        "limitations": [
+          "SpriteMaterialの頂点処理（回転・中心・サイズ）とsRGB変換後のフォグをシェーダーで再現。フレーム毎の回転を60fps相当の時間基準で再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]
@@ -32340,7 +32368,7 @@
     {
       "id": "misc_controls_trackball",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html",
       "source_sha256": "e1516b48a4b50c6c5b604644414c017bc7ad1d255adc6f6c90bf8ec02025997c",
@@ -32380,7 +32408,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 215,
+        "source": "src/browser/trackball_sprites.rs",
+        "test": "tests/browser/trackball-sprites.spec.js",
+        "limitations": [
+          "TrackballControls（回転・ズーム・パンの減衰、A/S/Dキー、正射影カメラ切替）をRustで再現。更新は60fps相当の時間ステップ。タッチ操作とmultiTouchRollは未検証。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",

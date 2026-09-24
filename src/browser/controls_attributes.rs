@@ -152,7 +152,7 @@ fn webgl_orthographic(l: f64, r: f64, t: f64, b: f64, near: f64, far: f64) -> Ma
     ])
 }
 /// OrbitControls (and MapControls), stepped once per animation frame like the original.
-struct Controls {
+pub(super) struct Controls {
     target: Vector3,
     delta_theta: f64,
     delta_phi: f64,
@@ -167,7 +167,12 @@ struct Controls {
     dolly_direction: Vector3,
 }
 impl Controls {
-    fn new(damping: Option<f64>, distance: (f64, f64), max_polar: f64, screen_space: bool) -> Self {
+    pub(super) fn new(
+        damping: Option<f64>,
+        distance: (f64, f64),
+        max_polar: f64,
+        screen_space: bool,
+    ) -> Self {
         Self {
             target: Vector3::ZERO,
             delta_theta: 0.,
@@ -183,12 +188,12 @@ impl Controls {
             dolly_direction: Vector3::ZERO,
         }
     }
-    fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
+    pub(super) fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
         self.delta_theta -= TAU * dx / height;
         self.delta_phi -= TAU * dy / height;
     }
     /// `_pan` for a perspective camera, from the camera's current matrix.
-    fn pan(&mut self, camera: &CameraState, dx: f64, dy: f64, height: f64) {
+    pub(super) fn pan(&mut self, camera: &CameraState, dx: f64, dy: f64, height: f64) {
         let offset = camera.position - self.target;
         let distance = offset.length() * (camera.fov / 2.).to_radians().tan();
         let x = camera.quaternion * Vector3::X;
@@ -201,7 +206,7 @@ impl Controls {
         self.pan += up * (2. * dy * distance / height);
     }
     /// Wheel: `_updateZoomParameters`, then `_dollyIn` / `_dollyOut`.
-    fn dolly(&mut self, wheel: f64, camera: &CameraState, pointer: Vector2) {
+    pub(super) fn dolly(&mut self, wheel: f64, camera: &CameraState, pointer: Vector2) {
         if self.zoom_to_cursor {
             self.cursor_zoom = true;
             // ( mouse.x, mouse.y, 1 ).unproject( camera ): a point on the far plane.
@@ -224,7 +229,7 @@ impl Controls {
         d.min(self.distance.1).max(self.distance.0)
     }
     /// `OrbitControls.update()` with `minPolarAngle` 0 and unbounded azimuth.
-    fn update(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
+    pub(super) fn update(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
         const EPS: f64 = 0.000001;
         let offset = s.get(c)?.position - self.target;
         let mut radius = offset.length();
@@ -290,14 +295,14 @@ impl Controls {
     }
 }
 /// The camera state the controls read: position, orientation, projection and field of view.
-struct CameraState {
+pub(super) struct CameraState {
     position: Vector3,
     quaternion: Quaternion,
     world: Matrix4,
     projection: Matrix4,
     fov: f64,
 }
-fn camera_state(s: &Scene, c: Object3D) -> Result<CameraState> {
+pub(super) fn camera_state(s: &Scene, c: Object3D) -> Result<CameraState> {
     let n = s.get(c)?;
     let (camera, _) = s.camera(c)?;
     let Camera::Perspective(p) = camera else {
@@ -1157,7 +1162,7 @@ fn offset_hue(c: [f64; 3], dh: f64) -> [f64; 3] {
         hue2rgb(q, p, h - 1. / 3.),
     ]
 }
-fn viewport_css() -> (f64, f64, f64) {
+pub(super) fn viewport_css() -> (f64, f64, f64) {
     let window = web_sys::window();
     let size = |f: fn(
         &web_sys::Window,

@@ -542,3 +542,9 @@ alongside `LICENSE-THREE`. The stereo examples reuse the retained
 `gallery/assets/water.jpg` is the unmodified r186 `examples/textures/water.jpg`.
 Its source path and SHA-256 hash are in `controls-attributes-manifest.json`; it
 is distributed alongside `LICENSE-THREE`.
+
+`gallery/assets/memorial.hdr`, `minecraft/atlas.png` and `sprite2.png` are the
+unmodified r186 `examples/textures/` files. Their source paths and SHA-256
+hashes are in `trackball-sprites-manifest.json`; they are distributed alongside
+`LICENSE-THREE`. The sprite example reuses `sprite1.png` and the retained
+`environment-materials` `sprite0.png`.
