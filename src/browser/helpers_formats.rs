@@ -937,7 +937,7 @@ impl Demo {
     }
 }
 /// `gltf.scene.children[ 0 ]` of LeePerrySmith.glb: its geometry and node scale.
-async fn head() -> Result<(Arc<BufferGeometry>, Vector3)> {
+pub(super) async fn head() -> Result<(Arc<BufferGeometry>, Vector3)> {
     let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
     let mut temp = Scene::default();
     crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(&mut temp)?;

@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-16 excluded for explicit WebGL APIs or equivalent WebGPU examples; 591 retained. 248 partial Rust ports; 343 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+19 excluded for explicit WebGL APIs or equivalent WebGPU examples; 588 retained. 258 partial Rust ports; 330 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,20 +12,20 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 383 |
+| Full camera controls: pan, touch, damping and control variants | 381 |
 | Programmable materials / TSL equivalents | 219 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 178 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 176 |
 | Inspector and per-example GUI parity | 175 |
-| Additional procedural geometry builders | 173 |
-| Shadow maps and shadow filtering | 130 |
-| Hemisphere/spot/area lights, light probes and baking | 123 |
+| Additional procedural geometry builders | 172 |
+| Shadow maps and shadow filtering | 128 |
+| Hemisphere/spot/area lights, light probes and baking | 122 |
 | Postprocessing passes and temporal history | 103 |
 | Distance and height fog | 93 |
 | Wireframe materials and scene helpers | 91 |
-| Additional loaders and compressed assets | 84 |
+| Additional loaders and compressed assets | 83 |
 | Instance transforms and batched drawing | 75 |
 | Animation mixer and skeletal animation | 48 |
-| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 47 |
+| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 46 |
 | Canvas, HTML, video and partial texture updates | 46 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
@@ -48,6 +48,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |
 | webgl_lights_spotlights | `tests/browser/shapes-lights.spec.js` | TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。 |
+| misc_exporter_stl | `tests/browser/exporters-matcap.spec.js` | STLExporter（ASCII・バイナリ）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。シーン（影・フォグ・グリッド）も再現。性能の完全な同等性は未保証。 |
+| misc_exporter_ply | `tests/browser/exporters-matcap.spec.js` | PLYExporter（ASCII・バイナリBE/LE、法線・UV・Uint8頂点色）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。 |
+| misc_exporter_obj | `tests/browser/exporters-matcap.spec.js` | OBJExporter（メッシュ・点群、変換済み複数オブジェクト）と6種のジオメトリ切替をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。 |
+| webgpu_materials_matcap | `tests/browser/exporters-matcap.spec.js` | EXRLoader（ZIP圧縮・FLOATチャネルのHalf変換）、matcapUVによるEXRマットキャップ、法線マップ、ACESトーンマッピングをRustで再現。ドラッグ＆ドロップによるマットキャップ差し替えは未移植。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_lights_physical | `tests/browser/exporters-matcap.spec.js` | 光束（lm）・照度（lx）による点光源と半球光、点光源の影、バンプ・ラフネス・メタルネスマップ付きStandard材質、Reinhardトーンマッピングと露出をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| misc_animation_groups | `tests/browser/selection-views.spec.js` | AnimationObjectGroupで25個の箱が共有するクォータニオン・離散カラー・不透明度のキーフレームをRustで再現（3秒ループ）。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| misc_animation_keys | `tests/browser/selection-views.spec.js` | 位置・スケール・クォータニオン・離散カラー・不透明度のキーフレームトラックとAxesHelperをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| misc_controls_drag | `tests/browser/selection-views.spec.js` | DragControls（左ドラッグで移動、右ドラッグで回転）、Shift+クリックのグループ選択とemissive表示、オンデマンド描画をRustで再現。ホバー時のカーソル変更とタッチ操作（Mキー）は未移植。性能の完全な同等性は未保証。 |
+| misc_boxselection | `tests/browser/selection-views.spec.js` | SelectionBoxの視錐台選択（NDC始点・終点、emissive表示）をRustで再現し、SelectionHelperの矩形はDOMで表示。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgpu_camera_array | `tests/browser/selection-views.spec.js` | ArrayCameraの6×6サブカメラを上端基準ビューポートで描画し、影マップは1回だけ描画（shadow autoUpdate相当）。性能の完全な同等性は未保証。 |
 | webgl_clipping_advanced | `tests/browser/text-clipping.spec.js` | 四面体のローカルクリッピング平面（毎フレーム変換）、回転する円筒状のグローバル平面、clipShadows付きInstancedMeshとスポット光・平行光源の影、平面の可視化をRustで再現。GUIはチェックボックスで表現（Visualizeのlisten表示更新は未移植）。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_splines | `tests/browser/text-clipping.spec.js` | CurveExtrasの14曲線とCatmullRom曲線、TubeGeometry（Frenetフレーム）、ワイヤーフレーム、スプラインカメラ・CameraHelper・lookAheadをRustで再現。パラメータ変更時のチューブ再生成は原本と同じくCPUで行う。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_text | `tests/browser/text-clipping.spec.js` | FontLoaderの書体JSON、ShapePath.toShapes、穴付きEarcut、ベベル付きExtrudeGeometry（TextGeometry）をRustで再現し、原本の頂点と一致を確認。10種の書体は起動時に一括取得（原本は選択時に取得）。キー入力（keydown/keypress）とドラッグ回転、4つのボタンを移植。性能の完全な同等性は未保証。 |

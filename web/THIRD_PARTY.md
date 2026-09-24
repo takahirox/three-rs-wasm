@@ -600,3 +600,17 @@ the castle cube.
   distributed with `fonts/droid/NOTICE` and `fonts/droid/README.txt`.
 
 Their source paths and SHA-256 hashes are in `text-clipping-manifest.json`.
+
+`gallery/assets/matcaps/040full.exr`, `LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg`,
+`hardwood2_bump.jpg`, `hardwood2_roughness.jpg` and `earth_specular_2048.jpg`
+are the unmodified r186 `examples/textures/matcaps/040full.exr`,
+`models/gltf/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg`,
+`textures/hardwood2_bump.jpg`, `textures/hardwood2_roughness.jpg` and
+`textures/planets/earth_specular_2048.jpg` files.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `exporters-matcap-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`.
+- **Credits.** The matcap is courtesy of cyaoeu and ships with its
+  `matcaps/040full.txt`. The Lee Perry-Smith normal map is covered by
+  `web/models/LeePerrySmith_License.txt`.

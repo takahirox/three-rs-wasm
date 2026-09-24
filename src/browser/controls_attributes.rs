@@ -111,7 +111,7 @@ pub(super) fn set_uniform(s: &mut Scene, h: Object3D, index: usize, value: [f32;
     Ok(())
 }
 /// `Matrix4.makePerspective` in WebGL's -1..1 depth convention.
-fn webgl_perspective(fov: f64, aspect: f64, near: f64, far: f64) -> Matrix4 {
+pub(super) fn webgl_perspective(fov: f64, aspect: f64, near: f64, far: f64) -> Matrix4 {
     let top = near * (fov.to_radians() * 0.5).tan();
     let height = 2. * top;
     let width = aspect * height;

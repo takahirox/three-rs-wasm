@@ -14,6 +14,7 @@ mod expanded_lights;
 mod expanded_lines;
 mod expanded_morph_models;
 mod expanded_triangles;
+mod exporters_matcap;
 mod gallery;
 mod gallery_scenes;
 mod geometry_materials;
@@ -31,6 +32,7 @@ mod point_lights;
 mod refraction_loaders;
 mod robot;
 mod room_environment;
+mod selection_views;
 mod shader_geometry;
 mod shapes;
 mod shapes_lights;
@@ -195,7 +197,8 @@ impl State {
             189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205,
             206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
             223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
-            240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
+            240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
+            258, 259, 260,
         ]
         .contains(&self.example)
         {
@@ -365,6 +368,19 @@ impl BrowserApp {
         state.scene.environment_rotation = rotation;
         state.scene.background_blur = blur.clamp(0.0, 1.0);
         state.scene.background_environment = background;
+    }
+    /// `[filename, bytes]` of the last exporter download, or null.
+    pub fn gallery_take_export(&self) -> JsValue {
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
+            &mut self.state.borrow_mut().gallery_scene
+            && let Some((name, bytes)) = demo.take_export()
+        {
+            let out = js_sys::Array::new();
+            out.push(&JsValue::from_str(&name));
+            out.push(&js_sys::Uint8Array::from(bytes.as_slice()));
+            return out.into();
+        }
+        JsValue::NULL
     }
     pub fn gallery_status(&self) -> String {
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
@@ -905,7 +921,7 @@ impl BrowserApp {
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
-                            248,
+                            248, 257, 262,
                         ]
                         .contains(&example)
                         {
@@ -918,7 +934,8 @@ impl BrowserApp {
                             193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204, 205, 206, 207,
                             208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224, 225,
                             226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
-                            241, 243, 244, 245, 246, 247, 248, 249, 250,
+                            241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 258,
+                            259, 260,
                         ]
                         .contains(&example),
                         format: if [
@@ -929,6 +946,7 @@ impl BrowserApp {
                             211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
                             225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
                             239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
+                            253, 254, 255, 256, 258, 259, 260,
                         ]
                         .contains(&example)
                         {
@@ -958,7 +976,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=252).contains(&example) {
+            if (7..=262).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1117,7 +1135,7 @@ impl BrowserApp {
                     // These official static scenes render only on load, input and resize.
                     if !([
                         16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236,
-                        237, 240, 242,
+                        237, 240, 242, 255,
                     ]
                     .contains(&state.example)
                         || state.paused && state.example >= 39)

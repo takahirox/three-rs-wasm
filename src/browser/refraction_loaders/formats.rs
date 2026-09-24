@@ -559,9 +559,66 @@ fn uncompress_piz(
     }
     Ok(bytes)
 }
-/// EXRLoader.parse for single-part scanline HALF images (no compression or PIZ),
-/// as HalfFloatType RGBA with rows from the bottom and alpha filled with 1.
-pub(super) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
+/// DataUtils.toHalfFloat: clamped to ±65504, then the base/shift tables, which
+/// truncate the mantissa.
+pub(in crate::browser) fn to_half_float(v: f32) -> u16 {
+    let v = v.clamp(-65504., 65504.);
+    let f = v.to_bits();
+    let e = ((f >> 23) & 0x1ff) as usize;
+    let (i, sign) = (e & 0xff, e & 0x100 != 0);
+    let exponent = i as i32 - 127;
+    let (base, shift) = if exponent < -27 {
+        (0u32, 24)
+    } else if exponent < -14 {
+        (0x0400 >> (-exponent - 14), -exponent - 1)
+    } else if exponent <= 15 {
+        (((exponent + 15) as u32) << 10, 13)
+    } else if exponent < 128 {
+        (0x7c00, 24)
+    } else {
+        (0x7c00, 13)
+    };
+    let base = if sign {
+        if exponent < -27 {
+            0x8000
+        } else {
+            base | 0x8000
+        }
+    } else {
+        base
+    };
+    (base + ((f & 0x007fffff) >> shift)) as u16
+}
+/// uncompressZIP: zlib, the byte predictor, then interleaveScalar.
+fn uncompress_zip(data: &[u8]) -> Result<Vec<u8>> {
+    let mut raw = miniz_oxide::inflate::decompress_to_vec_zlib(data)
+        .map_err(|_| bad("EXR: bad ZIP block"))?;
+    for t in 1..raw.len() {
+        raw[t] = raw[t - 1].wrapping_add(raw[t]).wrapping_sub(128);
+    }
+    let mut out = vec![0; raw.len()];
+    let (mut t1, mut t2, mut s) = (0, raw.len().div_ceil(2), 0);
+    let stop = raw.len() as isize - 1;
+    loop {
+        if s as isize > stop {
+            break;
+        }
+        out[s] = raw[t1];
+        s += 1;
+        t1 += 1;
+        if s as isize > stop {
+            break;
+        }
+        out[s] = raw[t2];
+        s += 1;
+        t2 += 1;
+    }
+    Ok(out)
+}
+/// EXRLoader.parse for single-part scanline HALF or FLOAT images (no compression,
+/// ZIPS, ZIP or PIZ), as HalfFloatType RGBA with rows from the bottom and alpha
+/// filled with 1.
+pub(in crate::browser) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
     let mut r = Reader { data, at: 8 };
     let string = |r: &mut Reader| {
         let mut s = vec![];
@@ -607,13 +664,18 @@ pub(super) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
         (window[3] - window[1] + 1) as usize,
     );
     let block = match compression {
-        0 => 1,
+        0 | 2 => 1,
+        3 => 16,
         4 => 32,
         _ => return Err(bad("EXR: unsupported compression")),
     };
-    if channels.iter().any(|(_, p)| *p != 1) {
-        return Err(bad("EXR: only HALF channels are supported"));
+    if channels.iter().any(|(_, p)| *p != 1 && *p != 2)
+        || (compression == 4 && channels.iter().any(|(_, p)| *p != 1))
+    {
+        return Err(bad("EXR: only HALF and FLOAT channels are supported"));
     }
+    // Byte size per sample: HALF 2, FLOAT 4.
+    let bytes = |p: usize| if p == 1 { 2 } else { 4 };
     let slot = |n: &str| match n {
         "R" => Some(0),
         "G" => Some(1),
@@ -623,12 +685,12 @@ pub(super) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
     };
     let fill = !channels.iter().any(|(n, _)| n == "A");
     let mut out = vec![if fill { 0x3C00u16 } else { 0 }; w * h * 4];
-    let total: usize = channels.iter().map(|(_, p)| p * 2).sum();
+    let total: usize = channels.iter().map(|(_, p)| bytes(*p)).sum();
     let mut offsets = vec![];
     let mut byte = 0;
     for (_, p) in &channels {
         offsets.push(byte);
-        byte += p * 2;
+        byte += bytes(*p);
     }
     r.at += h.div_ceil(block) * 8;
     for _ in 0..h / block {
@@ -642,7 +704,14 @@ pub(super) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
         let per_line = w * total;
         let raw;
         let viewer: &[u8] = if size < lines * per_line {
-            raw = uncompress_piz(data, r.at, w, lines, channels.len(), 1)?;
+            raw = if compression == 4 {
+                uncompress_piz(data, r.at, w, lines, channels.len(), 1)?
+            } else {
+                uncompress_zip(
+                    data.get(r.at..r.at + size)
+                        .ok_or_else(|| bad("EXR: truncated"))?,
+                )?
+            };
             &raw
         } else {
             data.get(r.at..r.at + size)
@@ -651,12 +720,21 @@ pub(super) fn decode_exr(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
         r.at += size;
         for y in 0..lines {
             let row = (h - 1 - (line as usize + y)) * w * 4;
-            for (c, (n, _)) in channels.iter().enumerate() {
+            for (c, (n, p)) in channels.iter().enumerate() {
                 let Some(s) = slot(n) else { continue };
                 let mut at = y * per_line + offsets[c] * w;
                 for x in 0..w {
-                    out[row + x * 4 + s] = u16::from_le_bytes([viewer[at], viewer[at + 1]]);
-                    at += 2;
+                    out[row + x * 4 + s] = if *p == 1 {
+                        u16::from_le_bytes([viewer[at], viewer[at + 1]])
+                    } else {
+                        to_half_float(f32::from_le_bytes([
+                            viewer[at],
+                            viewer[at + 1],
+                            viewer[at + 2],
+                            viewer[at + 3],
+                        ]))
+                    };
+                    at += bytes(*p);
                 }
             }
         }

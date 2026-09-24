@@ -165,3 +165,15 @@ batch ([text-clipping.md](text-clipping.md)) bounds 4× MSAA comparisons of
 silhouettes, dense facets, line strips and the tube's wireframe. With MSAA off,
 it bounds only the spline tubes, whose wireframe relies on exact line/face
 depth ties that fall on different pixels in the WebGL and WebGPU depth paths.
+
+The keyframe, drag-control, box-selection and camera-array batch
+([selection-views.md](selection-views.md)) lists `webgpu_camera_array` and
+excludes `webgl_camera_array`. With MSAA off it bounds only the camera array,
+whose `ceil`-sized viewports overlap by a pixel and resolve in view order rather
+than WebGPU's object order. With 4× MSAA it bounds silhouettes and shadow edges.
+
+The exporter, matcap and physical-lights batch
+([exporters-matcap.md](exporters-matcap.md)) lists `webgpu_materials_matcap`
+and `webgpu_lights_physical` and excludes their WebGL equivalents. All five
+scenes match within the ordinary threshold with MSAA off, and the exported STL,
+PLY and OBJ files equal the originals byte for byte.

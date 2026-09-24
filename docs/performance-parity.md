@@ -571,3 +571,30 @@ boxes' two shadow passes.
 
 Warmed cycles create no GPU resources. The geometry-building controls are left
 out of those cycles. No GPU timing parity is claimed.
+
+### Keyframes, drag controls, box selection and the camera array
+
+The [keyframe, drag-control, box-selection and camera-array
+ports](selection-views.md) match the original draws.
+
+- **Camera array.** The 36 views share one shadow pass, through the new
+  `Scene::shadow_auto_update`.
+- **Culling.** Shadow casters are frustum-culled per shadow camera, as in
+  Three.js, and shadow draw data stays resident per caster.
+- **CPU work.** Picking and selection run as explicit CPU queries on input.
+
+No scene uploads geometry or texture data after a warm pass, and warmed cycles
+create no GPU resources. No GPU timing parity is claimed.
+
+### STL, PLY and OBJ exporters, matcap and physical lights
+
+The [exporter, matcap and physical-lights ports](exporters-matcap.md) match the
+original draws.
+
+- **CPU work.** The exporters run on the CPU only when their buttons are
+  pressed. The EXR decodes once at load.
+- **Uploads.** No scene uploads geometry or texture data after a warm pass.
+
+Warmed cycles create no GPU resources. The OBJ scene selection and the shadow
+toggle are left out, as they build geometry and light bindings. No GPU timing
+parity is claimed.

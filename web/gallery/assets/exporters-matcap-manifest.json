@@ -1,0 +1,32 @@
+[
+ {
+  "file": "matcaps/040full.exr",
+  "source": "examples/textures/matcaps/040full.exr",
+  "sha256": "14deb8c88d02cd44d3694c9b63a5a56fb481364298900441a2be42f9eb70a9d3"
+ },
+ {
+  "file": "matcaps/040full.txt",
+  "source": "examples/textures/matcaps/040full.txt",
+  "sha256": "d825731820093c79b84f1b294d59e4e4b807d692c9babe911a6c89a495323429"
+ },
+ {
+  "file": "LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "source": "examples/models/gltf/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "sha256": "36925e51ad9b324b94e8faf4692da1b4132809f2762bb8d5bd549ffd215d4ca6"
+ },
+ {
+  "file": "hardwood2_bump.jpg",
+  "source": "examples/textures/hardwood2_bump.jpg",
+  "sha256": "0f07254a3eb31274b7f7cc71968b74a5a39a799d33e8b290c4b8dca6ce43654d"
+ },
+ {
+  "file": "hardwood2_roughness.jpg",
+  "source": "examples/textures/hardwood2_roughness.jpg",
+  "sha256": "bdce31ae1138fd110703f5fb37a4979b4b03cd6a057f58897c16d27839d7d17b"
+ },
+ {
+  "file": "earth_specular_2048.jpg",
+  "source": "examples/textures/planets/earth_specular_2048.jpg",
+  "sha256": "2df48906732d7a458b2d0a7cdec51a829262307c6bdee4cfdf079a4dd7c71c69"
+ }
+]

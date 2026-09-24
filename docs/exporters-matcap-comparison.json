@@ -1,0 +1,1854 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/exporters-matcap.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Exporters-11c5b--materials-matcap-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0030059814453125,
+      "meanError": 0.24870427449544272
+     },
+     {
+      "state": 1,
+      "fraction": 0.0028228759765625,
+      "meanError": 0.12693150838216147
+     },
+     {
+      "state": 2,
+      "fraction": 0.002101898193359375,
+      "meanError": 0.08565775553385417
+     },
+     {
+      "state": 3,
+      "fraction": 0.00217437744140625,
+      "meanError": 0.1525090535481771
+     },
+     {
+      "state": 4,
+      "fraction": 0.0030059814453125,
+      "meanError": 0.24870427449544272
+     },
+     {
+      "state": 5,
+      "fraction": 0.00237274169921875,
+      "meanError": 0.19722366333007812
+     },
+     {
+      "state": 6,
+      "fraction": 0.00187890625,
+      "meanError": 0.14441015625
+     }
+    ]
+   },
+   "Exporters-27e9d-misc-exporter-obj-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0.0001983642578125,
+      "meanError": 0.002925872802734375
+     },
+     {
+      "state": 3,
+      "fraction": 0.000152587890625,
+      "meanError": 0.0021209716796875
+     },
+     {
+      "state": 4,
+      "fraction": 0.0004425048828125,
+      "meanError": 0.006346384684244792
+     },
+     {
+      "state": 5,
+      "fraction": 9.918212890625e-05,
+      "meanError": 0.0015538533528645833
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0.000408172607421875,
+      "meanError": 0.0065765380859375
+     },
+     {
+      "state": 8,
+      "fraction": 0.00034375,
+      "meanError": 0.005541666666666667
+     }
+    ]
+   },
+   "Exporters-450cb--materials-matcap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.10817718505859375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.07216644287109375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.060277303059895836
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.07855606079101562
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.10817718505859375
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.08694203694661458
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.05483333333333333
+     }
+    ]
+   },
+   "Exporters-7412d-misc-exporter-stl-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0007235209147135416
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0012029012044270833
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00015004475911458334
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00024348958333333332
+     }
+    ]
+   },
+   "Exporters-928ac-u-lights-physical-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000194549560546875,
+      "meanError": 0.07621002197265625
+     },
+     {
+      "state": 1,
+      "fraction": 0.000141143798828125,
+      "meanError": 0.07622782389322917
+     },
+     {
+      "state": 2,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.07532755533854167
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.08685302734375
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.010854085286458334
+     },
+     {
+      "state": 5,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.011241912841796875
+     },
+     {
+      "state": 6,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.005598704020182292
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.004988352457682292
+     },
+     {
+      "state": 8,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.005598704020182292
+     },
+     {
+      "state": 9,
+      "fraction": 0.00042724609375,
+      "meanError": 0.030024210611979168
+     },
+     {
+      "state": 10,
+      "fraction": 0.000301361083984375,
+      "meanError": 0.047078450520833336
+     },
+     {
+      "state": 11,
+      "fraction": 0.000141143798828125,
+      "meanError": 0.07622782389322917
+     },
+     {
+      "state": 12,
+      "fraction": 0.000598907470703125,
+      "meanError": 0.10674794514973958
+     },
+     {
+      "state": 13,
+      "fraction": 0.00078582763671875,
+      "meanError": 0.09894434611002605
+     },
+     {
+      "state": 14,
+      "fraction": 0.00051171875,
+      "meanError": 0.11039453125
+     }
+    ]
+   },
+   "Exporters-a0b21-residency-misc-exporter-obj": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-a663d-ency-webgpu-lights-physical": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 194,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      },
+      "after": {
+       "creates": 194,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 198,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      },
+      "after": {
+       "creates": 198,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-a72ba-misc-exporter-ply-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 7.62939453125e-06,
+      "meanError": 0.0006306966145833334
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.000637054443359375
+     },
+     {
+      "state": 2,
+      "fraction": 3.90625e-06,
+      "meanError": 0.00041796875
+     }
+    ]
+   },
+   "Exporters-aba61-misc-exporter-stl-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.010738372802734375,
+      "meanError": 0.15134811401367188
+     },
+     {
+      "state": 1,
+      "fraction": 0.007961273193359375,
+      "meanError": 0.10079447428385417
+     },
+     {
+      "state": 2,
+      "fraction": 0.006427764892578125,
+      "meanError": 0.08868026733398438
+     },
+     {
+      "state": 3,
+      "fraction": 0.00858203125,
+      "meanError": 0.11095052083333333
+     }
+    ]
+   },
+   "Exporters-d2b34-misc-exporter-ply-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.011127471923828125,
+      "meanError": 0.1613286336263021
+     },
+     {
+      "state": 1,
+      "fraction": 0.00803375244140625,
+      "meanError": 0.10113143920898438
+     },
+     {
+      "state": 2,
+      "fraction": 0.01008203125,
+      "meanError": 0.1230859375
+     }
+    ]
+   },
+   "Exporters-d62b4-misc-exporter-obj-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Exporters-d7f75-residency-misc-exporter-stl": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-e2d6f-residency-misc-exporter-ply": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 53,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 53,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 58,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 58,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-f32df-ncy-webgpu-materials-matcap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 46,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 46,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-fc4fe--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "misc_exporter_stl",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_ply",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_obj",
+      "reference": {
+       "draws": [],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_materials_matcap",
+      "reference": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lights_physical",
+      "reference": {
+       "draws": [
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Exporters-11c5b--materials-matcap-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0015249252319335938,
+      "meanError": 0.17857487996419272
+     },
+     {
+      "state": 1,
+      "fraction": 0.0014171600341796875,
+      "meanError": 0.09979470570882161
+     },
+     {
+      "state": 2,
+      "fraction": 0.0010519027709960938,
+      "meanError": 0.07270431518554688
+     },
+     {
+      "state": 3,
+      "fraction": 0.0010919570922851562,
+      "meanError": 0.11595217386881511
+     },
+     {
+      "state": 4,
+      "fraction": 0.0015249252319335938,
+      "meanError": 0.17857487996419272
+     },
+     {
+      "state": 5,
+      "fraction": 0.0012025833129882812,
+      "meanError": 0.14314047495524088
+     },
+     {
+      "state": 6,
+      "fraction": 0.00094140625,
+      "meanError": 0.09751595052083334
+     }
+    ]
+   },
+   "Exporters-27e9d-misc-exporter-obj-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 3.0517578125e-05
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 8.0108642578125e-05,
+      "meanError": 0.0011685689290364583
+     },
+     {
+      "state": 3,
+      "fraction": 6.4849853515625e-05,
+      "meanError": 0.0008618036905924479
+     },
+     {
+      "state": 4,
+      "fraction": 0.00026607513427734375,
+      "meanError": 0.0038607915242513022
+     },
+     {
+      "state": 5,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.0008366902669270834
+     },
+     {
+      "state": 6,
+      "fraction": 1.9073486328125e-06,
+      "meanError": 3.0517578125e-05
+     },
+     {
+      "state": 7,
+      "fraction": 0.0002040863037109375,
+      "meanError": 0.0032873153686523438
+     },
+     {
+      "state": 8,
+      "fraction": 0.000173828125,
+      "meanError": 0.0028017578125
+     }
+    ]
+   },
+   "Exporters-450cb--materials-matcap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.10811837514241536
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.07218519846598308
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.059932708740234375
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0787518819173177
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.10811837514241536
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.08764235178629558
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.05426432291666667
+     }
+    ]
+   },
+   "Exporters-7412d-misc-exporter-stl-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.33514404296875e-05,
+      "meanError": 0.0009717941284179688
+     },
+     {
+      "state": 1,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.001136461893717448
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0005016326904296875
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00022688802083333334
+     }
+    ]
+   },
+   "Exporters-928ac-u-lights-physical-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00020885467529296875,
+      "meanError": 0.07645829518636067
+     },
+     {
+      "state": 1,
+      "fraction": 0.0001811981201171875,
+      "meanError": 0.0769513448079427
+     },
+     {
+      "state": 2,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.07518990834554036
+     },
+     {
+      "state": 3,
+      "fraction": 8.7738037109375e-05,
+      "meanError": 0.08643595377604167
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.010823249816894531
+     },
+     {
+      "state": 5,
+      "fraction": 3.62396240234375e-05,
+      "meanError": 0.011547724405924479
+     },
+     {
+      "state": 6,
+      "fraction": 2.86102294921875e-05,
+      "meanError": 0.00576019287109375
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.005033175150553386
+     },
+     {
+      "state": 8,
+      "fraction": 2.86102294921875e-05,
+      "meanError": 0.00576019287109375
+     },
+     {
+      "state": 9,
+      "fraction": 0.0004911422729492188,
+      "meanError": 0.03112951914469401
+     },
+     {
+      "state": 10,
+      "fraction": 0.00035190582275390625,
+      "meanError": 0.048065503438313804
+     },
+     {
+      "state": 11,
+      "fraction": 0.0001811981201171875,
+      "meanError": 0.0769513448079427
+     },
+     {
+      "state": 12,
+      "fraction": 0.0006074905395507812,
+      "meanError": 0.10733604431152344
+     },
+     {
+      "state": 13,
+      "fraction": 0.0007038116455078125,
+      "meanError": 0.10333601633707683
+     },
+     {
+      "state": 14,
+      "fraction": 0.0004521484375,
+      "meanError": 0.11551985677083333
+     }
+    ]
+   },
+   "Exporters-a0b21-residency-misc-exporter-obj": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 28,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 28,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-a663d-ency-webgpu-lights-physical": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 194,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      },
+      "after": {
+       "creates": 194,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 198,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      },
+      "after": {
+       "creates": 198,
+       "transfers": [
+        4,
+        128264,
+        64
+       ],
+       "resources": [
+        2,
+        9,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-a72ba-misc-exporter-ply-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.621246337890625e-05,
+      "meanError": 0.0009860992431640625
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00080108642578125
+     },
+     {
+      "state": 2,
+      "fraction": 7.8125e-06,
+      "meanError": 0.0006363932291666666
+     }
+    ]
+   },
+   "Exporters-aba61-misc-exporter-stl-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0053348541259765625,
+      "meanError": 0.07634639739990234
+     },
+     {
+      "state": 1,
+      "fraction": 0.0039806365966796875,
+      "meanError": 0.05087693532307943
+     },
+     {
+      "state": 2,
+      "fraction": 0.0037164688110351562,
+      "meanError": 0.04924710591634115
+     },
+     {
+      "state": 3,
+      "fraction": 0.004640625,
+      "meanError": 0.0577470703125
+     }
+    ]
+   },
+   "Exporters-d2b34-misc-exporter-ply-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0055408477783203125,
+      "meanError": 0.08114878336588542
+     },
+     {
+      "state": 1,
+      "fraction": 0.0040111541748046875,
+      "meanError": 0.05068492889404297
+     },
+     {
+      "state": 2,
+      "fraction": 0.00505859375,
+      "meanError": 0.06205013020833333
+     }
+    ]
+   },
+   "Exporters-d62b4-misc-exporter-obj-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Exporters-d7f75-residency-misc-exporter-stl": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        3,
+        9128,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-e2d6f-residency-misc-exporter-ply": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 53,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 53,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 58,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 58,
+       "transfers": [
+        4,
+        11192,
+        48
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-f32df-ncy-webgpu-materials-matcap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 46,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 46,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Exporters-fc4fe--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "misc_exporter_stl",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_ply",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 84,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_obj",
+      "reference": {
+       "draws": [],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_materials_matcap",
+      "reference": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lights_physical",
+      "reference": {
+       "draws": [
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   }
+  }
+ }
+}

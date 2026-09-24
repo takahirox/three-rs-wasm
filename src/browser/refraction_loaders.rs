@@ -1,6 +1,6 @@
 //! Cube-map refraction, the PLY loader with shadows, the KMZ and Collada loaders
 //! and the EXR loader from the pinned WebGL examples.
-mod formats;
+pub(super) mod formats;
 use super::controls_attributes::{CameraState, Controls, camera_state, viewport_css};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::helpers_formats::formats::{parse_xml, unzip};

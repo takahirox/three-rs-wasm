@@ -9,8 +9,8 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 554,
-    "excluded": 16,
+    "runtime-prerequisite": 551,
+    "excluded": 19,
     "rust-static-frame-rendered": 34,
     "rust-empty-frame": 3
   },
@@ -271,28 +271,8 @@
       "id": "webgl_camera_array",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_array.html",
       "source_sha256": "481047a13ecb55c4ce578d881d256998167aa143a713322c78e4d631dd02a780",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_camera_array",
-        "source_sha256": "481047a13ecb55c4ce578d881d256998167aa143a713322c78e4d631dd02a780",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Camera type: PerspectiveCamera",
-          "Shadow maps",
-          "Material type: MeshPhongMaterial"
-        ],
-        "observed": {
-          "objects": 2,
-          "vertices": 200,
-          "lights": 2
-        },
-        "elapsed_ms": 1280,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_camera_logarithmicdepthbuffer",
@@ -1651,30 +1631,8 @@
       "id": "webgl_lights_physical",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_physical.html",
       "source_sha256": "7f92cf57c44e8bd7b95ba49373569f5af793f77766b4e54f04fcbc968941aff7",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_lights_physical",
-        "source_sha256": "7f92cf57c44e8bd7b95ba49373569f5af793f77766b4e54f04fcbc968941aff7",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Tone mapping mode: 2",
-          "Light type: HemisphereLight",
-          "Shadow maps",
-          "Material map: bumpMap",
-          "Separate roughness and metalness textures"
-        ],
-        "observed": {
-          "objects": 6,
-          "vertices": 1318,
-          "lights": 2
-        },
-        "elapsed_ms": 1338,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lights_spotlight",
@@ -3806,26 +3764,8 @@
       "id": "webgl_materials_matcap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_matcap.html",
       "source_sha256": "71c8fe686c1e8727c530bea8c493230c13ab5d6b62d16675f931ea1d56ce6a3b",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_materials_matcap",
-        "source_sha256": "71c8fe686c1e8727c530bea8c493230c13ab5d6b62d16675f931ea1d56ce6a3b",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Material type: MeshMatcapMaterial"
-        ],
-        "observed": {
-          "objects": 1,
-          "vertices": 9279,
-          "lights": 0
-        },
-        "elapsed_ms": 1321,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_materials_normalmap",
@@ -7821,7 +7761,7 @@
       "id": "webgpu_camera_array",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_camera_array.html",
       "source_sha256": "1cb6fca0660eaa17f33a057d579bd70b76c142f1763ab0f64ccf96942385f22b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_camera_array",
         "source_sha256": "1cb6fca0660eaa17f33a057d579bd70b76c142f1763ab0f64ccf96942385f22b",
@@ -9454,7 +9394,7 @@
       "id": "webgpu_lights_physical",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_physical.html",
       "source_sha256": "0dd1c733656725c2f5fc328e53c669ae3256088013f81fe50fd88958e9e6964c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_physical",
         "source_sha256": "0dd1c733656725c2f5fc328e53c669ae3256088013f81fe50fd88958e9e6964c",
@@ -10266,7 +10206,7 @@
       "id": "webgpu_materials_matcap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_matcap.html",
       "source_sha256": "aacd52fd536924609ec0c4121abd389eb0d1a56bb83aff63369d87a40ab283fd",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_materials_matcap",
         "source_sha256": "aacd52fd536924609ec0c4121abd389eb0d1a56bb83aff63369d87a40ab283fd",
@@ -15154,7 +15094,7 @@
       "id": "misc_animation_groups",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_animation_groups.html",
       "source_sha256": "a65fa58c35b12839a883c0ed4394b34ea255cd6962a06a75debdcf19ba0170c3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_animation_groups",
         "source_sha256": "a65fa58c35b12839a883c0ed4394b34ea255cd6962a06a75debdcf19ba0170c3",
@@ -15185,7 +15125,7 @@
       "id": "misc_animation_keys",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_animation_keys.html",
       "source_sha256": "f5c336c2ca9413918acffa8eaf58a0726a1f139d0fbea72e10c88189ddf1a981",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_animation_keys",
         "source_sha256": "f5c336c2ca9413918acffa8eaf58a0726a1f139d0fbea72e10c88189ddf1a981",
@@ -15216,7 +15156,7 @@
       "id": "misc_boxselection",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_boxselection.html",
       "source_sha256": "5b16843aa5c0bcc5994552a0daa9f414f0678d8ce78bdb435911df5154c9a7c5",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_boxselection",
         "source_sha256": "5b16843aa5c0bcc5994552a0daa9f414f0678d8ce78bdb435911df5154c9a7c5",
@@ -15268,7 +15208,7 @@
       "id": "misc_controls_drag",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_drag.html",
       "source_sha256": "32d04b50d3dd21add82de46894e3cb465444d7dfb567444346fe22de860ff001",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_drag",
         "source_sha256": "32d04b50d3dd21add82de46894e3cb465444d7dfb567444346fe22de860ff001",
@@ -15574,7 +15514,7 @@
       "id": "misc_exporter_obj",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_obj.html",
       "source_sha256": "0a1d1475b4e5f1789d842a8fec8570bd149311052429d4b60ecd59263f8cbcfe",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_exporter_obj",
         "source_sha256": "0a1d1475b4e5f1789d842a8fec8570bd149311052429d4b60ecd59263f8cbcfe",
@@ -15599,7 +15539,7 @@
       "id": "misc_exporter_ply",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ply.html",
       "source_sha256": "3f6f57f335098e0190bc4a15ecec8c9f0be6f2831b729f2a1e7a6cde01b53949",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_exporter_ply",
         "source_sha256": "3f6f57f335098e0190bc4a15ecec8c9f0be6f2831b729f2a1e7a6cde01b53949",
@@ -15627,7 +15567,7 @@
       "id": "misc_exporter_stl",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_stl.html",
       "source_sha256": "6b36ff8c5f76b29aa48564d050647f3a6d533c05a4583caa83e88a5b5c181b66",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_exporter_stl",
         "source_sha256": "6b36ff8c5f76b29aa48564d050647f3a6d533c05a4583caa83e88a5b5c181b66",

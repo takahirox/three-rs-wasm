@@ -630,8 +630,8 @@
     {
       "id": "webgl_camera_array",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_camera_array",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_array.html",
       "source_sha256": "481047a13ecb55c4ce578d881d256998167aa143a713322c78e4d631dd02a780",
       "requirements": {
@@ -673,7 +673,8 @@
       "port": null,
       "imports": [
         "three"
-      ]
+      ],
+      "preferred_example": "webgpu_camera_array"
     },
     {
       "id": "webgl_camera_logarithmicdepthbuffer",
@@ -3146,8 +3147,8 @@
     {
       "id": "webgl_lights_physical",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lights_physical",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_physical.html",
       "source_sha256": "7f92cf57c44e8bd7b95ba49373569f5af793f77766b4e54f04fcbc968941aff7",
       "requirements": {
@@ -3210,7 +3211,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lights_physical"
     },
     {
       "id": "webgl_lights_spotlight",
@@ -7021,8 +7023,8 @@
     {
       "id": "webgl_materials_matcap",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_materials_matcap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_matcap.html",
       "source_sha256": "71c8fe686c1e8727c530bea8c493230c13ab5d6b62d16675f931ea1d56ce6a3b",
       "requirements": {
@@ -7064,7 +7066,8 @@
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/loaders/EXRLoader.js",
         "three/addons/loaders/GLTFLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_materials_matcap"
     },
     {
       "id": "webgl_materials_normalmap",
@@ -14305,7 +14308,7 @@
     {
       "id": "webgpu_camera_array",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_camera_array.html",
       "source_sha256": "1cb6fca0660eaa17f33a057d579bd70b76c142f1763ab0f64ccf96942385f22b",
@@ -14345,7 +14348,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 257,
+        "source": "src/browser/selection_views.rs",
+        "test": "tests/browser/selection-views.spec.js",
+        "limitations": [
+          "ArrayCameraの6×6サブカメラを上端基準ビューポートで描画し、影マップは1回だけ描画（shadow autoUpdate相当）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -18333,7 +18343,7 @@
     {
       "id": "webgpu_lights_physical",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_physical.html",
       "source_sha256": "0dd1c733656725c2f5fc328e53c669ae3256088013f81fe50fd88958e9e6964c",
@@ -18401,7 +18411,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 262,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "光束（lm）・照度（lx）による点光源と半球光、点光源の影、バンプ・ラフネス・メタルネスマップ付きStandard材質、Reinhardトーンマッピングと露出をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -20027,7 +20044,7 @@
     {
       "id": "webgpu_materials_matcap",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_matcap.html",
       "source_sha256": "aacd52fd536924609ec0c4121abd389eb0d1a56bb83aff63369d87a40ab283fd",
@@ -20073,7 +20090,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 261,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "EXRLoader（ZIP圧縮・FLOATチャネルのHalf変換）、matcapUVによるEXRマットキャップ、法線マップ、ACESトーンマッピングをRustで再現。ドラッグ＆ドロップによるマットキャップ差し替えは未移植。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -32233,7 +32257,7 @@
     {
       "id": "misc_animation_groups",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_animation_groups.html",
       "source_sha256": "a65fa58c35b12839a883c0ed4394b34ea255cd6962a06a75debdcf19ba0170c3",
@@ -32249,7 +32273,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 253,
+        "source": "src/browser/selection_views.rs",
+        "test": "tests/browser/selection-views.spec.js",
+        "limitations": [
+          "AnimationObjectGroupで25個の箱が共有するクォータニオン・離散カラー・不透明度のキーフレームをRustで再現（3秒ループ）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -32258,7 +32289,7 @@
     {
       "id": "misc_animation_keys",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_animation_keys.html",
       "source_sha256": "f5c336c2ca9413918acffa8eaf58a0726a1f139d0fbea72e10c88189ddf1a981",
@@ -32284,7 +32315,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 254,
+        "source": "src/browser/selection_views.rs",
+        "test": "tests/browser/selection-views.spec.js",
+        "limitations": [
+          "位置・スケール・クォータニオン・離散カラー・不透明度のキーフレームトラックとAxesHelperをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -32293,7 +32331,7 @@
     {
       "id": "misc_boxselection",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_boxselection.html",
       "source_sha256": "5b16843aa5c0bcc5994552a0daa9f414f0678d8ce78bdb435911df5154c9a7c5",
@@ -32329,7 +32367,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 256,
+        "source": "src/browser/selection_views.rs",
+        "test": "tests/browser/selection-views.spec.js",
+        "limitations": [
+          "SelectionBoxの視錐台選択（NDC始点・終点、emissive表示）をRustで再現し、SelectionHelperの矩形はDOMで表示。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/interactive/SelectionBox.js",
@@ -32368,7 +32413,7 @@
     {
       "id": "misc_controls_drag",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_drag.html",
       "source_sha256": "32d04b50d3dd21add82de46894e3cb465444d7dfb567444346fe22de860ff001",
@@ -32404,7 +32449,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 255,
+        "source": "src/browser/selection_views.rs",
+        "test": "tests/browser/selection-views.spec.js",
+        "limitations": [
+          "DragControls（左ドラッグで移動、右ドラッグで回転）、Shift+クリックのグループ選択とemissive表示、オンデマンド描画をRustで再現。ホバー時のカーソル変更とタッチ操作（Mキー）は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/DragControls.js"
@@ -32977,7 +33029,7 @@
     {
       "id": "misc_exporter_obj",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_obj.html",
       "source_sha256": "0a1d1475b4e5f1789d842a8fec8570bd149311052429d4b60ecd59263f8cbcfe",
@@ -33021,7 +33073,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 260,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "OBJExporter（メッシュ・点群、変換済み複数オブジェクト）と6種のジオメトリ切替をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -33032,7 +33091,7 @@
     {
       "id": "misc_exporter_ply",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ply.html",
       "source_sha256": "3f6f57f335098e0190bc4a15ecec8c9f0be6f2831b729f2a1e7a6cde01b53949",
@@ -33094,7 +33153,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 259,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "PLYExporter（ASCII・バイナリBE/LE、法線・UV・Uint8頂点色）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -33105,7 +33171,7 @@
     {
       "id": "misc_exporter_stl",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_stl.html",
       "source_sha256": "6b36ff8c5f76b29aa48564d050647f3a6d533c05a4583caa83e88a5b5c181b66",
@@ -33167,7 +33233,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 258,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "STLExporter（ASCII・バイナリ）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。シーン（影・フォグ・グリッド）も再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

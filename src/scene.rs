@@ -392,6 +392,9 @@ pub struct Scene {
     /// Include scene-wide clipping planes when rendering shadow maps.
     pub clipping_shadows: bool,
     pub shadow_map_size: u32,
+    /// `shadowMap.autoUpdate`: when false, renders reuse the last shadow maps
+    /// (as an ArrayCamera's sub-views share one shadow pass).
+    pub shadow_auto_update: bool,
     pub defaults: NodeDefaults,
     id: u32,
     pub(crate) cache_owner: Arc<()>,
@@ -418,6 +421,7 @@ impl Default for Scene {
     fn default() -> Self {
         Self {
             shadow_map_size: 512,
+            shadow_auto_update: true,
             clipping_planes: Vec::new(),
             clipping_shadows: true,
             defaults: Default::default(),

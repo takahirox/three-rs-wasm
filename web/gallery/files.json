@@ -119,6 +119,7 @@
   "webgpu": [
     "webgpu_backdrop",
     "webgpu_backdrop_area",
+    "webgpu_camera_array",
     "webgpu_centroid_sampling",
     "webgpu_clipping",
     "webgpu_compute_audio",
@@ -145,6 +146,7 @@
     "webgpu_layers",
     "webgpu_lights_custom",
     "webgpu_lights_phong",
+    "webgpu_lights_physical",
     "webgpu_lights_pointlights",
     "webgpu_lights_rectarealight",
     "webgpu_lights_selective",
@@ -167,6 +169,7 @@
     "webgpu_materials_envmaps_groundprojected",
     "webgpu_materials_envmaps",
     "webgpu_materials_lightmap",
+    "webgpu_materials_matcap",
     "webgpu_materials_retroreflection",
     "webgpu_materials_sss",
     "webgpu_materials_texture_manualmipmap",
@@ -253,8 +256,15 @@
     "webgpu_volume_perlin"
   ],
   "misc": [
+    "misc_animation_groups",
+    "misc_animation_keys",
+    "misc_boxselection",
+    "misc_controls_drag",
     "misc_controls_map",
     "misc_controls_orbit",
-    "misc_controls_trackball"
+    "misc_controls_trackball",
+    "misc_exporter_obj",
+    "misc_exporter_ply",
+    "misc_exporter_stl"
   ]
 }

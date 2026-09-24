@@ -4,6 +4,8 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
+    ExportersMatcap(Box<super::exporters_matcap::Demo>),
+    SelectionViews(Box<super::selection_views::Demo>),
     TextClipping(Box<super::text_clipping::Demo>),
     ShapesLights(Box<super::shapes_lights::Demo>),
     RefractionLoaders(Box<super::refraction_loaders::Demo>),
@@ -88,6 +90,24 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            258..=262 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ExportersMatcap(Box::new(
+                    super::exporters_matcap::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            253..=257 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::SelectionViews(Box::new(super::selection_views::Demo::create(
+                    scene, camera, example,
+                )?)),
+            }),
             248..=252 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -797,6 +817,12 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SelectionViews(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1147,6 +1173,9 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
+        if let Content::SelectionViews(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1213,6 +1242,11 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::SelectionViews(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::PickingBuffers(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -1265,6 +1299,12 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            demo.prepare(scene, camera)?;
+        }
+        if let Content::SelectionViews(demo) = &mut self.content {
+            demo.prepare(scene, camera)?;
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
@@ -1322,6 +1362,12 @@ impl Demo {
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SelectionViews(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -1426,6 +1472,14 @@ impl Demo {
         }
         Err(crate::Error::Invalid("not a TSL example"))
     }
+    /// A file produced by an exporter button, taken once.
+    pub fn take_export(&mut self) -> Option<(String, Vec<u8>)> {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            demo.take_export()
+        } else {
+            None
+        }
+    }
     pub fn status(&self) -> String {
         if let Content::BufferParticles(demo) = &self.content {
             demo.status()
@@ -1434,6 +1488,9 @@ impl Demo {
         }
     }
     pub fn key(&mut self, code: u32, down: bool) {
+        if let Content::SelectionViews(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1468,6 +1525,10 @@ impl Demo {
         }
     }
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
+        if let Content::SelectionViews(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1501,6 +1562,12 @@ impl Demo {
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SelectionViews(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -1625,6 +1692,9 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
+        if let Content::ExportersMatcap(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }

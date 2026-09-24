@@ -53,7 +53,13 @@ pub(crate) struct ShadowRenderer {
     empty: wgpu::TextureView,
     white: Arc<Texture>,
     target: std::cell::RefCell<Option<ShadowTarget>>,
-    slots: std::cell::RefCell<Vec<crate::draw_gpu::Slot>>,
+    /// Resident draw data per (shadow layer, caster, material group), so reordered
+    /// casters keep their bindings.
+    slots: std::cell::RefCell<
+        std::collections::HashMap<(usize, crate::scene::Object3D, usize), crate::draw_gpu::Slot>,
+    >,
+    /// The cached target holds maps rendered for the current layout.
+    rendered: std::cell::Cell<bool>,
 }
 struct ShadowTarget {
     texture: wgpu::Texture,
@@ -132,6 +138,7 @@ impl ShadowRenderer {
             empty,
             target: Default::default(),
             slots: Default::default(),
+            rendered: Default::default(),
             sampler: device.create_sampler(&wgpu::SamplerDescriptor {
                 compare: Some(wgpu::CompareFunction::LessEqual),
                 mag_filter: wgpu::FilterMode::Linear,
@@ -160,7 +167,7 @@ impl ShadowRenderer {
         deformation_cache: &mut crate::deformation_gpu::Cache,
     ) -> Result<Atlas> {
         let mut slots = self.slots.borrow_mut();
-        let mut cursor = 0;
+        let mut used = std::collections::HashSet::new();
         let mut atlas = Atlas {
             view: self.empty.clone(),
             matrices: [[0.0; 16]; 48],
@@ -314,6 +321,7 @@ impl ShadowRenderer {
         if cameras.is_empty() {
             slots.clear();
             *self.target.borrow_mut() = None;
+            self.rendered.set(false);
             return Ok(atlas);
         }
         if size == 0 || size > device.limits().max_texture_dimension_2d {
@@ -343,12 +351,18 @@ impl ShadowRenderer {
                 view,
                 layers,
             });
+            self.rendered.set(false);
         }
         let target = cached.as_ref().expect("shadow target");
         atlas.view = target.view.clone();
+        if !scene.shadow_auto_update && self.rendered.get() {
+            return Ok(atlas);
+        }
         let mut encoder = device.create_command_encoder(&Default::default());
         for (layer, camera) in cameras.iter().enumerate() {
             let mut draws = Vec::new();
+            // WebGLShadowMap culls casters against each shadow camera's frustum.
+            let frustum = crate::math::Frustum::from_projection(*camera);
             for &handle in visible {
                 let node = scene.get(handle)?;
                 if !node.cast_shadow {
@@ -357,6 +371,18 @@ impl ShadowRenderer {
                 let NodeKind::Mesh(mesh) = &node.kind else {
                     continue;
                 };
+                if node.frustum_culled
+                    && node.skin.is_none()
+                    && node.morph_weights.is_empty()
+                    && node.instances.is_empty()
+                    && !frustum.intersects_sphere(
+                        geometry_cache
+                            .sphere(&mesh.geometry)?
+                            .transformed(node.matrix_world),
+                    )
+                {
+                    continue;
+                }
                 if mesh.materials.iter().any(|m| {
                     (matches!(m.as_ref(), crate::material::Material::Shader(_))
                         || m.properties().vertex_program.is_some())
@@ -378,7 +404,7 @@ impl ShadowRenderer {
                         material_index: 0,
                     }]
                 };
-                for group in groups {
+                for (group_index, group) in groups.into_iter().enumerate() {
                     let material = mesh
                         .materials
                         .get(group.material_index)
@@ -420,11 +446,9 @@ impl ShadowRenderer {
                             })
                         })
                         .collect::<Result<Vec<_>>>()?;
-                    if cursor == slots.len() {
-                        slots.push(Default::default());
-                    }
-                    let slot = &mut slots[cursor];
-                    cursor += 1;
+                    let key = (layer, handle, group_index);
+                    used.insert(key);
+                    let slot = slots.entry(key).or_default();
                     let instance_buffer =
                         slot.instances(device, queue, bytemuck::cast_slice(&data));
                     let uniform = slot.uniform(
@@ -541,8 +565,13 @@ impl ShadowRenderer {
                 }
             }
         }
-        slots.truncate(cursor);
+        // Keep slots of casters culled this frame (they return as the light moves);
+        // drop only removed nodes and layers beyond the current shadow cameras.
+        slots.retain(|key, _| {
+            used.contains(key) || (key.0 < cameras.len() && scene.get(key.1).is_ok())
+        });
         queue.submit([encoder.finish()]);
+        self.rendered.set(true);
         Ok(atlas)
     }
 }
