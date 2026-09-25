@@ -202,3 +202,12 @@ renderer. All five scenes match within the ordinary threshold. Exported data
 textures are identical; PMREM exports are compared as half floats, and EXR
 blocks after inflating.
 
+The shadow-mesh, dynamic-instancing, depth-texture, render-to-texture and
+normal-map composer batch ([shadow-rtt.md](shadow-rtt.md)) lists five WebGL
+examples without WebGPU equivalents: `webgl_shadowmesh`,
+`webgl_instancing_dynamic`, `webgl_depth_texture`, `webgl_rtt` and
+`webgl_materials_normalmap`. They are compared against the WebGL renderer. Only
+the instancing MSAA edges and the depth texture's multisampled resolve use
+scoped bounds. `webgl_rtt` has no resize handler and is not compared after a
+resize.
+

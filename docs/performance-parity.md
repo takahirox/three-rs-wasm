@@ -646,3 +646,21 @@ background's fullscreen triangle.
 Warmed cycles of time, input and resize create no GPU resources. No GPU timing
 parity is claimed.
 
+### Shadow meshes, dynamic instancing, depth texture, render to texture and the normal-map composer
+
+The [shadow-mesh, instancing, depth-texture, render-to-texture and composer
+ports](shadow-rtt.md) match the original draws, except the depth post pass's
+fullscreen triangle.
+
+- **Instances.** The 10,000 instances stream each frame, as the original's
+  DynamicDrawUsage matrices do. The port packs matrix and color at 80 bytes an
+  instance.
+- **Shadows.** ShadowMesh projections are GPU per-vertex, with the matrix
+  computed once per object and frame.
+- **Composer.** The composer passes are fullscreen effects on resident
+  half-float targets.
+- **Bind groups.** Draw slots keep their four most recent bind groups.
+
+Warmed cycles create no GPU resources, except the depth texture's
+target-recreating controls. No GPU timing parity is claimed.
+

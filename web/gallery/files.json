@@ -4,6 +4,7 @@
     "webgl_camera",
     "webgl_clipping_advanced",
     "webgl_clipping_intersection",
+    "webgl_depth_texture",
     "webgl_effects_anaglyph",
     "webgl_effects_parallaxbarrier",
     "webgl_effects_stereo",
@@ -25,6 +26,7 @@
     "webgl_geometry_text_shapes",
     "webgl_geometry_text_stroke",
     "webgl_helpers",
+    "webgl_instancing_dynamic",
     "webgl_instancing_performance",
     "webgl_instancing_raycast",
     "webgl_instancing_scatter",
@@ -67,6 +69,7 @@
     "webgl_materials_bumpmap",
     "webgl_materials_cubemap",
     "webgl_materials_cubemap_refraction",
+    "webgl_materials_normalmap",
     "webgl_materials_normalmap_object_space",
     "webgl_materials_texture_canvas",
     "webgl_materials_texture_filters",
@@ -87,7 +90,9 @@
     "webgl_points_waves",
     "webgl_raycaster_sprite",
     "webgl_read_float_buffer",
+    "webgl_rtt",
     "webgl_shader",
+    "webgl_shadowmesh",
     "webgl_sprites"
   ],
   "webgl / postprocessing": [

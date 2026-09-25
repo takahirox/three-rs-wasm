@@ -1059,7 +1059,7 @@
     {
       "id": "webgl_depth_texture",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_depth_texture.html",
       "source_sha256": "8ee23ac45ac3233941f6e3e6a8832770a966c6ac2db376fbc166f470f3dfe4e3",
@@ -1093,7 +1093,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 280,
+        "source": "src/browser/shadow_rtt.rs",
+        "test": "tests/browser/shadow-rtt.spec.js",
+        "limitations": [
+          "DepthTexture付きのレンダーターゲット、深度の線形化ポストパス、50個のトーラスノットのInstancedMesh、減衰付きOrbitControls（描画後の更新）をRustで再現。深度の形式と型は表示に影響しない。WebGPUのMSAAは4サンプルのみのため、0以外のサンプル数は4として扱う。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -2360,7 +2367,7 @@
     {
       "id": "webgl_instancing_dynamic",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_dynamic.html",
       "source_sha256": "1bb7cdf50e4d63065ec00435aa3f912fbc6329ffdfa104118ca557cf91593d92",
@@ -2372,7 +2379,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 279,
+        "source": "src/browser/shadow_rtt.rs",
+        "test": "tests/browser/shadow-rtt.spec.js",
+        "limitations": [
+          "10,000個のInstancedMesh（毎フレームの行列更新とTWEENによる色の切り替え、原本と同じCPU更新）、RoomEnvironmentの環境、Neutralトーンマッピング、カメラの軌道とup変化をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/environments/RoomEnvironment.js",
@@ -7074,7 +7088,7 @@
     {
       "id": "webgl_materials_normalmap",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_normalmap.html",
       "source_sha256": "60d920cef908de10d41e946cf0b28c3ff8dff431e310274ba0626f3307983d3b",
@@ -7106,7 +7120,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 282,
+        "source": "src/browser/shadow_rtt.rs",
+        "test": "tests/browser/shadow-rtt.spec.js",
+        "limitations": [
+          "LeePerrySmithの頭部（Phong、カラー・スペキュラー・法線マップ）、EffectComposer（BleachBypass、ColorCorrection、OutputPass、FXAA）、減衰付きOrbitControls、法線マップの切り替えと強度をRustで再現。devicePixelRatioを使わない原本と同じく1倍で描画。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -9392,7 +9413,7 @@
     {
       "id": "webgl_rtt",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rtt.html",
       "source_sha256": "6af4821d7f1aa384ba720f0574575d92943889274a7b32bfac8a80201802c095",
@@ -9424,7 +9445,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 281,
+        "source": "src/browser/shadow_rtt.rs",
+        "test": "tests/browser/shadow-rtt.spec.js",
+        "limitations": [
+          "レンダーターゲットへの描画（UVとtimeのシェーダー、2つのPhongトーラス）、画面クアッドと25個の球へのテクスチャ、autoClearなしの2段描画、マウス追従カメラをRustで再現。原本はリサイズに対応しないため、リサイズ後の表示は未比較。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
@@ -10073,7 +10101,7 @@
     {
       "id": "webgl_shadowmesh",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmesh.html",
       "source_sha256": "22879e329cd53abec90fa2ba15b87d9deeae56fe24888fa814d399214fce98e6",
@@ -10115,7 +10143,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 278,
+        "source": "src/browser/shadow_rtt.rs",
+        "test": "tests/browser/shadow-rtt.spec.js",
+        "limitations": [
+          "ShadowMesh（光源の同次座標による平面投影、ステンシルで二重描画を防止、前フレームのワールド行列を使用）、5つの物体の回転と移動、ArrowHelper、平行光源と点光源の切り替えボタンをRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/objects/ShadowMesh.js"

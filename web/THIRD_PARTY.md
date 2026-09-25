@@ -657,3 +657,14 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
   `tsl-procedural/san_giuseppe_bridge_2k.hdr`, and the KTX2 exporter reuses
   `venice_sunset_1k.hdr`.
 
+`gallery/assets/shadow-rtt/` holds the unmodified r186 `textures/edge3.jpg` and
+`models/gltf/LeePerrySmith/Map-COL.jpg` and `Map-SPEC.jpg`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `shadow-rtt-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`.
+- **Credits.** The Lee Perry-Smith maps are covered by
+  `web/models/LeePerrySmith_License.txt`. The normal-map example reuses
+  `web/models/LeePerrySmith.glb` and the credited
+  `LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg`.
+

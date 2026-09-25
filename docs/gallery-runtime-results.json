@@ -424,7 +424,7 @@
       "id": "webgl_depth_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_depth_texture.html",
       "source_sha256": "8ee23ac45ac3233941f6e3e6a8832770a966c6ac2db376fbc166f470f3dfe4e3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_depth_texture",
         "source_sha256": "8ee23ac45ac3233941f6e3e6a8832770a966c6ac2db376fbc166f470f3dfe4e3",
@@ -1116,7 +1116,7 @@
       "id": "webgl_instancing_dynamic",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_dynamic.html",
       "source_sha256": "1bb7cdf50e4d63065ec00435aa3f912fbc6329ffdfa104118ca557cf91593d92",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_instancing_dynamic",
         "source_sha256": "1bb7cdf50e4d63065ec00435aa3f912fbc6329ffdfa104118ca557cf91593d92",
@@ -3730,7 +3730,7 @@
       "id": "webgl_materials_normalmap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_normalmap.html",
       "source_sha256": "60d920cef908de10d41e946cf0b28c3ff8dff431e310274ba0626f3307983d3b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_normalmap",
         "source_sha256": "60d920cef908de10d41e946cf0b28c3ff8dff431e310274ba0626f3307983d3b",
@@ -4953,7 +4953,7 @@
       "id": "webgl_rtt",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rtt.html",
       "source_sha256": "6af4821d7f1aa384ba720f0574575d92943889274a7b32bfac8a80201802c095",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_rtt",
         "source_sha256": "6af4821d7f1aa384ba720f0574575d92943889274a7b32bfac8a80201802c095",
@@ -5225,7 +5225,7 @@
       "id": "webgl_shadowmesh",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmesh.html",
       "source_sha256": "22879e329cd53abec90fa2ba15b87d9deeae56fe24888fa814d399214fce98e6",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_shadowmesh",
         "source_sha256": "22879e329cd53abec90fa2ba15b87d9deeae56fe24888fa814d399214fce98e6",

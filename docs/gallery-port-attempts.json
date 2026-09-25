@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 304,
-    "runnable-partial": 273,
+    "blocked-at-port-review": 299,
+    "runnable-partial": 278,
     "excluded": 28,
     "requires-feature-review": 2
   },
@@ -1595,10 +1595,10 @@
     },
     {
       "id": "webgl_depth_texture",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_depth_texture.html",
       "source_sha256": "8ee23ac45ac3233941f6e3e6a8832770a966c6ac2db376fbc166f470f3dfe4e3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shadow-rtt.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -3360,10 +3360,10 @@
     },
     {
       "id": "webgl_instancing_dynamic",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_instancing_dynamic.html",
       "source_sha256": "1bb7cdf50e4d63065ec00435aa3f912fbc6329ffdfa104118ca557cf91593d92",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shadow-rtt.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -9651,10 +9651,10 @@
     },
     {
       "id": "webgl_materials_normalmap",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_normalmap.html",
       "source_sha256": "60d920cef908de10d41e946cf0b28c3ff8dff431e310274ba0626f3307983d3b",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shadow-rtt.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -12712,10 +12712,10 @@
     },
     {
       "id": "webgl_rtt",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rtt.html",
       "source_sha256": "6af4821d7f1aa384ba720f0574575d92943889274a7b32bfac8a80201802c095",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shadow-rtt.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -13768,10 +13768,10 @@
     },
     {
       "id": "webgl_shadowmesh",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmesh.html",
       "source_sha256": "22879e329cd53abec90fa2ba15b87d9deeae56fe24888fa814d399214fce98e6",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/shadow-rtt.spec.js",
       "blockers": [
         {
           "kind": "core-api",

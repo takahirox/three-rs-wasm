@@ -1,0 +1,1782 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/shadow-rtt.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "shadow-rtt-Shadows-and-ren-23608-y-webgl-materials-normalmap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 95,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 95,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-23862-sidency-webgl-depth-texture": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 44,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 44,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 53,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 53,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-2f1cc--residency-webgl-shadowmesh": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 162,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 162,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 166,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 166,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-4761f--webgl-shadowmesh-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 6.357828776041667e-06
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 1.1444091796875e-05
+     },
+     {
+      "state": 2,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00060272216796875
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 1.0172526041666666e-05
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 1.52587890625e-05
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 3.0517578125e-05
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 1.3020833333333334e-05
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-49d07-nstancing-dynamic-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0235748291015625,
+      "meanError": 0.3884023030598958
+     },
+     {
+      "state": 1,
+      "fraction": 0.040126800537109375,
+      "meanError": 0.5604934692382812
+     },
+     {
+      "state": 2,
+      "fraction": 0.0399932861328125,
+      "meanError": 0.5647493998209635
+     },
+     {
+      "state": 3,
+      "fraction": 0.02127838134765625,
+      "meanError": 0.3117052714029948
+     },
+     {
+      "state": 4,
+      "fraction": 0.032672882080078125,
+      "meanError": 0.42212168375651044
+     },
+     {
+      "state": 5,
+      "fraction": 0.041095733642578125,
+      "meanError": 0.5141766866048177
+     },
+     {
+      "state": 6,
+      "fraction": 0.05053125,
+      "meanError": 0.6217981770833333
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-83fb2-bgl-depth-texture-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.051570892333984375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.051570892333984375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.000492095947265625
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.000492095947265625
+     },
+     {
+      "state": 4,
+      "fraction": 0.0029754638671875,
+      "meanError": 0.625091552734375
+     },
+     {
+      "state": 5,
+      "fraction": 0.0029449462890625,
+      "meanError": 0.5953369140625
+     },
+     {
+      "state": 6,
+      "fraction": 0.002532958984375,
+      "meanError": 0.5184059143066406
+     },
+     {
+      "state": 7,
+      "fraction": 0.0029140625,
+      "meanError": 0.617703125
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-ce7fe--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_shadowmesh",
+      "reference": {
+       "draws": [
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_dynamic",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 10000
+        }
+       ],
+       "attributeBytes": 640000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 10000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 799924,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_depth_texture",
+      "reference": {
+       "draws": [
+        {
+         "count": 49152,
+         "instances": 50
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 49152,
+         "instances": 50
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_rtt",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_normalmap",
+      "reference": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-d0362-ndering-webgl-rtt-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00054931640625
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00075531005859375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00057220458984375
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0005645751953125
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00045013427734375
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-d4c1e-terials-normalmap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 8.0108642578125e-05,
+      "meanError": 0.03372065226236979
+     },
+     {
+      "state": 1,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.028228759765625
+     },
+     {
+      "state": 2,
+      "fraction": 6.103515625e-05,
+      "meanError": 0.025755564371744793
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-05,
+      "meanError": 0.017894744873046875
+     },
+     {
+      "state": 4,
+      "fraction": 0.000102996826171875,
+      "meanError": 0.017589569091796875
+     },
+     {
+      "state": 5,
+      "fraction": 8.984375e-05,
+      "meanError": 0.016408854166666667
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-f3295-ets-GPU-residency-webgl-rtt": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 190,
+       "transfers": [
+        3,
+        270040,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 190,
+       "transfers": [
+        3,
+        270040,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-f85fa-cy-webgl-instancing-dynamic": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 137,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 137,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 142,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 142,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-fb645-nstancing-dynamic-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000518798828125,
+      "meanError": 0.11562474568684895
+     },
+     {
+      "state": 1,
+      "fraction": 6.4849853515625e-05,
+      "meanError": 0.10099156697591145
+     },
+     {
+      "state": 2,
+      "fraction": 6.103515625e-05,
+      "meanError": 0.08992258707682292
+     },
+     {
+      "state": 3,
+      "fraction": 4.1961669921875e-05,
+      "meanError": 0.08351643880208333
+     },
+     {
+      "state": 4,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.07410939534505208
+     },
+     {
+      "state": 5,
+      "fraction": 3.4332275390625e-05,
+      "meanError": 0.07453282674153645
+     },
+     {
+      "state": 6,
+      "fraction": 2.34375e-05,
+      "meanError": 0.08166276041666666
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "shadow-rtt-Shadows-and-ren-23608-y-webgl-materials-normalmap": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 95,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 95,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-23862-sidency-webgl-depth-texture": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 44,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 44,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 53,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 53,
+       "transfers": [
+        1,
+        867408,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-2f1cc--residency-webgl-shadowmesh": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 162,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 162,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 166,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 166,
+       "transfers": [
+        14,
+        144536,
+        224
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-4761f--webgl-shadowmesh-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 7.05718994140625e-05
+     },
+     {
+      "state": 1,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 3.814697265625e-05
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0005420049031575521
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 8.265177408854166e-06
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 5.086263020833333e-06
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 3.3696492513020836e-05
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 2.7994791666666667e-05
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-49d07-nstancing-dynamic-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01192474365234375,
+      "meanError": 0.20880540211995444
+     },
+     {
+      "state": 1,
+      "fraction": 0.020349502563476562,
+      "meanError": 0.2997792561848958
+     },
+     {
+      "state": 2,
+      "fraction": 0.020967483520507812,
+      "meanError": 0.3097858428955078
+     },
+     {
+      "state": 3,
+      "fraction": 0.010564804077148438,
+      "meanError": 0.17620086669921875
+     },
+     {
+      "state": 4,
+      "fraction": 0.01635456085205078,
+      "meanError": 0.22742525736490884
+     },
+     {
+      "state": 5,
+      "fraction": 0.02089214324951172,
+      "meanError": 0.2766262690226237
+     },
+     {
+      "state": 6,
+      "fraction": 0.026294921875,
+      "meanError": 0.3371298828125
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-83fb2-bgl-depth-texture-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.051364898681640625
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.051364898681640625
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0004787445068359375
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0004787445068359375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0014371871948242188,
+      "meanError": 0.30342674255371094
+     },
+     {
+      "state": 5,
+      "fraction": 0.0014801025390625,
+      "meanError": 0.2956523895263672
+     },
+     {
+      "state": 6,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.28214263916015625
+     },
+     {
+      "state": 7,
+      "fraction": 0.0014873046875,
+      "meanError": 0.31084375
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-ce7fe--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgl_shadowmesh",
+      "reference": {
+       "draws": [
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 30,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 1080,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 960,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_instancing_dynamic",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 10000
+        }
+       ],
+       "attributeBytes": 640000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 10000
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 799924,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_depth_texture",
+      "reference": {
+       "draws": [
+        {
+         "count": 49152,
+         "instances": 50
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 49152,
+         "instances": 50
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_rtt",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 2700,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_normalmap",
+      "reference": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-d0362-ndering-webgl-rtt-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0007222493489583334
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0008872350056966146
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00075531005859375
+     },
+     {
+      "state": 3,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.0007867813110351562
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0004838307698567708
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-d4c1e-terials-normalmap-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.811981201171875e-05,
+      "meanError": 0.03137683868408203
+     },
+     {
+      "state": 1,
+      "fraction": 1.33514404296875e-05,
+      "meanError": 0.02635669708251953
+     },
+     {
+      "state": 2,
+      "fraction": 1.430511474609375e-05,
+      "meanError": 0.024020830790201824
+     },
+     {
+      "state": 3,
+      "fraction": 4.57763671875e-05,
+      "meanError": 0.017065048217773438
+     },
+     {
+      "state": 4,
+      "fraction": 3.147125244140625e-05,
+      "meanError": 0.01661841074625651
+     },
+     {
+      "state": 5,
+      "fraction": 3.61328125e-05,
+      "meanError": 0.016235677083333334
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-f3295-ets-GPU-residency-webgl-rtt": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 190,
+       "transfers": [
+        3,
+        270040,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 190,
+       "transfers": [
+        3,
+        270040,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-f85fa-cy-webgl-instancing-dynamic": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 137,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 137,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 142,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 142,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "shadow-rtt-Shadows-and-ren-fb645-nstancing-dynamic-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0003566741943359375,
+      "meanError": 0.07630666097005208
+     },
+     {
+      "state": 1,
+      "fraction": 5.91278076171875e-05,
+      "meanError": 0.0669412612915039
+     },
+     {
+      "state": 2,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.06444390614827473
+     },
+     {
+      "state": 3,
+      "fraction": 2.6702880859375e-05,
+      "meanError": 0.062132835388183594
+     },
+     {
+      "state": 4,
+      "fraction": 2.47955322265625e-05,
+      "meanError": 0.054083824157714844
+     },
+     {
+      "state": 5,
+      "fraction": 3.24249267578125e-05,
+      "meanError": 0.053283373514811196
+     },
+     {
+      "state": 6,
+      "fraction": 3.41796875e-05,
+      "meanError": 0.05993977864583333
+     }
+    ]
+   }
+  }
+ }
+}

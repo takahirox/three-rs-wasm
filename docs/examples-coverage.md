@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-28 excluded for explicit WebGL APIs or equivalent WebGPU examples; 579 retained. 273 partial Rust ports; 306 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+28 excluded for explicit WebGL APIs or equivalent WebGPU examples; 579 retained. 278 partial Rust ports; 301 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_shadowmesh | `tests/browser/shadow-rtt.spec.js` | ShadowMesh（光源の同次座標による平面投影、ステンシルで二重描画を防止、前フレームのワールド行列を使用）、5つの物体の回転と移動、ArrowHelper、平行光源と点光源の切り替えボタンをRustで再現。性能の完全な同等性は未保証。 |
+| webgl_instancing_dynamic | `tests/browser/shadow-rtt.spec.js` | 10,000個のInstancedMesh（毎フレームの行列更新とTWEENによる色の切り替え、原本と同じCPU更新）、RoomEnvironmentの環境、Neutralトーンマッピング、カメラの軌道とup変化をRustで再現。性能の完全な同等性は未保証。 |
+| webgl_depth_texture | `tests/browser/shadow-rtt.spec.js` | DepthTexture付きのレンダーターゲット、深度の線形化ポストパス、50個のトーラスノットのInstancedMesh、減衰付きOrbitControls（描画後の更新）をRustで再現。深度の形式と型は表示に影響しない。WebGPUのMSAAは4サンプルのみのため、0以外のサンプル数は4として扱う。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_rtt | `tests/browser/shadow-rtt.spec.js` | レンダーターゲットへの描画（UVとtimeのシェーダー、2つのPhongトーラス）、画面クアッドと25個の球へのテクスチャ、autoClearなしの2段描画、マウス追従カメラをRustで再現。原本はリサイズに対応しないため、リサイズ後の表示は未比較。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_materials_normalmap | `tests/browser/shadow-rtt.spec.js` | LeePerrySmithの頭部（Phong、カラー・スペキュラー・法線マップ）、EffectComposer（BleachBypass、ColorCorrection、OutputPass、FXAA）、減衰付きOrbitControls、法線マップの切り替えと強度をRustで再現。devicePixelRatioを使わない原本と同じく1倍で描画。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | misc_exporter_exr | `tests/browser/exporters-video.spec.js` | EXRExporter（ZIP・ZIPS・無圧縮、Half/Float）、PMREMの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。PMREMの書き出しはGPUからの読み戻し。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | misc_exporter_ktx2 | `tests/browser/exporters-video.spec.js` | KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、PMREMの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。PMREMの書き出しはGPUからの読み戻し。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgpu_materials_video | `tests/browser/exporters-video.spec.js` | VideoTexture（新しいフレームのみ転送）を貼った200個のPhongキューブ（UVで分割）、色相の時間変化、1000フレーム周期の移動と反転、マウス追従カメラをRustで再現。性能の完全な同等性は未保証。 |

@@ -80,7 +80,9 @@ pub(crate) struct Slot {
     uniform: Option<Upload>,
     instances: Option<Upload>,
     indirect: Option<Upload>,
-    bindings: Option<CachedBindings>,
+    /// Recently used bind groups, most recent first. A few entries let a draw
+    /// alternate between texture sets (e.g. a toggled map) without rebuilding.
+    bindings: Vec<CachedBindings>,
 }
 type CachedBindings = (wgpu::BindGroupLayout, Vec<(u32, Resource)>, wgpu::BindGroup);
 impl Slot {
@@ -148,18 +150,24 @@ impl Slot {
                 )
             })
             .collect::<Vec<_>>();
-        if let Some((old_layout, old_key, group)) = &self.bindings
-            && old_layout == layout
-            && old_key == &key
+        if let Some(i) = self
+            .bindings
+            .iter()
+            .position(|(old_layout, old_key, _)| old_layout == layout && old_key == &key)
         {
-            return group.clone();
+            let entry = self.bindings.remove(i);
+            let group = entry.2.clone();
+            self.bindings.insert(0, entry);
+            return group;
         }
         let group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some("resident draw bindings"),
             layout,
             entries,
         });
-        self.bindings = Some((layout.clone(), key, group.clone()));
+        self.bindings
+            .insert(0, (layout.clone(), key, group.clone()));
+        self.bindings.truncate(4);
         group
     }
 }
