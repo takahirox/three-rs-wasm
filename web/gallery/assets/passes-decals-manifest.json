@@ -1,0 +1,27 @@
+[
+ {
+  "file": "passes-decals/crate.gif",
+  "source": "examples/textures/crate.gif",
+  "sha256": "a890f0a89eadc083cb39bfbe597c1395d7acf47a19f673b5643d4a9c174ea52f"
+ },
+ {
+  "file": "passes-decals/cloud.png",
+  "source": "examples/textures/lava/cloud.png",
+  "sha256": "0534be6a67b3da22ad7dff90ed7ef2fdd62588d57e39f535677758b36dc1aa08"
+ },
+ {
+  "file": "passes-decals/lavatile.jpg",
+  "source": "examples/textures/lava/lavatile.jpg",
+  "sha256": "8dd33ecfacd108323888479a85cdf10a2159fe82daa247c2f46978952730e76f"
+ },
+ {
+  "file": "passes-decals/decal-diffuse.png",
+  "source": "examples/textures/decal/decal-diffuse.png",
+  "sha256": "96ebc3fd5e6052271d39df713e02d1684194f4f5cf95d2fb3ed34bf09b428741"
+ },
+ {
+  "file": "passes-decals/decal-normal.jpg",
+  "source": "examples/textures/decal/decal-normal.jpg",
+  "sha256": "a619799e5e125570896100665e262645dfd6ed131269a2f488b633d491e1c120"
+ }
+]

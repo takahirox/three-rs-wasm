@@ -1,0 +1,2321 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/passes-decals.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "passes-decals-Passes-and-d-19347--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "webgl_postprocessing_backgrounds",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_shader_lava",
+      "reference": {
+       "draws": [
+        {
+         "count": 5400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_ubo",
+      "reference": {
+       "draws": [
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 12,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_postprocessing_rgb_halftone",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_decals",
+      "reference": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 53052,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-3be01-ndering-webgl-ubo-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.009779612223307291
+     },
+     {
+      "state": 1,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.009540557861328125
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.009045918782552084
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.01227734375
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-3dab5-residency-webgl-shader-lava": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 82,
+       "transfers": [
+        1,
+        98480,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 82,
+       "transfers": [
+        1,
+        98480,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 98,
+       "transfers": [
+        1,
+        98480,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 98,
+       "transfers": [
+        1,
+        98480,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-54a45-ssing-backgrounds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0811932881673177
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.1692784627278646
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.11473464965820312
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.12872314453125
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.0810559590657552
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.0778973897298177
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.0778973897298177
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.048766927083333335
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-5aad7-postprocessing-rgb-halftone": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 289,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 289,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 302,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 302,
+       "transfers": [
+        2,
+        4128,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-65932-ndering-webgl-ubo-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00975799560546875,
+      "meanError": 0.18589274088541666
+     },
+     {
+      "state": 1,
+      "fraction": 0.010143280029296875,
+      "meanError": 0.19084803263346353
+     },
+     {
+      "state": 2,
+      "fraction": 0.00959014892578125,
+      "meanError": 0.18326314290364584
+     },
+     {
+      "state": 3,
+      "fraction": 0.01287109375,
+      "meanError": 0.23514322916666666
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-97d6d-ring-webgl-decals-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.002750396728515625,
+      "meanError": 0.1099408467610677
+     },
+     {
+      "state": 1,
+      "fraction": 0.002811431884765625,
+      "meanError": 0.11264292399088542
+     },
+     {
+      "state": 2,
+      "fraction": 0.002838134765625,
+      "meanError": 0.1130205790201823
+     },
+     {
+      "state": 3,
+      "fraction": 0.00290679931640625,
+      "meanError": 0.1155255635579427
+     },
+     {
+      "state": 4,
+      "fraction": 0.003009796142578125,
+      "meanError": 0.11697006225585938
+     },
+     {
+      "state": 5,
+      "fraction": 0.002956390380859375,
+      "meanError": 0.1128705342610677
+     },
+     {
+      "state": 6,
+      "fraction": 0.00274658203125,
+      "meanError": 0.10994211832682292
+     },
+     {
+      "state": 7,
+      "fraction": 0.003055572509765625,
+      "meanError": 0.15355046590169272
+     },
+     {
+      "state": 8,
+      "fraction": 0.002986907958984375,
+      "meanError": 0.11954116821289062
+     },
+     {
+      "state": 9,
+      "fraction": 0.00231640625,
+      "meanError": 0.09573828125
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-a0b29-ring-webgl-decals-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000457763671875,
+      "meanError": 0.031939188639322914
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000457763671875,
+      "meanError": 0.031941731770833336
+     },
+     {
+      "state": 2,
+      "fraction": 0.000041961669921875,
+      "meanError": 0.031995137532552086
+     },
+     {
+      "state": 3,
+      "fraction": 0.000041961669921875,
+      "meanError": 0.031982421875
+     },
+     {
+      "state": 4,
+      "fraction": 0.00002288818359375,
+      "meanError": 0.03178532918294271
+     },
+     {
+      "state": 5,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.031097412109375
+     },
+     {
+      "state": 6,
+      "fraction": 0.0000457763671875,
+      "meanError": 0.031931559244791664
+     },
+     {
+      "state": 7,
+      "fraction": 0.000362396240234375,
+      "meanError": 0.08879597981770833
+     },
+     {
+      "state": 8,
+      "fraction": 0.000072479248046875,
+      "meanError": 0.03333409627278646
+     },
+     {
+      "state": 9,
+      "fraction": 0.0000546875,
+      "meanError": 0.03075
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-abe40--postprocessing-backgrounds": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 132,
+       "transfers": [
+        2,
+        126560,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 132,
+       "transfers": [
+        2,
+        126560,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 144,
+       "transfers": [
+        2,
+        126560,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 144,
+       "transfers": [
+        2,
+        126560,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-c5945-sing-rgb-halftone-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00011698404947916667
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00014241536458333334
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00013987223307291666
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00012969970703125
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00011571248372395833
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00011571248372395833
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00014241536458333334
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.000194549560546875
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.00018437703450520834
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.00013605753580729166
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.00012969970703125
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.00013605753580729166
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.00008265177408854167
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.00008519490559895833
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.000133514404296875
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.00012969970703125
+     },
+     {
+      "state": 16,
+      "fraction": 0,
+      "meanError": 0.00008900960286458333
+     },
+     {
+      "state": 17,
+      "fraction": 0,
+      "meanError": 0.00008265177408854167
+     },
+     {
+      "state": 18,
+      "fraction": 0,
+      "meanError": 0.000016530354817708332
+     },
+     {
+      "state": 19,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.00191497802734375
+     },
+     {
+      "state": 20,
+      "fraction": 0,
+      "meanError": 0.000026702880859375
+     },
+     {
+      "state": 21,
+      "fraction": 0,
+      "meanError": 0.0000078125
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-e8931-webgl-shader-lava-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000957489013671875,
+      "meanError": 0.07542928059895833
+     },
+     {
+      "state": 1,
+      "fraction": 0.000732421875,
+      "meanError": 0.06737518310546875
+     },
+     {
+      "state": 2,
+      "fraction": 0.001132965087890625,
+      "meanError": 0.06573232014973958
+     },
+     {
+      "state": 3,
+      "fraction": 0.000578125,
+      "meanError": 0.04952473958333333
+     }
+    ]
+   },
+   "passes-decals-Passes-and-decals-GPU-residency-webgl-decals": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 66,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 66,
+       "transfers": [
+        1,
+        954528,
+        16
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 79,
+       "transfers": [
+        2,
+        954688,
+        32
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 79,
+       "transfers": [
+        2,
+        954688,
+        32
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "passes-decals-Passes-and-decals-GPU-residency-webgl-ubo": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 524,
+       "transfers": [
+        2,
+        3024,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 524,
+       "transfers": [
+        2,
+        3024,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 529,
+       "transfers": [
+        2,
+        3024,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 529,
+       "transfers": [
+        2,
+        3024,
+        32
+       ],
+       "resources": [
+        1,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "passes-decals-Passes-and-d-3be01-ndering-webgl-ubo-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.009377797444661459
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.009770393371582031
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.008425076802571615
+     },
+     {
+      "state": 3,
+      "fraction": 0.0000029296875,
+      "meanError": 0.011361653645833334
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-54a45-ssing-backgrounds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.08072471618652344
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.08068148295084636
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.08067703247070312
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.08066463470458984
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.07777976989746094
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.07777976989746094
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.0485517578125
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-65932-ndering-webgl-ubo-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004998207092285156,
+      "meanError": 0.09595966339111328
+     },
+     {
+      "state": 1,
+      "fraction": 0.0049839019775390625,
+      "meanError": 0.0960842768351237
+     },
+     {
+      "state": 2,
+      "fraction": 0.004807472229003906,
+      "meanError": 0.09223047892252605
+     },
+     {
+      "state": 3,
+      "fraction": 0.006322265625,
+      "meanError": 0.1159365234375
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-97d6d-ring-webgl-decals-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0013513565063476562,
+      "meanError": 0.05266761779785156
+     },
+     {
+      "state": 1,
+      "fraction": 0.0013837814331054688,
+      "meanError": 0.054050445556640625
+     },
+     {
+      "state": 2,
+      "fraction": 0.0014057159423828125,
+      "meanError": 0.054778099060058594
+     },
+     {
+      "state": 3,
+      "fraction": 0.0014438629150390625,
+      "meanError": 0.05621655782063802
+     },
+     {
+      "state": 4,
+      "fraction": 0.0014905929565429688,
+      "meanError": 0.057202657063802086
+     },
+     {
+      "state": 5,
+      "fraction": 0.0014657974243164062,
+      "meanError": 0.05412832895914713
+     },
+     {
+      "state": 6,
+      "fraction": 0.0013561248779296875,
+      "meanError": 0.05283292134602865
+     },
+     {
+      "state": 7,
+      "fraction": 0.0015554428100585938,
+      "meanError": 0.07277234395345052
+     },
+     {
+      "state": 8,
+      "fraction": 0.0013017654418945312,
+      "meanError": 0.049042065938313804
+     },
+     {
+      "state": 9,
+      "fraction": 0.0010341796875,
+      "meanError": 0.03929524739583334
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-a0b29-ring-webgl-decals-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000438690185546875,
+      "meanError": 0.013876597086588541
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000438690185546875,
+      "meanError": 0.013875643412272135
+     },
+     {
+      "state": 2,
+      "fraction": 0.000041961669921875,
+      "meanError": 0.014190673828125
+     },
+     {
+      "state": 3,
+      "fraction": 0.00004291534423828125,
+      "meanError": 0.014202753702799479
+     },
+     {
+      "state": 4,
+      "fraction": 0.000034332275390625,
+      "meanError": 0.01432641347249349
+     },
+     {
+      "state": 5,
+      "fraction": 0.00002765655517578125,
+      "meanError": 0.013523419698079428
+     },
+     {
+      "state": 6,
+      "fraction": 0.0000438690185546875,
+      "meanError": 0.013870557149251303
+     },
+     {
+      "state": 7,
+      "fraction": 0.0001888275146484375,
+      "meanError": 0.039827982584635414
+     },
+     {
+      "state": 8,
+      "fraction": 0.00003147125244140625,
+      "meanError": 0.012554486592610678
+     },
+     {
+      "state": 9,
+      "fraction": 0.000033203125,
+      "meanError": 0.010606119791666667
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-c5945-sing-rgb-halftone-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000026702880859375,
+      "meanError": 0.0005537668863932291
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0001277923583984375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0001262029012044271
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00011189778645833333
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00012524922688802084
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0001274744669596354
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0001277923583984375
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.0001242955525716146
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0001220703125
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.0001338322957356771
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.0001277923583984375
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.0001338322957356771
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.00007406870524088542
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.00010585784912109375
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.00011126200358072917
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.00011094411214192708
+     },
+     {
+      "state": 16,
+      "fraction": 0,
+      "meanError": 0.00009695688883463542
+     },
+     {
+      "state": 17,
+      "fraction": 0,
+      "meanError": 0.00007406870524088542
+     },
+     {
+      "state": 18,
+      "fraction": 0,
+      "meanError": 0.000022570292154947918
+     },
+     {
+      "state": 19,
+      "fraction": 0,
+      "meanError": 0.00007184346516927083
+     },
+     {
+      "state": 20,
+      "fraction": 0,
+      "meanError": 0.000008900960286458334
+     },
+     {
+      "state": 21,
+      "fraction": 9.765625e-7,
+      "meanError": 0.00021842447916666668
+     }
+    ]
+   },
+   "passes-decals-Passes-and-d-e8931-webgl-shader-lava-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0005512237548828125,
+      "meanError": 0.043166796366373696
+     },
+     {
+      "state": 1,
+      "fraction": 0.00047397613525390625,
+      "meanError": 0.040030479431152344
+     },
+     {
+      "state": 2,
+      "fraction": 0.000644683837890625,
+      "meanError": 0.04094918568929037
+     },
+     {
+      "state": 3,
+      "fraction": 0.000330078125,
+      "meanError": 0.029500651041666666
+     }
+    ]
+   }
+  }
+ }
+}

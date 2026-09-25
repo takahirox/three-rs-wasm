@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-30 excluded for explicit WebGL APIs or equivalent WebGPU examples; 577 retained. 283 partial Rust ports; 294 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+30 excluded for explicit WebGL APIs or equivalent WebGPU examples; 577 retained. 288 partial Rust ports; 289 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_postprocessing_backgrounds | `tests/browser/passes-decals.spec.js` | EffectComposerのClearPass（色とアルファ）、TexturePass（木目テクスチャと不透明度）、CubeTexturePass（NoColorSpaceのpisaキューブ、10単位の裏面ボックス、カメラの回転と投影を共有）、RenderPass（3つの点光源とStandardの球）、OutputPass、ズームなしのOrbitControls、全8項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_shader_lava | `tests/browser/passes-decals.spec.js` | 溶岩のGLSLシェーダー（雲と溶岩テクスチャ、uvScale、gl_FragCoord.z/wによるフォグ）を持つトーラス、BloomPass（25タップのガウス畳み込みを横と縦、加算合成）、OutputPass、delta×5の時間と回転をRustで再現。性能の完全な同等性は未保証。 |
+| webgl_ubo | `tests/browser/passes-decals.spec.js` | ViewDataとLightingDataのユニフォームブロックを共有する2つのRawShaderMaterial（視点空間のPhong、sRGB出力）、200個の四面体と木箱、毎フレームの回転をRustで再現。ViewDataはフレーム共通のカメラユニフォーム、変化しないLightingDataは両プログラムの定数として実装。性能の完全な同等性は未保証。 |
+| webgl_postprocessing_rgb_halftone | `tests/browser/passes-decals.spec.js` | 50個の法線とUVのシェーダー立方体、Phongの床と回転する点光源、HalftonePass（全5形状、チャンネルごとの角度、散乱、ブレンドモード、グレースケール、無効化）、OrbitControls、全10項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_decals | `tests/browser/passes-decals.spec.js` | LeePerrySmithの頭部（Phong、カラー・スペキュラー・法線マップ）、ポインタのレイキャストと法線ライン、クリックで生成するDecalGeometry（6平面のクリッピング、ランダムな回転・大きさ・色、polygonOffset）、Clearボタン、OrbitControlsをRustで再現。デカールの生成は原本と同じくクリック時のCPU処理。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgpu_lightprobe_cubecamera | `tests/browser/probes-hdr.spec.js` | CubeCameraで捉えたpisa背景からのLightProbeGenerator.fromCubeRenderTarget（8bit線形のキューブと同じ値からCPUでSH係数を一度だけ計算）、LightProbeHelper、背景キューブ、変更時のみの描画をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_materials_envmaps_hdr | `tests/browser/probes-hdr.spec.js` | Generated（DebugEnvironmentのPMREM）・LDR・HDRキューブの環境マップ切り替え、生キューブ背景とPMREM背景、デバッグ用のPMREMアトラス表示、粗さ・金属度・露出、ACESをRustで再現。Stats表示とlil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_loader_texture_ultrahdr | `tests/browser/probes-hdr.spec.js` | UltraHDRLoader（MPFとXMPの解析、ブラウザでのJPEGデコードとゲインマップ拡大、復元式とtoHalfFloat）、環境と背景、自動回転、解像度の切り替え（非同期再読み込み）をRustで再現。FloatType選択時も半精度で保持。lil-gui外観は未一致。性能の完全な同等性は未保証。 |

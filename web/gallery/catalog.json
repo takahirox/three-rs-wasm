@@ -1010,7 +1010,7 @@
     {
       "id": "webgl_decals",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_decals.html",
       "source_sha256": "56ed46841bc5230626ff89bd49afb441de4d820dfb520f9cbdd8361673429f5b",
@@ -1046,7 +1046,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 292,
+        "source": "src/browser/passes_decals.rs",
+        "test": "tests/browser/passes-decals.spec.js",
+        "limitations": [
+          "LeePerrySmithの頭部（Phong、カラー・スペキュラー・法線マップ）、ポインタのレイキャストと法線ライン、クリックで生成するDecalGeometry（6平面のクリッピング、ランダムな回転・大きさ・色、polygonOffset）、Clearボタン、OrbitControlsをRustで再現。デカールの生成は原本と同じくクリック時のCPU処理。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -9563,7 +9570,7 @@
     {
       "id": "webgl_shader_lava",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader_lava.html",
       "source_sha256": "2747fd426279ead3cc5c68fa8253c547fc3e8c53e9dadb3772449bdad051c74e",
@@ -9591,7 +9598,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 289,
+        "source": "src/browser/passes_decals.rs",
+        "test": "tests/browser/passes-decals.spec.js",
+        "limitations": [
+          "溶岩のGLSLシェーダー（雲と溶岩テクスチャ、uvScale、gl_FragCoord.z/wによるフォグ）を持つトーラス、BloomPass（25タップのガウス畳み込みを横と縦、加算合成）、OutputPass、delta×5の時間と回転をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/postprocessing/BloomPass.js",
@@ -10635,7 +10649,7 @@
     {
       "id": "webgl_postprocessing_backgrounds",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_backgrounds.html",
       "source_sha256": "59cfe9f960efd98fe03f6ed3bcaebcf2d301d5314f87de344186bed78f622528",
@@ -10661,7 +10675,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 288,
+        "source": "src/browser/passes_decals.rs",
+        "test": "tests/browser/passes-decals.spec.js",
+        "limitations": [
+          "EffectComposerのClearPass（色とアルファ）、TexturePass（木目テクスチャと不透明度）、CubeTexturePass（NoColorSpaceのpisaキューブ、10単位の裏面ボックス、カメラの回転と投影を共有）、RenderPass（3つの点光源とStandardの球）、OutputPass、ズームなしのOrbitControls、全8項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -11027,7 +11048,7 @@
     {
       "id": "webgl_postprocessing_rgb_halftone",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_rgb_halftone.html",
       "source_sha256": "cf04a51d84bb35cc0e7a33fb77f25b5be5fe7a70bfba98defb1d4c24210ee3d2",
@@ -11065,7 +11086,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 291,
+        "source": "src/browser/passes_decals.rs",
+        "test": "tests/browser/passes-decals.spec.js",
+        "limitations": [
+          "50個の法線とUVのシェーダー立方体、Phongの床と回転する点光源、HalftonePass（全5形状、チャンネルごとの角度、散乱、ブレンドモード、グレースケール、無効化）、OrbitControls、全10項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -13469,7 +13497,7 @@
     {
       "id": "webgl_ubo",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_ubo.html",
       "source_sha256": "b527743237db0c816b577cfc0a1a728452808c651f25c01acb4d036f90798ae9",
@@ -13491,7 +13519,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 290,
+        "source": "src/browser/passes_decals.rs",
+        "test": "tests/browser/passes-decals.spec.js",
+        "limitations": [
+          "ViewDataとLightingDataのユニフォームブロックを共有する2つのRawShaderMaterial（視点空間のPhong、sRGB出力）、200個の四面体と木箱、毎フレームの回転をRustで再現。ViewDataはフレーム共通のカメラユニフォーム、変化しないLightingDataは両プログラムの定数として実装。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]

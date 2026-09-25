@@ -682,3 +682,16 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 - **Reuse.** The pisa cubes are reused from `lights-probes/` and
   `tsl-environment/`.
 
+`gallery/assets/passes-decals/` holds the unmodified r186 files:
+
+- `textures/crate.gif`;
+- `textures/lava/cloud.png` and `lavatile.jpg`;
+- `textures/decal/decal-diffuse.png` and `decal-normal.jpg`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `passes-decals-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`. The decal
+  textures are CC0, as the Three.js `textures/decal/LICENSE.TXT` states.
+- **Reuse.** The wood texture, the pisa cube and the LeePerrySmith head and
+  maps are reused from earlier batches.
+

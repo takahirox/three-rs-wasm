@@ -203,6 +203,9 @@ pub struct MaterialProperties {
     pub wireframe: bool,
     /// Material.toneMapped: false skips the renderer's tone mapping for this material.
     pub tone_mapped: bool,
+    /// Material.polygonOffset: ( factor, units ), a depth bias of units × the
+    /// depth resolution plus factor × the depth slope.
+    pub polygon_offset: Option<(f32, i32)>,
     pub fog: bool,
     /// Optional scene-light selection for this material. None uses all visible lights.
     #[serde(skip)]
@@ -247,6 +250,7 @@ impl Default for MaterialProperties {
             flat_shading: false,
             wireframe: false,
             tone_mapped: true,
+            polygon_offset: None,
             fog: true,
             lights: None,
             clipping_planes: Vec::new(),

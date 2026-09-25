@@ -680,3 +680,17 @@ backgrounds drawn with a fullscreen triangle.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
+### Composer backgrounds, lava, uniform buffers, RGB halftone and decals
+
+The [composer, lava, uniform-buffer, halftone and decal
+ports](passes-decals.md) match the original draws.
+
+- **Passes.** The composer passes run on the GPU in half-float targets, as
+  EffectComposer does.
+- **Decals.** A decal's geometry is clipped once on the CPU at the click, as
+  DecalGeometry does.
+- **Helper line.** The pointer's helper line is placed by its transform, without
+  rewriting geometry.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+

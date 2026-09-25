@@ -398,7 +398,7 @@
       "id": "webgl_decals",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_decals.html",
       "source_sha256": "56ed46841bc5230626ff89bd49afb441de4d820dfb520f9cbdd8361673429f5b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_decals",
         "source_sha256": "56ed46841bc5230626ff89bd49afb441de4d820dfb520f9cbdd8361673429f5b",
@@ -5015,7 +5015,7 @@
       "id": "webgl_shader_lava",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader_lava.html",
       "source_sha256": "2747fd426279ead3cc5c68fa8253c547fc3e8c53e9dadb3772449bdad051c74e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_shader_lava",
         "source_sha256": "2747fd426279ead3cc5c68fa8253c547fc3e8c53e9dadb3772449bdad051c74e",
@@ -5519,7 +5519,7 @@
       "id": "webgl_postprocessing_backgrounds",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_backgrounds.html",
       "source_sha256": "59cfe9f960efd98fe03f6ed3bcaebcf2d301d5314f87de344186bed78f622528",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_backgrounds",
         "source_sha256": "59cfe9f960efd98fe03f6ed3bcaebcf2d301d5314f87de344186bed78f622528",
@@ -5720,7 +5720,7 @@
       "id": "webgl_postprocessing_rgb_halftone",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_rgb_halftone.html",
       "source_sha256": "cf04a51d84bb35cc0e7a33fb77f25b5be5fe7a70bfba98defb1d4c24210ee3d2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_rgb_halftone",
         "source_sha256": "cf04a51d84bb35cc0e7a33fb77f25b5be5fe7a70bfba98defb1d4c24210ee3d2",
@@ -7098,7 +7098,7 @@
       "id": "webgl_ubo",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_ubo.html",
       "source_sha256": "b527743237db0c816b577cfc0a1a728452808c651f25c01acb4d036f90798ae9",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_ubo",
         "source_sha256": "b527743237db0c816b577cfc0a1a728452808c651f25c01acb4d036f90798ae9",

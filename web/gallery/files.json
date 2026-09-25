@@ -4,6 +4,7 @@
     "webgl_camera",
     "webgl_clipping_advanced",
     "webgl_clipping_intersection",
+    "webgl_decals",
     "webgl_depth_texture",
     "webgl_effects_anaglyph",
     "webgl_effects_parallaxbarrier",
@@ -94,10 +95,13 @@
     "webgl_read_float_buffer",
     "webgl_rtt",
     "webgl_shader",
+    "webgl_shader_lava",
     "webgl_shadowmesh",
     "webgl_sprites"
   ],
   "webgl / postprocessing": [
+    "webgl_postprocessing_backgrounds",
+    "webgl_postprocessing_rgb_halftone",
     "webgl_postprocessing_procedural"
   ],
   "webgl / advanced": [
@@ -122,7 +126,8 @@
     "webgl_custom_attributes_points",
     "webgl_custom_attributes_points2",
     "webgl_custom_attributes_points3",
-    "webgl_materials_modified"
+    "webgl_materials_modified",
+    "webgl_ubo"
   ],
   "webgpu": [
     "webgpu_backdrop",

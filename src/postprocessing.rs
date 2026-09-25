@@ -38,6 +38,16 @@ impl Effect {
     ) -> Result<Self> {
         Self::build(renderer, format, wgsl, &[], Some(blend), None, None).await
     }
+    /// Fullscreen pass with an explicit blend state and extra texture/sampler pairs.
+    pub async fn with_blend_and_textures(
+        renderer: &Renderer,
+        format: wgpu::TextureFormat,
+        wgsl: &str,
+        blend: wgpu::BlendState,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+    ) -> Result<Self> {
+        Self::build(renderer, format, wgsl, textures, Some(blend), None, None).await
+    }
     /// Fullscreen effect with a single-sampled depth view at group 1 binding 0.
     /// Use textureLoad for exact depth reads; no depth copy or CPU readback.
     pub async fn with_depth(

@@ -220,3 +220,8 @@ against the WebGL renderer. Scoped bounds cover the generated room capture's
 brightness, the UltraHDR background's mip sampling and the transmissive
 sphere's inner faces.
 
+The composer-background, lava, uniform-buffer, RGB halftone and decal batch
+([passes-decals.md](passes-decals.md)) has no WebGPU equivalents and is
+compared against the WebGL renderer. A scoped bound covers the uniform-buffer
+scene's MSAA edges.
+
