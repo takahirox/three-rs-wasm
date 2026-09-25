@@ -322,6 +322,32 @@ impl ShaderProgram {
         )
         .await
     }
+    /// `with_projection` without the creation-time validation pipeline and its
+    /// error-scope round trip, for many trusted TSL programs created between
+    /// frames. Their pipelines compile on first draw; errors are reported as
+    /// uncaptured device errors.
+    #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+    pub(crate) fn with_projection_unvalidated(
+        renderer: &Renderer,
+        wgsl: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        projection: &str,
+    ) -> Self {
+        Self::build_core(
+            renderer,
+            wgsl,
+            &[],
+            textures,
+            DEFAULT_OUTPUT,
+            projection,
+            DEFAULT_SURFACE,
+            &[],
+            &[],
+            None,
+            None,
+            false,
+        )
+    }
     #[allow(clippy::too_many_arguments)]
     async fn build(
         renderer: &Renderer,
@@ -338,6 +364,41 @@ impl ShaderProgram {
     ) -> Result<Self> {
         let device = &renderer.device;
         device.push_error_scope(wgpu::ErrorFilter::Validation);
+        let program = Self::build_core(
+            renderer,
+            wgsl,
+            buffers,
+            textures,
+            output,
+            projection,
+            surface,
+            dimensions,
+            sample_types,
+            mrt,
+            interpolation,
+            true,
+        );
+        if let Some(error) = device.pop_error_scope().await {
+            return Err(Error::Gpu(error.to_string()));
+        }
+        Ok(program)
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn build_core(
+        renderer: &Renderer,
+        wgsl: &str,
+        buffers: &[&GpuBuffer],
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        output: &str,
+        projection: &str,
+        surface: &str,
+        dimensions: &[wgpu::TextureViewDimension],
+        sample_types: &[wgpu::TextureSampleType],
+        mrt: Option<(u32, &str)>,
+        interpolation: Option<UvInterpolation>,
+        validate: bool,
+    ) -> Self {
+        let device = &renderer.device;
         let mut source = format!(
             "{}\n{}\n{wgsl}\n{output}\n{projection}\n{surface}",
             include_str!("shaders/cube_uv.wgsl"),
@@ -480,16 +541,15 @@ impl ShaderProgram {
         // format-specific variants. This pipeline is deliberately not submitted.
         let viewport = u8::from(wgsl.contains("viewport_read_color"))
             | (u8::from(wgsl.contains("viewport_read_depth")) << 1);
-        renderer.validate_shader_program(
-            &module,
-            &layout,
-            mrt.map_or(1, |(count, _)| count),
-            viewport != 0,
-        );
-        if let Some(error) = device.pop_error_scope().await {
-            return Err(Error::Gpu(error.to_string()));
+        if validate {
+            renderer.validate_shader_program(
+                &module,
+                &layout,
+                mrt.map_or(1, |(count, _)| count),
+                viewport != 0,
+            );
         }
-        Ok(Self {
+        Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
             custom_environment: wgsl.contains("fn environment_sample("),
             viewport,
@@ -498,6 +558,6 @@ impl ShaderProgram {
             layout,
             bindings,
             binding_counts: (buffers.len(), textures.len()),
-        })
+        }
     }
 }

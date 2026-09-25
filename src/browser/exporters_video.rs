@@ -151,6 +151,9 @@ struct VideoWall {
 struct CompileGrid {
     sphere: Object3D,
     group: Object3D,
+    plane: Arc<BufferGeometry>,
+    /// Material sources and positions still to be built, a few per frame.
+    pending: Vec<(String, Vector3)>,
     /// The first CSS size: a later resize switches to the 12-unit frustum.
     size: (f64, f64),
     resized: bool,
@@ -450,6 +453,7 @@ impl Demo {
         let (count, grid) = (256usize, 16usize);
         let start = -(grid as f64 - 1.) / 2.;
         let hash = |seed: u32| crate::tsl::hash(crate::tsl::uint(seed));
+        let mut pending = vec![];
         for i in 0..count {
             let seed = float(i as f32 * 0.1 + 1.);
             let scale = float((i % 5) as f32 + 2.);
@@ -486,25 +490,17 @@ impl Demo {
                 hash(i as u32 * 3 + 2),
             ) * float(0.3)
                 + float(0.7);
-            let program = ShaderProgram::with_projection(
-                r,
-                &NodeMaterial::new(vec4(color * tint, float(1.))).wgsl(0)?,
-                &[],
-                &[],
-                "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}",
-            )
-            .await?;
-            let mesh = s.insert(NodeKind::Mesh(Mesh::new(
-                plane.clone(),
-                Arc::new(Material::Shader(ShaderMaterial::new(Arc::new(program)))),
-            )));
-            s.get_mut(mesh)?.position =
-                Vector3::new(start + (i % grid) as f64, start + (i / grid) as f64, 0.);
-            s.add(group, mesh)?;
+            pending.push((
+                NodeMaterial::new(vec4(color * tint, float(1.))).wgsl(0)?,
+                Vector3::new(start + (i % grid) as f64, start + (i / grid) as f64, 0.),
+            ));
         }
+        pending.reverse();
         self.grid = Some(CompileGrid {
             sphere,
             group,
+            plane,
+            pending,
             size: (w, h),
             resized: false,
         });
@@ -622,7 +618,27 @@ impl Demo {
             275 => self.video_step(r, s, c, steps)?,
             276 => {
                 let k = self.grid.as_mut().ok_or(Error::Invalid("grid"))?;
-                // setTimeout( addMeshes, 1000 ); the sphere swings from its start time.
+                // The programs are built between frames while the sphere animates, as
+                // compileAsync does; setTimeout( addMeshes, 1000 ) shows them, building
+                // any still pending when it fires.
+                let batch = if t >= 1. { k.pending.len() } else { 16 };
+                for _ in 0..batch {
+                    let Some((wgsl, position)) = k.pending.pop() else {
+                        break;
+                    };
+                    let program = ShaderProgram::with_projection_unvalidated(
+                        r,
+                        &wgsl,
+                        &[],
+                        "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}",
+                    );
+                    let mesh = s.insert(NodeKind::Mesh(Mesh::new(
+                        k.plane.clone(),
+                        Arc::new(Material::Shader(ShaderMaterial::new(Arc::new(program)))),
+                    )));
+                    s.get_mut(mesh)?.position = position;
+                    s.add(k.group, mesh)?;
+                }
                 s.get_mut(k.group)?.visible = t >= 1.;
                 s.get_mut(k.sphere)?.position.x = (t * 2.).sin() * 8.;
                 let (w, h, _) = viewport_css();

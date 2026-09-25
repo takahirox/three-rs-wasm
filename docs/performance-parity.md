@@ -641,7 +641,8 @@ background's fullscreen triangle.
   Data textures are encoded from their resident Float32 source.
 - **Video.** The 200 cubes share one program. Frames are copied from the video
   element only when it presents a new one.
-- **Compilation.** The 256 distinct programs are built before they are shown.
+- **Compilation.** The 256 distinct programs are created 16 a frame while the
+  scene animates, without blocking the first frames, and are shown at 1 s.
 
 Warmed cycles of time, input and resize create no GPU resources. No GPU timing
 parity is claimed.

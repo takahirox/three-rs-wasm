@@ -62,8 +62,11 @@ equivalent and are compared against the original WebGL renderer.
     `mx_cell_noise_float` on the 2D UV;
   - `mx_fractal_noise_vec3`, whose vec3 layout widens the UV to `vec3( uv, 0 )`;
   - the `hash` tints.
-- **Build.** The programs are built before they are shown, as `compileAsync`
-  does. The group appears at 1 s.
+- **Build.** The programs are created between frames, 16 a frame, while the
+  sphere animates, as `compileAsync` builds in the background. They skip the
+  creation-time validation pipeline, and their pipelines compile on first
+  draw. The group appears at 1 s, when the original's timer adds it; any
+  programs still pending are created then.
 - **Sphere.** MeshNormalNodeMaterial takes `directionToColor( normalView )` as
   sRGB.
 - **Resize.** After a resize the camera uses the 12-unit frustum of the
