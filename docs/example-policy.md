@@ -211,3 +211,12 @@ the instancing MSAA edges and the depth texture's multisampled resolve use
 scoped bounds. `webgl_rtt` has no resize handler and is not compared after a
 resize.
 
+The cube-camera probe, HDR environment-map, UltraHDR, transmission and dungeon
+batch ([probes-hdr.md](probes-hdr.md)) lists `webgpu_lightprobe_cubecamera`,
+`webgpu_materials_transmission` and `webgpu_performance`, and excludes
+`webgl_lightprobe_cubecamera` and `webgl_performance`.
+`webgl_materials_envmaps_hdr` and `webgl_loader_texture_ultrahdr` are compared
+against the WebGL renderer. Scoped bounds cover the generated room capture's
+brightness, the UltraHDR background's mip sampling and the transmissive
+sphere's inner faces.
+

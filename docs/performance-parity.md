@@ -665,3 +665,18 @@ fullscreen triangle.
 Warmed cycles create no GPU resources, except the depth texture's
 target-recreating controls. No GPU timing parity is claimed.
 
+### Cube-camera probe, HDR environment maps, UltraHDR, transmission and the dungeon
+
+The [probe, environment-map, UltraHDR, transmission and dungeon
+ports](probes-hdr.md) match the original draws, except equirectangular
+backgrounds drawn with a fullscreen triangle.
+
+- **Probe.** The probe's SH is computed once on the CPU, from the same 8-bit
+  values the cube capture would hold.
+- **UltraHDR.** The gain map is applied once on the CPU after browser JPEG
+  decoding, as UltraHDRLoader does.
+- **Environments.** All environments are prefiltered once, and switching
+  between them does not refilter.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+

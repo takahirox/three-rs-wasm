@@ -2,10 +2,10 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 299,
-    "runnable-partial": 278,
-    "excluded": 28,
-    "requires-feature-review": 2
+    "blocked-at-port-review": 293,
+    "runnable-partial": 283,
+    "excluded": 30,
+    "requires-feature-review": 1
   },
   "examples": [
     {
@@ -4010,7 +4010,7 @@
     },
     {
       "id": "webgl_lightprobe_cubecamera",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe_cubecamera.html",
       "source_sha256": "b2ad73847b7c05b0d14d6e010150b4a605fb2f929d79a47aa0fe2017b243b78f",
       "runtime_test": null,
@@ -7866,10 +7866,10 @@
     },
     {
       "id": "webgl_loader_texture_ultrahdr",
-      "state": "requires-feature-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ultrahdr.html",
       "source_sha256": "f6dccb386d35cd18f347b9af471022e2ac32d5c3bc373eeced650b5bfb67a872",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/probes-hdr.spec.js",
       "blockers": [],
       "feature_review": [
         {
@@ -9477,10 +9477,10 @@
     },
     {
       "id": "webgl_materials_envmaps_hdr",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_hdr.html",
       "source_sha256": "72869b5fdc7ed08edd3bd638ea8be867dce9c43e4fc4683733db515947428580",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/probes-hdr.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -19284,7 +19284,7 @@
     },
     {
       "id": "webgl_performance",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_performance.html",
       "source_sha256": "06af6ab15d64cf9fc424c955067243646810c6be9d6ed12b753a032c75db9664",
       "runtime_test": null,
@@ -24464,10 +24464,10 @@
     },
     {
       "id": "webgpu_lightprobe_cubecamera",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobe_cubecamera.html",
       "source_sha256": "bf34952eb9683179f760595cb1fa5a3c23d7a310b6161a1d92d9e05c0de81c81",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/probes-hdr.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -27361,10 +27361,10 @@
     },
     {
       "id": "webgpu_materials_transmission",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_transmission.html",
       "source_sha256": "3dd044ac2de1ff01ea86ef613da716aa951af2c22b0d903e87e30e80c6e3e7e8",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/probes-hdr.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -28883,10 +28883,10 @@
     },
     {
       "id": "webgpu_performance",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_performance.html",
       "source_sha256": "86fbbfc4f8d44c5c9b1de48e0e481ff0a73d14cf609fa170dc6cfce987b377dc",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/probes-hdr.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

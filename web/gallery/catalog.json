@@ -2890,8 +2890,8 @@
     {
       "id": "webgl_lightprobe_cubecamera",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lightprobe_cubecamera",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe_cubecamera.html",
       "source_sha256": "b2ad73847b7c05b0d14d6e010150b4a605fb2f929d79a47aa0fe2017b243b78f",
       "requirements": {
@@ -2930,7 +2930,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/LightProbeHelper.js",
         "three/addons/lights/LightProbeGenerator.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lightprobe_cubecamera"
     },
     {
       "id": "webgl_lightprobes",
@@ -5692,7 +5693,7 @@
     {
       "id": "webgl_loader_texture_ultrahdr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ultrahdr.html",
       "source_sha256": "f6dccb386d35cd18f347b9af471022e2ac32d5c3bc373eeced650b5bfb67a872",
@@ -5714,7 +5715,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 285,
+        "source": "src/browser/probes_hdr.rs",
+        "test": "tests/browser/probes-hdr.spec.js",
+        "limitations": [
+          "UltraHDRLoader（MPFとXMPの解析、ブラウザでのJPEGデコードとゲインマップ拡大、復元式とtoHalfFloat）、環境と背景、自動回転、解像度の切り替え（非同期再読み込み）をRustで再現。FloatType選択時も半精度で保持。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -6956,7 +6964,7 @@
     {
       "id": "webgl_materials_envmaps_hdr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_hdr.html",
       "source_sha256": "72869b5fdc7ed08edd3bd638ea8be867dce9c43e4fc4683733db515947428580",
@@ -6978,7 +6986,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 284,
+        "source": "src/browser/probes_hdr.rs",
+        "test": "tests/browser/probes-hdr.spec.js",
+        "limitations": [
+          "Generated（DebugEnvironmentのPMREM）・LDR・HDRキューブの環境マップ切り替え、生キューブ背景とPMREM背景、デバッグ用のPMREMアトラス表示、粗さ・金属度・露出、ACESをRustで再現。Stats表示とlil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -13663,8 +13678,8 @@
     {
       "id": "webgl_performance",
       "category": "webgl / advanced",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_performance",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_performance.html",
       "source_sha256": "06af6ab15d64cf9fc424c955067243646810c6be9d6ed12b753a032c75db9664",
       "requirements": {
@@ -13686,7 +13701,8 @@
         "three/addons/libs/stats.module.js",
         "three/addons/loaders/GLTFLoader.js",
         "three/addons/loaders/UltraHDRLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_performance"
     },
     {
       "id": "webgl_tsl_shadowmap",
@@ -17852,7 +17868,7 @@
     {
       "id": "webgpu_lightprobe_cubecamera",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobe_cubecamera.html",
       "source_sha256": "bf34952eb9683179f760595cb1fa5a3c23d7a310b6161a1d92d9e05c0de81c81",
@@ -17896,7 +17912,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 283,
+        "source": "src/browser/probes_hdr.rs",
+        "test": "tests/browser/probes-hdr.spec.js",
+        "limitations": [
+          "CubeCameraで捉えたpisa背景からのLightProbeGenerator.fromCubeRenderTarget（8bit線形のキューブと同じ値からCPUでSH係数を一度だけ計算）、LightProbeHelper、背景キューブ、変更時のみの描画をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/LightProbeHelperGPU.js",
@@ -20411,7 +20434,7 @@
     {
       "id": "webgpu_materials_transmission",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_transmission.html",
       "source_sha256": "3dd044ac2de1ff01ea86ef613da716aa951af2c22b0d903e87e30e80c6e3e7e8",
@@ -20461,7 +20484,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 286,
+        "source": "src/browser/probes_hdr.rs",
+        "test": "tests/browser/probes-hdr.spec.js",
+        "limitations": [
+          "UltraHDRの環境と背景、透過（transmission）・IOR・厚み・スペキュラーを持つ両面の物理マテリアル、アルファマップの縞、全12項目の操作をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -21728,7 +21758,7 @@
     {
       "id": "webgpu_performance",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_performance.html",
       "source_sha256": "86fbbfc4f8d44c5c9b1de48e0e481ff0a73d14cf609fa170dc6cfce987b377dc",
@@ -21764,7 +21794,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 287,
+        "source": "src/browser/probes_hdr.rs",
+        "test": "tests/browser/probes-hdr.spec.js",
+        "limitations": [
+          "UltraHDRの環境、798メッシュのダンジョンglTF（WebP）、ACES、OrbitControls、static切り替えをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

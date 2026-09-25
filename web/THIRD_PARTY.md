@@ -668,3 +668,17 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
   `web/models/LeePerrySmith.glb` and the credited
   `LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg`.
 
+`gallery/assets/probes-hdr/` holds the unmodified r186 files:
+
+- `textures/equirectangular/spruit_sunrise_2k.hdr.jpg`, `spruit_sunrise_4k.hdr.jpg`
+  and `royal_esplanade_2k.hdr.jpg`;
+- `models/gltf/dungeon_warkarma.glb`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `probes-hdr-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`. The Spruit
+  Sunrise and Royal Esplanade panoramas are from Poly Haven (CC0). The dungeon
+  model is credited as in the Three.js examples.
+- **Reuse.** The pisa cubes are reused from `lights-probes/` and
+  `tsl-environment/`.
+

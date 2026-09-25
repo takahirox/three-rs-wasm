@@ -201,6 +201,8 @@ pub struct MaterialProperties {
     pub vertex_colors: bool,
     pub flat_shading: bool,
     pub wireframe: bool,
+    /// Material.toneMapped: false skips the renderer's tone mapping for this material.
+    pub tone_mapped: bool,
     pub fog: bool,
     /// Optional scene-light selection for this material. None uses all visible lights.
     #[serde(skip)]
@@ -244,6 +246,7 @@ impl Default for MaterialProperties {
             vertex_colors: false,
             flat_shading: false,
             wireframe: false,
+            tone_mapped: true,
             fog: true,
             lights: None,
             clipping_planes: Vec::new(),

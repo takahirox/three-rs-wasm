@@ -7,6 +7,7 @@ enum Content {
     LightsProbes(Box<super::lights_probes::Demo>),
     ExportersVideo(Box<super::exporters_video::Demo>),
     ShadowRtt(Box<super::shadow_rtt::Demo>),
+    ProbesHdr(Box<super::probes_hdr::Demo>),
     SkyWater(Box<super::sky_water::Demo>),
     ExportersMatcap(Box<super::exporters_matcap::Demo>),
     SelectionViews(Box<super::selection_views::Demo>),
@@ -94,6 +95,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            283..=287 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ProbesHdr(Box::new(
+                    super::probes_hdr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             278..=282 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -866,6 +876,9 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::ProbesHdr(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1374,6 +1387,9 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
+        if let Content::ProbesHdr(demo) = &mut self.content {
+            demo.prepare(scene, camera)?;
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
@@ -1447,6 +1463,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ProbesHdr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::SkyWater(demo) = &mut self.content {
@@ -1590,6 +1609,9 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::ProbesHdr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1642,6 +1664,10 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::ProbesHdr(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1690,6 +1716,9 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ProbesHdr(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::SkyWater(demo) = &mut self.content {
@@ -1832,6 +1861,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ProbesHdr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::SkyWater(demo) = &mut self.content {

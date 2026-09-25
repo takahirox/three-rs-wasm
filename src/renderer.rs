@@ -847,8 +847,11 @@ impl Renderer {
                     .as_ref()
                     .is_some_and(|(owner, _)| owner.ptr_eq(&Arc::downgrade(image)))
                 {
-                    self.environment_builds
-                        .set(self.environment_builds.get() + 1);
+                    // A map already prefiltered on the GPU is reused without filtering.
+                    if image.gpu.is_none() {
+                        self.environment_builds
+                            .set(self.environment_builds.get() + 1);
+                    }
                     *cached = Some((
                         Arc::downgrade(image),
                         crate::environment_gpu::build(&self.device, &self.queue, image)?,
@@ -1269,7 +1272,11 @@ impl Renderer {
                 let mut u = Uniforms {
                     output: [
                         scene.exposure as f32,
-                        scene.output_tone_mapping() as u32 as f32,
+                        if material.properties().tone_mapped {
+                            scene.output_tone_mapping() as u32 as f32
+                        } else {
+                            0.0
+                        },
                         0.0,
                         0.0,
                     ],

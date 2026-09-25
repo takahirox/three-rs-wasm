@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-28 excluded for explicit WebGL APIs or equivalent WebGPU examples; 579 retained. 278 partial Rust ports; 301 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+30 excluded for explicit WebGL APIs or equivalent WebGPU examples; 577 retained. 283 partial Rust ports; 294 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,13 +12,13 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 374 |
+| Full camera controls: pan, touch, damping and control variants | 372 |
 | Programmable materials / TSL equivalents | 219 |
 | Inspector and per-example GUI parity | 175 |
 | Phong, Lambert, normal, depth, toon and matcap materials | 174 |
 | Additional procedural geometry builders | 171 |
 | Shadow maps and shadow filtering | 126 |
-| Hemisphere/spot/area lights, light probes and baking | 121 |
+| Hemisphere/spot/area lights, light probes and baking | 120 |
 | Postprocessing passes and temporal history | 101 |
 | Distance and height fog | 92 |
 | Wireframe materials and scene helpers | 91 |
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_lightprobe_cubecamera | `tests/browser/probes-hdr.spec.js` | CubeCameraで捉えたpisa背景からのLightProbeGenerator.fromCubeRenderTarget（8bit線形のキューブと同じ値からCPUでSH係数を一度だけ計算）、LightProbeHelper、背景キューブ、変更時のみの描画をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_envmaps_hdr | `tests/browser/probes-hdr.spec.js` | Generated（DebugEnvironmentのPMREM）・LDR・HDRキューブの環境マップ切り替え、生キューブ背景とPMREM背景、デバッグ用のPMREMアトラス表示、粗さ・金属度・露出、ACESをRustで再現。Stats表示とlil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_ultrahdr | `tests/browser/probes-hdr.spec.js` | UltraHDRLoader（MPFとXMPの解析、ブラウザでのJPEGデコードとゲインマップ拡大、復元式とtoHalfFloat）、環境と背景、自動回転、解像度の切り替え（非同期再読み込み）をRustで再現。FloatType選択時も半精度で保持。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_materials_transmission | `tests/browser/probes-hdr.spec.js` | UltraHDRの環境と背景、透過（transmission）・IOR・厚み・スペキュラーを持つ両面の物理マテリアル、アルファマップの縞、全12項目の操作をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_performance | `tests/browser/probes-hdr.spec.js` | UltraHDRの環境、798メッシュのダンジョンglTF（WebP）、ACES、OrbitControls、static切り替えをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_shadowmesh | `tests/browser/shadow-rtt.spec.js` | ShadowMesh（光源の同次座標による平面投影、ステンシルで二重描画を防止、前フレームのワールド行列を使用）、5つの物体の回転と移動、ArrowHelper、平行光源と点光源の切り替えボタンをRustで再現。性能の完全な同等性は未保証。 |
 | webgl_instancing_dynamic | `tests/browser/shadow-rtt.spec.js` | 10,000個のInstancedMesh（毎フレームの行列更新とTWEENによる色の切り替え、原本と同じCPU更新）、RoomEnvironmentの環境、Neutralトーンマッピング、カメラの軌道とup変化をRustで再現。性能の完全な同等性は未保証。 |
 | webgl_depth_texture | `tests/browser/shadow-rtt.spec.js` | DepthTexture付きのレンダーターゲット、深度の線形化ポストパス、50個のトーラスノットのInstancedMesh、減衰付きOrbitControls（描画後の更新）をRustで再現。深度の形式と型は表示に影響しない。WebGPUのMSAAは4サンプルのみのため、0以外のサンプル数は4として扱う。Stats表示は未移植。性能の完全な同等性は未保証。 |

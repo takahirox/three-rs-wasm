@@ -35,7 +35,7 @@ fn repeated(mut t: Texture, x: f64, y: f64) -> Arc<Texture> {
     Arc::new(t)
 }
 /// HDRCubeTextureLoader: six RGBE faces as a resident half-float cube.
-async fn pisa_hdr(r: &Renderer) -> Result<crate::texture_gpu::GpuTexture> {
+pub(super) async fn pisa_hdr(r: &Renderer) -> Result<crate::texture_gpu::GpuTexture> {
     let mut pixels = vec![];
     let mut size = 0;
     for face in ["px", "nx", "py", "ny", "pz", "nz"] {
@@ -151,9 +151,65 @@ fn sh_basis(d: Vector3) -> [f64; 9] {
         0.546274 * (x * x - y * y),
     ]
 }
+/// CubeTextureLoader's six sRGB pisa faces.
+pub(super) async fn pisa_faces() -> Result<Vec<Texture>> {
+    let mut faces = vec![];
+    for name in ["px", "nx", "py", "ny", "pz", "nz"] {
+        let mut t =
+            decode_texture_image(&fetch(&format!("{ASSETS}/lights-probes/pisa/{name}.png")).await?)
+                .await?;
+        t.srgb = true;
+        faces.push(t);
+    }
+    Ok(faces)
+}
+/// LightProbeGenerator's projection of six cube faces onto the SH basis, with
+/// solid-angle weights. The faces are sRGB and decoded to linear. `quantize`
+/// stores the linear colors at 8 bits first, as a render to an 8-bit
+/// NoColorSpace cube target does before `fromCubeRenderTarget` reads it back.
+pub(super) fn cube_sh(faces: &[Texture], quantize: bool) -> [Vector3; 9] {
+    let mut sh = [Vector3::ZERO; 9];
+    let mut total = 0.;
+    for (face, t) in faces.iter().enumerate() {
+        let width = t.width as usize;
+        let pixel = 2. / width as f64;
+        for (i, p) in t.rgba.as_chunks::<4>().0.iter().enumerate() {
+            let color = Vector3::new(p[0] as f64, p[1] as f64, p[2] as f64).map(|v| {
+                let linear = srgb_to_linear(v / 255.);
+                if quantize {
+                    (linear * 255.).round() / 255.
+                } else {
+                    linear
+                }
+            });
+            let col = -1. + ((i % width) as f64 + 0.5) * pixel;
+            let row = 1. - ((i / width) as f64 + 0.5) * pixel;
+            let coord = match face {
+                0 => Vector3::new(-1., row, -col),
+                1 => Vector3::new(1., row, col),
+                2 => Vector3::new(-col, 1., -row),
+                3 => Vector3::new(-col, -1., row),
+                4 => Vector3::new(-col, row, 1.),
+                _ => Vector3::new(col, row, -1.),
+            };
+            let length_sq = coord.length_squared();
+            let weight = 4. / (length_sq.sqrt() * length_sq);
+            total += weight;
+            let basis = sh_basis(coord.normalize());
+            for j in 0..9 {
+                sh[j] += color * (basis[j] * weight);
+            }
+        }
+    }
+    let norm = 4. * PI / total;
+    for c in &mut sh {
+        *c *= norm;
+    }
+    sh
+}
 /// getShIrradianceAt( normal, coefficients ) in WGSL, coefficients in uniforms 0..8.
 const SH_IRRADIANCE: &str = "fn sh_irradiance(n:vec3<f32>,c0:vec4<f32>,c1:vec4<f32>,c2:vec4<f32>,c3:vec4<f32>,c4:vec4<f32>,c5:vec4<f32>,c6:vec4<f32>,c7:vec4<f32>,c8:vec4<f32>)->vec3<f32>{let x=n.x;let y=n.y;let z=n.z;var r=c0.xyz*0.886227;r+=c1.xyz*(2.0*0.511664)*y;r+=c2.xyz*(2.0*0.511664)*z;r+=c3.xyz*(2.0*0.511664)*x;r+=c4.xyz*(2.0*0.429043)*x*y;r+=c5.xyz*(2.0*0.429043)*y*z;r+=c6.xyz*(z*z*0.743125-0.247708);r+=c7.xyz*(2.0*0.429043)*x*z;r+=c8.xyz*0.429043*(x*x-y*y);return r;}";
-fn sh_call(scale_uniform: Option<usize>) -> Result<crate::tsl::Node> {
+pub(super) fn sh_call(scale_uniform: Option<usize>) -> Result<crate::tsl::Node> {
     use crate::tsl::*;
     let mut args = vec![normal_world()];
     args.extend((0..9).map(|i| uniform(i, Type::Vec4)));
@@ -554,39 +610,10 @@ impl Demo {
     /// the environment-mapped sphere and the LightProbeHelper.
     async fn probe_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         let mut pixels = vec![];
-        let mut faces = vec![];
-        let mut sh = [Vector3::ZERO; 9];
-        let mut total = 0.;
-        for (face, name) in ["px", "nx", "py", "ny", "pz", "nz"].into_iter().enumerate() {
-            let mut t = decode_texture_image(
-                &fetch(&format!("{ASSETS}/lights-probes/pisa/{name}.png")).await?,
-            )
-            .await?;
-            t.srgb = true;
-            let width = t.width as usize;
-            let pixel = 2. / width as f64;
-            for (i, p) in t.rgba.as_chunks::<4>().0.iter().enumerate() {
-                // CubeTextureLoader marks the faces sRGB; fromCubeTexture converts them.
-                let color = Vector3::new(p[0] as f64, p[1] as f64, p[2] as f64)
-                    .map(|v| srgb_to_linear(v / 255.));
-                let col = -1. + ((i % width) as f64 + 0.5) * pixel;
-                let row = 1. - ((i / width) as f64 + 0.5) * pixel;
-                let coord = match face {
-                    0 => Vector3::new(-1., row, -col),
-                    1 => Vector3::new(1., row, col),
-                    2 => Vector3::new(-col, 1., -row),
-                    3 => Vector3::new(-col, -1., row),
-                    4 => Vector3::new(-col, row, 1.),
-                    _ => Vector3::new(col, row, -1.),
-                };
-                let length_sq = coord.length_squared();
-                let weight = 4. / (length_sq.sqrt() * length_sq);
-                total += weight;
-                let basis = sh_basis(coord.normalize());
-                for j in 0..9 {
-                    sh[j] += color * (basis[j] * weight);
-                }
-            }
+        let faces = pisa_faces().await?;
+        // CubeTextureLoader marks the faces sRGB; fromCubeTexture converts them.
+        let sh = cube_sh(&faces, false);
+        for t in &faces {
             pixels.extend(t.rgba.iter().enumerate().map(|(i, &v)| {
                 half::f16::from_f64(if i % 4 == 3 {
                     1.
@@ -594,11 +621,6 @@ impl Demo {
                     srgb_to_linear(v as f64 / 255.)
                 })
             }));
-            faces.push(t);
-        }
-        let norm = 4. * PI / total;
-        for c in &mut sh {
-            *c *= norm;
         }
         // The PMREM of the cube lights the sphere as its envMap; the background samples
         // the cube itself.
@@ -908,7 +930,7 @@ impl Demo {
 
 /// `scene.background = cubeTexture`: as in r186, a camera-centered 32 × 32 sphere
 /// at the far plane.
-async fn cube_background(
+pub(super) async fn cube_background(
     s: &mut Scene,
     r: &Renderer,
     env: &crate::texture_gpu::GpuTexture,

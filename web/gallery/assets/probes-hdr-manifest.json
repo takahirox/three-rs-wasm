@@ -1,0 +1,22 @@
+[
+ {
+  "file": "probes-hdr/spruit_sunrise_2k.hdr.jpg",
+  "source": "examples/textures/equirectangular/spruit_sunrise_2k.hdr.jpg",
+  "sha256": "867a853b9076fd7e6a6e0f38ca5f613ff6bbc672191720bf24af828e6384b62d"
+ },
+ {
+  "file": "probes-hdr/spruit_sunrise_4k.hdr.jpg",
+  "source": "examples/textures/equirectangular/spruit_sunrise_4k.hdr.jpg",
+  "sha256": "49372dff4f9db4aab995f0a22462df4c25d31d5ac16ce9620b7e69d2dac69ddd"
+ },
+ {
+  "file": "probes-hdr/royal_esplanade_2k.hdr.jpg",
+  "source": "examples/textures/equirectangular/royal_esplanade_2k.hdr.jpg",
+  "sha256": "b05a664c5fb022ddc6104f253a6684570e99876d30b41a220c8dea4482df6d64"
+ },
+ {
+  "file": "probes-hdr/dungeon_warkarma.glb",
+  "source": "examples/models/gltf/dungeon_warkarma.glb",
+  "sha256": "cac0fc8c16d107e7ac4e69efde89c2cb6ef4bc66c34456a4dd0923218e5aafb1"
+ }
+]

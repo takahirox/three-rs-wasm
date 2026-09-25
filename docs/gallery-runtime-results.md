@@ -2,12 +2,12 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 278 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 283 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 543 |
-| excluded | 28 |
+| runtime-prerequisite | 541 |
+| excluded | 30 |
 | rust-static-frame-rendered | 33 |
 | rust-empty-frame | 3 |
 
@@ -133,7 +133,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_interactive_voxelpainter](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_voxelpainter.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_lensflares](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lensflares.html) | runtime-prerequisite | PROBE LIMIT: Fog: linear; Material type: MeshPhongMaterial; Probe resource limit: more than 2000 objects |
 | [webgl_lightprobe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe.html) | excluded |  |
-| [webgl_lightprobe_cubecamera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe_cubecamera.html) | runtime-prerequisite | Light type: Light; Material type: LightProbeHelperMaterial |
+| [webgl_lightprobe_cubecamera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe_cubecamera.html) | excluded |  |
 | [webgl_lightprobes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobes.html) | runtime-prerequisite | Shadow maps |
 | [webgl_lightprobes_complex](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobes_complex.html) | runtime-prerequisite | Shadow maps |
 | [webgl_lightprobes_sponza](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobes_sponza.html) | runtime-prerequisite | Material type: ShaderMaterial; Shadow maps; Light type: SunLight |
@@ -370,7 +370,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_volume_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_volume_instancing.html) | runtime-prerequisite | Instance/batch transforms: Mesh; Material type: RawShaderMaterial |
 | [webgl_volume_perlin](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_volume_perlin.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_worker_offscreencanvas](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_worker_offscreencanvas.html) | runtime-prerequisite | Fog: linear; Material type: MeshMatcapMaterial |
-| [webgl_performance](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_performance.html) | runtime-prerequisite | PROBE LIMIT: Probe resource limit: combined texture data exceeds 8M pixels |
+| [webgl_performance](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_performance.html) | excluded |  |
 | [webgl_tsl_shadowmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_shadowmap.html) | runtime-prerequisite | Fog: linear; Programmable background node; Light type: SpotLight; Shadow maps; Material type: MeshPhongNodeMaterial; Programmable material: maskNode; Programmable material: colorNode |
 | [webgl_tsl_skinning](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_skinning.html) | runtime-prerequisite | Tone mapping mode: 1; Skinned mesh / skeleton; Non-default material IOR |
 | [webgl_tsl_clearcoat](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_clearcoat.html) | runtime-prerequisite | Shadow maps; Physical material extension: clearcoat |
