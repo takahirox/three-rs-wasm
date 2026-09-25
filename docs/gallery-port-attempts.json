@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 310,
-    "runnable-partial": 268,
-    "excluded": 27,
+    "blocked-at-port-review": 304,
+    "runnable-partial": 273,
+    "excluded": 28,
     "requires-feature-review": 2
   },
   "examples": [
@@ -9745,10 +9745,10 @@
     },
     {
       "id": "webgl_materials_normalmap_object_space",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_normalmap_object_space.html",
       "source_sha256": "45c84138ac446bb204a0ab7cac31ad67a55bb004a45874d6b980a7b73420c5ec",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/exporters-video.spec.js",
       "blockers": [
         {
           "kind": "behavior",
@@ -10423,7 +10423,7 @@
     },
     {
       "id": "webgl_materials_video",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video.html",
       "source_sha256": "e013960d549060f0a9a5513cdf8b13a9182b71689881395b492145d9bab4d87c",
       "runtime_test": null,
@@ -20965,10 +20965,10 @@
     },
     {
       "id": "webgpu_compile_async",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compile_async.html",
       "source_sha256": "da1b44c30f673704532d53652a477b8850981747e52d526eb9e30458a2cf66ed",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/exporters-video.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -27517,10 +27517,10 @@
     },
     {
       "id": "webgpu_materials_video",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_video.html",
       "source_sha256": "5911ec391184aa9811c87b8dc35c206f93bb0a30640a78877210cc6301a90948",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/exporters-video.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -44524,10 +44524,10 @@
     },
     {
       "id": "misc_exporter_exr",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_exr.html",
       "source_sha256": "955403a4cdf6d51668fe7267ac0533435f0c3497d77017a18955311623a41178",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/exporters-video.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44563,10 +44563,10 @@
     },
     {
       "id": "misc_exporter_ktx2",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ktx2.html",
       "source_sha256": "bf799614b47bff3f09797cbc3b1087a778247b987115bdd4f1ca8b73e105676f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/exporters-video.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

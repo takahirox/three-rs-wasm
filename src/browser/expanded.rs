@@ -5,6 +5,7 @@ use std::sync::Arc;
 
 enum Content {
     LightsProbes(Box<super::lights_probes::Demo>),
+    ExportersVideo(Box<super::exporters_video::Demo>),
     SkyWater(Box<super::sky_water::Demo>),
     ExportersMatcap(Box<super::exporters_matcap::Demo>),
     SelectionViews(Box<super::selection_views::Demo>),
@@ -92,6 +93,15 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            273..=277 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ExportersVideo(Box::new(
+                    super::exporters_video::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             268..=272 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -840,6 +850,9 @@ impl Demo {
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::ExportersVideo(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1334,6 +1347,9 @@ impl Demo {
         if let Content::LightsProbes(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
+        if let Content::ExportersVideo(demo) = &mut self.content {
+            demo.prepare(renderer, scene, camera)?;
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
@@ -1401,6 +1417,9 @@ impl Demo {
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
         if let Content::LightsProbes(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ExportersVideo(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::SkyWater(demo) = &mut self.content {
@@ -1517,11 +1536,14 @@ impl Demo {
         Err(crate::Error::Invalid("not a TSL example"))
     }
     /// A file produced by an exporter button, taken once.
-    pub fn take_export(&mut self) -> Option<(String, Vec<u8>)> {
-        if let Content::ExportersMatcap(demo) = &mut self.content {
-            demo.take_export()
-        } else {
-            None
+    pub fn take_export(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+    ) -> Option<(String, Vec<u8>)> {
+        match &mut self.content {
+            Content::ExportersMatcap(demo) => demo.take_export(),
+            Content::ExportersVideo(demo) => demo.take_export(renderer),
+            _ => None,
         }
     }
     pub fn status(&self) -> String {
@@ -1533,6 +1555,9 @@ impl Demo {
     }
     pub fn key(&mut self, code: u32, down: bool) {
         if let Content::LightsProbes(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ExportersVideo(demo) = &mut self.content {
             demo.key(code, down);
         }
         if let Content::SkyWater(demo) = &mut self.content {
@@ -1579,6 +1604,10 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::ExportersVideo(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1621,6 +1650,9 @@ impl Demo {
     }
     pub fn seek(&mut self, seconds: f64) {
         if let Content::LightsProbes(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ExportersVideo(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::SkyWater(demo) = &mut self.content {
@@ -1757,6 +1789,9 @@ impl Demo {
         height: f64,
     ) -> Result<()> {
         if let Content::LightsProbes(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ExportersVideo(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::SkyWater(demo) = &mut self.content {

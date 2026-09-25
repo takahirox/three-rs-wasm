@@ -68,6 +68,8 @@ impl EnvironmentMap {
 /// GPU-only prefiltered scene lighting. Views keep their backing textures alive.
 #[derive(Clone, Debug)]
 pub struct PrefilteredEnvironment {
+    /// The cube-UV atlas that `view` shows.
+    pub(crate) texture: wgpu::Texture,
     pub(crate) view: wgpu::TextureView,
     pub(crate) source: wgpu::TextureView,
     pub(crate) sampler: wgpu::Sampler,
@@ -100,5 +102,9 @@ impl PrefilteredEnvironment {
     }
     pub fn max_mip(&self) -> f32 {
         self.max_mip
+    }
+    /// The Rgba16Float cube-UV atlas, copyable for readback.
+    pub fn texture(&self) -> &wgpu::Texture {
+        &self.texture
     }
 }

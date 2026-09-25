@@ -409,6 +409,9 @@ pub struct Scene {
     pub environment_intensity: f64,
     pub environment_rotation: f64,
     pub background_environment: bool,
+    /// With `background_environment`: sample the PMREM cube-UV atlas at the
+    /// blurriness, as for `scene.background = pmremRenderTarget.texture`.
+    pub background_pmrem: bool,
     pub background_outputs: Vec<BackgroundOutput>,
     pub background_blur: f64,
     pub fog: Option<Fog>,
@@ -437,6 +440,7 @@ impl Default for Scene {
             environment_intensity: 1.0,
             environment_rotation: 0.0,
             background_environment: false,
+            background_pmrem: false,
             background_outputs: Vec::new(),
             background_blur: 0.0,
             fog: None,

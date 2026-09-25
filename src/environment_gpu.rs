@@ -71,7 +71,10 @@ fn filter(
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
             format: wgpu::TextureFormat::Rgba16Float,
-            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::STORAGE_BINDING,
+            // COPY_SRC lets exporters read the atlas back, as readRenderTargetPixels does.
+            usage: wgpu::TextureUsages::TEXTURE_BINDING
+                | wgpu::TextureUsages::STORAGE_BINDING
+                | wgpu::TextureUsages::COPY_SRC,
             view_formats: &[],
         })
     };
@@ -198,6 +201,7 @@ fn filter(
     }
     queue.submit([encoder.finish()]);
     Ok(GpuEnvironment {
+        texture: atlas,
         view,
         source,
         sampler,

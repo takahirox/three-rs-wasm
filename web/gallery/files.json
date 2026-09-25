@@ -67,6 +67,7 @@
     "webgl_materials_bumpmap",
     "webgl_materials_cubemap",
     "webgl_materials_cubemap_refraction",
+    "webgl_materials_normalmap_object_space",
     "webgl_materials_texture_canvas",
     "webgl_materials_texture_filters",
     "webgl_materials_texture_rotation",
@@ -123,6 +124,7 @@
     "webgpu_centroid_sampling",
     "webgpu_clearcoat",
     "webgpu_clipping",
+    "webgpu_compile_async",
     "webgpu_compute_audio",
     "webgpu_compute_geometry",
     "webgpu_compute_particles",
@@ -177,6 +179,7 @@
     "webgpu_materials_sss",
     "webgpu_materials_texture_manualmipmap",
     "webgpu_materials_toon",
+    "webgpu_materials_video",
     "webgpu_materialx_noise",
     "webgpu_mirror",
     "webgpu_morphtargets",
@@ -275,6 +278,8 @@
     "misc_controls_trackball",
     "misc_exporter_obj",
     "misc_exporter_ply",
-    "misc_exporter_stl"
+    "misc_exporter_stl",
+    "misc_exporter_exr",
+    "misc_exporter_ktx2"
   ]
 }

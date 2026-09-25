@@ -642,3 +642,18 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 - **Reuse.** The clearcoat HDR cube reuses `tsl-environment/textures/cube/pisaHDR/`,
   and the tone-mapping background reuses the credited `venice_sunset_1k.hdr`.
 
+`gallery/assets/exporters-video/` holds unmodified r186 files:
+
+- `models/gltf/Nefertiti/Nefertiti.glb`, with its `README.md`;
+- `textures/sintel.ogv` and `textures/sintel.mp4`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `exporters-video-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`.
+- **Credits.** The Nefertiti scan is by Fraunhofer IGD (cultlab3d.de), under a
+  non-commercial Creative Commons license, as its README states. The Sintel
+  trailer is © Blender Foundation ([durian.blender.org](https://durian.blender.org/)).
+- **Reuse.** The EXR exporter reuses the credited
+  `tsl-procedural/san_giuseppe_bridge_2k.hdr`, and the KTX2 exporter reuses
+  `venice_sunset_1k.hdr`.
+

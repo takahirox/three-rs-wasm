@@ -1,0 +1,22 @@
+[
+ {
+  "file": "exporters-video/Nefertiti.glb",
+  "source": "examples/models/gltf/Nefertiti/Nefertiti.glb",
+  "sha256": "d8c00c742b59137695245eefeef0e217d6e33c64eeaeb1904ff39f6b31542639"
+ },
+ {
+  "file": "exporters-video/README.md",
+  "source": "examples/models/gltf/Nefertiti/README.md",
+  "sha256": "609a213ee8fe842e44fd68b80949ba8c92ac8cbbc5fad59a7beff6ebb4eda58f"
+ },
+ {
+  "file": "exporters-video/sintel.mp4",
+  "source": "examples/textures/sintel.mp4",
+  "sha256": "21d505bb1116c7e058f1680a6d53a7e2e69284563e351b4a6a45c03a0e2ac38d"
+ },
+ {
+  "file": "exporters-video/sintel.ogv",
+  "source": "examples/textures/sintel.ogv",
+  "sha256": "19c8c74cc4b5b68e25c86533e160a4f717d4fae978e8101d2d651c097f930da9"
+ }
+]

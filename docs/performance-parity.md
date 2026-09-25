@@ -630,3 +630,19 @@ background's fullscreen triangle.
 
 Warmed cycles of time, input and resize create no GPU resources. No GPU timing
 parity is claimed.
+
+### EXR and KTX2 exporters, video cubes, async compilation and object-space normals
+
+The [exporter, video-cube, async-compilation and object-space normal
+ports](exporters-video.md) match the original draws, except the PMREM
+background's fullscreen triangle.
+
+- **Exports.** PMREM exports read the atlas back asynchronously from the GPU.
+  Data textures are encoded from their resident Float32 source.
+- **Video.** The 200 cubes share one program. Frames are copied from the video
+  element only when it presents a new one.
+- **Compilation.** The 256 distinct programs are built before they are shown.
+
+Warmed cycles of time, input and resize create no GPU resources. No GPU timing
+parity is claimed.
+

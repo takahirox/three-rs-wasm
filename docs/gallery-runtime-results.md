@@ -2,12 +2,12 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 268 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 273 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 544 |
-| excluded | 27 |
+| runtime-prerequisite | 543 |
+| excluded | 28 |
 | rust-static-frame-rendered | 33 |
 | rust-empty-frame | 3 |
 
@@ -37,7 +37,7 @@ Counts overlap and describe the sampled execution, not all possible branches.
 | Material type: MeshLambertMaterial | 42 |
 | Flat shaded lit material | 39 |
 | Instance/batch transforms: Mesh | 36 |
-| Material type: RawShaderMaterial | 32 |
+| Material type: RawShaderMaterial | 31 |
 | WebXR session integration | 31 |
 | Programmable background node | 27 |
 | GPU compute/storage dispatch | 24 |
@@ -237,7 +237,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_materials_texture_partialupdate](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_partialupdate.html) | excluded |  |
 | [webgl_materials_texture_rotation](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_texture_rotation.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_materials_toon](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_toon.html) | runtime-prerequisite | Material type: MeshToonMaterial |
-| [webgl_materials_video](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video.html) | runtime-prerequisite | Material type: RawShaderMaterial |
+| [webgl_materials_video](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video.html) | excluded |  |
 | [webgl_materials_video_webcam](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video_webcam.html) | runtime-prerequisite | Texture image is not loaded or is GPU-only |
 | [webgl_materials_wireframe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_wireframe.html) | runtime-prerequisite | Wireframe material; Material type: ShaderMaterial; Alpha-to-coverage |
 | [webgl_pmrem_cubemap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_pmrem_cubemap.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |

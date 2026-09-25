@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-27 excluded for explicit WebGL APIs or equivalent WebGPU examples; 580 retained. 268 partial Rust ports; 312 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+28 excluded for explicit WebGL APIs or equivalent WebGPU examples; 579 retained. 273 partial Rust ports; 306 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -14,19 +14,19 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | --- | ---: |
 | Full camera controls: pan, touch, damping and control variants | 374 |
 | Programmable materials / TSL equivalents | 219 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 175 |
 | Inspector and per-example GUI parity | 175 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 174 |
 | Additional procedural geometry builders | 171 |
 | Shadow maps and shadow filtering | 126 |
 | Hemisphere/spot/area lights, light probes and baking | 121 |
-| Postprocessing passes and temporal history | 102 |
+| Postprocessing passes and temporal history | 101 |
 | Distance and height fog | 92 |
 | Wireframe materials and scene helpers | 91 |
 | Additional loaders and compressed assets | 82 |
 | Instance transforms and batched drawing | 74 |
 | Animation mixer and skeletal animation | 48 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
-| Canvas, HTML, video and partial texture updates | 43 |
+| Canvas, HTML, video and partial texture updates | 42 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
 | GPU compute and storage buffers | 30 |
@@ -44,6 +44,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| misc_exporter_exr | `tests/browser/exporters-video.spec.js` | EXRExporter（ZIP・ZIPS・無圧縮、Half/Float）、PMREMの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。PMREMの書き出しはGPUからの読み戻し。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| misc_exporter_ktx2 | `tests/browser/exporters-video.spec.js` | KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、PMREMの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。PMREMの書き出しはGPUからの読み戻し。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_materials_video | `tests/browser/exporters-video.spec.js` | VideoTexture（新しいフレームのみ転送）を貼った200個のPhongキューブ（UVで分割）、色相の時間変化、1000フレーム周期の移動と反転、マウス追従カメラをRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_compile_async | `tests/browser/exporters-video.spec.js` | MaterialXノイズ（Perlin・Worley・Cell・Fractal）とhashによる256種の固有マテリアルを表示前にビルドし、1秒後に追加。法線マテリアルの球の往復、リサイズ時の12単位のフラスタムをRustで再現。モード切替ボタン（ページ再読み込み）と計測表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_materials_normalmap_object_space | `tests/browser/exporters-video.spec.js` | オブジェクト空間法線マップ（法線属性を削除、両面、裏面で反転）、カメラに付けた点光源、Nefertitiの縮小と中心合わせ、変更時のみの描画をRustで再現。devicePixelRatioを使わない原本と同じく1倍で描画。性能の完全な同等性は未保証。 |
 | webgl_materials_cubemap | `tests/browser/shapes-lights.spec.js` | OBJLoaderの頭部とLambertのenvmap（反射・屈折、Multiply・Mix合成）、背景キューブ、極角制限付きOrbitControlsをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |

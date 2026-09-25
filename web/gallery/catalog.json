@@ -7124,7 +7124,7 @@
     {
       "id": "webgl_materials_normalmap_object_space",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_normalmap_object_space.html",
       "source_sha256": "45c84138ac446bb204a0ab7cac31ad67a55bb004a45874d6b980a7b73420c5ec",
@@ -7140,7 +7140,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 277,
+        "source": "src/browser/exporters_video.rs",
+        "test": "tests/browser/exporters-video.spec.js",
+        "limitations": [
+          "オブジェクト空間法線マップ（法線属性を削除、両面、裏面で反転）、カメラに付けた点光源、Nefertitiの縮小と中心合わせ、変更時のみの描画をRustで再現。devicePixelRatioを使わない原本と同じく1倍で描画。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -7639,8 +7646,8 @@
     {
       "id": "webgl_materials_video",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_materials_video",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video.html",
       "source_sha256": "e013960d549060f0a9a5513cdf8b13a9182b71689881395b492145d9bab4d87c",
       "requirements": {
@@ -7674,7 +7681,8 @@
         "three/addons/postprocessing/EffectComposer.js",
         "three/addons/postprocessing/OutputPass.js",
         "three/addons/postprocessing/RenderPass.js"
-      ]
+      ],
+      "preferred_example": "webgpu_materials_video"
     },
     {
       "id": "webgl_materials_video_webcam",
@@ -14804,7 +14812,7 @@
     {
       "id": "webgpu_compile_async",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compile_async.html",
       "source_sha256": "da1b44c30f673704532d53652a477b8850981747e52d526eb9e30458a2cf66ed",
@@ -14822,7 +14830,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 276,
+        "source": "src/browser/exporters_video.rs",
+        "test": "tests/browser/exporters-video.spec.js",
+        "limitations": [
+          "MaterialXノイズ（Perlin・Worley・Cell・Fractal）とhashによる256種の固有マテリアルを表示前にビルドし、1秒後に追加。法線マテリアルの球の往復、リサイズ時の12単位のフラスタムをRustで再現。モード切替ボタン（ページ再読み込み）と計測表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/libs/lil-gui.module.min.js",
         "three/tsl",
@@ -20496,7 +20511,7 @@
     {
       "id": "webgpu_materials_video",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_video.html",
       "source_sha256": "5911ec391184aa9811c87b8dc35c206f93bb0a30640a78877210cc6301a90948",
@@ -20514,7 +20529,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 275,
+        "source": "src/browser/exporters_video.rs",
+        "test": "tests/browser/exporters-video.spec.js",
+        "limitations": [
+          "VideoTexture（新しいフレームのみ転送）を貼った200個のPhongキューブ（UVで分割）、色相の時間変化、1000フレーム周期の移動と反転、マウス追従カメラをRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -33385,7 +33407,7 @@
     {
       "id": "misc_exporter_exr",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_exr.html",
       "source_sha256": "955403a4cdf6d51668fe7267ac0533435f0c3497d77017a18955311623a41178",
@@ -33401,7 +33423,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 273,
+        "source": "src/browser/exporters_video.rs",
+        "test": "tests/browser/exporters-video.spec.js",
+        "limitations": [
+          "EXRExporter（ZIP・ZIPS・無圧縮、Half/Float）、PMREMの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。PMREMの書き出しはGPUからの読み戻し。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -33413,7 +33442,7 @@
     {
       "id": "misc_exporter_ktx2",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ktx2.html",
       "source_sha256": "bf799614b47bff3f09797cbc3b1087a778247b987115bdd4f1ca8b73e105676f",
@@ -33429,7 +33458,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 274,
+        "source": "src/browser/exporters_video.rs",
+        "test": "tests/browser/exporters-video.spec.js",
+        "limitations": [
+          "KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、PMREMの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。PMREMの書き出しはGPUからの読み戻し。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

@@ -193,3 +193,12 @@ It excludes `webgl_materials_physical_clearcoat`, `webgl_shadowmap_pointlight`,
 WebGPURenderer in r186. Only the fly planet's non-MSAA cloud rim and 4× MSAA
 resolves use scoped bounds. The light-probe reference is refreshed after each
 intensity change, since r186 defers it to the mesh's next refresh.
+
+The EXR, KTX2, video-cube, async-compilation and object-space normal batch
+([exporters-video.md](exporters-video.md)) lists `webgpu_materials_video` and
+excludes `webgl_materials_video`. `misc_exporter_exr`, `misc_exporter_ktx2` and
+`webgl_materials_normalmap_object_space` are compared against the WebGL
+renderer. All five scenes match within the ordinary threshold. Exported data
+textures are identical; PMREM exports are compared as half floats, and EXR
+blocks after inflating.
+

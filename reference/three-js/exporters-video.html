@@ -1,0 +1,44 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#blocker{display:none}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
+</script></head><body><script type="module">
+import * as THREE from 'three';
+const id=new URLSearchParams(location.search).get('id');if(!['misc_exporter_exr','misc_exporter_ktx2','webgpu_materials_video','webgpu_compile_async','webgl_materials_normalmap_object_space'].includes(id))throw Error('invalid fixture');
+window.fixtureExports=[];{const create=URL.createObjectURL.bind(URL);URL.createObjectURL=blob=>{fixtureExports.push(blob);return create(blob);};}HTMLAnchorElement.prototype.click=function(){};
+window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
+const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
+// WebGL render is an instance method: wrap construction so static examples expose it too.
+window.captureRenderer=r=>{window.fixtureRenderer=r;const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>window.fixtureCallback=fn;return r;};
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info,#stats,#blocker,video'))document.body.appendChild(document.importNode(node,true));
+for(const node of document.querySelectorAll('video source'))node.src='/.cache/three-r186/examples/'+node.getAttribute('src');document.querySelector('video')?.load();
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replace('new THREE.WebGLRenderer()', 'new THREE.WebGLRenderer( {} )').replace('new THREE.WebGPURenderer()', 'new THREE.WebGPURenderer( {} )').replace(/new THREE\.(WebGLRenderer|WebGPURenderer)\( ([^;]*) \);/g,'window.captureRenderer(new THREE.$1( $2 ));')
+.replace(/import \{ GUI \}[^;]*;/,'').replace(/import \{ Inspector \}[^;]*;/,'class Inspector{createParameters(){return new GUI();}}').replace('renderer.inspector = new Inspector();','window.fixtureInspector=new Inspector();').replaceAll('renderer.inspector.createParameters','fixtureInspector.createParameters')
+.replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}begin(){}end(){}}`)
+.replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/").replaceAll("'./models/","'/.cache/three-r186/examples/models/").replaceAll("'fonts/","'/.cache/three-r186/examples/fonts/")
+.replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)');
+if(new URLSearchParams(location.search).get('samples')==='1')source=source.replaceAll('antialias: true','antialias: false');
+source=`class GUI{constructor(){fixtureControls.length=0;}add(o,k){const item={onChange(fn){this.callback=fn;return this;},name(){return this;},step(){return this;},options(){return this;},onFinishChange(fn){this.callback=fn;return this;},min(){return this;},max(){return this;},setValue(v){if(typeof o[k]==='function'){o[k]();return;}o[k]=v;this.callback?.(v);},listen(){return this;}};fixtureControls.push(item);return item;}addColor(o,k){const item={onChange(fn){this.callback=fn;return this;},listen(){return this;},setValue(v){if(typeof o[k]==='number'){o[k]=v;this.callback?.(v);return;}const c=o[k];c.r=((v>>16)&255)/255;c.g=((v>>8)&255)/255;c.b=(v&255)/255;this.callback?.(c);}};fixtureControls.push(item);return item;}open(){}destroy(){}addFolder(){const folder=Object.create(this);folder.$children=document.createElement('div');return folder;}}`+'\n'+source;
+source='let seed=186;function fixtureRandom(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}\n'+source;
+// Example-clock timers.
+window.fixtureTimers=[];window.fixtureTimeout=(fn,ms)=>fixtureTimers.push({at:(window.fixtureNow??0)+ms,fn});
+window.runFixtureTimers=now=>{for(;;){const next=fixtureTimers.filter(x=>x.at<=now).sort((a,b)=>a.at-b.at)[0];if(!next)break;fixtureTimers.splice(fixtureTimers.indexOf(next),1);window.fixtureNow=next.at;next.fn();}window.fixtureNow=now;};
+// Timer on the example clock; per-frame control updates and particle ages as 60 fps steps.
+source=source.replace('timer = new THREE.Timer();','timer = new THREE.Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureSeconds * 1000 );');
+// Per-frame easing, controls and random walks as 60 fps steps.
+const steps='for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)';
+source=source.replace('scene = new THREE.Scene();','scene = window.fixtureScene = new THREE.Scene();');
+// Per-frame easing and counters as 60 fps steps.
+if(id==='webgpu_materials_video')source=source.replace('const time = (window.fixtureSeconds*1000) * 0.00005;','const time = (window.fixtureSeconds*1000) * 0.00005;'+steps+'{').replace('\t\t\t\trenderer.render( scene, camera );\n\n\t\t\t}','\t\t\t\t}renderer.render( scene, camera );\n\n\t\t\t}');
+// The meshes are added by an example-clock timer after compileAsync, which the fixture
+// awaits. performance.now() is the example clock, so the start time is 0: the sphere
+// check becomes >= 0 (the page's start time is always positive).
+if(id==='webgpu_compile_async')source=source.replace('setTimeout( () => addMeshes( mode ), ADD_DELAY );','fixtureTimeout( () => { window.fixtureAwait = addMeshes( mode ); }, ADD_DELAY );').replace('sphereStartTime > 0','sphereStartTime >= 0');
+await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
+// webgl_loader_obj creates its renderer after awaiting the loaders.
+while(!window.fixtureRenderer)await new Promise(r=>setTimeout(r,10));
+if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
+while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
+window.renderFixture=async(t=0)=>{fixtureSeconds=t;window.fixtureStep=(t-(window.fixtureLast??t))*60;window.fixtureLast=t;runFixtureTimers(t*1000);if(window.fixtureAwait)await window.fixtureAwait;while(pending)await new Promise(r=>setTimeout(r,10));for(const v of window.pointQuadViewports??[])v.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes){reference.renderer._nodes.nodeFrame.update();reference.renderer._nodes.nodeFrame.time=t;}if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
+window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixture();reference.renderer.domElement.dataset.ready='true';
+</script></body></html>
