@@ -184,6 +184,29 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
     let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
     var value=0.0;
+    if settings.w>0.5 {
+        // r186 getPointShadow: Vogel-disk offsets in the tangent frame of the light-to-fragment
+        // direction, radius / mapSize apart, each looked up in its own cube face against the
+        // fragment's face depth.
+        let base=u32(settings.x)-1u;
+        let light=u.light_position[i].xyz;
+        let bd=normalize(position+normal*settings.z-light);let ad=abs(bd);
+        let tangent=normalize(cross(bd,select(vec3(1.0,0.0,0.0),vec3(0.0,1.0,0.0),ad.x>ad.z)));
+        let bitangent=cross(bd,tangent);
+        let texel=u.shadow_filters[i].x/(size.x*u.shadow_filters[i].z);
+        for(var j=0u;j<5u;j++){
+            let angle=f32(j)*2.399963229728653+phi;let r=sqrt((f32(j)+0.5)/5.0);
+            let dir=bd+(tangent*cos(angle)+bitangent*sin(angle))*r*texel;let da=abs(dir);
+            var face=base;
+            if da.x>=da.y && da.x>=da.z {face+=select(1u,0u,dir.x>=0.0);}
+            else if da.y>=da.z {face+=select(3u,2u,dir.y>=0.0);}
+            else {face+=select(5u,4u,dir.z>=0.0);}
+            let q=u.shadow_matrices[face]*vec4(light+dir,1.0);
+            let quv=(q.xy/q.w*vec2(0.5,-0.5)+0.5)*u.shadow_filters[i].z;
+            value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,quv),i32(face),ndc.z+settings.y);
+        }
+        return value*0.2;
+    }
     for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*u.shadow_filters[i].x/size;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
     return value*0.2;
 }

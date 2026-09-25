@@ -613,3 +613,20 @@ ports](sky-water.md) match the original draws.
 
 Warmed cycles of time and input create no GPU resources. No GPU timing parity is
 claimed.
+
+### Clearcoat, fly controls, point-light shadows, light probe and tone mapping
+
+The [clearcoat, fly-controls, point-light-shadow, light-probe and tone-mapping
+ports](lights-probes.md) match the original draws, except the tone-mapping
+background's fullscreen triangle.
+
+- **Backgrounds.** Raw cube backgrounds are drawn as r186's 32 × 32 background
+  sphere.
+- **Points.** The fly stars are native one-pixel points, as r186's WebGPU
+  Points draw them.
+- **Shadows.** Point-light casters are culled per cube face.
+- **Light probe.** The SH coefficients are computed once on the CPU, as
+  `LightProbeGenerator.fromCubeTexture` does.
+
+Warmed cycles of time, input and resize create no GPU resources. No GPU timing
+parity is claimed.

@@ -184,3 +184,12 @@ The sky, sun-light, pointer-lock, video-panorama and ocean batch
 `webgl_lights_sunlight`, `webgl_video_panorama_equirectangular` and
 `webgl_shaders_ocean`. All five scenes match within the ordinary threshold with
 MSAA off. Only the pointer-lock boxes' silhouettes bound 4× MSAA.
+
+The clearcoat, fly-controls, point-light-shadow, light-probe and tone-mapping
+batch ([lights-probes.md](lights-probes.md)) lists `webgpu_clearcoat`,
+`webgpu_shadowmap_pointlight`, `webgpu_lightprobe` and `webgpu_tonemapping`.
+It excludes `webgl_materials_physical_clearcoat`, `webgl_shadowmap_pointlight`,
+`webgl_lightprobe` and `webgl_tonemapping`. `misc_controls_fly` renders with
+WebGPURenderer in r186. Only the fly planet's non-MSAA cloud rim and 4× MSAA
+resolves use scoped bounds. The light-probe reference is refreshed after each
+intensity change, since r186 defers it to the mesh's next refresh.

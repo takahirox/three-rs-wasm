@@ -619,3 +619,26 @@ are the unmodified r186 `examples/textures/matcaps/040full.exr`,
 unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 `textures/waternormals.jpg` files. Their source paths and SHA-256 hashes are in
 `sky-water-manifest.json`; they are distributed alongside `LICENSE-THREE`.
+
+`gallery/assets/lights-probes/` holds unmodified r186 files:
+
+- `textures/carbon/Carbon.png` and `Carbon_Normal.png`;
+- `textures/golfball.jpg` and `textures/water/Water_1_M_Normal.jpg`;
+- `textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png`, from
+  [cgbookcase](https://www.cgbookcase.com/textures/scratched-gold-01), with its
+  `Scratched_gold.txt`;
+- `textures/planets/earth_normal_2048.jpg`, `earth_clouds_1024.png` and
+  `moon_1024.jpg`;
+- the `textures/cube/pisa/` faces;
+- `models/gltf/venice_mask.glb`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `lights-probes-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`. The Venice Mask
+  is by [DailyArt](https://sketchfab.com/D.art), from
+  [Sketchfab](https://sketchfab.com/3d-models/venice-mask-4aace12762ee44cf97d934a6ced12e65),
+  under [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/), as
+  recorded in the file.
+- **Reuse.** The clearcoat HDR cube reuses `tsl-environment/textures/cube/pisaHDR/`,
+  and the tone-mapping background reuses the credited `venice_sunset_1k.hdr`.
+

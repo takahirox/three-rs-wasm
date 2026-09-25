@@ -9,8 +9,8 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 548,
-    "excluded": 23,
+    "runtime-prerequisite": 544,
+    "excluded": 27,
     "rust-static-frame-rendered": 33,
     "rust-empty-frame": 3
   },
@@ -1470,27 +1470,8 @@
       "id": "webgl_lightprobe",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe.html",
       "source_sha256": "8a60cc69a0484ce3d4530684ce18742c148fe3090d26314d3b9ac8c4b966d0a4",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_lightprobe",
-        "source_sha256": "8a60cc69a0484ce3d4530684ce18742c148fe3090d26314d3b9ac8c4b966d0a4",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Light type: Light",
-          "Material type: LightProbeHelperMaterial"
-        ],
-        "observed": {
-          "objects": 2,
-          "vertices": 2706,
-          "lights": 2
-        },
-        "elapsed_ms": 1335,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lightprobe_cubecamera",
@@ -3799,26 +3780,8 @@
       "id": "webgl_materials_physical_clearcoat",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_physical_clearcoat.html",
       "source_sha256": "5550788aa81e4ec3884f154c910a24b479d57dad0e0a0fd86909f820a46182a2",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_materials_physical_clearcoat",
-        "source_sha256": "5550788aa81e4ec3884f154c910a24b479d57dad0e0a0fd86909f820a46182a2",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Physical material extension: clearcoat"
-        ],
-        "observed": {
-          "objects": 5,
-          "vertices": 8661,
-          "lights": 1
-        },
-        "elapsed_ms": 1272,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_materials_physical_transmission",
@@ -5212,28 +5175,8 @@
       "id": "webgl_shadowmap_pointlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_pointlight.html",
       "source_sha256": "1ee42f8769e1cbc26c34bd9ee478ebf93df2df3969a455ca624b9be0f3097f95",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_shadowmap_pointlight",
-        "source_sha256": "1ee42f8769e1cbc26c34bd9ee478ebf93df2df3969a455ca624b9be0f3097f95",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Shadow maps",
-          "Material type: MeshPhongMaterial",
-          "Material map: alphaMap"
-        ],
-        "observed": {
-          "objects": 5,
-          "vertices": 800,
-          "lights": 3
-        },
-        "elapsed_ms": 1282,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_shadowmap_viewer",
@@ -5442,26 +5385,8 @@
       "id": "webgl_tonemapping",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tonemapping.html",
       "source_sha256": "62df7691a68a4665c32ffc97995b8247a028d4a387b2a39a883d929b494c1bb2",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_tonemapping",
-        "source_sha256": "62df7691a68a4665c32ffc97995b8247a028d4a387b2a39a883d929b494c1bb2",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Tone mapping mode: 7"
-        ],
-        "observed": {
-          "objects": 5,
-          "vertices": 173876,
-          "lights": 1
-        },
-        "elapsed_ms": 1271,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_video_kinect",
@@ -7785,7 +7710,7 @@
       "id": "webgpu_clearcoat",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_clearcoat.html",
       "source_sha256": "4cfbe8520c129356b65882ee53e1a3dddc7779d9e729ef2c68f46795baf06eaf",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_clearcoat",
         "source_sha256": "4cfbe8520c129356b65882ee53e1a3dddc7779d9e729ef2c68f46795baf06eaf",
@@ -9040,7 +8965,7 @@
       "id": "webgpu_lightprobe",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobe.html",
       "source_sha256": "9aa63802a31d0e4b033dd58cc919e13ac677fceb5222545588f90df68ff4b910",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lightprobe",
         "source_sha256": "9aa63802a31d0e4b033dd58cc919e13ac677fceb5222545588f90df68ff4b910",
@@ -12360,7 +12285,7 @@
       "id": "webgpu_shadowmap_pointlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_pointlight.html",
       "source_sha256": "e191dbc18a1a890010008f9a3c31017e6a7a6e116915e704b533d16f8c13269a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_shadowmap_pointlight",
         "source_sha256": "e191dbc18a1a890010008f9a3c31017e6a7a6e116915e704b533d16f8c13269a",
@@ -12869,7 +12794,7 @@
       "id": "webgpu_tonemapping",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tonemapping.html",
       "source_sha256": "a45985a37e268f9b6da4b457cf8853bf14ca440c5496893f0e00782c333b4994",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tonemapping",
         "source_sha256": "a45985a37e268f9b6da4b457cf8853bf14ca440c5496893f0e00782c333b4994",
@@ -15152,7 +15077,7 @@
       "id": "misc_controls_fly",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_fly.html",
       "source_sha256": "bfac9b0ff3a3f7f58bbb21db73cb09ff9de005d9dd85386228fdcface4f10f8a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_fly",
         "source_sha256": "bfac9b0ff3a3f7f58bbb21db73cb09ff9de005d9dd85386228fdcface4f10f8a",

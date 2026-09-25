@@ -1,0 +1,82 @@
+[
+ {
+  "file": "lights-probes/Carbon.png",
+  "source": "examples/textures/carbon/Carbon.png",
+  "sha256": "f5d4dd14c4b6f7548f50921e2bc75a77e2867fd93916928f60551f4857a96e06"
+ },
+ {
+  "file": "lights-probes/Carbon_Normal.png",
+  "source": "examples/textures/carbon/Carbon_Normal.png",
+  "sha256": "15fe5cbeb3db8e85d8663ee1f67ffd5f0bfa457d01e1209c3011222ba08bb4fd"
+ },
+ {
+  "file": "lights-probes/Scratched_gold.txt",
+  "source": "examples/textures/pbr/Scratched_gold/Scratched_gold.txt",
+  "sha256": "2c1677ad4b7910ed7693bbac8ed6f2850c124b199a16f185af0e29f3fce6ae9d"
+ },
+ {
+  "file": "lights-probes/Scratched_gold_01_1K_Normal.png",
+  "source": "examples/textures/pbr/Scratched_gold/Scratched_gold_01_1K_Normal.png",
+  "sha256": "f6cbad89a8d43188007532a2545f382e225e6def85778fc530681588fb9f6f9c"
+ },
+ {
+  "file": "lights-probes/Water_1_M_Normal.jpg",
+  "source": "examples/textures/water/Water_1_M_Normal.jpg",
+  "sha256": "6d7825469a374ff84700b4fb1a2890bd1fce0ca1f777bdd4d5ecdaf15833a804"
+ },
+ {
+  "file": "lights-probes/earth_clouds_1024.png",
+  "source": "examples/textures/planets/earth_clouds_1024.png",
+  "sha256": "5f9612e4f4040975a195dd0d14e89c9ba72bd6bdd22e1454db4fcefb92d37d38"
+ },
+ {
+  "file": "lights-probes/earth_normal_2048.jpg",
+  "source": "examples/textures/planets/earth_normal_2048.jpg",
+  "sha256": "3fc43e9639c34e8223c4a871e3bdf5b2d52ee79f7e89ce3f28cba45d4cac031a"
+ },
+ {
+  "file": "lights-probes/golfball.jpg",
+  "source": "examples/textures/golfball.jpg",
+  "sha256": "7d5f075891eac89ee55620cd8753efe8a969d89cdd73b54fe0ee444ee5da0b15"
+ },
+ {
+  "file": "lights-probes/moon_1024.jpg",
+  "source": "examples/textures/planets/moon_1024.jpg",
+  "sha256": "fcb0f1f5548e6e18d40063dd55c6aacd3daedf2407b181dab85b61e22bf9fe57"
+ },
+ {
+  "file": "lights-probes/pisa/nx.png",
+  "source": "examples/textures/cube/pisa/nx.png",
+  "sha256": "cf01cfc9a168e7c71bf66d0bed8dcad3a4fd353f528e73caaba62d1a097c49a1"
+ },
+ {
+  "file": "lights-probes/pisa/ny.png",
+  "source": "examples/textures/cube/pisa/ny.png",
+  "sha256": "61a94678f04f9853509d7a864fd839cf688c6705ee9df02fc4e42bfca858270b"
+ },
+ {
+  "file": "lights-probes/pisa/nz.png",
+  "source": "examples/textures/cube/pisa/nz.png",
+  "sha256": "e5c1774f9a41d8124f8f223c9810e95d277f256104f8aee57ad2e5ef73a64424"
+ },
+ {
+  "file": "lights-probes/pisa/px.png",
+  "source": "examples/textures/cube/pisa/px.png",
+  "sha256": "11d859640e7da526ac0654dbfa1cc18f40dd8fc100db197730485218a7c9d24d"
+ },
+ {
+  "file": "lights-probes/pisa/py.png",
+  "source": "examples/textures/cube/pisa/py.png",
+  "sha256": "b34a1cec12e62327c9555ca9f82a38bea73f519915e1368fa69bbd51c82ec712"
+ },
+ {
+  "file": "lights-probes/pisa/pz.png",
+  "source": "examples/textures/cube/pisa/pz.png",
+  "sha256": "bd528b739e9e0ea6c1e8627e949caa950991719069c983e8abdc3a8640039667"
+ },
+ {
+  "file": "lights-probes/venice_mask.glb",
+  "source": "examples/models/gltf/venice_mask.glb",
+  "sha256": "b9003245b0b73e31673600b53dd7050bb16af8220cf7cf5643347b4dc9bf4d34"
+ }
+]

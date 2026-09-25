@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-23 excluded for explicit WebGL APIs or equivalent WebGPU examples; 584 retained. 263 partial Rust ports; 321 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+27 excluded for explicit WebGL APIs or equivalent WebGPU examples; 580 retained. 268 partial Rust ports; 312 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,21 +12,21 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 378 |
+| Full camera controls: pan, touch, damping and control variants | 374 |
 | Programmable materials / TSL equivalents | 219 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 176 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 175 |
 | Inspector and per-example GUI parity | 175 |
-| Additional procedural geometry builders | 172 |
-| Shadow maps and shadow filtering | 127 |
-| Hemisphere/spot/area lights, light probes and baking | 122 |
+| Additional procedural geometry builders | 171 |
+| Shadow maps and shadow filtering | 126 |
+| Hemisphere/spot/area lights, light probes and baking | 121 |
 | Postprocessing passes and temporal history | 102 |
 | Distance and height fog | 92 |
 | Wireframe materials and scene helpers | 91 |
-| Additional loaders and compressed assets | 83 |
+| Additional loaders and compressed assets | 82 |
 | Instance transforms and batched drawing | 74 |
 | Animation mixer and skeletal animation | 48 |
-| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 46 |
-| Canvas, HTML, video and partial texture updates | 45 |
+| Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
+| Canvas, HTML, video and partial texture updates | 43 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
 | GPU compute and storage buffers | 30 |
@@ -48,6 +48,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |
 | webgl_lights_spotlights | `tests/browser/shapes-lights.spec.js` | TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_clearcoat | `tests/browser/lights-probes.spec.js` | クリアコート付きMeshPhysicalMaterial（法線マップ、クリアコート法線マップ、FlakesTextureのキャンバス描画）、HDRキューブ環境、点光源をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| misc_controls_fly | `tests/browser/lights-probes.spec.js` | FlyControls（ポインタ位置によるヨー・ピッチ、キー移動・ロール）、法線・スペキュラーマップ付きの地球と雲・月、星のPoints（r186のWebGPUと同じネイティブ1ピクセル点）、FogExp2、FilmNodeのグレインをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgpu_shadowmap_pointlight | `tests/browser/lights-probes.spec.js` | 2つの点光源のキューブ影（半径10のPCF、bias）、alphaMap＋alphaTestで穴の空いた球（影にも反映）、BackSideの部屋をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_lightprobe | `tests/browser/lights-probes.spec.js` | LightProbeGenerator.fromCubeTexture（CPUでSH係数を計算）、LightProbeの照度、キューブ環境マップの球、LightProbeHelperをRustで再現。r186はライト強度の変更をメッシュの次回リフレッシュまで反映しないため、比較では参照側を強制リフレッシュ（移植版は即時反映）。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_tonemapping | `tests/browser/lights-probes.spec.js` | 7種のトーンマッピング（None、Linear、Reinhard、Cineon、ACESFilmic、AgX、Neutral）、露出、背景のぼかしと強度、Dracoのglb、ダンピング付きOrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | webgpu_sky | `tests/browser/sky-water.spec.js` | SkyMesh（Preetham大気散乱とr186の雲層）とCubeCameraによる毎フレームの6面キャプチャ、反射球、ACESトーンマッピングをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | webgpu_lights_sunlight | `tests/browser/sky-water.spec.js` | SunLight（2カスケード影）、SkyMeshから生成するPMREM環境、フォグ色と太陽色の補間、InstancedMeshの柱と塔、FirstPersonControlsをRustで再現。カスケード色分け表示（show cascades）は未移植。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | misc_controls_pointerlock | `tests/browser/sky-water.spec.js` | PointerLockControls（視点回転・前後左右移動）、重力とジャンプ、下向きレイによる箱への着地、ジッター付き床と500個の箱をRustで再現。ポインタロックはギャラリーのクリックで取得。性能の完全な同等性は未保証。 |

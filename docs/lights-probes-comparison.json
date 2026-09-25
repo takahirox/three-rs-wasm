@@ -1,0 +1,2600 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/lights-probes.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "lights-probes-Lights-and-p-011db-esidency-webgpu-tonemapping": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 281,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      },
+      "after": {
+       "creates": 281,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 286,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      },
+      "after": {
+       "creates": 286,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-0c56e-webgpu-shadowmap-pointlight": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 128,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 128,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 133,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 133,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-1022d-residency-misc-controls-fly": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 204,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 204,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 213,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 213,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-3cb5a-ebgpu-tonemapping-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00347137451171875,
+      "meanError": 0.2420501708984375
+     },
+     {
+      "state": 1,
+      "fraction": 0.002910614013671875,
+      "meanError": 0.2420781453450521
+     },
+     {
+      "state": 2,
+      "fraction": 0.002910614013671875,
+      "meanError": 0.2420781453450521
+     },
+     {
+      "state": 3,
+      "fraction": 0.0023193359375,
+      "meanError": 0.17904790242513022
+     },
+     {
+      "state": 4,
+      "fraction": 0.00350189208984375,
+      "meanError": 0.22923914591471353
+     },
+     {
+      "state": 5,
+      "fraction": 0.003612518310546875,
+      "meanError": 0.49341456095377606
+     },
+     {
+      "state": 6,
+      "fraction": 0.00283050537109375,
+      "meanError": 0.19334284464518228
+     },
+     {
+      "state": 7,
+      "fraction": 0.00347137451171875,
+      "meanError": 0.2420501708984375
+     },
+     {
+      "state": 8,
+      "fraction": 0.0038909912109375,
+      "meanError": 0.2480901082356771
+     },
+     {
+      "state": 9,
+      "fraction": 0.0038909912109375,
+      "meanError": 0.25644175211588544
+     },
+     {
+      "state": 10,
+      "fraction": 0.0038909912109375,
+      "meanError": 0.28710683186848956
+     },
+     {
+      "state": 11,
+      "fraction": 0.00305938720703125,
+      "meanError": 0.29179636637369794
+     },
+     {
+      "state": 12,
+      "fraction": 0.003902435302734375,
+      "meanError": 0.2910423278808594
+     },
+     {
+      "state": 13,
+      "fraction": 0.00262109375,
+      "meanError": 0.2865494791666667
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-6279e-webgpu-lightprobe-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.007043202718098958
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.007375081380208333
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.007626851399739583
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.007241566975911458
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007994333902994791
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.009372711181640625
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00691796875
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-63844-dowmap-pointlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.03638585408528646
+     },
+     {
+      "state": 1,
+      "fraction": 4.57763671875e-05,
+      "meanError": 0.021334330240885418
+     },
+     {
+      "state": 2,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.042546590169270836
+     },
+     {
+      "state": 3,
+      "fraction": 2.288818359375e-05,
+      "meanError": 0.037837982177734375
+     },
+     {
+      "state": 4,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.054272969563802086
+     },
+     {
+      "state": 5,
+      "fraction": 1.5625e-05,
+      "meanError": 0.03810546875
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-66fec-misc-controls-fly-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005176544189453125,
+      "meanError": 0.2038599650065104
+     },
+     {
+      "state": 1,
+      "fraction": 0.005100250244140625,
+      "meanError": 0.20393880208333334
+     },
+     {
+      "state": 2,
+      "fraction": 0.0049896240234375,
+      "meanError": 0.20069376627604166
+     },
+     {
+      "state": 3,
+      "fraction": 0.004306793212890625,
+      "meanError": 0.18039067586263022
+     },
+     {
+      "state": 4,
+      "fraction": 0.002346038818359375,
+      "meanError": 0.12933349609375
+     },
+     {
+      "state": 5,
+      "fraction": 0.00201416015625,
+      "meanError": 0.11661020914713542
+     },
+     {
+      "state": 6,
+      "fraction": 0.001911163330078125,
+      "meanError": 0.12088521321614583
+     },
+     {
+      "state": 7,
+      "fraction": 0.001743316650390625,
+      "meanError": 0.11593373616536458
+     },
+     {
+      "state": 8,
+      "fraction": 0.004703125,
+      "meanError": 0.22827473958333333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-6cfdc-residency-webgpu-lightprobe": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 159,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      },
+      "after": {
+       "creates": 159,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 164,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      },
+      "after": {
+       "creates": 164,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-7b778--residency-webgpu-clearcoat": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 188,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      },
+      "after": {
+       "creates": 188,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 193,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      },
+      "after": {
+       "creates": 193,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-7d456-misc-controls-fly-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.035390218098958336
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.03502782185872396
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.03534571329752604
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.035634358723958336
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.04311243693033854
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.040537516276041664
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.03775787353515625
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.035230000813802086
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.029631510416666666
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-8fe8d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgpu_clearcoat",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_controls_fly",
+      "reference": {
+       "draws": [
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 29400,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_shadowmap_pointlight",
+      "reference": {
+       "draws": [
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lightprobe",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_tonemapping",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 56592,
+         "instances": 1
+        },
+        {
+         "count": 59058,
+         "instances": 1
+        },
+        {
+         "count": 185229,
+         "instances": 1
+        },
+        {
+         "count": 388236,
+         "instances": 1
+        },
+        {
+         "count": 197685,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 56592,
+         "instances": 1
+        },
+        {
+         "count": 59058,
+         "instances": 1
+        },
+        {
+         "count": 388236,
+         "instances": 1
+        },
+        {
+         "count": 185229,
+         "instances": 1
+        },
+        {
+         "count": 197685,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-9ef6a--webgpu-clearcoat-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0001983642578125,
+      "meanError": 0.29754892985026044
+     },
+     {
+      "state": 1,
+      "fraction": 0.000270843505859375,
+      "meanError": 0.2986246744791667
+     },
+     {
+      "state": 2,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.30544789632161456
+     },
+     {
+      "state": 3,
+      "fraction": 0.000286102294921875,
+      "meanError": 0.2884991963704427
+     },
+     {
+      "state": 4,
+      "fraction": 0.000637054443359375,
+      "meanError": 0.3088544209798177
+     },
+     {
+      "state": 5,
+      "fraction": 0.00018359375,
+      "meanError": 0.2792604166666667
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-abff0-ebgpu-tonemapping-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00460052490234375,
+      "meanError": 0.26282628377278644
+     },
+     {
+      "state": 1,
+      "fraction": 0.0037384033203125,
+      "meanError": 0.2595227559407552
+     },
+     {
+      "state": 2,
+      "fraction": 0.0037384033203125,
+      "meanError": 0.2595227559407552
+     },
+     {
+      "state": 3,
+      "fraction": 0.002613067626953125,
+      "meanError": 0.19440587361653647
+     },
+     {
+      "state": 4,
+      "fraction": 0.00461578369140625,
+      "meanError": 0.2529309590657552
+     },
+     {
+      "state": 5,
+      "fraction": 0.005035400390625,
+      "meanError": 0.5157966613769531
+     },
+     {
+      "state": 6,
+      "fraction": 0.003414154052734375,
+      "meanError": 0.21219635009765625
+     },
+     {
+      "state": 7,
+      "fraction": 0.00460052490234375,
+      "meanError": 0.26282628377278644
+     },
+     {
+      "state": 8,
+      "fraction": 0.005329132080078125,
+      "meanError": 0.2726593017578125
+     },
+     {
+      "state": 9,
+      "fraction": 0.00530242919921875,
+      "meanError": 0.2811787923177083
+     },
+     {
+      "state": 10,
+      "fraction": 0.00533294677734375,
+      "meanError": 0.3115348815917969
+     },
+     {
+      "state": 11,
+      "fraction": 0.0046234130859375,
+      "meanError": 0.32518895467122394
+     },
+     {
+      "state": 12,
+      "fraction": 0.0058746337890625,
+      "meanError": 0.3308461507161458
+     },
+     {
+      "state": 13,
+      "fraction": 0.00409375,
+      "meanError": 0.3144075520833333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-b8b74-webgpu-lightprobe-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.007074991861979167
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.007436116536458333
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.007653554280598958
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00732421875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.008014678955078125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00945281982421875
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.007013020833333333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-ca6c6--webgpu-clearcoat-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000244140625,
+      "meanError": 0.29867808024088544
+     },
+     {
+      "state": 1,
+      "fraction": 0.00028228759765625,
+      "meanError": 0.29881540934244794
+     },
+     {
+      "state": 2,
+      "fraction": 0.000148773193359375,
+      "meanError": 0.3059794108072917
+     },
+     {
+      "state": 3,
+      "fraction": 0.0002899169921875,
+      "meanError": 0.2883555094401042
+     },
+     {
+      "state": 4,
+      "fraction": 0.000637054443359375,
+      "meanError": 0.3087005615234375
+     },
+     {
+      "state": 5,
+      "fraction": 0.0001796875,
+      "meanError": 0.2789739583333333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-d5710-dowmap-pointlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.52587890625e-05,
+      "meanError": 0.036303202311197914
+     },
+     {
+      "state": 1,
+      "fraction": 3.0517578125e-05,
+      "meanError": 0.021210988362630207
+     },
+     {
+      "state": 2,
+      "fraction": 5.340576171875e-05,
+      "meanError": 0.04251988728841146
+     },
+     {
+      "state": 3,
+      "fraction": 1.9073486328125e-05,
+      "meanError": 0.037778218587239586
+     },
+     {
+      "state": 4,
+      "fraction": 3.814697265625e-05,
+      "meanError": 0.054219563802083336
+     },
+     {
+      "state": 5,
+      "fraction": 1.5625e-05,
+      "meanError": 0.03735026041666667
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "lights-probes-Lights-and-p-011db-esidency-webgpu-tonemapping": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 281,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      },
+      "after": {
+       "creates": 281,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 286,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      },
+      "after": {
+       "creates": 286,
+       "transfers": [
+        5,
+        17457280,
+        80
+       ],
+       "resources": [
+        16,
+        16,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-0c56e-webgpu-shadowmap-pointlight": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 128,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 128,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 133,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 133,
+       "transfers": [
+        5,
+        77776,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-1022d-residency-misc-controls-fly": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 204,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 204,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 213,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 213,
+       "transfers": [
+        3,
+        669680,
+        48
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-3cb5a-ebgpu-tonemapping-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0023746490478515625,
+      "meanError": 0.22185897827148438
+     },
+     {
+      "state": 1,
+      "fraction": 0.0020732879638671875,
+      "meanError": 0.2250210444132487
+     },
+     {
+      "state": 2,
+      "fraction": 0.0020732879638671875,
+      "meanError": 0.2250210444132487
+     },
+     {
+      "state": 3,
+      "fraction": 0.00168609619140625,
+      "meanError": 0.16551081339518228
+     },
+     {
+      "state": 4,
+      "fraction": 0.00243377685546875,
+      "meanError": 0.21098200480143228
+     },
+     {
+      "state": 5,
+      "fraction": 0.0024404525756835938,
+      "meanError": 0.4746071497599284
+     },
+     {
+      "state": 6,
+      "fraction": 0.002033233642578125,
+      "meanError": 0.17739264170328775
+     },
+     {
+      "state": 7,
+      "fraction": 0.0023746490478515625,
+      "meanError": 0.22185897827148438
+     },
+     {
+      "state": 8,
+      "fraction": 0.0026340484619140625,
+      "meanError": 0.2269566853841146
+     },
+     {
+      "state": 9,
+      "fraction": 0.0026340484619140625,
+      "meanError": 0.23493067423502603
+     },
+     {
+      "state": 10,
+      "fraction": 0.0026340484619140625,
+      "meanError": 0.2658678690592448
+     },
+     {
+      "state": 11,
+      "fraction": 0.0019245147705078125,
+      "meanError": 0.2718931833902995
+     },
+     {
+      "state": 12,
+      "fraction": 0.0021762847900390625,
+      "meanError": 0.26945654551188153
+     },
+     {
+      "state": 13,
+      "fraction": 0.0015703125,
+      "meanError": 0.2717216796875
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-6279e-webgpu-lightprobe-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0072027842203776045
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.007500648498535156
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.007653554280598958
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.007459322611490886
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007918675740559896
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.008385658264160156
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.006418294270833333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-63844-dowmap-pointlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.049041748046875e-05,
+      "meanError": 0.0363616943359375
+     },
+     {
+      "state": 1,
+      "fraction": 2.956390380859375e-05,
+      "meanError": 0.021593411763509113
+     },
+     {
+      "state": 2,
+      "fraction": 4.482269287109375e-05,
+      "meanError": 0.042419115702311196
+     },
+     {
+      "state": 3,
+      "fraction": 2.574920654296875e-05,
+      "meanError": 0.03774738311767578
+     },
+     {
+      "state": 4,
+      "fraction": 5.626678466796875e-05,
+      "meanError": 0.05412705739339193
+     },
+     {
+      "state": 5,
+      "fraction": 3.41796875e-05,
+      "meanError": 0.0380947265625
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-66fec-misc-controls-fly-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00235748291015625,
+      "meanError": 0.10555330912272136
+     },
+     {
+      "state": 1,
+      "fraction": 0.002315521240234375,
+      "meanError": 0.10654830932617188
+     },
+     {
+      "state": 2,
+      "fraction": 0.002288818359375,
+      "meanError": 0.10539309183756511
+     },
+     {
+      "state": 3,
+      "fraction": 0.0020160675048828125,
+      "meanError": 0.09711074829101562
+     },
+     {
+      "state": 4,
+      "fraction": 0.0009469985961914062,
+      "meanError": 0.07374223073323567
+     },
+     {
+      "state": 5,
+      "fraction": 0.0007600784301757812,
+      "meanError": 0.06637191772460938
+     },
+     {
+      "state": 6,
+      "fraction": 0.000732421875,
+      "meanError": 0.06571102142333984
+     },
+     {
+      "state": 7,
+      "fraction": 0.0006275177001953125,
+      "meanError": 0.06207847595214844
+     },
+     {
+      "state": 8,
+      "fraction": 0.001822265625,
+      "meanError": 0.09468587239583333
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-6cfdc-residency-webgpu-lightprobe": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 159,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      },
+      "after": {
+       "creates": 159,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 164,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      },
+      "after": {
+       "creates": 164,
+       "transfers": [
+        3,
+        386544,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-7b778--residency-webgpu-clearcoat": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 188,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      },
+      "after": {
+       "creates": 188,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 193,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      },
+      "after": {
+       "creates": 193,
+       "transfers": [
+        3,
+        337968,
+        48
+       ],
+       "resources": [
+        6,
+        6,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-7d456-misc-controls-fly-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.03503259023030599
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.03545061747233073
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0354150136311849
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0355230967203776
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.04302565256754557
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.04065895080566406
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.03784720102945963
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.03516737620035807
+     },
+     {
+      "state": 8,
+      "fraction": 1.953125e-06,
+      "meanError": 0.029511067708333335
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-8fe8d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgpu_clearcoat",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_controls_fly",
+      "reference": {
+       "draws": [
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 29400,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 250,
+         "instances": 1
+        },
+        {
+         "count": 1500,
+         "instances": 1
+        },
+        {
+         "count": 29400,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_shadowmap_pointlight",
+      "reference": {
+       "draws": [
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1344,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lightprobe",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_tonemapping",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 56592,
+         "instances": 1
+        },
+        {
+         "count": 59058,
+         "instances": 1
+        },
+        {
+         "count": 185229,
+         "instances": 1
+        },
+        {
+         "count": 388236,
+         "instances": 1
+        },
+        {
+         "count": 197685,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 56592,
+         "instances": 1
+        },
+        {
+         "count": 59058,
+         "instances": 1
+        },
+        {
+         "count": 388236,
+         "instances": 1
+        },
+        {
+         "count": 185229,
+         "instances": 1
+        },
+        {
+         "count": 197685,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-9ef6a--webgpu-clearcoat-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000782012939453125,
+      "meanError": 0.30680084228515625
+     },
+     {
+      "state": 1,
+      "fraction": 0.0011301040649414062,
+      "meanError": 0.3107414245605469
+     },
+     {
+      "state": 2,
+      "fraction": 0.0007572174072265625,
+      "meanError": 0.3164224624633789
+     },
+     {
+      "state": 3,
+      "fraction": 0.0013885498046875,
+      "meanError": 0.30246416727701825
+     },
+     {
+      "state": 4,
+      "fraction": 0.0019426345825195312,
+      "meanError": 0.3149232864379883
+     },
+     {
+      "state": 5,
+      "fraction": 0.0007431640625,
+      "meanError": 0.2825768229166667
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-abff0-ebgpu-tonemapping-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.002811431884765625,
+      "meanError": 0.23123868306477866
+     },
+     {
+      "state": 1,
+      "fraction": 0.0023813247680664062,
+      "meanError": 0.23333867390950522
+     },
+     {
+      "state": 2,
+      "fraction": 0.0023813247680664062,
+      "meanError": 0.23333867390950522
+     },
+     {
+      "state": 3,
+      "fraction": 0.0018110275268554688,
+      "meanError": 0.17235755920410156
+     },
+     {
+      "state": 4,
+      "fraction": 0.002872467041015625,
+      "meanError": 0.22049872080485025
+     },
+     {
+      "state": 5,
+      "fraction": 0.0029878616333007812,
+      "meanError": 0.48444588979085285
+     },
+     {
+      "state": 6,
+      "fraction": 0.0022268295288085938,
+      "meanError": 0.18510055541992188
+     },
+     {
+      "state": 7,
+      "fraction": 0.002811431884765625,
+      "meanError": 0.23123868306477866
+     },
+     {
+      "state": 8,
+      "fraction": 0.0032167434692382812,
+      "meanError": 0.2373377482096354
+     },
+     {
+      "state": 9,
+      "fraction": 0.003215789794921875,
+      "meanError": 0.24535210927327475
+     },
+     {
+      "state": 10,
+      "fraction": 0.0032224655151367188,
+      "meanError": 0.27616341908772785
+     },
+     {
+      "state": 11,
+      "fraction": 0.0024967193603515625,
+      "meanError": 0.2806682586669922
+     },
+     {
+      "state": 12,
+      "fraction": 0.0025320053100585938,
+      "meanError": 0.2757596969604492
+     },
+     {
+      "state": 13,
+      "fraction": 0.001904296875,
+      "meanError": 0.2777574869791667
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-b8b74-webgpu-lightprobe-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0072154998779296875
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.007512728373209636
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.007678985595703125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.007484118143717448
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007958730061848959
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.008424758911132812
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.006444986979166667
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-ca6c6--webgpu-clearcoat-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0007781982421875,
+      "meanError": 0.3067849477132161
+     },
+     {
+      "state": 1,
+      "fraction": 0.0011348724365234375,
+      "meanError": 0.3106686274210612
+     },
+     {
+      "state": 2,
+      "fraction": 0.0007467269897460938,
+      "meanError": 0.31655089060465497
+     },
+     {
+      "state": 3,
+      "fraction": 0.0013904571533203125,
+      "meanError": 0.3023904164632161
+     },
+     {
+      "state": 4,
+      "fraction": 0.0019397735595703125,
+      "meanError": 0.3149903615315755
+     },
+     {
+      "state": 5,
+      "fraction": 0.0007353515625,
+      "meanError": 0.282421875
+     }
+    ]
+   },
+   "lights-probes-Lights-and-p-d5710-dowmap-pointlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 1.049041748046875e-05,
+      "meanError": 0.036333719889322914
+     },
+     {
+      "state": 1,
+      "fraction": 2.765655517578125e-05,
+      "meanError": 0.021515528361002605
+     },
+     {
+      "state": 2,
+      "fraction": 4.482269287109375e-05,
+      "meanError": 0.04240290323893229
+     },
+     {
+      "state": 3,
+      "fraction": 2.47955322265625e-05,
+      "meanError": 0.037741661071777344
+     },
+     {
+      "state": 4,
+      "fraction": 5.626678466796875e-05,
+      "meanError": 0.05410544077555338
+     },
+     {
+      "state": 5,
+      "fraction": 3.3203125e-05,
+      "meanError": 0.037712239583333335
+     }
+    ]
+   }
+  }
+ }
+}

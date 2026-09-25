@@ -378,6 +378,8 @@ pub enum ToneMapping {
     Reinhard = 2,
     Neutral = 3,
     Linear = 4,
+    Cineon = 5,
+    AgX = 6,
 }
 /// Background values written to corresponding MRT attachments.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

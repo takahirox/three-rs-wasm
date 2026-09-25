@@ -24,6 +24,7 @@ mod helpers_formats;
 mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
+mod lights_probes;
 mod material_textures;
 mod models_modifiers;
 mod picking_buffers;
@@ -922,7 +923,7 @@ impl BrowserApp {
                             117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
-                            248, 257, 262, 263, 267,
+                            248, 257, 262, 263, 267, 269,
                         ]
                         .contains(&example)
                         {
@@ -977,7 +978,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=267).contains(&example) {
+            if (7..=272).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

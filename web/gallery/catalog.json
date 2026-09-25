@@ -2823,8 +2823,8 @@
     {
       "id": "webgl_lightprobe",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lightprobe",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe.html",
       "source_sha256": "8a60cc69a0484ce3d4530684ce18742c148fe3090d26314d3b9ac8c4b966d0a4",
       "requirements": {
@@ -2870,7 +2870,8 @@
         "three/addons/helpers/LightProbeHelper.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/lights/LightProbeGenerator.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lightprobe"
     },
     {
       "id": "webgl_lightprobe_cubecamera",
@@ -7149,8 +7150,8 @@
     {
       "id": "webgl_materials_physical_clearcoat",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_clearcoat",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_physical_clearcoat.html",
       "source_sha256": "5550788aa81e4ec3884f154c910a24b479d57dad0e0a0fd86909f820a46182a2",
       "requirements": {
@@ -7196,7 +7197,8 @@
         "three/addons/libs/stats.module.js",
         "three/addons/loaders/HDRCubeTextureLoader.js",
         "three/addons/textures/FlakesTexture.js"
-      ]
+      ],
+      "preferred_example": "webgpu_clearcoat"
     },
     {
       "id": "webgl_materials_physical_transmission",
@@ -9848,8 +9850,8 @@
     {
       "id": "webgl_shadowmap_pointlight",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_shadowmap_pointlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_pointlight.html",
       "source_sha256": "1ee42f8769e1cbc26c34bd9ee478ebf93df2df3969a455ca624b9be0f3097f95",
       "requirements": {
@@ -9903,7 +9905,8 @@
         "three",
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_shadowmap_pointlight"
     },
     {
       "id": "webgl_shadowmap_viewer",
@@ -10205,8 +10208,8 @@
     {
       "id": "webgl_tonemapping",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_tonemapping",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tonemapping.html",
       "source_sha256": "62df7691a68a4665c32ffc97995b8247a028d4a387b2a39a883d929b494c1bb2",
       "requirements": {
@@ -10239,7 +10242,8 @@
         "three/addons/loaders/DRACOLoader.js",
         "three/addons/loaders/GLTFLoader.js",
         "three/addons/loaders/HDRLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_tonemapping"
     },
     {
       "id": "webgl_video_kinect",
@@ -14548,7 +14552,7 @@
     {
       "id": "webgpu_clearcoat",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_clearcoat.html",
       "source_sha256": "4cfbe8520c129356b65882ee53e1a3dddc7779d9e729ef2c68f46795baf06eaf",
@@ -14598,7 +14602,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 268,
+        "source": "src/browser/lights_probes.rs",
+        "test": "tests/browser/lights-probes.spec.js",
+        "limitations": [
+          "クリアコート付きMeshPhysicalMaterial（法線マップ、クリアコート法線マップ、FlakesTextureのキャンバス描画）、HDRキューブ環境、点光源をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -17722,7 +17733,7 @@
     {
       "id": "webgpu_lightprobe",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobe.html",
       "source_sha256": "9aa63802a31d0e4b033dd58cc919e13ac677fceb5222545588f90df68ff4b910",
@@ -17772,7 +17783,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 271,
+        "source": "src/browser/lights_probes.rs",
+        "test": "tests/browser/lights-probes.spec.js",
+        "limitations": [
+          "LightProbeGenerator.fromCubeTexture（CPUでSH係数を計算）、LightProbeの照度、キューブ環境マップの球、LightProbeHelperをRustで再現。r186はライト強度の変更をメッシュの次回リフレッシュまで反映しないため、比較では参照側を強制リフレッシュ（移植版は即時反映）。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/LightProbeHelperGPU.js",
@@ -25645,7 +25663,7 @@
     {
       "id": "webgpu_shadowmap_pointlight",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_pointlight.html",
       "source_sha256": "e191dbc18a1a890010008f9a3c31017e6a7a6e116915e704b533d16f8c13269a",
@@ -25705,7 +25723,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 270,
+        "source": "src/browser/lights_probes.rs",
+        "test": "tests/browser/lights-probes.spec.js",
+        "limitations": [
+          "2つの点光源のキューブ影（半径10のPCF、bias）、alphaMap＋alphaTestで穴の空いた球（影にも反映）、BackSideの部屋をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -26682,7 +26707,7 @@
     {
       "id": "webgpu_tonemapping",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tonemapping.html",
       "source_sha256": "a45985a37e268f9b6da4b457cf8853bf14ca440c5496893f0e00782c333b4994",
@@ -26718,7 +26743,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 272,
+        "source": "src/browser/lights_probes.rs",
+        "test": "tests/browser/lights-probes.spec.js",
+        "limitations": [
+          "7種のトーンマッピング（None、Linear、Reinhard、Cineon、ACESFilmic、AgX、Neutral）、露出、背景のぼかしと強度、Dracoのglb、ダンピング付きOrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -32497,7 +32529,7 @@
     {
       "id": "misc_controls_fly",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_fly.html",
       "source_sha256": "bfac9b0ff3a3f7f58bbb21db73cb09ff9de005d9dd85386228fdcface4f10f8a",
@@ -32545,7 +32577,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 269,
+        "source": "src/browser/lights_probes.rs",
+        "test": "tests/browser/lights-probes.spec.js",
+        "limitations": [
+          "FlyControls（ポインタ位置によるヨー・ピッチ、キー移動・ロール）、法線・スペキュラーマップ付きの地球と雲・月、星のPoints（r186のWebGPUと同じネイティブ1ピクセル点）、FogExp2、FilmNodeのグレインをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/FlyControls.js",
         "three/addons/libs/stats.module.js",
