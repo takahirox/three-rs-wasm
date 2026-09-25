@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 328,
-    "runnable-partial": 258,
-    "excluded": 19,
+    "blocked-at-port-review": 319,
+    "runnable-partial": 263,
+    "excluded": 23,
     "requires-feature-review": 2
   },
   "examples": [
@@ -4705,7 +4705,7 @@
     },
     {
       "id": "webgl_lights_sunlight",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html",
       "source_sha256": "4aa2f47e0ee13d1ef010c857c46a30adb80f6f70b66d5141ac5fd822eafaa4db",
       "runtime_test": null,
@@ -12955,7 +12955,7 @@
     },
     {
       "id": "webgl_shaders_ocean",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html",
       "source_sha256": "87b6965af1d05c32eebe21d1dba3e55c6b5981703c7c87992b359416fdc1ff5e",
       "runtime_test": null,
@@ -13009,7 +13009,7 @@
     },
     {
       "id": "webgl_shaders_sky",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html",
       "source_sha256": "0ff9fde8861d424fc633c0d67fb61745849dd669b28a3cf2679814a978a19c23",
       "runtime_test": null,
@@ -14104,7 +14104,7 @@
     },
     {
       "id": "webgl_video_panorama_equirectangular",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html",
       "source_sha256": "b72355957601606dd32ff45402e0423aa4be338e2f5ca854b02ab78144cba742",
       "runtime_test": null,
@@ -25568,10 +25568,10 @@
     },
     {
       "id": "webgpu_lights_sunlight",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_sunlight.html",
       "source_sha256": "689064332a96d0318d33e248c442b0b1e411ebde34477e4ef6d47697d6092ef8",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/sky-water.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -28542,10 +28542,10 @@
     },
     {
       "id": "webgpu_ocean",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_ocean.html",
       "source_sha256": "9570fb6eb403a1d2ce93b3fdfa9e0f74f9bd5f1cb4115e551328d8c553d03882",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/sky-water.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -34398,10 +34398,10 @@
     },
     {
       "id": "webgpu_sky",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sky.html",
       "source_sha256": "55c3b6f3caa84ede76ca7efdb80c08dd7c9bd9e0f8fa4a14565c4430d2c210f2",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/sky-water.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -36430,10 +36430,10 @@
     },
     {
       "id": "webgpu_video_panorama",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html",
       "source_sha256": "c60161e02de23000e191d99fde39c7063c2e7f1073953fd9359896e200dc8f8f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/sky-water.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43461,10 +43461,10 @@
     },
     {
       "id": "misc_controls_pointerlock",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html",
       "source_sha256": "62857e85defdf704d5c4056bfe666abf7fdccd72b39c55107d403b4f2df82637",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/sky-water.spec.js",
       "blockers": [
         {
           "kind": "core-api",

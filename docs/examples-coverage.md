@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-19 excluded for explicit WebGL APIs or equivalent WebGPU examples; 588 retained. 258 partial Rust ports; 330 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+23 excluded for explicit WebGL APIs or equivalent WebGPU examples; 584 retained. 263 partial Rust ports; 321 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,21 +12,21 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 381 |
+| Full camera controls: pan, touch, damping and control variants | 378 |
 | Programmable materials / TSL equivalents | 219 |
 | Phong, Lambert, normal, depth, toon and matcap materials | 176 |
 | Inspector and per-example GUI parity | 175 |
 | Additional procedural geometry builders | 172 |
-| Shadow maps and shadow filtering | 128 |
+| Shadow maps and shadow filtering | 127 |
 | Hemisphere/spot/area lights, light probes and baking | 122 |
-| Postprocessing passes and temporal history | 103 |
-| Distance and height fog | 93 |
+| Postprocessing passes and temporal history | 102 |
+| Distance and height fog | 92 |
 | Wireframe materials and scene helpers | 91 |
 | Additional loaders and compressed assets | 83 |
-| Instance transforms and batched drawing | 75 |
+| Instance transforms and batched drawing | 74 |
 | Animation mixer and skeletal animation | 48 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 46 |
-| Canvas, HTML, video and partial texture updates | 46 |
+| Canvas, HTML, video and partial texture updates | 45 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
 | GPU compute and storage buffers | 30 |
@@ -48,6 +48,11 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_loader_stl | `tests/browser/shapes-lights.spec.js` | STLLoader（ASCII・バイナリ・COLOR=ヘッダの頂点色）、フォグ、半球光と2灯の影をRustで再現。影のPCFの回転ノイズはWebGLと画面座標の上下が逆のため縁が異なる。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_extrude_shapes | `tests/browser/shapes-lights.spec.js` | ExtrudeGeometry（パス押し出し・ベベル）、Earcut（穴なし単純多角形）、CatmullRomCurve3の等弧長点とFrenetフレームをRustで再現し、原本の頂点と一致を確認。TrackballControlsは60fps相当の時間ステップ。UV属性は未生成（材質が不使用）。性能の完全な同等性は未保証。 |
 | webgl_lights_spotlights | `tests/browser/shapes-lights.spec.js` | TWEEN（Quadratic.Out）による3灯のスポットライトの角度・半影・位置の補間、5秒ごとの再設定、スポットライトの影とSpotLightHelperをRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_sky | `tests/browser/sky-water.spec.js` | SkyMesh（Preetham大気散乱とr186の雲層）とCubeCameraによる毎フレームの6面キャプチャ、反射球、ACESトーンマッピングをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_lights_sunlight | `tests/browser/sky-water.spec.js` | SunLight（2カスケード影）、SkyMeshから生成するPMREM環境、フォグ色と太陽色の補間、InstancedMeshの柱と塔、FirstPersonControlsをRustで再現。カスケード色分け表示（show cascades）は未移植。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| misc_controls_pointerlock | `tests/browser/sky-water.spec.js` | PointerLockControls（視点回転・前後左右移動）、重力とジャンプ、下向きレイによる箱への着地、ジッター付き床と500個の箱をRustで再現。ポインタロックはギャラリーのクリックで取得。性能の完全な同等性は未保証。 |
+| webgpu_video_panorama | `tests/browser/sky-water.spec.js` | VideoTexture（新しい動画フレームごとにcopyExternalImageToTextureで転送、flipY）と内向き球、ドラッグによる経度・緯度の視点操作をRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_ocean | `tests/browser/sky-water.spec.js` | WaterMesh（法線テクスチャのノイズ、半解像度のReflector、フレネル）、SkyMesh（雲）、空から生成するPMREM環境、ブルーム後処理をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
 | misc_exporter_stl | `tests/browser/exporters-matcap.spec.js` | STLExporter（ASCII・バイナリ）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。シーン（影・フォグ・グリッド）も再現。性能の完全な同等性は未保証。 |
 | misc_exporter_ply | `tests/browser/exporters-matcap.spec.js` | PLYExporter（ASCII・バイナリBE/LE、法線・UV・Uint8頂点色）をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。 |
 | misc_exporter_obj | `tests/browser/exporters-matcap.spec.js` | OBJExporter（メッシュ・点群、変換済み複数オブジェクト）と6種のジオメトリ切替をRustで再現し、書き出したファイルが原本とバイト単位で一致することを確認。性能の完全な同等性は未保証。 |

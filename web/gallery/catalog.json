@@ -3365,8 +3365,8 @@
     {
       "id": "webgl_lights_sunlight",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lights_sunlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html",
       "source_sha256": "4aa2f47e0ee13d1ef010c857c46a30adb80f6f70b66d5141ac5fd822eafaa4db",
       "requirements": {
@@ -3422,7 +3422,8 @@
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/lights/SunLight.js",
         "three/addons/objects/Sky.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lights_sunlight"
     },
     {
       "id": "webgl_lights_rectarealight",
@@ -9549,8 +9550,8 @@
     {
       "id": "webgl_shaders_ocean",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_ocean",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html",
       "source_sha256": "87b6965af1d05c32eebe21d1dba3e55c6b5981703c7c87992b359416fdc1ff5e",
       "requirements": {
@@ -9584,13 +9585,14 @@
         "three/addons/objects/Sky.js",
         "three/addons/objects/Water.js",
         "three/addons/postprocessing/UnrealBloomPass.js"
-      ]
+      ],
+      "preferred_example": "webgpu_ocean"
     },
     {
       "id": "webgl_shaders_sky",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_sky",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html",
       "source_sha256": "0ff9fde8861d424fc633c0d67fb61745849dd669b28a3cf2679814a978a19c23",
       "requirements": {
@@ -9611,7 +9613,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/objects/Sky.js"
-      ]
+      ],
+      "preferred_example": "webgpu_sky"
     },
     {
       "id": "webgl_shadow_contact",
@@ -10274,8 +10277,8 @@
     {
       "id": "webgl_video_panorama_equirectangular",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_video_panorama",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html",
       "source_sha256": "b72355957601606dd32ff45402e0423aa4be338e2f5ca854b02ab78144cba742",
       "requirements": {
@@ -10289,7 +10292,8 @@
       "port": null,
       "imports": [
         "three"
-      ]
+      ],
+      "preferred_example": "webgpu_video_panorama"
     },
     {
       "id": "webgl_watch",
@@ -18798,7 +18802,7 @@
     {
       "id": "webgpu_lights_sunlight",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_sunlight.html",
       "source_sha256": "689064332a96d0318d33e248c442b0b1e411ebde34477e4ef6d47697d6092ef8",
@@ -18868,7 +18872,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 264,
+        "source": "src/browser/sky_water.rs",
+        "test": "tests/browser/sky-water.spec.js",
+        "limitations": [
+          "SunLight（2カスケード影）、SkyMeshから生成するPMREM環境、フォグ色と太陽色の補間、InstancedMeshの柱と塔、FirstPersonControlsをRustで再現。カスケード色分け表示（show cascades）は未移植。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/FirstPersonControls.js",
         "three/addons/inspector/Inspector.js",
@@ -21311,7 +21322,7 @@
     {
       "id": "webgpu_ocean",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_ocean.html",
       "source_sha256": "9570fb6eb403a1d2ce93b3fdfa9e0f74f9bd5f1cb4115e551328d8c553d03882",
@@ -21357,7 +21368,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 267,
+        "source": "src/browser/sky_water.rs",
+        "test": "tests/browser/sky-water.spec.js",
+        "limitations": [
+          "WaterMesh（法線テクスチャのノイズ、半解像度のReflector、フレネル）、SkyMesh（雲）、空から生成するPMREM環境、ブルーム後処理をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26170,7 +26188,7 @@
     {
       "id": "webgpu_sky",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sky.html",
       "source_sha256": "55c3b6f3caa84ede76ca7efdb80c08dd7c9bd9e0f8fa4a14565c4430d2c210f2",
@@ -26196,7 +26214,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 263,
+        "source": "src/browser/sky_water.rs",
+        "test": "tests/browser/sky-water.spec.js",
+        "limitations": [
+          "SkyMesh（Preetham大気散乱とr186の雲層）とCubeCameraによる毎フレームの6面キャプチャ、反射球、ACESトーンマッピングをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -27854,7 +27879,7 @@
     {
       "id": "webgpu_video_panorama",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html",
       "source_sha256": "c60161e02de23000e191d99fde39c7063c2e7f1073953fd9359896e200dc8f8f",
@@ -27866,7 +27891,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 266,
+        "source": "src/browser/sky_water.rs",
+        "test": "tests/browser/sky-water.spec.js",
+        "limitations": [
+          "VideoTexture（新しい動画フレームごとにcopyExternalImageToTextureで転送、flipY）と内向き球、ドラッグによる経度・緯度の視点操作をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -32632,7 +32664,7 @@
     {
       "id": "misc_controls_pointerlock",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html",
       "source_sha256": "62857e85defdf704d5c4056bfe666abf7fdccd72b39c55107d403b4f2df82637",
@@ -32656,7 +32688,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 265,
+        "source": "src/browser/sky_water.rs",
+        "test": "tests/browser/sky-water.spec.js",
+        "limitations": [
+          "PointerLockControls（視点回転・前後左右移動）、重力とジャンプ、下向きレイによる箱への着地、ジッター付き床と500個の箱をRustで再現。ポインタロックはギャラリーのクリックで取得。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/PointerLockControls.js"

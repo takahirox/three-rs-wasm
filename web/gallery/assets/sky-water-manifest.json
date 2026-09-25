@@ -1,0 +1,17 @@
+[
+ {
+  "file": "pano.webm",
+  "source": "examples/textures/pano.webm",
+  "sha256": "60644e17ee7e2535ed589cc36cb5579aee5159d31bb5145bb6d42459062a9e0d"
+ },
+ {
+  "file": "pano.mp4",
+  "source": "examples/textures/pano.mp4",
+  "sha256": "2c2057d542ec30052f16250e9ce3568870dfa4219af2c14f8e172fee36a5966e"
+ },
+ {
+  "file": "waternormals.jpg",
+  "source": "examples/textures/waternormals.jpg",
+  "sha256": "add9912b158a4fe9c12421745babe68c44c8af75631ac4837236cb2a03bc373f"
+ }
+]

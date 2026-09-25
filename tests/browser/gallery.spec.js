@@ -6,7 +6,7 @@ const files=readFileSync('web/gallery/files.json','utf8');
 test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
  const listed=Object.values(JSON.parse(files)).flat();
  const excluded=catalog.examples.filter(e=>e.preferred_example);
- expect(excluded).toHaveLength(17);
+ expect(excluded).toHaveLength(21);
  for(const entry of excluded){
   expect(entry.status).toBe('excluded');expect(entry.port).toBeNull();
   expect(listed).not.toContain(entry.id);

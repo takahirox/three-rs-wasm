@@ -598,3 +598,18 @@ original draws.
 Warmed cycles create no GPU resources. The OBJ scene selection and the shadow
 toggle are left out, as they build geometry and light bindings. No GPU timing
 parity is claimed.
+
+### Sky, sun light, pointer-lock walk, video panorama and ocean
+
+The [sky, sun-light, pointer-lock, video-panorama and ocean
+ports](sky-water.md) match the original draws.
+
+- **Per-frame work.** The sky's six-face cube capture and the ocean's
+  half-resolution reflector run each frame, as in the original.
+- **Environment.** Moving the sun builds a new PMREM environment, as
+  `updateSun()` does.
+- **Video.** Frames are copied from the video element only when it presents
+  a new one.
+
+Warmed cycles of time and input create no GPU resources. No GPU timing parity is
+claimed.

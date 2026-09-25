@@ -614,3 +614,8 @@ are the unmodified r186 `examples/textures/matcaps/040full.exr`,
 - **Credits.** The matcap is courtesy of cyaoeu and ships with its
   `matcaps/040full.txt`. The Lee Perry-Smith normal map is covered by
   `web/models/LeePerrySmith_License.txt`.
+
+`gallery/assets/pano.webm`, `pano.mp4` and `waternormals.jpg` are the
+unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
+`textures/waternormals.jpg` files. Their source paths and SHA-256 hashes are in
+`sky-water-manifest.json`; they are distributed alongside `LICENSE-THREE`.

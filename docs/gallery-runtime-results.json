@@ -9,9 +9,9 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 551,
-    "excluded": 19,
-    "rust-static-frame-rendered": 34,
+    "runtime-prerequisite": 548,
+    "excluded": 23,
+    "rust-static-frame-rendered": 33,
     "rust-empty-frame": 3
   },
   "examples": [
@@ -1694,30 +1694,8 @@
       "id": "webgl_lights_sunlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html",
       "source_sha256": "4aa2f47e0ee13d1ef010c857c46a30adb80f6f70b66d5141ac5fd822eafaa4db",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_lights_sunlight",
-        "source_sha256": "4aa2f47e0ee13d1ef010c857c46a30adb80f6f70b66d5141ac5fd822eafaa4db",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Fog: linear",
-          "Light type: SunLight",
-          "Material type: ShaderMaterial",
-          "Shadow maps",
-          "Instance/batch transforms: Mesh"
-        ],
-        "observed": {
-          "objects": 4,
-          "vertices": 76,
-          "lights": 1
-        },
-        "elapsed_ms": 1336,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lights_rectarealight",
@@ -5136,52 +5114,15 @@
       "id": "webgl_shaders_ocean",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html",
       "source_sha256": "87b6965af1d05c32eebe21d1dba3e55c6b5981703c7c87992b359416fdc1ff5e",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_shaders_ocean",
-        "source_sha256": "87b6965af1d05c32eebe21d1dba3e55c6b5981703c7c87992b359416fdc1ff5e",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Material type: ShaderMaterial"
-        ],
-        "observed": {
-          "objects": 3,
-          "vertices": 52,
-          "lights": 0
-        },
-        "elapsed_ms": 1324,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_shaders_sky",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html",
       "source_sha256": "0ff9fde8861d424fc633c0d67fb61745849dd669b28a3cf2679814a978a19c23",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_shaders_sky",
-        "source_sha256": "0ff9fde8861d424fc633c0d67fb61745849dd669b28a3cf2679814a978a19c23",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Unlit environment reflection/refraction",
-          "Material type: ShaderMaterial"
-        ],
-        "observed": {
-          "objects": 2,
-          "vertices": 2169,
-          "lights": 0
-        },
-        "elapsed_ms": 1291,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_shadow_contact",
@@ -5552,32 +5493,8 @@
       "id": "webgl_video_panorama_equirectangular",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html",
       "source_sha256": "b72355957601606dd32ff45402e0423aa4be338e2f5ca854b02ab78144cba742",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_video_panorama_equirectangular",
-        "source_sha256": "b72355957601606dd32ff45402e0423aa4be338e2f5ca854b02ab78144cba742",
-        "stage": "captured-scene",
-        "blockers": [],
-        "observed": {
-          "objects": 1,
-          "vertices": 2501,
-          "lights": 0
-        },
-        "elapsed_ms": 1721,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "rust": {
-        "colored_pixels": 65453,
-        "distinct_colors": 22467,
-        "fidelity": "Not compared with upstream pixels; this is one captured frame, not a behavioral port.",
-        "objects": 1,
-        "stage": "rust-static-frame-rendered"
-      },
-      "outcome": "rust-static-frame-rendered",
-      "local_image": ".cache/gallery-runtime/webgl_video_panorama_equirectangular.png",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_watch",
@@ -9561,7 +9478,7 @@
       "id": "webgpu_lights_sunlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_sunlight.html",
       "source_sha256": "689064332a96d0318d33e248c442b0b1e411ebde34477e4ef6d47697d6092ef8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lights_sunlight",
         "source_sha256": "689064332a96d0318d33e248c442b0b1e411ebde34477e4ef6d47697d6092ef8",
@@ -10782,7 +10699,7 @@
       "id": "webgpu_ocean",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_ocean.html",
       "source_sha256": "9570fb6eb403a1d2ce93b3fdfa9e0f74f9bd5f1cb4115e551328d8c553d03882",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_ocean",
         "source_sha256": "9570fb6eb403a1d2ce93b3fdfa9e0f74f9bd5f1cb4115e551328d8c553d03882",
@@ -12652,7 +12569,7 @@
       "id": "webgpu_sky",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sky.html",
       "source_sha256": "55c3b6f3caa84ede76ca7efdb80c08dd7c9bd9e0f8fa4a14565c4430d2c210f2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_sky",
         "source_sha256": "55c3b6f3caa84ede76ca7efdb80c08dd7c9bd9e0f8fa4a14565c4430d2c210f2",
@@ -13475,7 +13392,7 @@
       "id": "webgpu_video_panorama",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html",
       "source_sha256": "c60161e02de23000e191d99fde39c7063c2e7f1073953fd9359896e200dc8f8f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_video_panorama",
         "source_sha256": "c60161e02de23000e191d99fde39c7063c2e7f1073953fd9359896e200dc8f8f",
@@ -15318,7 +15235,7 @@
       "id": "misc_controls_pointerlock",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html",
       "source_sha256": "62857e85defdf704d5c4056bfe666abf7fdccd72b39c55107d403b4f2df82637",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_controls_pointerlock",
         "source_sha256": "62857e85defdf704d5c4056bfe666abf7fdccd72b39c55107d403b4f2df82637",

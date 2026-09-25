@@ -2,13 +2,13 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 258 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 263 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 551 |
-| excluded | 19 |
-| rust-static-frame-rendered | 34 |
+| runtime-prerequisite | 548 |
+| excluded | 23 |
+| rust-static-frame-rendered | 33 |
 | rust-empty-frame | 3 |
 
 ## Limits
@@ -27,22 +27,22 @@ Counts overlap and describe the sampled execution, not all possible branches.
 
 | Prerequisite | Examples |
 | --- | ---: |
-| Shadow maps | 95 |
 | Material type: MeshPhongMaterial | 95 |
+| Shadow maps | 94 |
 | Light type: HemisphereLight | 80 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |
-| Fog: linear | 55 |
-| Material type: ShaderMaterial | 49 |
+| Fog: linear | 54 |
+| Material type: ShaderMaterial | 46 |
 | Material type: MeshLambertMaterial | 42 |
 | Flat shaded lit material | 39 |
-| Instance/batch transforms: Mesh | 37 |
+| Instance/batch transforms: Mesh | 36 |
 | Material type: RawShaderMaterial | 32 |
 | WebXR session integration | 31 |
 | Programmable background node | 27 |
 | GPU compute/storage dispatch | 24 |
-| Light type: SunLight | 22 |
 | Tone mapping mode: 7 | 22 |
+| Light type: SunLight | 21 |
 | Light type: SpotLight | 21 |
 | Physical material extension: transmission | 21 |
 | Skinned mesh / skeleton | 20 |
@@ -141,7 +141,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_lights_physical](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_physical.html) | excluded |  |
 | [webgl_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html) | runtime-prerequisite | Tone mapping mode: 7; Light type: HemisphereLight; Light type: SpotLight; Shadow maps; Material type: MeshLambertMaterial |
 | [webgl_lights_spotlights](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlights.html) | runtime-prerequisite | Shadow maps; Material type: MeshPhongMaterial; Light type: SpotLight |
-| [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | runtime-prerequisite | Fog: linear; Light type: SunLight; Material type: ShaderMaterial; Shadow maps; Instance/batch transforms: Mesh |
+| [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | excluded |  |
 | [webgl_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html) | excluded |  |
 | [webgl_lines_colors](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_colors.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_lines_dashed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_dashed.html) | runtime-prerequisite | Fog: linear; Dashed lines |
@@ -280,8 +280,8 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_sculpt](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sculpt.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_shader](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader.html) | runtime-prerequisite | Material type: ShaderMaterial |
 | [webgl_shader_lava](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader_lava.html) | runtime-prerequisite | Material type: RawShaderMaterial |
-| [webgl_shaders_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html) | runtime-prerequisite | Material type: ShaderMaterial |
-| [webgl_shaders_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html) | runtime-prerequisite | Unlit environment reflection/refraction; Material type: ShaderMaterial |
+| [webgl_shaders_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html) | excluded |  |
+| [webgl_shaders_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html) | excluded |  |
 | [webgl_shadow_contact](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadow_contact.html) | runtime-prerequisite | Material type: MeshNormalMaterial |
 | [webgl_shadowmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap.html) | runtime-prerequisite | Fog: linear; Shadow maps; Material type: MeshPhongMaterial; Morph target evaluation; Flat shaded lit material |
 | [webgl_shadowmap_performance](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_performance.html) | runtime-prerequisite | Fog: linear; Light type: SunLight; Shadow maps; Material type: MeshPhongMaterial; Morph target evaluation; Flat shaded lit material |
@@ -295,7 +295,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_test_wide_gamut](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_wide_gamut.html) | rust-empty-frame |  |
 | [webgl_tonemapping](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tonemapping.html) | runtime-prerequisite | Tone mapping mode: 7 |
 | [webgl_video_kinect](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_kinect.html) | runtime-prerequisite | Material type: ShaderMaterial; Blend mode: 2 |
-| [webgl_video_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
+| [webgl_video_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html) | excluded |  |
 | [webgl_watch](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_watch.html) | runtime-prerequisite | Tone mapping mode: 7; Shadow maps; Physical material extension: clearcoat; Physical material extension: iridescence; Blend mode: 2; Physical material extension: sheen; Separate roughness and metalness textures |
 | [webgl_postprocessing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_postprocessing_3dlut](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_3dlut.html) | runtime-prerequisite | Material type: ShaderMaterial |

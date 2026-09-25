@@ -1,0 +1,3098 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/sky-water.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "Sky-and-water-GP-8ddd3-y-misc-controls-pointerlock": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 346,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 346,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 351,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 351,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-lights-sunlight": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 129,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 129,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 134,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 134,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-ocean": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 203,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 203,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 250,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 250,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-sky": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 49,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 49,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-video-panorama": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-of-26303-ring-webgpu-ocean-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.2060979207356771
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.1860682169596354
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.1949895222981771
+     },
+     {
+      "state": 3,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.20139694213867188
+     },
+     {
+      "state": 4,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.17233912150065103
+     },
+     {
+      "state": 5,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.24618657430013022
+     },
+     {
+      "state": 6,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.2454833984375
+     },
+     {
+      "state": 7,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.2349522908528646
+     },
+     {
+      "state": 8,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.28904978434244794
+     },
+     {
+      "state": 9,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.30811436971028644
+     },
+     {
+      "state": 10,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.30986913045247394
+     },
+     {
+      "state": 11,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.3097979227701823
+     },
+     {
+      "state": 12,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.3081626892089844
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.28083165486653644
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.2799530029296875
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.2886341145833333
+     }
+    ]
+   },
+   "Sky-and-water-of-556b1-u-lights-sunlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.2352142333984375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.2352142333984375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.2352142333984375
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.25118382771809894
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.2973467508951823
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.2976277669270833
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.2973594665527344
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.2919718424479167
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.30492273966471356
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.3018900553385417
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.29976781209309894
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.29039192708333333
+     }
+    ]
+   },
+   "Sky-and-water-of-999c9-dering-webgpu-sky-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.33831787109375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.16180419921875
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.2254180908203125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.28710301717122394
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.30946985880533856
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.25028101603190106
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.25028101603190106
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.25405629475911456
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.25809987386067706
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.2595787048339844
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.3109690348307292
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.3314463297526042
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.3627611796061198
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.4017537434895833
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.3942877604166667
+     }
+    ]
+   },
+   "Sky-and-water-of-b0db5-pu-video-panorama-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.005559285481770833
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.005559285481770833
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0048828125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.005718231201171875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0049713541666666665
+     }
+    ]
+   },
+   "Sky-and-water-of-cd70b-trols-pointerlock-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0105438232421875,
+      "meanError": 0.13833236694335938
+     },
+     {
+      "state": 1,
+      "fraction": 0.0105438232421875,
+      "meanError": 0.13833236694335938
+     },
+     {
+      "state": 2,
+      "fraction": 0.006916046142578125,
+      "meanError": 0.06423568725585938
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Sky-and-water-of-d438e-u-lights-sunlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.23384857177734375
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.23384857177734375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.23384857177734375
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.2526512145996094
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.29677581787109375
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.2969563802083333
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.29677073160807294
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.28981653849283856
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.30385589599609375
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.30066680908203125
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.29861195882161456
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.28932552083333335
+     }
+    ]
+   },
+   "Sky-and-water-of-d578f-pu-video-panorama-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.005475362141927083
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.005475362141927083
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.004797617594401042
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.005658467610677083
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.004875
+     }
+    ]
+   },
+   "Sky-and-water-of-e6bb9-trols-pointerlock-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0006993611653645834
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0006993611653645834
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00022633870442708334
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Sky-and-water-re-9eb3d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgpu_sky",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lights_sunlight",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_controls_pointerlock",
+      "reference": {
+       "draws": [
+        {
+         "count": 60000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 60000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_video_panorama",
+      "reference": {
+       "draws": [
+        {
+         "count": 14040,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 14040,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_ocean",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "Sky-and-water-GP-8ddd3-y-misc-controls-pointerlock": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 346,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 346,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 351,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 351,
+       "transfers": [
+        2,
+        4802880,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-lights-sunlight": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 129,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 129,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 134,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 134,
+       "transfers": [
+        5,
+        8600,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-ocean": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 203,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 203,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 250,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      },
+      "after": {
+       "creates": 250,
+       "transfers": [
+        4,
+        6536,
+        64
+       ],
+       "resources": [
+        1,
+        2,
+        1
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-sky": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 45,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 45,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 49,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 49,
+       "transfers": [
+        2,
+        221280,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-GPU-residency-webgpu-video-panorama": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 33,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 33,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        256240,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "Sky-and-water-of-26303-ring-webgpu-ocean-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 5.7220458984375e-06,
+      "meanError": 0.19179725646972656
+     },
+     {
+      "state": 1,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.1598672866821289
+     },
+     {
+      "state": 2,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.17859395345052084
+     },
+     {
+      "state": 3,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.19601821899414062
+     },
+     {
+      "state": 4,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.17374102274576822
+     },
+     {
+      "state": 5,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.2477254867553711
+     },
+     {
+      "state": 6,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.24769179026285806
+     },
+     {
+      "state": 7,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.23512872060139975
+     },
+     {
+      "state": 8,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.2786874771118164
+     },
+     {
+      "state": 9,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.28995545705159503
+     },
+     {
+      "state": 10,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.29028956095377606
+     },
+     {
+      "state": 11,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.2912769317626953
+     },
+     {
+      "state": 12,
+      "fraction": 2.86102294921875e-06,
+      "meanError": 0.2892147699991862
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.19768778483072916
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.196775754292806
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.20583072916666667
+     }
+    ]
+   },
+   "Sky-and-water-of-556b1-u-lights-sunlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.2334864934285482
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.2334864934285482
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.2334864934285482
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.25124867757161456
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.29723453521728516
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.2974551518758138
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.2971893946329753
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.29088687896728516
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.3040291468302409
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.301394780476888
+     },
+     {
+      "state": 10,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.29889170328776044
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.2898720703125
+     }
+    ]
+   },
+   "Sky-and-water-of-999c9-dering-webgpu-sky-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.3389606475830078
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.16176891326904297
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.22558116912841797
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.28711382548014325
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.3094825744628906
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.25015830993652344
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.25015926361083984
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.2539307276407878
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.258242925008138
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.2594134012858073
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.31113624572753906
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.3314825693766276
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.362701416015625
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.4019813537597656
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.3942389322916667
+     }
+    ]
+   },
+   "Sky-and-water-of-b0db5-pu-video-panorama-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.005431811014811198
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.005431811014811198
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.004843076070149739
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.005587259928385417
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0047864583333333335
+     }
+    ]
+   },
+   "Sky-and-water-of-cd70b-trols-pointerlock-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004390716552734375,
+      "meanError": 0.04976590474446615
+     },
+     {
+      "state": 1,
+      "fraction": 0.004390716552734375,
+      "meanError": 0.04976590474446615
+     },
+     {
+      "state": 2,
+      "fraction": 0.0033025741577148438,
+      "meanError": 0.03127606709798177
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Sky-and-water-of-d438e-u-lights-sunlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.23377227783203125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.23377227783203125
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.23377227783203125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.2530253728230794
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.29645220438639325
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-07,
+      "meanError": 0.29665978749593097
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.296444574991862
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.29052289326985675
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.30377451578776044
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.30107657114664715
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.2985232671101888
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.28933854166666667
+     }
+    ]
+   },
+   "Sky-and-water-of-d578f-pu-video-panorama-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.005407015482584636
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.005407015482584636
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0048262278238932295
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0055573781331380205
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.004759114583333333
+     }
+    ]
+   },
+   "Sky-and-water-of-e6bb9-trols-pointerlock-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0007670720418294271
+     },
+     {
+      "state": 1,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.0007670720418294271
+     },
+     {
+      "state": 2,
+      "fraction": 3.814697265625e-06,
+      "meanError": 0.00025272369384765625
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "Sky-and-water-re-9eb3d--and-official-draw-workload": {
+    "gpu-work": [
+     {
+      "kind": "webgpu_sky",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 11904,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_lights_sunlight",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 120
+        },
+        {
+         "count": 36,
+         "instances": 60
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_controls_pointerlock",
+      "reference": {
+       "draws": [
+        {
+         "count": 60000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 60000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_video_panorama",
+      "reference": {
+       "draws": [
+        {
+         "count": 14040,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 14040,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_ocean",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   }
+  }
+ }
+}

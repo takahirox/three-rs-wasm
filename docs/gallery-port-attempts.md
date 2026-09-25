@@ -74,7 +74,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_lights_physical](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_physical.html) | excluded | HemisphereLight |
 | [webgl_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html) | blocked-at-port-review | HemisphereLight; SpotLight; SpotLightHelper; CameraHelper |
 | [webgl_lights_spotlights](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlights.html) | runnable-partial | tests/browser/shapes-lights.spec.js |
-| [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | blocked-at-port-review | Fog; FirstPersonControls; PMREMGenerator; Sky |
+| [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | excluded | Fog; FirstPersonControls; PMREMGenerator; Sky |
 | [webgl_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html) | excluded | RectAreaLight; RectAreaLightHelper; CanvasTexture |
 | [webgl_lines_colors](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_colors.html) | runnable-partial | tests/browser/expanded.spec.js |
 | [webgl_lines_dashed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_dashed.html) | runnable-partial | tests/browser/expanded.spec.js |
@@ -213,8 +213,8 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_sculpt](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sculpt.html) | blocked-at-port-review | GLTFExporter; Sculptor |
 | [webgl_shader](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader.html) | runnable-partial | tests/browser/interactive-shaders.spec.js |
 | [webgl_shader_lava](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shader_lava.html) | blocked-at-port-review | ShaderMaterial; RenderPass; BloomPass; OutputPass |
-| [webgl_shaders_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html) | blocked-at-port-review | UnrealBloomPass; Water; Sky; PMREMGenerator |
-| [webgl_shaders_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html) | blocked-at-port-review | Sky; WebGLCubeRenderTarget; CubeCamera |
+| [webgl_shaders_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_ocean.html) | excluded | UnrealBloomPass; Water; Sky; PMREMGenerator |
+| [webgl_shaders_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shaders_sky.html) | excluded | Sky; WebGLCubeRenderTarget; CubeCamera |
 | [webgl_shadow_contact](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadow_contact.html) | blocked-at-port-review | MeshNormalMaterial; WebGLRenderTarget; CameraHelper; MeshDepthMaterial |
 | [webgl_shadowmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap.html) | blocked-at-port-review | Fog; ShadowMapViewer; MeshPhongMaterial; FontLoader |
 | [webgl_shadowmap_performance](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_performance.html) | blocked-at-port-review | Fog; SunLight; FirstPersonControls; MeshPhongMaterial |
@@ -228,7 +228,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_test_wide_gamut](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_wide_gamut.html) | blocked-at-port-review | DisplayP3ColorSpace |
 | [webgl_tonemapping](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tonemapping.html) | blocked-at-port-review | HDRLoader; DRACOLoader; venice_mask.glb; EXT_texture_webp |
 | [webgl_video_kinect](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_kinect.html) | blocked-at-port-review | VideoTexture; ShaderMaterial |
-| [webgl_video_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html) | blocked-at-port-review | VideoTexture |
+| [webgl_video_panorama_equirectangular](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_panorama_equirectangular.html) | excluded | VideoTexture |
 | [webgl_watch](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_watch.html) | blocked-at-port-review | TAARenderPass; UnrealBloomPass; HDRLoader; DRACOLoader |
 | [webgl_postprocessing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing.html) | blocked-at-port-review | Fog; MeshPhongMaterial; EffectComposer; RenderPass |
 | [webgl_postprocessing_3dlut](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_3dlut.html) | blocked-at-port-review | LUTCubeLoader; LUTImageLoader; LUT3dlLoader; EffectComposer |
@@ -380,7 +380,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_rectarealight.html) | runnable-partial | tests/browser/tsl-surface.spec.js |
 | [webgpu_lights_selective](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_selective.html) | runnable-partial | tests/browser/tsl-surface.spec.js |
 | [webgpu_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_spotlight.html) | blocked-at-port-review | HemisphereLight; SpotLight; SpotLightHelper; CameraHelper |
-| [webgpu_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_sunlight.html) | blocked-at-port-review | Fog; FirstPersonControls; PMREMGenerator; SkyMesh |
+| [webgpu_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_sunlight.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [webgpu_lines_fat_raycasting](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat_raycasting.html) | blocked-at-port-review | Line2NodeMaterial; LineGeometry; LineSegmentsGeometry; LineSegments2 |
 | [webgpu_lines_fat_wireframe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat_wireframe.html) | runnable-partial | tests/browser/tsl-primitives.spec.js |
 | [webgpu_lines_fat](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat.html) | runnable-partial | tests/browser/tsl-primitives.spec.js |
@@ -425,7 +425,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_multiple_rendertargets_readback](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multiple_rendertargets_readback.html) | runnable-partial | tests/browser/tsl-procedural.spec.js |
 | [webgpu_multisampled_renderbuffers](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_multisampled_renderbuffers.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
 | [webgpu_occlusion](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_occlusion.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
-| [webgpu_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_ocean.html) | blocked-at-port-review | RenderPipeline; WaterMesh; SkyMesh; PMREMGenerator |
+| [webgpu_ocean](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_ocean.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [webgpu_oit](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_oit.html) | runnable-partial | tests/browser/tsl-materials.spec.js |
 | [webgpu_parallax_uv](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_parallax_uv.html) | runnable-partial | tests/browser/tsl-next.spec.js |
 | [webgpu_particles](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_particles.html) | runnable-partial | tests/browser/tsl-compute.spec.js |
@@ -493,7 +493,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_skinning_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_instancing.html) | runnable-partial | tests/browser/tsl-materials.spec.js |
 | [webgpu_skinning_instancing_individual](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_instancing_individual.html) | blocked-at-port-review | StorageBufferAttribute; HemisphereLight; SunLight; ShadowMaterial |
 | [webgpu_skinning_points](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_points.html) | runnable-partial | tests/browser/tsl-procedural.spec.js |
-| [webgpu_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sky.html) | blocked-at-port-review | SkyMesh; CubeRenderTarget; CubeCamera; MeshBasicNodeMaterial |
+| [webgpu_sky](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sky.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [webgpu_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sprites.html) | runnable-partial | tests/browser/tsl-particles.spec.js |
 | [webgpu_storage_buffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_storage_buffer.html) | runnable-partial | tests/browser/tsl-surface.spec.js |
 | [webgpu_struct_drawindirect](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_struct_drawindirect.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
@@ -523,7 +523,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_upscaling_fsr1](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_upscaling_fsr1.html) | runnable-partial | tests/browser/tsl-viewport.spec.js |
 | [webgpu_upscaling_taau](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_upscaling_taau.html) | runnable-partial | tests/browser/tsl-procedural.spec.js |
 | [webgpu_video_frame](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_frame.html) | blocked-at-port-review | VideoFrameTexture; MP4Demuxer |
-| [webgpu_video_panorama](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html) | blocked-at-port-review | VideoTexture |
+| [webgpu_video_panorama](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [webgpu_volume_caustics](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_caustics.html) | blocked-at-port-review | SpotLight; DRACOLoader; MeshPhysicalNodeMaterial; RenderPipeline |
 | [webgpu_volume_cloud](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_cloud.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
 | [webgpu_volume_fire](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_fire.html) | blocked-at-port-review | ImprovedNoise; Storage3DTexture; TeapotGeometry; VolumeNodeMaterial |
@@ -591,7 +591,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [misc_controls_fly](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_fly.html) | blocked-at-port-review | FogExp2; MeshPhongMaterial; MeshLambertMaterial; FlyControls |
 | [misc_controls_map](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_map.html) | runnable-partial | tests/browser/controls-attributes.spec.js |
 | [misc_controls_orbit](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_orbit.html) | runnable-partial | tests/browser/controls-attributes.spec.js |
-| [misc_controls_pointerlock](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html) | blocked-at-port-review | Fog; HemisphereLight; PointerLockControls; MeshPhongMaterial |
+| [misc_controls_pointerlock](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_pointerlock.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [misc_controls_trackball](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_trackball.html) | runnable-partial | tests/browser/trackball-sprites.spec.js |
 | [misc_controls_transform](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_transform.html) | blocked-at-port-review | GridHelper; MeshLambertMaterial; TransformControls |
 | [misc_exporter_draco](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_draco.html) | blocked-at-port-review | Fog; DRACOExporter; HemisphereLight; MeshPhongMaterial |

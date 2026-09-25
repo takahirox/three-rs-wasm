@@ -177,3 +177,10 @@ The exporter, matcap and physical-lights batch
 and `webgpu_lights_physical` and excludes their WebGL equivalents. All five
 scenes match within the ordinary threshold with MSAA off, and the exported STL,
 PLY and OBJ files equal the originals byte for byte.
+
+The sky, sun-light, pointer-lock, video-panorama and ocean batch
+([sky-water.md](sky-water.md)) lists `webgpu_sky`, `webgpu_lights_sunlight`,
+`webgpu_video_panorama` and `webgpu_ocean`. It excludes `webgl_shaders_sky`,
+`webgl_lights_sunlight`, `webgl_video_panorama_equirectangular` and
+`webgl_shaders_ocean`. All five scenes match within the ordinary threshold with
+MSAA off. Only the pointer-lock boxes' silhouettes bound 4× MSAA.
