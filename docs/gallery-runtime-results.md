@@ -2,12 +2,12 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 288 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 298 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 541 |
-| excluded | 30 |
+| runtime-prerequisite | 539 |
+| excluded | 32 |
 | rust-static-frame-rendered | 33 |
 | rust-empty-frame | 3 |
 
@@ -27,12 +27,12 @@ Counts overlap and describe the sampled execution, not all possible branches.
 
 | Prerequisite | Examples |
 | --- | ---: |
-| Material type: MeshPhongMaterial | 94 |
+| Material type: MeshPhongMaterial | 93 |
 | Shadow maps | 93 |
 | Light type: HemisphereLight | 80 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |
-| Fog: linear | 54 |
+| Fog: linear | 53 |
 | Material type: ShaderMaterial | 46 |
 | Material type: MeshLambertMaterial | 42 |
 | Flat shaded lit material | 39 |
@@ -48,8 +48,8 @@ Counts overlap and describe the sampled execution, not all possible branches.
 | Skinned mesh / skeleton | 20 |
 | Wireframe material | 19 |
 | Programmable material: positionNode | 18 |
-| Morph target evaluation | 17 |
 | Material type: NodeMaterial | 17 |
+| Morph target evaluation | 16 |
 | Material type: MeshPhongNodeMaterial | 14 |
 | Programmable material: normalNode | 14 |
 
@@ -131,7 +131,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_points.html) | runtime-prerequisite | Material type: ShaderMaterial |
 | [webgl_interactive_raycasting_points](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_raycasting_points.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_interactive_voxelpainter](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_interactive_voxelpainter.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
-| [webgl_lensflares](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lensflares.html) | runtime-prerequisite | PROBE LIMIT: Fog: linear; Material type: MeshPhongMaterial; Probe resource limit: more than 2000 objects |
+| [webgl_lensflares](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lensflares.html) | excluded |  |
 | [webgl_lightprobe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe.html) | excluded |  |
 | [webgl_lightprobe_cubecamera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobe_cubecamera.html) | excluded |  |
 | [webgl_lightprobes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobes.html) | runtime-prerequisite | Shadow maps |
@@ -254,7 +254,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_modifier_subdivision](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_subdivision.html) | runtime-prerequisite | Light type: HemisphereLight; Polygon offset |
 | [webgl_modifier_tessellation](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_tessellation.html) | runtime-prerequisite | Material type: ShaderMaterial |
 | [webgl_morphtargets](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets.html) | excluded |  |
-| [webgl_morphtargets_face](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_face.html) | runtime-prerequisite | Morph target evaluation |
+| [webgl_morphtargets_face](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_face.html) | excluded |  |
 | [webgl_morphtargets_horse](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_horse.html) | runtime-prerequisite | Morph target evaluation; Flat shaded lit material |
 | [webgl_morphtargets_sphere](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_sphere.html) | runtime-prerequisite | Morph target evaluation |
 | [webgl_morphtargets_webcam](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_webcam.html) | runtime-prerequisite | Morph target evaluation; Material type: MeshNormalMaterial |

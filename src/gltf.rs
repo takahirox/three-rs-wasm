@@ -5,11 +5,16 @@ use crate::{
 use std::sync::Arc;
 mod animation;
 pub use animation::{AnimatedGltf, GltfInstance, import_animated, import_animated_decoded};
+/// KHR_materials_variants mappings of one mesh: ( variant indices, material ).
+pub type VariantMaterials = Vec<(Vec<usize>, Arc<Material>)>;
 #[derive(Clone)]
 pub struct ImportedGltf {
     pub bounds: Box3,
     pub triangles: usize,
     meshes: Vec<(String, Matrix4, Mesh)>,
+    /// Per mesh, in `instantiate` order: KHR_materials_variants mappings as
+    /// ( variant indices, material ).
+    pub variant_materials: Vec<VariantMaterials>,
     mesh_nodes: Vec<usize>,
 }
 impl ImportedGltf {
@@ -149,6 +154,7 @@ fn import_internal(
     let mut bounds = Box3::default();
     let mut triangles = 0;
     let mut meshes = Vec::new();
+    let mut variant_materials = Vec::new();
     let mut mesh_nodes = Vec::new();
     while let Some((node, parent)) = stack.pop() {
         let local = local_transform(node.transform());
@@ -280,282 +286,323 @@ fn import_internal(
                         }
                     }
                 }
-                let source = primitive.material();
-                let pbr = source.pbr_metallic_roughness();
-                let factor = pbr.base_color_factor();
-                let get_texture = |index: usize, uv: u32, srgb: bool| -> Result<Arc<Texture>> {
-                    if uv > 1 {
-                        return Err(Error::Invalid(
-                            "glTF texture coordinate set (only TEXCOORD_0/1 supported)",
-                        ));
-                    }
-                    let pair = textures.get(index).ok_or(Error::Invalid("glTF texture"))?;
-                    let mut texture = if srgb { pair.0.clone() } else { pair.1.clone() };
-                    if uv != 0 {
-                        Arc::make_mut(&mut texture).tex_coord = uv;
-                    }
-                    Ok(texture)
-                };
-                let get_info =
-                    |info: &gltf::texture::Info<'_>, srgb: bool| -> Result<Arc<Texture>> {
-                        let transform = info.texture_transform();
-                        let mut texture = get_texture(
-                            info.texture().index(),
-                            transform
-                                .as_ref()
-                                .and_then(|t| t.tex_coord())
-                                .unwrap_or(info.tex_coord()),
-                            srgb,
-                        )?;
-                        if let Some(t) = transform {
-                            let texture = Arc::make_mut(&mut texture);
-                            texture.offset = Vector2::from_array(t.offset().map(f64::from));
-                            texture.repeat = Vector2::from_array(t.scale().map(f64::from));
-                            texture.rotation = t.rotation() as f64;
-                            let (s, c) = texture.rotation.sin_cos();
-                            let scale = texture.repeat;
-                            let offset = texture.offset;
-                            texture.matrix = Some(Matrix3::from_cols_array(&[
-                                scale.x * c,
-                                -scale.x * s,
-                                0.0,
-                                scale.y * s,
-                                scale.y * c,
-                                0.0,
-                                offset.x,
-                                offset.y,
-                                1.0,
-                            ]));
+                // Builds a primitive's material: its own, or a KHR_materials_variants one.
+                let build = |source: gltf::Material<'_>,
+                             geometry: &mut BufferGeometry|
+                 -> Result<Material> {
+                    let pbr = source.pbr_metallic_roughness();
+                    let factor = pbr.base_color_factor();
+                    let get_texture = |index: usize, uv: u32, srgb: bool| -> Result<Arc<Texture>> {
+                        if uv > 1 {
+                            return Err(Error::Invalid(
+                                "glTF texture coordinate set (only TEXCOORD_0/1 supported)",
+                            ));
+                        }
+                        let pair = textures.get(index).ok_or(Error::Invalid("glTF texture"))?;
+                        let mut texture = if srgb { pair.0.clone() } else { pair.1.clone() };
+                        if uv != 0 {
+                            Arc::make_mut(&mut texture).tex_coord = uv;
                         }
                         Ok(texture)
                     };
-                let mut standard = MeshStandardMaterial {
-                    roughness: pbr.roughness_factor() as f64,
-                    metalness: pbr.metallic_factor() as f64,
-                    emissive: Color(
-                        Vector3::from_array(source.emissive_factor().map(f64::from))
-                            * source.emissive_strength().unwrap_or(1.0) as f64,
-                    ),
-                    ..Default::default()
-                };
-                if let Some(info) = pbr.metallic_roughness_texture() {
-                    standard.metallic_roughness_map = Some(get_info(&info, false)?);
-                }
-                if let Some(info) = source.normal_texture() {
-                    standard.normal_map = Some(transform_texture(
-                        get_texture(info.texture().index(), info.tex_coord(), false)?,
-                        info.extension_value("KHR_texture_transform"),
-                    )?);
-                    standard.normal_scale = Vector2::splat(info.scale() as f64);
-                }
-                if let Some(info) = source.occlusion_texture() {
-                    standard.occlusion_map = Some(transform_texture(
-                        get_texture(info.texture().index(), info.tex_coord(), false)?,
-                        info.extension_value("KHR_texture_transform"),
-                    )?);
-                    standard.occlusion_strength = info.strength() as f64;
-                }
-                if let Some(info) = source.emissive_texture() {
-                    standard.emissive_map = Some(get_info(&info, true)?);
-                }
-                // Match GLTFLoader's derivative-tangent convention for glTF UVs.
-                if !geometry.attributes.contains_key("tangent") {
-                    standard.normal_scale.y *= -1.0;
-                }
-                let mut material = Material::Standard(standard);
-                let p = material.properties_mut();
-                p.color = Color(Vector3::new(
-                    factor[0] as f64,
-                    factor[1] as f64,
-                    factor[2] as f64,
-                ));
-                p.opacity = factor[3] as f64;
-                p.transparent = source.alpha_mode() == gltf::material::AlphaMode::Blend;
-                p.depth_write = !p.transparent;
-                p.alpha_test = if source.alpha_mode() == gltf::material::AlphaMode::Mask {
-                    source.alpha_cutoff().unwrap_or(0.5) as f64
-                } else {
-                    0.0
-                };
-                p.side = if source.double_sided() {
-                    Side::Double
-                } else {
-                    Side::Front
-                };
-                if let Some(info) = pbr.base_color_texture() {
-                    p.map = Some(get_info(&info, true)?);
-                }
-                if let Some(colors) = reader.read_colors(0) {
-                    geometry.set_attribute(
-                        "color",
-                        Attribute::F32(BufferAttribute::new(
-                            colors.into_rgba_f32().flatten().collect(),
-                            4,
-                            false,
-                        )?),
-                    );
-                    p.vertex_colors = true;
-                }
-                if source.unlit() {
-                    material = Material::Basic(MeshBasicMaterial {
-                        properties: material.properties().clone(),
-                    });
-                } else if source.ior().is_some()
-                    || source.specular().is_some()
-                    || [
-                        "KHR_materials_clearcoat",
-                        "KHR_materials_sheen",
-                        "KHR_materials_anisotropy",
-                        "KHR_materials_transmission",
-                        "KHR_materials_volume",
-                        "KHR_materials_dispersion",
-                        "KHR_materials_iridescence",
-                    ]
-                    .iter()
-                    .any(|name| source.extension_value(name).is_some())
-                {
-                    let Material::Standard(base) = material else {
-                        unreachable!()
-                    };
-                    let mut physical = MeshPhysicalMaterial {
-                        base,
-                        ior: source.ior().unwrap_or(1.5) as f64,
+                    let get_info =
+                        |info: &gltf::texture::Info<'_>, srgb: bool| -> Result<Arc<Texture>> {
+                            let transform = info.texture_transform();
+                            let mut texture = get_texture(
+                                info.texture().index(),
+                                transform
+                                    .as_ref()
+                                    .and_then(|t| t.tex_coord())
+                                    .unwrap_or(info.tex_coord()),
+                                srgb,
+                            )?;
+                            if let Some(t) = transform {
+                                let texture = Arc::make_mut(&mut texture);
+                                texture.offset = Vector2::from_array(t.offset().map(f64::from));
+                                texture.repeat = Vector2::from_array(t.scale().map(f64::from));
+                                texture.rotation = t.rotation() as f64;
+                                let (s, c) = texture.rotation.sin_cos();
+                                let scale = texture.repeat;
+                                let offset = texture.offset;
+                                texture.matrix = Some(Matrix3::from_cols_array(&[
+                                    scale.x * c,
+                                    -scale.x * s,
+                                    0.0,
+                                    scale.y * s,
+                                    scale.y * c,
+                                    0.0,
+                                    offset.x,
+                                    offset.y,
+                                    1.0,
+                                ]));
+                            }
+                            Ok(texture)
+                        };
+                    let mut standard = MeshStandardMaterial {
+                        roughness: pbr.roughness_factor() as f64,
+                        metalness: pbr.metallic_factor() as f64,
+                        emissive: Color(
+                            Vector3::from_array(source.emissive_factor().map(f64::from))
+                                * source.emissive_strength().unwrap_or(1.0) as f64,
+                        ),
                         ..Default::default()
                     };
-                    if let Some(specular) = source.specular() {
-                        physical.specular_intensity_map = specular
-                            .specular_texture()
-                            .map(|info| get_info(&info, false))
-                            .transpose()?;
-                        physical.specular_color_map = specular
-                            .specular_color_texture()
-                            .map(|info| get_info(&info, true))
-                            .transpose()?;
-                        physical.specular_color = Color(Vector3::from_array(
-                            specular.specular_color_factor().map(f64::from),
-                        ));
-                        physical.specular_intensity = specular.specular_factor() as f64;
+                    if let Some(info) = pbr.metallic_roughness_texture() {
+                        standard.metallic_roughness_map = Some(get_info(&info, false)?);
                     }
-                    for name in [
-                        "KHR_materials_clearcoat",
-                        "KHR_materials_sheen",
-                        "KHR_materials_anisotropy",
-                        "KHR_materials_transmission",
-                        "KHR_materials_volume",
-                        "KHR_materials_dispersion",
-                        "KHR_materials_iridescence",
-                    ] {
-                        if let Some(extension) = source.extension_value(name) {
-                            let map = |key: &str, srgb: bool| -> Result<Option<Arc<Texture>>> {
-                                let Some(info) = extension.get(key) else {
-                                    return Ok(None);
+                    if let Some(info) = source.normal_texture() {
+                        standard.normal_map = Some(transform_texture(
+                            get_texture(info.texture().index(), info.tex_coord(), false)?,
+                            info.extension_value("KHR_texture_transform"),
+                        )?);
+                        standard.normal_scale = Vector2::splat(info.scale() as f64);
+                    }
+                    if let Some(info) = source.occlusion_texture() {
+                        standard.occlusion_map = Some(transform_texture(
+                            get_texture(info.texture().index(), info.tex_coord(), false)?,
+                            info.extension_value("KHR_texture_transform"),
+                        )?);
+                        standard.occlusion_strength = info.strength() as f64;
+                    }
+                    if let Some(info) = source.emissive_texture() {
+                        standard.emissive_map = Some(get_info(&info, true)?);
+                    }
+                    // Match GLTFLoader's derivative-tangent convention for glTF UVs.
+                    if !geometry.attributes.contains_key("tangent") {
+                        standard.normal_scale.y *= -1.0;
+                    }
+                    let mut material = Material::Standard(standard);
+                    let p = material.properties_mut();
+                    p.color = Color(Vector3::new(
+                        factor[0] as f64,
+                        factor[1] as f64,
+                        factor[2] as f64,
+                    ));
+                    p.opacity = factor[3] as f64;
+                    p.transparent = source.alpha_mode() == gltf::material::AlphaMode::Blend;
+                    p.depth_write = !p.transparent;
+                    p.alpha_test = if source.alpha_mode() == gltf::material::AlphaMode::Mask {
+                        source.alpha_cutoff().unwrap_or(0.5) as f64
+                    } else {
+                        0.0
+                    };
+                    p.side = if source.double_sided() {
+                        Side::Double
+                    } else {
+                        Side::Front
+                    };
+                    if let Some(info) = pbr.base_color_texture() {
+                        p.map = Some(get_info(&info, true)?);
+                    }
+                    if let Some(colors) = reader.read_colors(0) {
+                        geometry.set_attribute(
+                            "color",
+                            Attribute::F32(BufferAttribute::new(
+                                colors.into_rgba_f32().flatten().collect(),
+                                4,
+                                false,
+                            )?),
+                        );
+                        p.vertex_colors = true;
+                    }
+                    if source.unlit() {
+                        material = Material::Basic(MeshBasicMaterial {
+                            properties: material.properties().clone(),
+                        });
+                    } else if source.ior().is_some()
+                        || source.specular().is_some()
+                        || [
+                            "KHR_materials_clearcoat",
+                            "KHR_materials_sheen",
+                            "KHR_materials_anisotropy",
+                            "KHR_materials_transmission",
+                            "KHR_materials_volume",
+                            "KHR_materials_dispersion",
+                            "KHR_materials_iridescence",
+                        ]
+                        .iter()
+                        .any(|name| source.extension_value(name).is_some())
+                    {
+                        let Material::Standard(base) = material else {
+                            unreachable!()
+                        };
+                        let mut physical = MeshPhysicalMaterial {
+                            base,
+                            ior: source.ior().unwrap_or(1.5) as f64,
+                            ..Default::default()
+                        };
+                        if let Some(specular) = source.specular() {
+                            physical.specular_intensity_map = specular
+                                .specular_texture()
+                                .map(|info| get_info(&info, false))
+                                .transpose()?;
+                            physical.specular_color_map = specular
+                                .specular_color_texture()
+                                .map(|info| get_info(&info, true))
+                                .transpose()?;
+                            physical.specular_color = Color(Vector3::from_array(
+                                specular.specular_color_factor().map(f64::from),
+                            ));
+                            physical.specular_intensity = specular.specular_factor() as f64;
+                        }
+                        for name in [
+                            "KHR_materials_clearcoat",
+                            "KHR_materials_sheen",
+                            "KHR_materials_anisotropy",
+                            "KHR_materials_transmission",
+                            "KHR_materials_volume",
+                            "KHR_materials_dispersion",
+                            "KHR_materials_iridescence",
+                        ] {
+                            if let Some(extension) = source.extension_value(name) {
+                                let map = |key: &str, srgb: bool| -> Result<Option<Arc<Texture>>> {
+                                    let Some(info) = extension.get(key) else {
+                                        return Ok(None);
+                                    };
+                                    let index = info["index"]
+                                        .as_u64()
+                                        .ok_or(Error::Invalid("physical texture index"))?
+                                        as usize;
+                                    let uv = info
+                                        .get("texCoord")
+                                        .map(|v| {
+                                            v.as_u64().ok_or(Error::Invalid("physical texture UV"))
+                                        })
+                                        .transpose()?
+                                        .unwrap_or(0);
+                                    if uv > 1 {
+                                        return Err(Error::Invalid("physical texture UV"));
+                                    }
+                                    Ok(Some(transform_texture(
+                                        get_texture(index, uv as u32, srgb)?,
+                                        info.get("extensions")
+                                            .and_then(|e| e.get("KHR_texture_transform")),
+                                    )?))
                                 };
-                                let index = info["index"]
-                                    .as_u64()
-                                    .ok_or(Error::Invalid("physical texture index"))?
-                                    as usize;
-                                let uv = info
-                                    .get("texCoord")
-                                    .map(|v| {
-                                        v.as_u64().ok_or(Error::Invalid("physical texture UV"))
-                                    })
-                                    .transpose()?
-                                    .unwrap_or(0);
-                                if uv > 1 {
-                                    return Err(Error::Invalid("physical texture UV"));
-                                }
-                                Ok(Some(transform_texture(
-                                    get_texture(index, uv as u32, srgb)?,
-                                    info.get("extensions")
-                                        .and_then(|e| e.get("KHR_texture_transform")),
-                                )?))
-                            };
-                            let value = |key: &str, default: f64| {
-                                extension[key].as_f64().unwrap_or(default)
-                            };
-                            match name {
-                                "KHR_materials_clearcoat" => {
-                                    physical.clearcoat_map = map("clearcoatTexture", false)?;
-                                    physical.clearcoat_roughness_map =
-                                        map("clearcoatRoughnessTexture", false)?;
-                                    physical.clearcoat_normal_map =
-                                        map("clearcoatNormalTexture", false)?;
-                                    physical.clearcoat_normal_scale = Vector2::splat(
-                                        extension["clearcoatNormalTexture"]["scale"]
-                                            .as_f64()
-                                            .unwrap_or(1.0),
-                                    );
-                                    if !geometry.attributes.contains_key("tangent") {
-                                        physical.clearcoat_normal_scale.y *= -1.0;
-                                    }
-
-                                    physical.clearcoat = value("clearcoatFactor", 0.0);
-                                    physical.clearcoat_roughness =
-                                        value("clearcoatRoughnessFactor", 0.0);
-                                }
-                                "KHR_materials_sheen" => {
-                                    physical.sheen_color_map = map("sheenColorTexture", true)?;
-                                    physical.sheen_roughness_map =
-                                        map("sheenRoughnessTexture", false)?;
-
-                                    physical.sheen = 1.0;
-                                    physical.sheen_roughness = value("sheenRoughnessFactor", 0.0);
-                                    if let Some(color) = extension["sheenColorFactor"].as_array() {
-                                        if color.len() != 3 {
-                                            return Err(Error::Invalid("sheen color"));
-                                        }
-                                        physical.sheen_color = Color::linear(
-                                            color[0].as_f64().unwrap_or(0.0),
-                                            color[1].as_f64().unwrap_or(0.0),
-                                            color[2].as_f64().unwrap_or(0.0),
+                                let value = |key: &str, default: f64| {
+                                    extension[key].as_f64().unwrap_or(default)
+                                };
+                                match name {
+                                    "KHR_materials_clearcoat" => {
+                                        physical.clearcoat_map = map("clearcoatTexture", false)?;
+                                        physical.clearcoat_roughness_map =
+                                            map("clearcoatRoughnessTexture", false)?;
+                                        physical.clearcoat_normal_map =
+                                            map("clearcoatNormalTexture", false)?;
+                                        physical.clearcoat_normal_scale = Vector2::splat(
+                                            extension["clearcoatNormalTexture"]["scale"]
+                                                .as_f64()
+                                                .unwrap_or(1.0),
                                         );
-                                    }
-                                }
-                                "KHR_materials_iridescence" => {
-                                    physical.iridescence = value("iridescenceFactor", 0.0);
-                                    physical.iridescence_ior = value("iridescenceIor", 1.3);
-                                    physical.iridescence_thickness_range = [
-                                        value("iridescenceThicknessMinimum", 100.0),
-                                        value("iridescenceThicknessMaximum", 400.0),
-                                    ];
-                                    physical.iridescence_map = map("iridescenceTexture", false)?;
-                                    physical.iridescence_thickness_map =
-                                        map("iridescenceThicknessTexture", false)?;
-                                }
-                                "KHR_materials_transmission" => {
-                                    physical.transmission = value("transmissionFactor", 0.0);
-                                    physical.transmission_map = map("transmissionTexture", false)?;
-                                }
-                                "KHR_materials_volume" => {
-                                    physical.thickness = value("thicknessFactor", 0.0);
-                                    physical.thickness_map = map("thicknessTexture", false)?;
-                                    physical.attenuation_distance =
-                                        value("attenuationDistance", f64::INFINITY);
-                                    if let Some(color) =
-                                        extension.get("attenuationColor").and_then(|v| v.as_array())
-                                    {
-                                        if color.len() != 3 {
-                                            return Err(Error::Invalid("attenuation color"));
+                                        if !geometry.attributes.contains_key("tangent") {
+                                            physical.clearcoat_normal_scale.y *= -1.0;
                                         }
-                                        physical.attenuation_color = Color::linear(
-                                            color[0].as_f64().unwrap_or(1.0),
-                                            color[1].as_f64().unwrap_or(1.0),
-                                            color[2].as_f64().unwrap_or(1.0),
-                                        );
+
+                                        physical.clearcoat = value("clearcoatFactor", 0.0);
+                                        physical.clearcoat_roughness =
+                                            value("clearcoatRoughnessFactor", 0.0);
                                     }
-                                }
-                                "KHR_materials_dispersion" => {
-                                    physical.dispersion = value("dispersion", 0.0);
-                                }
-                                _ => {
-                                    physical.anisotropy_map = map("anisotropyTexture", false)?;
-                                    physical.anisotropy = value("anisotropyStrength", 0.0);
-                                    physical.anisotropy_rotation = value("anisotropyRotation", 0.0);
+                                    "KHR_materials_sheen" => {
+                                        physical.sheen_color_map = map("sheenColorTexture", true)?;
+                                        physical.sheen_roughness_map =
+                                            map("sheenRoughnessTexture", false)?;
+
+                                        physical.sheen = 1.0;
+                                        physical.sheen_roughness =
+                                            value("sheenRoughnessFactor", 0.0);
+                                        if let Some(color) =
+                                            extension["sheenColorFactor"].as_array()
+                                        {
+                                            if color.len() != 3 {
+                                                return Err(Error::Invalid("sheen color"));
+                                            }
+                                            physical.sheen_color = Color::linear(
+                                                color[0].as_f64().unwrap_or(0.0),
+                                                color[1].as_f64().unwrap_or(0.0),
+                                                color[2].as_f64().unwrap_or(0.0),
+                                            );
+                                        }
+                                    }
+                                    "KHR_materials_iridescence" => {
+                                        physical.iridescence = value("iridescenceFactor", 0.0);
+                                        physical.iridescence_ior = value("iridescenceIor", 1.3);
+                                        physical.iridescence_thickness_range = [
+                                            value("iridescenceThicknessMinimum", 100.0),
+                                            value("iridescenceThicknessMaximum", 400.0),
+                                        ];
+                                        physical.iridescence_map =
+                                            map("iridescenceTexture", false)?;
+                                        physical.iridescence_thickness_map =
+                                            map("iridescenceThicknessTexture", false)?;
+                                    }
+                                    "KHR_materials_transmission" => {
+                                        physical.transmission = value("transmissionFactor", 0.0);
+                                        physical.transmission_map =
+                                            map("transmissionTexture", false)?;
+                                    }
+                                    "KHR_materials_volume" => {
+                                        physical.thickness = value("thicknessFactor", 0.0);
+                                        physical.thickness_map = map("thicknessTexture", false)?;
+                                        physical.attenuation_distance =
+                                            value("attenuationDistance", f64::INFINITY);
+                                        if let Some(color) = extension
+                                            .get("attenuationColor")
+                                            .and_then(|v| v.as_array())
+                                        {
+                                            if color.len() != 3 {
+                                                return Err(Error::Invalid("attenuation color"));
+                                            }
+                                            physical.attenuation_color = Color::linear(
+                                                color[0].as_f64().unwrap_or(1.0),
+                                                color[1].as_f64().unwrap_or(1.0),
+                                                color[2].as_f64().unwrap_or(1.0),
+                                            );
+                                        }
+                                    }
+                                    "KHR_materials_dispersion" => {
+                                        physical.dispersion = value("dispersion", 0.0);
+                                    }
+                                    _ => {
+                                        physical.anisotropy_map = map("anisotropyTexture", false)?;
+                                        physical.anisotropy = value("anisotropyStrength", 0.0);
+                                        physical.anisotropy_rotation =
+                                            value("anisotropyRotation", 0.0);
+                                    }
                                 }
                             }
                         }
+                        material = Material::Physical(physical);
                     }
-                    material = Material::Physical(physical);
+                    Ok(material)
+                };
+                let mut material = build(primitive.material(), &mut geometry)?;
+                let mut variants = Vec::new();
+                if let Some(mappings) = primitive
+                    .extension_value("KHR_materials_variants")
+                    .and_then(|v| v.get("mappings"))
+                    .and_then(|v| v.as_array())
+                {
+                    for mapping in mappings {
+                        let index = mapping["material"]
+                            .as_u64()
+                            .ok_or(Error::Invalid("variant material"))?
+                            as usize;
+                        let source = asset
+                            .materials()
+                            .nth(index)
+                            .ok_or(Error::Invalid("variant material"))?;
+                        let mut variant = build(source, &mut geometry)?;
+                        if !geometry.attributes.contains_key("normal") {
+                            variant.properties_mut().flat_shading = true;
+                        }
+                        let indices = mapping["variants"]
+                            .as_array()
+                            .ok_or(Error::Invalid("variant indices"))?
+                            .iter()
+                            .filter_map(|v| v.as_u64().map(|v| v as usize))
+                            .collect();
+                        variants.push((indices, Arc::new(variant)));
+                    }
                 }
                 if !geometry.attributes.contains_key("normal") {
                     // GLTFLoader derives flat normals from the deformed surface
@@ -570,6 +617,7 @@ fn import_internal(
                     world,
                     Mesh::new(Arc::new(geometry), Arc::new(material)),
                 ));
+                variant_materials.push(variants);
             }
         }
     }
@@ -581,6 +629,7 @@ fn import_internal(
         bounds,
         triangles,
         meshes,
+        variant_materials,
         mesh_nodes,
     })
 }

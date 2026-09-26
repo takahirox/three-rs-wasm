@@ -7,6 +7,8 @@ enum Content {
     LightsProbes(Box<super::lights_probes::Demo>),
     ExportersVideo(Box<super::exporters_video::Demo>),
     ShadowRtt(Box<super::shadow_rtt::Demo>),
+    TextureFlares(Box<super::texture_flares::Demo>),
+    DracoVariants(Box<super::draco_variants::Demo>),
     PassesDecals(Box<super::passes_decals::Demo>),
     ProbesHdr(Box<super::probes_hdr::Demo>),
     SkyWater(Box<super::sky_water::Demo>),
@@ -96,6 +98,24 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            298..=302 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::TextureFlares(Box::new(
+                    super::texture_flares::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            293..=297 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::DracoVariants(Box::new(
+                    super::draco_variants::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             288..=292 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -886,6 +906,12 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1260,6 +1286,9 @@ impl Demo {
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1403,6 +1432,12 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
@@ -1482,6 +1517,12 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::PassesDecals(demo) = &mut self.content {
@@ -1631,6 +1672,12 @@ impl Demo {
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -1686,6 +1733,14 @@ impl Demo {
             return Ok(());
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -1745,6 +1800,12 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::PassesDecals(demo) = &mut self.content {
@@ -1893,6 +1954,12 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ShadowRtt(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::DracoVariants(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PassesDecals(demo) = &mut self.content {

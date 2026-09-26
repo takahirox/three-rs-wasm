@@ -225,3 +225,14 @@ The composer-background, lava, uniform-buffer, RGB halftone and decal batch
 compared against the WebGL renderer. A scoped bound covers the uniform-buffer
 scene's MSAA edges.
 
+The uniform-buffer array, Draco, keyframe, material-variant and facecap batch
+([draco-variants.md](draco-variants.md)) lists `webgpu_morphtargets_face` and
+excludes `webgl_morphtargets_face`. The other four are compared against the
+WebGL renderer. Scoped bounds cover MSAA edges, the Draco bunny's PCF noise
+orientation and the facecap background's one-step rounding.
+
+The canvas raycast texture, 3D partial update, cube mip, lens flare and car
+batch ([texture-flares.md](texture-flares.md)) lists `webgpu_lensflares` and
+excludes `webgl_lensflares`. The other four are compared against the WebGL
+renderer. A scoped bound covers the car's MSAA edges.
+

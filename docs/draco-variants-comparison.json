@@ -1,0 +1,2597 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/draco-variants.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "draco-variants-Draco-and-v-10d39-morphtargets-face-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.7563095092773438
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.7559178670247396
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.7560717264811198
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.7199325561523438
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.6174583435058594
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.753390625
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-32516-y-webgl-animation-keyframes": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 1346,
+       "transfers": [
+        73,
+        17155752,
+        27184
+       ],
+       "resources": [
+        62,
+        62,
+        0
+       ]
+      },
+      "after": {
+       "creates": 1346,
+       "transfers": [
+        73,
+        17155752,
+        27184
+       ],
+       "resources": [
+        62,
+        62,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 1351,
+       "transfers": [
+        73,
+        17155752,
+        27184
+       ],
+       "resources": [
+        62,
+        62,
+        0
+       ]
+      },
+      "after": {
+       "creates": 1351,
+       "transfers": [
+        73,
+        17155752,
+        27184
+       ],
+       "resources": [
+        62,
+        62,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-4ad6e-ebgl-loader-draco-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.026622772216796875,
+      "meanError": 0.622704823811849
+     },
+     {
+      "state": 1,
+      "fraction": 0.02864837646484375,
+      "meanError": 0.6263326009114584
+     },
+     {
+      "state": 2,
+      "fraction": 0.02518463134765625,
+      "meanError": 0.5060386657714844
+     },
+     {
+      "state": 3,
+      "fraction": 0.018625,
+      "meanError": 0.39998046875
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-737ee-ebgl-loader-draco-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.025104522705078125,
+      "meanError": 0.6001014709472656
+     },
+     {
+      "state": 1,
+      "fraction": 0.02712249755859375,
+      "meanError": 0.6039237976074219
+     },
+     {
+      "state": 2,
+      "fraction": 0.0236968994140625,
+      "meanError": 0.4841105143229167
+     },
+     {
+      "state": 3,
+      "fraction": 0.01737890625,
+      "meanError": 0.3803606770833333
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-8c3b7-der-gltf-variants-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006839752197265625,
+      "meanError": 0.4808349609375
+     },
+     {
+      "state": 1,
+      "fraction": 0.007297515869140625,
+      "meanError": 0.5704854329427084
+     },
+     {
+      "state": 2,
+      "fraction": 0.005130767822265625,
+      "meanError": 0.4481010437011719
+     },
+     {
+      "state": 3,
+      "fraction": 0.00664520263671875,
+      "meanError": 0.4850044250488281
+     },
+     {
+      "state": 4,
+      "fraction": 0.007518768310546875,
+      "meanError": 0.543999989827474
+     },
+     {
+      "state": 5,
+      "fraction": 0.00641796875,
+      "meanError": 0.46624348958333334
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-a30b7-morphtargets-face-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.7574653625488281
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.7566935221354166
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.75714111328125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.721154530843099
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.6182746887207031
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.7544856770833334
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-bd2f8--webgl-ubo-arrays-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00006993611653645833
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00006612141927083333
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.000058492024739583336
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.000011444091796875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00006612141927083333
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.000035603841145833336
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.000044504801432291664
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.00010677083333333334
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-c781f-cy-webgpu-morphtargets-face": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 155,
+       "transfers": [
+        5,
+        448008,
+        4482880
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 155,
+       "transfers": [
+        5,
+        448008,
+        4482880
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 160,
+       "transfers": [
+        5,
+        448008,
+        4482880
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 160,
+       "transfers": [
+        5,
+        448008,
+        4482880
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-c8b7f--webgl-ubo-arrays-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00543212890625,
+      "meanError": 0.09053929646809895
+     },
+     {
+      "state": 1,
+      "fraction": 0.0052337646484375,
+      "meanError": 0.08634440104166667
+     },
+     {
+      "state": 2,
+      "fraction": 0.005565643310546875,
+      "meanError": 0.0923627217610677
+     },
+     {
+      "state": 3,
+      "fraction": 0.0013427734375,
+      "meanError": 0.0191497802734375
+     },
+     {
+      "state": 4,
+      "fraction": 0.0052337646484375,
+      "meanError": 0.08634440104166667
+     },
+     {
+      "state": 5,
+      "fraction": 0.0054779052734375,
+      "meanError": 0.08068084716796875
+     },
+     {
+      "state": 6,
+      "fraction": 0.005252838134765625,
+      "meanError": 0.0800336201985677
+     },
+     {
+      "state": 7,
+      "fraction": 0.00475390625,
+      "meanError": 0.07296614583333333
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-d651e--residency-webgl-ubo-arrays": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 536,
+       "transfers": [
+        2,
+        56744,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 536,
+       "transfers": [
+        2,
+        56744,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 541,
+       "transfers": [
+        2,
+        56744,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 541,
+       "transfers": [
+        2,
+        56744,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-e0481-der-gltf-variants-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0009613037109375,
+      "meanError": 0.38408788045247394
+     },
+     {
+      "state": 1,
+      "fraction": 0.001117706298828125,
+      "meanError": 0.4708099365234375
+     },
+     {
+      "state": 2,
+      "fraction": 0.000492095947265625,
+      "meanError": 0.3439750671386719
+     },
+     {
+      "state": 3,
+      "fraction": 0.00084686279296875,
+      "meanError": 0.37195078531901044
+     },
+     {
+      "state": 4,
+      "fraction": 0.000957489013671875,
+      "meanError": 0.41182581583658856
+     },
+     {
+      "state": 5,
+      "fraction": 0.000765625,
+      "meanError": 0.35650130208333336
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-e4426--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "webgl_ubo_arrays",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 4800,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 4800,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_draco",
+      "reference": {
+       "draws": [
+        {
+         "count": 208353,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 208353,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 208353,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 208353,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_keyframes",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 27372,
+         "instances": 1
+        },
+        {
+         "count": 122202,
+         "instances": 1
+        },
+        {
+         "count": 8898,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 168,
+         "instances": 1
+        },
+        {
+         "count": 4581,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 138,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 138,
+         "instances": 1
+        },
+        {
+         "count": 66,
+         "instances": 1
+        },
+        {
+         "count": 87828,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 429,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 52050,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 42,
+         "instances": 1
+        },
+        {
+         "count": 2406,
+         "instances": 1
+        },
+        {
+         "count": 1152,
+         "instances": 1
+        },
+        {
+         "count": 1152,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 117,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 348,
+         "instances": 1
+        },
+        {
+         "count": 348,
+         "instances": 1
+        },
+        {
+         "count": 50805,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 28314,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 5544,
+         "instances": 1
+        },
+        {
+         "count": 696,
+         "instances": 1
+        },
+        {
+         "count": 948,
+         "instances": 1
+        },
+        {
+         "count": 4746,
+         "instances": 1
+        },
+        {
+         "count": 156,
+         "instances": 1
+        },
+        {
+         "count": 156,
+         "instances": 1
+        },
+        {
+         "count": 957,
+         "instances": 1
+        },
+        {
+         "count": 957,
+         "instances": 1
+        },
+        {
+         "count": 444,
+         "instances": 1
+        },
+        {
+         "count": 444,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 9,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 138,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 429,
+         "instances": 1
+        },
+        {
+         "count": 117,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 66,
+         "instances": 1
+        },
+        {
+         "count": 348,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 348,
+         "instances": 1
+        },
+        {
+         "count": 87828,
+         "instances": 1
+        },
+        {
+         "count": 28314,
+         "instances": 1
+        },
+        {
+         "count": 52050,
+         "instances": 1
+        },
+        {
+         "count": 50805,
+         "instances": 1
+        },
+        {
+         "count": 696,
+         "instances": 1
+        },
+        {
+         "count": 4746,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 168,
+         "instances": 1
+        },
+        {
+         "count": 122202,
+         "instances": 1
+        },
+        {
+         "count": 27372,
+         "instances": 1
+        },
+        {
+         "count": 4581,
+         "instances": 1
+        },
+        {
+         "count": 408,
+         "instances": 1
+        },
+        {
+         "count": 384,
+         "instances": 1
+        },
+        {
+         "count": 42,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 195,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 138,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 90,
+         "instances": 1
+        },
+        {
+         "count": 5022,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 180,
+         "instances": 1
+        },
+        {
+         "count": 1152,
+         "instances": 1
+        },
+        {
+         "count": 1152,
+         "instances": 1
+        },
+        {
+         "count": 2406,
+         "instances": 1
+        },
+        {
+         "count": 5544,
+         "instances": 1
+        },
+        {
+         "count": 948,
+         "instances": 1
+        },
+        {
+         "count": 8898,
+         "instances": 1
+        },
+        {
+         "count": 540,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 957,
+         "instances": 1
+        },
+        {
+         "count": 957,
+         "instances": 1
+        },
+        {
+         "count": 444,
+         "instances": 1
+        },
+        {
+         "count": 444,
+         "instances": 1
+        },
+        {
+         "count": 156,
+         "instances": 1
+        },
+        {
+         "count": 156,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 16384,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_gltf_variants",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 68100,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 68100,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_morphtargets_face",
+      "reference": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 3270,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 15096,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 15096,
+         "instances": 1
+        },
+        {
+         "count": 3270,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 208,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-ed71e-imation-keyframes-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00264739990234375,
+      "meanError": 0.24427286783854166
+     },
+     {
+      "state": 1,
+      "fraction": 0.002593994140625,
+      "meanError": 0.23845291137695312
+     },
+     {
+      "state": 2,
+      "fraction": 0.002590179443359375,
+      "meanError": 0.23808670043945312
+     },
+     {
+      "state": 3,
+      "fraction": 0.002838134765625,
+      "meanError": 0.21928278605143228
+     },
+     {
+      "state": 4,
+      "fraction": 0.003265380859375,
+      "meanError": 0.2737986246744792
+     },
+     {
+      "state": 5,
+      "fraction": 0.00280859375,
+      "meanError": 0.19622786458333333
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-f95a6--webgl-loader-gltf-variants": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 141,
+       "transfers": [
+        1,
+        1355600,
+        16
+       ],
+       "resources": [
+        6,
+        6,
+        0
+       ]
+      },
+      "after": {
+       "creates": 141,
+       "transfers": [
+        1,
+        1355600,
+        16
+       ],
+       "resources": [
+        6,
+        6,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 146,
+       "transfers": [
+        1,
+        1355600,
+        16
+       ],
+       "resources": [
+        6,
+        6,
+        0
+       ]
+      },
+      "after": {
+       "creates": 146,
+       "transfers": [
+        1,
+        1355600,
+        16
+       ],
+       "resources": [
+        6,
+        6,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-fa542-imation-keyframes-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.05204010009765625,
+      "meanError": 1.137891133626302
+     },
+     {
+      "state": 1,
+      "fraction": 0.05420684814453125,
+      "meanError": 1.178967793782552
+     },
+     {
+      "state": 2,
+      "fraction": 0.054088592529296875,
+      "meanError": 1.1802279154459636
+     },
+     {
+      "state": 3,
+      "fraction": 0.0789031982421875,
+      "meanError": 1.7145830790201824
+     },
+     {
+      "state": 4,
+      "fraction": 0.08856582641601562,
+      "meanError": 1.935167948404948
+     },
+     {
+      "state": 5,
+      "fraction": 0.07126171875,
+      "meanError": 1.5418203125
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-fd99b-esidency-webgl-loader-draco": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 43,
+       "transfers": [
+        2,
+        3620476,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 43,
+       "transfers": [
+        2,
+        3620476,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 48,
+       "transfers": [
+        2,
+        3620476,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 48,
+       "transfers": [
+        2,
+        3620476,
+        32
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "draco-variants-Draco-and-v-10d39-morphtargets-face-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.7564331690470377
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.7564970652262369
+     },
+     {
+      "state": 2,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.7566868464152018
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.7205171585083008
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.6694663365681967
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.7927041015625
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-4ad6e-ebgl-loader-draco-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.02578449249267578,
+      "meanError": 0.6113243103027344
+     },
+     {
+      "state": 1,
+      "fraction": 0.027543067932128906,
+      "meanError": 0.6096102396647135
+     },
+     {
+      "state": 2,
+      "fraction": 0.0246429443359375,
+      "meanError": 0.5003086725870768
+     },
+     {
+      "state": 3,
+      "fraction": 0.0176796875,
+      "meanError": 0.3870091145833333
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-737ee-ebgl-loader-draco-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.02511882781982422,
+      "meanError": 0.6023149490356445
+     },
+     {
+      "state": 1,
+      "fraction": 0.02681255340576172,
+      "meanError": 0.5990524291992188
+     },
+     {
+      "state": 2,
+      "fraction": 0.0239105224609375,
+      "meanError": 0.49030208587646484
+     },
+     {
+      "state": 3,
+      "fraction": 0.0170615234375,
+      "meanError": 0.3782783203125
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-8c3b7-der-gltf-variants-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00324249267578125,
+      "meanError": 0.42128976186116535
+     },
+     {
+      "state": 1,
+      "fraction": 0.0035829544067382812,
+      "meanError": 0.509364128112793
+     },
+     {
+      "state": 2,
+      "fraction": 0.0024271011352539062,
+      "meanError": 0.3861411412556966
+     },
+     {
+      "state": 3,
+      "fraction": 0.003292083740234375,
+      "meanError": 0.4190390904744466
+     },
+     {
+      "state": 4,
+      "fraction": 0.0035076141357421875,
+      "meanError": 0.4407672882080078
+     },
+     {
+      "state": 5,
+      "fraction": 0.002857421875,
+      "meanError": 0.38324479166666664
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-a30b7-morphtargets-face-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.7570101420084635
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.7570387522379557
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.7572075525919596
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.7211558024088541
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.670079231262207
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.7932197265625
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-bd2f8--webgl-ubo-arrays-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00007597605387369792
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00006453196207682292
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.000057856241861979164
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.000009854634602864584
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00006453196207682292
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.000034650166829427086
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.000048319498697916664
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.000021158854166666667
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-c8b7f--webgl-ubo-arrays-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0053501129150390625,
+      "meanError": 0.0775604248046875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00511932373046875,
+      "meanError": 0.07418568929036458
+     },
+     {
+      "state": 2,
+      "fraction": 0.005764961242675781,
+      "meanError": 0.0799862543741862
+     },
+     {
+      "state": 3,
+      "fraction": 0.0009708404541015625,
+      "meanError": 0.016421000162760418
+     },
+     {
+      "state": 4,
+      "fraction": 0.00511932373046875,
+      "meanError": 0.07418568929036458
+     },
+     {
+      "state": 5,
+      "fraction": 0.004673004150390625,
+      "meanError": 0.06902917226155598
+     },
+     {
+      "state": 6,
+      "fraction": 0.004740715026855469,
+      "meanError": 0.0705874760945638
+     },
+     {
+      "state": 7,
+      "fraction": 0.004287109375,
+      "meanError": 0.06427669270833333
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-e0481-der-gltf-variants-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00060272216796875,
+      "meanError": 0.3765144348144531
+     },
+     {
+      "state": 1,
+      "fraction": 0.0006580352783203125,
+      "meanError": 0.4619690577189128
+     },
+     {
+      "state": 2,
+      "fraction": 0.00025844573974609375,
+      "meanError": 0.3384571075439453
+     },
+     {
+      "state": 3,
+      "fraction": 0.0004520416259765625,
+      "meanError": 0.363406499226888
+     },
+     {
+      "state": 4,
+      "fraction": 0.0004730224609375,
+      "meanError": 0.38118934631347656
+     },
+     {
+      "state": 5,
+      "fraction": 0.0003681640625,
+      "meanError": 0.33517903645833336
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-ed71e-imation-keyframes-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.002048492431640625,
+      "meanError": 0.23221397399902344
+     },
+     {
+      "state": 1,
+      "fraction": 0.0020017623901367188,
+      "meanError": 0.22690232594807944
+     },
+     {
+      "state": 2,
+      "fraction": 0.0019941329956054688,
+      "meanError": 0.22672430674235025
+     },
+     {
+      "state": 3,
+      "fraction": 0.0018033981323242188,
+      "meanError": 0.19066270192464194
+     },
+     {
+      "state": 4,
+      "fraction": 0.0018463134765625,
+      "meanError": 0.21298948923746744
+     },
+     {
+      "state": 5,
+      "fraction": 0.0016162109375,
+      "meanError": 0.1519755859375
+     }
+    ]
+   },
+   "draco-variants-Draco-and-v-fa542-imation-keyframes-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.027342796325683594,
+      "meanError": 0.6758979161580404
+     },
+     {
+      "state": 1,
+      "fraction": 0.028715133666992188,
+      "meanError": 0.7049541473388672
+     },
+     {
+      "state": 2,
+      "fraction": 0.028638839721679688,
+      "meanError": 0.705534299214681
+     },
+     {
+      "state": 3,
+      "fraction": 0.04241371154785156,
+      "meanError": 0.9754254023234049
+     },
+     {
+      "state": 4,
+      "fraction": 0.04506492614746094,
+      "meanError": 1.0461889902750652
+     },
+     {
+      "state": 5,
+      "fraction": 0.0364326171875,
+      "meanError": 0.8226025390625
+     }
+    ]
+   }
+  }
+ }
+}

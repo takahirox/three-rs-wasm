@@ -1,6 +1,6 @@
 //! SkyMesh with a dynamic cube reflection, the cascaded sun light over the sky
 //! environment, the pointer-lock walk, the video panorama and the ocean.
-mod sky;
+pub(super) mod sky;
 use super::controls_attributes::{CameraState, Controls, camera_state};
 use super::trackball_sprites::FirstPerson;
 use crate::{

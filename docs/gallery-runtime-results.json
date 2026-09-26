@@ -9,8 +9,8 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 541,
-    "excluded": 30,
+    "runtime-prerequisite": 539,
+    "excluded": 32,
     "rust-static-frame-rendered": 33,
     "rust-empty-frame": 3
   },
@@ -19,7 +19,7 @@
       "id": "webgl_animation_keyframes",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_keyframes.html",
       "source_sha256": "68dd0cf9d8dd135628bfe70a4f06f7d637d6b29c806af9beec2be701decf7106",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_animation_keyframes",
         "source_sha256": "68dd0cf9d8dd135628bfe70a4f06f7d637d6b29c806af9beec2be701decf7106",
@@ -1443,28 +1443,8 @@
       "id": "webgl_lensflares",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lensflares.html",
       "source_sha256": "0c706d5d8aff1a98e2ab4d392c79cbbac5e452074c1ea8e737964e6c46231bf3",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_lensflares",
-        "source_sha256": "0c706d5d8aff1a98e2ab4d392c79cbbac5e452074c1ea8e737964e6c46231bf3",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Fog: linear",
-          "Material type: MeshPhongMaterial",
-          "Probe resource limit: more than 2000 objects"
-        ],
-        "observed": {
-          "objects": 3003,
-          "vertices": 72012,
-          "lights": 4
-        },
-        "elapsed_ms": 1310,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": true
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lightprobe",
@@ -2072,7 +2052,7 @@
       "id": "webgl_loader_draco",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_draco.html",
       "source_sha256": "9f13086a8563d24339c701efdf84c4a33a6e1e490414a507819116a04e1c160a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_draco",
         "source_sha256": "9f13086a8563d24339c701efdf84c4a33a6e1e490414a507819116a04e1c160a",
@@ -2392,7 +2372,7 @@
       "id": "webgl_loader_gltf_variants",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_variants.html",
       "source_sha256": "a6d1e8fa8e31b5cc5e1dfe37bc4f248bb96e15199aed0d081d1d91581f0d445c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gltf_variants",
         "source_sha256": "a6d1e8fa8e31b5cc5e1dfe37bc4f248bb96e15199aed0d081d1d91581f0d445c",
@@ -3403,7 +3383,7 @@
       "id": "webgl_materials_car",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_car.html",
       "source_sha256": "e362b6ebc8a5e6da4f05b2d4d6b09933b0c9ab88503b9690e0e598d5b2137ef8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_car",
         "source_sha256": "e362b6ebc8a5e6da4f05b2d4d6b09933b0c9ab88503b9690e0e598d5b2137ef8",
@@ -3561,7 +3541,7 @@
       "id": "webgl_materials_cubemap_render_to_mipmaps",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_render_to_mipmaps.html",
       "source_sha256": "be81d353ef03d8d4c7efe1adbac629fe7bbddfec95801a2eb829dd609b4fdabc",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_cubemap_render_to_mipmaps",
         "source_sha256": "be81d353ef03d8d4c7efe1adbac629fe7bbddfec95801a2eb829dd609b4fdabc",
@@ -4363,26 +4343,8 @@
       "id": "webgl_morphtargets_face",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_face.html",
       "source_sha256": "61f1b2210d4591d7be198275299e602f0e18181d06d1766d1441ac0de13d5ad5",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_morphtargets_face",
-        "source_sha256": "61f1b2210d4591d7be198275299e602f0e18181d06d1766d1441ac0de13d5ad5",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Morph target evaluation"
-        ],
-        "observed": {
-          "objects": 4,
-          "vertices": 4368,
-          "lights": 0
-        },
-        "elapsed_ms": 1281,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_morphtargets_horse",
@@ -4823,7 +4785,7 @@
       "id": "webgl_raycaster_texture",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_texture.html",
       "source_sha256": "5858801b68cffc10012a39a38b5eb5d6c8cf55a333eb8c105c79426d9807c133",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_raycaster_texture",
         "source_sha256": "5858801b68cffc10012a39a38b5eb5d6c8cf55a333eb8c105c79426d9807c133",
@@ -7073,7 +7035,7 @@
       "id": "webgl_texture3d_partialupdate",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture3d_partialupdate.html",
       "source_sha256": "b3c8fcd8b2eb0ee60a903023b81be1de88a9c9d833d90fe834636c444a8b3241",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_texture3d_partialupdate",
         "source_sha256": "b3c8fcd8b2eb0ee60a903023b81be1de88a9c9d833d90fe834636c444a8b3241",
@@ -7123,7 +7085,7 @@
       "id": "webgl_ubo_arrays",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_ubo_arrays.html",
       "source_sha256": "2fcec4cea4a131c86199464ce0cbaae6bfc20b305a68388adb0a49f248191f8e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_ubo_arrays",
         "source_sha256": "2fcec4cea4a131c86199464ce0cbaae6bfc20b305a68388adb0a49f248191f8e",
@@ -8883,7 +8845,7 @@
       "id": "webgpu_lensflares",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lensflares.html",
       "source_sha256": "6fb406fe48ddcbe28105091a8953a6e38be5a869432319ec04b672d660445280",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lensflares",
         "source_sha256": "6fb406fe48ddcbe28105091a8953a6e38be5a869432319ec04b672d660445280",
@@ -10332,7 +10294,7 @@
       "id": "webgpu_morphtargets_face",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_morphtargets_face.html",
       "source_sha256": "778ea85fa5ffcc83e09d9354fddbaee960d98690cdb06bfdd008d446c3e488b7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_morphtargets_face",
         "source_sha256": "778ea85fa5ffcc83e09d9354fddbaee960d98690cdb06bfdd008d446c3e488b7",

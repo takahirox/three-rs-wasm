@@ -695,3 +695,28 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 - **Reuse.** The wood texture, the pisa cube and the LeePerrySmith head and
   maps are reused from earlier batches.
 
+`gallery/assets/draco-variants/` holds the unmodified r186 files:
+
+- `models/draco/bunny.drc`;
+- `textures/equirectangular/quarry_01_1k.hdr`;
+- `models/gltf/facecap.glb`;
+- `models/gltf/MaterialsVariantsShoe/` (the glTF, its buffer and textures, and
+  its README).
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `draco-variants-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE`:
+  - the shoe is © 2020 Shopify, Inc., CC BY 4.0, as its README states;
+  - the Quarry panorama is from Poly Haven (CC0);
+  - the others are credited as in the Three.js examples.
+- **Reuse.** Littlest Tokyo is reused from `tsl-viewport/`.
+
+`gallery/assets/texture-flares/` holds the unmodified r186
+`textures/lensflare/lensflare3.png`.
+
+- **Hashes.** Its source path and SHA-256 hash are in
+  `texture-flares-manifest.json`.
+- **License.** It is distributed alongside `LICENSE-THREE`.
+- **Reuse.** The uv grid, `lensflare0.png`, the Park3Med cube, the Ferrari and
+  its AO map, and the Venice Sunset panorama are reused from earlier batches.
+

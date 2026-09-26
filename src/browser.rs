@@ -6,6 +6,7 @@ use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
 mod buffer_particles;
 mod controls_attributes;
+mod draco_variants;
 mod environment_materials;
 mod expanded;
 mod expanded_geometry_colors;
@@ -47,6 +48,7 @@ mod teapot_data;
 mod terrain_loaders;
 mod text_clipping;
 mod text_shapes;
+mod texture_flares;
 mod trackball_sprites;
 mod tsl_compute;
 mod tsl_environment;
@@ -205,7 +207,7 @@ impl State {
             223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
             240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
             258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
-            291, 292,
+            291, 292, 293, 294, 295, 296, 298, 299, 300, 302,
         ]
         .contains(&self.example)
         {
@@ -930,7 +932,7 @@ impl BrowserApp {
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
-                            291,
+                            291, 298, 299, 301,
                         ]
                         .contains(&example)
                         {
@@ -945,7 +947,7 @@ impl BrowserApp {
                             226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
                             241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 258,
                             259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
-                            289, 290, 291, 292,
+                            289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302,
                         ]
                         .contains(&example),
                         format: if [
@@ -957,7 +959,8 @@ impl BrowserApp {
                             225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
                             239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
                             253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280,
-                            281, 282, 284, 285, 288, 289, 290, 291, 292,
+                            281, 282, 284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298,
+                            299, 300, 302,
                         ]
                         .contains(&example)
                         {
@@ -989,7 +992,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=292).contains(&example) {
+            if (7..=302).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1148,7 +1151,7 @@ impl BrowserApp {
                     // These official static scenes render only on load, input and resize.
                     if !([
                         16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236,
-                        237, 240, 242, 255, 277, 283,
+                        237, 240, 242, 255, 277, 283, 296,
                     ]
                     .contains(&state.example)
                         || state.paused && state.example >= 39)

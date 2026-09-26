@@ -74,7 +74,7 @@ fn sky_color(world:vec3<f32>,a:vec4<f32>,b:vec4<f32>,c:vec4<f32>,d:vec4<f32>)->v
 
 /// SkyMesh's uniforms, with its defaults.
 #[derive(Clone, Copy)]
-pub(super) struct Sky {
+pub(in crate::browser) struct Sky {
     pub turbidity: f64,
     pub rayleigh: f64,
     pub mie_coefficient: f64,
@@ -141,7 +141,7 @@ impl Sky {
     }
 }
 /// The sky program: z pinned to the far plane, back faces, no depth writes.
-pub(super) async fn sky_program(r: &Renderer) -> Result<Arc<ShaderProgram>> {
+pub(in crate::browser) async fn sky_program(r: &Renderer) -> Result<Arc<ShaderProgram>> {
     let color = WgslFn::new(
         "sky_color",
         SKY,
@@ -167,7 +167,7 @@ pub(super) async fn sky_program(r: &Renderer) -> Result<Arc<ShaderProgram>> {
     ))
 }
 /// A SkyMesh node: the unit box scaled by `scale`.
-pub(super) fn sky_mesh(
+pub(in crate::browser) fn sky_mesh(
     s: &mut Scene,
     program: &Arc<ShaderProgram>,
     scale: f64,

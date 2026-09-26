@@ -39,6 +39,46 @@ fn append_view(document: &mut Value, buffers: &mut Vec<Vec<u8>>, data: Vec<u8>) 
 }
 /// `buffers` contains resolved external buffers (or the GLB BIN chunk) in source
 /// index order. Missing URI-less meshopt fallback buffers may be empty.
+/// DRACOLoader for a standalone `.drc` mesh: position, normal, color and uv as
+/// float attributes, with the face indices.
+pub fn decode_draco(bytes: &[u8]) -> Result<crate::geometry::BufferGeometry> {
+    use crate::attribute::BufferAttribute;
+    use crate::geometry::{Attribute, BufferGeometry};
+    use draco_core::geometry_attribute::GeometryAttributeType as T;
+    let mut mesh = draco_core::Mesh::new();
+    draco_core::MeshDecoder::new()
+        .decode(&mut draco_core::DecoderBuffer::new(bytes), &mut mesh)
+        .map_err(|e| Error::Asset(format!("Draco: {e:?}")))?;
+    if mesh.num_points() > 16_000_000 {
+        return Err(Error::Invalid("Draco vertex count"));
+    }
+    let mut geometry = BufferGeometry::default();
+    for (kind, name) in [
+        (T::Position, "position"),
+        (T::Normal, "normal"),
+        (T::Color, "color"),
+        (T::TexCoord, "uv"),
+    ] {
+        if let Some(attribute) = mesh.named_attribute(kind) {
+            let size = attribute.num_components() as usize;
+            let values = attribute.read_f32s(mesh.num_points(), size);
+            geometry.set_attribute(
+                name,
+                Attribute::F32(BufferAttribute::new(values, size, false)?),
+            );
+        }
+    }
+    let mut indices = Vec::with_capacity(mesh.num_faces() * 3);
+    for i in 0..mesh.num_faces() {
+        indices.extend(
+            mesh.face(draco_core::geometry_indices::FaceIndex(i as u32))
+                .iter()
+                .map(|index| index.0),
+        );
+    }
+    geometry.set_index(Some(indices));
+    Ok(geometry)
+}
 pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
     let mut document: Value = if bytes.starts_with(b"glTF") {
         let glb = gltf::binary::Glb::from_slice(bytes).map_err(|e| Error::Asset(e.to_string()))?;

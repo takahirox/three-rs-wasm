@@ -31,7 +31,7 @@ uuid = { version = "1", features = ["v4", "js", "serde"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
-web-sys = { version = "0.3", features = ["Window", "Document", "HtmlCanvasElement", "Element", "EventTarget", "Event", "PointerEvent", "KeyboardEvent", "Response", "Performance", "console", "Blob", "ImageBitmap", "ImageBitmapOptions", "ColorSpaceConversion", "PremultiplyAlpha", "CanvasGradient", "OffscreenCanvas", "OffscreenCanvasRenderingContext2d", "CanvasRenderingContext2d", "ImageData", "HtmlMediaElement", "HtmlVideoElement"] }
+web-sys = { version = "0.3", features = ["Window", "Document", "HtmlCanvasElement", "Element", "EventTarget", "Event", "PointerEvent", "KeyboardEvent", "Response", "Performance", "console", "Blob", "ImageBitmap", "ImageBitmapOptions", "ColorSpaceConversion", "PremultiplyAlpha", "CanvasGradient", "OffscreenCanvas", "OffscreenCanvasRenderingContext2d", "CanvasRenderingContext2d", "ImageData", "HtmlMediaElement", "HtmlVideoElement", "HtmlImageElement"] }
 
 [dev-dependencies]
 pollster = "0.4"

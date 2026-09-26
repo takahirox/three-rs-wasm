@@ -1,0 +1,57 @@
+[
+ {
+  "file": "draco-variants/bunny.drc",
+  "source": "examples/models/draco/bunny.drc",
+  "sha256": "3bb08f257d873f69ded447e07c2dd4e9d7a264d58a686c88978c38430c5f6eb4"
+ },
+ {
+  "file": "draco-variants/quarry_01_1k.hdr",
+  "source": "examples/textures/equirectangular/quarry_01_1k.hdr",
+  "sha256": "a3101f0ae89ed847dbed88da3ffa3ddb17b5acf8063099b26ceae08f640eea9b"
+ },
+ {
+  "file": "draco-variants/facecap.glb",
+  "source": "examples/models/gltf/facecap.glb",
+  "sha256": "6bfce6d0fcbb5839f5102b79733007859fef7c5df6d9eb49e2264542810b5f64"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/README.md",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/README.md",
+  "sha256": "301bc962029a2bbb94d6252a5576a673b38d1293e78a6c6511a5e273ba301ccf"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/MaterialsVariantsShoe.bin",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.bin",
+  "sha256": "76396a934f53ca9ef39fab20fe27178a5b00e726b710432089b924b6c3d87c4c"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf",
+  "sha256": "80f0a8feff5494ad1cfb978578502cc980fe75d8f585a5346033c3108d90906f"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/diffuseBeach.jpg",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/diffuseBeach.jpg",
+  "sha256": "346526481eb3f2399cad743cc46b4f89dc281d90af703c910dfac8c860191035"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/diffuseMidnight.jpg",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/diffuseMidnight.jpg",
+  "sha256": "44050f6953b7a212a8f4016c980ac7e7ea6887c44e6d9ead45473a34f1818dd6"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/diffuseStreet.jpg",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/diffuseStreet.jpg",
+  "sha256": "170ae397f725cd2c1b1560c5f3c4280984c49901faaf5033f47b52c578e1b676"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/normal.jpg",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/normal.jpg",
+  "sha256": "36b185826d49e8dafc98a2550a40c5693a4f25cf0210e3c37826501377aaa78f"
+ },
+ {
+  "file": "draco-variants/MaterialsVariantsShoe/occlusionRougnessMetalness.jpg",
+  "source": "examples/models/gltf/MaterialsVariantsShoe/glTF/occlusionRougnessMetalness.jpg",
+  "sha256": "c5316fbc0054b4c1fdd8fa0de705e0e9fc33629586b29a20bb7ededfd6000bb9"
+ }
+]

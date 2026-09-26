@@ -2,18 +2,18 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "blocked-at-port-review": 288,
-    "runnable-partial": 288,
-    "excluded": 30,
+    "runnable-partial": 298,
+    "blocked-at-port-review": 276,
+    "excluded": 32,
     "requires-feature-review": 1
   },
   "examples": [
     {
       "id": "webgl_animation_keyframes",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_keyframes.html",
       "source_sha256": "68dd0cf9d8dd135628bfe70a4f06f7d637d6b29c806af9beec2be701decf7106",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/draco-variants.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -3878,7 +3878,7 @@
     },
     {
       "id": "webgl_lensflares",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lensflares.html",
       "source_sha256": "0c706d5d8aff1a98e2ab4d392c79cbbac5e452074c1ea8e737964e6c46231bf3",
       "runtime_test": null,
@@ -5763,10 +5763,10 @@
     },
     {
       "id": "webgl_loader_draco",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_draco.html",
       "source_sha256": "9f13086a8563d24339c701efdf84c4a33a6e1e490414a507819116a04e1c160a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/draco-variants.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -6728,10 +6728,10 @@
     },
     {
       "id": "webgl_loader_gltf_variants",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_variants.html",
       "source_sha256": "a6d1e8fa8e31b5cc5e1dfe37bc4f248bb96e15199aed0d081d1d91581f0d445c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/draco-variants.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -8812,10 +8812,10 @@
     },
     {
       "id": "webgl_materials_car",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_car.html",
       "source_sha256": "e362b6ebc8a5e6da4f05b2d4d6b09933b0c9ab88503b9690e0e598d5b2137ef8",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-flares.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -9214,10 +9214,10 @@
     },
     {
       "id": "webgl_materials_cubemap_render_to_mipmaps",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_render_to_mipmaps.html",
       "source_sha256": "be81d353ef03d8d4c7efe1adbac629fe7bbddfec95801a2eb829dd609b4fdabc",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-flares.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -11384,7 +11384,7 @@
     },
     {
       "id": "webgl_morphtargets_face",
-      "state": "blocked-at-port-review",
+      "state": "excluded",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_face.html",
       "source_sha256": "61f1b2210d4591d7be198275299e602f0e18181d06d1766d1441ac0de13d5ad5",
       "runtime_test": null,
@@ -12467,10 +12467,10 @@
     },
     {
       "id": "webgl_raycaster_texture",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_texture.html",
       "source_sha256": "5858801b68cffc10012a39a38b5eb5d6c8cf55a333eb8c105c79426d9807c133",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-flares.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -18898,10 +18898,10 @@
     },
     {
       "id": "webgl_texture3d_partialupdate",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture3d_partialupdate.html",
       "source_sha256": "b3c8fcd8b2eb0ee60a903023b81be1de88a9c9d833d90fe834636c444a8b3241",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-flares.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -19033,10 +19033,10 @@
     },
     {
       "id": "webgl_ubo_arrays",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_ubo_arrays.html",
       "source_sha256": "2fcec4cea4a131c86199464ce0cbaae6bfc20b305a68388adb0a49f248191f8e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/draco-variants.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -24332,10 +24332,10 @@
     },
     {
       "id": "webgpu_lensflares",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lensflares.html",
       "source_sha256": "6fb406fe48ddcbe28105091a8953a6e38be5a869432319ec04b672d660445280",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-flares.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -27891,10 +27891,10 @@
     },
     {
       "id": "webgpu_morphtargets_face",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_morphtargets_face.html",
       "source_sha256": "778ea85fa5ffcc83e09d9354fddbaee960d98690cdb06bfdd008d446c3e488b7",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/draco-variants.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

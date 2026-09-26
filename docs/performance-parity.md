@@ -694,3 +694,29 @@ ports](passes-decals.md) match the original draws.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
+### Uniform-buffer arrays, Draco, keyframes, material variants and facecap
+
+The [uniform-buffer, Draco, keyframe, variant and facecap
+ports](draco-variants.md) match the original draws, except the variant example's
+HDR background drawn with a fullscreen triangle.
+
+- **Light arrays.** The 300 light positions stream each frame into a resident
+  storage buffer, as the original updates its uniform block.
+- **Decoding.** Draco, meshopt and KTX2 decoding happen once at load.
+- **Environments.** They are prefiltered once.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Canvas raycast textures, 3D partial updates, cube mips, lens flares and the car
+
+The [canvas texture, 3D update, cube mip, lens flare and car
+ports](texture-flares.md) match the original draws.
+
+- **Canvas and cloud updates.** Canvas redraws are copied on the GPU when the
+  pointer moves. Cloud blocks are generated on the CPU and written once, as the
+  original does.
+- **Lens flares.** The occlusion test copies 16 × 16 patches and draws its
+  quads on the GPU, as LensflareMesh does.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+

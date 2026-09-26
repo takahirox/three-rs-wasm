@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-30 excluded for explicit WebGL APIs or equivalent WebGPU examples; 577 retained. 288 partial Rust ports; 289 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+32 excluded for explicit WebGL APIs or equivalent WebGPU examples; 575 retained. 298 partial Rust ports; 277 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,19 +12,19 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 372 |
+| Full camera controls: pan, touch, damping and control variants | 370 |
 | Programmable materials / TSL equivalents | 219 |
 | Inspector and per-example GUI parity | 175 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 174 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 173 |
 | Additional procedural geometry builders | 171 |
 | Shadow maps and shadow filtering | 126 |
 | Hemisphere/spot/area lights, light probes and baking | 120 |
 | Postprocessing passes and temporal history | 101 |
-| Distance and height fog | 92 |
 | Wireframe materials and scene helpers | 91 |
-| Additional loaders and compressed assets | 82 |
+| Distance and height fog | 91 |
+| Additional loaders and compressed assets | 81 |
 | Instance transforms and batched drawing | 74 |
-| Animation mixer and skeletal animation | 48 |
+| Animation mixer and skeletal animation | 47 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
 | Canvas, HTML, video and partial texture updates | 42 |
 | WebXR sessions, controllers and XR render targets | 32 |
@@ -34,7 +34,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | Physics integration | 14 |
 | Curve interpolation and path builders | 13 |
 | CSS2D/CSS3D/SVG scene renderers | 11 |
-| Morph target animation | 10 |
+| Morph target animation | 9 |
 | Wide / dashed line rendering | 8 |
 | Clipping planes and stencil operations | 6 |
 | Spatial audio and audio analysis | 6 |
@@ -44,6 +44,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgl_raycaster_texture | `tests/browser/texture-flares.spec.js` | ブラウザのCanvas 2Dで描く格子画像と黄色の十字（GPUコピーとミップマップ再生成で3つのテクスチャに反映）、ポインタのレイキャストとtransformUv、立方体・平面・円のUV、円テクスチャのラップ・offset・repeat・rotationの操作をRustで再現。ラップの切り替えはテクスチャを共有するサンプラー別のプログラムで行い、原本の再アップロードは行わない。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_texture3d_partialupdate | `tests/browser/texture-flares.spec.js` | 128³のData3DTexture、1.5秒ごとにCPUのImprovedNoiseで生成する30³ブロックの部分書き込み（原本と同じCPU生成）、フレーム番号とgl_FragCoordによるジッター付きレイマーチ、キャンバスのグラデーション空、OrbitControls、全4項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_cubemap_render_to_mipmaps | `tests/browser/texture-flares.spec.js` | 半精度キューブレンダーターゲットのレベル0〜8への面ごとの描画（レベル別の色付け、ソースキューブの暗黙LODサンプリング）、頂点ごとの反射ベクトルによる2つの環境マップ球（CubeTextureのx反転）、極角制限付きOrbitControlsをRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_lensflares | `tests/browser/texture-flares.spec.js` | 3000個のPhongの箱、3つの点光源、LensflareMesh（16×16のフレームバッファ退避、マゼンタの深度テストによる遮蔽マップ、復元、頂点で9テクセルを読む加算要素、光源色のsRGB→線形の一度きりの変換）、フォグ、FlyControls（ポインタとキー）をRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_materials_car | `tests/browser/texture-flares.spec.js` | Draco圧縮のferrari glTF、クリアコートの車体・金属の細部・透過ガラス、HDR環境、フォグ、ACES（露出0.85）、半透明のGridHelperの移動と車輪の回転、乗算合成のAO平面、OrbitControls、3色の入力をRustで再現。Stats外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_ubo_arrays | `tests/browser/draco-variants.spec.js` | 300個の点光源の位置と色（LightingDataブロック、毎フレームCPUで位置を更新して書き込み、原本と同じ）、ワールド位置と距離減衰の光ループ、平面と100個の球、パンなしのOrbitControls、countの操作をRustで再現。ブロックはWebGPUのストレージバッファとして束縛。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_draco | `tests/browser/draco-variants.spec.js` | DRACOLoaderによるbunny.drcのデコード（位置・法線・色・UV、面インデックス）とcomputeVertexNormals、半球光とPCFの影付きスポットライト、フォグ、Date.nowで回るカメラをRustで再現。性能の完全な同等性は未保証。 |
+| webgl_animation_keyframes | `tests/browser/draco-variants.spec.js` | Skyとその一度だけのPMREM（fromScene）による環境、Draco圧縮のLittlestTokyo glTFとキーフレームアニメーション、ACES、減衰付きOrbitControlsをRustで再現。Stats外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_gltf_variants | `tests/browser/draco-variants.spec.js` | HDRの環境と背景、ACES、KHR_materials_variantsの靴（バリアントごとのマテリアル、元のマテリアルへの復帰）、変更時のみの描画、OrbitControls、Variantの操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgpu_morphtargets_face | `tests/browser/draco-variants.spec.js` | RoomEnvironmentのPMREM（sigma 0.04）、ACES、meshoptとKTX2のfacecap glTF、52個のモーフターゲットのアニメーション、方位角と距離の制限付き減衰OrbitControlsをRustで再現。ミキサーが毎フレーム上書きするlisten表示のモーフスライダーとInspector外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_postprocessing_backgrounds | `tests/browser/passes-decals.spec.js` | EffectComposerのClearPass（色とアルファ）、TexturePass（木目テクスチャと不透明度）、CubeTexturePass（NoColorSpaceのpisaキューブ、10単位の裏面ボックス、カメラの回転と投影を共有）、RenderPass（3つの点光源とStandardの球）、OutputPass、ズームなしのOrbitControls、全8項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_shader_lava | `tests/browser/passes-decals.spec.js` | 溶岩のGLSLシェーダー（雲と溶岩テクスチャ、uvScale、gl_FragCoord.z/wによるフォグ）を持つトーラス、BloomPass（25タップのガウス畳み込みを横と縦、加算合成）、OutputPass、delta×5の時間と回転をRustで再現。性能の完全な同等性は未保証。 |
 | webgl_ubo | `tests/browser/passes-decals.spec.js` | ViewDataとLightingDataのユニフォームブロックを共有する2つのRawShaderMaterial（視点空間のPhong、sRGB出力）、200個の四面体と木箱、毎フレームの回転をRustで再現。ViewDataはフレーム共通のカメラユニフォーム、変化しないLightingDataは両プログラムの定数として実装。性能の完全な同等性は未保証。 |

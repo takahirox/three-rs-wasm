@@ -280,6 +280,8 @@ pub(super) struct Controls {
     pub(super) up: Vector3,
     /// minPolarAngle.
     pub(super) min_polar: f64,
+    /// minAzimuthAngle and maxAzimuthAngle, when both are finite.
+    pub(super) azimuth: Option<(f64, f64)>,
 }
 impl Controls {
     pub(super) fn new(
@@ -304,6 +306,7 @@ impl Controls {
             auto_rotate: None,
             up: Vector3::Y,
             min_polar: 0.,
+            azimuth: None,
         }
     }
     /// The animation loop's update(): autoRotate turns first while no pointer is active.
@@ -373,6 +376,25 @@ impl Controls {
         let f = self.damping.unwrap_or(1.);
         theta += self.delta_theta * f;
         phi += self.delta_phi * f;
+        if let Some((mut min, mut max)) = self.azimuth {
+            let wrap = |a: f64| {
+                if a < -PI {
+                    a + TAU
+                } else if a > PI {
+                    a - TAU
+                } else {
+                    a
+                }
+            };
+            (min, max) = (wrap(min), wrap(max));
+            theta = if min <= max {
+                theta.min(max).max(min)
+            } else if theta > (min + max) / 2. {
+                theta.max(min)
+            } else {
+                theta.min(max)
+            };
+        }
         phi = phi.min(self.max_polar).max(self.min_polar);
         phi = phi.clamp(EPS, PI - EPS);
         self.target += self.pan * f;
