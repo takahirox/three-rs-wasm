@@ -7,12 +7,13 @@ Implemented in `src/browser/controls_attributes.rs`.
 | --- | ---: | --- |
 | `misc_controls_orbit` | 208 | 500 instanced flat-shaded cones in exponential fog, damped OrbitControls with distance and polar limits |
 | `misc_controls_map` | 209 | 500 instanced boxes, damped MapControls, the `zoomToCursor` and `screenSpacePanning` controls |
-| `webgl_camera` | 210 | Two viewports, a perspective/orthographic camera rig with CameraHelpers, wireframe spheres, 10,000 points, O/P keys |
+| `webgpu_camera` | 311 | Two viewports, a perspective/orthographic camera rig with CameraHelpers, wireframe spheres, 10,000 one-pixel points, O/P keys |
 | `webgl_custom_attributes` | 211 | A 128×64 displaced sphere with a per-frame CPU noise walk and an HSL-drifting color |
 | `webgl_buffergeometry_drawrange` | 212 | 1,000 bouncing particles, per-frame CPU connection search, additive points and lines, all six controls |
 
-None of these scenes has an equivalent official WebGPU example in the pinned
-inventory, so each is compared against the original WebGL renderer.
+`webgpu_camera` supersedes `webgl_camera`, which is excluded as its WebGL
+equivalent; it is compared against the WebGPU renderer. The other scenes have
+no WebGPU equivalents and are compared against the original WebGL renderer.
 
 ## Port notes
 
@@ -43,11 +44,12 @@ inventory, so each is compared against the original WebGL renderer.
   vertex stage applies the active camera's `matrixWorld ×
   projectionMatrixInverse`, computed in f64 with WebGL's depth range. The
   helper's unset `p` point stays at the camera position, as in the original.
-- **Views.** Two viewports use WebGL's rounded `setViewport` rectangles. Each
-  view's clear color is drawn by a scissored fullscreen triangle. The rig
+- **Views.** Two viewports use the WebGPU renderer's floored `setViewport`
+  rectangles. Each view's clear color is drawn by a scissored fullscreen
+  triangle. The rig
   follows `lookAt`, the animated field of view and the far plane.
-- **Points.** They are one-pixel minimum `gl_PointSize` squares from a
-  resident buffer.
+- **Points.** WebGPURenderer draws `Points` as point-list primitives, one
+  device pixel each; the port draws the same resident point list.
 
 ### Custom attributes
 
@@ -97,7 +99,7 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 | --- | --- | --- |
 | Orbit controls, MSAA off / on | 0.001% / 0.00, 0.803% / 0.12 | 0% / 0.00, 0.402% / 0.06 |
 | Map controls, MSAA off / on | 0.017% / 0.01, 0.609% / 0.12 | 0.011% / 0.01, 0.310% / 0.06 |
-| Camera, MSAA off / on | 0.298% / 0.57, 4.424% / 1.61 | 0.157% / 0.30, 1.630% / 0.79 |
+| Camera, MSAA off / on | 0.001% / 0.00, 0.001% / 0.00 | 0% / 0.00, 0% / 0.00 |
 | Custom attributes | 0.003% / 0.00 | 0% / 0.00 |
 | Draw range, MSAA off / on | 0.062% / 0.08, 28.955% / 8.02 | 0.037% / 0.04, 22.820% / 6.41 |
 
@@ -110,7 +112,6 @@ weights agree.
 With 4× MSAA, the differences lie on:
 
 - the controls scenes' box and cone silhouettes;
-- the camera scene's wireframes and one-pixel points;
 - the draw-range scene's dense additive lines.
 
 In the draw-range scene, per-sample line coverage differs between WebGL and
@@ -123,7 +124,6 @@ The suite requires, with MSAA:
 - the draw-range mean levels within 0.5%, in every state;
 - orbit within 1% / 0.15;
 - map within 0.75% / 0.15;
-- camera within 5% / 1.8;
 - draw range within 33% / 9.2.
 
 MSAA-off comparisons keep the ordinary threshold.
@@ -133,12 +133,13 @@ MSAA-off comparisons keep the ordinary threshold.
 - **Draw workload.** The measured draws equal the original's:
   - one instanced draw of 500 cones or boxes;
   - eight camera draws: the helper, five wireframe sphere draws across the two
-    views after the same frustum culling, and the points in both views;
+    views after the same frustum culling, and the 10,000-point list in both
+    views;
   - one displaced sphere;
   - the BoxHelper, 500 point billboards and the connected segments (5,550
     line vertices in the measured frame).
 
-  WebGL points are counted as six-vertex billboards.
+  WebGL points are counted as six-vertex billboards (the draw-range scene).
 - **Attribute uploads per measured frame:**
 
   | Example | Port | Original |

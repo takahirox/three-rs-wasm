@@ -286,6 +286,51 @@ fn import_internal(
                         }
                     }
                 }
+                // GLTFLoader.computeBounds: the POSITION accessor's min/max box,
+                // expanded by the morph targets' largest displacement; the sphere
+                // spans the box diagonal.
+                let accessor_box = |accessor: &gltf::Accessor<'_>| -> Option<(Vector3, Vector3)> {
+                    let scale = if accessor.normalized() {
+                        match accessor.data_type() {
+                            gltf::accessor::DataType::I8 => 1. / 127.,
+                            gltf::accessor::DataType::U8 => 1. / 255.,
+                            gltf::accessor::DataType::I16 => 1. / 32767.,
+                            gltf::accessor::DataType::U16 => 1. / 65535.,
+                            _ => 1.,
+                        }
+                    } else {
+                        1.
+                    };
+                    let v = |j: serde_json::Value| -> Option<Vector3> {
+                        let a = j.as_array()?;
+                        Some(
+                            Vector3::new(
+                                a.first()?.as_f64()?,
+                                a.get(1)?.as_f64()?,
+                                a.get(2)?.as_f64()?,
+                            ) * scale,
+                        )
+                    };
+                    Some((v(accessor.min()?)?, v(accessor.max()?)?))
+                };
+                if let Some((min, max)) = primitive
+                    .get(&gltf::Semantic::Positions)
+                    .and_then(|a| accessor_box(&a))
+                {
+                    let mut displacement = Vector3::ZERO;
+                    for target in primitive.morph_targets() {
+                        if let Some((low, high)) = target.positions().and_then(|a| accessor_box(&a))
+                        {
+                            displacement = displacement.max(low.abs().max(high.abs()));
+                        }
+                    }
+                    let (min, max) = (min - displacement, max + displacement);
+                    geometry.bounding_box = Some(crate::math::Box3 { min, max });
+                    geometry.bounding_sphere = Some(crate::math::Sphere {
+                        center: (min + max) * 0.5,
+                        radius: min.distance(max) / 2.,
+                    });
+                }
                 // Builds a primitive's material: its own, or a KHR_materials_variants one.
                 let build = |source: gltf::Material<'_>,
                              geometry: &mut BufferGeometry|

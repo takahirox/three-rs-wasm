@@ -87,6 +87,15 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
         serde_json::from_slice(bytes).map_err(|e| Error::Asset(e.to_string()))?
     };
     let mut buffers = buffers.to_vec();
+    // EXT_texture_webp: the browser decodes WebP, so its image is the texture source.
+    if let Some(textures) = document.get_mut("textures").and_then(Value::as_array_mut) {
+        for texture in textures {
+            let webp = texture["extensions"]["EXT_texture_webp"]["source"].clone();
+            if texture["source"].is_null() && webp.is_u64() {
+                texture["source"] = webp;
+            }
+        }
+    }
     let count = document["buffers"]
         .as_array()
         .ok_or(Error::Invalid("glTF buffers"))?

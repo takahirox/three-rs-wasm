@@ -137,9 +137,12 @@ pub trait Curve {
     }
     /// `Curve.getSpacedPoints( divisions )`: points at equal arc-length steps.
     fn spaced_points(&self, divisions: u32) -> Result<Vec<Vector3>> {
-        let lengths = self.lengths(200)?;
+        self.spaced_points_with(divisions, &self.lengths(200)?)
+    }
+    /// `getSpacedPoints` over cached arc lengths (another `arcLengthDivisions`).
+    fn spaced_points_with(&self, divisions: u32, lengths: &[f64]) -> Result<Vec<Vector3>> {
         (0..=divisions)
-            .map(|d| self.point(self.u_to_t(d as f64 / divisions as f64, &lengths)))
+            .map(|d| self.point(self.u_to_t(d as f64 / divisions as f64, lengths)))
             .collect()
     }
     /// `Curve.getTangent( t )`: the normalized chord across ±0.0001.
@@ -154,9 +157,18 @@ pub trait Curve {
         segments: u32,
         closed: bool,
     ) -> Result<(Vec<Vector3>, Vec<Vector3>, Vec<Vector3>)> {
-        let lengths = self.lengths(200)?;
+        self.frenet_frames_with(segments, closed, &self.lengths(200)?)
+    }
+    /// `computeFrenetFrames` over cached arc lengths (another `arcLengthDivisions`).
+    #[allow(clippy::type_complexity)]
+    fn frenet_frames_with(
+        &self,
+        segments: u32,
+        closed: bool,
+        lengths: &[f64],
+    ) -> Result<(Vec<Vector3>, Vec<Vector3>, Vec<Vector3>)> {
         let tangents: Vec<Vector3> = (0..=segments)
-            .map(|i| self.tangent(self.u_to_t(i as f64 / segments as f64, &lengths)))
+            .map(|i| self.tangent(self.u_to_t(i as f64 / segments as f64, lengths)))
             .collect::<Result<_>>()?;
         let rotate = |v: Vector3, axis: Vector3, angle: f64| {
             // makeRotationAxis, applied as a Matrix4 to a point.

@@ -500,7 +500,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             let cone=dot(light,direction);let outer=u.light_params[i].z;let inner=u.light_params[i].w;
             attenuation*=select(smoothstep(outer,max(inner,outer+0.000001),cone),select(0.0,1.0,cone>=outer),inner==outer);
         }
-        if RECEIVE_SHADOW {attenuation*=shadow_visibility(i,surface.shadow_position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));}
+        if RECEIVE_SHADOW {attenuation*=mix(shadow_visibility(i,surface.shadow_position,normalize((transpose(u.view)*vec4(n,0.0)).xyz)),1.0,u.shadow_filters[i].w);}
         let scattering_half=normalize(light+n*surface.thickness.x);
         let scattering_dot=pow(clamp(dot(v,-scattering_half),0.0,1.0),surface.thickness.w)*surface.thickness_scale;
         let scattering=(scattering_dot+surface.thickness.y)*surface.thickness_color*surface.thickness.z*light_color*attenuation;

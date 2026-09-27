@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-32 excluded for explicit WebGL APIs or equivalent WebGPU examples; 575 retained. 298 partial Rust ports; 277 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+35 excluded for explicit WebGL APIs or equivalent WebGPU examples; 572 retained. 308 partial Rust ports; 264 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,17 +12,17 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 370 |
+| Full camera controls: pan, touch, damping and control variants | 368 |
 | Programmable materials / TSL equivalents | 219 |
 | Inspector and per-example GUI parity | 175 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 173 |
-| Additional procedural geometry builders | 171 |
-| Shadow maps and shadow filtering | 126 |
-| Hemisphere/spot/area lights, light probes and baking | 120 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 172 |
+| Additional procedural geometry builders | 170 |
+| Shadow maps and shadow filtering | 125 |
+| Hemisphere/spot/area lights, light probes and baking | 119 |
 | Postprocessing passes and temporal history | 101 |
-| Wireframe materials and scene helpers | 91 |
 | Distance and height fog | 91 |
-| Additional loaders and compressed assets | 81 |
+| Wireframe materials and scene helpers | 89 |
+| Additional loaders and compressed assets | 80 |
 | Instance transforms and batched drawing | 74 |
 | Animation mixer and skeletal animation | 47 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
@@ -32,7 +32,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | GPU compute and storage buffers | 30 |
 | Volume rendering and layered textures | 18 |
 | Physics integration | 14 |
-| Curve interpolation and path builders | 13 |
+| Curve interpolation and path builders | 12 |
 | CSS2D/CSS3D/SVG scene renderers | 11 |
 | Morph target animation | 9 |
 | Wide / dashed line rendering | 8 |
@@ -44,6 +44,17 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Example | Evidence | Remaining differences |
 | --- | --- | --- |
+| webgpu_camera | `tests/browser/controls-attributes.spec.js` | カメラリグ（透視/正射影カメラとCameraHelper、fovとfarの変化、lookAt）、2つのビューポートとシザー、O/Pキー切替、WebGPUの1ピクセル点（point-list）をRustで再現。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。性能の完全な同等性は未保証。 |
+| misc_exporter_gltf_normals | `tests/browser/transform-curves.spec.js` | OpenGL/DirectX法線マップの2枚の平面（normalScale.yの符号、両面）、2灯の平行光源、変更時のみの描画のOrbitControls、GLTFExporterのGLB出力（ノード行列、共有アクセサ、緑反転した法線マップ、PNG画像の埋め込み）をRustで再現し、出力をバイト単位で一致させる。PNGの符号化はブラウザのcanvas.toBlobを使う（原本と同じ）。性能の完全な同等性は未保証。 |
+| webgl_animation_skinning_ik | `tests/browser/transform-curves.spec.js` | Draco圧縮・WebPテクスチャのKiraモデル、CCDIKSolver（回転制限付き）とCCDIKHelper、毎フレームの1024² CubeCameraによる鏡面球、頭のlookAt、TransformControlsでのIKターゲット操作、減衰付きOrbitControls、全4項目の操作をRustで再現。原本と同じくIK更新ごとにSkinnedMesh.computeBoundingSphere（CPU）でカリング用の境界球を更新する。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| misc_controls_transform | `tests/browser/transform-curves.spec.js` | TransformControls（移動・回転・拡大縮小のギズモ、不可視ピッカー、ドラッグ平面、ヘルパー、ハイライト、スナップ、ローカル/ワールド空間、軸表示、サイズ、有効化、リセット）、透視/正射影カメラの切替とランダムなfov/zoom、OrbitControls、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_modifier_curve | `tests/browser/transform-curves.spec.js` | CurveModifierGPUのFlow（半精度のスプラインテクスチャ、頂点段での曲線変形、normalNode）、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。性能の完全な同等性は未保証。 |
+| webgl_modifier_curve_instanced | `tests/browser/transform-curves.spec.js` | InstancedFlow（インスタンス行列に曲線番号・長さ・オフセット、インスタンス色）、2本の曲線テクスチャ、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgpu_lights_spotlight | `tests/browser/spot-skinning.spec.js` | マップ付きスポットライト（lightProjectionUVでの投影テクスチャ、focus込みの影カメラ、影の強度）、PCFの影、半球光、Lucy PLYとLambertの床、Neutralトーンマッピング、SpotLightHelperと影カメラのCameraHelper、全10項目の操作、OrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_animation_multiple | `tests/browser/spot-skinning.spec.js` | SkeletonUtilsの3体の兵士（idle・run・walk）、SunLightの影、共有スケルトン（DetachedBindModeのvanguard_Mesh 3体）、切り替えで時間が0から始まるミキサーをRustで再現。共有スケルトンは同じクリップと時間で動く骨格の複製で描画（原本は1つの骨格）。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_animation_skinning_blending | `tests/browser/spot-skinning.spec.js` | three.jsのAnimationMixerの意味論（重みと時間スケールの補間、warp付きクロスフェード、loopイベントでの同期、一時停止と1ステップ、停止と元の姿勢への復帰）、SkeletonHelper、SunLightの影、全17項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_animation_skinning_additive_blending | `tests/browser/spot-skinning.spec.js` | Xbotのベース動作のクロスフェードと加算アニメーション（makeClipAdditive、subclip、PropertyMixerの加算合成）、SkeletonHelper、SunLightの影、ズームとパンなしのOrbitControls、全9項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_animation_walk | `tests/browser/spot-skinning.spec.js` | キー操作での歩行と走行（fixe_transitionのフェード、方位角に沿った移動と回転、床のずらし）、HDR環境、ACES、SunLightと点光源の影、異方性の床テクスチャ、metalnessMap、半透明のバイザー、SkeletonHelper、減衰付きOrbitControlsをRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_raycaster_texture | `tests/browser/texture-flares.spec.js` | ブラウザのCanvas 2Dで描く格子画像と黄色の十字（GPUコピーとミップマップ再生成で3つのテクスチャに反映）、ポインタのレイキャストとtransformUv、立方体・平面・円のUV、円テクスチャのラップ・offset・repeat・rotationの操作をRustで再現。ラップの切り替えはテクスチャを共有するサンプラー別のプログラムで行い、原本の再アップロードは行わない。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_texture3d_partialupdate | `tests/browser/texture-flares.spec.js` | 128³のData3DTexture、1.5秒ごとにCPUのImprovedNoiseで生成する30³ブロックの部分書き込み（原本と同じCPU生成）、フレーム番号とgl_FragCoordによるジッター付きレイマーチ、キャンバスのグラデーション空、OrbitControls、全4項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。 |
 | webgl_materials_cubemap_render_to_mipmaps | `tests/browser/texture-flares.spec.js` | 半精度キューブレンダーターゲットのレベル0〜8への面ごとの描画（レベル別の色付け、ソースキューブの暗黙LODサンプリング）、頂点ごとの反射ベクトルによる2つの環境マップ球（CubeTextureのx反転）、極角制限付きOrbitControlsをRustで再現。性能の完全な同等性は未保証。 |
@@ -136,7 +147,6 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_lod | `tests/browser/trackball-sprites.spec.js` | LODの距離選択とFlyControls（マウス位置での旋回・ボタン前後移動・キー操作）をRustで再現。性能の完全な同等性は未保証。 |
 | misc_controls_orbit | `tests/browser/controls-attributes.spec.js` | OrbitControls（減衰・極角制限・地面平面パン）をRustで再現。キーボード操作とカーソル形状は未移植。性能の完全な同等性は未保証。 |
 | misc_controls_map | `tests/browser/controls-attributes.spec.js` | MapControls（左ドラッグのパン・右ドラッグの回転・zoomToCursor・screenSpacePanning）をRustで再現。タッチ操作は未検証。性能の完全な同等性は未保証。 |
-| webgl_camera | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。2つのビューポートとO/Pキー切替を再現。性能の完全な同等性は未保証。 |
 | webgl_custom_attributes | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。毎フレームのCPUノイズ・HSL変化を60fps相当の時間基準で再現し、変位属性のみ常駐GPUバッファへ書き込み（原本と同じ）。性能の完全な同等性は未保証。 |
 | webgl_buffergeometry_drawrange | `tests/browser/controls-attributes.spec.js` | Stats表示は未移植。毎フレームの粒子移動と接続線の探索は原本と同じCPU処理で、60fps相当の時間基準で再現。更新分のみ常駐GPUバッファへ書き込み。性能の完全な同等性は未保証。 |
 | webgl_effects_stereo | `tests/browser/stereo-loaders.spec.js` | StereoCamera・StereoEffectをRustで再現。フレーム毎のカメラ追従を60fps相当の時間基準で再現。性能の完全な同等性は未保証。 |

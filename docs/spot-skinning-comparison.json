@@ -1,0 +1,2125 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/spot-skinning.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "spot-skinning-Spotlight-an-01716-skinning-blending-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000965118408203125,
+      "meanError": 0.16556803385416666
+     },
+     {
+      "state": 1,
+      "fraction": 0.000881195068359375,
+      "meanError": 0.1641820271809896
+     },
+     {
+      "state": 2,
+      "fraction": 0.000751495361328125,
+      "meanError": 0.15957260131835938
+     },
+     {
+      "state": 3,
+      "fraction": 0.0008392333984375,
+      "meanError": 0.16233444213867188
+     },
+     {
+      "state": 4,
+      "fraction": 0.000946044921875,
+      "meanError": 0.15611648559570312
+     },
+     {
+      "state": 5,
+      "fraction": 0.0009002685546875,
+      "meanError": 0.1529362996419271
+     },
+     {
+      "state": 6,
+      "fraction": 0.000762939453125,
+      "meanError": 0.14708455403645834
+     },
+     {
+      "state": 7,
+      "fraction": 0.0007476806640625,
+      "meanError": 0.14859517415364584
+     },
+     {
+      "state": 8,
+      "fraction": 0.000736236572265625,
+      "meanError": 0.14517720540364584
+     },
+     {
+      "state": 9,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0016886393229166667
+     },
+     {
+      "state": 10,
+      "fraction": 0.000736236572265625,
+      "meanError": 0.14517720540364584
+     },
+     {
+      "state": 11,
+      "fraction": 0.001010894775390625,
+      "meanError": 0.16842524210611978
+     },
+     {
+      "state": 12,
+      "fraction": 0.00075531005859375,
+      "meanError": 0.1425043741861979
+     },
+     {
+      "state": 13,
+      "fraction": 0.0007781982421875,
+      "meanError": 0.154571533203125
+     },
+     {
+      "state": 14,
+      "fraction": 0.0007476806640625,
+      "meanError": 0.15535481770833334
+     },
+     {
+      "state": 15,
+      "fraction": 0.0004296875,
+      "meanError": 0.098
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-04d30--lights-spotlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.042612711588541664
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.042811075846354164
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.04199345906575521
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.04628880818684896
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.040662129720052086
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.01495361328125
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.04199345906575521
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.07583236694335938
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.05911127726236979
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.06516520182291667
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.052478790283203125
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.04745610555013021
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.03277460734049479
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.025622049967447918
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.03285980224609375
+     },
+     {
+      "state": 15,
+      "fraction": 0.000354766845703125,
+      "meanError": 0.07175572713216145
+     },
+     {
+      "state": 16,
+      "fraction": 0.00043487548828125,
+      "meanError": 0.10023880004882812
+     },
+     {
+      "state": 17,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.056650797526041664
+     },
+     {
+      "state": 18,
+      "fraction": 0,
+      "meanError": 0.052673177083333335
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-30f3a-nimation-multiple-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001049041748046875,
+      "meanError": 0.13366317749023438
+     },
+     {
+      "state": 1,
+      "fraction": 0.000995635986328125,
+      "meanError": 0.13565953572591147
+     },
+     {
+      "state": 2,
+      "fraction": 0.0010223388671875,
+      "meanError": 0.13547643025716147
+     },
+     {
+      "state": 3,
+      "fraction": 0.000823974609375,
+      "meanError": 0.1237640380859375
+     },
+     {
+      "state": 4,
+      "fraction": 0.000995635986328125,
+      "meanError": 0.13565953572591147
+     },
+     {
+      "state": 5,
+      "fraction": 0.00061328125,
+      "meanError": 0.08815885416666666
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-3beff-ncy-webgpu-lights-spotlight": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 84,
+       "transfers": [
+        4,
+        5210424,
+        64
+       ],
+       "resources": [
+        2,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 84,
+       "transfers": [
+        4,
+        5210424,
+        64
+       ],
+       "resources": [
+        2,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 89,
+       "transfers": [
+        4,
+        5210424,
+        64
+       ],
+       "resources": [
+        2,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 89,
+       "transfers": [
+        4,
+        5210424,
+        64
+       ],
+       "resources": [
+        2,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-46285-additive-blending-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00373077392578125,
+      "meanError": 0.20791753133138022
+     },
+     {
+      "state": 1,
+      "fraction": 0.003692626953125,
+      "meanError": 0.20697657267252603
+     },
+     {
+      "state": 2,
+      "fraction": 0.0041656494140625,
+      "meanError": 0.21809895833333334
+     },
+     {
+      "state": 3,
+      "fraction": 0.004093170166015625,
+      "meanError": 0.21912256876627603
+     },
+     {
+      "state": 4,
+      "fraction": 0.003902435302734375,
+      "meanError": 0.1959864298502604
+     },
+     {
+      "state": 5,
+      "fraction": 0.00377655029296875,
+      "meanError": 0.19501241048177084
+     },
+     {
+      "state": 6,
+      "fraction": 0.004199981689453125,
+      "meanError": 0.21714401245117188
+     },
+     {
+      "state": 7,
+      "fraction": 0.00409698486328125,
+      "meanError": 0.21376800537109375
+     },
+     {
+      "state": 8,
+      "fraction": 0.0034637451171875,
+      "meanError": 0.18680826822916666
+     },
+     {
+      "state": 9,
+      "fraction": 0.0034637451171875,
+      "meanError": 0.18680826822916666
+     },
+     {
+      "state": 10,
+      "fraction": 0.0026953125,
+      "meanError": 0.13043880208333333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-5c881-skinning-blending-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0062255859375,
+      "meanError": 0.2796287536621094
+     },
+     {
+      "state": 1,
+      "fraction": 0.0063629150390625,
+      "meanError": 0.2834154764811198
+     },
+     {
+      "state": 2,
+      "fraction": 0.006381988525390625,
+      "meanError": 0.2851600646972656
+     },
+     {
+      "state": 3,
+      "fraction": 0.006317138671875,
+      "meanError": 0.28175608317057294
+     },
+     {
+      "state": 4,
+      "fraction": 0.005420684814453125,
+      "meanError": 0.2530199686686198
+     },
+     {
+      "state": 5,
+      "fraction": 0.0055694580078125,
+      "meanError": 0.25332387288411456
+     },
+     {
+      "state": 6,
+      "fraction": 0.006103515625,
+      "meanError": 0.2597618103027344
+     },
+     {
+      "state": 7,
+      "fraction": 0.0060882568359375,
+      "meanError": 0.2645619710286458
+     },
+     {
+      "state": 8,
+      "fraction": 0.0085296630859375,
+      "meanError": 0.3261311848958333
+     },
+     {
+      "state": 9,
+      "fraction": 0.002597808837890625,
+      "meanError": 0.08814748128255208
+     },
+     {
+      "state": 10,
+      "fraction": 0.0085296630859375,
+      "meanError": 0.3261311848958333
+     },
+     {
+      "state": 11,
+      "fraction": 0.007930755615234375,
+      "meanError": 0.3328043619791667
+     },
+     {
+      "state": 12,
+      "fraction": 0.00833892822265625,
+      "meanError": 0.3106498718261719
+     },
+     {
+      "state": 13,
+      "fraction": 0.009456634521484375,
+      "meanError": 0.35150909423828125
+     },
+     {
+      "state": 14,
+      "fraction": 0.009319305419921875,
+      "meanError": 0.3545430501302083
+     },
+     {
+      "state": 15,
+      "fraction": 0.00711328125,
+      "meanError": 0.25489192708333336
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-7f9e5-nimation-multiple-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01007080078125,
+      "meanError": 0.32423146565755206
+     },
+     {
+      "state": 1,
+      "fraction": 0.0099334716796875,
+      "meanError": 0.33542505900065106
+     },
+     {
+      "state": 2,
+      "fraction": 0.00994110107421875,
+      "meanError": 0.33110300699869794
+     },
+     {
+      "state": 3,
+      "fraction": 0.008960723876953125,
+      "meanError": 0.28882598876953125
+     },
+     {
+      "state": 4,
+      "fraction": 0.0099334716796875,
+      "meanError": 0.33542505900065106
+     },
+     {
+      "state": 5,
+      "fraction": 0.00782421875,
+      "meanError": 0.24561588541666668
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-91b43-gl-animation-walk-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005496978759765625,
+      "meanError": 0.18678665161132812
+     },
+     {
+      "state": 1,
+      "fraction": 0.005283355712890625,
+      "meanError": 0.18611526489257812
+     },
+     {
+      "state": 2,
+      "fraction": 0.008350372314453125,
+      "meanError": 0.241912841796875
+     },
+     {
+      "state": 3,
+      "fraction": 0.008350372314453125,
+      "meanError": 0.241912841796875
+     },
+     {
+      "state": 4,
+      "fraction": 0.00821685791015625,
+      "meanError": 0.23944854736328125
+     },
+     {
+      "state": 5,
+      "fraction": 0.006839752197265625,
+      "meanError": 0.21777725219726562
+     },
+     {
+      "state": 6,
+      "fraction": 0.006732940673828125,
+      "meanError": 0.20769882202148438
+     },
+     {
+      "state": 7,
+      "fraction": 0.008068084716796875,
+      "meanError": 0.23088963826497397
+     },
+     {
+      "state": 8,
+      "fraction": 0.00817108154296875,
+      "meanError": 0.23546473185221353
+     },
+     {
+      "state": 9,
+      "fraction": 0.008441925048828125,
+      "meanError": 0.24551773071289062
+     },
+     {
+      "state": 10,
+      "fraction": 0.006298065185546875,
+      "meanError": 0.2729746500651042
+     },
+     {
+      "state": 11,
+      "fraction": 0.006908416748046875,
+      "meanError": 0.3027636210123698
+     },
+     {
+      "state": 12,
+      "fraction": 0.00529296875,
+      "meanError": 0.2679505208333333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-99865--lights-spotlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000701904296875,
+      "meanError": 0.061206817626953125
+     },
+     {
+      "state": 1,
+      "fraction": 0.00075531005859375,
+      "meanError": 0.06434885660807292
+     },
+     {
+      "state": 2,
+      "fraction": 0.000762939453125,
+      "meanError": 0.0638745625813802
+     },
+     {
+      "state": 3,
+      "fraction": 0.001251220703125,
+      "meanError": 0.0951372782389323
+     },
+     {
+      "state": 4,
+      "fraction": 0.001129150390625,
+      "meanError": 0.06275304158528645
+     },
+     {
+      "state": 5,
+      "fraction": 0.001216888427734375,
+      "meanError": 0.08077239990234375
+     },
+     {
+      "state": 6,
+      "fraction": 0.000762939453125,
+      "meanError": 0.0638745625813802
+     },
+     {
+      "state": 7,
+      "fraction": 0.000896453857421875,
+      "meanError": 0.0950775146484375
+     },
+     {
+      "state": 8,
+      "fraction": 0.001094818115234375,
+      "meanError": 0.0837694803873698
+     },
+     {
+      "state": 9,
+      "fraction": 0.00109100341796875,
+      "meanError": 0.08986790974934895
+     },
+     {
+      "state": 10,
+      "fraction": 0.001270294189453125,
+      "meanError": 0.0849164326985677
+     },
+     {
+      "state": 11,
+      "fraction": 0.001293182373046875,
+      "meanError": 0.0814069112141927
+     },
+     {
+      "state": 12,
+      "fraction": 0.0014495849609375,
+      "meanError": 0.07888539632161458
+     },
+     {
+      "state": 13,
+      "fraction": 0.001239776611328125,
+      "meanError": 0.058179219563802086
+     },
+     {
+      "state": 14,
+      "fraction": 0.00199127197265625,
+      "meanError": 0.0707562764485677
+     },
+     {
+      "state": 15,
+      "fraction": 0.018096923828125,
+      "meanError": 0.6791356404622396
+     },
+     {
+      "state": 16,
+      "fraction": 0.00713348388671875,
+      "meanError": 0.30725733439127606
+     },
+     {
+      "state": 17,
+      "fraction": 0.0068511962890625,
+      "meanError": 0.2758165995279948
+     },
+     {
+      "state": 18,
+      "fraction": 0.0113046875,
+      "meanError": 0.41653515625
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-b5682-gl-animation-walk-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001140594482421875,
+      "meanError": 0.1268793741861979
+     },
+     {
+      "state": 1,
+      "fraction": 0.001110076904296875,
+      "meanError": 0.12605412801106772
+     },
+     {
+      "state": 2,
+      "fraction": 0.003276824951171875,
+      "meanError": 0.14051183064778647
+     },
+     {
+      "state": 3,
+      "fraction": 0.003276824951171875,
+      "meanError": 0.14051183064778647
+     },
+     {
+      "state": 4,
+      "fraction": 0.003505706787109375,
+      "meanError": 0.14633687337239584
+     },
+     {
+      "state": 5,
+      "fraction": 0.002742767333984375,
+      "meanError": 0.1337153116861979
+     },
+     {
+      "state": 6,
+      "fraction": 0.002826690673828125,
+      "meanError": 0.1288935343424479
+     },
+     {
+      "state": 7,
+      "fraction": 0.00336456298828125,
+      "meanError": 0.14315160115559897
+     },
+     {
+      "state": 8,
+      "fraction": 0.00345611572265625,
+      "meanError": 0.1432342529296875
+     },
+     {
+      "state": 9,
+      "fraction": 0.00335693359375,
+      "meanError": 0.14513524373372397
+     },
+     {
+      "state": 10,
+      "fraction": 0.00243377685546875,
+      "meanError": 0.199371337890625
+     },
+     {
+      "state": 11,
+      "fraction": 0.002635955810546875,
+      "meanError": 0.2075831095377604
+     },
+     {
+      "state": 12,
+      "fraction": 0.00198046875,
+      "meanError": 0.19526302083333333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-cb715-cy-webgl-animation-multiple": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 293,
+       "transfers": [
+        10,
+        4354736,
+        1416880
+       ],
+       "resources": [
+        13,
+        13,
+        0
+       ]
+      },
+      "after": {
+       "creates": 293,
+       "transfers": [
+        10,
+        4354736,
+        1416880
+       ],
+       "resources": [
+        13,
+        13,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 298,
+       "transfers": [
+        10,
+        4354736,
+        1416880
+       ],
+       "resources": [
+        13,
+        13,
+        0
+       ]
+      },
+      "after": {
+       "creates": 298,
+       "transfers": [
+        10,
+        4354736,
+        1416880
+       ],
+       "resources": [
+        13,
+        13,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-d06f3-animation-skinning-blending": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 97,
+       "transfers": [
+        4,
+        739256,
+        237920
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 97,
+       "transfers": [
+        4,
+        739256,
+        237920
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 102,
+       "transfers": [
+        4,
+        739256,
+        237920
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 102,
+       "transfers": [
+        4,
+        739256,
+        237920
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-d1cc6--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "webgpu_lights_spotlight",
+      "reference": {
+       "draws": [
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 300000,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_multiple",
+      "reference": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 9792,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_skinning_blending",
+      "reference": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 3264,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_skinning_additive_blending",
+      "reference": {
+       "draws": [
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        },
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        },
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 62520,
+         "instances": 1
+        },
+        {
+         "count": 84816,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 8576,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_walk",
+      "reference": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 15000,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 33558,
+         "instances": 1
+        },
+        {
+         "count": 15000,
+         "instances": 1
+        },
+        {
+         "count": 570,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 3264,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-d4447-idency-webgl-animation-walk": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 173,
+       "transfers": [
+        4,
+        1006992,
+        237920
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 173,
+       "transfers": [
+        4,
+        1006992,
+        237920
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 187,
+       "transfers": [
+        5,
+        1021920,
+        237936
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 187,
+       "transfers": [
+        5,
+        1021920,
+        237936
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-e7709--skinning-additive-blending": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 64,
+       "transfers": [
+        3,
+        2859608,
+        907984
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 64,
+       "transfers": [
+        3,
+        2859608,
+        907984
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 69,
+       "transfers": [
+        3,
+        2859608,
+        907984
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 69,
+       "transfers": [
+        3,
+        2859608,
+        907984
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-fc17d-additive-blending-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000141143798828125,
+      "meanError": 0.12836329142252603
+     },
+     {
+      "state": 1,
+      "fraction": 0.000171661376953125,
+      "meanError": 0.12872695922851562
+     },
+     {
+      "state": 2,
+      "fraction": 0.000217437744140625,
+      "meanError": 0.13155619303385416
+     },
+     {
+      "state": 3,
+      "fraction": 0.000164031982421875,
+      "meanError": 0.1321258544921875
+     },
+     {
+      "state": 4,
+      "fraction": 0.00020599365234375,
+      "meanError": 0.11331558227539062
+     },
+     {
+      "state": 5,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.1141370137532552
+     },
+     {
+      "state": 6,
+      "fraction": 0.00016021728515625,
+      "meanError": 0.12684122721354166
+     },
+     {
+      "state": 7,
+      "fraction": 0.000133514404296875,
+      "meanError": 0.12674458821614584
+     },
+     {
+      "state": 8,
+      "fraction": 0.0001678466796875,
+      "meanError": 0.11639912923177083
+     },
+     {
+      "state": 9,
+      "fraction": 0.0001678466796875,
+      "meanError": 0.11639912923177083
+     },
+     {
+      "state": 10,
+      "fraction": 0.00017578125,
+      "meanError": 0.07762109375
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "spot-skinning-Spotlight-an-01716-skinning-blending-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0005769729614257812,
+      "meanError": 0.15664958953857422
+     },
+     {
+      "state": 1,
+      "fraction": 0.0005340576171875,
+      "meanError": 0.15506203969319662
+     },
+     {
+      "state": 2,
+      "fraction": 0.0005083084106445312,
+      "meanError": 0.15286668141682944
+     },
+     {
+      "state": 3,
+      "fraction": 0.000621795654296875,
+      "meanError": 0.15360705057779947
+     },
+     {
+      "state": 4,
+      "fraction": 0.0005693435668945312,
+      "meanError": 0.1471996307373047
+     },
+     {
+      "state": 5,
+      "fraction": 0.0005664825439453125,
+      "meanError": 0.1450519561767578
+     },
+     {
+      "state": 6,
+      "fraction": 0.0005397796630859375,
+      "meanError": 0.13978163401285806
+     },
+     {
+      "state": 7,
+      "fraction": 0.0005321502685546875,
+      "meanError": 0.14203389485677084
+     },
+     {
+      "state": 8,
+      "fraction": 0.0005254745483398438,
+      "meanError": 0.13968785603841147
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 10,
+      "fraction": 0.0005254745483398438,
+      "meanError": 0.13968785603841147
+     },
+     {
+      "state": 11,
+      "fraction": 0.0006856918334960938,
+      "meanError": 0.1625229517618815
+     },
+     {
+      "state": 12,
+      "fraction": 0.0005054473876953125,
+      "meanError": 0.13708972930908203
+     },
+     {
+      "state": 13,
+      "fraction": 0.0005445480346679688,
+      "meanError": 0.1494572957356771
+     },
+     {
+      "state": 14,
+      "fraction": 0.0005741119384765625,
+      "meanError": 0.1504535675048828
+     },
+     {
+      "state": 15,
+      "fraction": 0.0003291015625,
+      "meanError": 0.09531770833333333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-04d30--lights-spotlight-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.043243408203125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.042511940002441406
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.04183038075764974
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.04616006215413412
+     },
+     {
+      "state": 4,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.04072348276774088
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.014761924743652344
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.04183038075764974
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.07577164967854817
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.05897649129231771
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.06510988871256511
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.05263868967692057
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.0473779042561849
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.03255875905354818
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.025630950927734375
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.03286170959472656
+     },
+     {
+      "state": 15,
+      "fraction": 0.00021076202392578125,
+      "meanError": 0.05572668711344401
+     },
+     {
+      "state": 16,
+      "fraction": 0.000335693359375,
+      "meanError": 0.08832136789957683
+     },
+     {
+      "state": 17,
+      "fraction": 0.00032806396484375,
+      "meanError": 0.08828989664713542
+     },
+     {
+      "state": 18,
+      "fraction": 0.0001357421875,
+      "meanError": 0.062908203125
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-30f3a-nimation-multiple-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000789642333984375,
+      "meanError": 0.1289068857828776
+     },
+     {
+      "state": 1,
+      "fraction": 0.0007600784301757812,
+      "meanError": 0.13193734486897787
+     },
+     {
+      "state": 2,
+      "fraction": 0.0008697509765625,
+      "meanError": 0.13237539927164713
+     },
+     {
+      "state": 3,
+      "fraction": 0.000701904296875,
+      "meanError": 0.12169869740804036
+     },
+     {
+      "state": 4,
+      "fraction": 0.0007600784301757812,
+      "meanError": 0.13193734486897787
+     },
+     {
+      "state": 5,
+      "fraction": 0.000541015625,
+      "meanError": 0.08519173177083333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-46285-additive-blending-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0018444061279296875,
+      "meanError": 0.1703335444132487
+     },
+     {
+      "state": 1,
+      "fraction": 0.0018911361694335938,
+      "meanError": 0.17119248708089194
+     },
+     {
+      "state": 2,
+      "fraction": 0.0021238327026367188,
+      "meanError": 0.17817020416259766
+     },
+     {
+      "state": 3,
+      "fraction": 0.0021696090698242188,
+      "meanError": 0.1797968546549479
+     },
+     {
+      "state": 4,
+      "fraction": 0.0019197463989257812,
+      "meanError": 0.1549228032430013
+     },
+     {
+      "state": 5,
+      "fraction": 0.0018825531005859375,
+      "meanError": 0.15703868865966797
+     },
+     {
+      "state": 6,
+      "fraction": 0.0020475387573242188,
+      "meanError": 0.17354806264241537
+     },
+     {
+      "state": 7,
+      "fraction": 0.0020160675048828125,
+      "meanError": 0.17225074768066406
+     },
+     {
+      "state": 8,
+      "fraction": 0.0017833709716796875,
+      "meanError": 0.15355873107910156
+     },
+     {
+      "state": 9,
+      "fraction": 0.0017833709716796875,
+      "meanError": 0.15355873107910156
+     },
+     {
+      "state": 10,
+      "fraction": 0.001505859375,
+      "meanError": 0.10863118489583333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-5c881-skinning-blending-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0030803680419921875,
+      "meanError": 0.21308199564615884
+     },
+     {
+      "state": 1,
+      "fraction": 0.0031919479370117188,
+      "meanError": 0.2153463363647461
+     },
+     {
+      "state": 2,
+      "fraction": 0.0033197402954101562,
+      "meanError": 0.2156073252360026
+     },
+     {
+      "state": 3,
+      "fraction": 0.00323486328125,
+      "meanError": 0.2129354476928711
+     },
+     {
+      "state": 4,
+      "fraction": 0.0029268264770507812,
+      "meanError": 0.1976505915323893
+     },
+     {
+      "state": 5,
+      "fraction": 0.0028591156005859375,
+      "meanError": 0.19504547119140625
+     },
+     {
+      "state": 6,
+      "fraction": 0.0032186508178710938,
+      "meanError": 0.1981045405069987
+     },
+     {
+      "state": 7,
+      "fraction": 0.0031309127807617188,
+      "meanError": 0.1999362309773763
+     },
+     {
+      "state": 8,
+      "fraction": 0.004416465759277344,
+      "meanError": 0.23148091634114584
+     },
+     {
+      "state": 9,
+      "fraction": 0.0013227462768554688,
+      "meanError": 0.04435539245605469
+     },
+     {
+      "state": 10,
+      "fraction": 0.004416465759277344,
+      "meanError": 0.23148091634114584
+     },
+     {
+      "state": 11,
+      "fraction": 0.0040187835693359375,
+      "meanError": 0.24384562174479166
+     },
+     {
+      "state": 12,
+      "fraction": 0.00437164306640625,
+      "meanError": 0.22460142771402994
+     },
+     {
+      "state": 13,
+      "fraction": 0.004891395568847656,
+      "meanError": 0.25020917256673175
+     },
+     {
+      "state": 14,
+      "fraction": 0.004900932312011719,
+      "meanError": 0.25296783447265625
+     },
+     {
+      "state": 15,
+      "fraction": 0.0038515625,
+      "meanError": 0.17693424479166667
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-7f9e5-nimation-multiple-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005164146423339844,
+      "meanError": 0.22665023803710938
+     },
+     {
+      "state": 1,
+      "fraction": 0.0051975250244140625,
+      "meanError": 0.23032601674397787
+     },
+     {
+      "state": 2,
+      "fraction": 0.0053234100341796875,
+      "meanError": 0.23114013671875
+     },
+     {
+      "state": 3,
+      "fraction": 0.004868507385253906,
+      "meanError": 0.2088445027669271
+     },
+     {
+      "state": 4,
+      "fraction": 0.0051975250244140625,
+      "meanError": 0.23032601674397787
+     },
+     {
+      "state": 5,
+      "fraction": 0.004279296875,
+      "meanError": 0.16831575520833333
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-91b43-gl-animation-walk-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0029449462890625,
+      "meanError": 0.15149593353271484
+     },
+     {
+      "state": 1,
+      "fraction": 0.0029392242431640625,
+      "meanError": 0.15137449900309244
+     },
+     {
+      "state": 2,
+      "fraction": 0.004558563232421875,
+      "meanError": 0.17998600006103516
+     },
+     {
+      "state": 3,
+      "fraction": 0.004558563232421875,
+      "meanError": 0.17998600006103516
+     },
+     {
+      "state": 4,
+      "fraction": 0.004549980163574219,
+      "meanError": 0.18132940928141275
+     },
+     {
+      "state": 5,
+      "fraction": 0.003711700439453125,
+      "meanError": 0.16855239868164062
+     },
+     {
+      "state": 6,
+      "fraction": 0.0038604736328125,
+      "meanError": 0.16401195526123047
+     },
+     {
+      "state": 7,
+      "fraction": 0.0044307708740234375,
+      "meanError": 0.1804510752360026
+     },
+     {
+      "state": 8,
+      "fraction": 0.004360198974609375,
+      "meanError": 0.17853005727132162
+     },
+     {
+      "state": 9,
+      "fraction": 0.0045642852783203125,
+      "meanError": 0.18429088592529297
+     },
+     {
+      "state": 10,
+      "fraction": 0.0033369064331054688,
+      "meanError": 0.22799142201741537
+     },
+     {
+      "state": 11,
+      "fraction": 0.0034914016723632812,
+      "meanError": 0.23803933461507162
+     },
+     {
+      "state": 12,
+      "fraction": 0.0027109375,
+      "meanError": 0.21975358072916668
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-99865--lights-spotlight-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00031375885009765625,
+      "meanError": 0.05209541320800781
+     },
+     {
+      "state": 1,
+      "fraction": 0.00032329559326171875,
+      "meanError": 0.052605628967285156
+     },
+     {
+      "state": 2,
+      "fraction": 0.00035858154296875,
+      "meanError": 0.052191734313964844
+     },
+     {
+      "state": 3,
+      "fraction": 0.000579833984375,
+      "meanError": 0.06865151723225911
+     },
+     {
+      "state": 4,
+      "fraction": 0.0005321502685546875,
+      "meanError": 0.05120309193929037
+     },
+     {
+      "state": 5,
+      "fraction": 0.0005502700805664062,
+      "meanError": 0.04516029357910156
+     },
+     {
+      "state": 6,
+      "fraction": 0.00035858154296875,
+      "meanError": 0.052191734313964844
+     },
+     {
+      "state": 7,
+      "fraction": 0.00041484832763671875,
+      "meanError": 0.0848703384399414
+     },
+     {
+      "state": 8,
+      "fraction": 0.0004825592041015625,
+      "meanError": 0.07063865661621094
+     },
+     {
+      "state": 9,
+      "fraction": 0.00048065185546875,
+      "meanError": 0.07676410675048828
+     },
+     {
+      "state": 10,
+      "fraction": 0.0005826950073242188,
+      "meanError": 0.06776936848958333
+     },
+     {
+      "state": 11,
+      "fraction": 0.0006055831909179688,
+      "meanError": 0.06323083241780598
+     },
+     {
+      "state": 12,
+      "fraction": 0.0006847381591796875,
+      "meanError": 0.05387465159098307
+     },
+     {
+      "state": 13,
+      "fraction": 0.000576019287109375,
+      "meanError": 0.04130077362060547
+     },
+     {
+      "state": 14,
+      "fraction": 0.000949859619140625,
+      "meanError": 0.05106131235758463
+     },
+     {
+      "state": 15,
+      "fraction": 0.009245872497558594,
+      "meanError": 0.3660643895467122
+     },
+     {
+      "state": 16,
+      "fraction": 0.0038557052612304688,
+      "meanError": 0.1965646743774414
+     },
+     {
+      "state": 17,
+      "fraction": 0.0042400360107421875,
+      "meanError": 0.2099307378133138
+     },
+     {
+      "state": 18,
+      "fraction": 0.0049306640625,
+      "meanError": 0.21489225260416667
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-b5682-gl-animation-walk-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0008955001831054688,
+      "meanError": 0.12158679962158203
+     },
+     {
+      "state": 1,
+      "fraction": 0.0009164810180664062,
+      "meanError": 0.12165164947509766
+     },
+     {
+      "state": 2,
+      "fraction": 0.0020704269409179688,
+      "meanError": 0.1293315887451172
+     },
+     {
+      "state": 3,
+      "fraction": 0.0020704269409179688,
+      "meanError": 0.1293315887451172
+     },
+     {
+      "state": 4,
+      "fraction": 0.002105712890625,
+      "meanError": 0.13447697957356772
+     },
+     {
+      "state": 5,
+      "fraction": 0.0016613006591796875,
+      "meanError": 0.12516562143961588
+     },
+     {
+      "state": 6,
+      "fraction": 0.0017299652099609375,
+      "meanError": 0.12078348795572917
+     },
+     {
+      "state": 7,
+      "fraction": 0.0020046234130859375,
+      "meanError": 0.1318197250366211
+     },
+     {
+      "state": 8,
+      "fraction": 0.0019941329956054688,
+      "meanError": 0.13079229990641275
+     },
+     {
+      "state": 9,
+      "fraction": 0.0020456314086914062,
+      "meanError": 0.13182767232259116
+     },
+     {
+      "state": 10,
+      "fraction": 0.001483917236328125,
+      "meanError": 0.1902004877726237
+     },
+     {
+      "state": 11,
+      "fraction": 0.0016231536865234375,
+      "meanError": 0.19557921091715494
+     },
+     {
+      "state": 12,
+      "fraction": 0.0012236328125,
+      "meanError": 0.1855283203125
+     }
+    ]
+   },
+   "spot-skinning-Spotlight-an-fc17d-additive-blending-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00018024444580078125,
+      "meanError": 0.13228893280029297
+     },
+     {
+      "state": 1,
+      "fraction": 0.00017833709716796875,
+      "meanError": 0.1322781244913737
+     },
+     {
+      "state": 2,
+      "fraction": 0.00019359588623046875,
+      "meanError": 0.13540935516357422
+     },
+     {
+      "state": 3,
+      "fraction": 0.0001850128173828125,
+      "meanError": 0.135955810546875
+     },
+     {
+      "state": 4,
+      "fraction": 0.000194549560546875,
+      "meanError": 0.11618963877360027
+     },
+     {
+      "state": 5,
+      "fraction": 0.00015354156494140625,
+      "meanError": 0.11742909749348958
+     },
+     {
+      "state": 6,
+      "fraction": 0.00015354156494140625,
+      "meanError": 0.1305850346883138
+     },
+     {
+      "state": 7,
+      "fraction": 0.0001735687255859375,
+      "meanError": 0.1307245890299479
+     },
+     {
+      "state": 8,
+      "fraction": 0.0002498626708984375,
+      "meanError": 0.12087249755859375
+     },
+     {
+      "state": 9,
+      "fraction": 0.0002498626708984375,
+      "meanError": 0.12087249755859375
+     },
+     {
+      "state": 10,
+      "fraction": 0.0001982421875,
+      "meanError": 0.08095052083333333
+     }
+    ]
+   }
+  }
+ }
+}

@@ -7,6 +7,9 @@ enum Content {
     LightsProbes(Box<super::lights_probes::Demo>),
     ExportersVideo(Box<super::exporters_video::Demo>),
     ShadowRtt(Box<super::shadow_rtt::Demo>),
+    SpotSkinning(Box<super::spot_skinning::Demo>),
+    TransformCurves(Box<super::transform_curves::Demo>),
+    GltfNormals(Box<super::gltf_normals::Demo>),
     TextureFlares(Box<super::texture_flares::Demo>),
     DracoVariants(Box<super::draco_variants::Demo>),
     PassesDecals(Box<super::passes_decals::Demo>),
@@ -98,6 +101,33 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            313 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::GltfNormals(Box::new(
+                    super::gltf_normals::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            308..=310 | 312 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::TransformCurves(Box::new(
+                    super::transform_curves::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            303..=307 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::SpotSkinning(Box::new(
+                    super::spot_skinning::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             298..=302 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -262,7 +292,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            208..=212 => Ok(Self {
+            208..=212 | 311 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 5000.,
@@ -909,6 +939,15 @@ impl Demo {
         if let Content::TextureFlares(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::DracoVariants(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1292,6 +1331,9 @@ impl Demo {
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::SelectionViews(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1435,6 +1477,15 @@ impl Demo {
         if let Content::TextureFlares(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -1520,6 +1571,15 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::DracoVariants(demo) = &mut self.content {
@@ -1651,6 +1711,7 @@ impl Demo {
     ) -> Option<(String, Vec<u8>)> {
         match &mut self.content {
             Content::ExportersMatcap(demo) => demo.take_export(),
+            Content::GltfNormals(demo) => demo.take_export(),
             Content::ExportersVideo(demo) => demo.take_export(renderer),
             _ => None,
         }
@@ -1673,6 +1734,15 @@ impl Demo {
             demo.key(code, down);
         }
         if let Content::TextureFlares(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
             demo.key(code, down);
         }
         if let Content::DracoVariants(demo) = &mut self.content {
@@ -1740,6 +1810,18 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -1803,6 +1885,15 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::TextureFlares(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::DracoVariants(demo) = &mut self.content {
@@ -1957,6 +2048,15 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::TextureFlares(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TransformCurves(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::DracoVariants(demo) = &mut self.content {

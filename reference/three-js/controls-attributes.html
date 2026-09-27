@@ -3,7 +3,7 @@
 const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
 </script></head><body><script type="module">
 import * as THREE from 'three';
-const id=new URLSearchParams(location.search).get('id');if(!['misc_controls_orbit','misc_controls_map','webgl_camera','webgl_custom_attributes','webgl_buffergeometry_drawrange'].includes(id))throw Error('invalid fixture');
+const id=new URLSearchParams(location.search).get('id');if(!['misc_controls_orbit','misc_controls_map','webgpu_camera','webgl_custom_attributes','webgl_buffergeometry_drawrange'].includes(id))throw Error('invalid fixture');
 window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
 const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
 // WebGL render is an instance method: wrap construction so static examples expose it too.

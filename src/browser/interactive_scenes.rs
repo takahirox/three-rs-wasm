@@ -22,7 +22,7 @@ fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
 }
-fn positions(data: Vec<f32>) -> Result<Attribute> {
+pub(super) fn positions(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }
 /// `Color.setHSL`, returning sRGB components.

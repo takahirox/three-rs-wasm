@@ -24,6 +24,10 @@ pub struct Shadow {
     /// PCF radius in texels; zero selects a single filtered comparison.
     pub radius: f64,
     pub filter: ShadowFilter,
+    /// SpotLightShadow.focus: the shadow camera's fov is 2 × angle × focus.
+    pub focus: f64,
+    /// LightShadow.intensity: received shadows are mixed toward lit by 1 − intensity.
+    pub intensity: f64,
 }
 impl Default for Shadow {
     fn default() -> Self {
@@ -36,8 +40,39 @@ impl Default for Shadow {
             normal_bias: 0.0,
             radius: 1.0,
             filter: ShadowFilter::Pcf,
+            focus: 1.0,
+            intensity: 1.0,
         }
     }
+}
+/// SkinnedMesh.computeBoundingSphere(): each skinned vertex added with
+/// Sphere.expandByPoint, in the mesh's local space.
+fn skinned_sphere(scene: &Scene, handle: Object3D) -> Result<Sphere> {
+    let mut center = Vector3::ZERO;
+    let mut radius = -1.0f64;
+    if let Some(geometry) = crate::deformation::evaluate(scene, handle)? {
+        let positions = geometry
+            .attributes
+            .get("position")
+            .ok_or(Error::Invalid("skinned positions"))?;
+        for i in 0..positions.count() {
+            let p = positions.vector3(i)?;
+            if radius < 0.0 {
+                center = p;
+                radius = 0.0;
+                continue;
+            }
+            let v = p - center;
+            let length_sq = v.length_squared();
+            if length_sq > radius * radius {
+                let length = length_sq.sqrt();
+                let delta = (length - radius) * 0.5;
+                center += v * (delta / length);
+                radius += delta;
+            }
+        }
+    }
+    Ok(Sphere { center, radius })
 }
 pub(crate) struct Atlas {
     pub view: wgpu::TextureView,
@@ -60,6 +95,9 @@ pub(crate) struct ShadowRenderer {
     >,
     /// The cached target holds maps rendered for the current layout.
     rendered: std::cell::Cell<bool>,
+    /// SkinnedMesh.boundingSphere: computed once from the pose at first use
+    /// and kept, as three's frustum culling caches it.
+    skinned_spheres: std::cell::RefCell<std::collections::HashMap<(usize, Object3D), Sphere>>,
 }
 struct ShadowTarget {
     texture: wgpu::Texture,
@@ -77,6 +115,22 @@ struct Uniform {
     custom: [[f32; 4]; 16],
 }
 impl ShadowRenderer {
+    /// A SkinnedMesh's bounding sphere: computed from the pose at first use and
+    /// cached until `compute_skinned_bounds` recomputes it, as three caches
+    /// `boundingSphere` until `computeBoundingSphere()`.
+    pub(crate) fn skinned_bounds(&self, scene: &Scene, handle: Object3D) -> Result<Sphere> {
+        let key = (Arc::as_ptr(&scene.cache_owner) as usize, handle);
+        if let Some(sphere) = self.skinned_spheres.borrow().get(&key) {
+            return Ok(*sphere);
+        }
+        self.compute_skinned_bounds(scene, handle)
+    }
+    pub(crate) fn compute_skinned_bounds(&self, scene: &Scene, handle: Object3D) -> Result<Sphere> {
+        let key = (Arc::as_ptr(&scene.cache_owner) as usize, handle);
+        let sphere = skinned_sphere(scene, handle)?;
+        self.skinned_spheres.borrow_mut().insert(key, sphere);
+        Ok(sphere)
+    }
     pub fn new(device: &wgpu::Device) -> Self {
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("shadow depth"),
@@ -139,6 +193,7 @@ impl ShadowRenderer {
             target: Default::default(),
             slots: Default::default(),
             rendered: Default::default(),
+            skinned_spheres: Default::default(),
             sampler: device.create_sampler(&wgpu::SamplerDescriptor {
                 compare: Some(wgpu::CompareFunction::LessEqual),
                 mag_filter: wgpu::FilterMode::Linear,
@@ -237,7 +292,7 @@ impl ShadowRenderer {
                         0.
                     },
                     scale as f32,
-                    0.,
+                    (1.0 - shadow.intensity) as f32,
                 ];
                 for (j, c) in cascades.into_iter().enumerate() {
                     atlas.matrices[cameras.len()] = c.projection_view.as_mat4().to_cols_array();
@@ -265,7 +320,7 @@ impl ShadowRenderer {
                 NodeKind::Light(Light::Spot { target, angle, .. }) => {
                     views.push(view(position, *target, node.up));
                     PerspectiveCamera {
-                        fov: (2.0 * angle).to_degrees().min(179.9),
+                        fov: (2.0 * angle * shadow.focus).to_degrees().min(179.9),
                         aspect: 1.0,
                         near: shadow.near,
                         far: shadow.far,
@@ -309,7 +364,7 @@ impl ShadowRenderer {
                     0.
                 },
                 scale as f32,
-                0.,
+                (1.0 - shadow.intensity) as f32,
             ];
             for v in views {
                 let matrix = projection * v;
@@ -371,6 +426,12 @@ impl ShadowRenderer {
                 let NodeKind::Mesh(mesh) = &node.kind else {
                     continue;
                 };
+                if node.frustum_culled && node.skin.is_some() && node.instances.is_empty() {
+                    let sphere = self.skinned_bounds(scene, handle)?;
+                    if !frustum.intersects_sphere(sphere.transformed(node.matrix_world)) {
+                        continue;
+                    }
+                }
                 if node.frustum_culled
                     && node.skin.is_none()
                     && node.morph_weights.is_empty()

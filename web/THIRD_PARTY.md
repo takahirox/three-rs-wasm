@@ -720,3 +720,33 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 - **Reuse.** The uv grid, `lensflare0.png`, the Park3Med cube, the Ferrari and
   its AO map, and the Venice Sunset panorama are reused from earlier batches.
 
+`gallery/assets/spot-skinning/` holds the unmodified r186 files:
+
+- `models/gltf/Soldier.glb`;
+- `textures/disturb.jpg`, `colors.png` and `uv_grid_opengl.jpg`;
+- `textures/equirectangular/lobe.hdr`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `spot-skinning-manifest.json`.
+- **Licenses.** They are distributed alongside `LICENSE-THREE` and credited as
+  in the Three.js examples.
+- **Reuse.** Xbot, Lucy and the checkerboard floor maps are reused from earlier
+  batches.
+
+
+`gallery/assets/transform-curves/` holds the unmodified r186
+`models/gltf/kira.glb`.
+
+- **Hash.** Its source path and SHA-256 hash are in
+  `transform-curves-manifest.json`.
+- **License.** CC0, as the example credits it: the character by Aki, the
+  furniture from poly.pizza and the scene by abernier.
+- **Reuse.** The crate texture and the helvetiker font are reused from earlier
+  batches.
+
+`gallery/assets/gltf-normals/` holds the unmodified r186
+`textures/NormalMapOpenGL.png` and `NormalMapDirectX.png`.
+
+- **Hashes.** Their source paths and SHA-256 hashes are in
+  `gltf-normals-manifest.json`.
+- **License.** They are distributed alongside `LICENSE-THREE`.

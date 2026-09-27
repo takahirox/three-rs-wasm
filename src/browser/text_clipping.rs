@@ -43,7 +43,12 @@ fn f32s(g: &BufferGeometry, name: &str) -> Vec<f32> {
 }
 /// ExtrudeGeometry positions, face normals from computeVertexNormals and the
 /// lid/side groups.
-fn text_geometry(font: &Font, text: &str, size: f64, o: &Extrude) -> Result<BufferGeometry> {
+pub(super) fn text_geometry(
+    font: &Font,
+    text: &str,
+    size: f64,
+    o: &Extrude,
+) -> Result<BufferGeometry> {
     let (positions, groups) = extrude(&font.shapes(text, size), o);
     let mut g = BufferGeometry::default();
     g.set_attribute("position", vec3s(positions)?);

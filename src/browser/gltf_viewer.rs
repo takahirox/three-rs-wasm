@@ -258,7 +258,13 @@ async fn decode_browser_image(
     if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
         return Texture::from_basis_compressed(bytes.to_vec(), true);
     }
+    // Lossy WebP (VP8, or VP8X extended) decodes differently between codecs:
+    // use the browser's, as TextureLoader and GLTFLoader do.
+    let lossy_webp = bytes.starts_with(b"RIFF")
+        && bytes.get(8..12) == Some(b"WEBP")
+        && bytes.get(12..16) != Some(b"VP8L");
     if !(bytes.starts_with(&[0xff, 0xd8])
+        || lossy_webp
         || (bytes.get(4..8) == Some(b"ftyp")
             && bytes
                 .get(8..32)

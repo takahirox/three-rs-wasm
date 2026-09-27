@@ -2,12 +2,12 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 298 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 308 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 539 |
-| excluded | 32 |
+| runtime-prerequisite | 536 |
+| excluded | 35 |
 | rust-static-frame-rendered | 33 |
 | rust-empty-frame | 3 |
 
@@ -28,13 +28,13 @@ Counts overlap and describe the sampled execution, not all possible branches.
 | Prerequisite | Examples |
 | --- | ---: |
 | Material type: MeshPhongMaterial | 93 |
-| Shadow maps | 93 |
-| Light type: HemisphereLight | 80 |
+| Shadow maps | 92 |
+| Light type: HemisphereLight | 79 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |
 | Fog: linear | 53 |
 | Material type: ShaderMaterial | 46 |
-| Material type: MeshLambertMaterial | 42 |
+| Material type: MeshLambertMaterial | 41 |
 | Flat shaded lit material | 39 |
 | Instance/batch transforms: Mesh | 36 |
 | Material type: RawShaderMaterial | 31 |
@@ -42,11 +42,11 @@ Counts overlap and describe the sampled execution, not all possible branches.
 | Programmable background node | 27 |
 | GPU compute/storage dispatch | 24 |
 | Light type: SunLight | 21 |
-| Light type: SpotLight | 21 |
-| Tone mapping mode: 7 | 21 |
 | Physical material extension: transmission | 21 |
 | Skinned mesh / skeleton | 20 |
-| Wireframe material | 19 |
+| Light type: SpotLight | 20 |
+| Tone mapping mode: 7 | 20 |
+| Wireframe material | 18 |
 | Programmable material: positionNode | 18 |
 | Material type: NodeMaterial | 17 |
 | Morph target evaluation | 16 |
@@ -85,7 +85,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_animation_multiple](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_multiple.html) | runtime-prerequisite | Fog: linear; Light type: HemisphereLight; Light type: SunLight; Shadow maps; Material type: MeshPhongMaterial; Skinned mesh / skeleton |
 | [webgl_animation_walk](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_walk.html) | runtime-prerequisite | Fog: linear; Skinned mesh / skeleton; Shadow maps; Separate roughness and metalness textures; Light type: SunLight |
 | [webgl_batch_lod_bvh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html) | runtime-prerequisite | Instance/batch transforms: Mesh |
-| [webgl_camera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html) | runtime-prerequisite | Wireframe material |
+| [webgl_camera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html) | excluded |  |
 | [webgl_camera_array](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_array.html) | excluded |  |
 | [webgl_camera_logarithmicdepthbuffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html) | runtime-prerequisite | Material type: MeshPhongMaterial |
 | [webgl_clipping](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping.html) | excluded |  |
@@ -139,7 +139,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_lightprobes_sponza](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lightprobes_sponza.html) | runtime-prerequisite | Material type: ShaderMaterial; Shadow maps; Light type: SunLight |
 | [webgl_lights_hemisphere](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_hemisphere.html) | runtime-prerequisite | Fog: linear; Light type: HemisphereLight; Wireframe material; Shadow maps; Material type: MeshLambertMaterial; Material type: ShaderMaterial; Morph target evaluation; Flat shaded lit material |
 | [webgl_lights_physical](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_physical.html) | excluded |  |
-| [webgl_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html) | runtime-prerequisite | Tone mapping mode: 7; Light type: HemisphereLight; Light type: SpotLight; Shadow maps; Material type: MeshLambertMaterial |
+| [webgl_lights_spotlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html) | excluded |  |
 | [webgl_lights_spotlights](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlights.html) | runtime-prerequisite | Shadow maps; Material type: MeshPhongMaterial; Light type: SpotLight |
 | [webgl_lights_sunlight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_sunlight.html) | excluded |  |
 | [webgl_lights_rectarealight](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_rectarealight.html) | excluded |  |
@@ -247,7 +247,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_math_orientation_transform](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_math_orientation_transform.html) | runtime-prerequisite | Material type: MeshNormalMaterial; Wireframe material |
 | [webgl_mesh_batch](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_mesh_batch.html) | runtime-prerequisite | Instance/batch transforms: Mesh; Material type: MeshPhongMaterial |
 | [webgl_mirror](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_mirror.html) | runtime-prerequisite | Material type: ShaderMaterial; Material type: MeshPhongMaterial; Flat shaded lit material |
-| [webgl_modifier_curve](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_curve.html) | runtime-prerequisite | Custom shader onBeforeCompile hook |
+| [webgl_modifier_curve](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_curve.html) | excluded |  |
 | [webgl_modifier_curve_instanced](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_curve_instanced.html) | runtime-prerequisite | Instance/batch transforms: Mesh |
 | [webgl_modifier_edgesplit](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_edgesplit.html) | runtime-prerequisite | Light type: HemisphereLight |
 | [webgl_modifier_simplifier](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_simplifier.html) | runtime-prerequisite | Flat shaded lit material |

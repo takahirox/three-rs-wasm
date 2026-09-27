@@ -12,7 +12,7 @@ fn bad(what: &str) -> Error {
 
 /// PLYLoader.parse for vertex positions and triangle or quad faces, in ASCII or
 /// binary form.
-pub(super) fn parse_ply(data: &[u8]) -> Result<(Vec<f32>, Vec<u32>)> {
+pub(in crate::browser) fn parse_ply(data: &[u8]) -> Result<(Vec<f32>, Vec<u32>)> {
     // extractHeaderText: lines up to end_header, then one byte after it.
     let mut i = 0;
     let mut line = String::new();

@@ -1,0 +1,5108 @@
+{
+ "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+ "note": "Recorded by tests/browser/transform-curves.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
+ "runs": {
+  "dpr1": {
+   "transform-curves-Transform-0c3a6-ontrols-transform-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.02483367919921875,
+      "meanError": 0.44187164306640625
+     },
+     {
+      "state": 1,
+      "fraction": 0.026424407958984375,
+      "meanError": 0.49913787841796875
+     },
+     {
+      "state": 2,
+      "fraction": 0.02873992919921875,
+      "meanError": 0.5522143046061198
+     },
+     {
+      "state": 3,
+      "fraction": 0.02875518798828125,
+      "meanError": 0.5520299275716146
+     },
+     {
+      "state": 4,
+      "fraction": 0.02689361572265625,
+      "meanError": 0.4857381184895833
+     },
+     {
+      "state": 5,
+      "fraction": 0.026905059814453125,
+      "meanError": 0.48762257893880206
+     },
+     {
+      "state": 6,
+      "fraction": 0.025363922119140625,
+      "meanError": 0.46735890706380206
+     },
+     {
+      "state": 7,
+      "fraction": 0.024082183837890625,
+      "meanError": 0.4321734110514323
+     },
+     {
+      "state": 8,
+      "fraction": 0.02339935302734375,
+      "meanError": 0.4199320475260417
+     },
+     {
+      "state": 9,
+      "fraction": 0.0063018798828125,
+      "meanError": 0.11496861775716145
+     },
+     {
+      "state": 10,
+      "fraction": 0.00598907470703125,
+      "meanError": 0.10654322306315105
+     },
+     {
+      "state": 11,
+      "fraction": 0.00598907470703125,
+      "meanError": 0.10654322306315105
+     },
+     {
+      "state": 12,
+      "fraction": 0.0063018798828125,
+      "meanError": 0.11496861775716145
+     },
+     {
+      "state": 13,
+      "fraction": 0.004695892333984375,
+      "meanError": 0.08848317464192708
+     },
+     {
+      "state": 14,
+      "fraction": 0.00048828125,
+      "meanError": 0.01090240478515625
+     },
+     {
+      "state": 15,
+      "fraction": 0.00585174560546875,
+      "meanError": 0.10689163208007812
+     },
+     {
+      "state": 16,
+      "fraction": 0.018951416015625,
+      "meanError": 0.3423207600911458
+     },
+     {
+      "state": 17,
+      "fraction": 0.022731781005859375,
+      "meanError": 0.41162363688151044
+     },
+     {
+      "state": 18,
+      "fraction": 0.0183046875,
+      "meanError": 0.331578125
+     }
+    ]
+   },
+   "transform-curves-Transform-13815--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "misc_controls_transform",
+      "reference": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_modifier_curve",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_skinning_ik",
+      "reference": {
+       "draws": [
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 264,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 97536,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 240,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 264,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 97536,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 96,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_gltf_normals",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_curve_instanced",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 8
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 8
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-2a082-r-curve-instanced-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.08943684895833333
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.08658981323242188
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.08530298868815105
+     },
+     {
+      "state": 3,
+      "fraction": 0.00016021728515625,
+      "meanError": 0.09203465779622395
+     },
+     {
+      "state": 4,
+      "fraction": 0.0001678466796875,
+      "meanError": 0.09083938598632812
+     },
+     {
+      "state": 5,
+      "fraction": 0.00018310546875,
+      "meanError": 0.09635162353515625
+     },
+     {
+      "state": 6,
+      "fraction": 0.00018310546875,
+      "meanError": 0.09635162353515625
+     },
+     {
+      "state": 7,
+      "fraction": 0.00019073486328125,
+      "meanError": 0.10083643595377605
+     },
+     {
+      "state": 8,
+      "fraction": 0.00012890625,
+      "meanError": 0.06353125
+     }
+    ]
+   },
+   "transform-curves-Transform-2c8b1-pu-modifier-curve-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0016924540201822917
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0013376871744791667
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0012461344401041667
+     },
+     {
+      "state": 3,
+      "fraction": 0.002048492431640625,
+      "meanError": 0.05507787068684896
+     },
+     {
+      "state": 4,
+      "fraction": 0.002685546875,
+      "meanError": 0.08917744954427083
+     },
+     {
+      "state": 5,
+      "fraction": 0.00211334228515625,
+      "meanError": 0.055536905924479164
+     },
+     {
+      "state": 6,
+      "fraction": 0.00211334228515625,
+      "meanError": 0.055536905924479164
+     },
+     {
+      "state": 7,
+      "fraction": 0.00211334228515625,
+      "meanError": 0.055446624755859375
+     },
+     {
+      "state": 8,
+      "fraction": 0.001296875,
+      "meanError": 0.034375
+     }
+    ]
+   },
+   "transform-curves-Transform-2d348-webgl-animation-skinning-ik": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 797,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      },
+      "after": {
+       "creates": 797,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 802,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      },
+      "after": {
+       "creates": 802,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-40339--misc-exporter-gltf-normals": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 61,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 61,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-44f7e-dency-webgpu-modifier-curve": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 73,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 73,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-75254-r-curve-instanced-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.014743804931640625,
+      "meanError": 0.28442128499348956
+     },
+     {
+      "state": 1,
+      "fraction": 0.014019012451171875,
+      "meanError": 0.2783050537109375
+     },
+     {
+      "state": 2,
+      "fraction": 0.013767242431640625,
+      "meanError": 0.2718696594238281
+     },
+     {
+      "state": 3,
+      "fraction": 0.015018463134765625,
+      "meanError": 0.2979329427083333
+     },
+     {
+      "state": 4,
+      "fraction": 0.017040252685546875,
+      "meanError": 0.3569539388020833
+     },
+     {
+      "state": 5,
+      "fraction": 0.015716552734375,
+      "meanError": 0.30851491292317706
+     },
+     {
+      "state": 6,
+      "fraction": 0.015716552734375,
+      "meanError": 0.30851491292317706
+     },
+     {
+      "state": 7,
+      "fraction": 0.01595306396484375,
+      "meanError": 0.3124402364095052
+     },
+     {
+      "state": 8,
+      "fraction": 0.01271484375,
+      "meanError": 0.23419270833333333
+     }
+    ]
+   },
+   "transform-curves-Transform-77863-gl-modifier-curve-instanced": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 100,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 100,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 105,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 105,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-8108e-ontrols-transform-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00017547607421875,
+      "meanError": 0.010510762532552084
+     },
+     {
+      "state": 1,
+      "fraction": 0.00017547607421875,
+      "meanError": 0.008836110432942709
+     },
+     {
+      "state": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.003922780354817708
+     },
+     {
+      "state": 3,
+      "fraction": 0.000041961669921875,
+      "meanError": 0.005320231119791667
+     },
+     {
+      "state": 4,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.004536946614583333
+     },
+     {
+      "state": 5,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.005800882975260417
+     },
+     {
+      "state": 6,
+      "fraction": 0.00052642822265625,
+      "meanError": 0.022747039794921875
+     },
+     {
+      "state": 7,
+      "fraction": 0.000244140625,
+      "meanError": 0.009332021077473959
+     },
+     {
+      "state": 8,
+      "fraction": 0.00009918212890625,
+      "meanError": 0.006318410237630208
+     },
+     {
+      "state": 9,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.006684621175130208
+     },
+     {
+      "state": 10,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.001827239990234375
+     },
+     {
+      "state": 11,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.001827239990234375
+     },
+     {
+      "state": 12,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.006684621175130208
+     },
+     {
+      "state": 13,
+      "fraction": 0.0001373291015625,
+      "meanError": 0.007680257161458333
+     },
+     {
+      "state": 14,
+      "fraction": 0.000064849853515625,
+      "meanError": 0.0032526652018229165
+     },
+     {
+      "state": 15,
+      "fraction": 0.000141143798828125,
+      "meanError": 0.0076141357421875
+     },
+     {
+      "state": 16,
+      "fraction": 0.000110626220703125,
+      "meanError": 0.006824493408203125
+     },
+     {
+      "state": 17,
+      "fraction": 0.000110626220703125,
+      "meanError": 0.006745656331380208
+     },
+     {
+      "state": 18,
+      "fraction": 0.00006640625,
+      "meanError": 0.005174479166666667
+     }
+    ]
+   },
+   "transform-curves-Transform-8159e-rter-gltf-normals-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.005995432535807292
+     },
+     {
+      "state": 1,
+      "fraction": 0.001495361328125,
+      "meanError": 0.04461034138997396
+     },
+     {
+      "state": 2,
+      "fraction": 0.00164031982421875,
+      "meanError": 0.048322041829427086
+     },
+     {
+      "state": 3,
+      "fraction": 0.00144921875,
+      "meanError": 0.042881510416666664
+     }
+    ]
+   },
+   "transform-curves-Transform-879e1-ation-skinning-ik-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 1,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 2,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 3,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 4,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 5,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 6,
+      "fraction": 0.00049591064453125,
+      "meanError": 0.040796915690104164
+     },
+     {
+      "state": 7,
+      "fraction": 0.00048828125,
+      "meanError": 0.03983306884765625
+     },
+     {
+      "state": 8,
+      "fraction": 0.00048828125,
+      "meanError": 0.03983306884765625
+     },
+     {
+      "state": 9,
+      "fraction": 0.00048828125,
+      "meanError": 0.039815266927083336
+     },
+     {
+      "state": 10,
+      "fraction": 0.000579833984375,
+      "meanError": 0.042711893717447914
+     },
+     {
+      "state": 11,
+      "fraction": 0.000591278076171875,
+      "meanError": 0.040707906087239586
+     },
+     {
+      "state": 12,
+      "fraction": 0.000720977783203125,
+      "meanError": 0.0417633056640625
+     },
+     {
+      "state": 13,
+      "fraction": 0.00050390625,
+      "meanError": 0.03771875
+     }
+    ]
+   },
+   "transform-curves-Transform-afec7-ation-skinning-ik-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 1,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 2,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 3,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 4,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 5,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 6,
+      "fraction": 0.01102447509765625,
+      "meanError": 0.1978429158528646
+     },
+     {
+      "state": 7,
+      "fraction": 0.0108642578125,
+      "meanError": 0.19539388020833334
+     },
+     {
+      "state": 8,
+      "fraction": 0.0108642578125,
+      "meanError": 0.19539388020833334
+     },
+     {
+      "state": 9,
+      "fraction": 0.010921478271484375,
+      "meanError": 0.19436136881510416
+     },
+     {
+      "state": 10,
+      "fraction": 0.010868072509765625,
+      "meanError": 0.19426091512044272
+     },
+     {
+      "state": 11,
+      "fraction": 0.011684417724609375,
+      "meanError": 0.19502131144205728
+     },
+     {
+      "state": 12,
+      "fraction": 0.01129913330078125,
+      "meanError": 0.19918314615885416
+     },
+     {
+      "state": 13,
+      "fraction": 0.01333984375,
+      "meanError": 0.22728776041666668
+     }
+    ]
+   },
+   "transform-curves-Transform-bb6dd-pu-modifier-curve-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006374359130859375,
+      "meanError": 0.14927037556966147
+     },
+     {
+      "state": 1,
+      "fraction": 0.00670623779296875,
+      "meanError": 0.1526616414388021
+     },
+     {
+      "state": 2,
+      "fraction": 0.006702423095703125,
+      "meanError": 0.15386835734049478
+     },
+     {
+      "state": 3,
+      "fraction": 0.009918212890625,
+      "meanError": 0.22078450520833334
+     },
+     {
+      "state": 4,
+      "fraction": 0.010974884033203125,
+      "meanError": 0.2998669942220052
+     },
+     {
+      "state": 5,
+      "fraction": 0.00975799560546875,
+      "meanError": 0.2157770792643229
+     },
+     {
+      "state": 6,
+      "fraction": 0.00975799560546875,
+      "meanError": 0.2157770792643229
+     },
+     {
+      "state": 7,
+      "fraction": 0.0093841552734375,
+      "meanError": 0.20972315470377603
+     },
+     {
+      "state": 8,
+      "fraction": 0.00709375,
+      "meanError": 0.15453645833333332
+     }
+    ]
+   },
+   "transform-curves-Transform-c0882-ncy-misc-controls-transform": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 296,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 296,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 301,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 301,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-e2842-rter-gltf-normals-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0059967041015625
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.005418141682942708
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.005304972330729167
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00491015625
+     }
+    ]
+   }
+  },
+  "dpr2": {
+   "transform-curves-Transform-0c3a6-ontrols-transform-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.012234687805175781,
+      "meanError": 0.21943060557047525
+     },
+     {
+      "state": 1,
+      "fraction": 0.013092994689941406,
+      "meanError": 0.2480189005533854
+     },
+     {
+      "state": 2,
+      "fraction": 0.014369010925292969,
+      "meanError": 0.27793312072753906
+     },
+     {
+      "state": 3,
+      "fraction": 0.014375686645507812,
+      "meanError": 0.2771170934041341
+     },
+     {
+      "state": 4,
+      "fraction": 0.013386726379394531,
+      "meanError": 0.24350579579671225
+     },
+     {
+      "state": 5,
+      "fraction": 0.013344764709472656,
+      "meanError": 0.24381637573242188
+     },
+     {
+      "state": 6,
+      "fraction": 0.0125732421875,
+      "meanError": 0.23316065470377603
+     },
+     {
+      "state": 7,
+      "fraction": 0.011834144592285156,
+      "meanError": 0.21474393208821616
+     },
+     {
+      "state": 8,
+      "fraction": 0.011345863342285156,
+      "meanError": 0.204744021097819
+     },
+     {
+      "state": 9,
+      "fraction": 0.0032806396484375,
+      "meanError": 0.06076590220133463
+     },
+     {
+      "state": 10,
+      "fraction": 0.00310516357421875,
+      "meanError": 0.05498282114664713
+     },
+     {
+      "state": 11,
+      "fraction": 0.00310516357421875,
+      "meanError": 0.05498282114664713
+     },
+     {
+      "state": 12,
+      "fraction": 0.0032806396484375,
+      "meanError": 0.06076590220133463
+     },
+     {
+      "state": 13,
+      "fraction": 0.0025529861450195312,
+      "meanError": 0.048988024393717446
+     },
+     {
+      "state": 14,
+      "fraction": 0.00030803680419921875,
+      "meanError": 0.007854779561360678
+     },
+     {
+      "state": 15,
+      "fraction": 0.0030469894409179688,
+      "meanError": 0.05688635508219401
+     },
+     {
+      "state": 16,
+      "fraction": 0.009821891784667969,
+      "meanError": 0.17703946431477866
+     },
+     {
+      "state": 17,
+      "fraction": 0.010556221008300781,
+      "meanError": 0.19192282358805338
+     },
+     {
+      "state": 18,
+      "fraction": 0.0084267578125,
+      "meanError": 0.15223958333333334
+     }
+    ]
+   },
+   "transform-curves-Transform-13815--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "misc_controls_transform",
+      "reference": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_modifier_curve",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_animation_skinning_ik",
+      "reference": {
+       "draws": [
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 264,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 97536,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 240,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 288,
+         "instances": 1
+        },
+        {
+         "count": 192,
+         "instances": 1
+        },
+        {
+         "count": 336,
+         "instances": 1
+        },
+        {
+         "count": 264,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 7776,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 2640,
+         "instances": 1
+        },
+        {
+         "count": 222,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 97536,
+         "instances": 1
+        },
+        {
+         "count": 612,
+         "instances": 1
+        },
+        {
+         "count": 657,
+         "instances": 1
+        },
+        {
+         "count": 1752,
+         "instances": 1
+        },
+        {
+         "count": 972,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 1470,
+         "instances": 1
+        },
+        {
+         "count": 504,
+         "instances": 1
+        },
+        {
+         "count": 1830,
+         "instances": 1
+        },
+        {
+         "count": 840,
+         "instances": 1
+        },
+        {
+         "count": 96,
+         "instances": 1
+        },
+        {
+         "count": 14334,
+         "instances": 1
+        },
+        {
+         "count": 2442,
+         "instances": 1
+        },
+        {
+         "count": 312,
+         "instances": 1
+        },
+        {
+         "count": 4572,
+         "instances": 1
+        },
+        {
+         "count": 4968,
+         "instances": 1
+        },
+        {
+         "count": 120,
+         "instances": 1
+        },
+        {
+         "count": 360,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 1455,
+         "instances": 1
+        },
+        {
+         "count": 576,
+         "instances": 1
+        },
+        {
+         "count": 324,
+         "instances": 1
+        },
+        {
+         "count": 60,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 4,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 672,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 72,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 96,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "misc_exporter_gltf_normals",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_modifier_curve_instanced",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 8
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 51,
+         "instances": 1
+        },
+        {
+         "count": 104112,
+         "instances": 8
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-2a082-r-curve-instanced-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.08965778350830078
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000057220458984375,
+      "meanError": 0.08688577016194661
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.08544540405273438
+     },
+     {
+      "state": 3,
+      "fraction": 0.00018024444580078125,
+      "meanError": 0.09302934010823567
+     },
+     {
+      "state": 4,
+      "fraction": 0.00019550323486328125,
+      "meanError": 0.09280618031819661
+     },
+     {
+      "state": 5,
+      "fraction": 0.00018978118896484375,
+      "meanError": 0.09688727060953777
+     },
+     {
+      "state": 6,
+      "fraction": 0.00018978118896484375,
+      "meanError": 0.09688727060953777
+     },
+     {
+      "state": 7,
+      "fraction": 0.0001888275146484375,
+      "meanError": 0.10118738810221355
+     },
+     {
+      "state": 8,
+      "fraction": 0.0001171875,
+      "meanError": 0.06316569010416667
+     }
+    ]
+   },
+   "transform-curves-Transform-2c8b1-pu-modifier-curve-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0017105738321940105
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0013128916422526042
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0011663436889648438
+     },
+     {
+      "state": 3,
+      "fraction": 0.0020895004272460938,
+      "meanError": 0.05535666147867838
+     },
+     {
+      "state": 4,
+      "fraction": 0.002410888671875,
+      "meanError": 0.07103506724039714
+     },
+     {
+      "state": 5,
+      "fraction": 0.0021457672119140625,
+      "meanError": 0.05651505788167318
+     },
+     {
+      "state": 6,
+      "fraction": 0.0021457672119140625,
+      "meanError": 0.05651505788167318
+     },
+     {
+      "state": 7,
+      "fraction": 0.0021457672119140625,
+      "meanError": 0.056456565856933594
+     },
+     {
+      "state": 8,
+      "fraction": 0.0013388671875,
+      "meanError": 0.03537044270833333
+     }
+    ]
+   },
+   "transform-curves-Transform-2d348-webgl-animation-skinning-ik": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 797,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      },
+      "after": {
+       "creates": 797,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 802,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      },
+      "after": {
+       "creates": 802,
+       "transfers": [
+        52,
+        5096684,
+        87984
+       ],
+       "resources": [
+        26,
+        26,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-40339--misc-exporter-gltf-normals": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 56,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 56,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 61,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 61,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-44f7e-dency-webgpu-modifier-curve": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 68,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 68,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 73,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 73,
+       "transfers": [
+        3,
+        8335104,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-75254-r-curve-instanced-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.007389068603515625,
+      "meanError": 0.1883563995361328
+     },
+     {
+      "state": 1,
+      "fraction": 0.007110595703125,
+      "meanError": 0.18179734547932944
+     },
+     {
+      "state": 2,
+      "fraction": 0.006900787353515625,
+      "meanError": 0.1785434087117513
+     },
+     {
+      "state": 3,
+      "fraction": 0.007625579833984375,
+      "meanError": 0.19548670450846353
+     },
+     {
+      "state": 4,
+      "fraction": 0.008706092834472656,
+      "meanError": 0.22475814819335938
+     },
+     {
+      "state": 5,
+      "fraction": 0.007914543151855469,
+      "meanError": 0.20105616251627603
+     },
+     {
+      "state": 6,
+      "fraction": 0.007914543151855469,
+      "meanError": 0.20105616251627603
+     },
+     {
+      "state": 7,
+      "fraction": 0.008245468139648438,
+      "meanError": 0.20798810323079428
+     },
+     {
+      "state": 8,
+      "fraction": 0.0065830078125,
+      "meanError": 0.14983333333333335
+     }
+    ]
+   },
+   "transform-curves-Transform-77863-gl-modifier-curve-instanced": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 100,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 100,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 105,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 105,
+       "transfers": [
+        4,
+        8339184,
+        64
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-8108e-ontrols-transform-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0001678466796875,
+      "meanError": 0.008022308349609375
+     },
+     {
+      "state": 1,
+      "fraction": 0.0001678466796875,
+      "meanError": 0.006699562072753906
+     },
+     {
+      "state": 2,
+      "fraction": 0.00001430511474609375,
+      "meanError": 0.0018469492594401042
+     },
+     {
+      "state": 3,
+      "fraction": 0.000030517578125,
+      "meanError": 0.002147674560546875
+     },
+     {
+      "state": 4,
+      "fraction": 0.0000095367431640625,
+      "meanError": 0.0019353230794270833
+     },
+     {
+      "state": 5,
+      "fraction": 0.00001811981201171875,
+      "meanError": 0.0033938090006510415
+     },
+     {
+      "state": 6,
+      "fraction": 0.000400543212890625,
+      "meanError": 0.014986991882324219
+     },
+     {
+      "state": 7,
+      "fraction": 0.00026035308837890625,
+      "meanError": 0.008505503336588541
+     },
+     {
+      "state": 8,
+      "fraction": 0.0001010894775390625,
+      "meanError": 0.004952748616536458
+     },
+     {
+      "state": 9,
+      "fraction": 0.00012493133544921875,
+      "meanError": 0.005770047505696614
+     },
+     {
+      "state": 10,
+      "fraction": 0.00000476837158203125,
+      "meanError": 0.0007680257161458334
+     },
+     {
+      "state": 11,
+      "fraction": 0.00000476837158203125,
+      "meanError": 0.0007680257161458334
+     },
+     {
+      "state": 12,
+      "fraction": 0.00012493133544921875,
+      "meanError": 0.005770047505696614
+     },
+     {
+      "state": 13,
+      "fraction": 0.00013446807861328125,
+      "meanError": 0.006288210550944011
+     },
+     {
+      "state": 14,
+      "fraction": 0.000080108642578125,
+      "meanError": 0.0037829081217447915
+     },
+     {
+      "state": 15,
+      "fraction": 0.00012302398681640625,
+      "meanError": 0.005814870198567708
+     },
+     {
+      "state": 16,
+      "fraction": 0.00010776519775390625,
+      "meanError": 0.005122184753417969
+     },
+     {
+      "state": 17,
+      "fraction": 0.0001049041748046875,
+      "meanError": 0.0049368540445963545
+     },
+     {
+      "state": 18,
+      "fraction": 0.0000654296875,
+      "meanError": 0.003091796875
+     }
+    ]
+   },
+   "transform-curves-Transform-8159e-rter-gltf-normals-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0005610783894856771
+     },
+     {
+      "state": 1,
+      "fraction": 0.0007352828979492188,
+      "meanError": 0.021535237630208332
+     },
+     {
+      "state": 2,
+      "fraction": 0.0008020401000976562,
+      "meanError": 0.023260752360026043
+     },
+     {
+      "state": 3,
+      "fraction": 0.0006376953125,
+      "meanError": 0.018595703125
+     }
+    ]
+   },
+   "transform-curves-Transform-879e1-ation-skinning-ik-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 1,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 2,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 3,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 4,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 5,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 6,
+      "fraction": 0.00038623809814453125,
+      "meanError": 0.022519429524739582
+     },
+     {
+      "state": 7,
+      "fraction": 0.00036334991455078125,
+      "meanError": 0.021574974060058594
+     },
+     {
+      "state": 8,
+      "fraction": 0.00036334991455078125,
+      "meanError": 0.021574974060058594
+     },
+     {
+      "state": 9,
+      "fraction": 0.0003662109375,
+      "meanError": 0.021579742431640625
+     },
+     {
+      "state": 10,
+      "fraction": 0.000415802001953125,
+      "meanError": 0.0236050287882487
+     },
+     {
+      "state": 11,
+      "fraction": 0.00040340423583984375,
+      "meanError": 0.02202892303466797
+     },
+     {
+      "state": 12,
+      "fraction": 0.0004253387451171875,
+      "meanError": 0.021567026774088543
+     },
+     {
+      "state": 13,
+      "fraction": 0.0004296875,
+      "meanError": 0.021534505208333332
+     }
+    ]
+   },
+   "transform-curves-Transform-afec7-ation-skinning-ik-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 1,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 2,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 3,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 4,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 5,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 6,
+      "fraction": 0.005517005920410156,
+      "meanError": 0.1004482905069987
+     },
+     {
+      "state": 7,
+      "fraction": 0.0055637359619140625,
+      "meanError": 0.10148016611735027
+     },
+     {
+      "state": 8,
+      "fraction": 0.0055637359619140625,
+      "meanError": 0.10148016611735027
+     },
+     {
+      "state": 9,
+      "fraction": 0.00557708740234375,
+      "meanError": 0.10057862599690755
+     },
+     {
+      "state": 10,
+      "fraction": 0.0054607391357421875,
+      "meanError": 0.09925460815429688
+     },
+     {
+      "state": 11,
+      "fraction": 0.005955696105957031,
+      "meanError": 0.09948190053304036
+     },
+     {
+      "state": 12,
+      "fraction": 0.00579071044921875,
+      "meanError": 0.09929974873860677
+     },
+     {
+      "state": 13,
+      "fraction": 0.0067939453125,
+      "meanError": 0.11436360677083333
+     }
+    ]
+   },
+   "transform-curves-Transform-bb6dd-pu-modifier-curve-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0032033920288085938,
+      "meanError": 0.07506402333577473
+     },
+     {
+      "state": 1,
+      "fraction": 0.0033855438232421875,
+      "meanError": 0.07747173309326172
+     },
+     {
+      "state": 2,
+      "fraction": 0.0034818649291992188,
+      "meanError": 0.08001867930094402
+     },
+     {
+      "state": 3,
+      "fraction": 0.0061550140380859375,
+      "meanError": 0.1411005655924479
+     },
+     {
+      "state": 4,
+      "fraction": 0.006691932678222656,
+      "meanError": 0.17818101247151694
+     },
+     {
+      "state": 5,
+      "fraction": 0.0059642791748046875,
+      "meanError": 0.13611062367757162
+     },
+     {
+      "state": 6,
+      "fraction": 0.0059642791748046875,
+      "meanError": 0.13611062367757162
+     },
+     {
+      "state": 7,
+      "fraction": 0.0057926177978515625,
+      "meanError": 0.13351726531982422
+     },
+     {
+      "state": 8,
+      "fraction": 0.004234375,
+      "meanError": 0.09665397135416667
+     }
+    ]
+   },
+   "transform-curves-Transform-c0882-ncy-misc-controls-transform": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 296,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 296,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 301,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 301,
+       "transfers": [
+        33,
+        199008,
+        528
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "transform-curves-Transform-e2842-rter-gltf-normals-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0005604426066080729
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00226593017578125
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0022373199462890625
+     },
+     {
+      "state": 3,
+      "fraction": 0.000001953125,
+      "meanError": 0.0020826822916666667
+     }
+    ]
+   }
+  }
+ }
+}

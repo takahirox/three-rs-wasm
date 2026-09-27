@@ -7,7 +7,7 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 9.5367431640625e-05,
+      "fraction": 0.000095367431640625,
       "meanError": 0.0240478515625,
       "meanLevel": [
        4.984073638916016,
@@ -97,7 +97,7 @@
      },
      {
       "state": 10,
-      "fraction": 6.4849853515625e-05,
+      "fraction": 0.000064849853515625,
       "meanError": 0.016536712646484375,
       "meanLevel": [
        7.463325500488281,
@@ -213,45 +213,6 @@
      }
     ]
    },
-   "Controls-3780a-ring-webgl-camera-samples-1": {
-    "comparison": [
-     {
-      "state": 0,
-      "fraction": 0.0029754638671875,
-      "meanError": 0.5717811584472656
-     },
-     {
-      "state": 1,
-      "fraction": 0.000457763671875,
-      "meanError": 0.045589447021484375
-     },
-     {
-      "state": 2,
-      "fraction": 0.00037384033203125,
-      "meanError": 0.037807464599609375
-     },
-     {
-      "state": 3,
-      "fraction": 0.0004730224609375,
-      "meanError": 0.049480438232421875
-     },
-     {
-      "state": 4,
-      "fraction": 0.000225067138671875,
-      "meanError": 0.0282745361328125
-     },
-     {
-      "state": 5,
-      "fraction": 0.000431060791015625,
-      "meanError": 0.0474700927734375
-     },
-     {
-      "state": 6,
-      "fraction": 0.00054296875,
-      "meanError": 0.062311197916666665
-     }
-    ]
-   },
    "Controls-5248f-custom-attributes-samples-1": {
     "comparison": [
      {
@@ -261,67 +222,28 @@
      },
      {
       "state": 1,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.0006001790364583334
      },
      {
       "state": 2,
-      "fraction": 2.6702880859375e-05,
+      "fraction": 0.000026702880859375,
       "meanError": 0.0007731119791666666
      },
      {
       "state": 3,
-      "fraction": 1.1444091796875e-05,
+      "fraction": 0.000011444091796875,
       "meanError": 0.0009282430013020834
      },
      {
       "state": 4,
-      "fraction": 1.1444091796875e-05,
+      "fraction": 0.000011444091796875,
       "meanError": 0.001506805419921875
      },
      {
       "state": 5,
-      "fraction": 1.953125e-05,
+      "fraction": 0.00001953125,
       "meanError": 0.0013033854166666667
-     }
-    ]
-   },
-   "Controls-5b050-ring-webgl-camera-samples-4": {
-    "comparison": [
-     {
-      "state": 0,
-      "fraction": 0.0331878662109375,
-      "meanError": 1.3061472574869792
-     },
-     {
-      "state": 1,
-      "fraction": 0.034313201904296875,
-      "meanError": 1.3889478047688801
-     },
-     {
-      "state": 2,
-      "fraction": 0.034709930419921875,
-      "meanError": 1.3646049499511719
-     },
-     {
-      "state": 3,
-      "fraction": 0.036224365234375,
-      "meanError": 1.4044558207194011
-     },
-     {
-      "state": 4,
-      "fraction": 0.038043975830078125,
-      "meanError": 1.6136182149251301
-     },
-     {
-      "state": 5,
-      "fraction": 0.0362091064453125,
-      "meanError": 1.3784764607747395
-     },
-     {
-      "state": 6,
-      "fraction": 0.0442421875,
-      "meanError": 1.56260546875
      }
     ]
    },
@@ -933,68 +855,6 @@
      }
     ]
    },
-   "Controls-de5c7--GPU-residency-webgl-camera": {
-    "residency": [
-     {
-      "resize": false,
-      "before": {
-       "creates": 88,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      },
-      "after": {
-       "creates": 88,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      }
-     },
-     {
-      "resize": true,
-      "before": {
-       "creates": 96,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      },
-      "after": {
-       "creates": 96,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      }
-     }
-    ]
-   },
    "Controls-f0f1e-misc-controls-map-samples-1": {
     "comparison": [
      {
@@ -1009,7 +869,7 @@
      },
      {
       "state": 2,
-      "fraction": 7.62939453125e-05,
+      "fraction": 0.0000762939453125,
       "meanError": 0.0012105305989583333
      },
      {
@@ -1044,27 +904,167 @@
      {
       "state": 0,
       "fraction": 0,
-      "meanError": 6.103515625e-05
+      "meanError": 0.00006103515625
      },
      {
       "state": 1,
-      "fraction": 7.62939453125e-06,
+      "fraction": 0.00000762939453125,
       "meanError": 0.0003662109375
      },
      {
       "state": 2,
       "fraction": 0,
-      "meanError": 6.612141927083333e-05
+      "meanError": 0.00006612141927083333
      },
      {
       "state": 3,
       "fraction": 0,
-      "meanError": 8.138020833333333e-05
+      "meanError": 0.00008138020833333333
      },
      {
       "state": 4,
       "fraction": 0,
       "meanError": 0.00012239583333333332
+     }
+    ]
+   },
+   "controls-attributes-Contro-11ea7-ing-webgpu-camera-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0002466837565104167
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0002568562825520833
+     },
+     {
+      "state": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0005353291829427084
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0009066263834635416
+     },
+     {
+      "state": 4,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0009702046712239584
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0007349650065104166
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0007109375
+     }
+    ]
+   },
+   "controls-attributes-Contro-616ff-GPU-residency-webgpu-camera": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 94,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 94,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "controls-attributes-Contro-fc460-ing-webgpu-camera-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.00116729736328125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0.00000390625,
+      "meanError": 0.00048697916666666665
      }
     ]
    }
@@ -1074,7 +1074,7 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.00017547607421875,
       "meanLevel": [
        4.6313276290893555,
@@ -1083,7 +1083,7 @@
      },
      {
       "state": 1,
-      "fraction": 6.198883056640625e-05,
+      "fraction": 0.00006198883056640625,
       "meanError": 0.007939338684082031,
       "meanLevel": [
        16.581143379211426,
@@ -1092,7 +1092,7 @@
      },
      {
       "state": 2,
-      "fraction": 5.626678466796875e-05,
+      "fraction": 0.00005626678466796875,
       "meanError": 0.006882667541503906,
       "meanLevel": [
        16.47234058380127,
@@ -1101,7 +1101,7 @@
      },
      {
       "state": 3,
-      "fraction": 8.106231689453125e-05,
+      "fraction": 0.00008106231689453125,
       "meanError": 0.010698318481445312,
       "meanLevel": [
        16.49071216583252,
@@ -1128,7 +1128,7 @@
      },
      {
       "state": 6,
-      "fraction": 3.528594970703125e-05,
+      "fraction": 0.00003528594970703125,
       "meanError": 0.0049896240234375,
       "meanLevel": [
        17.578636169433594,
@@ -1155,7 +1155,7 @@
      },
      {
       "state": 9,
-      "fraction": 6.866455078125e-05,
+      "fraction": 0.00006866455078125,
       "meanError": 0.006823539733886719,
       "meanLevel": [
        26.69273090362549,
@@ -1164,7 +1164,7 @@
      },
      {
       "state": 10,
-      "fraction": 5.53131103515625e-05,
+      "fraction": 0.0000553131103515625,
       "meanError": 0.013402938842773438,
       "meanLevel": [
        7.072389602661133,
@@ -1173,7 +1173,7 @@
      },
      {
       "state": 11,
-      "fraction": 8.7738037109375e-05,
+      "fraction": 0.000087738037109375,
       "meanError": 0.010814666748046875,
       "meanLevel": [
        26.74246311187744,
@@ -1280,50 +1280,11 @@
      }
     ]
    },
-   "Controls-3780a-ring-webgl-camera-samples-1": {
-    "comparison": [
-     {
-      "state": 0,
-      "fraction": 0.0015735626220703125,
-      "meanError": 0.29608821868896484
-     },
-     {
-      "state": 1,
-      "fraction": 0.00021457672119140625,
-      "meanError": 0.020427703857421875
-     },
-     {
-      "state": 2,
-      "fraction": 0.00018978118896484375,
-      "meanError": 0.018190383911132812
-     },
-     {
-      "state": 3,
-      "fraction": 0.00026798248291015625,
-      "meanError": 0.025664329528808594
-     },
-     {
-      "state": 4,
-      "fraction": 0.0005712509155273438,
-      "meanError": 0.07612832387288411
-     },
-     {
-      "state": 5,
-      "fraction": 0.000232696533203125,
-      "meanError": 0.022929827372233074
-     },
-     {
-      "state": 6,
-      "fraction": 0.0002626953125,
-      "meanError": 0.0275087890625
-     }
-    ]
-   },
    "Controls-5248f-custom-attributes-samples-1": {
     "comparison": [
      {
       "state": 0,
-      "fraction": 1.9073486328125e-06,
+      "fraction": 0.0000019073486328125,
       "meanError": 0.00015131632486979166
      },
      {
@@ -1333,62 +1294,23 @@
      },
      {
       "state": 2,
-      "fraction": 4.76837158203125e-06,
+      "fraction": 0.00000476837158203125,
       "meanError": 0.000286102294921875
      },
      {
       "state": 3,
-      "fraction": 1.9073486328125e-06,
+      "fraction": 0.0000019073486328125,
       "meanError": 0.00032711029052734375
      },
      {
       "state": 4,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.0004507700602213542
      },
      {
       "state": 5,
-      "fraction": 4.8828125e-06,
+      "fraction": 0.0000048828125,
       "meanError": 0.0004423828125
-     }
-    ]
-   },
-   "Controls-5b050-ring-webgl-camera-samples-4": {
-    "comparison": [
-     {
-      "state": 0,
-      "fraction": 0.012801170349121094,
-      "meanError": 0.5731321970621744
-     },
-     {
-      "state": 1,
-      "fraction": 0.013205528259277344,
-      "meanError": 0.5921414693196615
-     },
-     {
-      "state": 2,
-      "fraction": 0.013182640075683594,
-      "meanError": 0.5691216786702474
-     },
-     {
-      "state": 3,
-      "fraction": 0.014822006225585938,
-      "meanError": 0.6372489929199219
-     },
-     {
-      "state": 4,
-      "fraction": 0.016297340393066406,
-      "meanError": 0.7940521240234375
-     },
-     {
-      "state": 5,
-      "fraction": 0.014682769775390625,
-      "meanError": 0.6254390080769857
-     },
-     {
-      "state": 6,
-      "fraction": 0.0160380859375,
-      "meanError": 0.6262291666666666
      }
     ]
    },
@@ -2000,68 +1922,6 @@
      }
     ]
    },
-   "Controls-de5c7--GPU-residency-webgl-camera": {
-    "residency": [
-     {
-      "resize": false,
-      "before": {
-       "creates": 88,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      },
-      "after": {
-       "creates": 88,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      }
-     },
-     {
-      "resize": true,
-      "before": {
-       "creates": 96,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      },
-      "after": {
-       "creates": 96,
-       "transfers": [
-        6,
-        57432,
-        96
-       ],
-       "resources": [
-        1,
-        1,
-        0
-       ]
-      }
-     }
-    ]
-   },
    "Controls-f0f1e-misc-controls-map-samples-1": {
     "comparison": [
      {
@@ -2076,12 +1936,12 @@
      },
      {
       "state": 2,
-      "fraction": 2.765655517578125e-05,
+      "fraction": 0.00002765655517578125,
       "meanError": 0.0016523996988932292
      },
      {
       "state": 3,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.0005311965942382812
      },
      {
@@ -2101,7 +1961,7 @@
      },
      {
       "state": 7,
-      "fraction": 9.765625e-07,
+      "fraction": 9.765625e-7,
       "meanError": 0.0008606770833333333
      }
     ]
@@ -2110,28 +1970,168 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.000217437744140625
      },
      {
       "state": 1,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00022602081298828125
      },
      {
       "state": 2,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.00010967254638671875
      },
      {
       "state": 3,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.00012111663818359375
      },
      {
       "state": 4,
-      "fraction": 1.953125e-06,
+      "fraction": 0.000001953125,
       "meanError": 0.00030598958333333335
+     }
+    ]
+   },
+   "controls-attributes-Contro-11ea7-ing-webgpu-camera-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00006898244222005208
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.00018787384033203125
+     },
+     {
+      "state": 2,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0002816518147786458
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0004145304361979167
+     },
+     {
+      "state": 4,
+      "fraction": 0.00000476837158203125,
+      "meanError": 0.00054931640625
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00041993459065755207
+     },
+     {
+      "state": 6,
+      "fraction": 0.00000390625,
+      "meanError": 0.0005784505208333334
+     }
+    ]
+   },
+   "controls-attributes-Contro-616ff-GPU-residency-webgpu-camera": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 86,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 86,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 94,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 94,
+       "transfers": [
+        6,
+        857088,
+        96
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "controls-attributes-Contro-fc460-ing-webgpu-camera-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.00011889139811197917
+     },
+     {
+      "state": 4,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.00011889139811197917
+     },
+     {
+      "state": 5,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.00011889139811197917
+     },
+     {
+      "state": 6,
+      "fraction": 0.000001953125,
+      "meanError": 0.00046484375
      }
     ]
    }

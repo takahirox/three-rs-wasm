@@ -720,3 +720,34 @@ ports](texture-flares.md) match the original draws.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
+### Mapped spotlight, multiple clones, skinning blends and the walking soldier
+
+The [spotlight and skinning ports](spot-skinning.md) match the original draws,
+including every shadow pass.
+
+- **Spotlight map.** The map's projection matrix is computed per frame on the
+  CPU, as three updates the shadow matrix.
+- **Mixing.** Animation blending runs on the CPU per bone, as three's mixer
+  does.
+- **Shared skeleton.** The shared-skeleton mode evaluates three copies of the
+  skeleton, where the original evaluates one.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+
+### Transform controls, curve modifiers, the IK arm and the glTF export
+
+The [transform-controls, curve, IK and glTF export ports](transform-curves.md) match the
+original draws, including the IK example's six cube-camera faces.
+
+- **Gizmo.** Its handles are resident. Updates change only transforms and swap
+  between resident materials.
+- **Curve flows.** The text bends on the GPU from the half-float spline
+  texture. The texture and the curve lines are rewritten only on drag end, as
+  the original rewrites them.
+- **IK.** The solver and `computeBoundingSphere()` run on the CPU, as the
+  original's do. Skinning stays on the GPU.
+- **Export.** The GLB is assembled only when Export is pressed, with the
+  images encoded by the browser canvas, as GLTFExporter encodes them.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

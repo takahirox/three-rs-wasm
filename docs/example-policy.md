@@ -236,3 +236,17 @@ batch ([texture-flares.md](texture-flares.md)) lists `webgpu_lensflares` and
 excludes `webgl_lensflares`. The other four are compared against the WebGL
 renderer. A scoped bound covers the car's MSAA edges.
 
+The mapped spotlight and skinning batch ([spot-skinning.md](spot-skinning.md))
+lists `webgpu_lights_spotlight` and excludes `webgl_lights_spotlight`. The four
+skinning examples are compared against the WebGL renderer. Scoped bounds cover
+MSAA edges only.
+
+
+The transform-controls, curve-modifier and IK batch
+([transform-curves.md](transform-curves.md)) lists `webgpu_modifier_curve` and
+excludes `webgl_modifier_curve`. It also lists `webgpu_camera`
+([controls-attributes.md](controls-attributes.md)), which supersedes the
+earlier `webgl_camera` port; `webgl_camera` is now excluded. The other four
+(including `misc_exporter_gltf_normals`, whose GLB export matches byte for
+byte) are compared against the WebGL renderer. Scoped bounds cover MSAA edges
+only.

@@ -180,6 +180,11 @@ struct Draw {
     depth: f64,
 }
 impl Renderer {
+    /// `SkinnedMesh.computeBoundingSphere()`: recompute the culling sphere of a
+    /// skinned mesh from its current pose (a CPU evaluation, as in three).
+    pub fn compute_bounding_sphere(&self, scene: &Scene, mesh: Object3D) -> Result<()> {
+        self.shadows.compute_skinned_bounds(scene, mesh).map(|_| ())
+    }
     pub(crate) fn validate_shader_program(
         &self,
         module: &wgpu::ShaderModule,
@@ -1071,6 +1076,18 @@ impl Renderer {
                 continue;
             }
             if n.geometry().is_none() {
+                continue;
+            }
+            // SkinnedMesh culling uses its cached pose bounding sphere.
+            if n.frustum_culled
+                && n.skin.is_some()
+                && n.instances.is_empty()
+                && !frustum.intersects_sphere(
+                    self.shadows
+                        .skinned_bounds(scene, h)?
+                        .transformed(n.matrix_world),
+                )
+            {
                 continue;
             }
             if n.frustum_culled

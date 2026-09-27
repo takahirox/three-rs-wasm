@@ -1,0 +1,12 @@
+[
+ {
+  "file": "gltf-normals/NormalMapOpenGL.png",
+  "source": "examples/textures/NormalMapOpenGL.png",
+  "sha256": "7f7ecb508fd1f183d2541f3668b7ea7a86cdcf0b9652fc5efe38319c21e3b46a"
+ },
+ {
+  "file": "gltf-normals/NormalMapDirectX.png",
+  "source": "examples/textures/NormalMapDirectX.png",
+  "sha256": "719c505d685bb8a5470dd2c500b77e2f9e2c56a414b3077cc1f3a83fcf4714c2"
+ }
+]

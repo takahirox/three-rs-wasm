@@ -1,0 +1,27 @@
+[
+ {
+  "file": "spot-skinning/Soldier.glb",
+  "source": "examples/models/gltf/Soldier.glb",
+  "sha256": "dfb230fc1f942f259dd00281a1186953ad602fc5d69067ce63e24b2aa439736b"
+ },
+ {
+  "file": "spot-skinning/disturb.jpg",
+  "source": "examples/textures/disturb.jpg",
+  "sha256": "be530999dc00f43d2f7bac7e4ad54747b2158889d6e45fc5d121fb1838e36df6"
+ },
+ {
+  "file": "spot-skinning/colors.png",
+  "source": "examples/textures/colors.png",
+  "sha256": "3992e4e4597da577cd8354a83cf62955f61c79567d8b323dc99e67473fe749e0"
+ },
+ {
+  "file": "spot-skinning/uv_grid_opengl.jpg",
+  "source": "examples/textures/uv_grid_opengl.jpg",
+  "sha256": "909d9a1eb2a5d5de9d221a5e8de4e9119d409decddf522d48896bd51523d354d"
+ },
+ {
+  "file": "spot-skinning/lobe.hdr",
+  "source": "examples/textures/equirectangular/lobe.hdr",
+  "sha256": "4d6566361e5da0d121a4f17a949e62267fce73697ed66087476788440a8f9874"
+ }
+]

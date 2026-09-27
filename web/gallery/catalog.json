@@ -86,7 +86,7 @@
     {
       "id": "webgl_animation_skinning_blending",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_skinning_blending.html",
       "source_sha256": "7dddf931d4a6e5c73a369610e4e34b39a6a333a4d56ff65561ecdbf429747397",
@@ -148,7 +148,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 305,
+        "source": "src/browser/spot_skinning.rs",
+        "test": "tests/browser/spot-skinning.spec.js",
+        "limitations": [
+          "three.jsのAnimationMixerの意味論（重みと時間スケールの補間、warp付きクロスフェード、loopイベントでの同期、一時停止と1ステップ、停止と元の姿勢への復帰）、SkeletonHelper、SunLightの影、全17項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "outside",
         "three",
@@ -161,7 +168,7 @@
     {
       "id": "webgl_animation_skinning_additive_blending",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_skinning_additive_blending.html",
       "source_sha256": "8059a8d4d4a238aa3a43e3489df2c6c0904da092d4dbc45c66de6b9ac3a905b9",
@@ -233,7 +240,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 306,
+        "source": "src/browser/spot_skinning.rs",
+        "test": "tests/browser/spot-skinning.spec.js",
+        "limitations": [
+          "Xbotのベース動作のクロスフェードと加算アニメーション（makeClipAdditive、subclip、PropertyMixerの加算合成）、SkeletonHelper、SunLightの影、ズームとパンなしのOrbitControls、全9項目の操作をRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -246,7 +260,7 @@
     {
       "id": "webgl_animation_skinning_ik",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_skinning_ik.html",
       "source_sha256": "81fe03ae043999f28c4201250feab05387a8555afdc0d46706ffdf3e71708de0",
@@ -296,7 +310,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 312,
+        "source": "src/browser/transform_curves.rs",
+        "test": "tests/browser/transform-curves.spec.js",
+        "limitations": [
+          "Draco圧縮・WebPテクスチャのKiraモデル、CCDIKSolver（回転制限付き）とCCDIKHelper、毎フレームの1024² CubeCameraによる鏡面球、頭のlookAt、TransformControlsでのIKターゲット操作、減衰付きOrbitControls、全4項目の操作をRustで再現。原本と同じくIK更新ごとにSkinnedMesh.computeBoundingSphere（CPU）でカリング用の境界球を更新する。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/animation/CCDIKSolver.js",
@@ -383,7 +404,7 @@
     {
       "id": "webgl_animation_multiple",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_multiple.html",
       "source_sha256": "8d308334a3bd37b470c0b13ce192a206ef5a3922f928ad7f0f91bf3812106b91",
@@ -443,7 +464,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 304,
+        "source": "src/browser/spot_skinning.rs",
+        "test": "tests/browser/spot-skinning.spec.js",
+        "limitations": [
+          "SkeletonUtilsの3体の兵士（idle・run・walk）、SunLightの影、共有スケルトン（DetachedBindModeのvanguard_Mesh 3体）、切り替えで時間が0から始まるミキサーをRustで再現。共有スケルトンは同じクリップと時間で動く骨格の複製で描画（原本は1つの骨格）。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -455,7 +483,7 @@
     {
       "id": "webgl_animation_walk",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_walk.html",
       "source_sha256": "4e490a8d3b5064a0f2caa9a0d51cf6ed25880bde077cb9460cfea472e45b511e",
@@ -517,7 +545,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 307,
+        "source": "src/browser/spot_skinning.rs",
+        "test": "tests/browser/spot-skinning.spec.js",
+        "limitations": [
+          "キー操作での歩行と走行（fixe_transitionのフェード、方位角に沿った移動と回転、床のずらし）、HDR環境、ACES、SunLightと点光源の影、異方性の床テクスチャ、metalnessMap、半透明のバイザー、SkeletonHelper、減衰付きOrbitControlsをRustで再現。lil-gui外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -597,8 +632,8 @@
     {
       "id": "webgl_camera",
       "category": "webgl",
-      "status": "partial",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_camera",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html",
       "source_sha256": "a97d4efbc7b530844793187301eca9e68572d78e01c3723704b2624d010b8b87",
       "requirements": {
@@ -621,18 +656,12 @@
           }
         ]
       },
-      "port": {
-        "example": 210,
-        "source": "src/browser/controls_attributes.rs",
-        "test": "tests/browser/controls-attributes.spec.js",
-        "limitations": [
-          "Stats表示は未移植。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。2つのビューポートとO/Pキー切替を再現。性能の完全な同等性は未保証。"
-        ]
-      },
+      "port": null,
       "imports": [
         "three",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_camera"
     },
     {
       "id": "webgl_camera_array",
@@ -3248,8 +3277,8 @@
     {
       "id": "webgl_lights_spotlight",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lights_spotlight",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lights_spotlight.html",
       "source_sha256": "0b618837471d5541ddfc4f9a4cd3967e728213473212a736fe91d266dd0e907a",
       "requirements": {
@@ -3324,7 +3353,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/loaders/PLYLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lights_spotlight"
     },
     {
       "id": "webgl_lights_spotlights",
@@ -8142,8 +8172,8 @@
     {
       "id": "webgl_modifier_curve",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_modifier_curve",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_curve.html",
       "source_sha256": "10791eb088492becd320081b4ce0434bdeeab0eaf454891d4538e3442d4066a6",
       "requirements": {
@@ -8182,12 +8212,13 @@
         "three/addons/libs/stats.module.js",
         "three/addons/loaders/FontLoader.js",
         "three/addons/modifiers/CurveModifier.js"
-      ]
+      ],
+      "preferred_example": "webgpu_modifier_curve"
     },
     {
       "id": "webgl_modifier_curve_instanced",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_curve_instanced.html",
       "source_sha256": "0181008e92187be2bffc5d6e8e20e46e7dc378f6f68f7d57a332691741769d48",
@@ -8219,7 +8250,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 310,
+        "source": "src/browser/transform_curves.rs",
+        "test": "tests/browser/transform-curves.spec.js",
+        "limitations": [
+          "InstancedFlow（インスタンス行列に曲線番号・長さ・オフセット、インスタンス色）、2本の曲線テクスチャ、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TransformControls.js",
@@ -14436,7 +14474,7 @@
     {
       "id": "webgpu_camera",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_camera.html",
       "source_sha256": "7eb96c96b782a989e9cea17bb104bbbc67c61af077bcf47252191ce85255d552",
@@ -14460,7 +14498,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 311,
+        "source": "src/browser/controls_attributes.rs",
+        "test": "tests/browser/controls-attributes.spec.js",
+        "limitations": [
+          "カメラリグ（透視/正射影カメラとCameraHelper、fovとfarの変化、lookAt）、2つのビューポートとシザー、O/Pキー切替、WebGPUの1ピクセル点（point-list）をRustで再現。CameraHelperの頂点はGPUで逆射影（原本はCPUで毎フレーム書き換え）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/webgpu"
       ]
@@ -18902,7 +18947,7 @@
     {
       "id": "webgpu_lights_spotlight",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_spotlight.html",
       "source_sha256": "02ada0ac1033b938a9af60a43a93abfd91bef2e5cb0f3adc5f053dec206a1bd1",
@@ -18982,7 +19027,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 303,
+        "source": "src/browser/spot_skinning.rs",
+        "test": "tests/browser/spot-skinning.spec.js",
+        "limitations": [
+          "マップ付きスポットライト（lightProjectionUVでの投影テクスチャ、focus込みの影カメラ、影の強度）、PCFの影、半球光、Lucy PLYとLambertの床、Neutralトーンマッピング、SpotLightHelperと影カメラのCameraHelper、全10項目の操作、OrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -20907,7 +20959,7 @@
     {
       "id": "webgpu_modifier_curve",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_modifier_curve.html",
       "source_sha256": "6e1e42eaa775bcac737843f1e29c7a8be294456227488bd48e632581b0180617",
@@ -20939,7 +20991,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 309,
+        "source": "src/browser/transform_curves.rs",
+        "test": "tests/browser/transform-curves.spec.js",
+        "limitations": [
+          "CurveModifierGPUのFlow（半精度のスプラインテクスチャ、頂点段での曲線変形、normalNode）、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/TransformControls.js",
         "three/addons/geometries/TextGeometry.js",
@@ -33002,7 +33061,7 @@
     {
       "id": "misc_controls_transform",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_transform.html",
       "source_sha256": "b4c66916b5f3207444af3d2caf2bbaf07022c79a290972d9f66153856266efb9",
@@ -33044,7 +33103,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 308,
+        "source": "src/browser/transform_controls.rs",
+        "test": "tests/browser/transform-curves.spec.js",
+        "limitations": [
+          "TransformControls（移動・回転・拡大縮小のギズモ、不可視ピッカー、ドラッグ平面、ヘルパー、ハイライト、スナップ、ローカル/ワールド空間、軸表示、サイズ、有効化、リセット）、透視/正射影カメラの切替とランダムなfov/zoom、OrbitControls、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -33282,7 +33348,7 @@
     {
       "id": "misc_exporter_gltf_normals",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_gltf_normals.html",
       "source_sha256": "38d951f65ed437d531f92ba05482395ade15b17468273564b2174251fde26658",
@@ -33298,7 +33364,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 313,
+        "source": "src/browser/gltf_normals.rs",
+        "test": "tests/browser/transform-curves.spec.js",
+        "limitations": [
+          "OpenGL/DirectX法線マップの2枚の平面（normalScale.yの符号、両面）、2灯の平行光源、変更時のみの描画のOrbitControls、GLTFExporterのGLB出力（ノード行列、共有アクセサ、緑反転した法線マップ、PNG画像の埋め込み）をRustで再現し、出力をバイト単位で一致させる。PNGの符号化はブラウザのcanvas.toBlobを使う（原本と同じ）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

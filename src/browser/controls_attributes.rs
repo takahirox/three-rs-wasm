@@ -319,6 +319,33 @@ impl Controls {
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;
     }
+    pub(super) fn target(&self) -> Vector3 {
+        self.target
+    }
+    /// The wheel's `_dollyIn` / `_dollyOut` without zoom-to-cursor.
+    pub(super) fn wheel_scale(&mut self, wheel: f64) {
+        let scale = 0.95f64.powf((wheel * 0.01).abs());
+        if wheel < 0. {
+            self.scale *= scale;
+        } else if wheel > 0. {
+            self.scale /= scale;
+        }
+    }
+    /// The pending dolly scale, reset: an orthographic camera zooms by it instead.
+    pub(super) fn take_scale(&mut self) -> f64 {
+        std::mem::replace(&mut self.scale, 1.)
+    }
+    /// `_panLeft( left )` and `_panUp( up )` along the camera's axes.
+    pub(super) fn pan_axes(&mut self, quaternion: Quaternion, left: f64, up: f64) {
+        let x = quaternion * Vector3::X;
+        let u = if self.screen_space {
+            quaternion * Vector3::Y
+        } else {
+            Vector3::Y.cross(x)
+        };
+        self.pan += x * -left;
+        self.pan += u * up;
+    }
     pub(super) fn rotate(&mut self, dx: f64, dy: f64, height: f64) {
         self.delta_theta -= TAU * dx / height;
         self.delta_phi -= TAU * dy / height;
@@ -468,7 +495,7 @@ pub(super) fn camera_state(s: &Scene, c: Object3D) -> Result<CameraState> {
         fov: p.fov,
     })
 }
-/// `webgl_camera`: the rig cameras, their helpers and the views.
+/// `webgpu_camera`: the rig cameras, their helpers and the views.
 struct Rig {
     rig: Object3D,
     perspective: Object3D,
@@ -476,11 +503,9 @@ struct Rig {
     helpers: [Object3D; 2],
     mesh: Object3D,
     child: Object3D,
-    points: Object3D,
     clear: Object3D,
     ortho: bool,
     output: Option<RenderTarget>,
-    _positions: GpuBuffer,
 }
 /// `webgl_buffergeometry_drawrange` particle state and its resident buffers.
 struct Particles {
@@ -536,7 +561,7 @@ impl Demo {
         let (fov, near, far, position) = match id {
             208 => (60., 1., 1000., Vector3::new(400., 200., 0.)),
             209 => (60., 1., 1000., Vector3::new(0., 200., -200.)),
-            210 => (50., 1., 10000., Vector3::new(0., 0., 2500.)),
+            311 => (50., 1., 10000., Vector3::new(0., 0., 2500.)),
             211 => (30., 1., 10000., Vector3::new(0., 0., 300.)),
             _ => (45., 1., 4000., Vector3::new(0., 0., 1750.)),
         };
@@ -544,14 +569,14 @@ impl Demo {
             fov,
             near,
             far,
-            aspect: if id == 210 { 0.5 * aspect } else { aspect },
+            aspect: if id == 311 { 0.5 * aspect } else { aspect },
             ..Default::default()
         }));
         s.get_mut(c)?.position = position;
         s.look_at(c, Vector3::ZERO)?;
         match id {
             208 | 209 => d.city(s)?,
-            210 => d.rig(s, r).await?,
+            311 => d.rig(s, r).await?,
             211 => d.displaced(s, r).await?,
             _ => d.particles(s, r).await?,
         }
@@ -663,15 +688,28 @@ impl Demo {
         s.get_mut(small)?.position.z = 150.;
         s.add(rig, small)?;
         // MathUtils.randFloatSpread( 2000 ) for x, y, z.
-        let mut positions = Vec::with_capacity(40000);
+        let mut positions = Vec::with_capacity(30000);
         for _ in 0..10000 {
             for _ in 0..3 {
                 positions.push((2000. * (0.5 - random(&mut self.seed))) as f32);
             }
-            positions.push(1.);
         }
-        let buffer = GpuBuffer::new(r, bytemuck::cast_slice(&positions), BufferAccess::Read)?;
-        let points = point_quads(s, r, &buffer, 10000, Color::from_hex(0x888888)).await?;
+        {
+            // WebGPU draws Points as native one-pixel point-list primitives.
+            let graph = NodeMaterial::new(vec4(uniform(1, Type::Vec3), float(1.)));
+            let mut m =
+                ShaderMaterial::new(Arc::new(ShaderProgram::new(r, &graph.wgsl(0)?, &[]).await?));
+            m.uniforms[1] = [1., 1., 1., 1.];
+            let mut g = BufferGeometry::default();
+            g.set_attribute(
+                "position",
+                Attribute::F32(crate::attribute::BufferAttribute::new(positions, 3, false)?),
+            );
+            s.insert(NodeKind::Points(Points {
+                geometry: Arc::new(g),
+                material: Arc::new(Material::Shader(m)),
+            }));
+        }
         let clear = clear_triangle(s, r).await?;
         set_uniform(
             s,
@@ -686,11 +724,9 @@ impl Demo {
             helpers,
             mesh,
             child,
-            points,
             clear,
             ortho: false,
             output: None,
-            _positions: buffer,
         });
         Ok(())
     }
@@ -862,7 +898,7 @@ impl Demo {
                     controls.update(s, c)?;
                 }
             }
-            210 => self.prepare_rig(s, c, t)?,
+            311 => self.prepare_rig(s, c, t)?,
             211 => {
                 let d = self.displaced.as_mut().ok_or(Error::Invalid("displaced"))?;
                 let time = t * 10.;
@@ -1030,7 +1066,7 @@ impl Demo {
         set_uniform(s, dots, 0, [(3. * dpr) as f32, 0., w as f32, h as f32])?;
         Ok(())
     }
-    /// `webgl_camera`: the active rig camera on the left, the overview camera on the right.
+    /// `webgpu_camera`: the active rig camera on the left, the overview camera on the right.
     pub fn render(
         &mut self,
         r: &Renderer,
@@ -1052,9 +1088,9 @@ impl Demo {
                 &r.device, out.width, out.height, options,
             )?);
         }
-        let (css_w, css_h, dpr) = viewport_css();
-        // setViewport( 0 / W/2, 0, W/2, H ): WebGL rounds × pixelRatio.
-        let half = ((css_w / 2.) * dpr).round() as u32;
+        let (css_w, _, dpr) = viewport_css();
+        // setViewport( 0 / W/2, 0, W/2, H ): the WebGPU renderer floors × pixelRatio.
+        let half = ((css_w / 2.) * dpr).floor() as u32;
         let width = half.min(out.width);
         let views = [
             (
@@ -1069,24 +1105,13 @@ impl Demo {
             (width, width.min(out.width - width), c),
         ];
         let active_helper = rig.helpers[usize::from(rig.ortho)];
-        let (points, clear) = (rig.points, rig.clear);
+        let clear = rig.clear;
         for (i, (x, w, camera)) in views.into_iter().enumerate() {
             if w == 0 {
                 continue;
             }
             s.get_mut(active_helper)?.visible = i == 1;
             s.get_mut(clear)?.visible = i == 1;
-            set_uniform(
-                s,
-                points,
-                0,
-                [
-                    dpr as f32,
-                    (css_h * 0.5) as f32,
-                    w as f32,
-                    out.height as f32,
-                ],
-            )?;
             let target = rig.output.as_mut().expect("camera target");
             target.viewport = [x, 0, w, out.height];
             target.scissor = Some([x, 0, w, out.height]);
