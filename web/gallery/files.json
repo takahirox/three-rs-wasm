@@ -49,9 +49,13 @@
     "webgl_lines_colors",
     "webgl_lines_dashed",
     "webgl_loader_3ds",
+    "webgl_loader_3mf",
+    "webgl_loader_3mf_materials",
     "webgl_loader_amf",
     "webgl_loader_bvh",
     "webgl_loader_collada",
+    "webgl_loader_collada_kinematics",
+    "webgl_loader_collada_skinning",
     "webgl_loader_draco",
     "webgl_loader_gcode",
     "webgl_loader_gltf_avif",
@@ -60,6 +64,7 @@
     "webgl_loader_imagebitmap",
     "webgl_loader_kmz",
     "webgl_loader_mdd",
+    "webgl_loader_nrrd",
     "webgl_loader_obj",
     "webgl_loader_pcd",
     "webgl_loader_pdb",
@@ -70,6 +75,7 @@
     "webgl_loader_texture_hdr",
     "webgl_loader_texture_tga",
     "webgl_loader_texture_tiff",
+    "webgl_loader_ttf",
     "webgl_loader_vox",
     "webgl_loader_xyz",
     "webgl_lod",
@@ -138,6 +144,8 @@
     "webgl_custom_attributes_points2",
     "webgl_custom_attributes_points3",
     "webgl_materials_modified",
+    "webgl_texture2darray_layerupdate",
+    "webgl_texture3d",
     "webgl_texture3d_partialupdate",
     "webgl_ubo",
     "webgl_ubo_arrays"
@@ -299,6 +307,9 @@
     "webgpu_volume_cloud",
     "webgpu_volume_perlin"
   ],
+  "webaudio": [
+    "webaudio_timing"
+  ],
   "misc": [
     "misc_animation_groups",
     "misc_animation_keys",
@@ -315,6 +326,7 @@
     "misc_exporter_ply",
     "misc_exporter_stl",
     "misc_exporter_exr",
-    "misc_exporter_ktx2"
+    "misc_exporter_ktx2",
+    "misc_raycaster_helper"
   ]
 }

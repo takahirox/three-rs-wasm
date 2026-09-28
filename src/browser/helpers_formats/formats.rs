@@ -161,16 +161,50 @@ pub(in crate::browser) fn unzip(data: &[u8]) -> Result<Vec<(String, Vec<u8>)>> {
         .rev()
         .find(|&o| data[o..o + 4] == [0x50, 0x4b, 0x05, 0x06])
         .ok_or_else(|| bad("zip: no end record"))?;
-    let (count, mut o) = (u16_at(end + 10)?, u32_at(end + 16)?);
+    let u64_at = |o: usize| -> Result<usize> {
+        data.get(o..o + 8)
+            .map(|b| u64::from_le_bytes(b.try_into().unwrap_or([0; 8])) as usize)
+            .ok_or_else(|| bad("zip: truncated"))
+    };
+    let (mut count, mut o) = (u16_at(end + 10)?, u32_at(end + 16)?);
+    // ZIP64: the locator before the end record points at the ZIP64 end record.
+    if (count == 0xffff || o == 0xffff_ffff) && end >= 20 && u32_at(end - 20)? == 0x0706_4b50 {
+        let record = u64_at(end - 20 + 8)?;
+        if u32_at(record)? != 0x0606_4b50 {
+            return Err(bad("zip: bad ZIP64 end record"));
+        }
+        count = u64_at(record + 32)?;
+        o = u64_at(record + 48)?;
+    }
     let mut files = vec![];
     for _ in 0..count {
         if u32_at(o)? != 0x0201_4b50 {
             return Err(bad("zip: bad central record"));
         }
         let method = u16_at(o + 10)?;
-        let size = u32_at(o + 20)?;
+        let mut size = u32_at(o + 20)?;
         let (name_len, extra, comment) = (u16_at(o + 28)?, u16_at(o + 30)?, u16_at(o + 32)?);
-        let local = u32_at(o + 42)?;
+        let mut local = u32_at(o + 42)?;
+        // The ZIP64 extra field replaces the saturated sizes and offset, in order.
+        let uncompressed = u32_at(o + 24)?;
+        let mut e = o + 46 + name_len;
+        while e + 4 <= o + 46 + name_len + extra {
+            let (tag, len) = (u16_at(e)?, u16_at(e + 2)?);
+            if tag == 1 {
+                let mut at = e + 4;
+                if uncompressed == 0xffff_ffff {
+                    at += 8;
+                }
+                if size == 0xffff_ffff {
+                    size = u64_at(at)?;
+                    at += 8;
+                }
+                if local == 0xffff_ffff {
+                    local = u64_at(at)?;
+                }
+            }
+            e += 4 + len;
+        }
         let name = String::from_utf8_lossy(
             data.get(o + 46..o + 46 + name_len)
                 .ok_or_else(|| bad("zip: name"))?,

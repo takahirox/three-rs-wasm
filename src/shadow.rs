@@ -498,7 +498,7 @@ impl ShadowRenderer {
                     let data = instances
                         .iter()
                         .map(|i| {
-                            if !i.matrix.is_finite() || i.matrix.determinant() <= 0.0 {
+                            if !i.matrix.is_finite() || i.matrix.determinant() < 0.0 {
                                 return Err(Error::Invalid("instance transform"));
                             }
                             Ok(crate::renderer::InstanceVertex {

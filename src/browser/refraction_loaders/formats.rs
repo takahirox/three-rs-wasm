@@ -773,11 +773,67 @@ pub(super) struct DaeMesh {
     pub materials: Vec<DaeMaterial>,
     /// The node's matrix composed with its ancestors', column-major.
     pub matrix: [f64; 16],
+    /// The owning visual-scene node.
+    pub node: usize,
+    /// buildSkin's four strongest influences per vertex, as skinIndex and skinWeight.
+    pub skin: Option<DaeSkin>,
+}
+/// A controller's skin: the joints ( name, bone inverse ), the bind shape matrix,
+/// the per-vertex influences and the instance's skeleton roots.
+pub(super) struct DaeSkin {
+    pub joints: Vec<(String, [f64; 16])>,
+    pub bind_shape: [f64; 16],
+    pub indices: Vec<f32>,
+    pub weights: Vec<f32>,
+    pub skeletons: Vec<String>,
+}
+/// A node transform element, in document order.
+#[derive(Clone)]
+pub(super) enum DaeTransform {
+    Matrix([f64; 16]),
+    Translate([f64; 3]),
+    Scale([f64; 3]),
+    /// Axis and angle in radians.
+    Rotate([f64; 3], f64),
+}
+pub(super) struct DaeNode {
+    pub id: String,
+    pub name: String,
+    pub sid: String,
+    pub joint: bool,
+    pub children: Vec<usize>,
+    pub transforms: Vec<(Option<String>, DaeTransform)>,
+    /// The composed local matrix, column-major.
+    pub matrix: [f64; 16],
+    /// Meshes instanced by this node, in document order.
+    pub meshes: Vec<usize>,
+}
+/// An animation channel on a node's transform: times and row-major values.
+pub(super) struct DaeChannel {
+    pub node: String,
+    pub sid: String,
+    pub times: Vec<f64>,
+    pub values: Vec<f64>,
+    pub stride: usize,
+}
+/// A kinematics joint: its type, axis and limits.
+pub(super) struct DaeJoint {
+    pub revolute: bool,
+    pub axis: [f64; 3],
+    pub min: f64,
+    pub max: f64,
 }
 pub(super) struct DaeScene {
     pub meshes: Vec<DaeMesh>,
     pub unit: f64,
     pub z_up: bool,
+    pub nodes: Vec<DaeNode>,
+    pub roots: Vec<usize>,
+    pub channels: Vec<DaeChannel>,
+    /// Kinematics model joints ( sid, joint ), in document order.
+    pub joints: Vec<(String, DaeJoint)>,
+    /// bind_joint_axis: ( joint index, target transform sid ).
+    pub binds: Vec<(String, String)>,
 }
 fn floats(text: &str) -> Vec<f64> {
     text.split_whitespace().map(parse_float).collect()
@@ -969,7 +1025,7 @@ pub(super) fn parse_collada(text: &str) -> Result<DaeScene> {
                     bindings: &HashMap<String, String>,
                     cache: &mut HashMap<String, DaeMaterial>,
                     matrix: [f64; 16]|
-     -> Result<Vec<DaeMesh>> {
+     -> Result<Vec<(DaeMesh, Vec<f32>)>> {
         let g = find_by_id("geometry", key).ok_or_else(|| bad("Collada: geometry"))?;
         let mesh = g
             .first_descendant("mesh")
@@ -1012,6 +1068,7 @@ pub(super) fn parse_collada(text: &str) -> Result<DaeScene> {
         let mut out = vec![];
         for (_, primitives) in types {
             let (mut position, mut normal, mut uv) = (vec![], vec![], vec![]);
+            let mut ids: Vec<f32> = vec![];
             let (mut groups, mut keys) = (vec![], vec![]);
             let mut start = 0;
             for (pi, p) in primitives.iter().enumerate() {
@@ -1123,7 +1180,13 @@ pub(super) fn parse_collada(text: &str) -> Result<DaeScene> {
                                 let s =
                                     sources.get(source).ok_or_else(|| bad("Collada: source"))?;
                                 match semantic.as_str() {
-                                    "POSITION" => push(&mut position, s, *offset)?,
+                                    "POSITION" => {
+                                        push(&mut position, s, *offset)?;
+                                        // The VERTEX index itself, for the skin's influences.
+                                        let n = s.0.len() / s.1.max(1);
+                                        let identity = ((0..n).map(|i| i as f64).collect(), 1);
+                                        push(&mut ids, &identity, *offset)?;
+                                    }
                                     "NORMAL" => push(&mut normal, s, *offset)?,
                                     "TEXCOORD" => push(&mut uv, s, *offset)?,
                                     _ => {}
@@ -1154,14 +1217,19 @@ pub(super) fn parse_collada(text: &str) -> Result<DaeScene> {
                 }
                 materials.push(cache[target].clone());
             }
-            out.push(DaeMesh {
-                positions: position,
-                normals: normal,
-                uvs: uv,
-                groups,
-                materials,
-                matrix,
-            });
+            out.push((
+                DaeMesh {
+                    positions: position,
+                    normals: normal,
+                    uvs: uv,
+                    groups,
+                    materials,
+                    matrix,
+                    node: 0,
+                    skin: None,
+                },
+                ids,
+            ));
         }
         Ok(out)
     };
@@ -1174,68 +1242,376 @@ pub(super) fn parse_collada(text: &str) -> Result<DaeScene> {
         .ok_or_else(|| bad("Collada: scene"))?;
     let visual =
         find_by_id("visual_scene", id(scene_url)).ok_or_else(|| bad("Collada: visual scene"))?;
+    let bindings_of = |instance: &Element| {
+        let mut bindings = HashMap::new();
+        let mut v = vec![];
+        all(instance, "instance_material", &mut v);
+        for m in v {
+            if let (Some(symbol), Some(target)) = (m.attribute("symbol"), m.attribute("target")) {
+                bindings.insert(symbol.to_string(), id(target).to_string());
+            }
+        }
+        bindings
+    };
     let mut meshes = vec![];
-    let mut stack: Vec<(&Element, [f64; 16])> =
-        children(visual, "node").map(|n| (n, IDENTITY)).collect();
+    let mut nodes: Vec<DaeNode> = vec![];
+    let mut roots = vec![];
+    let mut stack: Vec<(&Element, [f64; 16], Option<usize>)> = children(visual, "node")
+        .map(|n| (n, IDENTITY, None))
+        .collect();
     stack.reverse();
-    while let Some((node, parent)) = stack.pop() {
+    while let Some((node, parent, parent_index)) = stack.pop() {
         let mut matrix = IDENTITY;
+        let mut transforms = vec![];
         for c in node.elements() {
-            let v = floats(&c.text());
-            let m = match c.name.as_str() {
-                // fromArray( array ).transpose(): the file lists rows.
-                "matrix" => std::array::from_fn(|i| v[(i % 4) * 4 + i / 4]),
-                "translate" => [
-                    1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., v[0], v[1], v[2], 1.,
-                ],
-                "scale" => [
-                    v[0], 0., 0., 0., 0., v[1], 0., 0., 0., 0., v[2], 0., 0., 0., 0., 1.,
-                ],
-                "rotate" => {
-                    // makeRotationAxis takes the axis as given.
-                    let (x, y, z) = (v[0], v[1], v[2]);
-                    let a = v[3].to_radians();
-                    let (c, s, t) = (a.cos(), a.sin(), 1. - a.cos());
-                    [
-                        t * x * x + c,
-                        t * x * y + s * z,
-                        t * x * z - s * y,
-                        0.,
-                        t * x * y - s * z,
-                        t * y * y + c,
-                        t * y * z + s * x,
-                        0.,
-                        t * x * z + s * y,
-                        t * y * z - s * x,
-                        t * z * z + c,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        1.,
-                    ]
-                }
-                _ => continue,
-            };
-            matrix = multiply(&matrix, &m);
+            let Some(t) = transform_of(c) else { continue };
+            matrix = multiply(&matrix, &transform_matrix(&t));
+            transforms.push((c.attribute("sid").map(str::to_string), t));
+        }
+        let index = nodes.len();
+        nodes.push(DaeNode {
+            id: node.attribute("id").unwrap_or_default().to_string(),
+            name: node.attribute("name").unwrap_or_default().to_string(),
+            sid: node.attribute("sid").unwrap_or_default().to_string(),
+            joint: node.attribute("type") == Some("JOINT"),
+            children: vec![],
+            transforms,
+            matrix,
+            meshes: vec![],
+        });
+        match parent_index {
+            Some(p) => nodes[p].children.push(index),
+            None => roots.push(index),
         }
         let world = multiply(&parent, &matrix);
-        for instance in children(node, "instance_geometry") {
-            let mut bindings = HashMap::new();
-            let mut v = vec![];
-            all(instance, "instance_material", &mut v);
-            for m in v {
-                if let (Some(symbol), Some(target)) = (m.attribute("symbol"), m.attribute("target"))
-                {
-                    bindings.insert(symbol.to_string(), id(target).to_string());
+        // instance_controller: the skin's geometry with its influences.
+        for instance in children(node, "instance_controller") {
+            let url = instance.attribute("url").unwrap_or_default();
+            let controller =
+                find_by_id("controller", id(url)).ok_or_else(|| bad("Collada: controller"))?;
+            let skin = controller
+                .first_descendant("skin")
+                .ok_or_else(|| bad("Collada: skin"))?;
+            let mut sources: HashMap<String, (Vec<String>, usize)> = HashMap::new();
+            for src in children(skin, "source") {
+                let stride = src
+                    .first_descendant("accessor")
+                    .and_then(|a| a.attribute("stride"))
+                    .map(|v| parse_float(v) as usize)
+                    .unwrap_or(1);
+                let values = src
+                    .elements()
+                    .find(|e| e.name.ends_with("_array"))
+                    .map(|a| a.text().split_whitespace().map(str::to_string).collect())
+                    .unwrap_or_default();
+                sources.insert(
+                    src.attribute("id").unwrap_or_default().to_string(),
+                    (values, stride),
+                );
+            }
+            let input_source = |parent: &Element, semantic: &str| -> Option<(String, usize)> {
+                children(parent, "input")
+                    .find(|i| i.attribute("semantic") == Some(semantic))
+                    .map(|i| {
+                        (
+                            id(i.attribute("source").unwrap_or_default()).to_string(),
+                            i.attribute("offset").map(parse_float).unwrap_or(0.) as usize,
+                        )
+                    })
+            };
+            let joints_element = children(skin, "joints")
+                .next()
+                .ok_or_else(|| bad("Collada: skin joints"))?;
+            let (joint_source, _) =
+                input_source(joints_element, "JOINT").ok_or_else(|| bad("Collada: joints"))?;
+            let (inverse_source, _) = input_source(joints_element, "INV_BIND_MATRIX")
+                .ok_or_else(|| bad("Collada: inverse bind matrices"))?;
+            let names = &sources
+                .get(&joint_source)
+                .ok_or_else(|| bad("Collada: joints"))?
+                .0;
+            let inverses = sources
+                .get(&inverse_source)
+                .ok_or_else(|| bad("Collada: inverse bind matrices"))?;
+            let mut joints = vec![];
+            for (i, name) in names.iter().enumerate() {
+                let v: Vec<f64> = inverses.0[i * inverses.1..i * inverses.1 + 16]
+                    .iter()
+                    .map(|x| parse_float(x))
+                    .collect();
+                joints.push((
+                    name.clone(),
+                    std::array::from_fn(|k| v[(k % 4) * 4 + k / 4]),
+                ));
+            }
+            let weights_element = children(skin, "vertex_weights")
+                .next()
+                .ok_or_else(|| bad("Collada: vertex weights"))?;
+            let (_, joint_offset) =
+                input_source(weights_element, "JOINT").ok_or_else(|| bad("Collada: weights"))?;
+            let (weight_source, weight_offset) =
+                input_source(weights_element, "WEIGHT").ok_or_else(|| bad("Collada: weights"))?;
+            let weight_values: Vec<f64> = sources
+                .get(&weight_source)
+                .ok_or_else(|| bad("Collada: weights"))?
+                .0
+                .iter()
+                .map(|x| parse_float(x))
+                .collect();
+            let vcount: Vec<usize> = weights_element
+                .first_descendant("vcount")
+                .map(|e| floats(&e.text()).into_iter().map(|v| v as usize).collect())
+                .unwrap_or_default();
+            let v: Vec<usize> = weights_element
+                .first_descendant("v")
+                .map(|e| floats(&e.text()).into_iter().map(|v| v as usize).collect())
+                .unwrap_or_default();
+            // buildSkin: each vertex's influences sorted by weight, the first four kept.
+            let (mut influence_indices, mut influence_weights) = (vec![], vec![]);
+            let mut stride = 0;
+            for &count in &vcount {
+                let mut data = vec![];
+                for _ in 0..count {
+                    let joint = *v
+                        .get(stride + joint_offset)
+                        .ok_or_else(|| bad("Collada: v"))?;
+                    let weight = *weight_values
+                        .get(
+                            *v.get(stride + weight_offset)
+                                .ok_or_else(|| bad("Collada: v"))?,
+                        )
+                        .ok_or_else(|| bad("Collada: weight"))?;
+                    data.push((joint, weight));
+                    stride += 2;
+                }
+                data.sort_by(|a, b| b.1.total_cmp(&a.1));
+                for j in 0..4 {
+                    let (index, weight) = data.get(j).copied().unwrap_or((0, 0.));
+                    influence_indices.push(index as f64);
+                    influence_weights.push(weight);
                 }
             }
-            let url = instance.attribute("url").unwrap_or_default();
-            meshes.extend(geometry(id(url), &bindings, &mut materials_cache, world)?);
+            let bind_shape = skin
+                .first_descendant("bind_shape_matrix")
+                .map(|e| {
+                    let v = floats(&e.text());
+                    std::array::from_fn(|k| v[(k % 4) * 4 + k / 4])
+                })
+                .unwrap_or(IDENTITY);
+            let skeletons: Vec<String> = children(instance, "skeleton")
+                .map(|e| id(e.text().trim()).to_string())
+                .collect();
+            let geometry_id = id(skin.attribute("source").unwrap_or_default()).to_string();
+            for (mut mesh, ids) in geometry(
+                &geometry_id,
+                &bindings_of(instance),
+                &mut materials_cache,
+                world,
+            )? {
+                // buildGeometryData over the VERTEX indices, then normalizeSkinWeights.
+                let (mut indices, mut weights) = (vec![], vec![]);
+                for &vertex in &ids {
+                    let at = vertex as usize * 4;
+                    let w: [f64; 4] = std::array::from_fn(|k| influence_weights[at + k]);
+                    let sum: f64 = w.iter().map(|x| x.abs()).sum();
+                    let w = if sum != 0. {
+                        w.map(|x| x * (1. / sum))
+                    } else {
+                        [1., 0., 0., 0.]
+                    };
+                    for k in 0..4 {
+                        indices.push(influence_indices[at + k] as f32);
+                        weights.push(w[k] as f32);
+                    }
+                }
+                mesh.node = index;
+                mesh.skin = Some(DaeSkin {
+                    joints: joints.clone(),
+                    bind_shape,
+                    indices,
+                    weights,
+                    skeletons: skeletons.clone(),
+                });
+                nodes[index].meshes.push(meshes.len());
+                meshes.push(mesh);
+            }
         }
-        let mut kids: Vec<_> = children(node, "node").map(|n| (n, world)).collect();
+        for instance in children(node, "instance_geometry") {
+            let url = instance.attribute("url").unwrap_or_default();
+            for (mut mesh, _) in
+                geometry(id(url), &bindings_of(instance), &mut materials_cache, world)?
+            {
+                mesh.node = index;
+                nodes[index].meshes.push(meshes.len());
+                meshes.push(mesh);
+            }
+        }
+        let mut kids: Vec<_> = children(node, "node")
+            .map(|n| (n, world, Some(index)))
+            .collect();
         kids.reverse();
         stack.extend(kids);
     }
-    Ok(DaeScene { meshes, unit, z_up })
+    // library_animations: matrix channels ( node/sid ) with their sampler data.
+    let mut channels = vec![];
+    let mut animations = vec![];
+    all(&root, "animation", &mut animations);
+    for animation in animations {
+        for channel in children(animation, "channel") {
+            let target = channel.attribute("target").unwrap_or_default();
+            let Some((node, sid)) = target.split_once('/') else {
+                continue;
+            };
+            let sampler_id = id(channel.attribute("source").unwrap_or_default());
+            let Some(sampler) =
+                children(animation, "sampler").find(|s| s.attribute("id") == Some(sampler_id))
+            else {
+                continue;
+            };
+            let source = |semantic: &str| -> Option<(Vec<f64>, usize)> {
+                let input = children(sampler, "input")
+                    .find(|i| i.attribute("semantic") == Some(semantic))?;
+                let key = id(input.attribute("source")?);
+                let src = children(animation, "source").find(|s| s.attribute("id") == Some(key))?;
+                let stride = src
+                    .first_descendant("accessor")
+                    .and_then(|a| a.attribute("stride"))
+                    .map(|v| parse_float(v) as usize)
+                    .unwrap_or(1);
+                Some((floats(&src.first_descendant("float_array")?.text()), stride))
+            };
+            if let (Some((times, _)), Some((values, stride))) = (source("INPUT"), source("OUTPUT"))
+            {
+                channels.push(DaeChannel {
+                    node: node.to_string(),
+                    sid: sid.to_string(),
+                    times,
+                    values,
+                    stride,
+                });
+            }
+        }
+    }
+    // library_kinematics_models and the scene's bind_joint_axis elements.
+    let mut joints = vec![];
+    let mut models = vec![];
+    all(&root, "kinematics_model", &mut models);
+    if let Some(model) = models.first() {
+        let mut list = vec![];
+        all(model, "joint", &mut list);
+        for joint in list {
+            let Some(body) = joint
+                .elements()
+                .find(|e| e.name == "revolute" || e.name == "prismatic")
+            else {
+                continue;
+            };
+            let axis = body
+                .first_descendant("axis")
+                .map(|a| floats(&a.text()))
+                .unwrap_or_default();
+            let limit = |tag: &str| {
+                body.first_descendant("limits")
+                    .and_then(|l| l.first_descendant(tag))
+                    .map(|v| parse_float(&v.text()))
+                    .unwrap_or(0.)
+            };
+            joints.push((
+                joint.attribute("sid").unwrap_or_default().to_string(),
+                DaeJoint {
+                    revolute: body.name == "revolute",
+                    axis: [
+                        axis.first().copied().unwrap_or(0.),
+                        axis.get(1).copied().unwrap_or(0.),
+                        axis.get(2).copied().unwrap_or(0.),
+                    ],
+                    min: limit("min"),
+                    max: limit("max"),
+                },
+            ));
+        }
+    }
+    let mut binds = vec![];
+    let mut list = vec![];
+    all(&root, "bind_joint_axis", &mut list);
+    for bind in list {
+        let target = bind
+            .attribute("target")
+            .unwrap_or_default()
+            .rsplit('/')
+            .next()
+            .unwrap_or_default()
+            .to_string();
+        if let Some(param) = bind
+            .first_descendant("axis")
+            .and_then(|a| a.first_descendant("param"))
+        {
+            // "..._inst_<joint>_axis0" → "<joint>".
+            let text = param.text();
+            let tail = text.rsplit("inst_").next().unwrap_or_default();
+            let head = tail.split("axis").next().unwrap_or_default();
+            let joint = head.get(..head.len().saturating_sub(1)).unwrap_or_default();
+            binds.push((joint.to_string(), target));
+        }
+    }
+    Ok(DaeScene {
+        meshes,
+        unit,
+        z_up,
+        nodes,
+        roots,
+        channels,
+        joints,
+        binds,
+    })
+}
+/// A node transform element as ColladaParser reads it.
+fn transform_of(c: &Element) -> Option<DaeTransform> {
+    let v = floats(&c.text());
+    Some(match c.name.as_str() {
+        // fromArray( array ).transpose(): the file lists rows.
+        "matrix" => DaeTransform::Matrix(std::array::from_fn(|i| v[(i % 4) * 4 + i / 4])),
+        "translate" => DaeTransform::Translate([v[0], v[1], v[2]]),
+        "scale" => DaeTransform::Scale([v[0], v[1], v[2]]),
+        "rotate" => DaeTransform::Rotate([v[0], v[1], v[2]], v[3].to_radians()),
+        _ => return None,
+    })
+}
+/// makeRotationAxis takes the axis as given.
+pub(super) fn rotation_axis(axis: [f64; 3], a: f64) -> [f64; 16] {
+    let [x, y, z] = axis;
+    let (c, s, t) = (a.cos(), a.sin(), 1. - a.cos());
+    [
+        t * x * x + c,
+        t * x * y + s * z,
+        t * x * z - s * y,
+        0.,
+        t * x * y - s * z,
+        t * y * y + c,
+        t * y * z + s * x,
+        0.,
+        t * x * z + s * y,
+        t * y * z - s * x,
+        t * z * z + c,
+        0.,
+        0.,
+        0.,
+        0.,
+        1.,
+    ]
+}
+pub(super) fn transform_matrix(t: &DaeTransform) -> [f64; 16] {
+    match *t {
+        DaeTransform::Matrix(m) => m,
+        DaeTransform::Translate(v) => [
+            1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., v[0], v[1], v[2], 1.,
+        ],
+        DaeTransform::Scale(v) => [
+            v[0], 0., 0., 0., 0., v[1], 0., 0., 0., 0., v[2], 0., 0., 0., 0., 1.,
+        ],
+        DaeTransform::Rotate(axis, a) => rotation_axis(axis, a),
+    }
+}
+pub(super) fn multiply_matrices(a: &[f64; 16], b: &[f64; 16]) -> [f64; 16] {
+    multiply(a, b)
 }

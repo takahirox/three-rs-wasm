@@ -1,0 +1,92 @@
+[
+ {
+  "file": "texture-volumes/cm_gray.png",
+  "source": "examples/textures/cm_gray.png",
+  "sha256": "e65f6e213ec619608e3ba7760d671f37d0e0e55c5980a1a55064ef35f7670794"
+ },
+ {
+  "file": "texture-volumes/cm_viridis.png",
+  "source": "examples/textures/cm_viridis.png",
+  "sha256": "ab62ce298b649a86ca9b9492b5658358fb24d5b5351624642631d1052cf39f6b"
+ },
+ {
+  "file": "texture-volumes/stent.nrrd",
+  "source": "examples/models/nrrd/stent.nrrd",
+  "sha256": "10f1a6e39cb113ba1357342e4df17c270edf4e98ea123a22d71462ff8f61aa11"
+ },
+ {
+  "file": "collada-anim/abb_irb52_7_120.dae",
+  "source": "examples/models/collada/abb_irb52_7_120.dae",
+  "sha256": "d016d827423984a2b8f3d0052074304d4ae3f0b0e69663c3c7d9a9523b6317d6"
+ },
+ {
+  "file": "collada-anim/stormtrooper/Stormtrooper_D.jpg",
+  "source": "examples/models/collada/stormtrooper/Stormtrooper_D.jpg",
+  "sha256": "0f3a4e444d48849b4fa6bdbbeedae79c36feba1dc8ff56549cde22282c45d12b"
+ },
+ {
+  "file": "collada-anim/stormtrooper/stormtrooper.dae",
+  "source": "examples/models/collada/stormtrooper/stormtrooper.dae",
+  "sha256": "6b44b1f8b6442b0bc81d643487a2f66654d60dc3e3f82b12aa812727a846c54b"
+ },
+ {
+  "file": "threemf/cube_gears.3mf",
+  "source": "examples/models/3mf/cube_gears.3mf",
+  "sha256": "b73c2e260b7331e002c9dc669f99ad0cd24b5064409335738cbd8f55a2a6fdd1"
+ },
+ {
+  "file": "threemf/facecolors.3mf",
+  "source": "examples/models/3mf/facecolors.3mf",
+  "sha256": "76e67544e5398831d29c45c7e424909c022beb55203a0aeaa0778a06d3a5dcb0"
+ },
+ {
+  "file": "threemf/multipletextures.3mf",
+  "source": "examples/models/3mf/multipletextures.3mf",
+  "sha256": "1024c33276043c5ef25bf111496056d87bf5a816ae2f6eb6a6804d75ced02d59"
+ },
+ {
+  "file": "threemf/pyramid.3mf",
+  "source": "examples/models/3mf/pyramid.3mf",
+  "sha256": "187bbb00a3ad0b31096d27e7a1638736f4560ef3bf9b2a05ba9aa2e5864004f8"
+ },
+ {
+  "file": "threemf/spinal implant.3mf",
+  "source": "examples/models/3mf/spinal implant.3mf",
+  "sha256": "9b4b7d43e071b2b7d4b9cd38031c63f598a0064090acec50696a849da40536e8"
+ },
+ {
+  "file": "threemf/truck.3mf",
+  "source": "examples/models/3mf/truck.3mf",
+  "sha256": "242ff6467b34b47c75c5a5b6417db30da15e45b805bbe0a0245bb5cca0a03a86"
+ },
+ {
+  "file": "threemf/variable voronoi.3mf",
+  "source": "examples/models/3mf/variable voronoi.3mf",
+  "sha256": "45bd479e36a05ab0624c1d41fa355d6f4619514101d235172469a83c1d722a43"
+ },
+ {
+  "file": "threemf/vertexcolors.3mf",
+  "source": "examples/models/3mf/vertexcolors.3mf",
+  "sha256": "1f79beb48ede62406b780a7f42933a05ff695e85d6a95124a2d0eff782b91555"
+ },
+ {
+  "file": "nrrd/I.nrrd",
+  "source": "examples/models/nrrd/I.nrrd",
+  "sha256": "741e36154074b3834be49c0554e1b49875a9a96d8ed1e466d7614758f2a8f726"
+ },
+ {
+  "file": "fonts/ttf/README.md",
+  "source": "examples/fonts/ttf/README.md",
+  "sha256": "839a0690ee62d559779bd978fa28828f1686db0071f46b5febca8c553af16039"
+ },
+ {
+  "file": "fonts/ttf/kenpixel.ttf",
+  "source": "examples/fonts/ttf/kenpixel.ttf",
+  "sha256": "fd42226067fc44707d41ef9f43597574c6a0fd415249416b38cf93371a7a611a"
+ },
+ {
+  "file": "webaudio/ping_pong.mp3",
+  "source": "examples/sounds/ping_pong.mp3",
+  "sha256": "51597e0d2fdd9bdb5658452adaf125596f05d07d9eab430994511e3039ea9cf2"
+ }
+]

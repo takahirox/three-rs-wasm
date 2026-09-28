@@ -4,7 +4,7 @@
  "runs": {
   "dpr1": {
    "Text-and-cli-29ee0--and-official-draw-workload": {
-    "gpu-work": [
+    "gpuWork": [
      {
       "kind": "webgl_clipping_advanced",
       "reference": {
@@ -449,6 +449,47 @@
        "transformBytes": 0,
        "textureBytes": 0
       }
+     },
+     {
+      "kind": "webgl_loader_ttf",
+      "reference": {
+       "draws": [
+        {
+         "count": 4764,
+         "instances": 1
+        },
+        {
+         "count": 4764,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 4764,
+         "instances": 1
+        },
+        {
+         "count": 4764,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
      }
     ]
    },
@@ -518,7 +559,7 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 5.340576171875e-05,
+      "fraction": 0.00005340576171875,
       "meanError": 0.000919342041015625
      },
      {
@@ -547,17 +588,17 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 7.62939453125e-06,
+      "fraction": 0.00000762939453125,
       "meanError": 0.000457763671875
      },
      {
       "state": 1,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00011189778645833333
      },
      {
       "state": 2,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00048065185546875
      },
      {
@@ -567,27 +608,27 @@
      },
      {
       "state": 4,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00011189778645833333
      },
      {
       "state": 5,
-      "fraction": 1.1444091796875e-05,
+      "fraction": 0.000011444091796875,
       "meanError": 0.0008824666341145834
      },
      {
       "state": 6,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.0010846455891927083
      },
      {
       "state": 7,
-      "fraction": 7.62939453125e-06,
+      "fraction": 0.00000762939453125,
       "meanError": 0.000286102294921875
      },
      {
       "state": 8,
-      "fraction": 7.8125e-06,
+      "fraction": 0.0000078125,
       "meanError": 0.0007994791666666667
      }
     ]
@@ -685,32 +726,32 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 9.5367431640625e-05,
+      "fraction": 0.000095367431640625,
       "meanError": 0.015996297200520832
      },
      {
       "state": 1,
-      "fraction": 9.918212890625e-05,
+      "fraction": 0.00009918212890625,
       "meanError": 0.010494232177734375
      },
      {
       "state": 2,
-      "fraction": 4.57763671875e-05,
+      "fraction": 0.0000457763671875,
       "meanError": 0.015127817789713541
      },
      {
       "state": 3,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.008754730224609375
      },
      {
       "state": 4,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.008733113606770834
      },
      {
       "state": 5,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.007795969645182292
      },
      {
@@ -730,27 +771,27 @@
      },
      {
       "state": 9,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.007815043131510416
      },
      {
       "state": 10,
-      "fraction": 1.9073486328125e-05,
+      "fraction": 0.000019073486328125,
       "meanError": 0.008754730224609375
      },
      {
       "state": 11,
-      "fraction": 4.9591064453125e-05,
+      "fraction": 0.000049591064453125,
       "meanError": 0.011091868082682291
      },
      {
       "state": 12,
-      "fraction": 4.1961669921875e-05,
+      "fraction": 0.000041961669921875,
       "meanError": 0.010173797607421875
      },
      {
       "state": 13,
-      "fraction": 3.515625e-05,
+      "fraction": 0.00003515625,
       "meanError": 0.0123515625
      }
     ]
@@ -1137,7 +1178,7 @@
      },
      {
       "state": 2,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.000213623046875
      },
      {
@@ -1148,16 +1189,16 @@
      {
       "state": 4,
       "fraction": 0,
-      "meanError": 6.612141927083333e-05
+      "meanError": 0.00006612141927083333
      },
      {
       "state": 5,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00015385945638020834
      },
      {
       "state": 6,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00016276041666666666
      },
      {
@@ -1168,22 +1209,22 @@
      {
       "state": 8,
       "fraction": 0,
-      "meanError": 3.5603841145833336e-05
+      "meanError": 0.000035603841145833336
      },
      {
       "state": 9,
       "fraction": 0,
-      "meanError": 1.0172526041666666e-05
+      "meanError": 0.000010172526041666666
      },
      {
       "state": 10,
       "fraction": 0,
-      "meanError": 3.814697265625e-06
+      "meanError": 0.000003814697265625
      },
      {
       "state": 11,
       "fraction": 0,
-      "meanError": 3.90625e-06
+      "meanError": 0.00000390625
      }
     ]
    },
@@ -1295,6 +1336,146 @@
       "state": 8,
       "fraction": 0.05796484375,
       "meanError": 1.3006640625
+     }
+    ]
+   },
+   "Text-and-cli-b0717--webgl-loader-ttf-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00333404541015625,
+      "meanError": 0.039524078369140625
+     },
+     {
+      "state": 1,
+      "fraction": 0.00333404541015625,
+      "meanError": 0.039524078369140625
+     },
+     {
+      "state": 2,
+      "fraction": 0.003749847412109375,
+      "meanError": 0.039279937744140625
+     },
+     {
+      "state": 3,
+      "fraction": 0.001087188720703125,
+      "meanError": 0.010121663411458334
+     },
+     {
+      "state": 4,
+      "fraction": 0.000835418701171875,
+      "meanError": 0.008200327555338541
+     },
+     {
+      "state": 5,
+      "fraction": 0.002674102783203125,
+      "meanError": 0.026755015055338543
+     },
+     {
+      "state": 6,
+      "fraction": 0.001953125,
+      "meanError": 0.020649739583333333
+     }
+    ]
+   },
+   "Text-and-cli-b7667--webgl-loader-ttf-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0002899169921875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0002899169921875
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00016276041666666666
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.000057220458984375
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0003140767415364583
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00009505208333333333
+     }
+    ]
+   },
+   "Text-and-cli-cb8e9--residency-webgl-loader-ttf": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 42,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 42,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
      }
     ]
    }
@@ -1815,7 +1996,7 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 3.528594970703125e-05,
+      "fraction": 0.00003528594970703125,
       "meanError": 0.0010964075724283855
      },
      {
@@ -1844,47 +2025,47 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 1.049041748046875e-05,
+      "fraction": 0.00001049041748046875,
       "meanError": 0.0013116200764973958
      },
      {
       "state": 1,
-      "fraction": 6.67572021484375e-06,
+      "fraction": 0.00000667572021484375,
       "meanError": 0.00093841552734375
      },
      {
       "state": 2,
-      "fraction": 1.33514404296875e-05,
+      "fraction": 0.0000133514404296875,
       "meanError": 0.0012098948160807292
      },
      {
       "state": 3,
-      "fraction": 1.33514404296875e-05,
+      "fraction": 0.0000133514404296875,
       "meanError": 0.0014406840006510417
      },
      {
       "state": 4,
-      "fraction": 6.67572021484375e-06,
+      "fraction": 0.00000667572021484375,
       "meanError": 0.00093841552734375
      },
      {
       "state": 5,
-      "fraction": 8.58306884765625e-06,
+      "fraction": 0.00000858306884765625,
       "meanError": 0.0005702972412109375
      },
      {
       "state": 6,
-      "fraction": 6.67572021484375e-06,
+      "fraction": 0.00000667572021484375,
       "meanError": 0.0003617604573567708
      },
      {
       "state": 7,
-      "fraction": 7.62939453125e-06,
+      "fraction": 0.00000762939453125,
       "meanError": 0.0005677541097005209
      },
      {
       "state": 8,
-      "fraction": 5.859375e-06,
+      "fraction": 0.000005859375,
       "meanError": 0.00020540364583333334
      }
     ]
@@ -1982,7 +2163,7 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 6.198883056640625e-05,
+      "fraction": 0.00006198883056640625,
       "meanError": 0.01560370127360026
      },
      {
@@ -1992,22 +2173,22 @@
      },
      {
       "state": 2,
-      "fraction": 6.29425048828125e-05,
+      "fraction": 0.0000629425048828125,
       "meanError": 0.015529950459798178
      },
      {
       "state": 3,
-      "fraction": 1.811981201171875e-05,
+      "fraction": 0.00001811981201171875,
       "meanError": 0.008862177530924479
      },
      {
       "state": 4,
-      "fraction": 1.811981201171875e-05,
+      "fraction": 0.00001811981201171875,
       "meanError": 0.008845647176106771
      },
      {
       "state": 5,
-      "fraction": 1.811981201171875e-05,
+      "fraction": 0.00001811981201171875,
       "meanError": 0.007888476053873697
      },
      {
@@ -2027,27 +2208,27 @@
      },
      {
       "state": 9,
-      "fraction": 1.811981201171875e-05,
+      "fraction": 0.00001811981201171875,
       "meanError": 0.007904688517252604
      },
      {
       "state": 10,
-      "fraction": 1.811981201171875e-05,
+      "fraction": 0.00001811981201171875,
       "meanError": 0.008862177530924479
      },
      {
       "state": 11,
-      "fraction": 5.054473876953125e-05,
+      "fraction": 0.00005054473876953125,
       "meanError": 0.011202494303385416
      },
      {
       "state": 12,
-      "fraction": 4.673004150390625e-05,
+      "fraction": 0.00004673004150390625,
       "meanError": 0.010647455851236979
      },
      {
       "state": 13,
-      "fraction": 2.83203125e-05,
+      "fraction": 0.0000283203125,
       "meanError": 0.011818359375
      }
     ]
@@ -2424,12 +2605,12 @@
     "comparison": [
      {
       "state": 0,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00035063425699869793
      },
      {
       "state": 1,
-      "fraction": 3.814697265625e-06,
+      "fraction": 0.000003814697265625,
       "meanError": 0.00035063425699869793
      },
      {
@@ -2439,12 +2620,12 @@
      },
      {
       "state": 3,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.00022125244140625
      },
      {
       "state": 4,
-      "fraction": 9.5367431640625e-07,
+      "fraction": 9.5367431640625e-7,
       "meanError": 0.00018310546875
      },
      {
@@ -2464,23 +2645,23 @@
      },
      {
       "state": 8,
-      "fraction": 9.5367431640625e-07,
-      "meanError": 4.8955281575520836e-05
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.000048955281575520836
      },
      {
       "state": 9,
       "fraction": 0,
-      "meanError": 1.239776611328125e-05
+      "meanError": 0.00001239776611328125
      },
      {
       "state": 10,
       "fraction": 0,
-      "meanError": 1.1444091796875e-05
+      "meanError": 0.000011444091796875
      },
      {
       "state": 11,
-      "fraction": 9.765625e-07,
-      "meanError": 1.2044270833333333e-05
+      "fraction": 9.765625e-7,
+      "meanError": 0.000012044270833333333
      }
     ]
    },
@@ -2592,6 +2773,146 @@
       "state": 8,
       "fraction": 0.0309296875,
       "meanError": 0.6827760416666667
+     }
+    ]
+   },
+   "Text-and-cli-b0717--webgl-loader-ttf-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0016002655029296875,
+      "meanError": 0.017750104268391926
+     },
+     {
+      "state": 1,
+      "fraction": 0.0016002655029296875,
+      "meanError": 0.017750104268391926
+     },
+     {
+      "state": 2,
+      "fraction": 0.0018415451049804688,
+      "meanError": 0.02032311757405599
+     },
+     {
+      "state": 3,
+      "fraction": 0.0005197525024414062,
+      "meanError": 0.0051962534586588545
+     },
+     {
+      "state": 4,
+      "fraction": 0.00041103363037109375,
+      "meanError": 0.004179318745930989
+     },
+     {
+      "state": 5,
+      "fraction": 0.0012569427490234375,
+      "meanError": 0.013483683268229166
+     },
+     {
+      "state": 6,
+      "fraction": 0.001068359375,
+      "meanError": 0.011143880208333333
+     }
+    ]
+   },
+   "Text-and-cli-b7667--webgl-loader-ttf-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000171661376953125,
+      "meanError": 0.0004018147786458333
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000171661376953125,
+      "meanError": 0.0004018147786458333
+     },
+     {
+      "state": 2,
+      "fraction": 0.0000057220458984375,
+      "meanError": 0.00040149688720703125
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00008487701416015625
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.000087738037109375
+     },
+     {
+      "state": 5,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00030612945556640625
+     },
+     {
+      "state": 6,
+      "fraction": 0.000001953125,
+      "meanError": 0.00015852864583333333
+     }
+    ]
+   },
+   "Text-and-cli-cb8e9--residency-webgl-loader-ttf": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 42,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 42,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        2,
+        381464,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
      }
     ]
    }

@@ -270,6 +270,166 @@ impl Font {
     pub fn parse(json: &[u8]) -> Result<Self> {
         serde_json::from_slice(json).map_err(|e| bad(&format!("typeface: {e}")))
     }
+    /// TTFLoader.parse(): opentype.js 1.3.4's TrueType outlines converted to the
+    /// typeface layout (resolution 1000, coordinates scaled and rounded).
+    pub fn from_ttf(data: &[u8]) -> Result<Self> {
+        let err = || bad("ttf: truncated");
+        let u16_at = |o: usize| -> Result<u16> {
+            Ok(u16::from_be_bytes(
+                data.get(o..o + 2)
+                    .ok_or_else(err)?
+                    .try_into()
+                    .unwrap_or_default(),
+            ))
+        };
+        let i16_at = |o: usize| -> Result<i16> { Ok(u16_at(o)? as i16) };
+        let u32_at = |o: usize| -> Result<u32> {
+            Ok(u32::from_be_bytes(
+                data.get(o..o + 4)
+                    .ok_or_else(err)?
+                    .try_into()
+                    .unwrap_or_default(),
+            ))
+        };
+        let mut tables = HashMap::new();
+        for i in 0..usize::from(u16_at(4)?) {
+            let r = 12 + 16 * i;
+            let tag = data.get(r..r + 4).ok_or_else(err)?;
+            tables.insert(tag.to_vec(), u32_at(r + 8)? as usize);
+        }
+        let table = |tag: &[u8]| {
+            tables
+                .get(tag)
+                .copied()
+                .ok_or_else(|| bad("ttf: missing table"))
+        };
+        let head = table(b"head")?;
+        let units_per_em = f64::from(u16_at(head + 18)?);
+        let y_min = f64::from(i16_at(head + 38)?);
+        let y_max = f64::from(i16_at(head + 42)?);
+        let long_loca = i16_at(head + 50)? != 0;
+        let glyph_count = usize::from(u16_at(table(b"maxp")? + 4)?);
+        let hhea = table(b"hhea")?;
+        let metrics = usize::from(u16_at(hhea + 34)?);
+        let hmtx = table(b"hmtx")?;
+        let advance = |g: usize| u16_at(hmtx + 4 * g.min(metrics.saturating_sub(1)));
+        let loca = table(b"loca")?;
+        let glyf = table(b"glyf")?;
+        let location = |g: usize| -> Result<usize> {
+            Ok(if long_loca {
+                u32_at(loca + 4 * g)? as usize
+            } else {
+                usize::from(u16_at(loca + 2 * g)?) * 2
+            })
+        };
+        let underline_thickness = f64::from(i16_at(table(b"post")? + 10)?);
+        // parseCmapTable: the last platform 3 (0, 1, 10) or platform 0 subtable.
+        let cmap = table(b"cmap")?;
+        let mut sub = None;
+        for i in (0..usize::from(u16_at(cmap + 2)?)).rev() {
+            let (platform, encoding) = (u16_at(cmap + 4 + 8 * i)?, u16_at(cmap + 6 + 8 * i)?);
+            if (platform == 3 && matches!(encoding, 0 | 1 | 10)) || (platform == 0 && encoding <= 4)
+            {
+                sub = Some(cmap + u32_at(cmap + 8 + 8 * i)? as usize);
+                break;
+            }
+        }
+        let sub = sub.ok_or_else(|| bad("ttf: no cmap"))?;
+        let mut map = std::collections::BTreeMap::new();
+        match u16_at(sub)? {
+            4 => {
+                let segments = usize::from(u16_at(sub + 6)? >> 1);
+                for i in 0..segments.saturating_sub(1) {
+                    let end = u16_at(sub + 14 + 2 * i)?;
+                    let start = u16_at(sub + 16 + 2 * segments + 2 * i)?;
+                    let delta = u16_at(sub + 16 + 4 * segments + 2 * i)?;
+                    let range_at = sub + 16 + 6 * segments + 2 * i;
+                    let range = usize::from(u16_at(range_at)?);
+                    for c in start..=end {
+                        let g = if range != 0 {
+                            let g = u16_at(range_at + range + 2 * usize::from(c - start))?;
+                            if g != 0 { g.wrapping_add(delta) } else { 0 }
+                        } else {
+                            c.wrapping_add(delta)
+                        };
+                        map.insert(u32::from(c), usize::from(g));
+                    }
+                }
+            }
+            12 => {
+                for i in 0..u32_at(sub + 12)? as usize {
+                    let r = sub + 16 + 12 * i;
+                    let (first, last, glyph) = (u32_at(r)?, u32_at(r + 4)?, u32_at(r + 8)?);
+                    for c in first..=last {
+                        map.insert(c, (glyph + c - first) as usize);
+                    }
+                }
+            }
+            _ => return Err(bad("ttf: unsupported cmap format")),
+        }
+        let scale = 100000. / (units_per_em * 72.);
+        let round = |v: f64| ((v * scale + 0.5).floor()) as i64;
+        let mut outlines: HashMap<usize, String> = HashMap::new();
+        let mut glyphs = HashMap::new();
+        for (&c, &g) in &map {
+            if g >= glyph_count {
+                continue;
+            }
+            if let std::collections::hash_map::Entry::Vacant(slot) = outlines.entry(g) {
+                let mut o = String::new();
+                for contour in ttf_contours(data, glyf, &location, g, 0)? {
+                    // getPath(): implied on-curve midpoints between off-curve points.
+                    let n = contour.len();
+                    let mid = |a: (f64, f64, bool), b: (f64, f64, bool)| {
+                        ((a.0 + b.0) * 0.5, (a.1 + b.1) * 0.5, true)
+                    };
+                    let (last, first) = (contour[n - 1], contour[0]);
+                    let start = if last.2 {
+                        last
+                    } else if first.2 {
+                        first
+                    } else {
+                        mid(last, first)
+                    };
+                    o += &format!("m {} {} ", round(start.0), round(start.1));
+                    for i in 0..n {
+                        let curr = contour[i];
+                        let next = contour[(i + 1) % n];
+                        if curr.2 {
+                            o += &format!("l {} {} ", round(curr.0), round(curr.1));
+                        } else {
+                            let end = if next.2 { next } else { mid(curr, next) };
+                            o += &format!(
+                                "q {} {} {} {} ",
+                                round(end.0),
+                                round(end.1),
+                                round(curr.0),
+                                round(curr.1)
+                            );
+                        }
+                    }
+                    o += "z ";
+                }
+                slot.insert(o);
+            }
+            let Some(ch) = char::from_u32(c) else {
+                continue;
+            };
+            glyphs.insert(
+                ch.to_string(),
+                Glyph {
+                    ha: round(f64::from(advance(g)?)) as f64,
+                    o: outlines.get(&g).cloned(),
+                },
+            );
+        }
+        Ok(Self {
+            glyphs,
+            resolution: 1000.,
+            bounding_box: BoundingBox { y_min, y_max },
+            underline_thickness,
+        })
+    }
     /// Font.generateShapes( text, size ): each glyph's ShapePath, left to right.
     pub fn shapes(&self, text: &str, size: f64) -> Vec<Shape> {
         let scale = size / self.resolution;
@@ -340,6 +500,125 @@ impl Font {
         }
         shapes
     }
+}
+
+/// A TrueType glyph's contours as (x, y, on-curve) points; composite glyphs
+/// place their components by offset and 2×2 transform, as transformPoints.
+type Contour = Vec<(f64, f64, bool)>;
+fn ttf_contours(
+    data: &[u8],
+    glyf: usize,
+    location: &dyn Fn(usize) -> Result<usize>,
+    g: usize,
+    depth: u32,
+) -> Result<Vec<Contour>> {
+    let err = || bad("ttf: truncated glyph");
+    let byte = |o: usize| data.get(o).copied().ok_or_else(err);
+    let u16_at =
+        |o: usize| -> Result<u16> { Ok(u16::from(byte(o)?) << 8 | u16::from(byte(o + 1)?)) };
+    let i16_at = |o: usize| -> Result<i16> { Ok(u16_at(o)? as i16) };
+    let (start, end) = (location(g)?, location(g + 1)?);
+    if end <= start || depth > 8 {
+        return Ok(vec![]);
+    }
+    let at = glyf + start;
+    let contours = i16_at(at)?;
+    let mut p = at + 10;
+    if contours >= 0 {
+        let contours = contours as usize;
+        let ends: Vec<usize> = (0..contours)
+            .map(|i| u16_at(p + 2 * i).map(usize::from))
+            .collect::<Result<_>>()?;
+        p += 2 * contours;
+        let count = ends.last().map_or(0, |e| e + 1);
+        p += 2 + usize::from(u16_at(p)?);
+        let mut flags = Vec::with_capacity(count);
+        while flags.len() < count {
+            let f = byte(p)?;
+            p += 1;
+            flags.push(f);
+            if f & 8 != 0 {
+                let repeat = byte(p)?;
+                p += 1;
+                for _ in 0..repeat {
+                    flags.push(f);
+                }
+            }
+        }
+        let mut coordinate = |short: u8, same: u8| -> Result<Vec<f64>> {
+            let mut v = 0i32;
+            let mut out = Vec::with_capacity(count);
+            for &f in &flags[..count] {
+                if f & short != 0 {
+                    let d = i32::from(byte(p)?);
+                    p += 1;
+                    v += if f & same != 0 { d } else { -d };
+                } else if f & same == 0 {
+                    v += i32::from(i16_at(p)?);
+                    p += 2;
+                }
+                out.push(f64::from(v));
+            }
+            Ok(out)
+        };
+        let xs = coordinate(2, 16)?;
+        let ys = coordinate(4, 32)?;
+        let mut out = vec![];
+        let mut first = 0;
+        for e in ends {
+            out.push(
+                (first..=e)
+                    .map(|i| (xs[i], ys[i], flags[i] & 1 != 0))
+                    .collect(),
+            );
+            first = e + 1;
+        }
+        return Ok(out);
+    }
+    let mut out = vec![];
+    loop {
+        let flags = u16_at(p)?;
+        let component = usize::from(u16_at(p + 2)?);
+        p += 4;
+        let (dx, dy) = if flags & 1 != 0 {
+            let v = (f64::from(i16_at(p)?), f64::from(i16_at(p + 2)?));
+            p += 4;
+            v
+        } else {
+            let v = (f64::from(byte(p)? as i8), f64::from(byte(p + 1)? as i8));
+            p += 2;
+            v
+        };
+        let f2dot14 = |o: usize| -> Result<f64> { Ok(f64::from(i16_at(o)?) / 16384.) };
+        let (mut a, mut b, mut c, mut d) = (1., 0., 0., 1.);
+        if flags & 8 != 0 {
+            a = f2dot14(p)?;
+            d = a;
+            p += 2;
+        } else if flags & 64 != 0 {
+            a = f2dot14(p)?;
+            d = f2dot14(p + 2)?;
+            p += 4;
+        } else if flags & 128 != 0 {
+            a = f2dot14(p)?;
+            b = f2dot14(p + 2)?;
+            c = f2dot14(p + 4)?;
+            d = f2dot14(p + 6)?;
+            p += 8;
+        }
+        for contour in ttf_contours(data, glyf, location, component, depth + 1)? {
+            out.push(
+                contour
+                    .into_iter()
+                    .map(|(x, y, on)| (a * x + b * y + dx, c * x + d * y + dy, on))
+                    .collect(),
+            );
+        }
+        if flags & 32 == 0 {
+            break;
+        }
+    }
+    Ok(out)
 }
 
 // ---------------------------------------------------------------- Earcut

@@ -1,5 +1,6 @@
 //! Cube-map refraction, the PLY loader with shadows, the KMZ and Collada loaders
 //! and the EXR loader from the pinned WebGL examples.
+pub(in crate::browser) mod collada_anim;
 pub(super) mod formats;
 use super::controls_attributes::{CameraState, Controls, camera_state, viewport_css};
 use super::gltf_viewer::{decode_texture_image, fetch};
@@ -33,6 +34,123 @@ async fn ply(path: &str) -> Result<Arc<BufferGeometry>> {
     g.set_index(Some(index));
     g.compute_vertex_normals()?;
     Ok(Arc::new(g))
+}
+/// buildObjects for one Collada primitive type: the geometry, its materials as
+/// ColladaComposer.buildMaterial converts them, and for a skin the bind shape
+/// baked into the vertices with the influences as skinIndex and skinWeight.
+async fn dae_object(
+    s: &mut Scene,
+    mesh: formats::DaeMesh,
+    textures: &mut std::collections::HashMap<String, Arc<crate::material::Texture>>,
+    base: &str,
+    files: &[(String, Vec<u8>)],
+) -> Result<Object3D> {
+    let mut g = BufferGeometry::default();
+    let (mut positions, mut normals) = (mesh.positions, mesh.normals);
+    if let Some(skin) = &mesh.skin {
+        // Skinning applies bindMatrix before the bones: bake it into the vertices.
+        let m = Matrix4::from_cols_array(&skin.bind_shape);
+        for p in positions.as_chunks_mut::<3>().0 {
+            let v = m.transform_point3(Vector3::new(p[0] as f64, p[1] as f64, p[2] as f64));
+            *p = [v.x as f32, v.y as f32, v.z as f32];
+        }
+        for n in normals.as_chunks_mut::<3>().0 {
+            let v = m.transform_vector3(Vector3::new(n[0] as f64, n[1] as f64, n[2] as f64));
+            *n = [v.x as f32, v.y as f32, v.z as f32];
+        }
+        g.set_attribute(
+            "skinIndex",
+            Attribute::U16(BufferAttribute::new(
+                skin.indices.iter().map(|&i| i as u16).collect(),
+                4,
+                false,
+            )?),
+        );
+        g.set_attribute(
+            "skinWeight",
+            Attribute::F32(BufferAttribute::new(skin.weights.clone(), 4, false)?),
+        );
+    }
+    g.set_attribute("position", vec3s(positions)?);
+    if !normals.is_empty() {
+        g.set_attribute("normal", vec3s(normals)?);
+    }
+    if !mesh.uvs.is_empty() {
+        g.set_attribute(
+            "uv",
+            Attribute::F32(BufferAttribute::new(mesh.uvs, 2, false)?),
+        );
+    }
+    g.groups = mesh
+        .groups
+        .iter()
+        .map(|&(start, count, material_index)| Group {
+            start,
+            count,
+            material_index,
+        })
+        .collect();
+    let mut materials = vec![];
+    for m in &mesh.materials {
+        let mut properties = MaterialProperties {
+            color: Color::from_srgb(m.color[0], m.color[1], m.color[2]),
+            opacity: m.opacity,
+            transparent: m.transparent,
+            side: if m.double_sided {
+                Side::Double
+            } else {
+                Side::Front
+            },
+            ..Default::default()
+        };
+        if let Some(path) = &m.map {
+            if !textures.contains_key(path) {
+                let bytes = match files.iter().find(|(name, _)| name.ends_with(path.as_str())) {
+                    Some((_, b)) => b.clone(),
+                    None => fetch(&format!("{base}/{path}")).await?,
+                };
+                let mut t = decode_texture_image(&bytes).await?;
+                t.srgb = true;
+                t.wrap_s = Wrapping::Repeat;
+                t.wrap_t = Wrapping::Repeat;
+                t.mipmap_filter = Some(Filter::Linear);
+                textures.insert(path.clone(), Arc::new(t));
+            }
+            properties.map = textures.get(path).cloned();
+        }
+        let srgb = |c: [f64; 3]| Color::from_srgb(c[0], c[1], c[2]);
+        materials.push(Arc::new(match m.shading {
+            Shading::Phong => {
+                let mut p = MeshPhongMaterial::default();
+                if let Some(c) = m.specular {
+                    p.specular = srgb(c);
+                }
+                if let Some(c) = m.emissive {
+                    p.emissive = srgb(c);
+                }
+                if let Some(v) = m.shininess {
+                    p.shininess = v;
+                }
+                p.properties = properties;
+                Material::Phong(p)
+            }
+            Shading::Lambert => {
+                let mut p = MeshLambertMaterial::default();
+                if let Some(c) = m.emissive {
+                    p.emissive = srgb(c);
+                }
+                p.properties = properties;
+                Material::Lambert(p)
+            }
+            Shading::Basic => Material::Basic(MeshBasicMaterial { properties }),
+        }));
+    }
+    if materials.is_empty() {
+        materials.push(Arc::new(Material::Phong(MeshPhongMaterial::default())));
+    }
+    let mut node_mesh = Mesh::new(Arc::new(g), materials[0].clone());
+    node_mesh.materials = materials;
+    Ok(s.insert(NodeKind::Mesh(node_mesh)))
 }
 pub(super) struct Demo {
     id: u32,
@@ -263,7 +381,7 @@ impl Demo {
         let _ = c;
         Ok(())
     }
-    /// Materials of a Collada scene, converted as ColladaComposer.buildMaterial does.
+    /// A Collada scene's meshes, placed by their world matrices.
     async fn collada_nodes(
         s: &mut Scene,
         dae: DaeScene,
@@ -271,93 +389,12 @@ impl Demo {
         files: &[(String, Vec<u8>)],
     ) -> Result<Object3D> {
         let root = s.insert(NodeKind::Group);
-        let mut textures: std::collections::HashMap<String, Arc<crate::material::Texture>> =
-            Default::default();
+        let mut textures = Default::default();
         for mesh in dae.meshes {
-            let mut g = BufferGeometry::default();
-            g.set_attribute("position", vec3s(mesh.positions)?);
-            if !mesh.normals.is_empty() {
-                g.set_attribute("normal", vec3s(mesh.normals)?);
-            }
-            if !mesh.uvs.is_empty() {
-                g.set_attribute(
-                    "uv",
-                    Attribute::F32(BufferAttribute::new(mesh.uvs, 2, false)?),
-                );
-            }
-            g.groups = mesh
-                .groups
-                .iter()
-                .map(|&(start, count, material_index)| Group {
-                    start,
-                    count,
-                    material_index,
-                })
-                .collect();
-            let mut materials = vec![];
-            for m in &mesh.materials {
-                let mut properties = MaterialProperties {
-                    color: Color::from_srgb(m.color[0], m.color[1], m.color[2]),
-                    opacity: m.opacity,
-                    transparent: m.transparent,
-                    side: if m.double_sided {
-                        Side::Double
-                    } else {
-                        Side::Front
-                    },
-                    ..Default::default()
-                };
-                if let Some(path) = &m.map {
-                    if !textures.contains_key(path) {
-                        let bytes =
-                            match files.iter().find(|(name, _)| name.ends_with(path.as_str())) {
-                                Some((_, b)) => b.clone(),
-                                None => fetch(&format!("{base}/{path}")).await?,
-                            };
-                        let mut t = decode_texture_image(&bytes).await?;
-                        t.srgb = true;
-                        t.wrap_s = Wrapping::Repeat;
-                        t.wrap_t = Wrapping::Repeat;
-                        t.mipmap_filter = Some(Filter::Linear);
-                        textures.insert(path.clone(), Arc::new(t));
-                    }
-                    properties.map = textures.get(path).cloned();
-                }
-                let srgb = |c: [f64; 3]| Color::from_srgb(c[0], c[1], c[2]);
-                materials.push(Arc::new(match m.shading {
-                    Shading::Phong => {
-                        let mut p = MeshPhongMaterial::default();
-                        if let Some(c) = m.specular {
-                            p.specular = srgb(c);
-                        }
-                        if let Some(c) = m.emissive {
-                            p.emissive = srgb(c);
-                        }
-                        if let Some(v) = m.shininess {
-                            p.shininess = v;
-                        }
-                        p.properties = properties;
-                        Material::Phong(p)
-                    }
-                    Shading::Lambert => {
-                        let mut p = MeshLambertMaterial::default();
-                        if let Some(c) = m.emissive {
-                            p.emissive = srgb(c);
-                        }
-                        p.properties = properties;
-                        Material::Lambert(p)
-                    }
-                    Shading::Basic => Material::Basic(MeshBasicMaterial { properties }),
-                }));
-            }
-            if materials.is_empty() {
-                materials.push(Arc::new(Material::Phong(MeshPhongMaterial::default())));
-            }
-            let mut node_mesh = Mesh::new(Arc::new(g), materials[0].clone());
-            node_mesh.materials = materials;
-            let h = s.insert(NodeKind::Mesh(node_mesh));
+            let matrix = mesh.matrix;
+            let h = dae_object(s, mesh, &mut textures, base, files).await?;
             let (scale, rotation, translation) =
-                Matrix4::from_cols_array(&mesh.matrix).to_scale_rotation_translation();
+                Matrix4::from_cols_array(&matrix).to_scale_rotation_translation();
             let n = s.get_mut(h)?;
             n.position = translation;
             n.quaternion = rotation;

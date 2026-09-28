@@ -194,8 +194,9 @@ pub struct Node {
     pub shadow: crate::shadow::Shadow,
     pub morph_weights: Vec<f64>,
     pub skin: Option<crate::deformation::Skin>,
-    /// Empty uses the ordinary mesh path. Instanced transforms must be invertible
-    /// and have positive determinant (as with Three.js InstancedMesh).
+    /// Empty uses the ordinary mesh path. Instanced transforms must not mirror
+    /// (negative determinant); a zero scale hides an instance, as three's
+    /// InstancedMesh helpers do, drawing only degenerate triangles.
     pub instances: Vec<Instance>,
     /// Active prefix of resident instances. None draws the full capacity.
     /// Changing this count does not mutate or re-upload the geometry.

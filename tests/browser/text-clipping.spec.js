@@ -11,6 +11,7 @@ const cases={
  webgl_geometry_text:{rebuilds:true,times:[0,1],parameters:[[3,0,1],[1,0,1],[2,0,1],[1,0,1],[0,0,1],[1,0,1]],at:0,antialias:true,script:[['drag',256,256,330,300,0,2],['type','Hi!',2],['press','Backspace',2]],residency:[['drag',256,256,330,300,0,2]]},
  webgl_modifier_tessellation:{times:[0,1,2.5,4],parameters:[],at:0,antialias:true,script:[['drag',256,256,330,300,0,1],['drag',256,256,300,200,2,1.5],['wheel',256,256,-400,2],['wait',3]]},
  webgl_custom_attributes_lines:{times:[0,.5,1,2],parameters:[],at:2,antialias:true},
+ webgl_loader_ttf:{rebuilds:true,times:[0,1],parameters:[],at:0,antialias:true,script:[['drag',256,256,330,300,0,2],['type','Hi!',2],['press','Backspace',2],['type','Ab 7',2]],residency:[['drag',256,256,330,300,0,2]]},
 };
 const official=kind=>kind;
 const streams=['webgl_custom_attributes_lines'];

@@ -1822,7 +1822,7 @@
       "id": "webgl_loader_3mf",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf.html",
       "source_sha256": "404fb62573b07e3eb01c9f8b4a00f6bf4d4051d9a83b905adc9bf0819c7492e4",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_3mf",
         "source_sha256": "404fb62573b07e3eb01c9f8b4a00f6bf4d4051d9a83b905adc9bf0819c7492e4",
@@ -1848,7 +1848,7 @@
       "id": "webgl_loader_3mf_materials",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf_materials.html",
       "source_sha256": "acac936c0f0ff8820c4263ce2db6aeca8a8f8317aca1aac948b59cb60b7d5d5a",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_3mf_materials",
         "source_sha256": "acac936c0f0ff8820c4263ce2db6aeca8a8f8317aca1aac948b59cb60b7d5d5a",
@@ -1960,7 +1960,7 @@
       "id": "webgl_loader_collada_kinematics",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada_kinematics.html",
       "source_sha256": "4039717283dcf1e15d6dd38f407f2c651d583c23d0e021b19b8fa06667092a26",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_collada_kinematics",
         "source_sha256": "4039717283dcf1e15d6dd38f407f2c651d583c23d0e021b19b8fa06667092a26",
@@ -1986,7 +1986,7 @@
       "id": "webgl_loader_collada_skinning",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada_skinning.html",
       "source_sha256": "8be3ad01914e8d2ce4eb81a630f31a61c8c9912af52eb68195240fd75703e368",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_collada_skinning",
         "source_sha256": "8be3ad01914e8d2ce4eb81a630f31a61c8c9912af52eb68195240fd75703e368",
@@ -2578,7 +2578,7 @@
       "id": "webgl_loader_nrrd",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_nrrd.html",
       "source_sha256": "8b7a3ce401dfb916364d0424f4cb4b555f23daba408a6b83765d1ae8911508fd",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_nrrd",
         "source_sha256": "8b7a3ce401dfb916364d0424f4cb4b555f23daba408a6b83765d1ae8911508fd",
@@ -3043,7 +3043,7 @@
       "id": "webgl_loader_ttf",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ttf.html",
       "source_sha256": "862381a762da708c344e0d1919054f8d5e470ec30f9a32b82343fe30c4a04c8f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_ttf",
         "source_sha256": "862381a762da708c344e0d1919054f8d5e470ec30f9a32b82343fe30c4a04c8f",
@@ -6925,7 +6925,7 @@
       "id": "webgl_texture2darray_layerupdate",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture2darray_layerupdate.html",
       "source_sha256": "e8403708a1f26c65dc2c205d8257551f920980df5cda07850609f4e029611d82",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_texture2darray_layerupdate",
         "source_sha256": "e8403708a1f26c65dc2c205d8257551f920980df5cda07850609f4e029611d82",
@@ -6952,7 +6952,7 @@
       "id": "webgl_texture3d",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture3d.html",
       "source_sha256": "05c475d9448b419d88b673ba585d0edf77b015e049712187666a2295067907d8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_texture3d",
         "source_sha256": "05c475d9448b419d88b673ba585d0edf77b015e049712187666a2295067907d8",
@@ -13624,7 +13624,7 @@
       "id": "webaudio_timing",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webaudio_timing.html",
       "source_sha256": "b3298dbf44287b005aedac56232277e0d6e2f3a9d7b4f4fe024608973d4c0b2c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webaudio_timing",
         "source_sha256": "b3298dbf44287b005aedac56232277e0d6e2f3a9d7b4f4fe024608973d4c0b2c",
@@ -15361,7 +15361,7 @@
       "id": "misc_raycaster_helper",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_raycaster_helper.html",
       "source_sha256": "3e5801e31a09061f7102fafcada59ba8a6b1ff7dfbe949f77009d08fbd78bbf4",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "misc_raycaster_helper",
         "source_sha256": "3e5801e31a09061f7102fafcada59ba8a6b1ff7dfbe949f77009d08fbd78bbf4",

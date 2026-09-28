@@ -751,3 +751,20 @@ original draws, including the IK example's six cube-camera faces.
   images encoded by the browser canvas, as GLTFExporter encodes them.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Texture volumes, loaders, raycaster helper and audio timing
+
+- **Layers and volume.** Layer transfers copy on the GPU; the float volume is
+  uploaded once.
+- **NRRD slices.** Repaints threshold and window on the CPU and copy a canvas
+  into the texture only on a control change, as the original repaints.
+- **Loaders.** Collada, 3MF and TrueType geometry is built once on the CPU at
+  load (or on a 3MF switch or text change), as the loaders do. Skinning stays
+  on the GPU.
+- **Raycaster helper.** The raycast runs on the CPU as the original's
+  explicit query. Only the 20 instance matrices are written per frame; the
+  unchanged helper lines stay resident.
+- **Audio.** Bounce detection and placement run in Rust; the Web Audio graph
+  is the browser's, as in the original.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

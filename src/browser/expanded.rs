@@ -10,6 +10,11 @@ enum Content {
     SpotSkinning(Box<super::spot_skinning::Demo>),
     TransformCurves(Box<super::transform_curves::Demo>),
     GltfNormals(Box<super::gltf_normals::Demo>),
+    RaycasterHelper(Box<super::raycaster_helper::Demo>),
+    AudioTiming(Box<super::audio_timing::Demo>),
+    TextureVolumes(Box<super::texture_volumes::Demo>),
+    ColladaAnim(Box<super::refraction_loaders::collada_anim::Demo>),
+    ThreeMf(Box<super::threemf::Demo>),
     TextureFlares(Box<super::texture_flares::Demo>),
     DracoVariants(Box<super::draco_variants::Demo>),
     PassesDecals(Box<super::passes_decals::Demo>),
@@ -101,6 +106,36 @@ impl Demo {
             _ => 1.0,
         };
         match example {
+            318 | 319 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ThreeMf(Box::new(
+                    super::threemf::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            316 | 317 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ColladaAnim(Box::new(
+                    super::refraction_loaders::collada_anim::Demo::create(
+                        scene, camera, example, renderer,
+                    )
+                    .await?,
+                )),
+            }),
+            314 | 315 | 321 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::TextureVolumes(Box::new(
+                    super::texture_volumes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             313 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -108,6 +143,24 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::GltfNormals(Box::new(
                     super::gltf_normals::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            322 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::RaycasterHelper(Box::new(
+                    super::raycaster_helper::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            323 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::AudioTiming(Box::new(
+                    super::audio_timing::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             308..=310 | 312 => Ok(Self {
@@ -218,7 +271,7 @@ impl Demo {
                     scene, camera, example,
                 )?)),
             }),
-            248..=252 => Ok(Self {
+            248..=252 | 320 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
                 far: 5000.,
@@ -942,7 +995,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1480,7 +1548,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1576,7 +1659,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1704,6 +1802,17 @@ impl Demo {
         }
         Err(crate::Error::Invalid("not a TSL example"))
     }
+    /// webaudio_timing's listener, sources and pending plays.
+    pub fn audio_frame(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+    ) -> crate::Result<Vec<f32>> {
+        match &mut self.content {
+            Content::AudioTiming(demo) => demo.audio_frame(scene, camera),
+            _ => Err(crate::Error::Invalid("not a positional audio example")),
+        }
+    }
     /// A file produced by an exporter button, taken once.
     pub fn take_export(
         &mut self,
@@ -1712,6 +1821,7 @@ impl Demo {
         match &mut self.content {
             Content::ExportersMatcap(demo) => demo.take_export(),
             Content::GltfNormals(demo) => demo.take_export(),
+            Content::RaycasterHelper(demo) => demo.take_export(),
             Content::ExportersVideo(demo) => demo.take_export(renderer),
             _ => None,
         }
@@ -1739,7 +1849,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             demo.key(code, down);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1814,7 +1939,27 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -1890,7 +2035,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -2053,7 +2213,22 @@ impl Demo {
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
+        if let Content::TextureVolumes(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ColladaAnim(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ThreeMf(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::GltfNormals(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RaycasterHelper(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::AudioTiming(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {

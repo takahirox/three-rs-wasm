@@ -75,6 +75,9 @@ pub(super) enum Mode {
 pub(super) struct Trackball {
     pub(super) camera: Object3D,
     pub(super) pan_speed: f64,
+    /// rotateSpeed and zoomSpeed; TrackballControls defaults to 1 and 1.2.
+    pub(super) rotate_speed: f64,
+    pub(super) zoom_speed: f64,
     /// staticMoving: no damping; each update consumes the pointer motion.
     pub(super) static_moving: bool,
     /// minDistance and maxDistance, checked by `_checkDistances`.
@@ -94,13 +97,13 @@ pub(super) struct Trackball {
     pub(super) screen: Vector2,
 }
 impl Trackball {
-    const ROTATE_SPEED: f64 = 1.0;
-    const ZOOM_SPEED: f64 = 1.2;
     const DAMPING: f64 = 0.2;
     pub(super) fn new(s: &mut Scene, camera: Object3D, screen: Vector2) -> Result<Self> {
         let mut t = Self {
             camera,
             pan_speed: 0.3,
+            rotate_speed: 1.,
+            zoom_speed: 1.2,
             static_moving: false,
             distance: (0., f64::INFINITY),
             target: Vector3::ZERO,
@@ -193,7 +196,7 @@ impl Trackball {
             let sideways = up_direction.cross(eye_direction).normalize();
             let direction = up_direction * delta.y + sideways * delta.x;
             let axis = direction.cross(self.eye).normalize();
-            let angle = angle * Self::ROTATE_SPEED;
+            let angle = angle * self.rotate_speed;
             let q = Quaternion::from_axis_angle(axis, angle);
             self.eye = q * self.eye;
             up = q * up;
@@ -208,7 +211,7 @@ impl Trackball {
         }
         self.move_prev = self.move_curr;
         // _zoomCamera
-        let factor = 1. + (self.zoom_end.y - self.zoom_start.y) * Self::ZOOM_SPEED;
+        let factor = 1. + (self.zoom_end.y - self.zoom_start.y) * self.zoom_speed;
         if factor != 1. && factor > 0. {
             if perspective {
                 self.eye *= factor;

@@ -1,5 +1,6 @@
 //! The advanced clipping volume, spline tubes, 3D text, the tessellated text and
-//! the custom-attribute text lines from the pinned WebGL examples.
+//! the custom-attribute text lines from the pinned WebGL examples, and the
+//! TrueType text of webgl_loader_ttf.
 mod tube;
 use super::controls_attributes::{
     CameraState, Controls, additive, call, camera_helper, camera_state, set_uniform,
@@ -237,8 +238,9 @@ struct Splines {
     params: [f64; 8],
     built: Option<[f64; 4]>,
 }
-/// webgl_geometry_text.
+/// webgl_geometry_text, or webgl_loader_ttf's single TrueType face.
 struct Text {
+    ttf: bool,
     fonts: Vec<Vec<u8>>,
     parsed: Vec<Option<Font>>,
     font: usize,
@@ -291,7 +293,7 @@ impl Demo {
         let (fov, near, far, position) = match id {
             248 => (36., 0.25, 16., Vector3::new(0., 1.5, 3.)),
             249 => (50., 0.01, 10000., Vector3::new(0., 50., 500.)),
-            250 => (30., 1., 1500., Vector3::new(0., 400., 700.)),
+            250 | 320 => (30., 1., 1500., Vector3::new(0., 400., 700.)),
             251 => (40., 1., 10000., Vector3::new(-100., 100., 200.)),
             _ => (30., 1., 10000., Vector3::new(0., 0., 400.)),
         };
@@ -322,7 +324,8 @@ impl Demo {
         match id {
             248 => d.clipping_scene(s, c)?,
             249 => d.splines_scene(s, c, r, aspect).await?,
-            250 => d.text_scene(s, c).await?,
+            250 => d.text_scene(s, c, false).await?,
+            320 => d.text_scene(s, c, true).await?,
             251 => d.tessellation_scene(s, c, r).await?,
             _ => d.lines_scene(s, r).await?,
         }
@@ -635,7 +638,7 @@ impl Demo {
         s.update_world_matrix(k.camera, true, false)?;
         update_camera_helper(s, k.camera, k.helper)
     }
-    async fn text_scene(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
+    async fn text_scene(&mut self, s: &mut Scene, c: Object3D, ttf: bool) -> Result<()> {
         s.fog = Some(Fog::Linear {
             color: Color::BLACK,
             near: 250.,
@@ -647,19 +650,37 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(dir)?.position = Vector3::Z;
-        let light = s.insert(NodeKind::Light(Light::Point {
-            color: hsl(random(&mut self.seed), 1., 0.5),
-            intensity: 4.5,
-            distance: 0.,
-            decay: 0.,
-        }));
-        s.get_mut(light)?.position = Vector3::new(0., 100., 90.);
+        let light = if ttf {
+            // setHSL( Math.random(), 1, 0.5, SRGBColorSpace ).
+            let c = hsl(random(&mut self.seed), 1., 0.5);
+            let light = s.insert(NodeKind::Light(Light::Directional {
+                color: Color::from_srgb(c.0.x, c.0.y, c.0.z),
+                intensity: 2.,
+                target: Vector3::ZERO,
+            }));
+            s.get_mut(light)?.position = Vector3::new(0., 30., 10.).normalize();
+            light
+        } else {
+            let light = s.insert(NodeKind::Light(Light::Point {
+                color: hsl(random(&mut self.seed), 1., 0.5),
+                intensity: 4.5,
+                distance: 0.,
+                decay: 0.,
+            }));
+            s.get_mut(light)?.position = Vector3::new(0., 100., 90.);
+            light
+        };
         let mut front = MeshPhongMaterial::default();
         front.properties.flat_shading = true;
-        let materials = vec![
-            Arc::new(Material::Phong(front)),
-            Arc::new(Material::Phong(MeshPhongMaterial::default())),
-        ];
+        // The TTF example's single flat material draws the whole geometry, ignoring groups.
+        let materials = if ttf {
+            vec![Arc::new(Material::Phong(front))]
+        } else {
+            vec![
+                Arc::new(Material::Phong(front)),
+                Arc::new(Material::Phong(MeshPhongMaterial::default())),
+            ]
+        };
         let group = s.insert(NodeKind::Group);
         s.get_mut(group)?.position.y = 100.;
         let mut meshes = vec![];
@@ -682,14 +703,25 @@ impl Demo {
         n.quaternion = Quaternion::from_rotation_x(-PI / 2.);
         // Every face the buttons can select is fetched once; each parses on first use.
         let mut fonts = vec![];
-        for name in FONTS {
-            for weight in ["regular", "bold"] {
-                fonts.push(fetch(&format!("{ASSETS}/fonts/{name}_{weight}.typeface.json")).await?);
+        let parsed = if ttf {
+            // TTFLoader: the outlines convert once, at load.
+            vec![Some(Font::from_ttf(
+                &fetch(&format!("{ASSETS}/fonts/ttf/kenpixel.ttf")).await?,
+            )?)]
+        } else {
+            for name in FONTS {
+                for weight in ["regular", "bold"] {
+                    fonts.push(
+                        fetch(&format!("{ASSETS}/fonts/{name}_{weight}.typeface.json")).await?,
+                    );
+                }
             }
-        }
+            fonts.iter().map(|_| None).collect()
+        };
         s.look_at(c, Vector3::new(0., 150., 0.))?;
         self.text = Some(Text {
-            parsed: fonts.iter().map(|_| None).collect(),
+            ttf,
+            parsed,
             fonts,
             font: 1,
             bold: true,
@@ -711,7 +743,11 @@ impl Demo {
     fn refresh_text(&mut self, s: &mut Scene) -> Result<()> {
         let k = self.text.as_mut().ok_or(Error::Invalid("text"))?;
         k.dirty = false;
-        let face = (k.font % FONTS.len()) * 2 + usize::from(k.bold);
+        let face = if k.ttf {
+            0
+        } else {
+            (k.font % FONTS.len()) * 2 + usize::from(k.bold)
+        };
         if k.parsed[face].is_none() {
             k.parsed[face] = Some(Font::parse(&k.fonts[face])?);
         }
@@ -901,7 +937,7 @@ impl Demo {
         match self.id {
             248 => self.prepare_clipping(s, t)?,
             249 => self.prepare_splines(s, t)?,
-            250 => {
+            250 | 320 => {
                 if self.text.as_ref().is_some_and(|k| k.dirty) {
                     self.refresh_text(s)?;
                 }

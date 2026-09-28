@@ -750,3 +750,30 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
 - **Hashes.** Their source paths and SHA-256 hashes are in
   `gltf-normals-manifest.json`.
 - **License.** They are distributed alongside `LICENSE-THREE`.
+
+The texture-volume, Collada, 3MF, NRRD, TrueType and Web Audio batch uses
+unmodified r186 example assets. Their source paths and SHA-256 hashes are in
+`gallery/assets/loaders-audio-manifest.json`.
+
+- `gallery/assets/texture-volumes/`: `models/nrrd/stent.nrrd` (public domain,
+  per the r186 `models/nrrd/README.txt`, converted from imageio's
+  `stent.npz`), and `textures/cm_gray.png` and `cm_viridis.png`.
+- `gallery/assets/nrrd/I.nrrd`: `models/nrrd/I.nrrd`. The r186
+  `models/nrrd/README.txt` records its license as unknown; it is
+  redistributed as part of the three.js examples, alongside `LICENSE-THREE`.
+- `gallery/assets/collada-anim/stormtrooper/`: "Dancing Stormtrooper" by
+  StrykerDoesAnimation (CC Attribution, as the example credits it), and
+  `abb_irb52_7_120.dae`, the robot from the Collada robots collection the
+  example credits.
+- `gallery/assets/threemf/`: the 3MF Consortium samples (BSD 2-Clause, per
+  the r186 `models/3mf/README.md`). `truck.3mf` is not listed there and is
+  redistributed as part of the three.js examples, alongside `LICENSE-THREE`.
+- `gallery/assets/fonts/ttf/`: Kenney's `kenpixel.ttf` (CC0 1.0) with its
+  README.
+- `gallery/assets/webaudio/ping_pong.mp3`: the sound effect by michorvath on
+  freesound (sound 269718), as the example credits it.
+
+The reference fixtures import two MIT-licensed npm packages pinned in
+`package.json`: opentype.js 1.3.4 (TTFLoader's parser) and
+@gsimone/three-raycaster-helper 0.1.0 (the raycaster helper example). They
+are development dependencies and are not part of the published gallery.

@@ -1452,7 +1452,20 @@ impl Renderer {
                         _ => [0.0; 4],
                     },
                     flags: [
-                        f32::from(properties.flat_shading),
+                        // Lit materials without vertex normals shade flat, as three does.
+                        f32::from(
+                            properties.flat_shading
+                                || (!geometry.attributes.contains_key("normal")
+                                    && match material {
+                                        Material::Lambert(_) | Material::Phong(_) => true,
+                                        Material::Standard(m)
+                                        | Material::Physical(MeshPhysicalMaterial {
+                                            base: m,
+                                            ..
+                                        }) => m.normal_map.is_none(),
+                                        _ => false,
+                                    }),
+                        ),
                         f32::from(n.receive_shadow),
                         f32::from(properties.vertex_colors),
                         0.0,
@@ -2138,7 +2151,7 @@ impl Renderer {
             instances
                 .iter()
                 .map(|instance| {
-                    if !instance.matrix.is_finite() || instance.matrix.determinant() <= 0.0 {
+                    if !instance.matrix.is_finite() || instance.matrix.determinant() < 0.0 {
                         return Err(Error::Invalid("instance transform"));
                     }
                     Ok(InstanceVertex {

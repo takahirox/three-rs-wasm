@@ -3914,7 +3914,7 @@
     {
       "id": "webgl_loader_3mf",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf.html",
       "source_sha256": "404fb62573b07e3eb01c9f8b4a00f6bf4d4051d9a83b905adc9bf0819c7492e4",
@@ -3936,7 +3936,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 318,
+        "source": "src/browser/threemf.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "ThreeMFLoader（ZIP展開、basematerials、colorgroupの面/頂点色、texture2dgroup、beamlatticeの円柱と球の結合、components、buildの変換）、7つのアセットの切替、読み込み後のBox3による中心合わせとcontrols.reset、z-upのOrbitControls、変更時のみの描画をRustで再現。7アセットは起動時に読み込み、切替時にシーンを組み直す。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -3947,7 +3954,7 @@
     {
       "id": "webgl_loader_3mf_materials",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf_materials.html",
       "source_sha256": "acac936c0f0ff8820c4263ce2db6aeca8a8f8317aca1aac948b59cb60b7d5d5a",
@@ -4005,7 +4012,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 319,
+        "source": "src/browser/threemf.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "ThreeMFLoaderのトラック（basematerials、ロゴのtexture2dgroup、入れ子のcomponents）、z-upの回転、全メッシュの影、SunLightとPCFの影、半球光、線形フォグ、OrbitControls、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -4137,7 +4151,7 @@
     {
       "id": "webgl_loader_collada_kinematics",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada_kinematics.html",
       "source_sha256": "4039717283dcf1e15d6dd38f407f2c651d583c23d0e021b19b8fa06667092a26",
@@ -4165,7 +4179,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 317,
+        "source": "src/browser/refraction_loaders/collada_anim.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "ColladaLoaderのkinematicsモデル（回転/直動関節、軸、制限、bind_joint_axisの対応付け）とsetJointValue、TWEENのQuadratic.Outによるランダムな関節目標（例の時計のsetTimeout）、周回するカメラをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -4176,7 +4197,7 @@
     {
       "id": "webgl_loader_collada_skinning",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_collada_skinning.html",
       "source_sha256": "8be3ad01914e8d2ce4eb81a630f31a61c8c9912af52eb68195240fd75703e368",
@@ -4226,7 +4247,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 316,
+        "source": "src/browser/refraction_loaders/collada_anim.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "ColladaLoaderのコントローラ（bind shape行列、4影響の重み正規化、スケルトンの並べ替え）、ボーン階層、行列アニメーションの位置/回転/拡大トラック、AnimationMixer、テクスチャ付きマテリアル、OrbitControlsをRustで再現。bind shape行列は頂点に焼き込む（スキニング前の線形変換として等価）。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5288,7 +5316,7 @@
     {
       "id": "webgl_loader_nrrd",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_nrrd.html",
       "source_sha256": "8b7a3ce401dfb916364d0424f4cb4b555f23daba408a6b83765d1ae8911508fd",
@@ -5316,7 +5344,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 321,
+        "source": "src/browser/texture_volumes/slices.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "NRRDLoader（gzip、short型、space directionsとLPS空間のIJK→RAS行列）、Volume.extractPerpendicularPlane、VolumeSliceの再描画（原本と同じくCPUで閾値・ウィンドウ処理し2Dキャンバスで拡大、テクスチャへ転送）、BoxHelper、TrackballControlsをRustで再現。再描画はGUI変更時のみ。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -5995,7 +6030,7 @@
     {
       "id": "webgl_loader_ttf",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ttf.html",
       "source_sha256": "862381a762da708c344e0d1919054f8d5e470ec30f9a32b82343fe30c4a04c8f",
@@ -6023,7 +6058,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 320,
+        "source": "src/browser/text_clipping.rs",
+        "test": "tests/browser/text-clipping.spec.js",
+        "limitations": [
+          "TTFLoader（opentype.js 1.3.4のTrueType輪郭変換：cmap形式4/12、glyf、暗黙の中点、スケールと丸め）をRustで再現し、変換結果が原本と一致することを確認。ベベル付きTextGeometry、鏡像メッシュ、sRGB指定のsetHSL、キー入力とドラッグ回転を移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/geometries/TextGeometry.js",
@@ -13436,7 +13478,7 @@
     {
       "id": "webgl_texture2darray_layerupdate",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture2darray_layerupdate.html",
       "source_sha256": "e8403708a1f26c65dc2c205d8257551f920980df5cda07850609f4e029611d82",
@@ -13470,7 +13512,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 314,
+        "source": "src/browser/texture_volumes.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "KTX2（Basis）を圧縮のまま保持した3層の配列テクスチャ、インスタンスごとの層選択、srcLayer/destLayer/transferによる層の更新（GPU上の層コピー）、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -13480,7 +13529,7 @@
     {
       "id": "webgl_texture3d",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture3d.html",
       "source_sha256": "05c475d9448b419d88b673ba585d0edf77b015e049712187666a2295067907d8",
@@ -13514,7 +13563,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 315,
+        "source": "src/browser/texture_volumes.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "NRRD（gzip）のfloat 3Dテクスチャ、VolumeRenderShader1のMIP/ISOレイマーチ（背面から、正射影）、カラーマップ、全5項目の操作、z-upの正射影OrbitControls（ズーム0.5〜4）、変更時のみの描画をRustで再現。カラーマップの参照はレイ走査の後に一様な制御フローで行う。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -29639,7 +29695,7 @@
     {
       "id": "webaudio_timing",
       "category": "webaudio",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webaudio_timing.html",
       "source_sha256": "b3298dbf44287b005aedac56232277e0d6e2f3a9d7b4f4fe024608973d4c0b2c",
@@ -29697,7 +29753,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 323,
+        "source": "src/browser/audio_timing.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "Playボタンによる開始、5個の球のバウンド（落下から上昇への切り替わりで再生）、PCF影、Lambert、OrbitControlsをRustで再現。Web Audioのグラフ（AudioListener、HRTFのPositionalAudio、再生中は再生しないAudio.play）はJSで構築し、位置と再生タイミングはRustから毎フレーム渡す。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js"
@@ -33729,7 +33792,7 @@
     {
       "id": "misc_raycaster_helper",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_raycaster_helper.html",
       "source_sha256": "3e5801e31a09061f7102fafcada59ba8a6b1ff7dfbe949f77009d08fbd78bbf4",
@@ -33747,7 +33810,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 322,
+        "source": "src/browser/raycaster_helper.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "@gsimone/three-raycaster-helper 0.1.0（光線、near/far平面、原点球の色、最大20個のヒット点InstancedMesh）とRaycasterによる両面カプセルとの交差（原本と同じく前回描画時のワールド行列を使用）をRustで再現。光線は動かないため2本の線は常駐（原本は毎フレーム同じ値を再転送）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "https://cdn.jsdelivr.net/npm/@gsimone/three-raycaster-helper@0.1.0/dist/gsimone-three-raycaster-helper.esm.js",
         "three/webgpu"

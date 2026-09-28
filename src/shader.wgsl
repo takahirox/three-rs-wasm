@@ -379,7 +379,9 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
         let sample=select(vec3(mix(0.2,0.8,uv.y)),matcap,u.custom[0].x>0.5);
         return apply_fog(vec4(base.rgb*sample,base.a),-in.view_position.z);
     }
-    if material_kind()==4.0 {return vec4(n*0.5+0.5,base.a);}
+    // Packed normals display unchanged: an encoding output first reads them
+    // as sRGB, as MeshNormalNodeMaterial's colorSpaceToWorking does.
+    if material_kind()==4.0 {let c=n*0.5+0.5;return vec4(select(c,srgb_input(c),ENCODE_SRGB),base.a);}
     var mr=vec4(1.0);if MR_MAP {mr=textureSample(mr_map,mr_sampler,map_uv(1u,in));}
 
     var emissive_sample=vec3(1.0);if EMISSIVE_MAP {emissive_sample=textureSample(emissive_map,emissive_sampler,map_uv(4u,in)).rgb;}

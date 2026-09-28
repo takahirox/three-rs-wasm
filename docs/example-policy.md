@@ -250,3 +250,12 @@ earlier `webgl_camera` port; `webgl_camera` is now excluded. The other four
 (including `misc_exporter_gltf_normals`, whose GLB export matches byte for
 byte) are compared against the WebGL renderer. Scoped bounds cover MSAA edges
 only.
+
+
+The texture-volume batch ([texture-volumes.md](texture-volumes.md)) and the
+Collada, 3MF, raycaster-helper and audio batch
+([collada-3mf.md](collada-3mf.md)) have no WebGPU equivalents except
+`misc_raycaster_helper`, which is compared against the WebGPU renderer; the
+others are compared against the WebGL renderer. `webgl_loader_ttf` is
+documented in [text-clipping.md](text-clipping.md). Scoped bounds cover MSAA
+edges, the volume's colormap lookup and the truck's shadow edges.

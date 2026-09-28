@@ -1,4 +1,4 @@
-# Advanced clipping, spline tubes, 3D text, tessellated text and text lines
+# Advanced clipping, spline tubes, 3D text, TrueType text, tessellated text and text lines
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 
@@ -18,6 +18,7 @@ text scenes:
 | `webgl_geometry_extrude_splines` | 249 | The 16 selectable curves as tubes with a wireframe overlay, the spline camera with look-ahead, the CameraHelper, the eight controls and the orbit |
 | `webgl_geometry_text` | 250 | Mirrored bevelled text in fog, the four buttons (color, font, weight, bevel), typing and backspace, and the eased drag rotation |
 | `webgl_modifier_tessellation` | 251 | The centered bevelled text, tessellated, with random face colors and per-face displacement in a raw ShaderMaterial, and TrackballControls |
+| `webgl_loader_ttf` | 320 | kenpixel.ttf converted by TTFLoader, mirrored bevelled text with one flat material, the sRGB `setHSL` key light, typing and backspace, and the eased drag rotation |
 | `webgl_custom_attributes_lines` | 252 | The text's vertices as one additive line strip, with a per-vertex random-walk displacement and HSL colors |
 
 None of these scenes has an equivalent official WebGPU example in the pinned
@@ -57,6 +58,23 @@ inventory, so each is compared against the original WebGL renderer.
 - **Input.** The gallery forwards `keydown` and `keypress` as the original's
   document listeners receive them. The first keydown clears the text, and
   backspace removes a character.
+
+### TrueType text
+
+- **TTFLoader.** `Font::from_ttf` in `src/browser/text_shapes.rs` converts
+  the font as TTFLoader does with opentype.js 1.3.4:
+  - the last platform 3 (encodings 0, 1, 10) or platform 0 `cmap` subtable,
+    formats 4 and 12;
+  - `glyf` outlines through `getPath`, with implied on-curve midpoints
+    between off-curve points, and composite glyphs placed by offset and
+    2×2 transform;
+  - the `100000 / (unitsPerEm × 72)` scale with `Math.round`, `ha` from
+    `hmtx`, resolution 1000, and the raw `head` bounds and `post` underline.
+- **Check.** All 136 kenpixel.ttf glyph entries equal TTFLoader's output
+  string for string.
+- **Scene.** The single flat MeshPhongMaterial draws each text mesh once,
+  ignoring the extrusion groups. The second directional light's color comes
+  from `setHSL( …, SRGBColorSpace )`.
 
 ### Advanced clipping
 
@@ -129,6 +147,7 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 | Text, MSAA off / on | 0% / 0.00, 0.878% / 0.13 | 0% / 0.00, 0.472% / 0.06 |
 | Tessellated text, MSAA off / on | 0.002% / 0.00, 7.192% / 2.32 | 0.001% / 0.00, 4.206% / 1.25 |
 | Text lines, MSAA off / on | 0.056% / 0.01, 10.822% / 1.19 | 0.038% / 0.01, 12.065% / 1.38 |
+| TrueType text, MSAA off / on | 0.001% / 0.00, 0.375% / 0.04 | 0.002% / 0.00, 0.184% / 0.02 |
 
 ### Wireframe depth ties
 
@@ -145,8 +164,9 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 
 With 4× MSAA, the differences lie on silhouettes, the dense random-colored
 facets, the thousands of one-pixel line segments and the wireframe ties. With
-MSAA off, the text, tessellation and line scenes match within the ordinary
-threshold. The suite requires, with MSAA:
+MSAA off, the text, TrueType text, tessellation and line scenes match within the ordinary
+threshold. The TrueType text also matches within it with MSAA. The suite
+requires, with MSAA:
 
 | Case | Bound |
 | --- | --- |

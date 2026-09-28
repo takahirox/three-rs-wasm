@@ -10,6 +10,9 @@ fn aces_output(value:vec3<f32>,exposure:f32)->vec3<f32> {
 fn srgb_output(rgb:vec3<f32>)->vec3<f32> {
     return select(1.055*pow(max(rgb,vec3(0.0)),vec3(1.0/2.4))-0.055,rgb*12.92,rgb<=vec3(0.0031308));
 }
+fn srgb_input(rgb:vec3<f32>)->vec3<f32> {
+    return select(pow((rgb+0.055)/1.055,vec3(2.4)),rgb/12.92,rgb<=vec3(0.04045));
+}
 
 // Three.js AgX (MIT): Rec.2020 inset, log2 encoding, contrast curve and outset.
 fn agx_output(value:vec3<f32>,exposure:f32)->vec3<f32> {

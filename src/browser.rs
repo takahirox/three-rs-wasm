@@ -4,6 +4,7 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod audio_timing;
 mod buffer_particles;
 mod controls_attributes;
 mod draco_variants;
@@ -35,6 +36,7 @@ mod picking_buffers;
 mod point_clouds;
 mod point_lights;
 mod probes_hdr;
+mod raycaster_helper;
 mod refraction_loaders;
 mod robot;
 mod room_environment;
@@ -51,7 +53,9 @@ mod terrain_loaders;
 mod text_clipping;
 mod text_shapes;
 mod texture_flares;
+mod texture_volumes;
 mod three_mixer;
+mod threemf;
 mod trackball_sprites;
 mod transform_controls;
 mod transform_curves;
@@ -213,7 +217,7 @@ impl State {
             240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
             258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
             291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312,
-            313,
+            313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
         ]
         .contains(&self.example)
         {
@@ -687,6 +691,21 @@ impl BrowserApp {
             ))
         }
     }
+    /// webaudio_timing: the listener and sources' placement and pending plays.
+    pub fn audio_frame(&self) -> std::result::Result<Vec<f32>, JsValue> {
+        let mut state = self.state.borrow_mut();
+        let State {
+            scene,
+            camera,
+            gallery_scene,
+            ..
+        } = &mut *state;
+        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene else {
+            return Err(JsValue::from_str("not an audio example"));
+        };
+        demo.audio_frame(scene, *camera)
+            .map_err(|e| JsValue::from_str(&e.to_string()))
+    }
     pub fn audio_play(&self) -> std::result::Result<bool, JsValue> {
         let state = self.state.borrow();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -938,7 +957,7 @@ impl BrowserApp {
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
-                            291, 298, 299, 301,
+                            291, 298, 299, 301, 315,
                         ]
                         .contains(&example)
                         {
@@ -954,7 +973,7 @@ impl BrowserApp {
                             241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 258,
                             259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
                             289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
-                            307, 308, 310, 312, 313,
+                            307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323,
                         ]
                         .contains(&example),
                         format: if [
@@ -967,7 +986,8 @@ impl BrowserApp {
                             239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
                             253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280,
                             281, 282, 284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298,
-                            299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313,
+                            299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314, 315, 316,
+                            317, 318, 319, 320, 321, 322, 323,
                         ]
                         .contains(&example)
                         {
@@ -999,7 +1019,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=313).contains(&example) {
+            if (7..=323).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1158,7 +1178,7 @@ impl BrowserApp {
                     // These official static scenes render only on load, input and resize.
                     if !([
                         16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236,
-                        237, 240, 242, 255, 277, 283, 296, 308, 313,
+                        237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319,
                     ]
                     .contains(&state.example)
                         || state.paused && state.example >= 39)
