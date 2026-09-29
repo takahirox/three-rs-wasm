@@ -1,4 +1,4 @@
-# Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping and post passes
+# Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping, post passes and depth buffers
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
@@ -8,7 +8,10 @@ Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
 `src/browser/shadowmap_viewer.rs`. The batch that follows adds
 `src/browser/stereo_loaders.rs` (display stereo), `dds.rs`, `kinect.rs`,
 `channels.rs`, `wide_gamut.rs`, `uv_tests.rs`, `clipping_stencil.rs`,
-`ascii.rs`, `glitch.rs` and `ssao.rs`.
+`ascii.rs`, `glitch.rs` and `ssao.rs`; the next adds `sao.rs`, `taa.rs`,
+`outline.rs`, `ktx2.rs`, `elements_text.rs`, `reversed_depth.rs`,
+`log_depth.rs`, `lines_raycast.rs`, `pvr.rs` (with the PVRTC decoder in
+`pvrtc.rs`) and `ktx.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |
@@ -30,11 +33,25 @@ Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
 | `webgl_effects_ascii` | 341 | The bouncing flat-shaded sphere at pixel ratio 1, AsciiEffect's inverted character table and TrackballControls |
 | `webgl_postprocessing_glitch` | 342 | 100 instanced flat-shaded spheres, GlitchPass (displacement map, RGB shift, snow, trigger cycle, wild mode) and OutputPass, after the photosensitivity warning |
 | `webgl_postprocessing_ssao` | 343 | 100 instanced Lambert boxes, SSAOPass (normals and depth, kernel, simplex rotation noise, blur, multiplied composite, all five outputs, the parameters) and OutputPass |
+| `webgl_postprocessing_sao` | 344 | The knot of turning spheres, SAOPass (normal render, 24-bit packed depth, spiral occlusion, depth-limited separable blur, the four outputs and every parameter) and OutputPass |
+| `webgl_postprocessing_taa` | 345 | TAARenderPass's jittered accumulation (sample levels, the index/200 toggle and the Disabled/Enabled switch) over the turning boxes, frame by frame |
+| `webgpu_postprocessing_outline` | 346 | The OBJ tree, 20 spheres, torus and floor with SunLight shadows, OutlineNode's depth, mask, edge and blur passes, the pulse, both colors, pointer selection and OrbitControls |
+| `webgpu_loader_texture_ktx2` | 347 | The page's sections and labels, and each KTX2 file (uncompressed, BC, ETC, ASTC, ETC1S and UASTC) uploaded as stored or transcoded once, drawn into its element's scissored viewport |
+| `webgl_multiple_elements_text` | 348 | The article (text and MathML) over the fixed canvas, six views of lattice or random molecules displaced by plane, cylindrical and spherical waves, per-view viewports and OrbitControls |
+| `webgpu_reversed_depth_buffer` | 349 | Five pairs of nearly coplanar planes drawn by three renderers side by side: Depth24Plus, logarithmic fragment depth and reversed Depth32Float |
+| `webgpu_camera_logarithmicdepthbuffer` | 350 | Fifteen text labels from 1 µm to 1000 light years with near 1e-6 and far 1e27, the normal and logarithmic views on either side of the draggable border, the per-frame zoom, wheel and mouse |
+| `webgpu_lines_fat_raycasting` | 351 | The CatmullRom spiral as LineSegments2 or Line2 in world units or pixels with alpha to coverage, the pointer raycast and its two spheres, the visualized threshold and the translation |
+| `webgl_loader_texture_pvrtc` | 352 | PVRLoader's v2 and v3 PVRTC 2/4 bpp maps with and without mips, the alpha flares and two cube maps reflected by the tori |
+| `webgl_loader_texture_ktx` | 353 | KTXLoader's KTX 1 files chosen by the WebGL extensions as the original does: PVRTC, BC1/BC3/BC5, ETC1, EAC RG and ASTC color maps, flares and packed two-channel normal maps under a point light |
 
-`webgpu_display_stereo` and `webgpu_clipping_stencil` are WebGPU examples and
-are compared against the WebGPU renderer. None of the others has an official
-WebGPU equivalent in the pinned inventory, so each is compared against the
-WebGL renderer. `misc_uv_tests` draws no WebGL at all; its canvases are
+`webgpu_display_stereo`, `webgpu_clipping_stencil`,
+`webgpu_postprocessing_outline`, `webgpu_loader_texture_ktx2`,
+`webgpu_reversed_depth_buffer`, `webgpu_camera_logarithmicdepthbuffer` and
+`webgpu_lines_fat_raycasting` are WebGPU examples and are compared against the
+WebGPU renderer (the WebGL outline, KTX2, reversed-depth, logarithmic-depth and
+fat-line twins are listed as equivalents only). None of the others has an
+official WebGPU equivalent in the pinned inventory, so each is compared against
+the WebGL renderer. `misc_uv_tests` draws no WebGL at all; its canvases are
 compared pixel for pixel.
 
 ## Port notes
@@ -247,6 +264,83 @@ compared pixel for pixel.
 - **Pixel ratio.** The example never sets the pixel ratio, so the port renders
   at 1.
 
+### SAO
+
+- **Passes.** The normal render, SAO, the two blur directions and the
+  multiplied or replaced copy are full-screen triangles with WebGL's texel
+  rows. Depth is quantized to 24 bits as the depth texture stores it; the
+  noise uses the exact pixel-centre uv WebGL interpolates.
+
+### TAA
+
+- **Accumulation.** The jitter tables, the sample and hold targets, the
+  additive One/One copies and the index/200 toggle follow TAARenderPass; the
+  test aligns frames with the original, including the level and enable
+  changes.
+
+### Outline
+
+- **Passes.** Depth and mask mirror scenes, downsampling, two edge and blur
+  pairs and the composite follow OutlineNode in RGBA8 targets; the mirror
+  scenes are warmed with the first render so selection changes create no GPU
+  resources. The pointer raycast selects in `prepare`.
+
+### KTX2 views
+
+- **Page.** The sections, descriptions and labels are built as the page
+  builds them; the gallery's own heading, language and font-smoothing rules are
+  reverted for the page. Each view is drawn into its element's viewport and
+  scissor of one canvas-sized target.
+
+### Multiple elements with text
+
+- **Waves.** The original displaces every point on the CPU each frame; the
+  port keeps the lattice and random positions resident and evaluates the same
+  plane, cylindrical and spherical waves in the vertex stage.
+- **Views.** The article is the original's markup; each view is drawn at
+  WebGL's rounded viewport, clipped to the canvas with a matching view
+  offset. The random positions use the fixture's seeded sequence.
+
+### Reversed and logarithmic depth
+
+- **Buffers.** The three renderers are three viewports of one canvas: a
+  Depth24Plus buffer with LessEqual, the same with the fragment depth of
+  `viewZToLogarithmicDepth`, and a Depth32Float buffer cleared to 0 with
+  GreaterEqual and the reversed projection. The planes keep three's vertex
+  order and matrix products, so the z-fighting matches.
+- **Renderer.** `logarithmicDepthBuffer` is a renderer setting: built-in
+  materials seen through a perspective camera write the logarithmic depth
+  from the camera's near and far. Frustum planes that degenerate at far =
+  1e27 reject nothing, as in three.
+
+### Fat line raycasting
+
+- **Raycast.** LineSegments2.raycast runs as the explicit CPU query in world
+  units or CSS-pixel screen space, on the matrixWorld the previous render
+  left; the threshold line copies the line's transform before the frame's
+  turn, as the original's order does.
+- **Output.** The renderer has `alpha: true`: alpha-to-coverage edges keep
+  their alpha, and the output unpremultiplies, encodes and premultiplies as
+  RenderOutputNode does, onto the page's black body.
+
+### PVRTC
+
+- **Decoding.** WebGPU has no PVRTC formats. Each level is decoded once at
+  load with the steps of Imagination's reference decompressor and uploaded as
+  RGBA8; the decoded texels match the Metal adapter's hardware decode. WebGL
+  has no sRGB PVRTC formats, so the texels are sampled as stored in both.
+- **Filters.** Mip chains are sampled trilinearly without anisotropy.
+
+### KTX
+
+- **Formats.** The original picks its textures from the WebGL extensions;
+  the port queries the same list from a WebGL context and uploads BC, ETC and
+  ASTC data as stored (sRGB variants where the textures are sRGB), and PVRTC
+  decoded as above.
+- **Normal maps.** BC5 and EAC RG normal maps reconstruct z from x and y, as
+  WebGL's `USE_PACKED_NORMALMAP` does; the renderer applies this to any
+  two-channel CompressedTexture normal map.
+
 Stats and the lil-gui appearance are not reproduced.
 
 ## Comparison
@@ -279,6 +373,16 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 | ASCII effect (table cells) | 0.66% of cells | 0.66% of cells |
 | Glitch | 1.690% / 0.17 | 0.880% / 0.09 |
 | SSAO | 0% / 0.00 | 0.001% / 0.00 |
+| SAO | 0% / 0.01 | 0% / 0.00 |
+| TAA (frame by frame) | 0.026% / 0.01 | 0.001% / 0.00 |
+| Outline | 0% / 0.01 | 0.001% / 0.01 |
+| KTX2 views (page) | 0% / 0.00 | 0% / 0.00 |
+| Multiple elements with text | 1.262% / 0.27 | 0.327% / 0.10 |
+| Reversed depth buffer | 0% / 0.00 | 0% / 0.00 |
+| Logarithmic depth buffer | 0.099% / 0.13 | 0.092% / 0.13 |
+| Fat line raycasting | 1.194% / 0.31 | 1.062% / 0.31 |
+| PVRTC, MSAA off / on | 0.032% / 0.01, 0.528% / 0.17 | 0.026% / 0.00, 0.237% / 0.08 |
+| KTX, MSAA off / on | 0.421% / 0.53, 0.402% / 0.30 | 0.030% / 0.23, 0.187% / 0.24 |
 
 ### Volume colormap lookup
 
@@ -309,6 +413,22 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
   mean error at most 0.17.
 - **Bound.** 2% / 0.6.
 
+### Wave displacement precision
+
+- **Cause.** The original displaces the points on the CPU in double
+  precision; the port evaluates the same waves in f32 in the vertex stage.
+- **Effect.** A few sprite edges land on the neighbouring pixel: up to 1.3%,
+  all at sprite edges.
+- **Bound.** 2% / 0.4.
+
+### Fat line threshold
+
+- **Cause.** The visualized threshold is a translucent alpha-to-coverage
+  overlay; its dithered samples resolve slightly brighter in the port.
+- **Effect.** Up to 1.2% of pixels, all on the 4 px threshold ribbons; every
+  other state of the test is exact.
+- **Bound.** 1.5% / 0.5 for that state only.
+
 ### ASCII cells
 
 The table is compared cell by cell. Brightness near a character threshold
@@ -319,7 +439,8 @@ changes a few edge cells: at most 0.66% of cells, bounded at 1%.
 With 4× MSAA, the slice example differs only along the box helper's and the
 planes' edges while rotating, and the shadow-map viewer along its helper
 lines and silhouettes; with MSAA off both match. With MSAA they are bounded
-at 1.2% / 0.45 and 2.5% / 0.8.
+at 1.2% / 0.45 and 2.5% / 0.8. The PVRTC boxes differ along their edges with
+MSAA only, bounded at 0.8% / 0.3.
 
 ## Performance evidence
 
@@ -343,9 +464,17 @@ at 1.2% / 0.45 and 2.5% / 0.8.
   - the DDS textures, the glitch heightmap and the SSAO noise and kernel
     are uploaded once;
   - the channels, Kinect and clipping examples keep their geometry resident
-    and displace or place it on the GPU.
+    and displace or place it on the GPU;
+  - the multiple-elements views keep their molecules resident and displace
+    them in the vertex stage, where the original rewrites every position on
+    the CPU each frame;
+  - the KTX and KTX2 textures are uploaded once as stored, and the PVRTC
+    levels are decoded once at load (RGBA8 keeps 4–8 × the compressed
+    memory).
 - **Readback.** The ASCII effect reads the frame back each frame, as the
   original does, at 0.15 of its size.
+- **Queries.** The fat-line raycast and the outline selection are CPU
+  queries per frame, as in the originals; they do not replace GPU work.
 - **Warmed cycles.** Warmed cycles of time, controls, input and resize
   create no GPU resources; the ASCII and glitch tests repeat their cycles
   too.

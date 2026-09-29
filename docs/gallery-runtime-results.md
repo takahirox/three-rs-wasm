@@ -2,13 +2,13 @@
 
 Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.
 
-**These are attempts, not 605 completed ports.** The gallery contains 338 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
+**These are attempts, not 605 completed ports.** The gallery contains 348 partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.
 
 | Outcome | Examples |
 | --- | ---: |
-| runtime-prerequisite | 536 |
-| excluded | 35 |
-| rust-static-frame-rendered | 33 |
+| runtime-prerequisite | 532 |
+| excluded | 40 |
+| rust-static-frame-rendered | 32 |
 | rust-empty-frame | 3 |
 
 ## Limits
@@ -27,18 +27,18 @@ Counts overlap and describe the sampled execution, not all possible branches.
 
 | Prerequisite | Examples |
 | --- | ---: |
-| Material type: MeshPhongMaterial | 93 |
 | Shadow maps | 92 |
+| Material type: MeshPhongMaterial | 92 |
 | Light type: HemisphereLight | 79 |
 | Programmable postprocessing pipeline | 61 |
 | Programmable material: colorNode | 60 |
 | Fog: linear | 53 |
-| Material type: ShaderMaterial | 46 |
+| Material type: ShaderMaterial | 45 |
 | Material type: MeshLambertMaterial | 41 |
 | Flat shaded lit material | 39 |
 | Instance/batch transforms: Mesh | 36 |
-| Material type: RawShaderMaterial | 31 |
 | WebXR session integration | 31 |
+| Material type: RawShaderMaterial | 30 |
 | Programmable background node | 27 |
 | GPU compute/storage dispatch | 24 |
 | Light type: SunLight | 21 |
@@ -87,7 +87,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_batch_lod_bvh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html) | runtime-prerequisite | Instance/batch transforms: Mesh |
 | [webgl_camera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html) | excluded |  |
 | [webgl_camera_array](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_array.html) | excluded |  |
-| [webgl_camera_logarithmicdepthbuffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html) | runtime-prerequisite | Material type: MeshPhongMaterial |
+| [webgl_camera_logarithmicdepthbuffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html) | excluded |  |
 | [webgl_clipping](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping.html) | excluded |  |
 | [webgl_clipping_advanced](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping_advanced.html) | runtime-prerequisite | Clipping planes; Light type: SpotLight; Instance/batch transforms: Mesh; Shadow maps; Material type: MeshPhongMaterial; Material clipping planes |
 | [webgl_clipping_intersection](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_clipping_intersection.html) | runtime-prerequisite | Clipping planes; Light type: HemisphereLight; Material type: MeshPhongMaterial; Material clipping planes; Alpha-to-coverage |
@@ -146,7 +146,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_lines_colors](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_colors.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_lines_dashed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_dashed.html) | runtime-prerequisite | Fog: linear; Dashed lines |
 | [webgl_lines_fat](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat.html) | runtime-prerequisite | Instanced custom attributes; Material type: LineMaterial; Alpha-to-coverage |
-| [webgl_lines_fat_raycasting](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_raycasting.html) | runtime-prerequisite | Instanced custom attributes; Material type: LineMaterial; Alpha-to-coverage |
+| [webgl_lines_fat_raycasting](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_raycasting.html) | excluded |  |
 | [webgl_lines_fat_wireframe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_wireframe.html) | runtime-prerequisite | Instanced custom attributes; Material type: LineMaterial |
 | [webgl_loader_3dm](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dm.html) | runtime-prerequisite | Non-default material IOR |
 | [webgl_loader_3ds](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3ds.html) | runtime-prerequisite | Material type: MeshPhongMaterial |
@@ -193,7 +193,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_loader_texture_ultrahdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ultrahdr.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
 | [webgl_loader_texture_hdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_hdr.html) | runtime-prerequisite | Tone mapping mode: 2 |
 | [webgl_loader_texture_ktx](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |
-| [webgl_loader_texture_ktx2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx2.html) | rust-static-frame-rendered | One sampled frame only; no behavior or pixel-parity claim |
+| [webgl_loader_texture_ktx2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx2.html) | excluded |  |
 | [webgl_loader_texture_lottie](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_lottie.html) | runtime-prerequisite | Failed to execute 'drawImage' on 'CanvasRenderingContext2D': The provided value is not of type '(CSSImageValue or HTMLCanvasElement or HTMLImageElement or HTMLVideoElement or ImageBitmap or OffscreenCanvas or SVGImageElement or VideoFrame)'. |
 | [webgl_loader_texture_pvrtc](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_pvrtc.html) | runtime-prerequisite | Unlit environment reflection/refraction; Multiple material environments |
 | [webgl_loader_texture_tga](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_tga.html) | runtime-prerequisite | Material type: MeshPhongMaterial |
@@ -312,7 +312,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_postprocessing_rgb_halftone](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_rgb_halftone.html) | runtime-prerequisite | Material type: ShaderMaterial |
 | [webgl_postprocessing_masking](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_masking.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_postprocessing_ssaa](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_ssaa.html) | runtime-prerequisite | Material type: RawShaderMaterial |
-| [webgl_postprocessing_outline](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_outline.html) | runtime-prerequisite | Material type: ShaderMaterial |
+| [webgl_postprocessing_outline](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_outline.html) | excluded |  |
 | [webgl_postprocessing_pixel](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_pixel.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_postprocessing_procedural](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_procedural.html) | runtime-prerequisite | Material type: ShaderMaterial |
 | [webgl_postprocessing_sao](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_sao.html) | runtime-prerequisite | Material type: RawShaderMaterial |
@@ -354,7 +354,7 @@ The browser runner resumes existing results. Pass explicit example IDs to repeat
 | [webgl_multiple_rendertargets](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_rendertargets.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_multisampled_renderbuffers](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multisampled_renderbuffers.html) | runtime-prerequisite | Material type: RawShaderMaterial |
 | [webgl_rendertarget_texture2darray](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rendertarget_texture2darray.html) | runtime-prerequisite | Material type: ShaderMaterial |
-| [webgl_reversed_depth_buffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_reversed_depth_buffer.html) | runtime-prerequisite | Material type: RawShaderMaterial |
+| [webgl_reversed_depth_buffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_reversed_depth_buffer.html) | excluded |  |
 | [webgl_shadowmap_csm](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_csm.html) | runtime-prerequisite | Shadow maps; Material type: MeshPhongMaterial |
 | [webgl_shadowmap_pcss](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_pcss.html) | runtime-prerequisite | Fog: linear; Shadow maps; Material type: MeshPhongMaterial |
 | [webgl_shadowmap_progressive](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_progressive.html) | runtime-prerequisite | Fog: linear; Wireframe material; Shadow maps; Material type: MeshPhongMaterial; Material map: lightMap |

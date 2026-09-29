@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-35 excluded for explicit WebGL APIs or equivalent WebGPU examples; 572 retained. 338 partial Rust ports; 234 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+40 excluded for explicit WebGL APIs or equivalent WebGPU examples; 567 retained. 348 partial Rust ports; 219 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,17 +12,17 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 368 |
+| Full camera controls: pan, touch, damping and control variants | 366 |
 | Programmable materials / TSL equivalents | 219 |
 | Inspector and per-example GUI parity | 175 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 172 |
-| Additional procedural geometry builders | 170 |
-| Shadow maps and shadow filtering | 125 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 170 |
+| Additional procedural geometry builders | 168 |
+| Shadow maps and shadow filtering | 124 |
 | Hemisphere/spot/area lights, light probes and baking | 119 |
-| Postprocessing passes and temporal history | 101 |
+| Postprocessing passes and temporal history | 99 |
 | Distance and height fog | 91 |
 | Wireframe materials and scene helpers | 89 |
-| Additional loaders and compressed assets | 80 |
+| Additional loaders and compressed assets | 78 |
 | Instance transforms and batched drawing | 74 |
 | Animation mixer and skeletal animation | 47 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
@@ -32,10 +32,10 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | GPU compute and storage buffers | 30 |
 | Volume rendering and layered textures | 18 |
 | Physics integration | 14 |
-| Curve interpolation and path builders | 12 |
+| Curve interpolation and path builders | 11 |
 | CSS2D/CSS3D/SVG scene renderers | 11 |
 | Morph target animation | 9 |
-| Wide / dashed line rendering | 8 |
+| Wide / dashed line rendering | 7 |
 | Clipping planes and stencil operations | 6 |
 | Spatial audio and audio analysis | 6 |
 | Stereo, anaglyph and parallax-barrier effects | 3 |
@@ -57,6 +57,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_modifier_curve | `tests/browser/transform-curves.spec.js` | CurveModifierGPUのFlow（半精度のスプラインテクスチャ、頂点段での曲線変形、normalNode）、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。性能の完全な同等性は未保証。 |
 | webgl_modifier_curve_instanced | `tests/browser/transform-curves.spec.js` | InstancedFlow（インスタンス行列に曲線番号・長さ・オフセット、インスタンス色）、2本の曲線テクスチャ、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgpu_lights_spotlight | `tests/browser/spot-skinning.spec.js` | マップ付きスポットライト（lightProjectionUVでの投影テクスチャ、focus込みの影カメラ、影の強度）、PCFの影、半球光、Lucy PLYとLambertの床、Neutralトーンマッピング、SpotLightHelperと影カメラのCameraHelper、全10項目の操作、OrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_ktx | `tests/browser/texture-volumes.spec.js` | KTXLoaderのKTX 1ファイル（PVRTC、S3TC/BC1・BC3・BC5、ETC1、EAC RG、ASTC 4x4・8x8）を、原作と同じくブラウザのWebGL拡張の有無で選び、回転する箱の色マップ、深度テストなしのレンズフレア、点光源下の2チャンネル圧縮法線マップ（MeshStandardMaterial）としてRustで再現。ブロック形式は格納値のままアップロードし、WebGPUにないPVRTCだけは読み込み時に一度RGBA8へデコードして常駐させる。性能の完全な同等性は未保証。 |
+| webgl_loader_texture_pvrtc | `tests/browser/texture-volumes.spec.js` | PVRLoaderのv2/v3ファイル（PVRTC 2/4bpp、ミップあり・なし、アルファ付き）を回転する箱に、2つのキューブマップをトーラスの反射に使う構成をRustで再現。WebGPUにはPVRTC形式がないため、各レベルを読み込み時に一度だけRGBA8へデコード（Imaginationの参照デコーダーと同じ手順）して常駐させる。GPU上のテクスチャメモリは圧縮時の4〜8倍になる。WebGLと同じくPVRTCにはsRGB形式がないため、色空間に関わらず格納値のままサンプリングする。性能の完全な同等性は未保証。 |
+| webgpu_lines_fat_raycasting | `tests/browser/texture-volumes.spec.js` | CatmullRom曲線から作る色付きの太線（LineSegmentsGeometry/LineGeometry、ワールド単位またはピクセル幅、alphaToCoverage）を常駐GPUリボンで描き、ポインターのレイキャスト（LineSegments2.raycastのCPUクエリ）で交点と線上の点に球を置く挙動、しきい値の可視化、平行移動をRustで再現。Inspector外観と性能の完全な同等性は未保証。 |
+| webgpu_camera_logarithmicdepthbuffer | `tests/browser/texture-volumes.spec.js` | 1µmから1000光年までの15個のテキストラベル（TextGeometry、Phong）と球を、near 1e-6・far 1e27の2つのカメラで通常深度と対数深度（レンダラーの組み込みマテリアルがビューZからフラグメント深度を書く）に分けて描画し、フレームごとのズーム、ホイール、マウス、境界ドラッグをRustで再現。2つのレンダラーは1枚のキャンバス上のビューポートとして描く。性能の完全な同等性は未保証。 |
+| webgpu_reversed_depth_buffer | `tests/browser/texture-volumes.spec.js` | ほぼ同一平面の赤と緑の平面5組を、通常のDepth24Plus深度、対数深度（ビューZからのフラグメント深度）、逆深度（逆射影、0クリア、GreaterEqual、Depth32Float）の3つのビューで並べて描画し、zファイティングの違いをRustで再現。3つのレンダラーは1枚のキャンバス上のビューポートとして描く。性能の完全な同等性は未保証。 |
+| webgl_multiple_elements_text | `tests/browser/texture-volumes.spec.js` | 記事（本文とMathML）と6つのビュー要素、各ビューの格子またはランダムな分子のPoints（キャンバスで描いた円のスプライト、alphaTest）、平面波・円筒波・球面波の変位、要素ごとのビューポートとシザー（キャンバス外にかかる場合はビューオフセットで切り出し）、ビューごとのOrbitControlsをRustで再現。原作は毎フレームCPUで全点を変位するが、移植は常駐した位置から頂点ステージで変位を計算する。性能の完全な同等性は未保証。 |
+| webgpu_loader_texture_ktx2 | `tests/browser/texture-volumes.spec.js` | KTX2コンテナ（非圧縮のRGBA8/16/32・RGB9E5・R11G11B10、ASTC・ETC1/2・BC1/3/4/5/7のブロック形式を格納どおりに転送、Basis UniversalはKTX2Loaderと同じ規則でデバイスのブロック形式へ変換）、DFDの色空間、KTX2Loaderのフィルタ、ページのセクションとリスト項目、完全に見える項目だけのビューポート／シザー描画、スクロールに追従するキャンバスをRustで再現。性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_outline | `tests/browser/texture-volumes.spec.js` | OBJの木、20個の球、床、トーラスとSunLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_postprocessing_taa | `tests/browser/texture-volumes.spec.js` | ワイヤーフレームの箱と最近傍フィルタのレンガの箱を、TAARenderPass（回転中はSSAARenderPass、静止中は32個のジッターを1フレームずつ蓄積して保持フレームと合成、SampleLevelごとのサンプル数）または通常のRenderPass、OutputPassで描画し、200フレームごとの回転と静止の切り替えをフレーム単位でRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_postprocessing_sao | `tests/browser/texture-volumes.spec.js` | 120個のインスタンス球（MeshStandardMaterial、HSLのインスタンス色）をRenderPassで半精度ターゲットへ描画し、SAOPass（ビュー法線と深度、7サンプルの螺旋、深度制限付きの縦横ガウスブラー、乗算合成、SAO・法線の各出力）、全11項目の操作とOutputPassをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_postprocessing_ssao | `tests/browser/texture-volumes.spec.js` | 100個のインスタンス箱をRenderPassで半精度ターゲットへ描画し、SSAOPass（ビュー法線と深度、32サンプルのカーネル、SimplexNoiseの4×4回転ノイズ、5×5ブラー、乗算合成、SSAO・ブラー・深度・法線の各出力、有効/無効）とOutputPassをRustで再現。SSAOPassとSimplexNoiseのMath.randomの消費順序を一致させて比較。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_postprocessing_glitch | `tests/browser/texture-volumes.spec.js` | 光過敏性の警告から開始し、100個のインスタンス球（フラットシェーディング、インスタンス色、フォグ）を半精度ターゲットへ描画してから、GlitchPass（64×64の乱数変位マップ、RGBずらし、ノイズ、トリガー周期、Glitch me wild）とOutputPassをRustで再現。GlitchPassのMath.randomの消費順序をフレーム単位で一致させて比較。性能の完全な同等性は未保証。 |
 | webgl_effects_ascii | `tests/browser/texture-volumes.spec.js` | 画素比1で描画したフレームを同じタスク内でCanvas 2Dへ0.15倍に縮小描画し、AsciiEffect（反転した文字セット、1行おき、&nbsp;、表のスタイル）の文字表をRustで生成。TrackballControls（要素の高さ0で初期化される原作の挙動を含む）、跳ねる球と平面をRustで再現。読み戻しは原作と同じく毎フレームのCPU処理。性能の完全な同等性は未保証。 |

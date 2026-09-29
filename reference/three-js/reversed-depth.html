@@ -1,0 +1,8 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><script>
+// The unmodified webgpu_reversed_depth_buffer page, with its imports pointed at the
+// pinned r186 sources and performance.now on the fixture clock.
+(async()=>{const html=await(await fetch('/.cache/three-r186/examples/webgpu_reversed_depth_buffer.html')).text();
+const prelude='<script>window.fixtureMs=0;performance.now=()=>window.fixtureMs;<\/script>';
+const page=html.replace('<head>','<head><base href="/.cache/three-r186/examples/">'+prelude).replace('"three": "../build/three.webgpu.js"','"three": "/.cache/three-r186/src/Three.WebGPU.js"').replace('"three/webgpu": "../build/three.webgpu.js"','"three/webgpu": "/.cache/three-r186/src/Three.WebGPU.js"').replace('"three/tsl": "../build/three.tsl.js"','"three/tsl": "/.cache/three-r186/src/Three.TSL.js"').replace('"three/addons/": "./jsm/"','"three/addons/": "/.cache/three-r186/examples/jsm/"');
+document.open();document.write(page);document.close();})();
+</script></body></html>

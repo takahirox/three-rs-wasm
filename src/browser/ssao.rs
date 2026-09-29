@@ -14,9 +14,9 @@ use crate::{
 use std::sync::Arc;
 
 /// The fixture's Math.random: a 32-bit LCG seeded with 186.
-struct Random(u32);
+pub(super) struct Random(pub(super) u32);
 impl Random {
-    fn next(&mut self) -> f64 {
+    pub(super) fn next(&mut self) -> f64 {
         self.0 = self.0.wrapping_mul(1664525).wrapping_add(1013904223);
         self.0 as f64 / 4294967296.
     }
@@ -110,12 +110,12 @@ impl Simplex {
         32.0 * n
     }
 }
-const FULLSCREEN: &str = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;out.clip=vec4(position.xy,0.0,1.0);return out;}";
+pub(super) const FULLSCREEN: &str = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;out.clip=vec4(position.xy,0.0,1.0);return out;}";
 /// A render target texel at the GL screen position uv (rows counted from
 /// the bottom; the texture is stored from its top row), clamped.
-const TEXEL: &str = "fn gl_texel(size:vec2<u32>,uv:vec2<f32>)->vec2<i32>{let s=vec2<f32>(size);let p=clamp(floor(uv*s),vec2(0.0),s-1.0);return vec2<i32>(i32(p.x),i32(s.y-1.0-p.y));}";
+pub(super) const TEXEL: &str = "fn gl_texel(size:vec2<u32>,uv:vec2<f32>)->vec2<i32>{let s=vec2<f32>(size);let p=clamp(floor(uv*s),vec2(0.0),s-1.0);return vec2<i32>(i32(p.x),i32(s.y-1.0-p.y));}";
 /// packing.glsl's depth conversions.
-const PACKING: &str = "fn perspective_depth_to_view_z(depth:f32,near:f32,far:f32)->f32{return (near*far)/((far-near)*depth-far);}fn view_z_to_orthographic_depth(view_z:f32,near:f32,far:f32)->f32{return (view_z+near)/(near-far);}";
+pub(super) const PACKING: &str = "fn perspective_depth_to_view_z(depth:f32,near:f32,far:f32)->f32{return (near*far)/((far-near)*depth-far);}fn view_z_to_orthographic_depth(view_z:f32,near:f32,far:f32)->f32{return (view_z+near)/(near-far);}";
 /// SSAOShader: u.custom[0..4] cameraProjectionMatrix, [4..8] its inverse,
 /// [8] (resolution, cameraNear, cameraFar), [9] (kernelRadius, minDistance,
 /// maxDistance). Textures: the view normals, the depth, the rotation noise.
@@ -134,13 +134,13 @@ const BLUR: &str = "fn ssao_blur()->vec4<f32>{let size=vec2<i32>(textureDimensio
 /// SSAODepthShader: 1 − linear depth; u.custom[8].zw is (near, far).
 const DEPTH: &str = "fn ssao_depth()->vec4<f32>{let d=textureLoad(tsl_texture_0,gl_texel(textureDimensions(tsl_texture_0),fragment_surface.uv),0);let depth=view_z_to_orthographic_depth(perspective_depth_to_view_z(d,u.custom[8].z,u.custom[8].w),u.custom[8].z,u.custom[8].w);return vec4(vec3(1.0-depth),1.0);}";
 /// CopyShader (and OutputPass's read): the texel under the fragment.
-const COPY: &str = "fn ssao_copy()->vec4<f32>{return textureLoad(tsl_texture_0,gl_texel(textureDimensions(tsl_texture_0),fragment_surface.uv),0);}";
+pub(super) const COPY: &str = "fn ssao_copy()->vec4<f32>{return textureLoad(tsl_texture_0,gl_texel(textureDimensions(tsl_texture_0),fragment_surface.uv),0);}";
 /// MeshNormalMaterial for the override render: the view normal packed.
-const NORMAL: &str =
+pub(super) const NORMAL: &str =
     "fn ssao_normal()->vec4<f32>{return vec4(normalize(fragment_surface.normal)*0.5+0.5,1.0);}";
 /// One full-screen pass: its own scene, camera and quad.
-struct Pass {
-    scene: Scene,
+pub(super) struct Pass {
+    pub(super) scene: Scene,
     camera: Object3D,
     quad: Object3D,
 }
@@ -169,7 +169,7 @@ impl Pass {
             quad,
         })
     }
-    fn material(&mut self) -> Result<&mut ShaderMaterial> {
+    pub(super) fn material(&mut self) -> Result<&mut ShaderMaterial> {
         match &mut self.scene.get_mut(self.quad)?.kind {
             NodeKind::Mesh(m) => match Arc::make_mut(&mut m.materials[0]) {
                 Material::Shader(m) => Ok(m),
@@ -178,7 +178,7 @@ impl Pass {
             _ => Err(Error::Invalid("ssao pass quad")),
         }
     }
-    fn render(
+    pub(super) fn render(
         &mut self,
         r: &Renderer,
         target: &RenderTarget,
@@ -188,7 +188,7 @@ impl Pass {
         r.render(&mut self.scene, self.camera, target)
     }
 }
-async fn pass(
+pub(super) async fn pass(
     r: &Renderer,
     name: &str,
     source: &str,
@@ -227,7 +227,7 @@ struct Targets {
     blur: RenderTarget,
 }
 /// FullScreenQuad's geometry: one triangle over the viewport, uv 0..2.
-fn fullscreen_triangle() -> Result<BufferGeometry> {
+pub(super) fn fullscreen_triangle() -> Result<BufferGeometry> {
     let mut g = BufferGeometry::default();
     g.set_attribute(
         "position",
@@ -276,7 +276,7 @@ pub(super) struct Demo {
     /// output, kernelRadius, minDistance, maxDistance, enabled.
     params: [f64; 5],
 }
-fn target(r: &Renderer, w: u32, h: u32, depth: bool) -> Result<RenderTarget> {
+pub(super) fn target(r: &Renderer, w: u32, h: u32, depth: bool) -> Result<RenderTarget> {
     RenderTarget::with_options(
         &r.device,
         w,
@@ -288,7 +288,7 @@ fn target(r: &Renderer, w: u32, h: u32, depth: bool) -> Result<RenderTarget> {
         },
     )
 }
-fn half() -> wgpu::TextureSampleType {
+pub(super) fn half() -> wgpu::TextureSampleType {
     wgpu::TextureSampleType::Float { filterable: true }
 }
 impl Demo {

@@ -299,6 +299,17 @@ var<private> fragment_normal:vec3<f32>;
 var<private> fragment_diffuse:vec4<f32>;
 var<private> fragment_emissive:vec3<f32>;
 @fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32> {
+    return color_output(in,front);
+}
+struct LogarithmicDepthOut {@location(0) color:vec4<f32>,@builtin(frag_depth) depth:f32,};
+// logarithmicDepthBuffer: viewZToLogarithmicDepth( positionView.z, cameraNear, cameraFar ),
+// the camera's near and far in u.output.zw.
+@fragment fn fs_log_depth(in:VertexOut,@builtin(front_facing) front:bool)->LogarithmicDepthOut {
+    let near=max(u.output.z,1e-6);
+    let depth=log2(-in.view_position.z/near)/log2(u.output.w/near);
+    return LogarithmicDepthOut(color_output(in,front),depth);
+}
+fn color_output(in:VertexOut,front:bool)->vec4<f32> {
     fragment_surface=in;fragment_front=front;
     fragment_normal=normalize(in.normal)*select(-1.0,1.0,front);fragment_diffuse=vec4(0.0);fragment_emissive=vec3(0.0);
     fragment_position_world=in.position;fragment_view_z=-in.view_position.z;
@@ -326,7 +337,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if u.flags.x>0.5 {geometry_normal=normalize(cross(q0,q1));}
     let view_normal=geometry_normal;
     let derivative=max(abs(dpdx(view_normal)),abs(dpdy(view_normal)));
-    var normal_sample=vec3(1.0);if NORMAL_MAP {normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;}
+    var normal_sample=vec3(1.0);if NORMAL_MAP {normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;if u.maps.x>1.5 {normal_sample=vec3(normal_sample.xy,sqrt(saturate(1.0-dot(normal_sample.xy,normal_sample.xy))));}}
     var base=u.color*in.color;if COLOR_MAP {base*=textureSample(color_map,color_sampler,map_uv(0u,in));}
     var clipping_opacity=1.0;
     if CLIPPING {

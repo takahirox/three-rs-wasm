@@ -15,5 +15,7 @@ fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{
   let b=select(v.y+1.0,v.y-1.0,v.y>0.0);let len2=v.x*v.x+b*b;let dl=fwidth(len2);
   if abs(v.y)>1.0 {if coverage {alpha=1.0-smoothstep(1.0-dl,1.0+dl,len2);}else if len2>1.0 {discard;}}
  }
+ // custom[2].y: no vertex colors, the material's color and opacity instead.
+ if u.custom[2].y>0.5 {return vec4(u.color.rgb,alpha*u.color.a);}
  return vec4(surface.color.rgb,alpha);
 }

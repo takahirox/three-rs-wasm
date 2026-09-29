@@ -22,6 +22,13 @@ pub enum Filter {
     #[default]
     Linear,
 }
+/// A CompressedTexture's mip chain (base level first) in a GPU block or
+/// texel format, for formats the device samples natively.
+#[derive(Debug)]
+pub struct BlockMips {
+    pub format: wgpu::TextureFormat,
+    pub levels: Vec<Vec<u8>>,
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct Texture {
     pub width: u32,
@@ -30,6 +37,9 @@ pub struct Texture {
     /// Basis payload retained for device-specific block transcoding at GPU upload.
     #[serde(skip)]
     pub basis: Option<Arc<Vec<u8>>>,
+    /// CompressedTexture levels uploaded as stored, in their own GPU format.
+    #[serde(skip)]
+    pub blocks: Option<Arc<BlockMips>>,
     #[cfg(target_arch = "wasm32")]
     #[serde(skip)]
     pub(crate) bitmap: Option<Arc<BrowserBitmap>>,
@@ -72,6 +82,16 @@ impl Texture {
         Ok(texture)
     }
 
+    /// RGFormat, RG11_EAC_Format or RED_GREEN_RGTC2_Format data: two channels.
+    pub fn packed_rg(&self) -> bool {
+        use wgpu::TextureFormat as F;
+        self.blocks.as_ref().is_some_and(|b| {
+            matches!(
+                b.format,
+                F::Rg8Unorm | F::Bc5RgUnorm | F::Bc5RgSnorm | F::EacRg11Unorm | F::EacRg11Snorm
+            )
+        })
+    }
     pub fn from_rgba(width: u32, height: u32, rgba: Vec<u8>, srgb: bool) -> Result<Self> {
         let size = (width as usize)
             .checked_mul(height as usize)
@@ -84,6 +104,7 @@ impl Texture {
             height,
             rgba,
             basis: None,
+            blocks: None,
             #[cfg(target_arch = "wasm32")]
             bitmap: None,
             srgb,

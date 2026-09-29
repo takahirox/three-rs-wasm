@@ -279,3 +279,13 @@ pixel. GlitchPass and SSAOPass draw from Math.random inside the addons, so the
 fixture rewrites those addons alone to the seeded sequence. Scoped bounds
 cover MSAA edges, the Kinect point squares, the glitch's filtered edges and
 the ASCII table's threshold cells.
+
+The SAO, TAA, outline, KTX2, multiple-elements, reversed-depth,
+logarithmic-depth, fat-line raycasting, PVRTC and KTX batch also extends
+[texture-volumes.md](texture-volumes.md). The outline, KTX2, depth-buffer and
+fat-line examples are the WebGPU ports of examples that also have WebGL
+versions, and only the WebGPU ports are listed; the others are WebGL-only.
+PVRTC has no WebGPU format, so its levels are decoded once at load; this is a
+load-time transcode and is documented as such. Scoped bounds cover the
+multiple-elements wave precision, the visualized fat-line threshold and the
+PVRTC MSAA edges.

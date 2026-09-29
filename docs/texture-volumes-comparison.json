@@ -43,6 +43,40 @@
      }
     ]
    },
+   "texture-volumes-Fat-line-r-b204c--spheres-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000012962962962962962,
+      "meanError": 0.024989506172839505
+     },
+     {
+      "state": 1,
+      "fraction": 0.00002037037037037037,
+      "meanError": 0.025575308641975308
+     },
+     {
+      "state": 2,
+      "fraction": 0.000022222222222222223,
+      "meanError": 0.025830864197530865
+     },
+     {
+      "state": 3,
+      "fraction": 0.00002962962962962963,
+      "meanError": 0.042028395061728396
+     },
+     {
+      "state": 4,
+      "fraction": 0.00003518518518518518,
+      "meanError": 0.004781481481481481
+     },
+     {
+      "state": 5,
+      "fraction": 0.011942592592592593,
+      "meanError": 0.3135827160493827
+     }
+    ]
+   },
    "texture-volumes-Glitch-pas-c6491-the-original-frame-by-frame": {
     "comparison": [
      {
@@ -55,7 +89,7 @@
       "state": 1,
       "frames": 1,
       "fraction": 0.010860443115234375,
-      "meanError": 0.09442901611328125
+      "meanError": 0.09443028767903645
      },
      {
       "state": 2,
@@ -73,13 +107,13 @@
       "state": 4,
       "frames": 1,
       "fraction": 0.00992584228515625,
-      "meanError": 0.09493255615234375
+      "meanError": 0.09492874145507812
      },
      {
       "state": 5,
       "frames": 1,
       "fraction": 0.011241912841796875,
-      "meanError": 0.10352198282877605
+      "meanError": 0.1034990946451823
      },
      {
       "state": 6,
@@ -133,7 +167,235 @@
       "state": 14,
       "frames": 1,
       "fraction": 0.0070037841796875,
-      "meanError": 0.11055882771809895
+      "meanError": 0.11056264241536458
+     }
+    ]
+   },
+   "texture-volumes-KTX2-loade-a3444-re-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0009814814814814814
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0010225694444444444
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0002795138888888889
+     }
+    ]
+   },
+   "texture-volumes-Logarithmi-7a11c-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.014933333333333333
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.014431481481481481
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.01752530864197531
+     },
+     {
+      "state": 3,
+      "fraction": 0.0003814814814814815,
+      "meanError": 0.05016172839506173
+     },
+     {
+      "state": 4,
+      "fraction": 0.00003888888888888889,
+      "meanError": 0.02525864197530864
+     },
+     {
+      "state": 5,
+      "fraction": 0.000009259259259259259,
+      "meanError": 0.017994444444444445
+     },
+     {
+      "state": 6,
+      "fraction": 0.0009870370370370371,
+      "meanError": 0.13306666666666667
+     }
+    ]
+   },
+   "texture-volumes-Multiple-e-3d7d5-ts-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.007432098765432099,
+      "meanError": 0.18862181069958847
+     },
+     {
+      "state": 1,
+      "fraction": 0.007992592592592593,
+      "meanError": 0.20706584362139918
+     },
+     {
+      "state": 2,
+      "fraction": 0.008853086419753086,
+      "meanError": 0.2227090534979424
+     },
+     {
+      "state": 3,
+      "fraction": 0.012617283950617285,
+      "meanError": 0.2597320987654321
+     },
+     {
+      "state": 4,
+      "fraction": 0.010387654320987654,
+      "meanError": 0.26843827160493827
+     },
+     {
+      "state": 5,
+      "fraction": 0.012093827160493828,
+      "meanError": 0.2417201646090535
+     },
+     {
+      "state": 6,
+      "fraction": 0.011637037037037038,
+      "meanError": 0.2426835390946502
+     }
+    ]
+   },
+   "texture-volumes-Reversed-d-0f17e-ee-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-TAA-pass-f-36012-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "frame": 50,
+      "frames": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.0005060831705729166
+     },
+     {
+      "state": 1,
+      "frame": 99,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 2,
+      "frame": 100,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0003331502278645833
+     },
+     {
+      "state": 3,
+      "frame": 101,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0003420511881510417
+     },
+     {
+      "state": 4,
+      "frame": 102,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0003484090169270833
+     },
+     {
+      "state": 5,
+      "frame": 105,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.000335693359375
+     },
+     {
+      "state": 6,
+      "frame": 110,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0003903706868489583
+     },
+     {
+      "state": 7,
+      "frame": 130,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004323323567708333
+     },
+     {
+      "state": 8,
+      "frame": 140,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004361470540364583
+     },
+     {
+      "state": 9,
+      "frame": 299,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004361470540364583
+     },
+     {
+      "state": 10,
+      "frame": 301,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.00054168701171875
+     },
+     {
+      "state": 11,
+      "frame": 305,
+      "frames": 2,
+      "fraction": 0.000263214111328125,
+      "meanError": 0.007353464762369792
+     },
+     {
+      "state": 12,
+      "frame": 306,
+      "frames": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.0003102620442708333
+     },
+     {
+      "state": 13,
+      "frame": 310,
+      "frames": 2,
+      "fraction": 0.00002288818359375,
+      "meanError": 0.000629425048828125
      }
     ]
    },
@@ -213,6 +475,114 @@
       "state": 14,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0a290-oader-texture-ktx-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00421142578125,
+      "meanError": 0.5276463826497396
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.1870447794596354
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.184661865234375
+     },
+     {
+      "state": 3,
+      "fraction": 0.000774383544921875,
+      "meanError": 0.19513320922851562
+     },
+     {
+      "state": 4,
+      "fraction": 0.00076953125,
+      "meanError": 0.23588802083333332
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0c42f-rocessing-outline-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0067596435546875
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.007150014241536458
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.007036844889322917
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.007333119710286458
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007424672444661458
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.007508595784505208
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.006871541341145833
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.007100423177083333
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.006871541341145833
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.006786346435546875
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.006924947102864583
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.006924947102864583
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.008930206298828125
+     },
+     {
+      "state": 13,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.011708577473958334
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.007830729166666666
      }
     ]
    },
@@ -347,6 +717,35 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-1bfe2-der-texture-pvrtc-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000762939453125,
+      "meanError": 0.0031750996907552085
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0006306966145833334
+     },
+     {
+      "state": 2,
+      "fraction": 0.0003204345703125,
+      "meanError": 0.006276448567708333
+     },
+     {
+      "state": 3,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.00298309326171875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.005244791666666667
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
     "comparison": [
      {
@@ -398,6 +797,129 @@
       "state": 9,
       "fraction": 0.0001171875,
       "meanError": 0.16163541666666667
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-1f550-der-texture-pvrtc-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004032135009765625,
+      "meanError": 0.1170209248860677
+     },
+     {
+      "state": 1,
+      "fraction": 0.005283355712890625,
+      "meanError": 0.1743316650390625
+     },
+     {
+      "state": 2,
+      "fraction": 0.004100799560546875,
+      "meanError": 0.12504450480143228
+     },
+     {
+      "state": 3,
+      "fraction": 0.00431060791015625,
+      "meanError": 0.1235186258951823
+     },
+     {
+      "state": 4,
+      "fraction": 0.00496875,
+      "meanError": 0.15380989583333332
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-2103f-ostprocessing-sao-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0011494954427083333
+     },
+     {
+      "state": 1,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0011494954427083333
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00107574462890625
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.000843048095703125
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.001026153564453125
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00107574462890625
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0010897318522135417
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.000720977783203125
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0011507670084635417
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.00109100341796875
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.001068115234375
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.0010782877604166667
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.001068115234375
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.001087188720703125
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.00614166259765625
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.0029017130533854165
+     },
+     {
+      "state": 16,
+      "fraction": 0,
+      "meanError": 0.001064300537109375
+     },
+     {
+      "state": 17,
+      "fraction": 0,
+      "meanError": 0.0007083333333333334
      }
     ]
    },
@@ -816,6 +1338,130 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-3a8fb-cy-webgl-postprocessing-sao": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 131,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 131,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 148,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 148,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3d74e--webgl-loader-texture-pvrtc": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 110,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 110,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-3d8e7-cy-webgl-materials-channels": {
     "residency": [
      {
@@ -971,6 +1617,68 @@
       "state": 5,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-4236d-bgpu-postprocessing-outline": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 655,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 655,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 702,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 702,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
      }
     ]
    },
@@ -1711,6 +2419,68 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-a0137-cy-webgl-loader-texture-ktx": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 116,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 116,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-ac67e-dency-webgpu-display-stereo": {
     "residency": [
      {
@@ -1898,6 +2668,35 @@
       "state": 18,
       "fraction": 0,
       "meanError": 0.015739583333333335
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-ba641-oader-texture-ktx-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000362396240234375,
+      "meanError": 0.1973851521809896
+     },
+     {
+      "state": 1,
+      "fraction": 0.00402069091796875,
+      "meanError": 0.2959861755371094
+     },
+     {
+      "state": 2,
+      "fraction": 0.003261566162109375,
+      "meanError": 0.2664019266764323
+     },
+     {
+      "state": 3,
+      "fraction": 0.00121307373046875,
+      "meanError": 0.20544560750325522
+     },
+     {
+      "state": 4,
+      "fraction": 0.0012890625,
+      "meanError": 0.25120052083333333
      }
     ]
    },
@@ -2107,6 +2906,592 @@
    },
    "texture-volumes-Texture-ar-eab9a--and-official-draw-workload": {
     "gpuWork": [
+     {
+      "kind": "webgpu_postprocessing_outline",
+      "reference": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_postprocessing_sao",
+      "reference": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 120
+        },
+        {
+         "count": 6624,
+         "instances": 120
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 120
+        },
+        {
+         "count": 6624,
+         "instances": 120
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
      {
       "kind": "webgl_postprocessing_ssao",
       "reference": {
@@ -2403,6 +3788,216 @@
          "count": 36,
          "instances": 1
         },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_pvrtc",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_ktx",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
         {
          "count": 36,
          "instances": 1
@@ -3031,6 +4626,40 @@
      }
     ]
    },
+   "texture-volumes-Fat-line-r-b204c--spheres-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000014814814814814815,
+      "meanError": 0.025440123456790125
+     },
+     {
+      "state": 1,
+      "fraction": 0.00001388888888888889,
+      "meanError": 0.025810185185185186
+     },
+     {
+      "state": 2,
+      "fraction": 0.000016203703703703704,
+      "meanError": 0.025918055555555555
+     },
+     {
+      "state": 3,
+      "fraction": 0.000021296296296296296,
+      "meanError": 0.042965586419753087
+     },
+     {
+      "state": 4,
+      "fraction": 0.00002546296296296296,
+      "meanError": 0.004053858024691358
+     },
+     {
+      "state": 5,
+      "fraction": 0.010615277777777777,
+      "meanError": 0.30875987654320985
+     }
+    ]
+   },
    "texture-volumes-Glitch-pas-c6491-the-original-frame-by-frame": {
     "comparison": [
      {
@@ -3042,26 +4671,26 @@
      {
       "state": 1,
       "frames": 1,
-      "fraction": 0.0059661865234375,
-      "meanError": 0.05603218078613281
+      "fraction": 0.005967140197753906,
+      "meanError": 0.05601692199707031
      },
      {
       "state": 2,
       "frames": 1,
-      "fraction": 0.006594657897949219,
-      "meanError": 0.06566778818766277
+      "fraction": 0.0065937042236328125,
+      "meanError": 0.06565348307291667
      },
      {
       "state": 3,
       "frames": 1,
-      "fraction": 0.00479888916015625,
-      "meanError": 0.07688013712565105
+      "fraction": 0.004797935485839844,
+      "meanError": 0.07686996459960938
      },
      {
       "state": 4,
       "frames": 1,
       "fraction": 0.00556182861328125,
-      "meanError": 0.06009991963704427
+      "meanError": 0.06009515126546224
      },
      {
       "state": 5,
@@ -3079,7 +4708,7 @@
       "state": 7,
       "frames": 1,
       "fraction": 0.007909774780273438,
-      "meanError": 0.0757001241048177
+      "meanError": 0.07569249471028645
      },
      {
       "state": 8,
@@ -3097,7 +4726,7 @@
       "state": 10,
       "frames": 1,
       "fraction": 0.00010395050048828125,
-      "meanError": 0.026378313700358074
+      "meanError": 0.026376724243164062
      },
      {
       "state": 11,
@@ -3121,7 +4750,235 @@
       "state": 14,
       "frames": 1,
       "fraction": 0.003086090087890625,
-      "meanError": 0.05914910634358724
+      "meanError": 0.05914433797200521
+     }
+    ]
+   },
+   "texture-volumes-KTX2-loade-a3444-re-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00007566550925925926
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00006901041666666667
+     }
+    ]
+   },
+   "texture-volumes-Logarithmi-7a11c-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.014899691358024691
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.014500617283950617
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.017336265432098766
+     },
+     {
+      "state": 3,
+      "fraction": 0.0009180555555555555,
+      "meanError": 0.11750092592592593
+     },
+     {
+      "state": 4,
+      "fraction": 0.0006648148148148148,
+      "meanError": 0.09906265432098765
+     },
+     {
+      "state": 5,
+      "fraction": 0.000002777777777777778,
+      "meanError": 0.01792854938271605
+     },
+     {
+      "state": 6,
+      "fraction": 0.0009212962962962963,
+      "meanError": 0.13041157407407408
+     }
+    ]
+   },
+   "texture-volumes-Multiple-e-3d7d5-ts-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0021151234567901235,
+      "meanError": 0.06725205761316873
+     },
+     {
+      "state": 1,
+      "fraction": 0.0018089506172839507,
+      "meanError": 0.05937304526748971
+     },
+     {
+      "state": 2,
+      "fraction": 0.0020435185185185187,
+      "meanError": 0.06623199588477366
+     },
+     {
+      "state": 3,
+      "fraction": 0.0031762345679012347,
+      "meanError": 0.08490216049382716
+     },
+     {
+      "state": 4,
+      "fraction": 0.0032694444444444446,
+      "meanError": 0.10498312757201646
+     },
+     {
+      "state": 5,
+      "fraction": 0.0029953703703703705,
+      "meanError": 0.07923230452674897
+     },
+     {
+      "state": 6,
+      "fraction": 0.0031290123456790124,
+      "meanError": 0.08335442386831275
+     }
+    ]
+   },
+   "texture-volumes-Reversed-d-0f17e-ee-views-match-the-original": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 9.259259259259259e-7,
+      "meanError": 0.0000787037037037037
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-TAA-pass-f-36012-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "frame": 50,
+      "frames": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.00037797292073567707
+     },
+     {
+      "state": 1,
+      "frame": 99,
+      "frames": 2,
+      "fraction": 0.00000858306884765625,
+      "meanError": 0.0002190272013346354
+     },
+     {
+      "state": 2,
+      "frame": 100,
+      "frames": 2,
+      "fraction": 0.00000858306884765625,
+      "meanError": 0.00043487548828125
+     },
+     {
+      "state": 3,
+      "frame": 101,
+      "frames": 2,
+      "fraction": 0.0000095367431640625,
+      "meanError": 0.0004924138387044271
+     },
+     {
+      "state": 4,
+      "frame": 102,
+      "frames": 2,
+      "fraction": 0.0000095367431640625,
+      "meanError": 0.000499725341796875
+     },
+     {
+      "state": 5,
+      "frame": 105,
+      "frames": 2,
+      "fraction": 0.00000667572021484375,
+      "meanError": 0.0004981358846028646
+     },
+     {
+      "state": 6,
+      "frame": 110,
+      "frames": 2,
+      "fraction": 0.00000476837158203125,
+      "meanError": 0.0005006790161132812
+     },
+     {
+      "state": 7,
+      "frame": 130,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004673004150390625
+     },
+     {
+      "state": 8,
+      "frame": 140,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004679361979166667
+     },
+     {
+      "state": 9,
+      "frame": 299,
+      "frames": 2,
+      "fraction": 0,
+      "meanError": 0.0004679361979166667
+     },
+     {
+      "state": 10,
+      "frame": 301,
+      "frames": 2,
+      "fraction": 0.00001430511474609375,
+      "meanError": 0.0005690256754557291
+     },
+     {
+      "state": 11,
+      "frame": 305,
+      "frames": 2,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0005242029825846354
+     },
+     {
+      "state": 12,
+      "frame": 306,
+      "frames": 2,
+      "fraction": 0.00001239776611328125,
+      "meanError": 0.0002101262410481771
+     },
+     {
+      "state": 13,
+      "frame": 310,
+      "frames": 2,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.0001732508341471354
      }
     ]
    },
@@ -3201,6 +5058,114 @@
       "state": 14,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0a290-oader-texture-ktx-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0000705718994140625,
+      "meanError": 0.18524901072184244
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.18686707814534506
+     },
+     {
+      "state": 2,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.1825984319051107
+     },
+     {
+      "state": 3,
+      "fraction": 0.0002918243408203125,
+      "meanError": 0.18608411153157553
+     },
+     {
+      "state": 4,
+      "fraction": 0.000302734375,
+      "meanError": 0.22827669270833334
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0c42f-rocessing-outline-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0066725413004557295
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0068581899007161455
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0068314870198567705
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.006974856058756511
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.007021268208821614
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0070501963297526045
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.006723721822102864
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.006819407145182292
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.006723721822102864
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.006684621175130208
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.006769498189290364
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.006769498189290364
+     },
+     {
+      "state": 12,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.009049733479817709
+     },
+     {
+      "state": 13,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.010091781616210938
+     },
+     {
+      "state": 14,
+      "fraction": 0.000005859375,
+      "meanError": 0.006859049479166666
      }
     ]
    },
@@ -3335,6 +5300,35 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-1bfe2-der-texture-pvrtc-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0013532638549804688
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0004755655924479167
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0007241566975911459
+     },
+     {
+      "state": 3,
+      "fraction": 0.000217437744140625,
+      "meanError": 0.0038366317749023438
+     },
+     {
+      "state": 4,
+      "fraction": 0.000263671875,
+      "meanError": 0.0036969401041666667
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
     "comparison": [
      {
@@ -3386,6 +5380,129 @@
       "state": 9,
       "fraction": 0.0000546875,
       "meanError": 0.1595322265625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-1f550-der-texture-pvrtc-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0017299652099609375,
+      "meanError": 0.05452950795491537
+     },
+     {
+      "state": 1,
+      "fraction": 0.0023708343505859375,
+      "meanError": 0.0814205805460612
+     },
+     {
+      "state": 2,
+      "fraction": 0.0017032623291015625,
+      "meanError": 0.056972503662109375
+     },
+     {
+      "state": 3,
+      "fraction": 0.001995086669921875,
+      "meanError": 0.06046740214029948
+     },
+     {
+      "state": 4,
+      "fraction": 0.0023740234375,
+      "meanError": 0.07020833333333333
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-2103f-ostprocessing-sao-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0008103052775065104
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0007686614990234375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0008176167805989584
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0007171630859375
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0009524027506510416
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0008176167805989584
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0008093516031901041
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.0005807876586914062
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0008233388264973959
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.0007950464884440104
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.0007356007893880209
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0.0007352828979492188
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0.0007356007893880209
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.0007378260294596354
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.004478136698404948
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.0023743311564127603
+     },
+     {
+      "state": 16,
+      "fraction": 0,
+      "meanError": 0.0007352828979492188
+     },
+     {
+      "state": 17,
+      "fraction": 0,
+      "meanError": 0.0004462890625
      }
     ]
    },
@@ -3804,6 +5921,130 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-3a8fb-cy-webgl-postprocessing-sao": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 131,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 131,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 148,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 148,
+       "transfers": [
+        8,
+        126176,
+        128
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3d74e--webgl-loader-texture-pvrtc": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 110,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 110,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 115,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 115,
+       "transfers": [
+        2,
+        86496,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-3d8e7-cy-webgl-materials-channels": {
     "residency": [
      {
@@ -3959,6 +6200,68 @@
       "state": 5,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-4236d-bgpu-postprocessing-outline": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 655,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 655,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 702,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 702,
+       "transfers": [
+        12,
+        484920,
+        192
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
      }
     ]
    },
@@ -4699,6 +7002,68 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-a0137-cy-webgl-loader-texture-ktx": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 111,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 116,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 116,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        3,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-ac67e-dency-webgpu-display-stereo": {
     "residency": [
      {
@@ -4889,6 +7254,35 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-ba641-oader-texture-ktx-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0002460479736328125,
+      "meanError": 0.1895291010538737
+     },
+     {
+      "state": 1,
+      "fraction": 0.0018672943115234375,
+      "meanError": 0.23908074696858725
+     },
+     {
+      "state": 2,
+      "fraction": 0.0015439987182617188,
+      "meanError": 0.22382895151774088
+     },
+     {
+      "state": 3,
+      "fraction": 0.00042819976806640625,
+      "meanError": 0.19164435068766275
+     },
+     {
+      "state": 4,
+      "fraction": 0.000546875,
+      "meanError": 0.2370302734375
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-c497f-pu-display-stereo-samples-1": {
     "comparison": [
      {
@@ -4913,8 +7307,8 @@
      },
      {
       "state": 4,
-      "fraction": 0.0004863739013671875,
-      "meanError": 0.04672114054361979
+      "fraction": 0.00004673004150390625,
+      "meanError": 0.039763450622558594
      },
      {
       "state": 5,
@@ -5095,6 +7489,592 @@
    },
    "texture-volumes-Texture-ar-eab9a--and-official-draw-workload": {
     "gpuWork": [
+     {
+      "kind": "webgpu_postprocessing_outline",
+      "reference": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 2280,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 6624,
+         "instances": 1
+        },
+        {
+         "count": 9600,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_postprocessing_sao",
+      "reference": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 120
+        },
+        {
+         "count": 6624,
+         "instances": 120
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6624,
+         "instances": 120
+        },
+        {
+         "count": 6624,
+         "instances": 120
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
      {
       "kind": "webgl_postprocessing_ssao",
       "reference": {
@@ -5391,6 +8371,216 @@
          "count": 36,
          "instances": 1
         },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_pvrtc",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 4608,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_ktx",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
         {
          "count": 36,
          "instances": 1

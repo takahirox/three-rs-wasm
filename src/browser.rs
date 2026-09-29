@@ -13,6 +13,7 @@ mod clipping_stencil;
 mod controls_attributes;
 mod dds;
 mod draco_variants;
+mod elements_text;
 mod environment_materials;
 mod envmap_exr;
 mod expanded;
@@ -36,20 +37,29 @@ mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
 mod kinect;
+mod ktx;
+mod ktx2;
 mod lights_probes;
+mod lines_raycast;
+mod log_depth;
 mod material_textures;
 mod md2;
 mod md2_control;
 mod models_modifiers;
+mod outline;
 mod passes_decals;
 mod picking_buffers;
 mod point_clouds;
 mod point_lights;
 mod probes_hdr;
+mod pvr;
+mod pvrtc;
 mod raycaster_helper;
 mod refraction_loaders;
+mod reversed_depth;
 mod robot;
 mod room_environment;
+mod sao;
 mod selection_views;
 mod shader_geometry;
 mod shadow_rtt;
@@ -60,6 +70,7 @@ mod sky_water;
 mod spot_skinning;
 mod ssao;
 mod stereo_loaders;
+mod taa;
 mod teapot_data;
 mod terrain_loaders;
 mod text_clipping;
@@ -232,7 +243,7 @@ impl State {
             258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
             291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312,
             313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329,
-            330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343,
+            330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 351, 352, 353,
         ]
         .contains(&self.example)
         {
@@ -250,7 +261,7 @@ impl State {
             }
             _ => &self.target,
         };
-        if [50, 54, 55, 57, 58, 118, 120, 126, 127].contains(&self.example) {
+        if [50, 54, 55, 57, 58, 118, 120, 126, 127, 351].contains(&self.example) {
             self.renderer.blit_premultiplied_srgb(
                 presentation,
                 &view,
@@ -967,7 +978,7 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if [46, 50, 54, 55, 57].contains(&example) {
+            if [46, 50, 54, 55, 57, 351].contains(&example) {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
@@ -987,7 +998,7 @@ impl BrowserApp {
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
                             291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
-                            343,
+                            343, 344, 345, 346, 349,
                         ]
                         .contains(&example)
                         {
@@ -1004,7 +1015,8 @@ impl BrowserApp {
                             259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
                             289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
                             307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327,
-                            329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343,
+                            329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343, 344, 345, 348,
+                            352, 353,
                         ]
                         .contains(&example),
                         format: if [
@@ -1019,7 +1031,8 @@ impl BrowserApp {
                             281, 282, 284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298,
                             299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314, 315, 316,
                             317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330,
-                            331, 332, 333, 335, 336, 337, 338, 341, 342, 343,
+                            331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 352,
+                            353,
                         ]
                         .contains(&example)
                         {
@@ -1051,7 +1064,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=343).contains(&example) {
+            if (7..=353).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

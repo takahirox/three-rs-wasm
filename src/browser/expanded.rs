@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Ktx(Box<super::ktx::Demo>),
+    Pvr(Box<super::pvr::Demo>),
+    LinesRaycast(Box<super::lines_raycast::Demo>),
+    LogDepth(Box<super::log_depth::Demo>),
+    ReversedDepth(Box<super::reversed_depth::Demo>),
+    ElementsText(Box<super::elements_text::Demo>),
+    Ktx2(Box<super::ktx2::Demo>),
+    Outline(Box<super::outline::Demo>),
+    Taa(Box<super::taa::Demo>),
+    Sao(Box<super::sao::Demo>),
     Glitch(Box<super::glitch::Demo>),
     Ssao(Box<super::ssao::Demo>),
     ShadowmapViewer(Box<super::shadowmap_viewer::Demo>),
@@ -292,6 +302,96 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::Ssao(Box::new(
                     super::ssao::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            344 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 3.,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::Sao(Box::new(
+                    super::sao::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            345 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Taa(Box::new(
+                    super::taa::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            346 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Outline(Box::new(
+                    super::outline::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            347 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::Ktx2(Box::new(
+                    super::ktx2::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            348 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::ElementsText(Box::new(
+                    super::elements_text::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            349 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 5.,
+                far: 9999.,
+                elapsed: 0.,
+                content: Content::ReversedDepth(Box::new(
+                    super::reversed_depth::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            350 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1e-6,
+                far: 1e27,
+                elapsed: 0.,
+                content: Content::LogDepth(Box::new(
+                    super::log_depth::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            351 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::LinesRaycast(Box::new(
+                    super::lines_raycast::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            352 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::Pvr(Box::new(
+                    super::pvr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            353 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::Ktx(Box::new(
+                    super::ktx::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1186,6 +1286,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Ktx(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Sao(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Ssao(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1575,6 +1705,27 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::LogDepth(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Sao(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::Ssao(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1663,6 +1814,26 @@ impl Demo {
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
         if let Content::ShadowmapViewer(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Ktx2(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ElementsText(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LogDepth(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ReversedDepth(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -1793,6 +1964,36 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ktx(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Sao(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ssao(demo) = &mut self.content {
@@ -1946,6 +2147,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ktx(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Sao(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Ssao(demo) = &mut self.content {
@@ -2188,6 +2419,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Ktx(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Sao(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Ssao(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -2337,6 +2598,46 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::Ktx(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Sao(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::Ssao(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -2470,6 +2771,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ktx(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Sao(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Ssao(demo) = &mut self.content {
@@ -2690,6 +3021,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ktx(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Pvr(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LinesRaycast(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LogDepth(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ReversedDepth(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ElementsText(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ktx2(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Outline(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Taa(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Sao(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ssao(demo) = &mut self.content {

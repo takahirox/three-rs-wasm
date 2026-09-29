@@ -6,6 +6,8 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ webgpu_postprocessing_outline:{times:[0],parameters:[],at:0,settle:true,script:[['move',256,256,0],['param',0,6,6,0],['param',1,.8,.8,0],['param',2,3,3,0],['param',4,0xff0000,0xff0000,0],['param',5,0x00ff00,0x00ff00,0],['param',3,2,2,1.3],['param',3,0,0,1.3],['move',140,320,1.3],['move',380,190,1.3],['move',30,30,1.3]],restore:[[0,3,3],[1,0,0],[2,1,1],[4,0xffffff,0xffffff],[5,0x4e3636,0x4e3636]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_postprocessing_sao:{times:[0,1,2.5],parameters:[[0,'SAO Only',1],[0,'Normal',2],[0,'Default',0],[1,.2,.2],[2,.5,.5],[3,3,3],[4,40,40],[5,.2,.2],[6,false,0],[6,true,1],[7,30,30],[8,10,10],[9,.05,.05],[10,false,0]],restore:[[1,.5,.5],[2,.18,.18],[3,1,1],[4,100,100],[5,0,0],[7,8,8],[8,4,4],[9,.01,.01],[10,true,1]],at:2.5},
  webgl_postprocessing_ssao:{times:[0,1,2.5],parameters:[[0,'SSAO Only',1],[0,'SSAO Only + Blur',2],[0,'Depth',3],[0,'Normal',4],[0,'Default',0],[1,16,16],[2,.01,.01],[3,.2,.2],[4,false,0]],restore:[[1,8,8],[2,.005,.005],[3,.1,.1],[4,true,1]],at:2.5},
  webgpu_clipping_stencil:{times:[0,1,2.5],parameters:[[2,.3,.3],[5,-.2,-.2],[3,true,1],[8,.4,.4],[1,true,1],[4,true,1],[7,true,1],[0,false,0],[9,true,1]],restore:[[2,0,0],[5,0,0],[3,false,0],[8,0,0],[1,false,0],[4,false,0],[7,false,0],[0,true,1],[9,false,0]],at:2.5,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The slider's line and handle and the labels are page overlays, hidden in both.
@@ -13,6 +15,8 @@ const cases={
  webgl_materials_channels:{times:[0],parameters:[[0,'standard',0],[0,'velocity',2],[0,'depthBasic',3],[0,'depthRGBA',4],[0,'depthRGB',5],[0,'depthRG',6],[0,'normal',1],[2,'front',0],[2,'back',1],[1,'ortho',1],[0,'depthRGBA',4],[0,'standard',0],[2,'double',2],[0,'normal',1],[1,'perspective',0]],restore:[],at:0,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_video_kinect:{limits:[.008,.6],frames:3,times:[],parameters:[],at:1,script:[['video',2,0],['param',0,1500,1500,0],['param',1,6000,6000,0],['param',2,4,4,0],['param',3,2000,2000,0],['param',0,850,850,0],['param',1,4000,4000,0],['param',2,2,2,0],['param',3,1000,1000,0],['video',5.5,0],['move',400,300,null],['wait',.5],['wait',1.5],['move',60,100,null],['wait',3]]},
  webgl_loader_texture_dds:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
+ webgl_loader_texture_pvrtc:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
+ webgl_loader_texture_ktx:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
  webgpu_display_stereo:{backgroundSphere:true,times:[0,1,2.5],parameters:[[1,.1,.1],[0,'Anaglyph',1],[2,'Grey',1],[3,'Magenta / Cyan',1],[4,5,5],[2,'Compromise',6],[3,'Magenta / Green',2],[0,'ParallaxBarrier',2]],restore:[[0,'Stereo',0],[1,.064,.064],[2,'Dubois',4],[3,'Red / Cyan',0],[4,3,3]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_shadowmap_viewer:{times:[0,.5,1.3,2],parameters:[],at:2,antialias:true,drag:[[256,300],[330,340]],wheel:[256,300,-300]},
  webgl_materials_envmaps_exr:{backgroundBox:true,times:[0,1,2],parameters:[[1,.5,.5],[2,1,1],[3,.6,.6],[0,'PNG',1]],restore:[[0,'EXR',0],[1,0,0],[2,0,0],[3,1,1]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -44,7 +48,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8]};
+const msaaLimits={webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -239,5 +243,184 @@ test('Glitch pass: frames match the original frame by frame',async({page},info)=
  // The RGB shift and displacement sample the scene target between texels: along
  // polygon edges the filtered values differ between the backends (docs/texture-volumes.md).
  for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.02);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgl_postprocessing_taa counts frames: 200 turning (SSAA), then 200 still
+// (TAA accumulating one jitter sample level per frame). Both runtimes are brought
+// to the same frame count and compared frame by frame, with the sample level
+// and the TAA switch changed on their frames.
+test('TAA pass: frames match the original frame by frame',async({page},info)=>{
+ test.setTimeout(300000);await page.setViewportSize({width:512,height:512});
+ const picks=[1,50,99,100,101,102,105,110,130,140,299,301,305,306,310];
+ const changes={141:[1,'Level 2: 4 Samples',2],306:[0,'Disabled',0]};
+ const shots={};let frames=0;
+ for(const runtime of ['rust','reference']){
+  if(runtime==='rust'){await page.goto('/web/gallery/example.html?id=webgl_postprocessing_taa&still=1');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);await page.evaluate(()=>app.set_samples(1));await page.waitForTimeout(200);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
+  else{await page.goto('/reference/three-js/texture-volumes.html?id=webgl_postprocessing_taa&samples=1');await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true',null,{timeout:90000});for(let i=1;i<frames;i++)await page.evaluate(()=>renderFixture(0));}
+  await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
+  const frame=change=>page.evaluate(async({runtime,change})=>{if(change){const [i,reference,rust]=change;if(runtime==='reference')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);}if(runtime==='reference')await renderFixture(0);else{const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(0);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,change:change??null});
+  const list=[];const start=runtime==='rust'?frames:frames;
+  for(let k=start+1;k<=picks.at(-1);k++){await frame(changes[k]);if(picks.includes(k))list.push(PNG.sync.read(await page.locator('canvas').screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   const cycle=async()=>{for(let k=0;k<4;k++)await frame(null);};
+   await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,frame:picks.filter(k=>k>frames)[state],frames,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgpu_loader_texture_ktx2 lays its scenes out in the page: the whole viewport
+// (page text and canvas) is compared, at the top and scrolled, and the labels'
+// color spaces must match.
+test('KTX2 loader: the page and its texture views match the original',async({page},info)=>{
+ test.setTimeout(180000);await page.setViewportSize({width:640,height:900});
+ const shots={},labels={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/ktx2.html':'/web/gallery/example.html?id=webgpu_loader_texture_ktx2');
+  await page.waitForFunction(()=>document.querySelectorAll('.list-item').length===16&&[...document.querySelectorAll('.list-item')].every(e=>e.innerText.includes('colorSpace')),null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
+  labels[runtime]=await page.evaluate(()=>[...document.querySelectorAll('.list-item')].map(e=>e.innerText));
+  const list=[];
+  for(const y of [0,700,1400]){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(400);list.push(PNG.sync.read(await page.screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   // Scrolling redraws the visible views from resident textures and scenes only.
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   const cycle=async()=>{for(const y of [0,700,1400,0]){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);}};
+   await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+  }
+ }
+ expect(labels.rust).toEqual(labels.reference);
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgl_multiple_elements_text draws its views behind the article's text: the
+// viewport (text, MathML and views) is compared over time, scrolled, and after
+// a view's OrbitControls drag and wheel.
+test('Multiple elements with text: the page and its views match the original',async({page},info)=>{
+ test.setTimeout(240000);await page.setViewportSize({width:900,height:900});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.mouse.move(899,0);
+  await page.goto(runtime==='reference'?'/reference/three-js/elements-text.html':'/web/gallery/example.html?id=webgl_multiple_elements_text&still=1');
+  await page.waitForFunction(runtime==='reference'?()=>document.querySelectorAll('.view').length===6&&document.querySelector('#c')?.width>0:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
+  if(runtime==='reference')await page.waitForTimeout(1000);
+  const at=t=>page.evaluate(async({runtime,t})=>{if(runtime==='reference'){window.fixtureMs=t*1000;for(let i=0;i<4;i++)await new Promise(r=>requestAnimationFrame(r));}else{const c=document.querySelector('canvas');for(let i=0;i<2;i++){const p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t});
+  const list=[];const shot=async()=>list.push(PNG.sync.read(await page.screenshot()));
+  for(const t of [0,1,2.5]){await at(t);await shot();}
+  for(const y of [1100,2600]){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);await at(2.5);await shot();}
+  await page.evaluate(()=>scrollTo(0,1100));await page.waitForTimeout(200);
+  const box=await page.evaluate(()=>{const r=[...document.querySelectorAll('.view')].map(v=>v.getBoundingClientRect()).find(r=>r.top+r.height/2>40&&r.top+r.height/2<innerHeight-40);return {x:r.left+r.width/2,y:r.top+r.height/2};});
+  await page.mouse.move(box.x,box.y);await page.mouse.down();await page.mouse.move(box.x+80,box.y+40,{steps:5});await page.mouse.up();await at(2.5);await shot();
+  await page.mouse.wheel(0,-300);await at(2.5);await shot();
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   const cycle=async()=>{for(const [y,t] of [[0,1],[1100,2],[2600,3],[0,0]]){await page.evaluate(y=>scrollTo(0,y),y);await at(t);}};
+   await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ // The original displaces every point on the CPU in double precision; the port
+ // evaluates the same waves in the vertex stage in f32, so a few sprite edges
+ // land on the neighbouring pixel (≤1.3% of pixels, all at sprite edges).
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.02);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.4);}
+});
+
+// webgpu_reversed_depth_buffer: the three side-by-side depth buffers (normal,
+// logarithmic, reversed) and their labels over time, including the z-fighting.
+test('Reversed depth buffer: the three views match the original',async({page},info)=>{
+ test.setTimeout(240000);await page.setViewportSize({width:900,height:600});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/reversed-depth.html':'/web/gallery/example.html?id=webgpu_reversed_depth_buffer&still=1');
+  await page.waitForFunction(runtime==='reference'?()=>document.querySelectorAll('canvas').length===3&&document.querySelector('canvas')?.width>0:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
+  if(runtime==='reference')await page.waitForTimeout(1000);
+  const at=t=>page.evaluate(async({runtime,t})=>{if(runtime==='reference'){window.fixtureMs=t*1000;for(let i=0;i<4;i++)await new Promise(r=>requestAnimationFrame(r));}else{const c=document.querySelector('canvas');for(let i=0;i<2;i++){const p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t});
+  const list=[];
+  for(const t of [0,0.7,1.9,3.3,5]){await at(t);list.push(PNG.sync.read(await page.screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   await at(1);const before=await read();for(const t of [2,3,4])await at(t);expect(await read()).toEqual(before);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgpu_camera_logarithmicdepthbuffer: the normal and logarithmic views of the
+// labels, frame by frame as the camera zooms out, after a wheel, a mouse move
+// and a drag of the border.
+test('Logarithmic depth buffer: both views match the original frame by frame',async({page},info)=>{
+ test.setTimeout(300000);await page.setViewportSize({width:900,height:600});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.mouse.move(450,300);
+  await page.goto(runtime==='reference'?'/reference/three-js/log-depth.html':'/web/gallery/example.html?id=webgpu_camera_logarithmicdepthbuffer&still=1');
+  await page.waitForFunction(runtime==='reference'?()=>typeof window.fixtureAnimate==='function':()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
+  const frames=n=>page.evaluate(async({runtime,n})=>{if(runtime==='reference'){window.fixtureFrames(n);for(let i=0;i<3;i++)await new Promise(r=>requestAnimationFrame(r));}else{const c=document.querySelector('canvas');for(let i=0;i<2;i++){const p=c.dataset.frames;if(i)app.gallery_time(0);else app.gallery_draw(1,n,0);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,n});
+  if(runtime==='reference')await page.waitForTimeout(500);else await frames(1);
+  const list=[];const shot=async()=>list.push(PNG.sync.read(await page.screenshot()));
+  await shot();
+  for(const n of [199,400,300]){await frames(n);await shot();}
+  // Wheel and mouse events arrive asynchronously; let them land before stepping.
+  await page.mouse.wheel(0,100);await page.waitForTimeout(300);await frames(60);await shot();
+  await page.mouse.move(630,180);await page.waitForTimeout(300);await frames(1);await shot();
+  await page.mouse.move(226,300);await page.mouse.down();await page.mouse.move(450,300,{steps:4});await page.mouse.up();await page.waitForTimeout(300);await frames(1);await shot();
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   await frames(1);const before=await read();await frames(5);await frames(1);expect(await read()).toEqual(before);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgpu_lines_fat_raycasting: the turning spiral and the raycast spheres under
+// the pointer, then with Line2, screen-space widths, a threshold (visualized)
+// and a translation.
+test('Fat line raycasting: lines and hit spheres match the original',async({page},info)=>{
+ test.setTimeout(240000);await page.setViewportSize({width:900,height:600});
+ const shots={};
+ const states=[[0,450,300,[]],[1.5,470,260,[]],[3,430,350,[]],[3,450,300,[['line type',0,0]]],[3,455,305,[['world units',1,false],['threshold',5,3]]],[3,440,290,[['visualize threshold',2,true],['translation',6,3]]]];
+ for(const runtime of ['reference','rust']){
+  await page.mouse.move(0,0);
+  await page.goto(runtime==='reference'?'/reference/three-js/lines-raycast.html':'/web/gallery/example.html?id=webgpu_lines_fat_raycasting&still=1');
+  await page.waitForFunction(runtime==='reference'?()=>window.fixtureControls?.['line type']:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
+  if(runtime==='reference')await page.waitForTimeout(1000);
+  const at=t=>page.evaluate(async({runtime,t})=>{if(runtime==='reference'){window.fixtureMs=t*1000;for(let i=0;i<4;i++)await new Promise(r=>requestAnimationFrame(r));}else{const c=document.querySelector('canvas');for(let i=0;i<3;i++){const p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t});
+  const list=[];
+  for(const [t,x,y,params] of states){
+   for(const [name,index,value] of params)await page.evaluate(({runtime,name,index,value})=>runtime==='reference'?window.fixtureSet(name,value):app.tsl_parameter(index,Number(value)),{runtime,name,index,value});
+   await page.mouse.move(x,y);await page.waitForTimeout(200);await at(t);list.push(PNG.sync.read(await page.screenshot()));
+  }
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   const cycle=async()=>{for(const [t,x] of [[1,440],[2,460],[3,450]]){await page.mouse.move(x,300);await at(t);}};
+   await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ // The visualized threshold (state 5) is a translucent alpha-to-coverage overlay:
+ // its dithered samples resolve slightly brighter in the port (≤1.2% of pixels,
+ // all on the 4 px threshold ribbons); every other state is exact.
+ for(const r of results){const [fraction,mean]=r.state===5?[.015,.5]:[.005,.6];expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(fraction);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(mean);}
 });
 

@@ -117,9 +117,9 @@ fn parse_dds(data: &[u8]) -> Result<Dds> {
 /// is the example's (or the loader's single-mip) min/magFilter override,
 /// which samples the base level only; mip chains otherwise use trilinear
 /// filtering with anisotropy 4, as WebGL applies it to mipmapped filters.
-struct DdsTexture {
-    view: wgpu::TextureView,
-    sampler: wgpu::Sampler,
+pub(super) struct DdsTexture {
+    pub(super) view: wgpu::TextureView,
+    pub(super) sampler: wgpu::Sampler,
 }
 async fn load(r: &Renderer, file: &str, srgb: bool, linear: bool) -> Result<DdsTexture> {
     let dds = parse_dds(&fetch(&format!("{ASSETS}/{file}")).await?)?;
@@ -208,7 +208,7 @@ const PLAIN: &str =
 /// A MeshBasicMaterial of a map, an envMap or both (the default
 /// MultiplyOperation with reflectivity 1: map × envMap), with the fragment
 /// body's final `return` choosing the alpha handling.
-async fn basic(
+pub(super) async fn basic(
     r: &Renderer,
     map: Option<&DdsTexture>,
     env: Option<&DdsTexture>,
@@ -251,7 +251,7 @@ async fn basic(
 }
 /// OPAQUE materials write alpha 1; the signed BC6H texels below zero
 /// encode to 0 as WebGL's output does.
-const OPAQUE: &str = "return vec4(max(c.rgb,vec3(0.0)),1.0);";
+pub(super) const OPAQUE: &str = "return vec4(max(c.rgb,vec3(0.0)),1.0);";
 pub(super) struct Demo {
     time: f64,
     meshes: Vec<Object3D>,

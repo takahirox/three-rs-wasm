@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><script>
+// The unmodified webgpu_lines_fat_raycasting page, with its imports pointed at the
+// pinned r186 sources, performance.now on the fixture clock, and the Inspector's
+// parameters replaced by setters the fixture calls (window.fixtureSet( name, value )).
+(async()=>{const html=await(await fetch('/.cache/three-r186/examples/webgpu_lines_fat_raycasting.html')).text();
+const prelude='<script>window.fixtureMs=0;performance.now=()=>window.fixtureMs;window.fixtureControls={};window.fixtureSet=(n,v)=>window.fixtureControls[n](v);window.fixtureGui={add(o,p){const c={cb:null,name(){return c},onChange(f){c.cb=f;return c}};window.fixtureControls[p]=v=>{o[p]=v;c.cb&&c.cb(v);};return c;}};<\/script>';
+let page=html.replace('<head>','<head><base href="/.cache/three-r186/examples/">'+prelude).replace('"three": "../build/three.webgpu.js"','"three": "/.cache/three-r186/src/Three.WebGPU.js"').replace('"three/webgpu": "../build/three.webgpu.js"','"three/webgpu": "/.cache/three-r186/src/Three.WebGPU.js"').replace('"three/tsl": "../build/three.tsl.js"','"three/tsl": "/.cache/three-r186/src/Three.TSL.js"').replace('"three/addons/": "./jsm/"','"three/addons/": "/.cache/three-r186/examples/jsm/"');
+page=page.replace(/import \{ Inspector \}[^;]*;/,'').replace('renderer.inspector = new Inspector();','').replace("gui = renderer.inspector.createParameters( 'Settings' );",'gui = fixtureGui;');
+document.open();document.write(page);document.close();})();
+</script></body></html>

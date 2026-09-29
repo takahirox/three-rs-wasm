@@ -438,5 +438,175 @@
   "file": "wide-gamut/logo_p3.png",
   "source": "examples/textures/wide_gamut/logo_p3.png",
   "sha256": "c65ce8fdb67ce9017adf6f7314092e6f97382e85c134bc07cda8f50018e3dd8d"
+ },
+ {
+  "file": "ktx2/2d_astc4x4.ktx2",
+  "source": "examples/textures/ktx2/2d_astc4x4.ktx2",
+  "sha256": "8fa06a8659482f5edbfa0a7ff486718600e9335fbe9bb6e5341fd0689de8bc33"
+ },
+ {
+  "file": "ktx2/2d_bc1.ktx2",
+  "source": "examples/textures/ktx2/2d_bc1.ktx2",
+  "sha256": "0db6a87f438a041c82e66d1f28253300d02c1fbdbe19482c572a8bc05a280f02"
+ },
+ {
+  "file": "ktx2/2d_bc3.ktx2",
+  "source": "examples/textures/ktx2/2d_bc3.ktx2",
+  "sha256": "d648816901d6b8837196db36532e4d5f18358bdcf9fef46b68b2a1724ffea35e"
+ },
+ {
+  "file": "ktx2/2d_bc4.ktx2",
+  "source": "examples/textures/ktx2/2d_bc4.ktx2",
+  "sha256": "06852ffdb83f8ff795816ebb7c989b5e386452b2df2dc526bfe86af5395eb6c7"
+ },
+ {
+  "file": "ktx2/2d_bc5.ktx2",
+  "source": "examples/textures/ktx2/2d_bc5.ktx2",
+  "sha256": "525541387e7c44f9301be18ca95bae742ec3f5cf9d4b97421cdf23291905eb35"
+ },
+ {
+  "file": "ktx2/2d_bc7.ktx2",
+  "source": "examples/textures/ktx2/2d_bc7.ktx2",
+  "sha256": "2dd67c154866013ee94af54cafc8a2c0f0ba68422088b20534232eed2bd8e9cd"
+ },
+ {
+  "file": "ktx2/2d_etc1.ktx2",
+  "source": "examples/textures/ktx2/2d_etc1.ktx2",
+  "sha256": "6de32f4bfbb271328eb38e394a44dbff16a49ba9ae4f868f1dbf506376c8ba18"
+ },
+ {
+  "file": "ktx2/2d_etc1s.ktx2",
+  "source": "examples/textures/ktx2/2d_etc1s.ktx2",
+  "sha256": "e56ddcc757fc73ff06bb0dac2a3533ce79c1e196ad895a3ff7dcc4d9de6b9d5d"
+ },
+ {
+  "file": "ktx2/2d_etc2.ktx2",
+  "source": "examples/textures/ktx2/2d_etc2.ktx2",
+  "sha256": "e8a0062f956ff858cb607a594c9aae907ae8794803343b73944d45ee390a35fc"
+ },
+ {
+  "file": "ktx2/2d_r11g11b10_linear.ktx2",
+  "source": "examples/textures/ktx2/2d_r11g11b10_linear.ktx2",
+  "sha256": "f50b095683cc9dd69da9502180f399d03f014d9ddb5bed7cd96d9ceca1085879"
+ },
+ {
+  "file": "ktx2/2d_rgb9e5_linear.ktx2",
+  "source": "examples/textures/ktx2/2d_rgb9e5_linear.ktx2",
+  "sha256": "7178f50452ab0139ab147b37a70872da0b18248c922d5dfea2b83d4e48b92618"
+ },
+ {
+  "file": "ktx2/2d_rgba16_linear.ktx2",
+  "source": "examples/textures/ktx2/2d_rgba16_linear.ktx2",
+  "sha256": "e62b6b2f7da518f44963380775be74c4ce3ac09b575c0e7823a50f9eea1b2a27"
+ },
+ {
+  "file": "ktx2/2d_rgba32_linear.ktx2",
+  "source": "examples/textures/ktx2/2d_rgba32_linear.ktx2",
+  "sha256": "0362d7db179ccfbfca0e94be8a118e9ad3637b4defa2c62b85dbd8dab357174c"
+ },
+ {
+  "file": "ktx2/2d_rgba8.ktx2",
+  "source": "examples/textures/ktx2/2d_rgba8.ktx2",
+  "sha256": "93c7b4c9eaecd6144ec6c6292b3408f57d9c557e060f2e2e2d53df8c195fe3d8"
+ },
+ {
+  "file": "ktx2/2d_rgba8_linear.ktx2",
+  "source": "examples/textures/ktx2/2d_rgba8_linear.ktx2",
+  "sha256": "b64194b65d2eca1337b3bddd5b8fc5c1d71f7c2e4cd6ed37e4c6651378d7d3a7"
+ },
+ {
+  "file": "ktx2/2d_uastc.ktx2",
+  "source": "examples/textures/ktx2/2d_uastc.ktx2",
+  "sha256": "21b6912cae1f074ae3eda1b751f43c36eafc7eb83f3af71f85bba2ccbafce125"
+ },
+ {
+  "file": "outline/tree.obj",
+  "source": "examples/models/obj/tree.obj",
+  "sha256": "8981e33746771778643a7479d4591da4dcdb59498703c2dacb8395129b8d3538"
+ },
+ {
+  "file": "pvrtc/disturb_2bpp_rgb.pvr",
+  "source": "examples/textures/compressed/disturb_2bpp_rgb.pvr",
+  "sha256": "ae1e03edd495975a2c877e1d9671d7c08e27d26e31a8385aac2a8de0c6a53a13"
+ },
+ {
+  "file": "pvrtc/disturb_4bpp_rgb.pvr",
+  "source": "examples/textures/compressed/disturb_4bpp_rgb.pvr",
+  "sha256": "de2f102990ef66d5cc33bc982f3af21ade3e70d97670a5f17aa2300c1cb8f114"
+ },
+ {
+  "file": "pvrtc/disturb_4bpp_rgb_mips.pvr",
+  "source": "examples/textures/compressed/disturb_4bpp_rgb_mips.pvr",
+  "sha256": "218679d885a8499ef666dc5fbdb7250c3b9126b2ffc0437ec3aa77ac926a3756"
+ },
+ {
+  "file": "pvrtc/disturb_4bpp_rgb_v3.pvr",
+  "source": "examples/textures/compressed/disturb_4bpp_rgb_v3.pvr",
+  "sha256": "e4911097c932f08c5b8be824b513f7666edd9c6eb4577415a8037f01505e60aa"
+ },
+ {
+  "file": "pvrtc/flare_2bpp_rgba.pvr",
+  "source": "examples/textures/compressed/flare_2bpp_rgba.pvr",
+  "sha256": "405081a36f4fde500453d184ffb285bbb0d685f0720df8017b7b41fdccd1a228"
+ },
+ {
+  "file": "pvrtc/flare_4bpp_rgba.pvr",
+  "source": "examples/textures/compressed/flare_4bpp_rgba.pvr",
+  "sha256": "d9c3398e944962f2a3b8ae3ce8ee0d2da213f1a93b47f62143b2d2f1c50eadce"
+ },
+ {
+  "file": "pvrtc/park3_cube_mip_2bpp_rgb_v3.pvr",
+  "source": "examples/textures/compressed/park3_cube_mip_2bpp_rgb_v3.pvr",
+  "sha256": "fa92c0fc73c48b7b26a18c3e605f3cd5ff75b14a70ea86eda068f39bee999db5"
+ },
+ {
+  "file": "pvrtc/park3_cube_nomip_4bpp_rgb.pvr",
+  "source": "examples/textures/compressed/park3_cube_nomip_4bpp_rgb.pvr",
+  "sha256": "ae4d3b02365c113965c5df71f755b1874bc7364b0be5ba00967967a423df851c"
+ },
+ {
+  "file": "ktx/disturb_ASTC4x4.ktx",
+  "source": "examples/textures/compressed/disturb_ASTC4x4.ktx",
+  "sha256": "6a7abe6b30343bd2124600445a40aa0f362d8722110619b848208cbe8dc08fee"
+ },
+ {
+  "file": "ktx/disturb_BC1.ktx",
+  "source": "examples/textures/compressed/disturb_BC1.ktx",
+  "sha256": "078c6f8ab59e2336726d5a388372c6b7ffe0fd8391433facd089cbf633f12f22"
+ },
+ {
+  "file": "ktx/disturb_ETC1.ktx",
+  "source": "examples/textures/compressed/disturb_ETC1.ktx",
+  "sha256": "b4ab5f5ff2628dc1d1a9fd6ebcd53688cb4a47f3662c4026280ae1c0853180bb"
+ },
+ {
+  "file": "ktx/disturb_PVR2bpp.ktx",
+  "source": "examples/textures/compressed/disturb_PVR2bpp.ktx",
+  "sha256": "b2df4397cad183b0027d33ccb126b65e7082ba9dab62f1f6f361d84eded479de"
+ },
+ {
+  "file": "ktx/lensflare_ASTC8x8.ktx",
+  "source": "examples/textures/compressed/lensflare_ASTC8x8.ktx",
+  "sha256": "9752b527b02c36bcf011726c8c878fc4d4134f56fe23da3dfad9e42386d2620d"
+ },
+ {
+  "file": "ktx/lensflare_BC3.ktx",
+  "source": "examples/textures/compressed/lensflare_BC3.ktx",
+  "sha256": "d81e8d30b5bcfa581fa469b4e47fde5f7c116e29962fb8a7b16cd5d64eb4acff"
+ },
+ {
+  "file": "ktx/lensflare_PVR4bpp.ktx",
+  "source": "examples/textures/compressed/lensflare_PVR4bpp.ktx",
+  "sha256": "b6bd3f397a047ac2f2dec1432590a64f3920fb95ea24fee108aa402609924514"
+ },
+ {
+  "file": "ktx/normal.bc5.ktx",
+  "source": "examples/textures/compressed/normal.bc5.ktx",
+  "sha256": "452727e199fe62a94ad8d562be901754c7af062e3c1ca064d6232ed40ff32a9d"
+ },
+ {
+  "file": "ktx/normal.eac_rg.ktx",
+  "source": "examples/textures/compressed/normal.eac_rg.ktx",
+  "sha256": "c13ac49fffeab83802cfb1b40a1950f5683c0b4ed4a98a69700f76c92a1e727e"
  }
 ]

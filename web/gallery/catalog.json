@@ -715,8 +715,8 @@
     {
       "id": "webgl_camera_logarithmicdepthbuffer",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_camera_logarithmicdepthbuffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html",
       "source_sha256": "ab3e4d8d3e713cc539f5608f6234333ba585d0a093672dd3a90a7249969ee90c",
       "requirements": {
@@ -743,7 +743,8 @@
         "three/addons/geometries/TextGeometry.js",
         "three/addons/libs/stats.module.js",
         "three/addons/loaders/FontLoader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_camera_logarithmicdepthbuffer"
     },
     {
       "id": "webgl_clipping",
@@ -3694,8 +3695,8 @@
     {
       "id": "webgl_lines_fat_raycasting",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_lines_fat_raycasting",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_raycasting.html",
       "source_sha256": "d2c6689b94e220e89f495f4cfedcaa3e167162f007b8257d95693adba1d94474",
       "requirements": {
@@ -3744,7 +3745,8 @@
         "three/addons/lines/LineMaterial.js",
         "three/addons/lines/LineSegments2.js",
         "three/addons/lines/LineSegmentsGeometry.js"
-      ]
+      ],
+      "preferred_example": "webgpu_lines_fat_raycasting"
     },
     {
       "id": "webgl_lines_fat_wireframe",
@@ -5877,7 +5879,7 @@
     {
       "id": "webgl_loader_texture_ktx",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx.html",
       "source_sha256": "f5bbdb355bb7b95823457dc5ae1afae3f6be5aa19f4eb3ec6c9ca31532ef84d9",
@@ -5893,7 +5895,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 353,
+        "source": "src/browser/ktx.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "KTXLoaderのKTX 1ファイル（PVRTC、S3TC/BC1・BC3・BC5、ETC1、EAC RG、ASTC 4x4・8x8）を、原作と同じくブラウザのWebGL拡張の有無で選び、回転する箱の色マップ、深度テストなしのレンズフレア、点光源下の2チャンネル圧縮法線マップ（MeshStandardMaterial）としてRustで再現。ブロック形式は格納値のままアップロードし、WebGPUにないPVRTCだけは読み込み時に一度RGBA8へデコードして常駐させる。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/KTXLoader.js"
@@ -5902,8 +5911,8 @@
     {
       "id": "webgl_loader_texture_ktx2",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_loader_texture_ktx2",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx2.html",
       "source_sha256": "023d48c7ea9585d40c3dca72e5b32980dcecaa7a2f94061c8ae6e397a2f26d84",
       "requirements": {
@@ -5922,7 +5931,8 @@
       "imports": [
         "three",
         "three/addons/loaders/KTX2Loader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_loader_texture_ktx2"
     },
     {
       "id": "webgl_loader_texture_lottie",
@@ -5961,7 +5971,7 @@
     {
       "id": "webgl_loader_texture_pvrtc",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_pvrtc.html",
       "source_sha256": "7b7005a70fd899a28c83173efdd53a26a41af4da759f2be15c96d48d895e8bfe",
@@ -5973,7 +5983,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 352,
+        "source": "src/browser/pvr.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "PVRLoaderのv2/v3ファイル（PVRTC 2/4bpp、ミップあり・なし、アルファ付き）を回転する箱に、2つのキューブマップをトーラスの反射に使う構成をRustで再現。WebGPUにはPVRTC形式がないため、各レベルを読み込み時に一度だけRGBA8へデコード（Imaginationの参照デコーダーと同じ手順）して常駐させる。GPU上のテクスチャメモリは圧縮時の4〜8倍になる。WebGLと同じくPVRTCにはsRGB形式がないため、色空間に関わらず格納値のままサンプリングする。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/PVRLoader.js"
@@ -8839,7 +8856,7 @@
     {
       "id": "webgl_multiple_elements_text",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_elements_text.html",
       "source_sha256": "b308c6d9e82e01a21b9373c8aef92860ede881d038cb30be4e476378c53f7781",
@@ -8861,7 +8878,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 348,
+        "source": "src/browser/elements_text.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "記事（本文とMathML）と6つのビュー要素、各ビューの格子またはランダムな分子のPoints（キャンバスで描いた円のスプライト、alphaTest）、平面波・円筒波・球面波の変位、要素ごとのビューポートとシザー（キャンバス外にかかる場合はビューオフセットで切り出し）、ビューごとのOrbitControlsをRustで再現。原作は毎フレームCPUで全点を変位するが、移植は常駐した位置から頂点ステージで変位を計算する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js"
@@ -11371,8 +11395,8 @@
     {
       "id": "webgl_postprocessing_outline",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_postprocessing_outline",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_outline.html",
       "source_sha256": "56908a1236290fc58d727bb87cb3c98f9ba40a73db9185eb17024b362f5b6206",
       "requirements": {
@@ -11463,7 +11487,8 @@
         "three/addons/postprocessing/RenderPass.js",
         "three/addons/postprocessing/ShaderPass.js",
         "three/addons/shaders/FXAAShader.js"
-      ]
+      ],
+      "preferred_example": "webgpu_postprocessing_outline"
     },
     {
       "id": "webgl_postprocessing_pixel",
@@ -11592,7 +11617,7 @@
     {
       "id": "webgl_postprocessing_sao",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_sao.html",
       "source_sha256": "00597698320b8b8afbde81b79ed06823804e5ada4f50bac20422e9e823e79a9e",
@@ -11614,7 +11639,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 344,
+        "source": "src/browser/sao.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "120個のインスタンス球（MeshStandardMaterial、HSLのインスタンス色）をRenderPassで半精度ターゲットへ描画し、SAOPass（ビュー法線と深度、7サンプルの螺旋、深度制限付きの縦横ガウスブラー、乗算合成、SAO・法線の各出力）、全11項目の操作とOutputPassをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -11888,7 +11920,7 @@
     {
       "id": "webgl_postprocessing_taa",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_taa.html",
       "source_sha256": "182a74d59e13414a88b2c2b4551595997b73de59ff8d6fc065277df575e5e7ee",
@@ -11916,7 +11948,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 345,
+        "source": "src/browser/taa.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ワイヤーフレームの箱と最近傍フィルタのレンガの箱を、TAARenderPass（回転中はSSAARenderPass、静止中は32個のジッターを1フレームずつ蓄積して保持フレームと合成、SampleLevelごとのサンプル数）または通常のRenderPass、OutputPassで描画し、200フレームごとの回転と静止の切り替えをフレーム単位でRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -13226,8 +13265,8 @@
     {
       "id": "webgl_reversed_depth_buffer",
       "category": "webgl / advanced",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_reversed_depth_buffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_reversed_depth_buffer.html",
       "source_sha256": "8f2fd46aef6572ef745f0814fb849955c734c5008a5dfb523a069b4ec6402b9e",
       "requirements": {
@@ -13257,7 +13296,8 @@
         "three/addons/postprocessing/EffectComposer.js",
         "three/addons/postprocessing/OutputPass.js",
         "three/addons/postprocessing/RenderPass.js"
-      ]
+      ],
+      "preferred_example": "webgpu_reversed_depth_buffer"
     },
     {
       "id": "webgl_shadowmap_csm",
@@ -14722,7 +14762,7 @@
     {
       "id": "webgpu_camera_logarithmicdepthbuffer",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_camera_logarithmicdepthbuffer.html",
       "source_sha256": "6950abe5cc99d3b7c0b699e006068b1c40424e357f8b121df4bbb6a2ae563592",
@@ -14754,7 +14794,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 350,
+        "source": "src/browser/log_depth.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "1µmから1000光年までの15個のテキストラベル（TextGeometry、Phong）と球を、near 1e-6・far 1e27の2つのカメラで通常深度と対数深度（レンダラーの組み込みマテリアルがビューZからフラグメント深度を書く）に分けて描画し、フレームごとのズーム、ホイール、マウス、境界ドラッグをRustで再現。2つのレンダラーは1枚のキャンバス上のビューポートとして描く。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/geometries/TextGeometry.js",
         "three/addons/inspector/Inspector.js",
@@ -19304,7 +19351,7 @@
     {
       "id": "webgpu_lines_fat_raycasting",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat_raycasting.html",
       "source_sha256": "0175d11e22835c3fc36df23664bdd10eebbf502bf51bbd2ea48b62c6b6964e41",
@@ -19354,7 +19401,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 351,
+        "source": "src/browser/lines_raycast.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "CatmullRom曲線から作る色付きの太線（LineSegmentsGeometry/LineGeometry、ワールド単位またはピクセル幅、alphaToCoverage）を常駐GPUリボンで描き、ポインターのレイキャスト（LineSegments2.raycastのCPUクエリ）で交点と線上の点に球を置く挙動、しきい値の可視化、平行移動をRustで再現。Inspector外観と性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -19868,7 +19922,7 @@
     {
       "id": "webgpu_loader_texture_ktx2",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_texture_ktx2.html",
       "source_sha256": "32f4acd7f7924041a3f3857257349537ad61920322b5de97f5aa4a96834c1930",
@@ -19884,7 +19938,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 347,
+        "source": "src/browser/ktx2.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "KTX2コンテナ（非圧縮のRGBA8/16/32・RGB9E5・R11G11B10、ASTC・ETC1/2・BC1/3/4/5/7のブロック形式を格納どおりに転送、Basis UniversalはKTX2Loaderと同じ規則でデバイスのブロック形式へ変換）、DFDの色空間、KTX2Loaderのフィルタ、ページのセクションとリスト項目、完全に見える項目だけのビューポート／シザー描画、スクロールに追従するキャンバスをRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/KTX2Loader.js"
@@ -23816,7 +23877,7 @@
     {
       "id": "webgpu_postprocessing_outline",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_outline.html",
       "source_sha256": "758081173cac51320c2be76b32a5bd8f2b3ff878eb070eae4b7db971562699ed",
@@ -23906,7 +23967,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 346,
+        "source": "src/browser/outline.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "OBJの木、20個の球、床、トーラスとSunLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -25432,7 +25500,7 @@
     {
       "id": "webgpu_reversed_depth_buffer",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_reversed_depth_buffer.html",
       "source_sha256": "ed3d59c074d7c23e8e42cbe2d222d657a147d71a3e179e6d21b782e04b923ef7",
@@ -25458,7 +25526,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 349,
+        "source": "src/browser/reversed_depth.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ほぼ同一平面の赤と緑の平面5組を、通常のDepth24Plus深度、対数深度（ビューZからのフラグメント深度）、逆深度（逆射影、0クリア、GreaterEqual、Depth32Float）の3つのビューで並べて描画し、zファイティングの違いをRustで再現。3つのレンダラーは1枚のキャンバス上のビューポートとして描く。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/tsl",
         "three/webgpu"

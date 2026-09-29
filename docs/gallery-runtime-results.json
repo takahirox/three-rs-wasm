@@ -9,9 +9,9 @@
     "The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md."
   ],
   "counts": {
-    "runtime-prerequisite": 536,
-    "excluded": 35,
-    "rust-static-frame-rendered": 33,
+    "runtime-prerequisite": 532,
+    "excluded": 40,
+    "rust-static-frame-rendered": 32,
     "rust-empty-frame": 3
   },
   "examples": [
@@ -260,26 +260,8 @@
       "id": "webgl_camera_logarithmicdepthbuffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html",
       "source_sha256": "ab3e4d8d3e713cc539f5608f6234333ba585d0a093672dd3a90a7249969ee90c",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_camera_logarithmicdepthbuffer",
-        "source_sha256": "ab3e4d8d3e713cc539f5608f6234333ba585d0a093672dd3a90a7249969ee90c",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Material type: MeshPhongMaterial"
-        ],
-        "observed": {
-          "objects": 30,
-          "vertices": 428283,
-          "lights": 2
-        },
-        "elapsed_ms": 1242,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_clipping",
@@ -1694,28 +1676,8 @@
       "id": "webgl_lines_fat_raycasting",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_raycasting.html",
       "source_sha256": "d2c6689b94e220e89f495f4cfedcaa3e167162f007b8257d95693adba1d94474",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_lines_fat_raycasting",
-        "source_sha256": "d2c6689b94e220e89f495f4cfedcaa3e167162f007b8257d95693adba1d94474",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Instanced custom attributes",
-          "Material type: LineMaterial",
-          "Alpha-to-coverage"
-        ],
-        "observed": {
-          "objects": 2,
-          "vertices": 16,
-          "lights": 0
-        },
-        "elapsed_ms": 1281,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_lines_fat_wireframe",
@@ -2880,7 +2842,7 @@
       "id": "webgl_loader_texture_ktx",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx.html",
       "source_sha256": "f5bbdb355bb7b95823457dc5ae1afae3f6be5aa19f4eb3ec6c9ca31532ef84d9",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_texture_ktx",
         "source_sha256": "f5bbdb355bb7b95823457dc5ae1afae3f6be5aa19f4eb3ec6c9ca31532ef84d9",
@@ -2905,32 +2867,8 @@
       "id": "webgl_loader_texture_ktx2",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_ktx2.html",
       "source_sha256": "023d48c7ea9585d40c3dca72e5b32980dcecaa7a2f94061c8ae6e397a2f26d84",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_loader_texture_ktx2",
-        "source_sha256": "023d48c7ea9585d40c3dca72e5b32980dcecaa7a2f94061c8ae6e397a2f26d84",
-        "stage": "captured-scene",
-        "blockers": [],
-        "observed": {
-          "objects": 1,
-          "vertices": 4,
-          "lights": 0
-        },
-        "elapsed_ms": 1305,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "rust": {
-        "colored_pixels": 17932,
-        "distinct_colors": 10,
-        "fidelity": "Not compared with upstream pixels; this is one captured frame, not a behavioral port.",
-        "objects": 1,
-        "stage": "rust-static-frame-rendered"
-      },
-      "outcome": "rust-static-frame-rendered",
-      "local_image": ".cache/gallery-runtime/webgl_loader_texture_ktx2.png",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_loader_texture_lottie",
@@ -2961,7 +2899,7 @@
       "id": "webgl_loader_texture_pvrtc",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_pvrtc.html",
       "source_sha256": "7b7005a70fd899a28c83173efdd53a26a41af4da759f2be15c96d48d895e8bfe",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_texture_pvrtc",
         "source_sha256": "7b7005a70fd899a28c83173efdd53a26a41af4da759f2be15c96d48d895e8bfe",
@@ -4395,7 +4333,7 @@
       "id": "webgl_multiple_elements_text",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multiple_elements_text.html",
       "source_sha256": "b308c6d9e82e01a21b9373c8aef92860ede881d038cb30be4e476378c53f7781",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_multiple_elements_text",
         "source_sha256": "b308c6d9e82e01a21b9373c8aef92860ede881d038cb30be4e476378c53f7781",
@@ -5699,26 +5637,8 @@
       "id": "webgl_postprocessing_outline",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_outline.html",
       "source_sha256": "56908a1236290fc58d727bb87cb3c98f9ba40a73db9185eb17024b362f5b6206",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_postprocessing_outline",
-        "source_sha256": "56908a1236290fc58d727bb87cb3c98f9ba40a73db9185eb17024b362f5b6206",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Material type: ShaderMaterial"
-        ],
-        "observed": {
-          "objects": 1,
-          "vertices": 3,
-          "lights": 0
-        },
-        "elapsed_ms": 1300,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_postprocessing_pixel",
@@ -5774,7 +5694,7 @@
       "id": "webgl_postprocessing_sao",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_sao.html",
       "source_sha256": "00597698320b8b8afbde81b79ed06823804e5ada4f50bac20422e9e823e79a9e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_sao",
         "source_sha256": "00597698320b8b8afbde81b79ed06823804e5ada4f50bac20422e9e823e79a9e",
@@ -5899,7 +5819,7 @@
       "id": "webgl_postprocessing_taa",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_taa.html",
       "source_sha256": "182a74d59e13414a88b2c2b4551595997b73de59ff8d6fc065277df575e5e7ee",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_taa",
         "source_sha256": "182a74d59e13414a88b2c2b4551595997b73de59ff8d6fc065277df575e5e7ee",
@@ -6737,26 +6657,8 @@
       "id": "webgl_reversed_depth_buffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_reversed_depth_buffer.html",
       "source_sha256": "8f2fd46aef6572ef745f0814fb849955c734c5008a5dfb523a069b4ec6402b9e",
-      "product_status": "not-ported",
-      "browser": {
-        "id": "webgl_reversed_depth_buffer",
-        "source_sha256": "8f2fd46aef6572ef745f0814fb849955c734c5008a5dfb523a069b4ec6402b9e",
-        "stage": "runtime-prerequisite",
-        "blockers": [
-          "Material type: RawShaderMaterial"
-        ],
-        "observed": {
-          "objects": 1,
-          "vertices": 3,
-          "lights": 0
-        },
-        "elapsed_ms": 1320,
-        "pending_requests": 0,
-        "errors": [],
-        "failed_requests": []
-      },
-      "outcome": "runtime-prerequisite",
-      "probe_limit": false
+      "product_status": "excluded",
+      "outcome": "excluded"
     },
     {
       "id": "webgl_shadowmap_csm",
@@ -7479,7 +7381,7 @@
       "id": "webgpu_camera_logarithmicdepthbuffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_camera_logarithmicdepthbuffer.html",
       "source_sha256": "6950abe5cc99d3b7c0b699e006068b1c40424e357f8b121df4bbb6a2ae563592",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_camera_logarithmicdepthbuffer",
         "source_sha256": "6950abe5cc99d3b7c0b699e006068b1c40424e357f8b121df4bbb6a2ae563592",
@@ -9283,7 +9185,7 @@
       "id": "webgpu_lines_fat_raycasting",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lines_fat_raycasting.html",
       "source_sha256": "0175d11e22835c3fc36df23664bdd10eebbf502bf51bbd2ea48b62c6b6964e41",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lines_fat_raycasting",
         "source_sha256": "0175d11e22835c3fc36df23664bdd10eebbf502bf51bbd2ea48b62c6b6964e41",
@@ -9597,7 +9499,7 @@
       "id": "webgpu_loader_texture_ktx2",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_texture_ktx2.html",
       "source_sha256": "32f4acd7f7924041a3f3857257349537ad61920322b5de97f5aa4a96834c1930",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_loader_texture_ktx2",
         "source_sha256": "32f4acd7f7924041a3f3857257349537ad61920322b5de97f5aa4a96834c1930",
@@ -11255,7 +11157,7 @@
       "id": "webgpu_postprocessing_outline",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_outline.html",
       "source_sha256": "758081173cac51320c2be76b32a5bd8f2b3ff878eb070eae4b7db971562699ed",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_outline",
         "source_sha256": "758081173cac51320c2be76b32a5bd8f2b3ff878eb070eae4b7db971562699ed",
@@ -11852,7 +11754,7 @@
       "id": "webgpu_reversed_depth_buffer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_reversed_depth_buffer.html",
       "source_sha256": "ed3d59c074d7c23e8e42cbe2d222d657a147d71a3e179e6d21b782e04b923ef7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_reversed_depth_buffer",
         "source_sha256": "ed3d59c074d7c23e8e42cbe2d222d657a147d71a3e179e6d21b782e04b923ef7",

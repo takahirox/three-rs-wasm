@@ -321,6 +321,20 @@ impl GpuTexture {
         })
     }
 
+    /// A single 2D Basis texture (KTX2 or .basis) transcoded to the device's
+    /// block format with its mip chain and trilinear filtering.
+    pub fn from_basis(
+        renderer: &crate::renderer::Renderer,
+        bytes: &[u8],
+        srgb: bool,
+    ) -> Result<Self> {
+        let t =
+            basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        let mut image = Texture::from_rgba(1, 1, vec![0; 4], srgb)?;
+        (image.width, image.height) = t.base_dimensions();
+        image.mipmap_filter = Some(Filter::Linear);
+        compressed_texture(&renderer.device, &renderer.queue, &image, bytes)
+    }
     /// Transcode every layer/mip to a supported GPU block format, retaining the
     /// compressed representation. No RGBA fallback is used.
     pub fn from_basis_array(
@@ -375,6 +389,13 @@ impl TextureCache {
             && owner.strong_count() > 0
         {
             return Ok(gpu.clone());
+        }
+        if let Some(blocks) = &image.blocks {
+            let gpu = block_texture(device, queue, image, blocks)?;
+            self.entries
+                .insert(key, (Arc::downgrade(image), gpu.clone()));
+            self.uploads += 1;
+            return Ok(gpu);
         }
         if let Some(bytes) = &image.basis {
             let gpu = compressed_texture(device, queue, image, bytes)?;
@@ -583,6 +604,78 @@ fn material_sampler(device: &wgpu::Device, image: &Texture) -> wgpu::Sampler {
     })
 }
 
+/// A CompressedTexture uploaded once as stored: every level at its
+/// block-rounded physical size.
+fn block_texture(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    image: &Texture,
+    blocks: &crate::material::BlockMips,
+) -> Result<GpuTexture> {
+    let format = blocks.format;
+    let (bw, bh) = format.block_dimensions();
+    let bytes = format
+        .block_copy_size(None)
+        .ok_or(Error::Invalid("block texture format"))?;
+    let levels = blocks.levels.len() as u32;
+    if image.width == 0
+        || image.height == 0
+        || image.width > device.limits().max_texture_dimension_2d
+        || image.height > device.limits().max_texture_dimension_2d
+        || levels == 0
+        || levels > image.width.max(image.height).ilog2() + 1
+        || !format.required_features().is_empty()
+            && !device.features().contains(format.required_features())
+    {
+        return Err(Error::Invalid("block texture dimensions/format"));
+    }
+    let texture = device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("cached block material texture"),
+        size: wgpu::Extent3d {
+            width: image.width,
+            height: image.height,
+            depth_or_array_layers: 1,
+        },
+        mip_level_count: levels,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format,
+        usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+        view_formats: &[],
+    });
+    for (level, data) in blocks.levels.iter().enumerate() {
+        let w = (image.width >> level).max(1);
+        let h = (image.height >> level).max(1);
+        let (columns, rows) = (w.div_ceil(bw), h.div_ceil(bh));
+        if data.len() < (columns * rows * bytes) as usize {
+            return Err(Error::Invalid("block texture level size"));
+        }
+        queue.write_texture(
+            wgpu::TexelCopyTextureInfo {
+                texture: &texture,
+                mip_level: level as u32,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            data,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(columns * bytes),
+                rows_per_image: Some(rows),
+            },
+            wgpu::Extent3d {
+                width: columns * bw,
+                height: rows * bh,
+                depth_or_array_layers: 1,
+            },
+        );
+    }
+    Ok(GpuTexture {
+        view: texture.create_view(&Default::default()),
+        sampler: material_sampler(device, image),
+        texture,
+    })
+}
 fn compressed_texture(
     device: &wgpu::Device,
     queue: &wgpu::Queue,

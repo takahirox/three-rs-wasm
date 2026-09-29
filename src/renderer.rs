@@ -38,8 +38,14 @@ struct PipelineKey {
     depth_format: Option<wgpu::TextureFormat>,
     attachment_formats: Vec<wgpu::TextureFormat>,
     mirrored: bool,
+    logarithmic_depth: bool,
 }
 
+/// u.maps.x: 0 without a normal map, 1 for RGB normal maps and 2 for packed
+/// two-channel ones, whose z the shader reconstructs (USE_PACKED_NORMALMAP).
+fn normal_map_kind(map: Option<&Texture>) -> f32 {
+    map.map_or(0.0, |t| if t.packed_rg() { 2.0 } else { 1.0 })
+}
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
 pub(crate) struct Vertex {
@@ -143,6 +149,9 @@ pub struct Renderer {
     draw_slots: RefCell<DrawSlots>,
     scene_draw_slots: RefCell<HashMap<u32, (std::sync::Weak<()>, DrawSlots)>>,
     present_slots: RefCell<Vec<(wgpu::Texture, crate::draw_gpu::Slot)>>,
+    /// WebGPURenderer( { logarithmicDepthBuffer } ): built-in materials seen
+    /// through a perspective camera write a logarithmic fragment depth.
+    pub logarithmic_depth: std::cell::Cell<bool>,
 }
 #[derive(Clone, Copy, PartialEq)]
 enum ScenePass {
@@ -480,6 +489,7 @@ impl Renderer {
             draw_slots: Default::default(),
             scene_draw_slots: Default::default(),
             present_slots: Default::default(),
+            logarithmic_depth: Default::default(),
         })
     }
 
@@ -880,6 +890,12 @@ impl Renderer {
             return Err(Error::Invalid("singular camera transform"));
         }
         let perspective = matches!(camera_data, crate::camera::Camera::Perspective(_));
+        let log_depth = match camera_data {
+            crate::camera::Camera::Perspective(p) if self.logarithmic_depth.get() => {
+                (p.near as f32, p.far as f32)
+            }
+            _ => (0.0, 0.0),
+        };
         let projection = camera_data.projection_matrix()?;
         let view_projection = projection * camera_world.inverse();
         let frustum = Frustum::from_projection(view_projection);
@@ -1306,8 +1322,8 @@ impl Renderer {
                         } else {
                             0.0
                         },
-                        0.0,
-                        0.0,
+                        log_depth.0,
+                        log_depth.1,
                     ],
                     uv_transforms,
                     clipping,
@@ -1427,13 +1443,13 @@ impl Renderer {
                     maps: match material {
                         Material::Standard(m)
                         | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
-                            f32::from(m.normal_map.is_some()),
+                            normal_map_kind(m.normal_map.as_deref()),
                             f32::from(properties.transparent),
                             f32::from(m.emissive_map.is_some()),
                             f32::from(m.metallic_roughness_map.is_some()),
                         ],
                         Material::Phong(m) => [
-                            f32::from(m.normal_map.is_some()),
+                            normal_map_kind(m.normal_map.as_deref()),
                             f32::from(properties.transparent),
                             0.0,
                             0.0,
@@ -1441,7 +1457,7 @@ impl Renderer {
                         Material::Lambert(m)
                         | Material::Toon(MeshToonMaterial { base: m, .. })
                         | Material::Matcap(MeshMatcapMaterial { base: m, .. }) => [
-                            f32::from(m.normal_map.is_some()),
+                            normal_map_kind(m.normal_map.as_deref()),
                             f32::from(properties.transparent),
                             0.0,
                             0.0,
@@ -2246,6 +2262,7 @@ impl Renderer {
             attachment_formats: target.color_formats(),
             mirrored: uniforms.point[2] == 0.0
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
+            logarithmic_depth: custom.is_none() && uniforms.output[3] > 0.0,
         };
         let mut pipelines = self.pipelines.borrow_mut();
         let create_pipeline = |key: &PipelineKey| {
@@ -2260,7 +2277,7 @@ impl Renderer {
             let shader = custom.map_or(&self.shader, |p| &p.module);
             self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
             vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some("fs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&key.attachment_formats.iter().enumerate().map(|(i,&format)|Some(wgpu::ColorTargetState {format,blend:key.attachment_blending.get(i).copied().unwrap_or(key.blend),write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
+            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some(if key.logarithmic_depth {"fs_log_depth"} else {"fs_main"}),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&key.attachment_formats.iter().enumerate().map(|(i,&format)|Some(wgpu::ColorTargetState {format,blend:key.attachment_blending.get(i).copied().unwrap_or(key.blend),write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
             depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:wgpu::DepthBiasState{constant:key.depth_bias.0,slope_scale:f32::from_bits(key.depth_bias.1),clamp:0.0}}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),alpha_to_coverage_enabled:key.alpha_to_coverage,..Default::default()},multiview:None,cache:None})
         };

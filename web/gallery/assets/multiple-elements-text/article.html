@@ -1,0 +1,337 @@
+<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - multiple elements with text - webgl</div>
+
+		
+
+		
+
+		<p>Sound waves whose geometry is determined by a single dimension, plane waves, obey the wave equation</p>
+
+		<math display="block">
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>r</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>&minus;</mo>
+			<mfrac>
+				<mn>1</mn>
+				<msup>
+					<mi>c</mi>
+					<mn>2</mn>
+				</msup>
+			</mfrac>
+			<mo>&sdot;</mo>
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>t</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>=</mo>
+			<mn>0</mn>
+		</math>
+
+		<p>where <math><mi>c</mi></math> designates the speed of sound in the medium. The monochromatic solution for plane waves will be taken to be</p>
+
+		<math display="block">
+			<mi>u</mi>
+			<mo>(</mo>
+			<mi>r</mi>
+			<mo>,</mo>
+			<mi>t</mi>
+			<mo>)</mo>
+			<mo>=</mo>
+			<mi>sin</mi>
+			<mo>(</mo>
+			<mi>k</mi>
+			<mi>r</mi>
+			<mo>&plusmn;</mo>
+			<mi>&omega;</mi>
+			<mi>t</mi>
+			<mo>)</mo>
+		</math>
+
+		<p>
+			where <math><mi>&omega;</mi></math> is the frequency and 
+
+			<math>
+				<mi>k</mi>
+				<mo>=</mo>
+				<mi>&omega;</mi>
+				<mo>/</mo>
+				<mi>c</mi>
+			</math>
+
+			is the wave number. The sign chosen in the argument determines the direction of movement of the waves.
+		</p>
+
+		<p>Here is a plane wave moving on a three-dimensional lattice of atoms:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>Here is a plane wave moving through a three-dimensional random distribution of molecules:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>Sound waves whose geometry is determined by two dimensions, cylindrical waves, obey the wave equation</p>
+
+		<math display="block">
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>r</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>+</mo>
+			<mfrac>
+				<mrow>
+					<mn>1</mn>
+				</mrow>
+				<mrow>
+					<mi>r</mi>
+				</mrow>
+			</mfrac>
+			<mo>&sdot;</mo>
+			<mfrac>
+				<mrow>
+					<mi>&part;</mi>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<mi>r</mi>
+				</mrow>
+			</mfrac>
+			<mo>&minus;</mo>
+			<mfrac>
+				<mrow>
+					<mn>1</mn>
+				</mrow>
+				<mrow>
+					<msup>
+						<mi>c</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>&sdot;</mo>
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>t</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>=</mo>
+			<mn>0</mn>
+		</math>
+
+		<p>The monochromatic solution for cylindrical sound waves will be taken to be</p>
+
+		<math display="block">
+			<mi>u</mi>
+			<mo stretchy="false">(</mo>
+			<mi>r</mi>
+			<mo>,</mo>
+			<mi>t</mi>
+			<mo stretchy="false">)</mo>
+			<mo>=</mo>
+			<mfrac>
+				<mrow>
+					<mi>sin</mi>
+					<mo>(</mo>
+					<mi>k</mi>
+					<mi>r</mi>
+					<mo>&plusmn;</mo>
+					<mi>&omega;</mi>
+					<mi>t</mi>
+					<mo>)</mo>
+				</mrow>
+				<mrow>
+					<msqrt>
+						<mi>r</mi>
+					</msqrt>
+				</mrow>
+			</mfrac>
+		</math>
+
+		<p>Here is a cylindrical wave moving on a three-dimensional lattice of atoms:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>Here is a cylindrical wave moving through a three-dimensional random distribution of molecules:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>Sound waves whose geometry is determined by three dimensions, spherical waves, obey the wave equation</p>
+
+		<math display="block">
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>r</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>+</mo>
+			<mfrac>
+				<mrow>
+					<mn>2</mn>
+				</mrow>
+				<mrow>
+					<mi>r</mi>
+				</mrow>
+			</mfrac>
+			<mo>&sdot;</mo>
+			<mfrac>
+				<mrow>
+					<mi>&part;</mi>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<mi>r</mi>
+				</mrow>
+			</mfrac>
+			<mo>&minus;</mo>
+			<mfrac>
+				<mrow>
+					<mn>1</mn>
+				</mrow>
+				<mrow>
+					<msup>
+						<mi>c</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>&sdot;</mo>
+			<mfrac>
+				<mrow>
+					<msup>
+						<mi>&part;</mi>
+						<mn>2</mn>
+					</msup>
+					<mi>u</mi>
+				</mrow>
+				<mrow>
+					<mi>&part;</mi>
+					<msup>
+						<mi>t</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+			<mo>=</mo>
+			<mn>0</mn>
+		</math>
+
+		<p>The monochromatic solution for spherical sound waves will be taken to be</p>
+
+		<math display="block">
+			<mi>u</mi>
+			<mo stretchy="false">(</mo>
+			<mi>r</mi>
+			<mo>,</mo>
+			<mi>t</mi>
+			<mo stretchy="false">)</mo>
+			<mo>=</mo>
+			<mfrac>
+				<mrow>
+					<mi>sin</mi>
+					<mo>(</mo>
+					<mi>k</mi>
+					<mi>r</mi>
+					<mo>&plusmn;</mo>
+					<mi>&omega;</mi>
+					<mi>t</mi>
+					<mo>)</mo>
+				</mrow>
+				<mrow>
+					<mi>r</mi>
+				</mrow>
+			</mfrac>
+		</math>
+
+		<p>Here is a spherical wave moving on a three-dimensional lattice of atoms:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>Here is a spherical wave moving through a three-dimensional random distribution of molecules:</p>
+
+		<div class="view">
+
+		
+
+		</div>
+
+		<p>The mathematical description of sound waves can be carried to higher dimensions, but one needs to wait for Four.js and its higher-dimensional successors to attempt visualizations.</p>

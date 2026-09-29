@@ -813,3 +813,19 @@ with their source paths and SHA-256 hashes in
   the r186 `textures/kinect.nfo`; distributed alongside `LICENSE-THREE`.
 - `gallery/assets/wide-gamut/`: `textures/wide_gamut/logo_srgb.png` and
   `logo_p3.png`, distributed alongside `LICENSE-THREE`.
+
+The SAO to KTX batch adds unmodified r186 example assets, listed with their
+source paths and SHA-256 hashes in `gallery/assets/loaders-audio-manifest.json`,
+all distributed alongside `LICENSE-THREE`:
+
+- `gallery/assets/outline/tree.obj`: `models/obj/tree.obj`.
+- `gallery/assets/ktx2/`: the KTX2Loader test textures from `textures/ktx2/`
+  (`2d_*.ktx2`).
+- `gallery/assets/pvrtc/`: the PVRLoader test textures from
+  `textures/compressed/` (`disturb_*.pvr`, `flare_*.pvr`, `park3_cube_*.pvr`).
+- `gallery/assets/ktx/`: the KTXLoader test textures from
+  `textures/compressed/` (`disturb_*.ktx`, `lensflare_*.ktx`, `normal.bc5.ktx`,
+  `normal.eac_rg.ktx`).
+- `gallery/assets/multiple-elements-text/article.html`: the article markup of
+  `webgl_multiple_elements_text.html` (text, MathML and the view elements),
+  without its scripts.

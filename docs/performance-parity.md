@@ -803,3 +803,21 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   frame at 0.15 of its size, as the original does.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### SAO, TAA, outline, texture loaders, depth buffers and fat-line raycasting
+
+- **Post passes.** SAO, TAA and OutlineNode run as full-screen passes over
+  resident targets; the outline mirror scenes are warmed at the first render.
+- **Points.** The multiple-elements molecules stay resident and are displaced
+  in the vertex stage; the original rewrites every position on the CPU each
+  frame.
+- **Textures.** KTX and KTX2 data is uploaded once as stored. PVRTC levels are
+  decoded once at load to RGBA8 (4–8 × the compressed memory), since WebGPU
+  has no PVRTC formats; nothing is decoded per frame.
+- **Depth.** The reversed-depth planes use one resident vertex buffer and
+  three pipelines; the logarithmic depth is written by the built-in fragment
+  stage.
+- **Queries.** The fat-line raycast is the original's per-frame CPU query; the
+  ribbons stay resident on the GPU.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

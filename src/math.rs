@@ -434,19 +434,22 @@ impl Frustum {
             }),
         }
     }
+    /// Frustum.intersectsSphere: a sphere is outside only when some plane's
+    /// distance is below −radius (a degenerate NaN plane rejects nothing).
     pub fn intersects_sphere(&self, s: Sphere) -> bool {
-        self.planes
+        !self
+            .planes
             .iter()
-            .all(|p| p.distance_to_point(s.center) >= -s.radius)
+            .any(|p| p.distance_to_point(s.center) < -s.radius)
     }
     pub fn intersects_box(&self, b: Box3) -> bool {
         !b.is_empty()
-            && self.planes.iter().all(|p| {
+            && !self.planes.iter().any(|p| {
                 p.distance_to_point(Vector3::new(
                     if p.normal.x > 0.0 { b.max.x } else { b.min.x },
                     if p.normal.y > 0.0 { b.max.y } else { b.min.y },
                     if p.normal.z > 0.0 { b.max.z } else { b.min.z },
-                )) >= 0.0
+                )) < 0.0
             })
     }
 }
