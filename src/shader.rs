@@ -221,6 +221,35 @@ impl ShaderProgram {
         )
         .await
     }
+    /// A custom vertex projection with explicit texture dimensions and sample
+    /// types (e.g. unfilterable depth read with textureLoad).
+    #[cfg(target_arch = "wasm32")]
+    pub(crate) async fn with_projection_and_sample_types(
+        renderer: &Renderer,
+        wgsl: &str,
+        textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
+        dimensions: &[wgpu::TextureViewDimension],
+        sample_types: &[wgpu::TextureSampleType],
+        projection: &str,
+    ) -> Result<Self> {
+        if dimensions.len() != textures.len() || sample_types.len() != textures.len() {
+            return Err(Error::Invalid("shader texture dimensions"));
+        }
+        Self::build(
+            renderer,
+            wgsl,
+            &[],
+            textures,
+            DEFAULT_OUTPUT,
+            projection,
+            DEFAULT_SURFACE,
+            dimensions,
+            sample_types,
+            None,
+            None,
+        )
+        .await
+    }
     pub(crate) async fn with_projection(
         renderer: &Renderer,
         wgsl: &str,

@@ -214,6 +214,11 @@ impl Renderer {
             .borrow_mut()
             .get(&self.device, &self.queue, image)
     }
+    /// The shadow depth atlas (Depth32Float, one layer per shadow camera in
+    /// light order), as ShadowMapViewer reads a light's shadow map.
+    pub fn shadow_atlas(&self) -> Option<wgpu::Texture> {
+        self.shadows.atlas_texture()
+    }
     /// Cumulative geometry uploads/bytes, static skin/morph bytes, and pose bytes.
     /// A pose-only frame must not increase the first three counters.
     pub fn transfer_counts(&self) -> (u64, u64, u64, u64) {
@@ -902,7 +907,11 @@ impl Renderer {
                         },
                         scene.background_intensity,
                         scene.exposure,
-                        scene.output_tone_mapping() as u32 as f64,
+                        if scene.background_tone_mapped {
+                            scene.output_tone_mapping() as u32 as f64
+                        } else {
+                            0.0
+                        },
                     ],
                     &scene.background_outputs,
                 )
@@ -1090,9 +1099,10 @@ impl Renderer {
             {
                 continue;
             }
+            // Morphed geometry culls by its bounding sphere, which covers every
+            // morph target, as three's computeBoundingSphere does.
             if n.frustum_culled
                 && n.skin.is_none()
-                && n.morph_weights.is_empty()
                 && n.instances.is_empty()
                 && !frustum.intersects_sphere(
                     self.geometry

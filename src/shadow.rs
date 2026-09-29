@@ -83,7 +83,7 @@ pub(crate) struct Atlas {
 }
 pub(crate) struct ShadowRenderer {
     layout: wgpu::BindGroupLayout,
-    pipelines: [wgpu::RenderPipeline; 6],
+    pipelines: [wgpu::RenderPipeline; 8],
     pub sampler: wgpu::Sampler,
     empty: wgpu::TextureView,
     white: Arc<Texture>,
@@ -202,6 +202,11 @@ impl ShadowRenderer {
             }),
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false).unwrap()),
         }
+    }
+    /// The depth atlas of the last shadow pass: one layer per shadow camera,
+    /// in shadow-casting light order.
+    pub fn atlas_texture(&self) -> Option<wgpu::Texture> {
+        self.target.borrow().as_ref().map(|t| t.texture.clone())
     }
     pub fn collect_resources(&self) {
         self.slots.borrow_mut().clear();
@@ -373,10 +378,9 @@ impl ShadowRenderer {
                 viewports.push(Vector4::new(0., 0., scale, scale));
             }
         }
+        // A pass without shadow casters (e.g. an overlay scene) keeps the
+        // resident atlas and caster slots for the next shadowed pass.
         if cameras.is_empty() {
-            slots.clear();
-            *self.target.borrow_mut() = None;
-            self.rendered.set(false);
             return Ok(atlas);
         }
         if size == 0 || size > device.limits().max_texture_dimension_2d {
@@ -434,7 +438,6 @@ impl ShadowRenderer {
                 }
                 if node.frustum_culled
                     && node.skin.is_none()
-                    && node.morph_weights.is_empty()
                     && node.instances.is_empty()
                     && !frustum.intersects_sphere(
                         geometry_cache
@@ -455,6 +458,14 @@ impl ShadowRenderer {
                 }
                 let g = &mesh.geometry;
                 let gpu = geometry_cache.get(device, queue, g, false, false, false, None)?;
+                let wire = if mesh.materials.iter().any(|m| m.properties().wireframe)
+                    && g.indirect.is_none()
+                    && g.gpu_indirect.is_none()
+                {
+                    Some(geometry_cache.get(device, queue, g, false, false, true, None)?)
+                } else {
+                    None
+                };
                 let deformation = deformation_cache.get(device, queue, scene, handle)?;
                 let groups = if mesh.materials.len() > 1 {
                     g.groups.clone()
@@ -578,15 +589,30 @@ impl ShadowRenderer {
                         Side::Front => usize::from(mirrored),
                         Side::Back => usize::from(!mirrored),
                     };
-                    draws.push((
-                        gpu.clone(),
-                        instance_buffer,
-                        bind,
-                        start as u32..end as u32,
-                        node.draw_instance_count(g)?,
-                        side + if node.instances.is_empty() { 3 } else { 0 },
-                        material.shadow_program.clone(),
-                    ));
+                    let lines = material.wireframe
+                        && material.shadow_program.is_none()
+                        && start % 3 == 0
+                        && end % 3 == 0;
+                    match (&wire, lines) {
+                        (Some(wire), true) => draws.push((
+                            wire.clone(),
+                            instance_buffer,
+                            bind,
+                            start as u32 * 2..end as u32 * 2,
+                            node.draw_instance_count(g)?,
+                            if node.instances.is_empty() { 7 } else { 6 },
+                            None,
+                        )),
+                        _ => draws.push((
+                            gpu.clone(),
+                            instance_buffer,
+                            bind,
+                            start as u32..end as u32,
+                            node.draw_instance_count(g)?,
+                            side + if node.instances.is_empty() { 3 } else { 0 },
+                            material.shadow_program.clone(),
+                        )),
+                    }
                 }
             }
             let attachment = &target.layers[layer];
@@ -636,24 +662,33 @@ impl ShadowRenderer {
         Ok(atlas)
     }
 }
-fn view(position: Vector3, target: Vector3, mut up: Vector3) -> Matrix4 {
-    let direction = (target - position).normalize_or_zero();
-    if direction.cross(up).length_squared() < 1e-10 {
-        up = if direction.z.abs() < 0.9 {
-            Vector3::Z
-        } else {
-            Vector3::X
-        };
+/// The shadow camera's view: Object3D.lookAt through Matrix4.lookAt, which
+/// nudges a forward axis parallel to `up` by 0.0001 before the cross products.
+fn view(position: Vector3, target: Vector3, up: Vector3) -> Matrix4 {
+    let mut z = position - target;
+    if z.length_squared() == 0. {
+        z.z = 1.;
     }
-    Matrix4::look_at_rh(
-        position,
-        if direction == Vector3::ZERO {
-            position - Vector3::Z
+    z = z.normalize();
+    let mut x = up.cross(z);
+    if x.length_squared() == 0. {
+        if up.z.abs() == 1. {
+            z.x += 0.0001;
         } else {
-            target
-        },
-        up,
+            z.z += 0.0001;
+        }
+        z = z.normalize();
+        x = up.cross(z);
+    }
+    x = x.normalize();
+    let y = z.cross(x);
+    Matrix4::from_cols(
+        x.extend(0.),
+        y.extend(0.),
+        z.extend(0.),
+        position.extend(1.),
     )
+    .inverse()
 }
 fn depth_texture(device: &wgpu::Device, size: u32, layers: u32) -> wgpu::Texture {
     device.create_texture(&wgpu::TextureDescriptor {
@@ -676,9 +711,17 @@ fn depth_pipelines(
     device: &wgpu::Device,
     pipeline_layout: &wgpu::PipelineLayout,
     shader: &wgpu::ShaderModule,
-) -> [wgpu::RenderPipeline; 6] {
+) -> [wgpu::RenderPipeline; 8] {
+    // 0–5: triangles by side, instanced first; 6–7: wireframe lines, as the
+    // depth material inherits `wireframe`.
     std::array::from_fn(|i| {
-        let cull_mode = [Some(wgpu::Face::Back), Some(wgpu::Face::Front), None][i % 3];
+        let lines = i >= 6;
+        let instanced = if lines { i == 6 } else { i < 3 };
+        let cull_mode = if lines {
+            None
+        } else {
+            [Some(wgpu::Face::Back), Some(wgpu::Face::Front), None][i % 3]
+        };
         device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("shadow depth"),
             layout: Some(pipeline_layout),
@@ -686,7 +729,7 @@ fn depth_pipelines(
                 module: shader,
                 entry_point: Some("vs_main"),
                 compilation_options: wgpu::PipelineCompilationOptions {
-                    constants: &[("INSTANCED", if i < 3 { 1.0 } else { 0.0 })],
+                    constants: &[("INSTANCED", if instanced { 1.0 } else { 0.0 })],
                     ..Default::default()
                 },
                 buffers: &[
@@ -716,7 +759,7 @@ fn depth_pipelines(
                             },
                         ],
                     },
-                    crate::renderer::instance_layout(i < 3),
+                    crate::renderer::instance_layout(instanced),
                 ],
             },
             fragment: Some(wgpu::FragmentState {
@@ -726,6 +769,11 @@ fn depth_pipelines(
                 targets: &[],
             }),
             primitive: wgpu::PrimitiveState {
+                topology: if lines {
+                    wgpu::PrimitiveTopology::LineList
+                } else {
+                    wgpu::PrimitiveTopology::TriangleList
+                },
                 cull_mode,
                 ..Default::default()
             },
@@ -746,7 +794,7 @@ fn depth_pipelines(
 /// Resident depth-only program. Shading returns alpha as a binary shadow mask.
 #[derive(Debug)]
 pub struct ShadowProgram {
-    pipelines: [wgpu::RenderPipeline; 6],
+    pipelines: [wgpu::RenderPipeline; 8],
     bindings: wgpu::BindGroup,
 }
 impl ShadowProgram {

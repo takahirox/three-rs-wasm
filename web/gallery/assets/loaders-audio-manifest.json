@@ -88,5 +88,265 @@
   "file": "webaudio/ping_pong.mp3",
   "source": "examples/sounds/ping_pong.mp3",
   "sha256": "51597e0d2fdd9bdb5658452adaf125596f05d07d9eab430994511e3039ea9cf2"
+ },
+ {
+  "file": "md2/ratamahatta/ratamahatta.md2",
+  "source": "examples/models/md2/ratamahatta/ratamahatta.md2",
+  "sha256": "a23640ddbade6be3337bb1735db9826d2ef5e389186efb33752a697f28f2329c"
+ },
+ {
+  "file": "md2/ratamahatta/skins/ctf_b.png",
+  "source": "examples/models/md2/ratamahatta/skins/ctf_b.png",
+  "sha256": "bb4e73c88f453c1a20b75bfcbed58620ed4541d0a10b4f20e596167b8d16a3c0"
+ },
+ {
+  "file": "md2/ratamahatta/skins/ctf_r.png",
+  "source": "examples/models/md2/ratamahatta/skins/ctf_r.png",
+  "sha256": "7b8100b7e2a8b3b58207d3196e44c4ad1866d07d7f30c86e8ffb1cdd47150aa1"
+ },
+ {
+  "file": "md2/ratamahatta/skins/dead.png",
+  "source": "examples/models/md2/ratamahatta/skins/dead.png",
+  "sha256": "25d2e022edb7ca5eef75e3907c9f3c0173add6e224aac08e81a000e7f4a6cdd9"
+ },
+ {
+  "file": "md2/ratamahatta/skins/gearwhore.png",
+  "source": "examples/models/md2/ratamahatta/skins/gearwhore.png",
+  "sha256": "738900efca1b558757e558fb4f37e10a8a72a5347b8630b02345fc65c98ef5dc"
+ },
+ {
+  "file": "md2/ratamahatta/skins/ratamahatta.png",
+  "source": "examples/models/md2/ratamahatta/skins/ratamahatta.png",
+  "sha256": "25506b71bdd40a897311581302e22d8bc958dd603acb45c4750349a8f5ec4210"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_bfg.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_bfg.png",
+  "sha256": "2bb8e5ba05909ee60434fb647629416d44f6dd7489fa6088a643a4c59c201f71"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_blaster.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_blaster.png",
+  "sha256": "3737844cb08ca2ae531231053de127a3325195f2925d5694846a954faf8e049e"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_chaingun.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_chaingun.png",
+  "sha256": "ae81264368ede5481ab3b00620d4dc3729f596744b641eb3d0ba878cf5c23afc"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_glauncher.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_glauncher.png",
+  "sha256": "8dcf555107e265b82359df1f362d3041e661ad7943cda265f2e90e80e7ee5f79"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_hyperblaster.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_hyperblaster.png",
+  "sha256": "54a5c65d29d70a2a1634ab3de0e7eb35d16b939ea07f703d3a752b2480c7883c"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_machinegun.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_machinegun.png",
+  "sha256": "b9cb8ac869df4fa91fb9d71f3515167ca9c5ca4103e1ab73ee8f58fecfab5fee"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_railgun.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_railgun.png",
+  "sha256": "2ad9dd65aa079f76c5e2e69ab516fa2221b8669f88592eda8a0cba3fb6fc0652"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_rlauncher.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_rlauncher.png",
+  "sha256": "2288258cb81c753f1d84e276ff09f02228384f8fb50c2ef973c5c400861d43a2"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_shotgun.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_shotgun.png",
+  "sha256": "1633e9afa0a087c35392bff89486ac3d0e2d7eb89aa7ee9c4d99385d402ba0f0"
+ },
+ {
+  "file": "md2/ratamahatta/skins/w_sshotgun.png",
+  "source": "examples/models/md2/ratamahatta/skins/w_sshotgun.png",
+  "sha256": "25b55b4c403e6a2e7e040ff913324b7e8d3e6141751bfcdc8201ddb576c8ffbb"
+ },
+ {
+  "file": "md2/ratamahatta/skins/weapon.png",
+  "source": "examples/models/md2/ratamahatta/skins/weapon.png",
+  "sha256": "ca24d52dfb56d3d2beda2d34e3caa87b0fa3125e97f1000c04a65be8e5b1048c"
+ },
+ {
+  "file": "md2/ratamahatta/w_bfg.md2",
+  "source": "examples/models/md2/ratamahatta/w_bfg.md2",
+  "sha256": "fb7820d5cf14409490411a2682af87009eda72d94720f2db423fefa2fbee0460"
+ },
+ {
+  "file": "md2/ratamahatta/w_blaster.md2",
+  "source": "examples/models/md2/ratamahatta/w_blaster.md2",
+  "sha256": "29ee9eb08e02198ccfd480aeac211e17a4bdefbdd04814a5c0f29d0c8488dafa"
+ },
+ {
+  "file": "md2/ratamahatta/w_chaingun.md2",
+  "source": "examples/models/md2/ratamahatta/w_chaingun.md2",
+  "sha256": "5ae6c4e3cbe8746fc9d80bdf28c2993e39ded63f78d2b0b3cb654941182c22c1"
+ },
+ {
+  "file": "md2/ratamahatta/w_glauncher.md2",
+  "source": "examples/models/md2/ratamahatta/w_glauncher.md2",
+  "sha256": "d1386a39c74f1a56e94f64865809af7874471d9c640647d75f51bf7d001a0b07"
+ },
+ {
+  "file": "md2/ratamahatta/w_hyperblaster.md2",
+  "source": "examples/models/md2/ratamahatta/w_hyperblaster.md2",
+  "sha256": "72892da87ff2bfdde2edcc03e3c8b9134598101418a5e4b84fd683fd9e9b2f5e"
+ },
+ {
+  "file": "md2/ratamahatta/w_machinegun.md2",
+  "source": "examples/models/md2/ratamahatta/w_machinegun.md2",
+  "sha256": "0c4802d50ed6b5a769e51bc59498d1d7ed2a9fea3f8b8e12efdb4cd3bc7ab88d"
+ },
+ {
+  "file": "md2/ratamahatta/w_railgun.md2",
+  "source": "examples/models/md2/ratamahatta/w_railgun.md2",
+  "sha256": "74f6402073837ba069de26f71cbca5727c735c031e456382fdcca8c47897d262"
+ },
+ {
+  "file": "md2/ratamahatta/w_rlauncher.md2",
+  "source": "examples/models/md2/ratamahatta/w_rlauncher.md2",
+  "sha256": "6c73ff93b449ec892fabae564ccf3ce77a30fdf352f79e56d1b831e6733fc7a4"
+ },
+ {
+  "file": "md2/ratamahatta/w_shotgun.md2",
+  "source": "examples/models/md2/ratamahatta/w_shotgun.md2",
+  "sha256": "9b75edf3070c3dff5fc6f0f607c09e1c5016a100559539c0ea9a180c9317fba5"
+ },
+ {
+  "file": "md2/ratamahatta/w_sshotgun.md2",
+  "source": "examples/models/md2/ratamahatta/w_sshotgun.md2",
+  "sha256": "f94b7f71c3f86568c5798722a985fb46e39841705cb5965b68c69fab20bc4cd5"
+ },
+ {
+  "file": "md2/ratamahatta/weapon.md2",
+  "source": "examples/models/md2/ratamahatta/weapon.md2",
+  "sha256": "30dc26938737f7b577c9af22dff1de22be9a8f96a55beafadc6b620888de147e"
+ },
+ {
+  "file": "md2/ogro/Ogro.txt",
+  "source": "examples/models/md2/ogro/Ogro.txt",
+  "sha256": "4c676f69a03569dff4cf29888dd052be84652a6bb10886a22e22db7532bc1b02"
+ },
+ {
+  "file": "md2/ogro/ogro.md2",
+  "source": "examples/models/md2/ogro/ogro.md2",
+  "sha256": "281523ecd28a072e210e313c2873d1ddb84cb72ecf1ab38bc9f677e007fd368b"
+ },
+ {
+  "file": "md2/ogro/skins/arboshak.png",
+  "source": "examples/models/md2/ogro/skins/arboshak.png",
+  "sha256": "483cbd8182fd483b3de4daa8128825b1b573dcd244afad3737aac42e29913e8d"
+ },
+ {
+  "file": "md2/ogro/skins/ctf_b.png",
+  "source": "examples/models/md2/ogro/skins/ctf_b.png",
+  "sha256": "1cc2f0ee11fc79d43a844960c0ebc22d3addb5e249179cab6f2855b7463aef43"
+ },
+ {
+  "file": "md2/ogro/skins/ctf_r.png",
+  "source": "examples/models/md2/ogro/skins/ctf_r.png",
+  "sha256": "45f4b48189abb56bdbea3b8aea6385f19fd0453190dd2e0239f948341fead42b"
+ },
+ {
+  "file": "md2/ogro/skins/darkam.png",
+  "source": "examples/models/md2/ogro/skins/darkam.png",
+  "sha256": "01fc0826b001da14a1eae8311e547f88f092949ed5eaad1ee45b9736d821a228"
+ },
+ {
+  "file": "md2/ogro/skins/freedom.png",
+  "source": "examples/models/md2/ogro/skins/freedom.png",
+  "sha256": "c89e220ceca0c43ed2e5d0a6a101e09c85fbd01b4788edff68e73fffa9027928"
+ },
+ {
+  "file": "md2/ogro/skins/gib.png",
+  "source": "examples/models/md2/ogro/skins/gib.png",
+  "sha256": "85650e2ae1e27809d60e7ca16c8e387ed56230200fa8e775f5f3ca1d99491c32"
+ },
+ {
+  "file": "md2/ogro/skins/gordogh.png",
+  "source": "examples/models/md2/ogro/skins/gordogh.png",
+  "sha256": "a893bc4889498cd2b8c102f33e2b7f74048327b2d3a4d51185421b5dc4c9f7e6"
+ },
+ {
+  "file": "md2/ogro/skins/grok.jpg",
+  "source": "examples/models/md2/ogro/skins/grok.jpg",
+  "sha256": "63c0d42ec37e65f599af47a5cc4f37f7623e79de515e5cdb56f98272c919cb2b"
+ },
+ {
+  "file": "md2/ogro/skins/igdosh.png",
+  "source": "examples/models/md2/ogro/skins/igdosh.png",
+  "sha256": "7cca5f0f54a21fb635560c96f7d5132464b488d67526254f0b1cef10b4efb860"
+ },
+ {
+  "file": "md2/ogro/skins/khorne.png",
+  "source": "examples/models/md2/ogro/skins/khorne.png",
+  "sha256": "337b2dd37ae03c9737228fbb4ec3ce2fd2f0d1c4d93a7542267f694cc28563cb"
+ },
+ {
+  "file": "md2/ogro/skins/nabogro.png",
+  "source": "examples/models/md2/ogro/skins/nabogro.png",
+  "sha256": "bff5901c16cf091c0c7244ff62a571f82fd232bd0323229fa686e437ac57f89f"
+ },
+ {
+  "file": "md2/ogro/skins/ogrobase.png",
+  "source": "examples/models/md2/ogro/skins/ogrobase.png",
+  "sha256": "53c367e78f9a59eb7807a19d3532b5c9ae5b90053d8f7b294cea88c89908735b"
+ },
+ {
+  "file": "md2/ogro/skins/sharokh.png",
+  "source": "examples/models/md2/ogro/skins/sharokh.png",
+  "sha256": "d0d89e2ffb1efbcab3fab6ad7886927e4d73344968086afafa7efe65b8a0169d"
+ },
+ {
+  "file": "md2/ogro/skins/weapon.jpg",
+  "source": "examples/models/md2/ogro/skins/weapon.jpg",
+  "sha256": "ca899df9cccd4602c8f8068318fc56d7ae7a06bb85b91b92c5dabf7eab53bee4"
+ },
+ {
+  "file": "md2/ogro/weapon.md2",
+  "source": "examples/models/md2/ogro/weapon.md2",
+  "sha256": "710f63bf1733295410654978539154689a4a296dbe3762e02bb242ae59f2362d"
+ },
+ {
+  "file": "md2/grasslight-big.jpg",
+  "source": "examples/textures/terrain/grasslight-big.jpg",
+  "sha256": "23bd506b94e40a9de435375c2be6280eb088dc637fb64c331e325c7472f47177"
+ },
+ {
+  "file": "webaudio/376737_Skullbeatz___Bad_Cat_Maste.mp3",
+  "source": "examples/sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3",
+  "sha256": "d7263cf4c686eb0a70fb08d4015e88fbe0a0b464050e5ad40c1c9d0cbec07d3e"
+ },
+ {
+  "file": "webaudio/358232_j_s_song.mp3",
+  "source": "examples/sounds/358232_j_s_song.mp3",
+  "sha256": "9d44904000cf1c6ee5d40eb35eacd09f0b72be41f687196ca600c5cc62bf08f7"
+ },
+ {
+  "file": "webaudio/Project_Utopia.mp3",
+  "source": "examples/sounds/Project_Utopia.mp3",
+  "sha256": "be17b8ec56af42a06ff1d6372cf0643cc9702fa92689e0b71156299975b3f0bb"
+ },
+ {
+  "file": "webaudio/BoomBox.glb",
+  "source": "examples/models/gltf/BoomBox.glb",
+  "sha256": "3f14d6608669b1ae77485a53686925e987b8d86c8fc81095f69c028c3e3ae81e"
+ },
+ {
+  "file": "envmap-exr/piz_compressed.exr",
+  "source": "examples/textures/piz_compressed.exr",
+  "sha256": "7ff75b7f52379d579aa462c8a34b8321109023b9deb1d67a8b41d35f475c17b3"
+ },
+ {
+  "file": "envmap-exr/equirectangular.png",
+  "source": "examples/textures/equirectangular.png",
+  "sha256": "d99861d29c0ca31379911ae0f76d57dce68c8b23f617a70cd1d85fa38d61e06d"
  }
 ]

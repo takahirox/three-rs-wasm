@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-35 excluded for explicit WebGL APIs or equivalent WebGPU examples; 572 retained. 318 partial Rust ports; 254 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+35 excluded for explicit WebGL APIs or equivalent WebGPU examples; 572 retained. 328 partial Rust ports; 244 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -119,6 +119,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgl_geometry_extrude_splines | `tests/browser/text-clipping.spec.js` | CurveExtrasの14曲線とCatmullRom曲線、TubeGeometry（Frenetフレーム）、ワイヤーフレーム、スプラインカメラ・CameraHelper・lookAheadをRustで再現。パラメータ変更時のチューブ再生成は原本と同じくCPUで行う。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webaudio_timing | `tests/browser/collada-3mf.spec.js` | Playボタンによる開始、5個の球のバウンド（落下から上昇への切り替わりで再生）、PCF影、Lambert、OrbitControlsをRustで再現。Web Audioのグラフ（AudioListener、HRTFのPositionalAudio、再生中は再生しないAudio.play）はJSで構築し、位置と再生タイミングはRustから毎フレーム渡す。性能の完全な同等性は未保証。 |
 | misc_raycaster_helper | `tests/browser/collada-3mf.spec.js` | @gsimone/three-raycaster-helper 0.1.0（光線、near/far平面、原点球の色、最大20個のヒット点InstancedMesh）とRaycasterによる両面カプセルとの交差（原本と同じく前回描画時のワールド行列を使用）をRustで再現。光線は動かないため2本の線は常駐（原本は毎フレーム同じ値を再転送）。性能の完全な同等性は未保証。 |
+| webaudio_sandbox | `tests/browser/collada-3mf.spec.js` | Playボタンによる開始、3つの音源球（2曲とサイン波の発振器、HRTFのPositionalAudio、refDistance 20）、アナライザ（fftSize 32）の平均周波数による球のemissive、環境音、FogExp2、グリッド、FirstPersonControls（lookVertical false）、音量と発振器のGUIをRustで再現。Web AudioのグラフはJSで構築し、配置と設定はRustから毎フレーム渡す。性能の完全な同等性は未保証。 |
+| webaudio_visualizer | `tests/browser/collada-3mf.spec.js` | Playボタンによる開始、AudioAnalyser（fftSize 128）の64ビンを毎フレームRedFormatのDataTextureとして転送し、生のShaderMaterialで線を描く処理をRustで再現。Web Audioのグラフ（メディア要素のソース、アナライザ）はJSで構築。性能の完全な同等性は未保証。 |
+| webaudio_orientation | `tests/browser/collada-3mf.spec.js` | Playボタンによる開始、BoomBox（環境キューブマップ、ジオメトリの−π回転、影）、指向性PositionalAudio（HRTF、コーン180°/230°/0.1）とPositionalAudioHelper、半透明の壁、グリッド、フォグ、OrbitControlsをRustで再現。Web AudioのグラフはJSで構築し、リスナーと音源の配置はRustから毎フレーム渡す。性能の完全な同等性は未保証。 |
+| webgl_loader_md2_control | `tests/browser/collada-3mf.spec.js` | 13体のMD2CharacterComplex（ボディと武器のジオメトリを共有、MorphBlendMeshのフレーム補間と15フレームのブレンド）、WASD/矢印キーによる移動・旋回と走行/待機の切替、中央のキャラクターに追従するGyroscopeのカメラ、SunLightの影、フォグ、OrbitControlsをRustで再現。モーフはGPUで変形。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_loader_md2 | `tests/browser/collada-3mf.spec.js` | MD2Loader（198フレームを絶対モーフターゲットとしてGPUで変形、名前の連番からモーフシーケンスのクリップを生成）、MD2Characterの本体・5種のスキン・11種の武器・ワイヤーフレーム・再生速度（timeScale=1/rate）、16種のアニメーション、2つのスポットライトの影、フォグ、OrbitControlsをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_shadowmap_viewer | `tests/browser/texture-volumes.spec.js` | スポットライトと平行光源のBasicShadowMap、2つのCameraHelper、回転するトーラスノットと立方体、ShadowMapViewerのHUD（常駐シャドウアトラスの各層を深度マテリアルの8bit「1−深度」として双線形表示、canvasのラベル）、OrbitControlsをRustで再現。影カメラの向きはMatrix4.lookAtと同じ退化時の補正。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_materials_envmaps_exr | `tests/browser/texture-volumes.spec.js` | EXRLoader（PIZ圧縮）とPNGの正距円筒図法マップを一度だけPMREMに変換し、トーラスノットの環境マップと背景に使用、ACESの露出（sRGB背景は原本同様トーンマッピングなし）、roughness/metalnessをRustで再現。debug平面はポート独自のPMREMアトラス配置を表示するため原本とは一致せず、比較対象外。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_texture2darray | `tests/browser/texture-volumes.spec.js` | head256x256x109（8bit）のDataArrayTexture（RedFormat、最近傍）、毎フレームの層の往復、生のShaderMaterial出力をRustで再現。zipは展開済みの生データとして配布。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_texture2darray_compressed | `tests/browser/texture-volumes.spec.js` | KTX2（Basis）の圧縮配列テクスチャを圧縮のまま保持し、タイマーで5層を巡回する生のShaderMaterial出力をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
+| webgl_rendertarget_texture2darray | `tests/browser/texture-volumes.spec.js` | 毎フレーム現在の層だけをGPUでWebGLArrayRenderTarget（RedFormat、256×256×109）へ描画し、その層を表示する2パス構成とintensity操作をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_nrrd | `tests/browser/texture-volumes.spec.js` | NRRDLoader（gzip、short型、space directionsとLPS空間のIJK→RAS行列）、Volume.extractPerpendicularPlane、VolumeSliceの再描画（原本と同じくCPUで閾値・ウィンドウ処理し2Dキャンバスで拡大、テクスチャへ転送）、BoxHelper、TrackballControlsをRustで再現。再描画はGUI変更時のみ。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgl_loader_ttf | `tests/browser/text-clipping.spec.js` | TTFLoader（opentype.js 1.3.4のTrueType輪郭変換：cmap形式4/12、glyf、暗黙の中点、スケールと丸め）をRustで再現し、変換結果が原本と一致することを確認。ベベル付きTextGeometry、鏡像メッシュ、sRGB指定のsetHSL、キー入力とドラッグ回転を移植。性能の完全な同等性は未保証。 |
 | webgl_geometry_text | `tests/browser/text-clipping.spec.js` | FontLoaderの書体JSON、ShapePath.toShapes、穴付きEarcut、ベベル付きExtrudeGeometry（TextGeometry）をRustで再現し、原本の頂点と一致を確認。10種の書体は起動時に一括取得（原本は選択時に取得）。キー入力（keydown/keypress）とドラッグ回転、4つのボタンを移植。性能の完全な同等性は未保証。 |

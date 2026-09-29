@@ -6,6 +6,11 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ webgl_shadowmap_viewer:{times:[0,.5,1.3,2],parameters:[],at:2,antialias:true,drag:[[256,300],[330,340]],wheel:[256,300,-300]},
+ webgl_materials_envmaps_exr:{backgroundBox:true,times:[0,1,2],parameters:[[1,.5,.5],[2,1,1],[3,.6,.6],[0,'PNG',1]],restore:[[0,'EXR',0],[1,0,0],[2,0,0],[3,1,1]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_texture2darray:{times:[0,1,2.5,4,10],parameters:[],at:4},
+ webgl_texture2darray_compressed:{times:[0,.05,.13,.27,.41],parameters:[],at:.41},
+ webgl_rendertarget_texture2darray:{times:[0,1,2.5,4,10],parameters:[[0,.3,.3],[0,.75,.75]],restore:[[0,1,1]],at:4},
  webgl_texture2darray_layerupdate:{times:[0],parameters:[[0,3,3],[1,1,1],[2,null,1],[0,4,4],[1,2,2],[2,null,1],[0,1,1],[1,0,0],[2,null,1]],restore:[[0,0,0],[1,0,0],[2,null,1],[0,1,1],[1,1,1],[2,null,1],[0,2,2],[1,2,2],[2,null,1],[0,0,0],[1,0,0]],at:0,antialias:true},
  webgl_loader_nrrd:{times:[0,1],parameters:[[0,60,60],[1,200,200],[2,100,100],[3,500,500],[4,3000,3000],[5,200,200],[6,2500,2500],[0,240,240],[2,0,0]],restore:[[0,120,120],[1,120,120],[2,42,42],[3,0,0],[4,3952,3952],[5,0,0],[6,3952,3952]],at:1,antialias:true,script:[['drag',256,256,330,300,0,2],['drag',256,256,300,200,2,2.5],['wheel',256,256,-400,3],['wait',4]]},
  webgl_texture3d:{limits:[.02,.5],times:[0],parameters:[[3,'mip',0],[2,'gray',0],[0,0.2,0.2],[1,0.8,0.8],[3,'iso',1],[4,0.3,0.3],[2,'viridis',1]],restore:[[0,0,0],[1,1,1],[4,0.15,0.15]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -30,7 +35,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_nrrd:[.012,.45]};
+const msaaLimits={webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -129,6 +134,9 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
    for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
    pair[runtime]=await page.evaluate(()=>work);
   }
+  // WebGL draws an equirectangular background as a 36-index box; the port's
+  // background is a fullscreen triangle, left out with the other tiny draws.
+  if(spec.backgroundBox){const i=pair.reference.draws.findIndex(d=>d.count===36&&d.instances===1);if(i>=0)pair.reference.draws.splice(i,1);}
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
   // 36-index box and WebGPU a 5,952-index sphere. All scene mesh draws must still match.

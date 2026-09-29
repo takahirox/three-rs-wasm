@@ -63,6 +63,8 @@
     "webgl_loader_gltf_variants",
     "webgl_loader_imagebitmap",
     "webgl_loader_kmz",
+    "webgl_loader_md2",
+    "webgl_loader_md2_control",
     "webgl_loader_mdd",
     "webgl_loader_nrrd",
     "webgl_loader_obj",
@@ -86,6 +88,7 @@
     "webgl_materials_cubemap",
     "webgl_materials_cubemap_refraction",
     "webgl_materials_cubemap_render_to_mipmaps",
+    "webgl_materials_envmaps_exr",
     "webgl_materials_envmaps_hdr",
     "webgl_materials_normalmap",
     "webgl_materials_normalmap_object_space",
@@ -113,6 +116,7 @@
     "webgl_rtt",
     "webgl_shader",
     "webgl_shader_lava",
+    "webgl_shadowmap_viewer",
     "webgl_shadowmesh",
     "webgl_sprites"
   ],
@@ -144,6 +148,9 @@
     "webgl_custom_attributes_points2",
     "webgl_custom_attributes_points3",
     "webgl_materials_modified",
+    "webgl_rendertarget_texture2darray",
+    "webgl_texture2darray",
+    "webgl_texture2darray_compressed",
     "webgl_texture2darray_layerupdate",
     "webgl_texture3d",
     "webgl_texture3d_partialupdate",
@@ -308,7 +315,10 @@
     "webgpu_volume_perlin"
   ],
   "webaudio": [
-    "webaudio_timing"
+    "webaudio_orientation",
+    "webaudio_sandbox",
+    "webaudio_timing",
+    "webaudio_visualizer"
   ],
   "misc": [
     "misc_animation_groups",

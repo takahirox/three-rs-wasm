@@ -12,6 +12,11 @@ enum Content {
     GltfNormals(Box<super::gltf_normals::Demo>),
     RaycasterHelper(Box<super::raycaster_helper::Demo>),
     AudioTiming(Box<super::audio_timing::Demo>),
+    Md2(Box<super::md2::Demo>),
+    Md2Control(Box<super::md2_control::Demo>),
+    EnvmapExr(Box<super::envmap_exr::Demo>),
+    ShadowmapViewer(Box<super::shadowmap_viewer::Demo>),
+    AudioVisual(Box<super::audio_visual::Demo>),
     TextureVolumes(Box<super::texture_volumes::Demo>),
     ColladaAnim(Box<super::refraction_loaders::collada_anim::Demo>),
     ThreeMf(Box<super::threemf::Demo>),
@@ -127,7 +132,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            314 | 315 | 321 => Ok(Self {
+            314 | 315 | 321 | 324..=326 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 5000.,
@@ -161,6 +166,51 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::AudioTiming(Box::new(
                     super::audio_timing::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            328..=330 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::AudioVisual(Box::new(
+                    super::audio_visual::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            327 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Md2(Box::new(
+                    super::md2::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            331 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Md2Control(Box::new(
+                    super::md2_control::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            332 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::EnvmapExr(Box::new(
+                    super::envmap_exr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            333 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ShadowmapViewer(Box::new(
+                    super::shadowmap_viewer::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             308..=310 | 312 => Ok(Self {
@@ -1013,6 +1063,21 @@ impl Demo {
         if let Content::AudioTiming(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1387,6 +1452,9 @@ impl Demo {
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1471,6 +1539,11 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::ShadowmapViewer(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::ShadowRtt(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -1564,6 +1637,21 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::AudioTiming(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1675,6 +1763,21 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::AudioTiming(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1810,7 +1913,15 @@ impl Demo {
     ) -> crate::Result<Vec<f32>> {
         match &mut self.content {
             Content::AudioTiming(demo) => demo.audio_frame(scene, camera),
+            Content::AudioVisual(demo) => demo.audio_frame(scene, camera),
             _ => Err(crate::Error::Invalid("not a positional audio example")),
+        }
+    }
+    /// webaudio_visualizer's analyser bins.
+    pub fn audio_data(&mut self, bytes: &[u8]) -> crate::Result<()> {
+        match &mut self.content {
+            Content::AudioVisual(demo) => demo.audio_data(bytes),
+            _ => Err(crate::Error::Invalid("not an analyser example")),
         }
     }
     /// A file produced by an exporter button, taken once.
@@ -1865,6 +1976,21 @@ impl Demo {
             demo.key(code, down);
         }
         if let Content::AudioTiming(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.key(code, down);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -1963,6 +2089,26 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::SpotSkinning(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -2051,6 +2197,21 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::AudioTiming(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {
@@ -2229,6 +2390,21 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::AudioTiming(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::AudioVisual(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Md2(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Md2Control(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::EnvmapExr(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::SpotSkinning(demo) = &mut self.content {

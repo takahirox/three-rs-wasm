@@ -3,7 +3,7 @@
 const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
 </script></head><body><script type="module">
 import * as THREE from 'three';
-const id=new URLSearchParams(location.search).get('id');if(!['webgl_texture2darray_layerupdate','webgl_texture3d','webgl_loader_nrrd'].includes(id))throw Error('invalid fixture');
+const id=new URLSearchParams(location.search).get('id');if(!['webgl_texture2darray_layerupdate','webgl_texture3d','webgl_loader_nrrd','webgl_texture2darray','webgl_texture2darray_compressed','webgl_rendertarget_texture2darray','webgl_materials_envmaps_exr','webgl_shadowmap_viewer'].includes(id))throw Error('invalid fixture');
 window.fixtureExports=[];{const create=URL.createObjectURL.bind(URL);URL.createObjectURL=blob=>{fixtureExports.push(blob);return create(blob);};}HTMLAnchorElement.prototype.click=function(){};
 window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
 const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
@@ -28,8 +28,11 @@ source=source.replace('timer = new THREE.Timer();','timer = new THREE.Timer(); t
 // Per-frame easing, controls and random walks as 60 fps steps.
 const steps='for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)';
 source=source.replace('scene = new THREE.Scene();','scene = window.fixtureScene = new THREE.Scene();');
+// The layer steps once per 60 fps step, with one reflection test per frame.
+if(['webgl_texture2darray','webgl_rendertarget_texture2darray'].includes(id))source=source.replace('value += depthStep;','value += depthStep*Math.max(0,Math.round(window.fixtureStep));');
+if(id==='webgl_materials_envmaps_exr')source=source.replace('torusMesh.rotation.y += 0.005;',steps+'torusMesh.rotation.y += 0.005;');
 if(id==='webgl_loader_nrrd')source=source.replace('controls.update();',steps+'controls.update();');
-window.fixtureReady={webgl_texture2darray_layerupdate:()=>window.fixtureScene?.children.length>0,webgl_texture3d:()=>window.fixtureScene?.children.length>0,webgl_loader_nrrd:()=>window.fixtureScene?.children.length>3}[id];
+window.fixtureReady={webgl_texture2darray_layerupdate:()=>window.fixtureScene?.children.length>0,webgl_texture3d:()=>window.fixtureScene?.children.length>0,webgl_loader_nrrd:()=>window.fixtureScene?.children.length>3,webgl_texture2darray:()=>window.fixtureScene?.children.length>0,webgl_texture2darray_compressed:()=>window.fixtureScene?.children.length>0,webgl_rendertarget_texture2darray:()=>window.fixtureScene?.children.length>0}[id];
 await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
 // webgl_loader_obj creates its renderer after awaiting the loaders.
 while(!window.fixtureRenderer)await new Promise(r=>setTimeout(r,10));

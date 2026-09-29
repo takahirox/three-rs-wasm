@@ -5127,7 +5127,7 @@
     {
       "id": "webgl_loader_md2",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_md2.html",
       "source_sha256": "633e5d216df5ccfbbc00f12fab48842df9649685005c7d0e1ac886573871061b",
@@ -5201,7 +5201,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 327,
+        "source": "src/browser/md2.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "MD2Loader（198フレームを絶対モーフターゲットとしてGPUで変形、名前の連番からモーフシーケンスのクリップを生成）、MD2Characterの本体・5種のスキン・11種の武器・ワイヤーフレーム・再生速度（timeScale=1/rate）、16種のアニメーション、2つのスポットライトの影、フォグ、OrbitControlsをRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -5213,7 +5220,7 @@
     {
       "id": "webgl_loader_md2_control",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_md2_control.html",
       "source_sha256": "e7af43b29f8e44893eff1ed92da36554e1b458e951ff6686251d3d9e464781da",
@@ -5259,7 +5266,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 331,
+        "source": "src/browser/md2_control.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "13体のMD2CharacterComplex（ボディと武器のジオメトリを共有、MorphBlendMeshのフレーム補間と15フレームのブレンド）、WASD/矢印キーによる移動・旋回と走行/待機の切替、中央のキャラクターに追従するGyroscopeのカメラ、SunLightの影、フォグ、OrbitControlsをRustで再現。モーフはGPUで変形。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -6979,7 +6993,7 @@
     {
       "id": "webgl_materials_envmaps_exr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_exr.html",
       "source_sha256": "ddf161a1c589e9728b7ede5b656da28e2020840f65ba5edac89985c72f7669ff",
@@ -7011,7 +7025,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 332,
+        "source": "src/browser/envmap_exr.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "EXRLoader（PIZ圧縮）とPNGの正距円筒図法マップを一度だけPMREMに変換し、トーラスノットの環境マップと背景に使用、ACESの露出（sRGB背景は原本同様トーンマッピングなし）、roughness/metalnessをRustで再現。debug平面はポート独自のPMREMアトラス配置を表示するため原本とは一致せず、比較対象外。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -10100,7 +10121,7 @@
     {
       "id": "webgl_shadowmap_viewer",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_viewer.html",
       "source_sha256": "905e1858f3386306c8b06cfc566d34f561a3d292693de7e779a1b7694d8b91a9",
@@ -10166,7 +10187,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 333,
+        "source": "src/browser/shadowmap_viewer.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "スポットライトと平行光源のBasicShadowMap、2つのCameraHelper、回転するトーラスノットと立方体、ShadowMapViewerのHUD（常駐シャドウアトラスの各層を深度マテリアルの8bit「1−深度」として双線形表示、canvasのラベル）、OrbitControlsをRustで再現。影カメラの向きはMatrix4.lookAtと同じ退化時の補正。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -13105,7 +13133,7 @@
     {
       "id": "webgl_rendertarget_texture2darray",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rendertarget_texture2darray.html",
       "source_sha256": "21765c3eed2ffb0cc91f92bdfb927a1c103d879d89fc9308e8d6618bdfe3dc33",
@@ -13131,7 +13159,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 326,
+        "source": "src/browser/texture_volumes/arrays.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "毎フレーム現在の層だけをGPUでWebGLArrayRenderTarget（RedFormat、256×256×109）へ描画し、その層を表示する2パス構成とintensity操作をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/fflate.module.js",
@@ -13418,7 +13453,7 @@
     {
       "id": "webgl_texture2darray",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture2darray.html",
       "source_sha256": "57f95a9e1c7ee8dacdef3e33d252bb3947e4202d695f10292e18d1b13c1ac97f",
@@ -13436,7 +13471,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 324,
+        "source": "src/browser/texture_volumes/arrays.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "head256x256x109（8bit）のDataArrayTexture（RedFormat、最近傍）、毎フレームの層の往復、生のShaderMaterial出力をRustで再現。zipは展開済みの生データとして配布。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/fflate.module.js",
@@ -13446,7 +13488,7 @@
     {
       "id": "webgl_texture2darray_compressed",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_texture2darray_compressed.html",
       "source_sha256": "169f7723009b572fab9db7e70aa69db03fc195481b131f1cfc32f95af2b5807e",
@@ -13468,7 +13510,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 325,
+        "source": "src/browser/texture_volumes/arrays.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "KTX2（Basis）の圧縮配列テクスチャを圧縮のまま保持し、タイマーで5層を巡回する生のShaderMaterial出力をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/stats.module.js",
@@ -29542,7 +29591,7 @@
     {
       "id": "webaudio_orientation",
       "category": "webaudio",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webaudio_orientation.html",
       "source_sha256": "9b1b06b97cba0a75a6bcdade25dd8216ec04ff1f6e6442d9a813b17e9c10644a",
@@ -29614,7 +29663,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 329,
+        "source": "src/browser/audio_visual.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "Playボタンによる開始、BoomBox（環境キューブマップ、ジオメトリの−π回転、影）、指向性PositionalAudio（HRTF、コーン180°/230°/0.1）とPositionalAudioHelper、半透明の壁、グリッド、フォグ、OrbitControlsをRustで再現。Web AudioのグラフはJSで構築し、リスナーと音源の配置はRustから毎フレーム渡す。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -29625,7 +29681,7 @@
     {
       "id": "webaudio_sandbox",
       "category": "webaudio",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webaudio_sandbox.html",
       "source_sha256": "a65c8a258b79ba064ce3784d29245b3af0e83c579bfd4a1ed0e82a6806efd6ee",
@@ -29685,7 +29741,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 330,
+        "source": "src/browser/audio_visual.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "Playボタンによる開始、3つの音源球（2曲とサイン波の発振器、HRTFのPositionalAudio、refDistance 20）、アナライザ（fftSize 32）の平均周波数による球のemissive、環境音、FogExp2、グリッド、FirstPersonControls（lookVertical false）、音量と発振器のGUIをRustで再現。Web AudioのグラフはJSで構築し、配置と設定はRustから毎フレーム渡す。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/FirstPersonControls.js",
@@ -29769,7 +29832,7 @@
     {
       "id": "webaudio_visualizer",
       "category": "webaudio",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webaudio_visualizer.html",
       "source_sha256": "9517f7b9e4859a4eca2033f43e7f9c378f86e694666b53e3ed8e79793d537e51",
@@ -29795,7 +29858,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 328,
+        "source": "src/browser/audio_visual.rs",
+        "test": "tests/browser/collada-3mf.spec.js",
+        "limitations": [
+          "Playボタンによる開始、AudioAnalyser（fftSize 128）の64ビンを毎フレームRedFormatのDataTextureとして転送し、生のShaderMaterialで線を描く処理をRustで再現。Web Audioのグラフ（メディア要素のソース、アナライザ）はJSで構築。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three"
       ]

@@ -777,3 +777,25 @@ The reference fixtures import two MIT-licensed npm packages pinned in
 `package.json`: opentype.js 1.3.4 (TTFLoader's parser) and
 @gsimone/three-raycaster-helper 0.1.0 (the raycaster helper example). They
 are development dependencies and are not part of the published gallery.
+
+The texture-array, MD2, Web Audio, EXR environment and shadow-map viewer batch
+also uses unmodified r186 example assets, listed with their source paths and
+SHA-256 hashes in `gallery/assets/loaders-audio-manifest.json`.
+
+- `gallery/assets/md2/ratamahatta/` and `gallery/assets/md2/ogro/`: the
+  Quake II MD2 characters and skins shipped with the three.js examples. The
+  ogro's `Ogro.txt` credits Magarnigal (model), Ogro_Fix (skins) and Deranged
+  (Sharokh skin). No license is stated for either character; they are
+  redistributed as part of the three.js examples, alongside `LICENSE-THREE`.
+- `gallery/assets/md2/grasslight-big.jpg`: `textures/terrain/grasslight-big.jpg`.
+- `gallery/assets/webaudio/`: `376737_Skullbeatz___Bad_Cat_Maste.mp3` ("Bad Cat
+  [Master Version]" by Skullbeatz) and `358232_j_s_song.mp3` ("The Sound of
+  Epicness" by larrylarrybb) from the Newgrounds Audio portal under Creative
+  Commons Attribution Noncommercial Share Alike, and `Project_Utopia.mp3`
+  ("Project Utopia" by congusbongus, CC0 1.0), per the r186
+  `sounds/readme.txt`; and the three.js examples' `models/gltf/BoomBox.glb`.
+- `gallery/assets/envmap-exr/`: `textures/piz_compressed.exr` and
+  `textures/equirectangular.png`, distributed alongside `LICENSE-THREE`.
+
+The texture-array examples reuse the `head256x256x109.raw` volume and
+`spiritedaway.ktx2` already listed above.

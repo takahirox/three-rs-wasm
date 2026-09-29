@@ -768,3 +768,17 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   is the browser's, as in the original.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Texture arrays, MD2 characters, audio scenes and HUD overlays
+
+- **Arrays.** Array textures are uploaded once. The render-target example
+  renders one layer per frame on the GPU, as the original does.
+- **MD2.** All frames stay resident as morph targets; each frame writes only
+  the influences, and the GPU morphs the vertices.
+- **Audio.** The visualizer uploads its 64 analyser bins each frame, as
+  `needsUpdate` does. Placement and settings run in Rust; the browser runs
+  the Web Audio graph.
+- **Overlays.** The shadow-map HUDs read the resident shadow atlas; the
+  caster-free overlay pass keeps it resident.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

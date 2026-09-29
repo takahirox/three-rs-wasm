@@ -3,12 +3,222 @@
  "note": "Recorded by tests/browser/collada-3mf.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
  "runs": {
   "dpr1": {
+   "collada-3mf-Collada-and-3M-06f77-oader-md2-control-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.017299652099609375,
+      "meanError": 0.40082422892252606
+     },
+     {
+      "state": 1,
+      "fraction": 0.0173187255859375,
+      "meanError": 0.40097808837890625
+     },
+     {
+      "state": 2,
+      "fraction": 0.01763916015625,
+      "meanError": 0.40557225545247394
+     },
+     {
+      "state": 3,
+      "fraction": 0.017963409423828125,
+      "meanError": 0.4103838602701823
+     },
+     {
+      "state": 4,
+      "fraction": 0.01473236083984375,
+      "meanError": 0.3661791483561198
+     },
+     {
+      "state": 5,
+      "fraction": 0.013881683349609375,
+      "meanError": 0.3501396179199219
+     },
+     {
+      "state": 6,
+      "fraction": 0.014125823974609375,
+      "meanError": 0.3415730794270833
+     },
+     {
+      "state": 7,
+      "fraction": 0.01364898681640625,
+      "meanError": 0.3442586263020833
+     },
+     {
+      "state": 8,
+      "fraction": 0.013660430908203125,
+      "meanError": 0.3405749003092448
+     },
+     {
+      "state": 9,
+      "fraction": 0.013317108154296875,
+      "meanError": 0.3376274108886719
+     },
+     {
+      "state": 10,
+      "fraction": 0.014369964599609375,
+      "meanError": 0.3404439290364583
+     },
+     {
+      "state": 11,
+      "fraction": 0.031097412109375,
+      "meanError": 0.5926958719889323
+     },
+     {
+      "state": 12,
+      "fraction": 0.03594207763671875,
+      "meanError": 0.6783536275227865
+     },
+     {
+      "state": 13,
+      "fraction": 0.03199609375,
+      "meanError": 0.6104427083333334
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-0a968--residency-webaudio-sandbox": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 39,
+       "transfers": [
+        2,
+        59920,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 39,
+       "transfers": [
+        2,
+        59920,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 44,
+       "transfers": [
+        2,
+        59920,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 44,
+       "transfers": [
+        2,
+        59920,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-1516e-oader-md2-control-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.011241912841796875,
+      "meanError": 0.24541727701822916
+     },
+     {
+      "state": 1,
+      "fraction": 0.011310577392578125,
+      "meanError": 0.24566014607747397
+     },
+     {
+      "state": 2,
+      "fraction": 0.01145172119140625,
+      "meanError": 0.24669011433919272
+     },
+     {
+      "state": 3,
+      "fraction": 0.011936187744140625,
+      "meanError": 0.2514915466308594
+     },
+     {
+      "state": 4,
+      "fraction": 0.0084381103515625,
+      "meanError": 0.2058741251627604
+     },
+     {
+      "state": 5,
+      "fraction": 0.008106231689453125,
+      "meanError": 0.20611953735351562
+     },
+     {
+      "state": 6,
+      "fraction": 0.008686065673828125,
+      "meanError": 0.2066650390625
+     },
+     {
+      "state": 7,
+      "fraction": 0.00858306884765625,
+      "meanError": 0.20648829142252603
+     },
+     {
+      "state": 8,
+      "fraction": 0.008083343505859375,
+      "meanError": 0.1971588134765625
+     },
+     {
+      "state": 9,
+      "fraction": 0.007839202880859375,
+      "meanError": 0.19440714518229166
+     },
+     {
+      "state": 10,
+      "fraction": 0.008815765380859375,
+      "meanError": 0.2029291788736979
+     },
+     {
+      "state": 11,
+      "fraction": 0.024326324462890625,
+      "meanError": 0.4906145731608073
+     },
+     {
+      "state": 12,
+      "fraction": 0.029052734375,
+      "meanError": 0.5752080281575521
+     },
+     {
+      "state": 13,
+      "fraction": 0.02623046875,
+      "meanError": 0.5227083333333333
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-1cd7c-l-loader-collada-kinematics": {
     "residency": [
      {
       "resize": false,
       "before": {
-       "creates": 78,
+       "creates": 80,
        "transfers": [
         8,
         6261120,
@@ -21,7 +231,7 @@
        ]
       },
       "after": {
-       "creates": 78,
+       "creates": 80,
        "transfers": [
         8,
         6261120,
@@ -37,7 +247,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 83,
+       "creates": 85,
        "transfers": [
         8,
         6261120,
@@ -50,7 +260,7 @@
        ]
       },
       "after": {
-       "creates": 83,
+       "creates": 85,
        "transfers": [
         8,
         6261120,
@@ -62,6 +272,85 @@
         0
        ]
       }
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-21669--webgl-loader-md2-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00258636474609375,
+      "meanError": 0.10802586873372395
+     },
+     {
+      "state": 1,
+      "fraction": 0.002429962158203125,
+      "meanError": 0.10690561930338542
+     },
+     {
+      "state": 2,
+      "fraction": 0.00260162353515625,
+      "meanError": 0.10781606038411458
+     },
+     {
+      "state": 3,
+      "fraction": 0.002506256103515625,
+      "meanError": 0.10663986206054688
+     },
+     {
+      "state": 4,
+      "fraction": 0.003086090087890625,
+      "meanError": 0.11391703287760417
+     },
+     {
+      "state": 5,
+      "fraction": 0.036586761474609375,
+      "meanError": 0.7514254252115885
+     },
+     {
+      "state": 6,
+      "fraction": 0.003086090087890625,
+      "meanError": 0.11391703287760417
+     },
+     {
+      "state": 7,
+      "fraction": 0.003635406494140625,
+      "meanError": 0.11635843912760417
+     },
+     {
+      "state": 8,
+      "fraction": 0.00269317626953125,
+      "meanError": 0.10487620035807292
+     },
+     {
+      "state": 9,
+      "fraction": 0.00269317626953125,
+      "meanError": 0.10487620035807292
+     },
+     {
+      "state": 10,
+      "fraction": 0.003185272216796875,
+      "meanError": 0.1120440165201823
+     },
+     {
+      "state": 11,
+      "fraction": 0.002994537353515625,
+      "meanError": 0.11099751790364583
+     },
+     {
+      "state": 12,
+      "fraction": 0.002979278564453125,
+      "meanError": 0.1257146199544271
+     },
+     {
+      "state": 13,
+      "fraction": 0.003936767578125,
+      "meanError": 0.15253067016601562
+     },
+     {
+      "state": 14,
+      "fraction": 0.00282421875,
+      "meanError": 0.12939583333333332
      }
     ]
    },
@@ -124,12 +413,122 @@
      }
     ]
    },
+   "collada-3mf-Collada-and-3M-3ace9-baudio-visualizer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-4621c--residency-webgl-loader-md2": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 136,
+       "transfers": [
+        6,
+        461336,
+        18570832
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 136,
+       "transfers": [
+        6,
+        461336,
+        18570832
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 141,
+       "transfers": [
+        6,
+        461336,
+        18570832
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      },
+      "after": {
+       "creates": 141,
+       "transfers": [
+        6,
+        461336,
+        18570832
+       ],
+       "resources": [
+        7,
+        7,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-49bba-audio-orientation-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.039043426513671875,
+      "meanError": 0.9053446451822916
+     },
+     {
+      "state": 1,
+      "fraction": 0.039043426513671875,
+      "meanError": 0.9053446451822916
+     },
+     {
+      "state": 2,
+      "fraction": 0.028347015380859375,
+      "meanError": 0.8237724304199219
+     },
+     {
+      "state": 3,
+      "fraction": 0.026912689208984375,
+      "meanError": 0.79986572265625
+     },
+     {
+      "state": 4,
+      "fraction": 0.0306171875,
+      "meanError": 0.8651979166666667
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-527e6-dency-misc-raycaster-helper": {
     "residency": [
      {
       "resize": false,
       "before": {
-       "creates": 84,
+       "creates": 86,
        "transfers": [
         6,
         146832,
@@ -142,7 +541,7 @@
        ]
       },
       "after": {
-       "creates": 84,
+       "creates": 86,
        "transfers": [
         6,
         146832,
@@ -158,7 +557,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 89,
+       "creates": 91,
        "transfers": [
         6,
         146832,
@@ -171,7 +570,7 @@
        ]
       },
       "after": {
-       "creates": 89,
+       "creates": 91,
        "transfers": [
         6,
         146832,
@@ -210,8 +609,699 @@
      }
     ]
    },
+   "collada-3mf-Collada-and-3M-5974f-sidency-webaudio-visualizer": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 35,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 35,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 40,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 40,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-67b4a--and-official-draw-workload": {
     "gpuWork": [
+     {
+      "kind": "webgl_loader_md2_control",
+      "reference": {
+       "draws": [
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 2010,
+         "instances": 1
+        },
+        {
+         "count": 366,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 20696,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webaudio_sandbox",
+      "reference": {
+       "draws": [
+        {
+         "count": 2880,
+         "instances": 1
+        },
+        {
+         "count": 44,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 44,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webaudio_visualizer",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 64
+      }
+     },
+     {
+      "kind": "webaudio_orientation",
+      "reference": {
+       "draws": [
+        {
+         "count": 18108,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 204,
+         "instances": 1
+        },
+        {
+         "count": 49,
+         "instances": 1
+        },
+        {
+         "count": 7,
+         "instances": 1
+        },
+        {
+         "count": 7,
+         "instances": 1
+        },
+        {
+         "count": 18108,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 18108,
+         "instances": 1
+        },
+        {
+         "count": 18108,
+         "instances": 1
+        },
+        {
+         "count": 7,
+         "instances": 1
+        },
+        {
+         "count": 49,
+         "instances": 1
+        },
+        {
+         "count": 7,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 204,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_md2",
+      "reference": {
+       "draws": [
+        {
+         "count": 1998,
+         "instances": 1
+        },
+        {
+         "count": 1998,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 1998,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 1998,
+         "instances": 1
+        },
+        {
+         "count": 1998,
+         "instances": 1
+        },
+        {
+         "count": 1998,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 792,
+       "textureBytes": 0
+      }
+     },
      {
       "kind": "webaudio_timing",
       "reference": {
@@ -1324,12 +2414,41 @@
      }
     ]
    },
+   "collada-3mf-Collada-and-3M-6c550-audio-orientation-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0008544921875,
+      "meanError": 0.055339813232421875
+     },
+     {
+      "state": 1,
+      "fraction": 0.0008544921875,
+      "meanError": 0.055339813232421875
+     },
+     {
+      "state": 2,
+      "fraction": 0.00125885009765625,
+      "meanError": 0.09136581420898438
+     },
+     {
+      "state": 3,
+      "fraction": 0.0016326904296875,
+      "meanError": 0.09903717041015625
+     },
+     {
+      "state": 4,
+      "fraction": 0.0013359375,
+      "meanError": 0.09263541666666666
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-704bc-bgl-loader-collada-skinning": {
     "residency": [
      {
       "resize": false,
       "before": {
-       "creates": 49,
+       "creates": 51,
        "transfers": [
         2,
         1571040,
@@ -1342,7 +2461,7 @@
        ]
       },
       "after": {
-       "creates": 49,
+       "creates": 51,
        "transfers": [
         2,
         1571040,
@@ -1358,7 +2477,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 54,
+       "creates": 56,
        "transfers": [
         2,
         1571040,
@@ -1371,7 +2490,7 @@
        ]
       },
       "after": {
-       "creates": 54,
+       "creates": 56,
        "transfers": [
         2,
         1571040,
@@ -1391,7 +2510,7 @@
      {
       "resize": false,
       "before": {
-       "creates": 75,
+       "creates": 77,
        "transfers": [
         2,
         56744,
@@ -1404,7 +2523,7 @@
        ]
       },
       "after": {
-       "creates": 75,
+       "creates": 77,
        "transfers": [
         2,
         56744,
@@ -1420,7 +2539,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 80,
+       "creates": 82,
        "transfers": [
         2,
         56744,
@@ -1433,7 +2552,7 @@
        ]
       },
       "after": {
-       "creates": 80,
+       "creates": 82,
        "transfers": [
         2,
         56744,
@@ -1442,6 +2561,68 @@
        "resources": [
         2,
         2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-80c2f-cy-webgl-loader-md2-control": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 400,
+       "transfers": [
+        3,
+        190424,
+        15130384
+       ],
+       "resources": [
+        16,
+        16,
+        0
+       ]
+      },
+      "after": {
+       "creates": 400,
+       "transfers": [
+        3,
+        190424,
+        15130384
+       ],
+       "resources": [
+        16,
+        16,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 405,
+       "transfers": [
+        3,
+        190424,
+        15130384
+       ],
+       "resources": [
+        16,
+        16,
+        0
+       ]
+      },
+      "after": {
+       "creates": 405,
+       "transfers": [
+        3,
+        190424,
+        15130384
+       ],
+       "resources": [
+        16,
+        16,
         0
        ]
       }
@@ -1492,7 +2673,7 @@
      {
       "resize": false,
       "before": {
-       "creates": 157,
+       "creates": 159,
        "transfers": [
         17,
         1337424,
@@ -1505,7 +2686,7 @@
        ]
       },
       "after": {
-       "creates": 157,
+       "creates": 159,
        "transfers": [
         17,
         1337424,
@@ -1521,7 +2702,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 162,
+       "creates": 164,
        "transfers": [
         17,
         1337424,
@@ -1534,7 +2715,7 @@
        ]
       },
       "after": {
-       "creates": 162,
+       "creates": 164,
        "transfers": [
         17,
         1337424,
@@ -1585,6 +2766,64 @@
       "state": 6,
       "fraction": 0.03885546875,
       "meanError": 1.3152369791666667
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-9771b-baudio-visualizer-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-9e69c--webaudio-sandbox-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 1,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 2,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 3,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 4,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 5,
+      "fraction": 0.001514434814453125,
+      "meanError": 0.021294911702473957
+     },
+     {
+      "state": 6,
+      "fraction": 0.00230078125,
+      "meanError": 0.035071614583333334
      }
     ]
    },
@@ -1793,7 +3032,7 @@
      {
       "resize": false,
       "before": {
-       "creates": 458,
+       "creates": 460,
        "transfers": [
         41,
         49274744,
@@ -1806,7 +3045,7 @@
        ]
       },
       "after": {
-       "creates": 458,
+       "creates": 460,
        "transfers": [
         41,
         49274744,
@@ -1822,7 +3061,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 469,
+       "creates": 471,
        "transfers": [
         41,
         49274744,
@@ -1835,7 +3074,7 @@
        ]
       },
       "after": {
-       "creates": 469,
+       "creates": 471,
        "transfers": [
         41,
         49274744,
@@ -1844,6 +3083,68 @@
        "resources": [
         3,
         3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-c26ae-idency-webaudio-orientation": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 247,
+       "transfers": [
+        7,
+        382200,
+        112
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 247,
+       "transfers": [
+        7,
+        382200,
+        112
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 252,
+       "transfers": [
+        7,
+        382200,
+        112
+       ],
+       "resources": [
+        5,
+        5,
+        0
+       ]
+      },
+      "after": {
+       "creates": 252,
+       "transfers": [
+        7,
+        382200,
+        112
+       ],
+       "resources": [
+        5,
+        5,
         0
        ]
       }
@@ -1891,6 +3192,45 @@
       "state": 7,
       "fraction": 0.0025859375,
       "meanError": 0.112046875
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-c9e6f--webaudio-sandbox-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 1,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 2,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 3,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 4,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 5,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.003143310546875
+     },
+     {
+      "state": 6,
+      "fraction": 0.00008984375,
+      "meanError": 0.0018893229166666668
      }
     ]
    },
@@ -1976,9 +3316,315 @@
       "meanError": 0.508703125
      }
     ]
+   },
+   "collada-3mf-Collada-and-3M-f1e4d--webgl-loader-md2-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000278472900390625,
+      "meanError": 0.07222239176432292
+     },
+     {
+      "state": 1,
+      "fraction": 0.000217437744140625,
+      "meanError": 0.0710589090983073
+     },
+     {
+      "state": 2,
+      "fraction": 0.0002288818359375,
+      "meanError": 0.07053375244140625
+     },
+     {
+      "state": 3,
+      "fraction": 0.000286102294921875,
+      "meanError": 0.07257334391276042
+     },
+     {
+      "state": 4,
+      "fraction": 0.000453948974609375,
+      "meanError": 0.07394154866536458
+     },
+     {
+      "state": 5,
+      "fraction": 0.010532379150390625,
+      "meanError": 0.2128753662109375
+     },
+     {
+      "state": 6,
+      "fraction": 0.000453948974609375,
+      "meanError": 0.07394154866536458
+     },
+     {
+      "state": 7,
+      "fraction": 0.000545501708984375,
+      "meanError": 0.07495880126953125
+     },
+     {
+      "state": 8,
+      "fraction": 0.000308990478515625,
+      "meanError": 0.0717328389485677
+     },
+     {
+      "state": 9,
+      "fraction": 0.000308990478515625,
+      "meanError": 0.0717328389485677
+     },
+     {
+      "state": 10,
+      "fraction": 0.0003662109375,
+      "meanError": 0.07372029622395833
+     },
+     {
+      "state": 11,
+      "fraction": 0.000339508056640625,
+      "meanError": 0.07125600179036458
+     },
+     {
+      "state": 12,
+      "fraction": 0.000537872314453125,
+      "meanError": 0.09260304768880208
+     },
+     {
+      "state": 13,
+      "fraction": 0.000911712646484375,
+      "meanError": 0.1096814473470052
+     },
+     {
+      "state": 14,
+      "fraction": 0.00054296875,
+      "meanError": 0.09736067708333333
+     }
+    ]
    }
   },
   "dpr2": {
+   "collada-3mf-Collada-and-3M-06f77-oader-md2-control-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.013800621032714844,
+      "meanError": 0.3126913706461589
+     },
+     {
+      "state": 1,
+      "fraction": 0.013831138610839844,
+      "meanError": 0.3124532699584961
+     },
+     {
+      "state": 2,
+      "fraction": 0.013998985290527344,
+      "meanError": 0.3153616587320964
+     },
+     {
+      "state": 3,
+      "fraction": 0.014348983764648438,
+      "meanError": 0.31790828704833984
+     },
+     {
+      "state": 4,
+      "fraction": 0.011110305786132812,
+      "meanError": 0.27277374267578125
+     },
+     {
+      "state": 5,
+      "fraction": 0.010905265808105469,
+      "meanError": 0.26653194427490234
+     },
+     {
+      "state": 6,
+      "fraction": 0.011212348937988281,
+      "meanError": 0.2656863530476888
+     },
+     {
+      "state": 7,
+      "fraction": 0.0110626220703125,
+      "meanError": 0.2705933252970378
+     },
+     {
+      "state": 8,
+      "fraction": 0.010527610778808594,
+      "meanError": 0.2619314193725586
+     },
+     {
+      "state": 9,
+      "fraction": 0.010338783264160156,
+      "meanError": 0.257476806640625
+     },
+     {
+      "state": 10,
+      "fraction": 0.011334419250488281,
+      "meanError": 0.2623729705810547
+     },
+     {
+      "state": 11,
+      "fraction": 0.027301788330078125,
+      "meanError": 0.5294837951660156
+     },
+     {
+      "state": 12,
+      "fraction": 0.02901172637939453,
+      "meanError": 0.5600865681966146
+     },
+     {
+      "state": 13,
+      "fraction": 0.0259501953125,
+      "meanError": 0.5131754557291667
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-1516e-oader-md2-control-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.010708808898925781,
+      "meanError": 0.2327143351236979
+     },
+     {
+      "state": 1,
+      "fraction": 0.010750770568847656,
+      "meanError": 0.2333078384399414
+     },
+     {
+      "state": 2,
+      "fraction": 0.010865211486816406,
+      "meanError": 0.2331517537434896
+     },
+     {
+      "state": 3,
+      "fraction": 0.011580467224121094,
+      "meanError": 0.24389870961507162
+     },
+     {
+      "state": 4,
+      "fraction": 0.007947921752929688,
+      "meanError": 0.192047119140625
+     },
+     {
+      "state": 5,
+      "fraction": 0.007936477661132812,
+      "meanError": 0.19429429372151694
+     },
+     {
+      "state": 6,
+      "fraction": 0.008358001708984375,
+      "meanError": 0.1982415517171224
+     },
+     {
+      "state": 7,
+      "fraction": 0.008421897888183594,
+      "meanError": 0.20001347859700522
+     },
+     {
+      "state": 8,
+      "fraction": 0.007819175720214844,
+      "meanError": 0.1898962656656901
+     },
+     {
+      "state": 9,
+      "fraction": 0.0075893402099609375,
+      "meanError": 0.18440755208333334
+     },
+     {
+      "state": 10,
+      "fraction": 0.008427619934082031,
+      "meanError": 0.19324620564778647
+     },
+     {
+      "state": 11,
+      "fraction": 0.0238800048828125,
+      "meanError": 0.476254145304362
+     },
+     {
+      "state": 12,
+      "fraction": 0.02544879913330078,
+      "meanError": 0.5054470698038737
+     },
+     {
+      "state": 13,
+      "fraction": 0.023095703125,
+      "meanError": 0.46901106770833334
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-21669--webgl-loader-md2-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001373291015625,
+      "meanError": 0.08209292093912761
+     },
+     {
+      "state": 1,
+      "fraction": 0.0012578964233398438,
+      "meanError": 0.08006604512532552
+     },
+     {
+      "state": 2,
+      "fraction": 0.0013380050659179688,
+      "meanError": 0.08021291097005208
+     },
+     {
+      "state": 3,
+      "fraction": 0.0013370513916015625,
+      "meanError": 0.08126513163248698
+     },
+     {
+      "state": 4,
+      "fraction": 0.001682281494140625,
+      "meanError": 0.08559513092041016
+     },
+     {
+      "state": 5,
+      "fraction": 0.02366924285888672,
+      "meanError": 0.5000333786010742
+     },
+     {
+      "state": 6,
+      "fraction": 0.001682281494140625,
+      "meanError": 0.08559513092041016
+     },
+     {
+      "state": 7,
+      "fraction": 0.0019617080688476562,
+      "meanError": 0.0867312749226888
+     },
+     {
+      "state": 8,
+      "fraction": 0.0015659332275390625,
+      "meanError": 0.08078320821126302
+     },
+     {
+      "state": 9,
+      "fraction": 0.0015659332275390625,
+      "meanError": 0.08078320821126302
+     },
+     {
+      "state": 10,
+      "fraction": 0.0016546249389648438,
+      "meanError": 0.08314895629882812
+     },
+     {
+      "state": 11,
+      "fraction": 0.0014743804931640625,
+      "meanError": 0.08116372426350911
+     },
+     {
+      "state": 12,
+      "fraction": 0.0016088485717773438,
+      "meanError": 0.09124247233072917
+     },
+     {
+      "state": 13,
+      "fraction": 0.0019559860229492188,
+      "meanError": 0.09563573201497395
+     },
+     {
+      "state": 14,
+      "fraction": 0.0014267578125,
+      "meanError": 0.098359375
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-39e79--webgl-loader-3mf-samples-1": {
     "comparison": [
      {
@@ -2038,6 +3684,54 @@
      }
     ]
    },
+   "collada-3mf-Collada-and-3M-3ace9-baudio-visualizer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-49bba-audio-orientation-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.020003318786621094,
+      "meanError": 0.46381982167561847
+     },
+     {
+      "state": 1,
+      "fraction": 0.020003318786621094,
+      "meanError": 0.46381982167561847
+     },
+     {
+      "state": 2,
+      "fraction": 0.0145416259765625,
+      "meanError": 0.42603492736816406
+     },
+     {
+      "state": 3,
+      "fraction": 0.0139617919921875,
+      "meanError": 0.4141537348429362
+     },
+     {
+      "state": 4,
+      "fraction": 0.0151455078125,
+      "meanError": 0.41708365885416665
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-58285-der-3mf-materials-samples-1": {
     "comparison": [
      {
@@ -2059,6 +3753,35 @@
       "state": 3,
       "fraction": 0.0072490234375,
       "meanError": 0.126771484375
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-6c550-audio-orientation-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0005855560302734375,
+      "meanError": 0.03574498494466146
+     },
+     {
+      "state": 1,
+      "fraction": 0.0005855560302734375,
+      "meanError": 0.03574498494466146
+     },
+     {
+      "state": 2,
+      "fraction": 0.0008955001831054688,
+      "meanError": 0.05421098073323568
+     },
+     {
+      "state": 3,
+      "fraction": 0.0010099411010742188,
+      "meanError": 0.05732440948486328
+     },
+     {
+      "state": 4,
+      "fraction": 0.0007880859375,
+      "meanError": 0.04814876302083333
      }
     ]
    },
@@ -2137,6 +3860,64 @@
       "state": 6,
       "fraction": 0.0200791015625,
       "meanError": 0.680298828125
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-9771b-baudio-visualizer-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-9e69c--webaudio-sandbox-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 1,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 2,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 3,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 4,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 5,
+      "fraction": 0.0006933212280273438,
+      "meanError": 0.011030197143554688
+     },
+     {
+      "state": 6,
+      "fraction": 0.0012099609375,
+      "meanError": 0.017131510416666666
      }
     ]
    },
@@ -2384,6 +4165,45 @@
      }
     ]
    },
+   "collada-3mf-Collada-and-3M-c9e6f--webaudio-sandbox-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 1,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 2,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 3,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 4,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 5,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.0021225611368815103
+     },
+     {
+      "state": 6,
+      "fraction": 0.00007421875,
+      "meanError": 0.0016585286458333333
+     }
+    ]
+   },
    "collada-3mf-Collada-and-3M-e4999--webgl-loader-3mf-samples-4": {
     "comparison": [
      {
@@ -2464,6 +4284,85 @@
       "state": 3,
       "fraction": 0.0157353515625,
       "meanError": 0.31089453125
+     }
+    ]
+   },
+   "collada-3mf-Collada-and-3M-f1e4d--webgl-loader-md2-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0002574920654296875,
+      "meanError": 0.06441116333007812
+     },
+     {
+      "state": 1,
+      "fraction": 0.000232696533203125,
+      "meanError": 0.06345907847086589
+     },
+     {
+      "state": 2,
+      "fraction": 0.0002231597900390625,
+      "meanError": 0.06309127807617188
+     },
+     {
+      "state": 3,
+      "fraction": 0.00024127960205078125,
+      "meanError": 0.0646209716796875
+     },
+     {
+      "state": 4,
+      "fraction": 0.0003643035888671875,
+      "meanError": 0.06621774037679036
+     },
+     {
+      "state": 5,
+      "fraction": 0.007549285888671875,
+      "meanError": 0.1825246810913086
+     },
+     {
+      "state": 6,
+      "fraction": 0.0003643035888671875,
+      "meanError": 0.06621774037679036
+     },
+     {
+      "state": 7,
+      "fraction": 0.00046825408935546875,
+      "meanError": 0.06702391306559245
+     },
+     {
+      "state": 8,
+      "fraction": 0.0003509521484375,
+      "meanError": 0.06405131022135417
+     },
+     {
+      "state": 9,
+      "fraction": 0.0003509521484375,
+      "meanError": 0.06405131022135417
+     },
+     {
+      "state": 10,
+      "fraction": 0.00038909912109375,
+      "meanError": 0.06558640797932942
+     },
+     {
+      "state": 11,
+      "fraction": 0.00032711029052734375,
+      "meanError": 0.0635843276977539
+     },
+     {
+      "state": 12,
+      "fraction": 0.00047969818115234375,
+      "meanError": 0.07596810658772786
+     },
+     {
+      "state": 13,
+      "fraction": 0.0007047653198242188,
+      "meanError": 0.07836469014485677
+     },
+     {
+      "state": 14,
+      "fraction": 0.0004404296875,
+      "meanError": 0.0844853515625
      }
     ]
    }

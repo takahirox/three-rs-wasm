@@ -6,6 +6,11 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ webgl_loader_md2_control:{limits:[.035,.7],times:[0,.5,1.3],parameters:[],at:5,antialias:true,script:[['key','w',true,1.6],['key','a',true,2.1],['key','a',false,2.4],['key','w',false,2.6],['wait',3.5],['key','s',true,3.9],['key','s',false,4.2],['wait',5]],residency:[],residencyDrag:false,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webaudio_sandbox:{times:[0,1,2.5],parameters:[[0,.5,.5],[5,440,440],[6,'square',1]],restore:[[0,1,1],[5,144,144],[6,'sine',0]],at:2.5,antialias:true,start:true},
+ webaudio_visualizer:{times:[0,1],parameters:[],at:1,antialias:true,start:true},
+ webaudio_orientation:{times:[0,1],parameters:[],at:1,antialias:true,start:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_loader_md2:{times:[0,.5,1.3,2.2],limits:[.015,.3],parameters:[[8,null,1],[1,true,1],[1,false,0],[3,null,1],[19,null,1],[0,.5,.5]],restore:[[0,1,1],[18,null,1],[2,null,1],[7,null,1]],at:2.2,antialias:true,script:[['wait',2.9],['wait',3.6]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webaudio_timing:{times:[0,.4,1,2.5],parameters:[],at:1,antialias:true,start:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  misc_raycaster_helper:{times:[0,.5,1,2.5,4,6.3,9],parameters:[],at:4,antialias:true,noResize:false},
  webgl_loader_collada_skinning:{times:[0,0.5,1.5,3],parameters:[],at:3,antialias:true,drag:[[60,440],[120,470]],wheel:[256,256,-300]},
@@ -16,6 +21,8 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 const streams=[];
+// The visualizer's needsUpdate uploads its 64 analyser bins each frame, as the original does.
+const textureStreams={webaudio_visualizer:64};
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -33,16 +40,16 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/collada-3mf.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_collada_skinning:[.07,2.5],webgl_loader_collada_kinematics:[.045,1.5],webgl_loader_3mf:[.06,1.4],webgl_loader_3mf_materials:[.03,.6]};
+const msaaLimits={webgl_loader_md2_control:[.045,.8],webaudio_orientation:[.045,1],webgl_loader_md2:[.045,.9],webgl_loader_collada_skinning:[.07,2.5],webgl_loader_collada_kinematics:[.045,1.5],webgl_loader_3mf:[.06,1.4],webgl_loader_3mf_materials:[.03,.6]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Collada and 3MF loaders official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
+ await page.addInitScript(()=>{AnalyserNode.prototype.getByteFrequencyData=function(a){for(let i=0;i<a.length;i++)a[i]=(i*53+17)%256;};window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
   await page.goto(runtime!=='rust'?`/reference/three-js/collada-3mf.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
-  if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);}
+  if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'});
   const shots=[];
@@ -84,7 +91,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
   await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
-  const runtime='rust';if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);}
+  const runtime='rust';if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -98,7 +105,8 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
     for(const [x,y] of spec.hover??[]){await page.mouse.move(x,y);await frames(page,'rust',spec.at,1);}
     for(const [x,y,shift] of spec.clicks??[]){await page.mouse.click(x,y);await frames(page,'rust',spec.at,1);}
     if(spec.slide){await page.mouse.move(...spec.slide[0]);await page.mouse.down();await page.mouse.move(...spec.slide[1],{steps:3});await page.mouse.up();await frames(page,'rust',spec.at,1);await page.mouse.move(...spec.slide[1]);await page.mouse.down();await page.mouse.move(...spec.slide[0],{steps:3});await page.mouse.up();await frames(page,'rust',spec.at,1);}
-    if(spec.drag){await page.mouse.move(...spec.drag[0]);await page.mouse.down();await page.mouse.move(...spec.drag[1],{steps:3});await page.mouse.up();await frames(page,'rust',spec.at,3);}
+    // The ogros' shadows reach new cascade texels as the camera turns: that cycle omits the one-way drag.
+    if(spec.drag&&spec.residencyDrag!==false){await page.mouse.move(...spec.drag[0]);await page.mouse.down();await page.mouse.move(...spec.drag[1],{steps:3});await page.mouse.up();await frames(page,'rust',spec.at,3);}
    };
    const read=()=>page.evaluate(()=>({creates,transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
    await cycle();const before=await read();await cycle();const after=await read();reports.push({resize,before,after});expect(after).toEqual(before);
@@ -129,7 +137,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
    await page.mouse.move(511,0);
    await page.goto(runtime==='reference'?`/reference/three-js/collada-3mf.html?id=${official(kind)}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
-   if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);}
+   if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
    // Per-frame solvers (the IK chain) converge before the measured frame.
    if(spec.frames)await frames(page,runtime,1,spec.frames);
    for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
@@ -145,7 +153,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
   if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
   else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
-  expect.soft(pair.rust.textureBytes,kind).toBe(0);
+  expect.soft(pair.rust.textureBytes,kind).toBe(textureStreams[kind]??0);
  }
  writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report,null,2));
 });

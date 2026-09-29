@@ -1264,6 +1264,8 @@ pub(super) struct FirstPerson {
     pointer_backward: bool,
     /// forward, backward, left, right, up, down.
     pub(super) keys: [bool; 6],
+    /// `lookVertical = false`: dragging turns only the longitude.
+    pub(super) fixed_latitude: bool,
 }
 impl FirstPerson {
     pub(super) fn update(&mut self, s: &mut Scene, c: Object3D, delta: f64) -> Result<()> {
@@ -1298,7 +1300,7 @@ impl FirstPerson {
         } else {
             0.
         };
-        let target_lat = if self.drag {
+        let target_lat = if self.drag && !self.fixed_latitude {
             -self.pointer.y * look
         } else {
             0.

@@ -259,3 +259,12 @@ Collada, 3MF, raycaster-helper and audio batch
 others are compared against the WebGL renderer. `webgl_loader_ttf` is
 documented in [text-clipping.md](text-clipping.md). Scoped bounds cover MSAA
 edges, the volume's colormap lookup and the truck's shadow edges.
+
+The following batch extends the same two documents. The texture arrays, EXR
+environment and shadow-map viewer are in
+[texture-volumes.md](texture-volumes.md). The MD2 characters and the three
+Web Audio scenes are in [collada-3mf.md](collada-3mf.md). None has a WebGPU
+equivalent, so all are compared against the WebGL renderer. The EXR debug
+plane shows the port's own PMREM atlas and is not compared. Scoped bounds
+cover MSAA edges, the MD2 wireframe lines and the SunLight cascade shadow
+edges of the moving ogros.

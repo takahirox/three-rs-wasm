@@ -5,10 +5,12 @@ use crate::{
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
 mod audio_timing;
+mod audio_visual;
 mod buffer_particles;
 mod controls_attributes;
 mod draco_variants;
 mod environment_materials;
+mod envmap_exr;
 mod expanded;
 mod expanded_geometry_colors;
 mod expanded_indexed;
@@ -30,6 +32,8 @@ mod interactive_scenes;
 mod interactive_shaders;
 mod lights_probes;
 mod material_textures;
+mod md2;
+mod md2_control;
 mod models_modifiers;
 mod passes_decals;
 mod picking_buffers;
@@ -43,6 +47,7 @@ mod room_environment;
 mod selection_views;
 mod shader_geometry;
 mod shadow_rtt;
+mod shadowmap_viewer;
 mod shapes;
 mod shapes_lights;
 mod sky_water;
@@ -217,7 +222,8 @@ impl State {
             240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
             258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
             291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312,
-            313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
+            313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329,
+            330, 331, 332, 333,
         ]
         .contains(&self.example)
         {
@@ -691,6 +697,17 @@ impl BrowserApp {
             ))
         }
     }
+    /// webaudio_visualizer: the analyser's frequency bins for this frame.
+    pub fn audio_data(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
+        let mut state = self.state.borrow_mut();
+        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene else {
+            return Err(JsValue::from_str("not an audio example"));
+        };
+        demo.audio_data(&bytes)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.request_render();
+        Ok(())
+    }
     /// webaudio_timing: the listener and sources' placement and pending plays.
     pub fn audio_frame(&self) -> std::result::Result<Vec<f32>, JsValue> {
         let mut state = self.state.borrow_mut();
@@ -957,7 +974,7 @@ impl BrowserApp {
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
-                            291, 298, 299, 301, 315,
+                            291, 298, 299, 301, 315, 324, 325, 326, 332,
                         ]
                         .contains(&example)
                         {
@@ -973,7 +990,8 @@ impl BrowserApp {
                             241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 258,
                             259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
                             289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
-                            307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323,
+                            307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327,
+                            329, 330, 331, 332, 333,
                         ]
                         .contains(&example),
                         format: if [
@@ -987,7 +1005,8 @@ impl BrowserApp {
                             253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280,
                             281, 282, 284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298,
                             299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314, 315, 316,
-                            317, 318, 319, 320, 321, 322, 323,
+                            317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330,
+                            331, 332, 333,
                         ]
                         .contains(&example)
                         {
@@ -1019,7 +1038,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=323).contains(&example) {
+            if (7..=333).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

@@ -419,6 +419,9 @@ pub struct Scene {
     /// Sample the equirectangular source directly instead of cube conversion.
     pub background_equirectangular: bool,
     pub background_intensity: f64,
+    /// Tone-map the environment background. three's WebGLBackground turns
+    /// tone mapping off for sRGB background textures.
+    pub background_tone_mapped: bool,
     pub exposure: f64,
     pub aces_tone_mapping: bool,
     pub tone_mapping: ToneMapping,
@@ -447,6 +450,7 @@ impl Default for Scene {
             fog: None,
             background_equirectangular: false,
             background_intensity: 1.0,
+            background_tone_mapped: true,
             exposure: 1.0,
             aces_tone_mapping: false,
             tone_mapping: ToneMapping::None,

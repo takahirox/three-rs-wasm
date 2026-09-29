@@ -30,7 +30,7 @@ async fn image(path: &str, srgb: bool) -> Result<Texture> {
     t.mipmap_filter = Some(Filter::Linear);
     Ok(t)
 }
-async fn cube(r: &Renderer, name: &str) -> Result<GpuTexture> {
+pub(super) async fn cube(r: &Renderer, name: &str) -> Result<GpuTexture> {
     let names = if name == "Bridge2" {
         ["posx", "negx", "posy", "negy", "posz", "negz"]
     } else {

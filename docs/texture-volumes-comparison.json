@@ -3,12 +3,100 @@
  "note": "Recorded by tests/browser/texture-volumes.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
  "runs": {
   "dpr1": {
+   "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0003204345703125,
+      "meanError": 0.06741714477539062
+     },
+     {
+      "state": 1,
+      "fraction": 0.000339508056640625,
+      "meanError": 0.064971923828125
+     },
+     {
+      "state": 2,
+      "fraction": 0.000522613525390625,
+      "meanError": 0.06255086263020833
+     },
+     {
+      "state": 3,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.05704625447591146
+     },
+     {
+      "state": 4,
+      "fraction": 0.000762939453125,
+      "meanError": 0.14767837524414062
+     },
+     {
+      "state": 5,
+      "fraction": 0.00072479248046875,
+      "meanError": 0.12545267740885416
+     },
+     {
+      "state": 6,
+      "fraction": 0.0005340576171875,
+      "meanError": 0.1597315470377604
+     },
+     {
+      "state": 7,
+      "fraction": 0.00014495849609375,
+      "meanError": 0.16489664713541666
+     },
+     {
+      "state": 8,
+      "fraction": 0.000118255615234375,
+      "meanError": 0.16335169474283853
+     },
+     {
+      "state": 9,
+      "fraction": 0.0001171875,
+      "meanError": 0.16163541666666667
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-21adf-darray-compressed-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.000041666666666666665
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-23891-U-residency-webgl-texture3d": {
     "residency": [
      {
       "resize": false,
       "before": {
-       "creates": 56,
+       "creates": 58,
        "transfers": [
         1,
         2064,
@@ -21,7 +109,7 @@
        ]
       },
       "after": {
-       "creates": 56,
+       "creates": 58,
        "transfers": [
         1,
         2064,
@@ -37,7 +125,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 60,
+       "creates": 62,
        "transfers": [
         1,
         2064,
@@ -50,7 +138,7 @@
        ]
       },
       "after": {
-       "creates": 60,
+       "creates": 62,
        "transfers": [
         1,
         2064,
@@ -70,7 +158,7 @@
      {
       "resize": false,
       "before": {
-       "creates": 34,
+       "creates": 36,
        "transfers": [
         1,
         344,
@@ -83,7 +171,7 @@
        ]
       },
       "after": {
-       "creates": 34,
+       "creates": 36,
        "transfers": [
         1,
         344,
@@ -99,7 +187,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 39,
+       "creates": 41,
        "transfers": [
         1,
         344,
@@ -112,7 +200,7 @@
        ]
       },
       "after": {
-       "creates": 39,
+       "creates": 41,
        "transfers": [
         1,
         344,
@@ -183,6 +271,141 @@
       "state": 10,
       "fraction": 0,
       "meanError": 0.0043138020833333336
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3f1c3-l-texture2darray-compressed": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3f412-gl-texture2darray-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-49431--shadowmap-viewer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0007527669270833334
+     },
+     {
+      "state": 1,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0007527669270833334
+     },
+     {
+      "state": 2,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0007807413736979166
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0015309651692708333
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0004641215006510417
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0005289713541666666
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0004140625
      }
     ]
    },
@@ -329,12 +552,74 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-58673-webgl-materials-envmaps-exr": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 136,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 136,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 140,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 140,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-682ca-residency-webgl-loader-nrrd": {
     "residency": [
      {
       "resize": false,
       "before": {
-       "creates": 58,
+       "creates": 60,
        "transfers": [
         4,
         1768,
@@ -347,7 +632,7 @@
        ]
       },
       "after": {
-       "creates": 58,
+       "creates": 60,
        "transfers": [
         4,
         1768,
@@ -363,7 +648,7 @@
      {
       "resize": true,
       "before": {
-       "creates": 63,
+       "creates": 65,
        "transfers": [
         4,
         1768,
@@ -376,7 +661,7 @@
        ]
       },
       "after": {
-       "creates": 63,
+       "creates": 65,
        "transfers": [
         4,
         1768,
@@ -385,6 +670,112 @@
        "resources": [
         4,
         4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-71062-et-texture2darray-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-947ef-rendertarget-texture2darray": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
         0
        ]
       }
@@ -475,8 +866,346 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-ccc4a-idency-webgl-texture2darray": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-d5b92--shadowmap-viewer-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.01288604736328125,
+      "meanError": 0.3656361897786458
+     },
+     {
+      "state": 1,
+      "fraction": 0.01288604736328125,
+      "meanError": 0.3656361897786458
+     },
+     {
+      "state": 2,
+      "fraction": 0.0132904052734375,
+      "meanError": 0.3711751302083333
+     },
+     {
+      "state": 3,
+      "fraction": 0.013050079345703125,
+      "meanError": 0.36705271402994794
+     },
+     {
+      "state": 4,
+      "fraction": 0.015964508056640625,
+      "meanError": 0.4668986002604167
+     },
+     {
+      "state": 5,
+      "fraction": 0.013851165771484375,
+      "meanError": 0.3997446695963542
+     },
+     {
+      "state": 6,
+      "fraction": 0.0165703125,
+      "meanError": 0.51184765625
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-eab9a--and-official-draw-workload": {
     "gpuWork": [
+     {
+      "kind": "webgl_shadowmap_viewer",
+      "reference": {
+       "draws": [
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_envmaps_exr",
+      "reference": {
+       "draws": [
+        {
+         "count": 18000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 18000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture2darray",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture2darray_compressed",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_rendertarget_texture2darray",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
      {
       "kind": "webgl_texture2darray_layerupdate",
       "reference": {
@@ -660,9 +1389,159 @@
       "meanError": 0.12752994791666666
      }
     ]
+   },
+   "texture-volumes-Texture-ar-f753d-ency-webgl-shadowmap-viewer": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 139,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 139,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 147,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 147,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
    }
   },
   "dpr2": {
+   "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00014591217041015625,
+      "meanError": 0.06287701924641927
+     },
+     {
+      "state": 1,
+      "fraction": 0.0001735687255859375,
+      "meanError": 0.060022989908854164
+     },
+     {
+      "state": 2,
+      "fraction": 0.0002803802490234375,
+      "meanError": 0.05663458506266276
+     },
+     {
+      "state": 3,
+      "fraction": 0.00000667572021484375,
+      "meanError": 0.055848121643066406
+     },
+     {
+      "state": 4,
+      "fraction": 0.00041675567626953125,
+      "meanError": 0.14212163289388022
+     },
+     {
+      "state": 5,
+      "fraction": 0.00039768218994140625,
+      "meanError": 0.1199350357055664
+     },
+     {
+      "state": 6,
+      "fraction": 0.00028228759765625,
+      "meanError": 0.1536258061726888
+     },
+     {
+      "state": 7,
+      "fraction": 0.000072479248046875,
+      "meanError": 0.16197077433268228
+     },
+     {
+      "state": 8,
+      "fraction": 0.00007915496826171875,
+      "meanError": 0.16131114959716797
+     },
+     {
+      "state": 9,
+      "fraction": 0.0000546875,
+      "meanError": 0.1595322265625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-21adf-darray-compressed-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 6.357828776041666e-7
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 6.357828776041666e-7
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.000004132588704427083
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0000025431315104166665
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.0000012715657552083333
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-378ca-array-layerupdate-samples-1": {
     "comparison": [
      {
@@ -719,6 +1598,79 @@
       "state": 10,
       "fraction": 0,
       "meanError": 0.004447265625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3f412-gl-texture2darray-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-49431--shadowmap-viewer-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00024890899658203125
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00024890899658203125
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.000286102294921875
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00026035308837890625
+     },
+     {
+      "state": 4,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0007289250691731771
+     },
+     {
+      "state": 5,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0009094874064127604
+     },
+     {
+      "state": 6,
+      "fraction": 9.765625e-7,
+      "meanError": 0.0003929036458333333
      }
     ]
    },
@@ -865,6 +1817,50 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-71062-et-texture2darray-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-97cce-webgl-loader-nrrd-samples-4": {
     "comparison": [
      {
@@ -946,6 +1942,45 @@
       "state": 15,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-d5b92--shadowmap-viewer-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.006510734558105469,
+      "meanError": 0.1849533716837565
+     },
+     {
+      "state": 1,
+      "fraction": 0.006510734558105469,
+      "meanError": 0.1849533716837565
+     },
+     {
+      "state": 2,
+      "fraction": 0.0067234039306640625,
+      "meanError": 0.1877756118774414
+     },
+     {
+      "state": 3,
+      "fraction": 0.006602287292480469,
+      "meanError": 0.18575827280680338
+     },
+     {
+      "state": 4,
+      "fraction": 0.008042335510253906,
+      "meanError": 0.23830509185791016
+     },
+     {
+      "state": 5,
+      "fraction": 0.007464408874511719,
+      "meanError": 0.22113037109375
+     },
+     {
+      "state": 6,
+      "fraction": 0.0086416015625,
+      "meanError": 0.2684775390625
      }
     ]
    },

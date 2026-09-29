@@ -1,5 +1,6 @@
 //! The compressed texture array's layer updates and the NRRD volume rendered
 //! by VolumeRenderShader1, and the NRRD loader's volume slices.
+mod arrays;
 mod slices;
 use super::controls_attributes::{Controls, viewport_css};
 use super::gltf_viewer::{decode_texture_image, fetch};
@@ -71,6 +72,7 @@ pub(super) struct Demo {
     layers: Option<Layers>,
     volume: Option<Volume>,
     slices: Option<slices::Slices>,
+    arrays: Option<arrays::Arrays>,
 }
 /// A parsed NRRD: sizes, the samples as numbers, and the header's space.
 pub(super) struct Nrrd {
@@ -256,10 +258,12 @@ impl Demo {
             layers: None,
             volume: None,
             slices: None,
+            arrays: None,
         };
         s.background = Color::BLACK;
         match id {
             314 => d.layer_scene(s, c, r).await?,
+            324..=326 => d.arrays = Some(arrays::Arrays::new(s, c, r, id).await?),
             321 => {
                 let nrrd = parse_nrrd(&fetch(&format!("{ASSETS}/nrrd/I.nrrd")).await?)?;
                 d.slices = Some(slices::Slices::new(s, c, r, nrrd).await?);
@@ -469,10 +473,16 @@ impl Demo {
         if let Some(k) = &mut self.slices {
             k.update(dt, animate);
         }
+        if let Some(k) = &mut self.arrays {
+            k.update(dt, animate);
+        }
         Ok(())
     }
     pub fn prepare(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         if let Some(k) = &mut self.slices {
+            return k.prepare(s, r);
+        }
+        if let Some(k) = &mut self.arrays {
             return k.prepare(s, r);
         }
         if let Some(k) = &mut self.layers
@@ -570,6 +580,11 @@ impl Demo {
                     .transfer = true
             }
             (315, 0..=4) => self.volume.as_mut().ok_or(Error::Invalid("volume"))?.params[index] = v,
+            (324..=326, _) => self
+                .arrays
+                .as_mut()
+                .ok_or(Error::Invalid("arrays"))?
+                .parameter(index, v)?,
             (321, _) => self
                 .slices
                 .as_mut()
@@ -582,6 +597,9 @@ impl Demo {
     pub fn seek(&mut self, t: f64) {
         self.time = t;
         if let Some(k) = &mut self.slices {
+            k.seek(t);
+        }
+        if let Some(k) = &mut self.arrays {
             k.seek(t);
         }
     }
