@@ -15,6 +15,15 @@ enum Content {
     Md2(Box<super::md2::Demo>),
     Md2Control(Box<super::md2_control::Demo>),
     EnvmapExr(Box<super::envmap_exr::Demo>),
+    Dds(Box<super::dds::Demo>),
+    Kinect(Box<super::kinect::Demo>),
+    Channels(Box<super::channels::Demo>),
+    WideGamut(Box<super::wide_gamut::Demo>),
+    UvTests(Box<super::uv_tests::Demo>),
+    ClippingStencil(Box<super::clipping_stencil::Demo>),
+    Ascii(Box<super::ascii::Demo>),
+    Glitch(Box<super::glitch::Demo>),
+    Ssao(Box<super::ssao::Demo>),
     ShadowmapViewer(Box<super::shadowmap_viewer::Demo>),
     AudioVisual(Box<super::audio_visual::Demo>),
     TextureVolumes(Box<super::texture_volumes::Demo>),
@@ -202,6 +211,87 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::EnvmapExr(Box::new(
                     super::envmap_exr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            335 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Dds(Box::new(
+                    super::dds::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            336 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::Kinect(Box::new(
+                    super::kinect::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            337 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 500.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::Channels(Box::new(
+                    super::channels::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            338 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::WideGamut(Box::new(
+                    super::wide_gamut::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            339 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::UvTests(Box::new(
+                    super::uv_tests::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            340 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::ClippingStencil(Box::new(
+                    super::clipping_stencil::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            341 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Ascii(Box::new(
+                    super::ascii::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            342 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Glitch(Box::new(
+                    super::glitch::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            343 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 100.,
+                far: 700.,
+                elapsed: 0.,
+                content: Content::Ssao(Box::new(
+                    super::ssao::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -405,7 +495,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            203..=207 => Ok(Self {
+            203..=207 | 334 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 5000.,
@@ -1075,6 +1165,33 @@ impl Demo {
         if let Content::EnvmapExr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Dds(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Glitch(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1455,6 +1572,12 @@ impl Demo {
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Glitch(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1651,6 +1774,33 @@ impl Demo {
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Dds(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Glitch(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -1775,6 +1925,33 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::EnvmapExr(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Dds(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Glitch(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
@@ -1990,6 +2167,33 @@ impl Demo {
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Dds(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Glitch(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -2105,6 +2309,42 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::Dds(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Glitch(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -2209,6 +2449,33 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::EnvmapExr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Dds(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Glitch(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
@@ -2404,6 +2671,33 @@ impl Demo {
         if let Content::EnvmapExr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
+        if let Content::Dds(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Kinect(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Channels(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::WideGamut(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::UvTests(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ClippingStencil(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ssao(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Glitch(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
@@ -2564,6 +2858,14 @@ impl Demo {
 }
 
 impl Demo {
+    /// After the frame is submitted, in the same task: effects that read the
+    /// canvas back (AsciiEffect).
+    pub fn presented(&mut self, canvas: &web_sys::HtmlCanvasElement) -> Result<()> {
+        if let Content::Ascii(d) = &mut self.content {
+            d.presented(canvas)?;
+        }
+        Ok(())
+    }
     pub fn attach_canvases(
         &mut self,
         r: &crate::renderer::Renderer,

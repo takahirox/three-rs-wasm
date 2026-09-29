@@ -4,10 +4,14 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod ascii;
 mod audio_timing;
 mod audio_visual;
 mod buffer_particles;
+mod channels;
+mod clipping_stencil;
 mod controls_attributes;
+mod dds;
 mod draco_variants;
 mod environment_materials;
 mod envmap_exr;
@@ -23,6 +27,7 @@ mod exporters_video;
 mod gallery;
 mod gallery_scenes;
 mod geometry_materials;
+mod glitch;
 mod gltf_examples;
 mod gltf_normals;
 mod gltf_viewer;
@@ -30,6 +35,7 @@ mod helpers_formats;
 mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
+mod kinect;
 mod lights_probes;
 mod material_textures;
 mod md2;
@@ -52,6 +58,7 @@ mod shapes;
 mod shapes_lights;
 mod sky_water;
 mod spot_skinning;
+mod ssao;
 mod stereo_loaders;
 mod teapot_data;
 mod terrain_loaders;
@@ -78,7 +85,9 @@ mod tsl_primitives;
 mod tsl_procedural;
 mod tsl_surface;
 mod tsl_viewport;
+mod uv_tests;
 mod views_loaders;
+mod wide_gamut;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
 fn asset_url(url: &str) -> Result<String> {
@@ -223,7 +232,7 @@ impl State {
             258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
             291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312,
             313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329,
-            330, 331, 332, 333,
+            330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343,
         ]
         .contains(&self.example)
         {
@@ -263,6 +272,9 @@ impl State {
             );
         }
         frame.present();
+        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
+            demo.presented(&self.canvas)?;
+        }
         self.frame += 1;
         let _ = self
             .canvas
@@ -974,7 +986,8 @@ impl BrowserApp {
                             161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
                             190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
-                            291, 298, 299, 301, 315, 324, 325, 326, 332,
+                            291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
+                            343,
                         ]
                         .contains(&example)
                         {
@@ -991,7 +1004,7 @@ impl BrowserApp {
                             259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
                             289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
                             307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327,
-                            329, 330, 331, 332, 333,
+                            329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343,
                         ]
                         .contains(&example),
                         format: if [
@@ -1006,7 +1019,7 @@ impl BrowserApp {
                             281, 282, 284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298,
                             299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314, 315, 316,
                             317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330,
-                            331, 332, 333,
+                            331, 332, 333, 335, 336, 337, 338, 341, 342, 343,
                         ]
                         .contains(&example)
                         {
@@ -1015,7 +1028,7 @@ impl BrowserApp {
                             wgpu::TextureFormat::Rgba16Float
                         },
                         // WebGLRenderer( { stencil: true } ) for ShadowMesh.
-                        stencil_buffer: example == 278,
+                        stencil_buffer: [278, 340].contains(&example),
                         ..Default::default()
                     }
                 } else {
@@ -1038,7 +1051,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=333).contains(&example) {
+            if (7..=343).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

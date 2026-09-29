@@ -799,3 +799,17 @@ SHA-256 hashes in `gallery/assets/loaders-audio-manifest.json`.
 
 The texture-array examples reuse the `head256x256x109.raw` volume and
 `spiritedaway.ktx2` already listed above.
+
+The display-stereo to SSAO batch adds unmodified r186 example assets, listed
+with their source paths and SHA-256 hashes in
+`gallery/assets/loaders-audio-manifest.json`:
+
+- `gallery/assets/dds/`: the DDSLoader test textures from
+  `textures/compressed/` (`disturb_*`, `explosion_dxt5_mip`,
+  `hepatica_dxt3_mip`, `Mountains*`) and `textures/wave_normals_24bit_uncompressed.dds`,
+  distributed alongside `LICENSE-THREE`.
+- `gallery/assets/kinect/`: `textures/kinect.webm` and `textures/kinect.mp4`,
+  a Kinect depth recording made with freenect and a modified glview.c, per
+  the r186 `textures/kinect.nfo`; distributed alongside `LICENSE-THREE`.
+- `gallery/assets/wide-gamut/`: `textures/wide_gamut/logo_srgb.png` and
+  `logo_p3.png`, distributed alongside `LICENSE-THREE`.

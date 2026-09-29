@@ -136,7 +136,7 @@ pub(super) fn webgl_perspective(fov: f64, aspect: f64, near: f64, far: f64) -> M
     ])
 }
 /// `Matrix4.makeOrthographic` in WebGL's -1..1 depth convention.
-fn webgl_orthographic(l: f64, r: f64, t: f64, b: f64, near: f64, far: f64) -> Matrix4 {
+pub(super) fn webgl_orthographic(l: f64, r: f64, t: f64, b: f64, near: f64, far: f64) -> Matrix4 {
     let (w, h, p) = (r - l, t - b, far - near);
     Matrix4::from_cols_array(&[
         2. / w,

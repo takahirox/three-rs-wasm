@@ -24,6 +24,7 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     await page.goto(`/three-rs-wasm/web/gallery/#${entry.id}`);
     const viewer = page.frameLocator('#viewer');
     if(entry.id==='webgpu_compute_audio')await viewer.getByRole('button',{name:'Play',exact:true}).click();
+    if(entry.id==='webgl_postprocessing_glitch')await viewer.locator('#startButton').click();
     const canvas = viewer.locator('canvas').first();
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.

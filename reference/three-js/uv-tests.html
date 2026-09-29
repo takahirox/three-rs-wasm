@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><script>
+// The unmodified misc_uv_tests page with its imports pointed at the pinned r186 sources.
+(async()=>{const html=await(await fetch('/.cache/three-r186/examples/misc_uv_tests.html')).text();
+const page=html.replace('"three": "../build/three.module.js"','"three": "/.cache/three-r186/src/Three.js"').replace('"three/addons/": "./jsm/"','"three/addons/": "/.cache/three-r186/examples/jsm/"');
+document.open();document.write(page);document.close();})();
+</script></body></html>

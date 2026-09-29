@@ -3,6 +3,350 @@
  "note": "Recorded by tests/browser/texture-volumes.spec.js at DPR 1 and 2 (Chrome, Apple Metal adapter). Pixel fractions count RGB channel differences above 6/255.",
  "runs": {
   "dpr1": {
+   "texture-volumes-ASCII-effe-34597--table-matches-the-original": {
+    "ascii": [
+     {
+      "state": 0,
+      "total": 2888,
+      "bad": 8,
+      "fraction": 0.002770083102493075
+     },
+     {
+      "state": 1,
+      "total": 2888,
+      "bad": 7,
+      "fraction": 0.0024238227146814403
+     },
+     {
+      "state": 2,
+      "total": 2888,
+      "bad": 18,
+      "fraction": 0.006232686980609419
+     },
+     {
+      "state": 3,
+      "total": 2888,
+      "bad": 19,
+      "fraction": 0.006578947368421052
+     },
+     {
+      "state": 4,
+      "total": 2888,
+      "bad": 10,
+      "fraction": 0.0034626038781163434
+     },
+     {
+      "state": 5,
+      "total": 2888,
+      "bad": 11,
+      "fraction": 0.003808864265927978
+     }
+    ]
+   },
+   "texture-volumes-Glitch-pas-c6491-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "frames": 1,
+      "fraction": 0.009624481201171875,
+      "meanError": 0.09956614176432292
+     },
+     {
+      "state": 1,
+      "frames": 1,
+      "fraction": 0.010860443115234375,
+      "meanError": 0.09442901611328125
+     },
+     {
+      "state": 2,
+      "frames": 1,
+      "fraction": 0.0110321044921875,
+      "meanError": 0.10861841837565105
+     },
+     {
+      "state": 3,
+      "frames": 1,
+      "fraction": 0.008899688720703125,
+      "meanError": 0.13205083211263022
+     },
+     {
+      "state": 4,
+      "frames": 1,
+      "fraction": 0.00992584228515625,
+      "meanError": 0.09493255615234375
+     },
+     {
+      "state": 5,
+      "frames": 1,
+      "fraction": 0.011241912841796875,
+      "meanError": 0.10352198282877605
+     },
+     {
+      "state": 6,
+      "frames": 1,
+      "fraction": 0.016902923583984375,
+      "meanError": 0.14527511596679688
+     },
+     {
+      "state": 7,
+      "frames": 1,
+      "fraction": 0.013294219970703125,
+      "meanError": 0.12272262573242188
+     },
+     {
+      "state": 8,
+      "frames": 1,
+      "fraction": 0.009532928466796875,
+      "meanError": 0.16694259643554688
+     },
+     {
+      "state": 9,
+      "frames": 1,
+      "fraction": 0.000942230224609375,
+      "meanError": 0.019265492757161457
+     },
+     {
+      "state": 10,
+      "frames": 1,
+      "fraction": 0.0000762939453125,
+      "meanError": 0.025690714518229168
+     },
+     {
+      "state": 11,
+      "frames": 1,
+      "fraction": 0.00009918212890625,
+      "meanError": 0.022836049397786457
+     },
+     {
+      "state": 12,
+      "frames": 1,
+      "fraction": 0.00054168701171875,
+      "meanError": 0.030729929606119793
+     },
+     {
+      "state": 13,
+      "frames": 1,
+      "fraction": 0.000640869140625,
+      "meanError": 0.030399322509765625
+     },
+     {
+      "state": 14,
+      "frames": 1,
+      "fraction": 0.0070037841796875,
+      "meanError": 0.11055882771809895
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0398c--clipping-stencil-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.002025604248046875,
+      "meanError": 0.06205113728841146
+     },
+     {
+      "state": 1,
+      "fraction": 0.00188446044921875,
+      "meanError": 0.05389404296875
+     },
+     {
+      "state": 2,
+      "fraction": 0.0024566650390625,
+      "meanError": 0.06652577718098958
+     },
+     {
+      "state": 3,
+      "fraction": 0.00289154052734375,
+      "meanError": 0.0735308329264323
+     },
+     {
+      "state": 4,
+      "fraction": 0.002471923828125,
+      "meanError": 0.06687037150065105
+     },
+     {
+      "state": 5,
+      "fraction": 0.0004730224609375,
+      "meanError": 0.01409149169921875
+     },
+     {
+      "state": 6,
+      "fraction": 0.0004730224609375,
+      "meanError": 0.01409149169921875
+     },
+     {
+      "state": 7,
+      "fraction": 0.0004730224609375,
+      "meanError": 0.010761260986328125
+     },
+     {
+      "state": 8,
+      "fraction": 0.000469207763671875,
+      "meanError": 0.01056671142578125
+     },
+     {
+      "state": 9,
+      "fraction": 0.000469207763671875,
+      "meanError": 0.01056671142578125
+     },
+     {
+      "state": 10,
+      "fraction": 0.000469207763671875,
+      "meanError": 0.01056671142578125
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0cd32-stprocessing-ssao-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0006192525227864584
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0003814697265625
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0003064473470052083
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00005340576171875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.000560760498046875
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.001132965087890625
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0017267862955729167
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.0003064473470052083
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0004145304361979167
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.000354766845703125
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.0003941853841145833
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-1be24-dency-webgl-test-wide-gamut": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 67,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 67,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 72,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 72,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
     "comparison": [
      {
@@ -88,6 +432,68 @@
       "state": 5,
       "fraction": 0,
       "meanError": 0.000041666666666666665
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-22919-cy-webgl-loader-texture-dds": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 160,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 160,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 165,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 165,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
      }
     ]
    },
@@ -215,6 +621,142 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-29ce1-ebgl-video-kinect-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.004730224609375,
+      "meanError": 0.11993408203125
+     },
+     {
+      "state": 1,
+      "fraction": 0.004573822021484375,
+      "meanError": 0.1231829325358073
+     },
+     {
+      "state": 2,
+      "fraction": 0.00551605224609375,
+      "meanError": 0.15962346394856772
+     },
+     {
+      "state": 3,
+      "fraction": 0.002712249755859375,
+      "meanError": 0.020109812418619793
+     },
+     {
+      "state": 4,
+      "fraction": 0.005401611328125,
+      "meanError": 0.06269582112630208
+     },
+     {
+      "state": 5,
+      "fraction": 0.005672454833984375,
+      "meanError": 0.07668304443359375
+     },
+     {
+      "state": 6,
+      "fraction": 0.002330780029296875,
+      "meanError": 0.05283482869466146
+     },
+     {
+      "state": 7,
+      "fraction": 0.00139617919921875,
+      "meanError": 0.029782613118489582
+     },
+     {
+      "state": 8,
+      "fraction": 0.004730224609375,
+      "meanError": 0.11993408203125
+     },
+     {
+      "state": 9,
+      "fraction": 0.004730224609375,
+      "meanError": 0.11993408203125
+     },
+     {
+      "state": 10,
+      "fraction": 0.004947662353515625,
+      "meanError": 0.1035601298014323
+     },
+     {
+      "state": 11,
+      "fraction": 0.00492095947265625,
+      "meanError": 0.0951690673828125
+     },
+     {
+      "state": 12,
+      "fraction": 0.00424957275390625,
+      "meanError": 0.060567220052083336
+     },
+     {
+      "state": 13,
+      "fraction": 0.0028515625,
+      "meanError": 0.033192708333333334
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-2e9fb-y-webgl-postprocessing-ssao": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 144,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 144,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 162,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 162,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-378ca-array-layerupdate-samples-1": {
     "comparison": [
      {
@@ -271,6 +813,68 @@
       "state": 10,
       "fraction": 0,
       "meanError": 0.0043138020833333336
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3d8e7-cy-webgl-materials-channels": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 84,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 84,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 88,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 88,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      }
      }
     ]
    },
@@ -720,6 +1324,228 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-765f3--clipping-stencil-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0007807413736979166
+     },
+     {
+      "state": 1,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0014495849609375
+     },
+     {
+      "state": 2,
+      "fraction": 0.000003814697265625,
+      "meanError": 0.0010503133138020833
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0018068949381510417
+     },
+     {
+      "state": 4,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.0018628438313802083
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00013224283854166666
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00013224283854166666
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.00008138020833333333
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-7d328-l-test-wide-gamut-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-8a3de-esidency-webgl-video-kinect": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-8c72c-ncy-webgpu-clipping-stencil": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 127,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 127,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 132,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 132,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-947ef-rendertarget-texture2darray": {
     "residency": [
      {
@@ -779,6 +1605,25 @@
         0
        ]
       }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-96ead-l-test-wide-gamut-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
      }
     ]
    },
@@ -863,6 +1708,270 @@
       "state": 15,
       "fraction": 0,
       "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-ac67e-dency-webgpu-display-stereo": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 132,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 132,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 145,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 145,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-b6f15-oader-texture-dds-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000396728515625,
+      "meanError": 0.008115132649739584
+     },
+     {
+      "state": 1,
+      "fraction": 0.004550933837890625,
+      "meanError": 0.0963274637858073
+     },
+     {
+      "state": 2,
+      "fraction": 0.002857208251953125,
+      "meanError": 0.05928802490234375
+     },
+     {
+      "state": 3,
+      "fraction": 0.0005340576171875,
+      "meanError": 0.011544545491536459
+     },
+     {
+      "state": 4,
+      "fraction": 0.0014296875,
+      "meanError": 0.034315104166666666
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-b8733-aterials-channels-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.014801025390625
+     },
+     {
+      "state": 1,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.0115814208984375
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00000762939453125
+     },
+     {
+      "state": 4,
+      "fraction": 0.00376129150390625,
+      "meanError": 0.07754135131835938
+     },
+     {
+      "state": 5,
+      "fraction": 0.003749847412109375,
+      "meanError": 0.07722727457682292
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00015004475911458334
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.014801025390625
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.014801025390625
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.013387044270833334
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.0114288330078125
+     },
+     {
+      "state": 11,
+      "fraction": 0.00215911865234375,
+      "meanError": 0.04110081990559896
+     },
+     {
+      "state": 12,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.00823974609375
+     },
+     {
+      "state": 13,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.016858418782552082
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.019884745279947918
+     },
+     {
+      "state": 15,
+      "fraction": 0,
+      "meanError": 0.014801025390625
+     },
+     {
+      "state": 16,
+      "fraction": 0.00000762939453125,
+      "meanError": 0.016465504964192707
+     },
+     {
+      "state": 17,
+      "fraction": 0,
+      "meanError": 0.016301472981770832
+     },
+     {
+      "state": 18,
+      "fraction": 0,
+      "meanError": 0.015739583333333335
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-c497f-pu-display-stereo-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000034332275390625,
+      "meanError": 0.010735829671223959
+     },
+     {
+      "state": 1,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.010892232259114584
+     },
+     {
+      "state": 2,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.010484059651692709
+     },
+     {
+      "state": 3,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.013380686442057291
+     },
+     {
+      "state": 4,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.040172576904296875
+     },
+     {
+      "state": 5,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.041142781575520836
+     },
+     {
+      "state": 6,
+      "fraction": 0.000019073486328125,
+      "meanError": 0.039517720540364586
+     },
+     {
+      "state": 7,
+      "fraction": 0.00002288818359375,
+      "meanError": 0.039409637451171875
+     },
+     {
+      "state": 8,
+      "fraction": 0.00002288818359375,
+      "meanError": 0.04500452677408854
+     },
+     {
+      "state": 9,
+      "fraction": 0.000030517578125,
+      "meanError": 0.037470499674479164
+     },
+     {
+      "state": 10,
+      "fraction": 0.0000152587890625,
+      "meanError": 0.011758168538411459
+     },
+     {
+      "state": 11,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.007401784261067708
+     },
+     {
+      "state": 12,
+      "fraction": 0.000057220458984375,
+      "meanError": 0.006665547688802083
+     },
+     {
+      "state": 13,
+      "fraction": 0.0000546875,
+      "meanError": 0.006135416666666667
      }
     ]
    },
@@ -967,8 +2076,436 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-e148f-oader-texture-dds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0005124409993489584
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.00040435791015625
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.0009180704752604166
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0005505879720052084
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00075390625
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-eab9a--and-official-draw-workload": {
     "gpuWork": [
+     {
+      "kind": "webgl_postprocessing_ssao",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 100
+        },
+        {
+         "count": 36,
+         "instances": 100
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 100
+        },
+        {
+         "count": 36,
+         "instances": 100
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_clipping_stencil",
+      "reference": {
+       "draws": [
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_test_wide_gamut",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_channels",
+      "reference": {
+       "draws": [
+        {
+         "count": 26652,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 26652,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_video_kinect",
+      "reference": {
+       "draws": [
+        {
+         "count": 1843200,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 307200
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_dds",
+      "reference": {
+       "draws": [
+        {
+         "count": 3456,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 3456,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_display_stereo",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        }
+       ],
+       "attributeBytes": 64000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 39928,
+       "textureBytes": 0
+      }
+     },
      {
       "kind": "webgl_shadowmap_viewer",
       "reference": {
@@ -1454,6 +2991,350 @@
    }
   },
   "dpr2": {
+   "texture-volumes-ASCII-effe-34597--table-matches-the-original": {
+    "ascii": [
+     {
+      "state": 0,
+      "total": 2888,
+      "bad": 8,
+      "fraction": 0.002770083102493075
+     },
+     {
+      "state": 1,
+      "total": 2888,
+      "bad": 7,
+      "fraction": 0.0024238227146814403
+     },
+     {
+      "state": 2,
+      "total": 2888,
+      "bad": 18,
+      "fraction": 0.006232686980609419
+     },
+     {
+      "state": 3,
+      "total": 2888,
+      "bad": 19,
+      "fraction": 0.006578947368421052
+     },
+     {
+      "state": 4,
+      "total": 2888,
+      "bad": 10,
+      "fraction": 0.0034626038781163434
+     },
+     {
+      "state": 5,
+      "total": 2888,
+      "bad": 12,
+      "fraction": 0.004155124653739612
+     }
+    ]
+   },
+   "texture-volumes-Glitch-pas-c6491-the-original-frame-by-frame": {
+    "comparison": [
+     {
+      "state": 0,
+      "frames": 1,
+      "fraction": 0.00504302978515625,
+      "meanError": 0.06140486399332682
+     },
+     {
+      "state": 1,
+      "frames": 1,
+      "fraction": 0.0059661865234375,
+      "meanError": 0.05603218078613281
+     },
+     {
+      "state": 2,
+      "frames": 1,
+      "fraction": 0.006594657897949219,
+      "meanError": 0.06566778818766277
+     },
+     {
+      "state": 3,
+      "frames": 1,
+      "fraction": 0.00479888916015625,
+      "meanError": 0.07688013712565105
+     },
+     {
+      "state": 4,
+      "frames": 1,
+      "fraction": 0.00556182861328125,
+      "meanError": 0.06009991963704427
+     },
+     {
+      "state": 5,
+      "frames": 1,
+      "fraction": 0.005718231201171875,
+      "meanError": 0.058814684549967446
+     },
+     {
+      "state": 6,
+      "frames": 1,
+      "fraction": 0.00879669189453125,
+      "meanError": 0.07993125915527344
+     },
+     {
+      "state": 7,
+      "frames": 1,
+      "fraction": 0.007909774780273438,
+      "meanError": 0.0757001241048177
+     },
+     {
+      "state": 8,
+      "frames": 1,
+      "fraction": 0.0050678253173828125,
+      "meanError": 0.09058157602945964
+     },
+     {
+      "state": 9,
+      "frames": 1,
+      "fraction": 0.0004901885986328125,
+      "meanError": 0.012600262959798178
+     },
+     {
+      "state": 10,
+      "frames": 1,
+      "fraction": 0.00010395050048828125,
+      "meanError": 0.026378313700358074
+     },
+     {
+      "state": 11,
+      "frames": 1,
+      "fraction": 0.000087738037109375,
+      "meanError": 0.022649129231770832
+     },
+     {
+      "state": 12,
+      "frames": 1,
+      "fraction": 0.00030803680419921875,
+      "meanError": 0.029401461283365887
+     },
+     {
+      "state": 13,
+      "frames": 1,
+      "fraction": 0.0008020401000976562,
+      "meanError": 0.029394785563151043
+     },
+     {
+      "state": 14,
+      "frames": 1,
+      "fraction": 0.003086090087890625,
+      "meanError": 0.05914910634358724
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0398c--clipping-stencil-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.0009822845458984375,
+      "meanError": 0.030193010965983074
+     },
+     {
+      "state": 1,
+      "fraction": 0.000934600830078125,
+      "meanError": 0.027986844380696613
+     },
+     {
+      "state": 2,
+      "fraction": 0.0012102127075195312,
+      "meanError": 0.033356666564941406
+     },
+     {
+      "state": 3,
+      "fraction": 0.001430511474609375,
+      "meanError": 0.03745619455973307
+     },
+     {
+      "state": 4,
+      "fraction": 0.0012102127075195312,
+      "meanError": 0.033120155334472656
+     },
+     {
+      "state": 5,
+      "fraction": 0.0002422332763671875,
+      "meanError": 0.0073089599609375
+     },
+     {
+      "state": 6,
+      "fraction": 0.000244140625,
+      "meanError": 0.007380167643229167
+     },
+     {
+      "state": 7,
+      "fraction": 0.000244140625,
+      "meanError": 0.005753517150878906
+     },
+     {
+      "state": 8,
+      "fraction": 0.000244140625,
+      "meanError": 0.005770365397135417
+     },
+     {
+      "state": 9,
+      "fraction": 0.000244140625,
+      "meanError": 0.005770365397135417
+     },
+     {
+      "state": 10,
+      "fraction": 0.000244140625,
+      "meanError": 0.005770365397135417
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-0cd32-stprocessing-ssao-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.000011444091796875,
+      "meanError": 0.0006116231282552084
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0003668467203776042
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0.00029595692952473957
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.0000591278076171875
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.000576019287109375
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.0011262893676757812
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.0016848246256510417
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.00029595692952473957
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.0004069010416666667
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.0003515879313151042
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.00038496653238932293
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-1be24-dency-webgl-test-wide-gamut": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 67,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 67,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 72,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 72,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-1cbfd-rials-envmaps-exr-samples-1": {
     "comparison": [
      {
@@ -1542,6 +3423,328 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-22919-cy-webgl-loader-texture-dds": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 160,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 160,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 165,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 165,
+       "transfers": [
+        2,
+        66848,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-23891-U-residency-webgl-texture3d": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 58,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 58,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 62,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      },
+      "after": {
+       "creates": 62,
+       "transfers": [
+        1,
+        2064,
+        16
+       ],
+       "resources": [
+        1,
+        3,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-24f9a--texture2darray-layerupdate": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 36,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 41,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 41,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-29ce1-ebgl-video-kinect-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.001190185546875,
+      "meanError": 0.028448740641276043
+     },
+     {
+      "state": 1,
+      "fraction": 0.00131988525390625,
+      "meanError": 0.03190167744954427
+     },
+     {
+      "state": 2,
+      "fraction": 0.001415252685546875,
+      "meanError": 0.03417332967122396
+     },
+     {
+      "state": 3,
+      "fraction": 0.0024652481079101562,
+      "meanError": 0.06776078542073567
+     },
+     {
+      "state": 4,
+      "fraction": 0.0016489028930664062,
+      "meanError": 0.04021167755126953
+     },
+     {
+      "state": 5,
+      "fraction": 0.0016956329345703125,
+      "meanError": 0.04084968566894531
+     },
+     {
+      "state": 6,
+      "fraction": 0.0008745193481445312,
+      "meanError": 0.018917401631673176
+     },
+     {
+      "state": 7,
+      "fraction": 0.0004367828369140625,
+      "meanError": 0.009447097778320312
+     },
+     {
+      "state": 8,
+      "fraction": 0.001190185546875,
+      "meanError": 0.028448740641276043
+     },
+     {
+      "state": 9,
+      "fraction": 0.001190185546875,
+      "meanError": 0.028448740641276043
+     },
+     {
+      "state": 10,
+      "fraction": 0.0012063980102539062,
+      "meanError": 0.029724756876627605
+     },
+     {
+      "state": 11,
+      "fraction": 0.001468658447265625,
+      "meanError": 0.03581460316975912
+     },
+     {
+      "state": 12,
+      "fraction": 0.0016422271728515625,
+      "meanError": 0.03696600596110026
+     },
+     {
+      "state": 13,
+      "fraction": 0.0015380859375,
+      "meanError": 0.029257486979166667
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-2e9fb-y-webgl-postprocessing-ssao": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 144,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 144,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 162,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 162,
+       "transfers": [
+        9,
+        3984,
+        144
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-378ca-array-layerupdate-samples-1": {
     "comparison": [
      {
@@ -1598,6 +3801,130 @@
       "state": 10,
       "fraction": 0,
       "meanError": 0.004447265625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3d8e7-cy-webgl-materials-channels": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 84,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 84,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 88,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 88,
+       "transfers": [
+        1,
+        2132160,
+        16
+       ],
+       "resources": [
+        3,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-3f1c3-l-texture2darray-compressed": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
      }
     ]
    },
@@ -1817,6 +4144,130 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-58673-webgl-materials-envmaps-exr": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 136,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 136,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 140,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 140,
+       "transfers": [
+        1,
+        325680,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-682ca-residency-webgl-loader-nrrd": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 60,
+       "transfers": [
+        4,
+        1768,
+        64
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 60,
+       "transfers": [
+        4,
+        1768,
+        64
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 65,
+       "transfers": [
+        4,
+        1768,
+        64
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 65,
+       "transfers": [
+        4,
+        1768,
+        64
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-71062-et-texture2darray-samples-1": {
     "comparison": [
      {
@@ -1856,6 +4307,309 @@
      },
      {
       "state": 7,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-765f3--clipping-stencil-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.0006659825642903646
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0.0011847813924153645
+     },
+     {
+      "state": 2,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0008083979288736979
+     },
+     {
+      "state": 3,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0018361409505208333
+     },
+     {
+      "state": 4,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0013825098673502605
+     },
+     {
+      "state": 5,
+      "fraction": 0,
+      "meanError": 0.00012842814127604166
+     },
+     {
+      "state": 6,
+      "fraction": 0,
+      "meanError": 0.00012842814127604166
+     },
+     {
+      "state": 7,
+      "fraction": 0,
+      "meanError": 0.00008551279703776042
+     },
+     {
+      "state": 8,
+      "fraction": 0,
+      "meanError": 0.00008551279703776042
+     },
+     {
+      "state": 9,
+      "fraction": 0,
+      "meanError": 0.00008551279703776042
+     },
+     {
+      "state": 10,
+      "fraction": 0,
+      "meanError": 0.00008551279703776042
+     },
+     {
+      "state": 11,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 12,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-7d328-l-test-wide-gamut-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-8a3de-esidency-webgl-video-kinect": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-8c72c-ncy-webgpu-clipping-stencil": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 127,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 127,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 132,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      },
+      "after": {
+       "creates": 132,
+       "transfers": [
+        5,
+        1397088,
+        80
+       ],
+       "resources": [
+        2,
+        2,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-947ef-rendertarget-texture2darray": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 47,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 47,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 51,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 51,
+       "transfers": [
+        2,
+        688,
+        32
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-96ead-l-test-wide-gamut-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 1,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 2,
       "fraction": 0,
       "meanError": 0
      }
@@ -1945,6 +4699,332 @@
      }
     ]
    },
+   "texture-volumes-Texture-ar-ac67e-dency-webgpu-display-stereo": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 132,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 132,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 145,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 145,
+       "transfers": [
+        3,
+        58704,
+        48
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-b6f15-oader-texture-dds-samples-4": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00019359588623046875,
+      "meanError": 0.004615465799967448
+     },
+     {
+      "state": 1,
+      "fraction": 0.0020599365234375,
+      "meanError": 0.04561456044514974
+     },
+     {
+      "state": 2,
+      "fraction": 0.0013818740844726562,
+      "meanError": 0.02968152364095052
+     },
+     {
+      "state": 3,
+      "fraction": 0.0002727508544921875,
+      "meanError": 0.006173133850097656
+     },
+     {
+      "state": 4,
+      "fraction": 0.0007216796875,
+      "meanError": 0.017447265625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-b8733-aterials-channels-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0036102930704752603
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000858306884765625,
+      "meanError": 0.0030012130737304688
+     },
+     {
+      "state": 2,
+      "fraction": 0,
+      "meanError": 0
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00000858306884765625
+     },
+     {
+      "state": 4,
+      "fraction": 0.0036487579345703125,
+      "meanError": 0.07511234283447266
+     },
+     {
+      "state": 5,
+      "fraction": 0.003635406494140625,
+      "meanError": 0.07478268941243489
+     },
+     {
+      "state": 6,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.00035826365152994793
+     },
+     {
+      "state": 7,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0036102930704752603
+     },
+     {
+      "state": 8,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0036102930704752603
+     },
+     {
+      "state": 9,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0030755996704101562
+     },
+     {
+      "state": 10,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0023040771484375
+     },
+     {
+      "state": 11,
+      "fraction": 0.0032415390014648438,
+      "meanError": 0.05516465504964193
+     },
+     {
+      "state": 12,
+      "fraction": 0.00000286102294921875,
+      "meanError": 0.0017878214518229167
+     },
+     {
+      "state": 13,
+      "fraction": 0,
+      "meanError": 0.004310290018717448
+     },
+     {
+      "state": 14,
+      "fraction": 0,
+      "meanError": 0.003979047139485677
+     },
+     {
+      "state": 15,
+      "fraction": 9.5367431640625e-7,
+      "meanError": 0.0036102930704752603
+     },
+     {
+      "state": 16,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0030864079793294272
+     },
+     {
+      "state": 17,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0029325485229492188
+     },
+     {
+      "state": 18,
+      "fraction": 9.765625e-7,
+      "meanError": 0.0036136067708333335
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-c497f-pu-display-stereo-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0.00003528594970703125,
+      "meanError": 0.008145968119303385
+     },
+     {
+      "state": 1,
+      "fraction": 0.00002574920654296875,
+      "meanError": 0.007964134216308594
+     },
+     {
+      "state": 2,
+      "fraction": 0.0000400543212890625,
+      "meanError": 0.008001327514648438
+     },
+     {
+      "state": 3,
+      "fraction": 0.0000286102294921875,
+      "meanError": 0.005476951599121094
+     },
+     {
+      "state": 4,
+      "fraction": 0.0004863739013671875,
+      "meanError": 0.04672114054361979
+     },
+     {
+      "state": 5,
+      "fraction": 0.00003814697265625,
+      "meanError": 0.04080359141031901
+     },
+     {
+      "state": 6,
+      "fraction": 0.00003814697265625,
+      "meanError": 0.03934033711751302
+     },
+     {
+      "state": 7,
+      "fraction": 0.0000400543212890625,
+      "meanError": 0.039318084716796875
+     },
+     {
+      "state": 8,
+      "fraction": 0.00004291534423828125,
+      "meanError": 0.04502391815185547
+     },
+     {
+      "state": 9,
+      "fraction": 0.00006008148193359375,
+      "meanError": 0.03687222798665365
+     },
+     {
+      "state": 10,
+      "fraction": 0.00002384185791015625,
+      "meanError": 0.005347251892089844
+     },
+     {
+      "state": 11,
+      "fraction": 0.0000171661376953125,
+      "meanError": 0.005256970723470052
+     },
+     {
+      "state": 12,
+      "fraction": 0.00003719329833984375,
+      "meanError": 0.004347801208496094
+     },
+     {
+      "state": 13,
+      "fraction": 0.0000390625,
+      "meanError": 0.004171875
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-ccc4a-idency-webgl-texture2darray": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 34,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      },
+      "after": {
+       "creates": 38,
+       "transfers": [
+        1,
+        344,
+        16
+       ],
+       "resources": [
+        1,
+        1,
+        0
+       ]
+      }
+     }
+    ]
+   },
    "texture-volumes-Texture-ar-d5b92--shadowmap-viewer-samples-4": {
     "comparison": [
      {
@@ -1981,6 +5061,798 @@
       "state": 6,
       "fraction": 0.0086416015625,
       "meanError": 0.2684775390625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-e148f-oader-texture-dds-samples-1": {
+    "comparison": [
+     {
+      "state": 0,
+      "fraction": 0,
+      "meanError": 0.00038941701253255207
+     },
+     {
+      "state": 1,
+      "fraction": 0.00000476837158203125,
+      "meanError": 0.0020351409912109375
+     },
+     {
+      "state": 2,
+      "fraction": 0.0000019073486328125,
+      "meanError": 0.0005728403727213541
+     },
+     {
+      "state": 3,
+      "fraction": 0,
+      "meanError": 0.00039450327555338543
+     },
+     {
+      "state": 4,
+      "fraction": 0,
+      "meanError": 0.00053515625
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-eab9a--and-official-draw-workload": {
+    "gpuWork": [
+     {
+      "kind": "webgl_postprocessing_ssao",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 100
+        },
+        {
+         "count": 36,
+         "instances": 100
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 100
+        },
+        {
+         "count": 36,
+         "instances": 100
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_clipping_stencil",
+      "reference": {
+       "draws": [
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 79200,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_test_wide_gamut",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_channels",
+      "reference": {
+       "draws": [
+        {
+         "count": 26652,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 26652,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_video_kinect",
+      "reference": {
+       "draws": [
+        {
+         "count": 1843200,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 307200
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_texture_dds",
+      "reference": {
+       "draws": [
+        {
+         "count": 3456,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 3456,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgpu_display_stereo",
+      "reference": {
+       "draws": [
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        },
+        {
+         "count": 5952,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        }
+       ],
+       "attributeBytes": 64000,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 2880,
+         "instances": 500
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 39928,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_shadowmap_viewer",
+      "reference": {
+       "draws": [
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 9000,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 50,
+         "instances": 1
+        },
+        {
+         "count": 36,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_materials_envmaps_exr",
+      "reference": {
+       "draws": [
+        {
+         "count": 18000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 18000,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture2darray",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture2darray_compressed",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_rendertarget_texture2darray",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture2darray_layerupdate",
+      "reference": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 3
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 6,
+         "instances": 3
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_loader_nrrd",
+      "reference": {
+       "draws": [
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 24,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        },
+        {
+         "count": 6,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
+     },
+     {
+      "kind": "webgl_texture3d",
+      "reference": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      },
+      "rust": {
+       "draws": [
+        {
+         "count": 36,
+         "instances": 1
+        }
+       ],
+       "attributeBytes": 0,
+       "transformBytes": 0,
+       "textureBytes": 0
+      }
      }
     ]
    },
@@ -2040,6 +5912,68 @@
       "state": 10,
       "fraction": 0.0070068359375,
       "meanError": 0.11210546875
+     }
+    ]
+   },
+   "texture-volumes-Texture-ar-f753d-ency-webgl-shadowmap-viewer": {
+    "residency": [
+     {
+      "resize": false,
+      "before": {
+       "creates": 139,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 139,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
+     },
+     {
+      "resize": true,
+      "before": {
+       "creates": 147,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      },
+      "after": {
+       "creates": 147,
+       "transfers": [
+        8,
+        173184,
+        128
+       ],
+       "resources": [
+        4,
+        4,
+        0
+       ]
+      }
      }
     ]
    }

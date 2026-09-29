@@ -782,3 +782,24 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   caster-free overlay pass keeps it resident.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Stereo, compressed textures, video points, channels and post passes
+
+- **Stereo.** The 500 sphere matrices stream each frame in one instanced
+  draw, as the original's instance buffer does; the eye passes and the
+  composite stay on the GPU.
+- **Textures.** The DDS block textures and mip chains are uploaded once in
+  their own formats, without RGBA decoding. The wide-gamut logos are
+  converted by the browser once on upload.
+- **Video.** Each new Kinect frame is copied once; the 307,200 points are
+  placed in the vertex stage, from the instance index, with no position
+  stream.
+- **Channels and clipping.** Displacement, normal-map frames, depth
+  packing, velocity, stencil caps and the shadow mask run on the GPU over
+  resident geometry.
+- **Post passes.** The glitch and SSAO passes are full-screen triangles over
+  resident targets, rebound only on resize; their random textures and the
+  SSAO kernel are created once. The ASCII effect reads the frame back each
+  frame at 0.15 of its size, as the original does.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

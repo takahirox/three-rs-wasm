@@ -6,6 +6,14 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ webgl_postprocessing_ssao:{times:[0,1,2.5],parameters:[[0,'SSAO Only',1],[0,'SSAO Only + Blur',2],[0,'Depth',3],[0,'Normal',4],[0,'Default',0],[1,16,16],[2,.01,.01],[3,.2,.2],[4,false,0]],restore:[[1,8,8],[2,.005,.005],[3,.1,.1],[4,true,1]],at:2.5},
+ webgpu_clipping_stencil:{times:[0,1,2.5],parameters:[[2,.3,.3],[5,-.2,-.2],[3,true,1],[8,.4,.4],[1,true,1],[4,true,1],[7,true,1],[0,false,0],[9,true,1]],restore:[[2,0,0],[5,0,0],[3,false,0],[8,0,0],[1,false,0],[4,false,0],[7,false,0],[0,true,1],[9,false,0]],at:2.5,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The slider's line and handle and the labels are page overlays, hidden in both.
+ webgl_test_wide_gamut:{times:[0],parameters:[],at:0,antialias:true,hide:'.slider:before,.slider:after,.label',slide:[[256,256],[150,256]]},
+ webgl_materials_channels:{times:[0],parameters:[[0,'standard',0],[0,'velocity',2],[0,'depthBasic',3],[0,'depthRGBA',4],[0,'depthRGB',5],[0,'depthRG',6],[0,'normal',1],[2,'front',0],[2,'back',1],[1,'ortho',1],[0,'depthRGBA',4],[0,'standard',0],[2,'double',2],[0,'normal',1],[1,'perspective',0]],restore:[],at:0,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_video_kinect:{limits:[.008,.6],frames:3,times:[],parameters:[],at:1,script:[['video',2,0],['param',0,1500,1500,0],['param',1,6000,6000,0],['param',2,4,4,0],['param',3,2000,2000,0],['param',0,850,850,0],['param',1,4000,4000,0],['param',2,2,2,0],['param',3,1000,1000,0],['video',5.5,0],['move',400,300,null],['wait',.5],['wait',1.5],['move',60,100,null],['wait',3]]},
+ webgl_loader_texture_dds:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
+ webgpu_display_stereo:{backgroundSphere:true,times:[0,1,2.5],parameters:[[1,.1,.1],[0,'Anaglyph',1],[2,'Grey',1],[3,'Magenta / Cyan',1],[4,5,5],[2,'Compromise',6],[3,'Magenta / Green',2],[0,'ParallaxBarrier',2]],restore:[[0,'Stereo',0],[1,.064,.064],[2,'Dubois',4],[3,'Red / Cyan',0],[4,3,3]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_shadowmap_viewer:{times:[0,.5,1.3,2],parameters:[],at:2,antialias:true,drag:[[256,300],[330,340]],wheel:[256,300,-300]},
  webgl_materials_envmaps_exr:{backgroundBox:true,times:[0,1,2],parameters:[[1,.5,.5],[2,1,1],[3,.6,.6],[0,'PNG',1]],restore:[[0,'EXR',0],[1,0,0],[2,0,0],[3,1,1]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_texture2darray:{times:[0,1,2.5,4,10],parameters:[],at:4},
@@ -17,7 +25,8 @@ const cases={
 };
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
-const streams=[];
+// webgpu_display_stereo streams its 500 instance matrices each frame.
+const streams=['webgpu_display_stereo'];
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -45,7 +54,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
   await page.goto(runtime!=='rust'?`/reference/three-js/texture-volumes.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
-  await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'});
+  await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'+(spec.hide?spec.hide+'{visibility:hidden!important}':'')});
   const shots=[];
   const capture=async(t,parameter=null)=>{
    if(parameter)await page.evaluate(({runtime,parameter})=>{const [i,reference,rust]=parameter;if(runtime!=='rust')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);},{runtime,parameter});
@@ -117,7 +126,10 @@ test('Texture arrays and volumes resident geometry and official draw workload',a
 // the two-vertex helper line) are left out on both sides.
 if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn.apply(this,a);};}
   for(const key of ['drawArraysInstanced','drawElementsInstanced']){const fn=WebGL2RenderingContext.prototype[key];WebGL2RenderingContext.prototype[key]=function(...a){work.draws.push({count:key==='drawArraysInstanced'?a[2]:a[1],instances:key==='drawArraysInstanced'?a[3]:a[4]});return fn.apply(this,a);};}
-  const write=GPUQueue.prototype.writeBuffer;GPUQueue.prototype.writeBuffer=function(b,offset,data,dataOffset,size){if(b.usage&(GPUBufferUsage.STORAGE|GPUBufferUsage.VERTEX|GPUBufferUsage.INDEX)){if(b.label==='resident draw data'||b.label==='skin/morph input')work.transformBytes+=size??data.byteLength;else work.attributeBytes+=size??data.byteLength;}return write.apply(this,arguments);};
+  const write=GPUQueue.prototype.writeBuffer;GPUQueue.prototype.writeBuffer=function(b,offset,data,dataOffset,size){// three's WebGPU InstanceNode keeps up to 64 KiB of instance matrices in a uniform
+  // buffer: the reference's large uniform uploads count as streamed instance data.
+  if(location.pathname.startsWith('/reference/')&&b.usage&GPUBufferUsage.UNIFORM&&(size??data.byteLength)>=16384)work.attributeBytes+=size??data.byteLength;
+  if(b.usage&(GPUBufferUsage.STORAGE|GPUBufferUsage.VERTEX|GPUBufferUsage.INDEX)){if(b.label==='resident draw data'||b.label==='skin/morph input')work.transformBytes+=size??data.byteLength;else work.attributeBytes+=size??data.byteLength;}return write.apply(this,arguments);};
   // WebGL attribute uploads: the original streams its dynamic attributes with bufferSubData.
   for(const key of ['bufferData','bufferSubData']){const fn=WebGL2RenderingContext.prototype[key];WebGL2RenderingContext.prototype[key]=function(...a){const data=key==='bufferData'?a[1]:a[2];if(typeof data==='object'&&data)work.attributeBytes+=key==='bufferSubData'&&a[4]?a[4]*data.BYTES_PER_ELEMENT:data.byteLength;return fn.apply(this,a);};}
   const texture=GPUQueue.prototype.writeTexture;GPUQueue.prototype.writeTexture=function(dest,data,...args){work.textureBytes+=data.byteLength;return texture.call(this,dest,data,...args);};
@@ -139,10 +151,11 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   if(spec.backgroundBox){const i=pair.reference.draws.findIndex(d=>d.count===36&&d.instances===1);if(i>=0)pair.reference.draws.splice(i,1);}
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
-  // 36-index box and WebGPU a 5,952-index sphere. All scene mesh draws must still match.
-  const background=null;
+  // 36-index box and WebGPU a 5,952-index sphere. The stereo port draws its cube
+  // background as a 36-index box (once per eye). All scene mesh draws must still match.
+  const background=spec.backgroundSphere?5952:null;
   const referenceDraws=pair.reference.draws.filter(d=>d.count!==background);
-  expect.soft(sort(pair.rust.draws),kind).toEqual(sort(referenceDraws));
+  expect.soft(sort(pair.rust.draws.filter(d=>!spec.backgroundSphere||d.count!==36)),kind).toEqual(sort(referenceDraws));
   // Each instance's matrix and color stream together (80 bytes) as resident draw data;
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
   if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
@@ -158,5 +171,73 @@ for(const kind of ['webgl_texture2darray_layerupdate','webgl_texture3d'])test(`T
  await page.setViewportSize({width:640,height:400});await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
 });
 
+// misc_uv_tests draws UVsDebug canvases with the Canvas 2D API: every section's
+// title and canvas pixels must match the original page exactly.
+test('UV mapping tests: UVsDebug canvases match the original',async({page})=>{
+ test.setTimeout(120000);const read=()=>page.evaluate(()=>[...document.querySelectorAll('h3')].map(h=>{const c=h.parentNode.querySelector('canvas');const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let hash=0;for(let i=0;i<d.length;i++)hash=(Math.imul(hash,31)+d[i])>>>0;return {title:h.textContent,size:[c.width,c.height],hash,pixels:Array.from(d.filter((_,i)=>i%4===0))};}));
+ await page.goto('/reference/three-js/uv-tests.html');await page.waitForFunction(()=>document.querySelectorAll('canvas').length===9);const reference=await read();
+ await page.goto('/web/gallery/example.html?id=misc_uv_tests&still=1');await page.waitForFunction(()=>document.querySelectorAll('#uv-tests canvas').length===9,null,{timeout:90000});const rust=await read();
+ expect(rust.map(r=>r.title)).toEqual(reference.map(r=>r.title));
+ for(let i=0;i<reference.length;i++){let bad=0;for(let p=0;p<reference[i].pixels.length;p++)if(Math.abs(reference[i].pixels[p]-rust[i].pixels[p])>6)bad++;expect({title:reference[i].title,size:rust[i].size,bad}).toEqual({title:reference[i].title,size:reference[i].size,bad:0});}
+});
 
+// webgl_effects_ascii writes its frame as characters into a table: the cells of
+// the original and the port are compared, with the resource counts across a
+// repeated cycle. TrackballControls steps once per 60 fps step.
+test('ASCII effect: the character table matches the original',async({page},info)=>{
+ test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
+ const cells=()=>page.evaluate(()=>document.querySelector('td')?.innerHTML.split('<br>').map(l=>l.replaceAll('&nbsp;',' ')));
+ const results={};
+ for(const runtime of ['reference','rust']){
+  await page.mouse.move(511,0);
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_effects_ascii':'/web/gallery/example.html?id=webgl_effects_ascii&still=1');
+  await page.waitForFunction(runtime==='reference'?()=>window.renderFixture&&window.reference:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
+  const frame=t=>page.evaluate(async({runtime,t})=>{if(runtime==='reference')await renderFixture(t);else{const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,t});
+  const shots=[];
+  for(const t of [0,.4,1.1,2]){await frame(t);shots.push(await cells());}
+  await page.mouse.move(256,256);await page.mouse.down();await page.mouse.move(330,300,{steps:5});await page.mouse.up();
+  for(let k=1;k<=90;k++)await frame(2+k/60);shots.push(await cells());
+  await page.mouse.move(256,256);await page.mouse.wheel(0,-300);for(let k=91;k<=150;k++)await frame(2+k/60);shots.push(await cells());
+  results[runtime]=shots;
+ }
+ const report=results.reference.map((reference,state)=>{const rust=results.rust[state];let total=0,bad=0;expect(rust.length,`state ${state} rows`).toBe(reference.length);for(let y=0;y<reference.length;y++){const a=reference[y],b=rust[y]??'';for(let x=0;x<Math.max(a.length,b.length);x++){total++;if(a[x]!==b[x])bad++;}}return {state,total,bad,fraction:bad/total};});
+ writeFileSync(info.outputPath('ascii.json'),JSON.stringify({report,results},null,1));
+ for(const r of report)expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.01);
+ // Steady-state residency: a second time cycle creates no GPU objects or transfers.
+ const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+ const cycle=()=>page.evaluate(async()=>{for(const t of [0,1,2,4,0]){const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}});
+ await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+});
+
+// webgl_postprocessing_glitch: GlitchPass advances its state and draws random
+// numbers once per composer frame, so both runtimes are brought to the same frame
+// count and then compared frame by frame, before and after "Glitch me wild".
+test('Glitch pass: frames match the original frame by frame',async({page},info)=>{
+ test.setTimeout(240000);await page.setViewportSize({width:512,height:512});
+ const picks=[1,2,3,5,8,13,21,34,55,70],wild=[71,72,73],after=[74,80];
+ const shots={};let frames=0;
+ for(const runtime of ['rust','reference']){
+  if(runtime==='rust'){await page.goto('/web/gallery/example.html?id=webgl_postprocessing_glitch&still=1');await page.click('#startButton');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
+  else{await page.goto('/reference/three-js/texture-volumes.html?id=webgl_postprocessing_glitch&samples=1');await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true',null,{timeout:90000});for(let i=1;i<frames;i++)await page.evaluate(()=>renderFixture(0));}
+  await page.addStyleTag({content:'#notice,#settings,#info,#overlay{display:none!important}'});
+  // The checkbox changes in the same task as the frame it applies to.
+  const frame=wild=>page.evaluate(async({runtime,wild})=>{if(wild!==null){if(runtime==='reference'){const e=document.getElementById('wildGlitch');e.checked=wild;e.dispatchEvent(new Event('change'));}else app.tsl_parameter(0,wild?1:0);}if(runtime==='reference')await renderFixture(0);else{const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(0);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,wild});
+  const list=[];
+  for(let k=1;k<=after.at(-1);k++){await frame(k===wild[0]?true:k===after[0]?false:null);if([...picks,...wild,...after].includes(k))list.push(PNG.sync.read(await page.locator('canvas').screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   // Steady state: further frames, with and without wild glitches, create no GPU objects or transfers.
+   const read=()=>page.evaluate(()=>({transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
+   const cycle=async()=>{for(let k=0;k<6;k++)await frame(k===2?true:k===4?false:null);};
+   await cycle();const before=await read();await cycle();expect(await read()).toEqual(before);
+   // The cycle's frames advance GlitchPass: the reference is aligned to the total.
+   frames=Number(await page.locator('canvas').getAttribute('data-frames'))-after.at(-1)-12;
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,frames,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ // The RGB shift and displacement sample the scene target between texels: along
+ // polygon edges the filtered values differ between the backends (docs/texture-volumes.md).
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.02);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
 

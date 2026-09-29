@@ -1186,7 +1186,7 @@
     {
       "id": "webgl_effects_ascii",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_effects_ascii.html",
       "source_sha256": "09fbb0266e91f0e6a56938310ca5fa0d09f151198bd1a08f9d592870144113dc",
@@ -1208,7 +1208,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 341,
+        "source": "src/browser/ascii.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "画素比1で描画したフレームを同じタスク内でCanvas 2Dへ0.15倍に縮小描画し、AsciiEffect（反転した文字セット、1行おき、&nbsp;、表のスタイル）の文字表をRustで生成。TrackballControls（要素の高さ0で初期化される原作の挙動を含む）、跳ねる球と平面をRustで再現。読み戻しは原作と同じく毎フレームのCPU処理。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -5719,7 +5726,7 @@
     {
       "id": "webgl_loader_texture_dds",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_dds.html",
       "source_sha256": "124c55dfa997841b4ed3b0b27cd1e2ce871fa4d4db1f703bbae764872411b672",
@@ -5755,7 +5762,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 335,
+        "source": "src/browser/dds.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "DDSLoaderのDXT1/DXT3/DXT5・BC6H（符号付き・なし）ブロック形式をデコードせずGPUへ一度だけ転送し、ARGB/RGB非圧縮ミップ、単一ファイルのキューブマップ、alphaTest・加算合成・透明マテリアルをRustで再現。ETC1のDDSは未対応。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/loaders/DDSLoader.js"
@@ -6648,7 +6662,7 @@
     {
       "id": "webgl_materials_channels",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_channels.html",
       "source_sha256": "ebbf6d23efd3e184e941f376768f3f497a219aed6184a35ad0bc6750353cfbaa",
@@ -6702,7 +6716,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 337,
+        "source": "src/browser/channels.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "変位マップ付きの忍者の頭部をMeshStandardMaterial、法線マップ付きMeshNormalMaterial、VelocityShader、MeshDepthMaterialの4種のパッキングで描画し、表・裏・両面、透視・正射影カメラ、カメラごとの減衰付きOrbitControlsをRustで再現。変位はすべてGPUの頂点ステージで計算。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -10417,12 +10438,19 @@
     {
       "id": "webgl_test_wide_gamut",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_test_wide_gamut.html",
       "source_sha256": "4d76ef5eefd9df8f804f34444299b11131b8a7b1a3df0c134fccd044ef84b0cc",
       "requirements": {},
-      "port": null,
+      "port": {
+        "example": 338,
+        "source": "src/browser/wide_gamut.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "作業色空間LinearDisplayP3とsRGB出力（P3非対応ディスプレイ）で、sRGBロゴをブラウザがDisplay P3へ変換、P3ロゴを無変換でアップロードし、TextureUtils.containの背景、スライダーによるシザー分割、threeの4桁丸めの色変換行列をRustで再現。P3出力ディスプレイでの表示は未検証。WebGLとのMSAA差を別途検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/capabilities/WebGL.js",
@@ -10472,7 +10500,7 @@
     {
       "id": "webgl_video_kinect",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_video_kinect.html",
       "source_sha256": "53fb810843a582008fa81ce016b37b096384520d5b57aab92304ba2db042259a",
@@ -10496,7 +10524,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 336,
+        "source": "src/browser/kinect.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "Kinect録画のVideoTextureを毎フレーム一度だけGPUへコピーし、640×480点の深度を頂点ステージでテクスチャから読み、加算合成の2pxの点（インスタンス化した四角形）として描画。位置属性はインスタンス番号から算出し、バウンディング球によるフラスタムカリング、マウス追従のカメラ、4つのGUI値をRustで再現。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js"
@@ -11031,7 +11066,7 @@
     {
       "id": "webgl_postprocessing_glitch",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_glitch.html",
       "source_sha256": "aa631a6123bf97c0d3d68695f21c2283a7cc286074b176ad0afd696db42cf596",
@@ -11065,7 +11100,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 342,
+        "source": "src/browser/glitch.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "光過敏性の警告から開始し、100個のインスタンス球（フラットシェーディング、インスタンス色、フォグ）を半精度ターゲットへ描画してから、GlitchPass（64×64の乱数変位マップ、RGBずらし、ノイズ、トリガー周期、Glitch me wild）とOutputPassをRustで再現。GlitchPassのMath.randomの消費順序をフレーム単位で一致させて比較。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/postprocessing/EffectComposer.js",
@@ -11689,7 +11731,7 @@
     {
       "id": "webgl_postprocessing_ssao",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_ssao.html",
       "source_sha256": "10fa42ef38150d3f9874c62864f8464b23f474cd1181044490401ef9f5024dd3",
@@ -11725,7 +11767,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 343,
+        "source": "src/browser/ssao.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "100個のインスタンス箱をRenderPassで半精度ターゲットへ描画し、SSAOPass（ビュー法線と深度、32サンプルのカーネル、SimplexNoiseの4×4回転ノイズ、5×5ブラー、乗算合成、SSAO・ブラー・深度・法線の各出力、有効/無効）とOutputPassをRustで再現。SSAOPassとSimplexNoiseのMath.randomの消費順序を一致させて比較。Stats表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -15026,7 +15075,7 @@
     {
       "id": "webgpu_clipping_stencil",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_clipping_stencil.html",
       "source_sha256": "43d905beb72cbb16b3cf3e897e3a527edaef00dd33b550baab61312d82fd4816",
@@ -15094,7 +15143,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 340,
+        "source": "src/browser/clipping_stencil.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ClippingGroupの3平面によるトーラスノットのクリッピング、平面ごとのステンシルビット反転と断面キャップ、平面追従のキャップとPlaneHelper、クリップされたSunLightの影を受けるShadowNodeMaterialの地面、OrbitControls、GUI（平面の定数・反転・ヘルパー表示・アニメーション）をRustで再現。renderOrderの1.1などは10倍の整数順で保持。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -17052,7 +17108,7 @@
     {
       "id": "webgpu_display_stereo",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_display_stereo.html",
       "source_sha256": "62aaa2938b3a636783058970ef8a67a9ea729b647768a47697a8f7d9aabe211e",
@@ -17090,7 +17146,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 334,
+        "source": "src/browser/stereo_loaders.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "StereoPassNode（描画バッファの左右半分）、AnaglyphPassNode（7種のアルゴリズムと3種の色モード、planeDistanceのframeCorners）、ParallaxBarrierPassNode、半精度の目用ターゲット、500個のInstancedMesh（毎フレームのinstanceMatrix転送）、キューブ背景とフラグメントごとの反射による環境マップ、OrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -34346,7 +34409,7 @@
     {
       "id": "misc_uv_tests",
       "category": "tests",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_uv_tests.html",
       "source_sha256": "888f7719c7eb6d600bf7e1b6e8656a62127c83e2785c8c42f0c07015e2272556",
@@ -34370,7 +34433,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 339,
+        "source": "src/browser/uv_tests.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "UVsDebugの1024×1024キャンバス（面の輪郭、面番号、頂点ラベル）を、RustのPlane・Sphere・Icosahedron・Octahedron・Cylinder・Box・Lathe・Torus・TorusKnotジオメトリのuvとインデックスからCanvas 2Dで描画して再現。WebGPU描画は使わない（原作もWebGLを使わない）。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/utils/UVsDebug.js"

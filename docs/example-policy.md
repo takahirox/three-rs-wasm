@@ -268,3 +268,14 @@ equivalent, so all are compared against the WebGL renderer. The EXR debug
 plane shows the port's own PMREM atlas and is not compared. Scoped bounds
 cover MSAA edges, the MD2 wireframe lines and the SunLight cascade shadow
 edges of the moving ogros.
+
+The display-stereo, DDS, Kinect, material-channel, wide-gamut, UV-test,
+clipping-stencil, ASCII, glitch and SSAO batch extends
+[texture-volumes.md](texture-volumes.md). `webgpu_display_stereo` and
+`webgpu_clipping_stencil` are compared against the WebGPU renderer; the others
+have no WebGPU equivalent and are compared against the WebGL renderer.
+`misc_uv_tests` uses no renderer, and its Canvas 2D drawings match pixel for
+pixel. GlitchPass and SSAOPass draw from Math.random inside the addons, so the
+fixture rewrites those addons alone to the seeded sequence. Scoped bounds
+cover MSAA edges, the Kinect point squares, the glitch's filtered edges and
+the ASCII table's threshold cells.

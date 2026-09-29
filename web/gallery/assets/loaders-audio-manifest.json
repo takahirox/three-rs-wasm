@@ -348,5 +348,95 @@
   "file": "envmap-exr/equirectangular.png",
   "source": "examples/textures/equirectangular.png",
   "sha256": "d99861d29c0ca31379911ae0f76d57dce68c8b23f617a70cd1d85fa38d61e06d"
+ },
+ {
+  "file": "dds/Mountains.dds",
+  "source": "examples/textures/compressed/Mountains.dds",
+  "sha256": "b280c9c775121fc403434a8dc9aed1483766ea6b97c5a951b70f8f9d3d2d7bc0"
+ },
+ {
+  "file": "dds/Mountains_argb_mip.dds",
+  "source": "examples/textures/compressed/Mountains_argb_mip.dds",
+  "sha256": "ae86f2e19efa56af1e0d553f81ca1d366b632f732a1c200f62a9fd3577550c88"
+ },
+ {
+  "file": "dds/Mountains_argb_nomip.dds",
+  "source": "examples/textures/compressed/Mountains_argb_nomip.dds",
+  "sha256": "30b5b1c7d753b7a8eeea7928a16d1a06b17e7a702635055f89fbbe687edcec13"
+ },
+ {
+  "file": "dds/disturb_argb_mip.dds",
+  "source": "examples/textures/compressed/disturb_argb_mip.dds",
+  "sha256": "810b506b5d090f5a1483449f83998f886edd5fa20dcc9cb2b0756d68c31903af"
+ },
+ {
+  "file": "dds/disturb_argb_nomip.dds",
+  "source": "examples/textures/compressed/disturb_argb_nomip.dds",
+  "sha256": "b5d83c0f5ce7bffe5ecaa5c708ec4e3dcf208b0ccebe4ecf00a282c6230168e6"
+ },
+ {
+  "file": "dds/disturb_dx10_bc6h_signed_mip.dds",
+  "source": "examples/textures/compressed/disturb_dx10_bc6h_signed_mip.dds",
+  "sha256": "96e751643db35292ac8cbb356fadd05bb3c468e18ca6f1d5db75ac0d45128598"
+ },
+ {
+  "file": "dds/disturb_dx10_bc6h_signed_nomip.dds",
+  "source": "examples/textures/compressed/disturb_dx10_bc6h_signed_nomip.dds",
+  "sha256": "588f8954158e68c3eae4cc02c0603bea5be917aa94b9b785d7ab418264c641c7"
+ },
+ {
+  "file": "dds/disturb_dx10_bc6h_unsigned_mip.dds",
+  "source": "examples/textures/compressed/disturb_dx10_bc6h_unsigned_mip.dds",
+  "sha256": "e207948823b49a97ded61202f068a9044fa84ae5c96197cf7d538a462c72c1da"
+ },
+ {
+  "file": "dds/disturb_dx10_bc6h_unsigned_nomip.dds",
+  "source": "examples/textures/compressed/disturb_dx10_bc6h_unsigned_nomip.dds",
+  "sha256": "0ca36e2a14eee476c13b35393a8f4e140cf2e4cc2f1de9495d873aae9f2afaa7"
+ },
+ {
+  "file": "dds/disturb_dxt1_mip.dds",
+  "source": "examples/textures/compressed/disturb_dxt1_mip.dds",
+  "sha256": "83e59177ef9c3b8613c4b83e84cbafd7502c4d54103a246e82f359d5bd6905a1"
+ },
+ {
+  "file": "dds/disturb_dxt1_nomip.dds",
+  "source": "examples/textures/compressed/disturb_dxt1_nomip.dds",
+  "sha256": "6626a8c11b1fdd37371cf21182242e51551645ee3f05477c318ab7e014c0a435"
+ },
+ {
+  "file": "dds/explosion_dxt5_mip.dds",
+  "source": "examples/textures/compressed/explosion_dxt5_mip.dds",
+  "sha256": "0ff0f06b11e360abdac66a70acfc3130f66313064def9b1dd75cdd9f81469272"
+ },
+ {
+  "file": "dds/hepatica_dxt3_mip.dds",
+  "source": "examples/textures/compressed/hepatica_dxt3_mip.dds",
+  "sha256": "a4e3cea3c090e89e61acbcbca4543a4207113ea03b9e48071ae5ff6e444d4929"
+ },
+ {
+  "file": "dds/wave_normals_24bit_uncompressed.dds",
+  "source": "examples/textures/wave_normals_24bit_uncompressed.dds",
+  "sha256": "943b5d189997f460ff8d4a35f5259d36809a5c6669a440d99b4f8b5abe0d8e4b"
+ },
+ {
+  "file": "kinect/kinect.webm",
+  "source": "examples/textures/kinect.webm",
+  "sha256": "ca06fb234e54da11b0bfb8068bc343234cd465e21a922d36017e45f93ede09f5"
+ },
+ {
+  "file": "kinect/kinect.mp4",
+  "source": "examples/textures/kinect.mp4",
+  "sha256": "0912e90b11b1df9a34cab6f618d8c59973e412eaf033fbe2aa09fedac4c6f7c2"
+ },
+ {
+  "file": "wide-gamut/logo_srgb.png",
+  "source": "examples/textures/wide_gamut/logo_srgb.png",
+  "sha256": "4610011c2da08e2ed5095e7b727d7168f3b175bd2f1c2c10195600145082c0e1"
+ },
+ {
+  "file": "wide-gamut/logo_p3.png",
+  "source": "examples/textures/wide_gamut/logo_p3.png",
+  "sha256": "c65ce8fdb67ce9017adf6f7314092e6f97382e85c134bc07cda8f50018e3dd8d"
  }
 ]
