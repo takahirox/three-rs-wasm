@@ -168,6 +168,11 @@ fn webgpu_renders_basic_mesh_and_recreates_targets() {
 
     // Complete each submission before inspecting native resource counts. The
     // pipeline cache may retain bounded entries; per-frame resources must settle.
+    // Geometry released by earlier scenes is kept for a few renders (a moved
+    // geometry reattaches to it) before it is freed: settle that first.
+    for _ in 0..5 {
+        renderer.render(&mut scene, camera, &target).unwrap();
+    }
     renderer.device.poll(wgpu::PollType::Wait).unwrap();
     let initial = renderer.device.get_internal_counters().hal;
     assert!(

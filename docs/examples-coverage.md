@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-40 excluded for explicit WebGL APIs or equivalent WebGPU examples; 567 retained. 348 partial Rust ports; 219 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+41 excluded for explicit WebGL APIs or equivalent WebGPU examples; 566 retained. 358 partial Rust ports; 208 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,18 +12,18 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 366 |
+| Full camera controls: pan, touch, damping and control variants | 365 |
 | Programmable materials / TSL equivalents | 219 |
 | Inspector and per-example GUI parity | 175 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 170 |
-| Additional procedural geometry builders | 168 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 169 |
+| Additional procedural geometry builders | 167 |
 | Shadow maps and shadow filtering | 124 |
 | Hemisphere/spot/area lights, light probes and baking | 119 |
 | Postprocessing passes and temporal history | 99 |
 | Distance and height fog | 91 |
 | Wireframe materials and scene helpers | 89 |
 | Additional loaders and compressed assets | 78 |
-| Instance transforms and batched drawing | 74 |
+| Instance transforms and batched drawing | 73 |
 | Animation mixer and skeletal animation | 47 |
 | Transmission, clearcoat, sheen, anisotropy and related PBR extensions | 45 |
 | Canvas, HTML, video and partial texture updates | 42 |
@@ -57,6 +57,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_modifier_curve | `tests/browser/transform-curves.spec.js` | CurveModifierGPUのFlow（半精度のスプラインテクスチャ、頂点段での曲線変形、normalNode）、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。性能の完全な同等性は未保証。 |
 | webgl_modifier_curve_instanced | `tests/browser/transform-curves.spec.js` | InstancedFlow（インスタンス行列に曲線番号・長さ・オフセット、インスタンス色）、2本の曲線テクスチャ、TextGeometry、クリックでのハンドル選択とTransformControlsでのドラッグ、ドラッグ終了時の曲線更新をRustで再現。Stats表示は未移植。性能の完全な同等性は未保証。 |
 | webgpu_lights_spotlight | `tests/browser/spot-skinning.spec.js` | マップ付きスポットライト（lightProjectionUVでの投影テクスチャ、focus込みの影カメラ、影の強度）、PCFの影、半球光、Lucy PLYとLambertの床、Neutralトーンマッピング、SpotLightHelperと影カメラのCameraHelper、全10項目の操作、OrbitControlsをRustで再現。Inspector外観は未一致。性能の完全な同等性は未保証。 |
+| webgl_volume_instancing | `tests/browser/texture-volumes.spec.js` | VOXLoaderのメンガーのスポンジ（81³の赤チャンネル3Dテクスチャ）を、ランダムに配置した50,000個のインスタンス化された裏面ボックス内で100ステップのレイマーチ（命中位置を色に、フラグメント深度を書き込む）で描き、減衰付き自動回転のOrbitControlsをRustで再現。インスタンス行列とボリュームは一度だけアップロードする。性能の完全な同等性は未保証。 |
+| webgpu_mesh_batch | `tests/browser/texture-volumes.spec.js` | 円錐・箱・球のBatchedMesh（既定512個、先頭dynamic個が毎フレーム回転）を、ビュー法線でバッチ色を陰影付けするノードマテリアルで描画。原作のonBeforeRenderと同じく毎フレームCPUで境界球の視錐台判定と深度ソート（スケールした深度の基数ソートまたは既定の比較関数）を行い、可視インスタンスごとに1回のインデックス描画でバッチIDを読む。行列・色・IDはGPUバッファに置き、変更された行列と毎フレームのIDだけをアップロードする。webgpuを切り替えた場合も描画はWebGPUのまま（背景色のみ原作と同じく変わる）。性能の完全な同等性は未保証。 |
+| webgpu_performance_renderbundle | `tests/browser/texture-volumes.spec.js` | 15種類のプリミティブからなる4,000個のメッシュ（それぞれランダム色のMeshToonNodeMaterial、DoubleSide）と10インスタンスのInstancedMeshをBundleGroupに入れ、平行光源と自動回転のOrbitControlsで描く構成をRustで再現。原作のBundleGroupと同じく全描画を一度WebGPUのレンダーバンドルに記録して毎フレーム再生し、dynamicでは毎フレーム回転させてバンドルを記録し直す。render bundleを切ると直接エンコードする。webgpuを切り替えても描画はWebGPUのまま。性能の完全な同等性は未保証。 |
+| webgl_marchingcubes | `tests/browser/texture-volumes.spec.js` | MarchingCubesのメタボールと平面を原作と同じく毎フレームCPUでポリゴン化（Float32のフィールド・法線キャッシュ・パレット）し、動的な位置・法線・UV・色属性として常駐バッファへ書き込む構成をRustで再現。平行光源・点光源・環境光の下、環境マップ付きStandardとLambert（反射・屈折）、テクスチャと頂点色のPhong、4つのToonShaderの13種のマテリアルとシミュレーションの全操作に対応。性能の完全な同等性は未保証。 |
+| webgl_test_memory2 | `tests/browser/texture-volumes.spec.js` | 1つのジオメトリを共有する100個の球のShaderMaterialを毎フレーム、ランダム色を埋め込んだ新しいフラグメントシェーダーで作り直して描画後に破棄する原作の挙動をRustで再現。原作が毎フレーム100個のプログラムをコンパイルするのと同じく、毎フレーム100個のシェーダーモジュールとパイプラインを作ってフレーム後に破棄する。球のジオメトリと行列は常駐させる。性能の完全な同等性は未保証。 |
+| webgl_loader_fbx_nurbs | `tests/browser/texture-volumes.spec.js` | FBXLoaderのASCIIパーサーでnurbs.fbxを読み、5つのNurbsCurve（開曲線・閉曲線・周期曲線、3次と4次）をNURBSCurve.getPoints( 制御点数 × 12 )で線にし、ローダーと同じ0x3300ffのLineBasicMaterial、モデルのLcl変換とレイヤーグループ、GridHelper、OrbitControlsとともにRustで再現。曲線は原作と同じく読み込み時に一度だけ評価する。FBXの対応範囲はこのファイルの内容（ASCII形式、NurbsCurveジオメトリ、平行移動と拡大縮小）に限る。性能の完全な同等性は未保証。 |
+| webgl_points_dynamic | `tests/browser/texture-volumes.spec.js` | male02とfemale02のOBJ頂点を点として描く9体（各8複製）が崩れ落ちて元に戻る原作の挙動を、BloomPass・FilmPass・FocusShader・OutputPassのコンポーザーとともにRustで再現。原作と同じく頂点ごとのランダムウォークはCPUでFloat32の位置に対して行い（座標ごとにMath.randomを原作の順序で1回ずつ）、動いた体の位置だけを常駐頂点バッファへ書き込む（positions.needsUpdate）。複製は同じGPUバッファを描き、各点は頂点シェーダーで常駐位置からgl_PointSizeの正方形（距離減衰、最小1ピクセル）に展開する。複製の視錐台判定は原作と同じく最初の位置から一度だけ求めた境界球で行う。原作は2つのOBJの読み込み完了順で乱数の消費順が変わるため、比較用フィクスチャでは男性モデルのコールバックから女性モデルを読み込んで順序を固定する。性能の完全な同等性は未保証。 |
+| webgl_postprocessing_advanced | `tests/browser/texture-volumes.spec.js` | 背景クアッドとPhongの頭部を8ビット線形ターゲットに描き、頭部以外（反転MaskPass）をぼかすシーンコンポーザーと、その結果をコピーしてガンマ補正・フィルム・ビネット・ドットスクリーン・頭部内外で色の異なるColorify・セピア・ブルーム・ブリーチバイパスを連ね、画面の4分割に描く4つの半解像度コンポーザーをRustで再現。各ShaderPassは原作と同じくGPUターゲットへのフルスクリーン描画1回。ステンシルマスクは頭部をシーン解像度と半解像度のマスクターゲットに描いて代用し、マスク付きパスはマスク内でエフェクトを、マスク外で読み込みバッファのコピーを書く（EffectComposerのステンシル付きコピーパスと同じ結果）。半解像度のピンポンバッファは4つのコンポーザーで共有する。性能の完全な同等性は未保証。 |
+| webgpu_lights_ies_spotlight | `tests/browser/texture-volumes.spec.js` | IESLoaderのLM-63プロファイル（180テクセルの半精度行）を持つ4つのIESSpotLight（影付き）と、中心へ揺れる各ターゲット、Phongの床と箱、SpotLightHelperの表示切替をRustで再現。IESSpotLightNodeと同じく、各ライトのコーン減衰をacos( L · D ) / πでサンプリングしたプロファイルに置き換える（コアのコーン減衰を無効化し、Phongマテリアルのライトごとの色フックで適用）。性能の完全な同等性は未保証。 |
+| webgl_test_memory | `tests/browser/texture-volumes.spec.js` | 毎フレーム、ランダムな分割数の球とランダム色の256×256キャンバステクスチャを作り、ワイヤーフレームで描いて破棄する原作の挙動をRustで再現。原作と同じく毎フレームのジオメトリとテクスチャのアップロードは発生するが、破棄によりGPU常駐リソースは増えない。性能の完全な同等性は未保証。 |
 | webgl_loader_texture_ktx | `tests/browser/texture-volumes.spec.js` | KTXLoaderのKTX 1ファイル（PVRTC、S3TC/BC1・BC3・BC5、ETC1、EAC RG、ASTC 4x4・8x8）を、原作と同じくブラウザのWebGL拡張の有無で選び、回転する箱の色マップ、深度テストなしのレンズフレア、点光源下の2チャンネル圧縮法線マップ（MeshStandardMaterial）としてRustで再現。ブロック形式は格納値のままアップロードし、WebGPUにないPVRTCだけは読み込み時に一度RGBA8へデコードして常駐させる。性能の完全な同等性は未保証。 |
 | webgl_loader_texture_pvrtc | `tests/browser/texture-volumes.spec.js` | PVRLoaderのv2/v3ファイル（PVRTC 2/4bpp、ミップあり・なし、アルファ付き）を回転する箱に、2つのキューブマップをトーラスの反射に使う構成をRustで再現。WebGPUにはPVRTC形式がないため、各レベルを読み込み時に一度だけRGBA8へデコード（Imaginationの参照デコーダーと同じ手順）して常駐させる。GPU上のテクスチャメモリは圧縮時の4〜8倍になる。WebGLと同じくPVRTCにはsRGB形式がないため、色空間に関わらず格納値のままサンプリングする。性能の完全な同等性は未保証。 |
 | webgpu_lines_fat_raycasting | `tests/browser/texture-volumes.spec.js` | CatmullRom曲線から作る色付きの太線（LineSegmentsGeometry/LineGeometry、ワールド単位またはピクセル幅、alphaToCoverage）を常駐GPUリボンで描き、ポインターのレイキャスト（LineSegments2.raycastのCPUクエリ）で交点と線上の点に球を置く挙動、しきい値の可視化、平行移動をRustで再現。Inspector外観と性能の完全な同等性は未保証。 |

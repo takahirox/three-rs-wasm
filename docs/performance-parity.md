@@ -821,3 +821,23 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   ribbons stay resident on the GPU.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Memory tests, instancing, batching, bundles, marching cubes and dynamic points
+
+- **Instancing.** The 50,000 volume boxes and the Menger volume are uploaded
+  once; the ray march runs per fragment.
+- **Batching.** The mesh batch keeps its geometry, matrices and colors in
+  GPU buffers and issues one indexed draw per visible instance after the
+  original's per-frame CPU cull and sort; only changed matrices and the draw
+  IDs are uploaded. The render bundle is recorded once and replayed.
+- **CPU-rebuilt data.** The marching cubes surface, the memory tests' sphere,
+  texture and 100 programs, and the dynamic points' random walk are rebuilt
+  on the CPU each frame, as the originals do; the surfaces and points are
+  written into resident buffers, and the memory tests dispose what they make.
+- **Points.** The dynamic points upload 12 bytes per moved point; the vertex
+  stage expands each resident position into its point square.
+- **Post passes.** The advanced and dynamic-points composers are full-screen
+  draws over resident targets with one uniform buffer; bind groups are
+  created once per target set.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

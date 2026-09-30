@@ -17,6 +17,8 @@ struct Geometry {
     targets: usize,
     max_joint: Option<usize>,
     layout: [u32; 3],
+    /// Dropped at the last prune; see the geometry cache.
+    orphaned: u8,
 }
 struct Pose {
     owner: Weak<()>,
@@ -68,7 +70,16 @@ fn buffer(device: &wgpu::Device, queue: &wgpu::Queue, bytes: &[u8], uniform: boo
 }
 impl Cache {
     pub fn prune(&mut self, scene: &Scene) {
-        self.geometry.retain(|_, g| g.owner.strong_count() > 0);
+        self.geometry.retain(|_, g| {
+            if g.owner.strong_count() > 0 {
+                g.orphaned = 0;
+                true
+            } else {
+                // Kept for a few prunes (several can run per frame).
+                g.orphaned += 1;
+                g.orphaned <= 4
+            }
+        });
         self.poses.retain(|h, p| {
             p.owner.strong_count() > 0
                 && (!p.owner.ptr_eq(&Arc::downgrade(&scene.cache_owner)) || scene.get(*h).is_ok())
@@ -86,13 +97,34 @@ impl Cache {
         let source = node
             .geometry()
             .ok_or(Error::Invalid("deformation geometry"))?;
-        let key = Arc::as_ptr(source) as usize;
-        let versions = source
-            .attributes
-            .values()
+        // Keyed by identity: a geometry moved to a new allocation keeps its inputs.
+        let key = source.identity.id as usize;
+        if let Some(g) = self.geometry.get_mut(&key)
+            && g.owner.strong_count() == 0
+        {
+            g.owner = Arc::downgrade(source);
+            g.orphaned = 0;
+        }
+        // Only skin and morph data feed these inputs: a dynamic position or
+        // normal update of an unskinned, unmorphed geometry keeps them.
+        let deformed = source.attributes.contains_key("skinIndex")
+            || source.attributes.contains_key("skinWeight")
+            || source.morph_attributes.values().any(|v| !v.is_empty());
+        let mut versions = ["skinIndex", "skinWeight"]
+            .iter()
+            .filter_map(|name| source.attributes.get(*name))
+            .chain(
+                source
+                    .morph_attributes
+                    .keys()
+                    .filter_map(|name| source.attributes.get(name)),
+            )
             .chain(source.morph_attributes.values().flatten())
             .map(|a| a.version())
             .collect::<Vec<_>>();
+        if deformed {
+            versions.push(source.vertex_count() as u64);
+        }
         let stale = self
             .geometry
             .get(&key)
@@ -221,6 +253,7 @@ impl Cache {
                     targets,
                     max_joint,
                     layout: [skin_size as u32, stride as u32, mask],
+                    orphaned: 0,
                 },
             );
             self.poses.retain(|_, p| p.geometry != key);

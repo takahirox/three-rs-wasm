@@ -316,6 +316,13 @@ impl Controls {
         }
         self.update(s, c)
     }
+    /// `update( deltaTime )`: autoRotate turns by 2π / 60 × speed × deltaTime.
+    pub(super) fn frame_update_dt(&mut self, s: &mut Scene, c: Object3D, dt: f64) -> Result<()> {
+        if let Some(speed) = self.auto_rotate {
+            self.delta_theta -= TAU / 60. * speed * dt;
+        }
+        self.update(s, c)
+    }
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;
     }

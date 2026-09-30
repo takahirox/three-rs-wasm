@@ -829,3 +829,21 @@ all distributed alongside `LICENSE-THREE`:
 - `gallery/assets/multiple-elements-text/article.html`: the article markup of
   `webgl_multiple_elements_text.html` (text, MathML and the view elements),
   without its scripts.
+
+The test-memory to FBX NURBS batch adds unmodified r186 example assets, listed
+with their source paths and SHA-256 hashes in
+`gallery/assets/loaders-audio-manifest.json`, all distributed alongside
+`LICENSE-THREE`:
+
+- `gallery/assets/vox/menger.vox`: `models/vox/menger.vox`.
+- `gallery/assets/ies/`: the four IES light profiles of `examples/ies/`
+  (photometric data from BEGA and Efficient Lighting Systems, as named in
+  their headers).
+- `gallery/assets/obj/female02/`: `models/obj/female02/female02.obj` and its
+  `readme.txt`; the female02 model is by Reallusion iClone, from Google 3D
+  Warehouse.
+- `gallery/assets/fbx/nurbs.fbx`: `models/fbx/nurbs.fbx`.
+
+The marching cubes, advanced postprocessing and IES examples reuse the retained
+`environment-materials` SwedishRoyalCastle cube and `uv_grid_opengl.jpg`, the
+`shadow-rtt` `Map-COL.jpg` and the `LeePerrySmith` normal map.

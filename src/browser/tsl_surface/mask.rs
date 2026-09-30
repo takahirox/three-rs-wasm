@@ -149,6 +149,7 @@ impl Demo {
             decay: 2.0,
             angle: std::f64::consts::PI / 3.0,
             penumbra: 0.0,
+            ies: false,
         }));
         scene.get_mut(light)?.position = Vector3::Y;
         scene.add(cam, light)?;

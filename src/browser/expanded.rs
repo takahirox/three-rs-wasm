@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    FbxNurbs(Box<super::fbx_nurbs::Demo>),
+    PointsDynamic(Box<super::points_dynamic::Demo>),
+    PostprocessingAdvanced(Box<super::postprocessing_advanced::Demo>),
+    IesSpotlight(Box<super::ies_spotlight::Demo>),
+    TestMemory2(Box<super::test_memory2::Demo>),
+    MarchingCubes(Box<super::marching_cubes::Demo>),
+    RenderBundle(Box<super::render_bundle::Demo>),
+    MeshBatch(Box<super::mesh_batch::Demo>),
+    VolumeInstancing(Box<super::volume_instancing::Demo>),
+    TestMemory(Box<super::test_memory::Demo>),
     Ktx(Box<super::ktx::Demo>),
     Pvr(Box<super::pvr::Demo>),
     LinesRaycast(Box<super::lines_raycast::Demo>),
@@ -392,6 +402,98 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::Ktx(Box::new(
                     super::ktx::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            354 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::TestMemory(Box::new(
+                    super::test_memory::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            355 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::VolumeInstancing(Box::new(
+                    super::volume_instancing::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            356 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::MeshBatch(Box::new(
+                    super::mesh_batch::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            357 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::RenderBundle(Box::new(
+                    super::render_bundle::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            358 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::MarchingCubes(Box::new(
+                    super::marching_cubes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            359 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::TestMemory2(Box::new(
+                    super::test_memory2::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            360 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::IesSpotlight(Box::new(
+                    super::ies_spotlight::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            361 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::PostprocessingAdvanced(Box::new(
+                    super::postprocessing_advanced::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            362 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 50000.,
+                elapsed: 0.,
+                content: Content::PointsDynamic(Box::new(
+                    super::points_dynamic::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            363 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::FbxNurbs(Box::new(
+                    super::fbx_nurbs::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1286,6 +1388,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Ktx(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1705,6 +1837,24 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::LogDepth(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1824,6 +1974,36 @@ impl Demo {
             return Some(target);
         }
         if let Content::ElementsText(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::TestMemory2(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::PointsDynamic(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::RenderBundle(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::MeshBatch(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::VolumeInstancing(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -1964,6 +2144,36 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ktx(demo) = &mut self.content {
@@ -2147,6 +2357,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Ktx(demo) = &mut self.content {
@@ -2419,6 +2659,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Ktx(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -2598,6 +2868,46 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::Ktx(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -2771,6 +3081,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Ktx(demo) = &mut self.content {
@@ -3021,6 +3361,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::FbxNurbs(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PointsDynamic(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PostprocessingAdvanced(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::IesSpotlight(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TestMemory2(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::MarchingCubes(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RenderBundle(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::MeshBatch(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeInstancing(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TestMemory(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ktx(demo) = &mut self.content {

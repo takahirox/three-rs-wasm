@@ -43,6 +43,7 @@ impl ShadowMap {
             decay: 2.,
             angle: std::f64::consts::PI / 5.,
             penumbra: 0.3,
+            ies: false,
         }));
         {
             let n = s.get_mut(spot)?;

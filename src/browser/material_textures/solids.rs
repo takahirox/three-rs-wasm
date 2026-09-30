@@ -142,6 +142,7 @@ impl Demo {
             decay: 2.,
             angle: std::f64::consts::PI / 5.,
             penumbra: 0.2,
+            ies: false,
         }));
         {
             let n = s.get_mut(spot)?;

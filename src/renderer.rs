@@ -1019,6 +1019,7 @@ impl Renderer {
                         decay,
                         angle,
                         penumbra,
+                        ies,
                     } => {
                         if !angle.is_finite()
                             || *angle <= 0.0
@@ -1041,8 +1042,13 @@ impl Renderer {
                         light_params[light_count] = [
                             *distance as f32,
                             *decay as f32,
-                            angle.cos() as f32,
-                            (angle * (1.0 - penumbra)).cos() as f32,
+                            // Equal cosines of −1 pass every direction: no cone.
+                            if *ies { -1.0 } else { angle.cos() as f32 },
+                            if *ies {
+                                -1.0
+                            } else {
+                                (angle * (1.0 - penumbra)).cos() as f32
+                            },
                         ];
                         light_count += 1;
                     }

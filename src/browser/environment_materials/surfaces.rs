@@ -147,6 +147,7 @@ impl Demo {
                 decay: 2.,
                 angle: std::f64::consts::FRAC_PI_3,
                 penumbra: 0.,
+                ies: false,
             }));
             let n = s.get_mut(spot)?;
             n.position = Vector3::new(3.5, 0., 7.);

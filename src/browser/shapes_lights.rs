@@ -534,6 +534,7 @@ impl Demo {
                 decay: 2.,
                 angle: 0.3,
                 penumbra: 0.2,
+                ies: false,
             }));
             let n = s.get_mut(light)?;
             n.position = Vector3::from_array(position);

@@ -1,4 +1,4 @@
-# Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping, post passes and depth buffers
+# Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping, post passes, depth buffers and memory tests
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
@@ -11,7 +11,11 @@ Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
 `ascii.rs`, `glitch.rs` and `ssao.rs`; the next adds `sao.rs`, `taa.rs`,
 `outline.rs`, `ktx2.rs`, `elements_text.rs`, `reversed_depth.rs`,
 `log_depth.rs`, `lines_raycast.rs`, `pvr.rs` (with the PVRTC decoder in
-`pvrtc.rs`) and `ktx.rs`.
+`pvrtc.rs`) and `ktx.rs`; the last adds `test_memory.rs`,
+`volume_instancing.rs`, `mesh_batch.rs`, `render_bundle.rs`,
+`marching_cubes.rs` (with `marching_tables.rs`), `test_memory2.rs`,
+`ies_spotlight.rs`, `postprocessing_advanced.rs`, `points_dynamic.rs` (both
+over the composer passes in `composer_passes.rs`) and `fbx_nurbs.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |
@@ -43,13 +47,24 @@ Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
 | `webgpu_lines_fat_raycasting` | 351 | The CatmullRom spiral as LineSegments2 or Line2 in world units or pixels with alpha to coverage, the pointer raycast and its two spheres, the visualized threshold and the translation |
 | `webgl_loader_texture_pvrtc` | 352 | PVRLoader's v2 and v3 PVRTC 2/4 bpp maps with and without mips, the alpha flares and two cube maps reflected by the tori |
 | `webgl_loader_texture_ktx` | 353 | KTXLoader's KTX 1 files chosen by the WebGL extensions as the original does: PVRTC, BC1/BC3/BC5, ETC1, EAC RG and ASTC color maps, flares and packed two-channel normal maps under a point light |
+| `webgl_test_memory` | 354 | A new wireframe sphere of random detail with a new 256 × 256 canvas texture of a random color every frame, the previous pair disposed |
+| `webgl_volume_instancing` | 355 | VOXLoader's Menger sponge as an 81³ red 3D texture ray-marched in 50,000 randomly placed instanced back-face boxes, writing the hit depth, with the damped auto-rotating OrbitControls |
+| `webgpu_mesh_batch` | 356 | BatchedMesh of cones, boxes and spheres (512 by default, the first `dynamic` turning), the per-frame frustum cull and depth sort (radix or custom), per-object culling, opacity, count and randomize |
+| `webgpu_performance_renderbundle` | 357 | 4,000 toon meshes of 15 primitives and a 10-instance mesh in a BundleGroup recorded once and replayed, re-recorded when dynamic, with the static and render-bundle switches |
+| `webgl_marchingcubes` | 358 | MarchingCubes polygonized on the CPU every frame into dynamic attributes, the 13 materials (environment, reflection, refraction, textures, vertex colors, four toon shaders) and every simulation control |
+| `webgl_test_memory2` | 359 | 100 spheres whose ShaderMaterials are replaced every frame by 100 newly compiled programs with random colors baked in, disposed after the frame |
+| `webgpu_lights_ies_spotlight` | 360 | Four IESSpotLights with LM-63 profiles and shadows over a Phong floor and boxes, the swaying targets and the SpotLightHelper switch |
+| `webgl_postprocessing_advanced` | 361 | Five EffectComposers: the background and Phong head blurred outside the head's inverse mask, then gamma, film, vignette, dot screen, masked colorify, sepia, bloom and bleach bypass in four quadrants |
+| `webgl_points_dynamic` | 362 | Nine OBJ point bodies with eight clones each crumbling and rising by the page's per-vertex random walk, with BloomPass, FilmPass, FocusShader and OutputPass |
+| `webgl_loader_fbx_nurbs` | 363 | FBXLoader's ASCII tree and five NURBS curves (open, closed and periodic) as lines, the GridHelper and OrbitControls |
 
 `webgpu_display_stereo`, `webgpu_clipping_stencil`,
 `webgpu_postprocessing_outline`, `webgpu_loader_texture_ktx2`,
 `webgpu_reversed_depth_buffer`, `webgpu_camera_logarithmicdepthbuffer` and
-`webgpu_lines_fat_raycasting` are WebGPU examples and are compared against the
-WebGPU renderer (the WebGL outline, KTX2, reversed-depth, logarithmic-depth and
-fat-line twins are listed as equivalents only). None of the others has an
+`webgpu_lines_fat_raycasting`, `webgpu_mesh_batch`,
+`webgpu_performance_renderbundle` and `webgpu_lights_ies_spotlight` are WebGPU
+examples and are compared against the WebGPU renderer (the WebGL outline, KTX2, reversed-depth, logarithmic-depth and
+fat-line and mesh-batch twins are listed as equivalents only). None of the others has an
 official WebGPU equivalent in the pinned inventory, so each is compared against
 the WebGL renderer. `misc_uv_tests` draws no WebGL at all; its canvases are
 compared pixel for pixel.
@@ -341,6 +356,101 @@ compared pixel for pixel.
   WebGL's `USE_PACKED_NORMALMAP` does; the renderer applies this to any
   two-channel CompressedTexture normal map.
 
+### Memory tests
+
+- **Per frame.** `webgl_test_memory` builds a sphere of random detail and a
+  256 × 256 texture of a random color each frame, uploads both and disposes
+  the previous pair, as the original does; resident counts stay flat.
+- **Programs.** `webgl_test_memory2` compiles 100 shader modules and
+  pipelines each frame with the random colors baked into the source, as the
+  original compiles 100 programs, and drops them after the frame. The
+  spheres' geometry and matrices stay resident. The fixture runs the page's
+  60 Hz interval as one render per frame.
+
+### Volume instancing
+
+- **Volume.** VOXLoader's chunks are parsed into an 81³ R8 3D texture with
+  nearest minification and linear magnification.
+- **Ray march.** Each of the 50,000 instanced back-face boxes marches the
+  volume in its local space with three's WebGL projection and writes the hit
+  depth; derivatives for the grid sample are reconstructed outside the loop,
+  as WGSL requires uniform control flow for them.
+
+### Batched mesh and render bundle
+
+- **Batch.** The three geometries share one index buffer; the matrices,
+  colors and batch IDs are storage buffers. The original's per-frame CPU
+  frustum cull and sort (the radix sort of scaled depths or the custom
+  comparator) choose one indexed draw per visible instance, the draw index
+  reading its batch ID. Only changed matrices and the IDs are uploaded.
+- **Bundle.** The 4,000 meshes are recorded once into a WebGPU render bundle
+  and replayed each frame. With `static`, as BundleGroup does, the objects'
+  uniforms are not refreshed; the dynamic mode updates the object data and
+  replays the same bundle, and a resize re-records it.
+
+### Marching cubes
+
+- **Polygonization.** MarchingCubes' field, normal cache and palette are
+  kept in Float32 and polygonized on the CPU every frame, as in the
+  original; the positions, normals, uvs and colors are written into the
+  resident attribute buffers, which grow only when the new data does not fit.
+- **Materials.** The 13 materials include the environment-mapped Standard,
+  reflecting and refracting Lambert (the cube map sampled per fragment),
+  textured and vertex-colored Phong, and the four ToonShaders with GL's
+  bottom-up fragment coordinates.
+- **Caches.** Geometry and deformation caches are keyed by the geometry's
+  identity rather than its allocation, so a geometry written in place keeps
+  its GPU buffers when `Arc::make_mut` moves it.
+
+### IES spotlights
+
+- **Profiles.** IESLoader's LM-63 parser, the squared and normalized candela
+  values and three's half-float conversion build a 180 × 4 profile texture.
+- **Light.** As IESSpotLightNode does, each light's cone falloff is replaced
+  by its profile sampled at acos( L · D ) / π: the core spot light has an
+  `ies` flag that disables the cone, and a Phong light-color hook applies the
+  profile per light.
+
+### Advanced postprocessing
+
+- **Composers.** Each ShaderPass is one full-screen draw into an 8-bit
+  linear GPU target, as the WebGL targets are; the four half-size composers
+  reuse one pair of ping-pong targets.
+- **Masks.** The MaskPass stencil is the head rendered into a mask target at
+  the scene and half resolutions; a masked pass writes its effect where the
+  stencil test passes and the read buffer elsewhere, which is what
+  EffectComposer's stencil-tested copy pass leaves.
+- **Film noise.** FilmPass hashes the interpolated vUv. ANGLE renders WebGL
+  upside down on Metal, so the composer targets are stored from their bottom
+  row with the triangle's y negated; the interpolated uv, and the hash, then
+  round exactly as in WebGL.
+
+### Dynamic points
+
+- **Walk.** The random walk runs on the CPU over the Float32 positions, one
+  Math.random draw per coordinate in the page's order, as in the original. A
+  moved body's positions are written into its resident vertex buffer, which
+  its eight clones share.
+- **Points.** Each point is expanded by the vertex shader from the resident
+  position into a square of gl_PointSize pixels (attenuated, at least one
+  pixel), with FogExp2. The clones are culled by the geometry's first
+  bounding sphere, which three computes once.
+- **Order.** The two OBJ callbacks both draw from Math.random, in whichever
+  order the files finish loading. The fixture loads the female model from
+  the male model's callback to fix that order; the port loads them in the
+  same order.
+- **Composer.** BloomPass, FilmPass, FocusShader and OutputPass are the
+  composer passes above, over half-float targets.
+
+### FBX NURBS
+
+- **Loader.** The ASCII tree, the NurbsCurve geometries, the models and the
+  connections are parsed as FBXLoader's TextParser reads them; this file's
+  models are translated and scaled only.
+- **Curves.** NURBSCurve.getPoints( controlPoints × 12 ) is evaluated once at
+  load in double precision, with the closed and periodic forms' repeated
+  control points and knot ranges.
+
 Stats and the lil-gui appearance are not reproduced.
 
 ## Comparison
@@ -383,6 +493,17 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
 | Fat line raycasting | 1.194% / 0.31 | 1.062% / 0.31 |
 | PVRTC, MSAA off / on | 0.032% / 0.01, 0.528% / 0.17 | 0.026% / 0.00, 0.237% / 0.08 |
 | KTX, MSAA off / on | 0.421% / 0.53, 0.402% / 0.30 | 0.030% / 0.23, 0.187% / 0.24 |
+| Test memory (frame by frame) | 0.160% / 0.21 | 0.083% / 0.12 |
+| Volume instancing | 0.064% / 0.02 | 0.290% / 0.06 |
+| Mesh batch, MSAA off / on | 0% / 0.04, 0.001% / 0.04 | 0.001% / 0.04, 0.002% / 0.04 |
+| Render bundle, MSAA off / on | 0.002% / 0.02, 0.055% / 0.03 | 0.002% / 0.02, 0.026% / 0.03 |
+| Marching cubes | 0.009% / 0.05 | 0.001% / 0.03 |
+| Test memory 2 (frame by frame) | 0% / 0.00 | 0.001% / 0.00 |
+| IES spotlights, MSAA off / on | 0% / 0.12, 0.241% / 0.14 | 0% / 0.11, 0.122% / 0.12 |
+| Advanced postprocessing | 0.025% / 0.03 | 0.009% / 0.03 |
+| Dynamic points | 1.578% / 0.31 | 0.637% / 0.16 |
+| Dynamic points, falling and rising | 2.149% / 0.34 | 1.057% / 0.20 |
+| FBX NURBS | 0.002% / 0.00 | 0.001% / 0.00 |
 
 ### Volume colormap lookup
 
@@ -429,6 +550,18 @@ Ordinary limits: at most 0.5% of pixels with an RGB channel difference above
   other state of the test is exact.
 - **Bound.** 1.5% / 0.5 for that state only.
 
+### Dynamic point squares
+
+- **Cause.** WebGL rasterizes `gl_PointSize` points through ANGLE's Metal
+  point sprites; the port expands each point into an exact square of the
+  same size. Measured on random points, about 2.5% of WebGL's squares cover
+  one pixel column or row more or less than the exact square (their edges
+  land within 0.03 px of a pixel center).
+- **Effect.** Isolated points shift by one pixel, and the bloom spreads each
+  difference: up to 2.15%, mean error at most 0.34, in every state including
+  the falling and rising bodies.
+- **Bound.** 3% / 0.45.
+
 ### ASCII cells
 
 The table is compared cell by cell. Brightness near a character threshold
@@ -444,7 +577,10 @@ MSAA only, bounded at 0.8% / 0.3.
 
 ## Performance evidence
 
-- **Draw workload.** The measured draws equal the original's.
+- **Draw workload.** The measured draws equal the original's, except that the
+  advanced composers' MaskPasses draw the head into both ping-pong buffers
+  for each of three masks (six draws), where the port draws one mask per
+  resolution (two).
 - **Uploads.** No geometry or texture data is written in steady frames:
   - the layer example copies layers on the GPU only on transfer;
   - the volume is uploaded once;
@@ -470,14 +606,29 @@ MSAA only, bounded at 0.8% / 0.3.
     the CPU each frame;
   - the KTX and KTX2 textures are uploaded once as stored, and the PVRTC
     levels are decoded once at load (RGBA8 keeps 4–8 × the compressed
-    memory).
+    memory);
+  - the Menger volume, the 50,000 instance matrices, the batch and bundle
+    geometries and the IES profiles are uploaded once.
+- **Rebuilt data.** Where the original rebuilds data on the CPU each frame,
+  the port does the same and no more:
+  - the marching cubes surface is polygonized and written into its resident
+    attributes each frame (the residency test compares creations only);
+  - the memory tests upload one sphere and one texture, or compile 100
+    programs, per frame and dispose them, keeping resident counts flat;
+  - the batch uploads the matrices that changed and the per-frame IDs of the
+    culled and sorted draws;
+  - the dynamic points write a moved body's positions (12 bytes a point)
+    into its resident buffer; the clones share it, and bodies at rest upload
+    nothing.
 - **Readback.** The ASCII effect reads the frame back each frame, as the
   original does, at 0.15 of its size.
 - **Queries.** The fat-line raycast and the outline selection are CPU
   queries per frame, as in the originals; they do not replace GPU work.
 - **Warmed cycles.** Warmed cycles of time, controls, input and resize
   create no GPU resources; the ASCII and glitch tests repeat their cycles
-  too.
+  too. The dynamic points' cycle returns the clock to its start so the
+  rotating clones revisit the same views, and its long test checks that
+  nothing is created while the bodies fall and rise.
 
 No GPU timing parity is claimed. Full measurements are in
 [texture-volumes-comparison.json](texture-volumes-comparison.json).

@@ -344,6 +344,7 @@ impl Demo {
             decay: 2.,
             angle: PI / 5.,
             penumbra: 0.2,
+            ies: false,
         }));
         let n = s.get_mut(spot)?;
         n.position = Vector3::new(2., 3., 3.);

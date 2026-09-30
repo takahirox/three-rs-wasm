@@ -167,12 +167,26 @@ impl<T: Component> BufferAttribute<T> {
             update_ranges: Vec::new(),
         })
     }
+    /// The address of the stored array: a replaced attribute has a new one.
+    pub fn storage_key(&self) -> usize {
+        self.array.as_ptr() as usize
+    }
     pub fn array(&self) -> &[T] {
         &self.array
     }
     pub fn array_mut(&mut self) -> &mut [T] {
         self.mark_dirty();
         &mut self.array
+    }
+    /// Replace the data, possibly with a different count, as a dynamic
+    /// attribute's next upload.
+    pub fn replace(&mut self, array: Vec<T>) -> Result<()> {
+        if !array.len().is_multiple_of(self.item_size) {
+            return Err(Error::Invalid("attribute item size"));
+        }
+        self.array = array;
+        self.mark_dirty();
+        Ok(())
     }
     pub fn count(&self) -> usize {
         self.array.len() / self.item_size
@@ -363,6 +377,10 @@ pub struct InterleavedBufferAttribute<T> {
     pub name: String,
 }
 impl<T: Component> InterleavedBufferAttribute<T> {
+    /// The shared interleaved buffer's address.
+    pub fn storage_key(&self) -> usize {
+        Arc::as_ptr(&self.data) as usize
+    }
     pub fn mark_dirty(&mut self) {
         self.data
             .write()

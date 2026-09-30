@@ -120,6 +120,9 @@ pub enum Light {
         decay: f64,
         angle: f64,
         penumbra: f64,
+        /// IESSpotLight: the cone attenuation is replaced by the light's IES
+        /// profile, which the receiving material applies to its color.
+        ies: bool,
     },
     Ambient {
         color: Color,

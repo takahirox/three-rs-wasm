@@ -107,6 +107,11 @@ impl Attribute {
     pub fn version(&self) -> u64 {
         dispatch!(self, a, a.version())
     }
+    /// Identifies the attribute's storage: an attribute replaced by
+    /// set_attribute differs even when both versions are equal.
+    pub fn storage_key(&self) -> usize {
+        dispatch!(self, a, a.storage_key())
+    }
     pub fn get_component(&self, i: usize, c: usize) -> Result<f64> {
         dispatch!(self, a, a.get_component(i, c))
     }

@@ -38,6 +38,7 @@ impl Demo {
                 decay: 2.0,
                 angle: std::f64::consts::PI / 3.0,
                 penumbra: 0.0,
+                ies: false,
             }));
             s.get_mut(h)?.position.y = 1.0;
             s.add(c, h)?;

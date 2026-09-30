@@ -289,3 +289,14 @@ PVRTC has no WebGPU format, so its levels are decoded once at load; this is a
 load-time transcode and is documented as such. Scoped bounds cover the
 multiple-elements wave precision, the visualized fat-line threshold and the
 PVRTC MSAA edges.
+
+The memory-test, volume-instancing, mesh-batch, render-bundle, marching-cubes,
+IES, advanced-postprocessing, dynamic-points and FBX NURBS batch extends
+[texture-volumes.md](texture-volumes.md) as well. `webgpu_mesh_batch`,
+`webgpu_performance_renderbundle` and `webgpu_lights_ies_spotlight` are
+compared against the WebGPU renderer, and `webgl_mesh_batch` is listed only as
+the mesh batch's equivalent; the others are WebGL-only. The marching cubes,
+memory tests and dynamic points rebuild data on the CPU each frame because the
+originals do. The dynamic points page draws Math.random in whichever order its
+two OBJ files load, so the fixture fixes that order. A scoped bound covers the
+dynamic points' rasterization.

@@ -204,6 +204,7 @@ fn per_light_shadow_resolution_survives_a_larger_atlas_neighbor() {
             penumbra: 0.2,
             decay: 2.,
             target: Vector3::ZERO,
+            ies: false,
         },
     ] {
         let mut s = Scene::new();

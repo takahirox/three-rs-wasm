@@ -11,8 +11,12 @@ pub(crate) struct Buffers {
 }
 struct Entry {
     owner: Weak<BufferGeometry>,
-    versions: Vec<u64>,
+    versions: Vec<(u64, usize)>,
     buffers: Buffers,
+    /// The owner was dropped at the last prune: a geometry moved to a new
+    /// allocation (Arc::make_mut with weak references) reclaims its entry by
+    /// identity before the next prune frees it.
+    orphaned: u8,
 }
 struct Bounds {
     owner: Weak<BufferGeometry>,
@@ -28,7 +32,16 @@ pub(crate) struct Cache {
 }
 impl Cache {
     pub fn prune(&mut self) {
-        self.entries.retain(|_, e| e.owner.strong_count() > 0);
+        self.entries.retain(|_, e| {
+            if e.owner.strong_count() > 0 {
+                e.orphaned = 0;
+                true
+            } else {
+                // Kept for a few prunes (several can run per frame).
+                e.orphaned += 1;
+                e.orphaned <= 4
+            }
+        });
         self.bounds.retain(|_, e| e.owner.strong_count() > 0);
     }
     pub fn sphere(&mut self, geometry: &Arc<BufferGeometry>) -> Result<Sphere> {
@@ -77,17 +90,32 @@ impl Cache {
         wireframe: bool,
         wide: Option<bool>,
     ) -> Result<Buffers> {
+        // Keyed by the geometry's identity, which survives a move to a new
+        // allocation; a moved geometry re-attaches its entry.
         let key = (
-            Arc::as_ptr(geometry) as usize,
+            geometry.identity.id as usize,
             vertex_colors,
             is_points,
             wireframe,
             wide,
         );
+        if self
+            .entries
+            .get(&key)
+            .is_some_and(|e| e.owner.strong_count() == 0)
+        {
+            // Every variant of the moved geometry follows it.
+            for (k, entry) in &mut self.entries {
+                if k.0 == key.0 && entry.owner.strong_count() == 0 {
+                    entry.owner = Arc::downgrade(geometry);
+                    entry.orphaned = 0;
+                }
+            }
+        }
         let versions = geometry
             .attributes
             .values()
-            .map(|a| a.version())
+            .map(|a| (a.version(), a.storage_key()))
             .collect::<Vec<_>>();
         if let Some(entry) = self.entries.get(&key)
             && entry.owner.strong_count() > 0
@@ -227,13 +255,31 @@ impl Cache {
             }
         }
         let vertex_bytes = bytemuck::cast_slice(&vertices);
-        let vertex_buffer = upload(
-            device,
-            queue,
-            "resident vertices",
-            vertex_bytes,
-            wgpu::BufferUsages::VERTEX,
-        );
+        // A live geometry whose attributes changed writes into its resident
+        // buffers, as WebGL's bufferSubData does; capacity grows only when the
+        // new data does not fit.
+        let previous = self
+            .entries
+            .get(&key)
+            .filter(|e| e.owner.strong_count() > 0)
+            .map(|e| e.buffers.clone());
+        let vertex_buffer = match &previous {
+            Some(b) => rewrite(
+                device,
+                queue,
+                &b.vertices,
+                "resident vertices",
+                vertex_bytes,
+                wgpu::BufferUsages::VERTEX,
+            ),
+            None => upload(
+                device,
+                queue,
+                "resident vertices",
+                vertex_bytes,
+                wgpu::BufferUsages::VERTEX,
+            ),
+        };
         let indices = if wide.is_some() {
             None
         } else if wireframe {
@@ -264,13 +310,24 @@ impl Cache {
             None
         };
         let index_buffer = indices.as_ref().map(|indices| {
-            upload(
-                device,
-                queue,
-                "resident indices",
-                bytemuck::cast_slice(indices),
-                wgpu::BufferUsages::INDEX,
-            )
+            let bytes = bytemuck::cast_slice(indices);
+            match previous.as_ref().and_then(|b| b.indices.as_ref()) {
+                Some(buffer) => rewrite(
+                    device,
+                    queue,
+                    buffer,
+                    "resident indices",
+                    bytes,
+                    wgpu::BufferUsages::INDEX,
+                ),
+                None => upload(
+                    device,
+                    queue,
+                    "resident indices",
+                    bytes,
+                    wgpu::BufferUsages::INDEX,
+                ),
+            }
         });
         for a in geometry.attributes.values() {
             a.notify_uploaded();
@@ -288,12 +345,46 @@ impl Cache {
                 owner: Arc::downgrade(geometry),
                 versions,
                 buffers: buffers.clone(),
+                orphaned: 0,
             },
         );
         Ok(buffers)
     }
 }
 
+/// Write changed data into a resident buffer when it fits, else allocate
+/// one of the next power-of-two size so growing data reallocates rarely.
+fn rewrite(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    buffer: &wgpu::Buffer,
+    label: &str,
+    bytes: &[u8],
+    usage: wgpu::BufferUsages,
+) -> wgpu::Buffer {
+    let size =
+        (bytes.len() as u64).div_ceil(wgpu::COPY_BUFFER_ALIGNMENT) * wgpu::COPY_BUFFER_ALIGNMENT;
+    if size <= buffer.size() {
+        if bytes.len() as u64 == size {
+            queue.write_buffer(buffer, 0, bytes);
+        } else {
+            let mut padded = bytes.to_vec();
+            padded.resize(size as usize, 0);
+            queue.write_buffer(buffer, 0, &padded);
+        }
+        return buffer.clone();
+    }
+    let grown = device.create_buffer(&wgpu::BufferDescriptor {
+        label: Some(label),
+        size: size.next_power_of_two(),
+        usage: usage | wgpu::BufferUsages::COPY_DST,
+        mapped_at_creation: false,
+    });
+    let mut padded = bytes.to_vec();
+    padded.resize(size as usize, 0);
+    queue.write_buffer(&grown, 0, &padded);
+    grown
+}
 /// Queue uploads, not mapped-at-creation buffers: WebGPU's mapped range holds a
 /// Wasm memory view until unmap, which allocator growth can detach.
 fn upload(

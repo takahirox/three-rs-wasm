@@ -19,6 +19,7 @@ fn directional_spot_and_point_shadows_respect_cast_and_receive() {
             decay: 0.0,
             angle: 1.0,
             penumbra: 0.2,
+            ies: false,
         },
         Light::Point {
             color: Color::WHITE,
@@ -141,6 +142,7 @@ fn legacy_lights_and_fog_follow_linear_radiometry() {
         decay: 0.0,
         angle: 0.2,
         penumbra: 0.5,
+        ies: false,
     });
     scene.get_mut(light).unwrap().position.z = 2.0;
     assert!(sample(&mut scene)[0] > 250);

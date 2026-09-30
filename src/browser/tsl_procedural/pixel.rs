@@ -59,6 +59,7 @@ impl Pixel {
             penumbra: 0.02,
             decay: 2.,
             target: Vector3::ZERO,
+            ies: false,
         }));
         {
             let n = s.get_mut(spot)?;

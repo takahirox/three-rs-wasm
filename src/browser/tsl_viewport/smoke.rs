@@ -71,6 +71,7 @@ impl Demo {
             penumbra: 0.7,
             distance: 0.0,
             decay: 2.0,
+            ies: false,
         }));
         s.get_mut(h)?.position = Vector3::new(10.0, 15.0, 8.0);
         let g = lucy(&fetch(&format!("{ASSETS}/models/ply/binary/Lucy100k.ply")).await?)?;

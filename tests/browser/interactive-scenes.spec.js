@@ -98,8 +98,8 @@ test('Interactive scenes resident geometry and official draw workload',async({pa
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   expect.soft(sort(pair.rust.draws),kind).toEqual(sort(pair.reference.draws));
   // The hovered triangle's 4-vertex outline is rewritten each frame, like the original's
-  // applyMatrix4: 4 × 80-byte resident vertices plus its 48-byte position input.
-  expect.soft(pair.rust.attributeBytes,kind).toBe(kind==='interactive_buffergeometry'?368:0);expect.soft(pair.rust.textureBytes,kind).toBe(0);
+  // applyMatrix4: 4 × 80-byte resident vertices (it has no skin or morph input).
+  expect.soft(pair.rust.attributeBytes,kind).toBe(kind==='interactive_buffergeometry'?320:0);expect.soft(pair.rust.textureBytes,kind).toBe(0);
  }
  writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report,null,2));
 });

@@ -608,5 +608,45 @@
   "file": "ktx/normal.eac_rg.ktx",
   "source": "examples/textures/compressed/normal.eac_rg.ktx",
   "sha256": "c13ac49fffeab83802cfb1b40a1950f5683c0b4ed4a98a69700f76c92a1e727e"
+ },
+ {
+  "file": "ies/007cfb11e343e2f42e3b476be4ab684e.ies",
+  "source": "examples/ies/007cfb11e343e2f42e3b476be4ab684e.ies",
+  "sha256": "d5e4a4b92dfe5a2b3027f3bd8eec78a8b9679621b089845253bf5ba410b767b2"
+ },
+ {
+  "file": "ies/02a7562c650498ebb301153dbbf59207.ies",
+  "source": "examples/ies/02a7562c650498ebb301153dbbf59207.ies",
+  "sha256": "904c25a329a1dd38d00c1c5985ec56aae9cbf43cc45a00e2d48a77de98941925"
+ },
+ {
+  "file": "ies/06b4cfdc8805709e767b5e2e904be8ad.ies",
+  "source": "examples/ies/06b4cfdc8805709e767b5e2e904be8ad.ies",
+  "sha256": "2d9b3c3f792af758496750da579ef3ed10502d985341b98357c30b8cf2fae446"
+ },
+ {
+  "file": "ies/1a936937a49c63374e6d4fbed9252b29.ies",
+  "source": "examples/ies/1a936937a49c63374e6d4fbed9252b29.ies",
+  "sha256": "fd68799c7c7fa3277c7b7029d489b4def594a839bfcb0cb610a739bb1a85f0a5"
+ },
+ {
+  "file": "vox/menger.vox",
+  "source": "examples/models/vox/menger.vox",
+  "sha256": "7a3307e11334b9c679cfdfcd0367ca05483c80586877f33b17ce7b7930b0bb8f"
+ },
+ {
+  "file": "obj/female02/female02.obj",
+  "source": "examples/models/obj/female02/female02.obj",
+  "sha256": "65916ef144d593d80f8d08c3e7fb70a43d8b69cf0b9f055fdaf3b508025bdc18"
+ },
+ {
+  "file": "obj/female02/readme.txt",
+  "source": "examples/models/obj/female02/readme.txt",
+  "sha256": "845813ca23b11c003e83c77d13aee5e8210806d6e95bb1b929a4dba5abd3de0f"
+ },
+ {
+  "file": "fbx/nurbs.fbx",
+  "source": "examples/models/fbx/nurbs.fbx",
+  "sha256": "18a1a98f97575e24f581ed38acdddfd194ce77edb6bad089ba9bbbe1223793c4"
  }
 ]

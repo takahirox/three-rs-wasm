@@ -6,6 +6,9 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ webgl_loader_fbx_nurbs:{times:[0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,200]},
+ webgl_points_dynamic:{times:[0,1,2.5],parameters:[],at:2.5,cycle:[0,.1,.2,.1,0],limits:[.03,.45]},
+ webgl_postprocessing_advanced:{times:[0,1,2.5],parameters:[],at:2.5,maskDraws:[53052,6,2]},
  webgpu_postprocessing_outline:{times:[0],parameters:[],at:0,settle:true,script:[['move',256,256,0],['param',0,6,6,0],['param',1,.8,.8,0],['param',2,3,3,0],['param',4,0xff0000,0xff0000,0],['param',5,0x00ff00,0x00ff00,0],['param',3,2,2,1.3],['param',3,0,0,1.3],['move',140,320,1.3],['move',380,190,1.3],['move',30,30,1.3]],restore:[[0,3,3],[1,0,0],[2,1,1],[4,0xffffff,0xffffff],[5,0x4e3636,0x4e3636]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_postprocessing_sao:{times:[0,1,2.5],parameters:[[0,'SAO Only',1],[0,'Normal',2],[0,'Default',0],[1,.2,.2],[2,.5,.5],[3,3,3],[4,40,40],[5,.2,.2],[6,false,0],[6,true,1],[7,30,30],[8,10,10],[9,.05,.05],[10,false,0]],restore:[[1,.5,.5],[2,.18,.18],[3,1,1],[4,100,100],[5,0,0],[7,8,8],[8,4,4],[9,.01,.01],[10,true,1]],at:2.5},
  webgl_postprocessing_ssao:{times:[0,1,2.5],parameters:[[0,'SSAO Only',1],[0,'SSAO Only + Blur',2],[0,'Depth',3],[0,'Normal',4],[0,'Default',0],[1,16,16],[2,.01,.01],[3,.2,.2],[4,false,0]],restore:[[1,8,8],[2,.005,.005],[3,.1,.1],[4,true,1]],at:2.5},
@@ -15,6 +18,17 @@ const cases={
  webgl_materials_channels:{times:[0],parameters:[[0,'standard',0],[0,'velocity',2],[0,'depthBasic',3],[0,'depthRGBA',4],[0,'depthRGB',5],[0,'depthRG',6],[0,'normal',1],[2,'front',0],[2,'back',1],[1,'ortho',1],[0,'depthRGBA',4],[0,'standard',0],[2,'double',2],[0,'normal',1],[1,'perspective',0]],restore:[],at:0,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_video_kinect:{limits:[.008,.6],frames:3,times:[],parameters:[],at:1,script:[['video',2,0],['param',0,1500,1500,0],['param',1,6000,6000,0],['param',2,4,4,0],['param',3,2000,2000,0],['param',0,850,850,0],['param',1,4000,4000,0],['param',2,2,2,0],['param',3,1000,1000,0],['video',5.5,0],['move',400,300,null],['wait',.5],['wait',1.5],['move',60,100,null],['wait',3]]},
  webgl_loader_texture_dds:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
+ webgl_volume_instancing:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,drag:[[256,256],[330,300]]},
+ // The batch streams its changed matrices and each frame's draw ids, as the original's
+ // matrix and indirect textures are uploaded.
+ webgpu_mesh_batch:{times:[0,1,2,3],parameters:[[2,512,512],[3,.5,.5],[6,false,0],[4,false,0],[3,1,1],[5,false,0],[7,null,1],[1,2000,2000]],restore:[[2,16,16],[4,true,1],[5,true,1],[6,true,1],[1,512,512]],at:3,batch:true,antialias:true,drag:[[256,256],[330,300]]},
+ // The render bundle and backend switches reload the original's page; dynamic turns the
+ // objects each frame and records the bundle again.
+ webgpu_performance_renderbundle:{times:[0,1,2,3],parameters:[[2,true,1],[2,true,1]],restore:[[2,false,0]],at:3,antialias:true,drag:[[256,256],[330,300]]},
+ // The material buttons, then the simulation controls; the surface is polygonized on the
+ // CPU each frame into streamed attributes, as the original does.
+ webgl_marchingcubes:{times:[0,1,2.5],parameters:[[1,null,1],[2,null,1],[3,null,1],[4,null,1],[5,null,1],[6,null,1],[7,null,1],[8,null,1],[9,null,1],[10,null,1],[11,null,1],[12,null,1],[0,null,1],[14,20,20],[15,40,40],[16,120,120],[17,false,0],[18,true,1],[19,true,1],[13,2,2]],restore:[[14,10,10],[15,28,28],[16,80,80],[17,true,1],[18,false,0],[19,false,0],[13,1,1]],at:2.5,streamsGeometry:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgpu_lights_ies_spotlight:{times:[0,.7,1.6,2.9],parameters:[[0,true,1],[0,false,0]],at:2.9,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_loader_texture_pvrtc:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
  webgl_loader_texture_ktx:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
  webgpu_display_stereo:{backgroundSphere:true,times:[0,1,2.5],parameters:[[1,.1,.1],[0,'Anaglyph',1],[2,'Grey',1],[3,'Magenta / Cyan',1],[4,5,5],[2,'Compromise',6],[3,'Magenta / Green',2],[0,'ParallaxBarrier',2]],restore:[[0,'Stereo',0],[1,.064,.064],[2,'Dubois',4],[3,'Red / Cyan',0],[4,3,3]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -30,7 +44,7 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // webgpu_display_stereo streams its 500 instance matrices each frame.
-const streams=['webgpu_display_stereo'];
+const streams=['webgpu_display_stereo','webgl_marchingcubes'];
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -102,7 +116,8 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
    const cycle=async()=>{
-    for(const t of [0,1,2,4,0])await frames(page,'rust',t,1);
+    // Accumulating motion driven by the clock deltas uses a cycle whose deltas cancel.
+    for(const t of spec.cycle??[0,1,2,4,0])await frames(page,'rust',t,1);
     // Parameter cycles end where they began, so the second cycle revisits the same states.
     for(const [i,,v] of spec.rebuilds?[]:[...spec.parameters,...(spec.restore??[])]){await page.evaluate(([i,v])=>app.tsl_parameter(i,v),[i,v]);await frames(page,'rust',spec.at,1);}
     // Typing rebuilds the text geometry, as the original does: the cycle drags only.
@@ -114,7 +129,14 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
     if(spec.drag){await page.mouse.move(...spec.drag[0]);await page.mouse.down();await page.mouse.move(...spec.drag[1],{steps:3});await page.mouse.up();await frames(page,'rust',spec.at,3);}
    };
    const read=()=>page.evaluate(()=>({creates,transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
-   await cycle();const before=await read();await cycle();const after=await read();reports.push({resize,before,after});expect(after).toEqual(before);
+   // A streamed surface keeps changing with the advancing clock: its buffers reach their
+   // grown capacity after a further cycle.
+   if(spec.streamsGeometry)await cycle();
+   await cycle();const before=await read();await cycle();const after=await read();reports.push({resize,before,after});
+   // A surface rebuilt each frame streams its attributes as the original does (bounded by
+   // the workload test); it must still create nothing and keep residency flat.
+   if(spec.streamsGeometry){delete before.transfers;delete after.transfers;}
+   expect(after).toEqual(before);
   }
   writeFileSync(info.outputPath('residency.json'),JSON.stringify(reports,null,2));await expect(page.locator(view)).not.toHaveAttribute('data-error',/.+/);
  });
@@ -153,6 +175,9 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // WebGL draws an equirectangular background as a 36-index box; the port's
   // background is a fullscreen triangle, left out with the other tiny draws.
   if(spec.backgroundBox){const i=pair.reference.draws.findIndex(d=>d.count===36&&d.instances===1);if(i>=0)pair.reference.draws.splice(i,1);}
+  // The advanced composers' MaskPasses draw the head into both ping-pong buffers, three
+  // times over two resolutions (six draws); the port draws one mask per resolution (two).
+  if(spec.maskDraws){const [count,reference,rust]=spec.maskDraws;for(let k=0;k<reference-rust;k++){const i=pair.reference.draws.findIndex(d=>d.count===count);if(i>=0)pair.reference.draws.splice(i,1);}}
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
   // 36-index box and WebGPU a 5,952-index sphere. The stereo port draws its cube
@@ -162,7 +187,8 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   expect.soft(sort(pair.rust.draws.filter(d=>!spec.backgroundSphere||d.count!==36)),kind).toEqual(sort(referenceDraws));
   // Each instance's matrix and color stream together (80 bytes) as resident draw data;
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
-  if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
+  if(spec.batch)expect.soft(pair.rust.attributeBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes*1.25);
+  else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
   else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
   expect.soft(pair.rust.textureBytes,kind).toBe(0);
  }
@@ -424,3 +450,81 @@ test('Fat line raycasting: lines and hit spheres match the original',async({page
  for(const r of results){const [fraction,mean]=r.state===5?[.015,.5]:[.005,.6];expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(fraction);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(mean);}
 });
 
+// webgl_test_memory builds, draws and disposes a random wireframe sphere and its
+// canvas texture every frame: frame by frame the port must draw the same sphere,
+// and its GPU residency must stay flat while each frame's upload recurs.
+test('Test memory: every frame matches and disposed resources are released',async({page},info)=>{
+ test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory&samples=1':'/web/gallery/example.html?id=webgl_test_memory&still=1');
+  await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
+  await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
+  const list=[];list.push(PNG.sync.read(await page.locator('canvas').screenshot()));
+  for(let k=1;k<=6;k++){await frames(page,runtime,k,1);list.push(PNG.sync.read(await page.locator('canvas').screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>Array.from(app.resource_counts()));
+   // [resident textures, cumulative texture uploads, filters]: one new canvas texture
+   // per frame, as the original uploads, and none left resident.
+   const before=await read();for(let k=0;k<20;k++)await frames(page,runtime,k,1);const after=await read();
+   expect([after[0],after[1]-before[1],after[2]]).toEqual([before[0],20,before[2]]);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// webgl_test_memory2 replaces all 100 ShaderMaterials every frame, each compiled with
+// its own random color: frame by frame the spheres must match, each frame must compile
+// exactly 100 programs (shader module and pipeline) and nothing else may accumulate.
+test('Test memory 2: every frame matches and its 100 programs are disposed',async({page},info)=>{
+ test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
+ await page.addInitScript(()=>{window.creates={};for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...a){creates[key]=(creates[key]||0)+1;return original.apply(this,a);};}});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory2&samples=1':'/web/gallery/example.html?id=webgl_test_memory2&still=1');
+  await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
+  await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
+  const list=[];list.push(PNG.sync.read(await page.locator('canvas').screenshot()));
+  for(let k=1;k<=4;k++){await frames(page,runtime,k,1);list.push(PNG.sync.read(await page.locator('canvas').screenshot()));}
+  shots[runtime]=list;
+  if(runtime==='rust'){
+   const read=()=>page.evaluate(()=>({...creates,resources:Array.from(app.resource_counts())}));
+   const before=await read();for(let k=0;k<10;k++)await frames(page,runtime,k,1);const after=await read();
+   expect(after.createShaderModule-before.createShaderModule).toBe(1000);expect(after.createRenderPipeline-before.createRenderPipeline).toBe(1000);
+   for(const key of ['createBuffer','createTexture','createBindGroup','resources'])expect(after[key]).toEqual(before[key]);
+  }
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+
+// webgl_points_dynamic: each body starts crumbling after 100–300 frames and rises again
+// after its delay, every frame's walk drawing from Math.random in the page's order. Frames
+// advance 0.2 s (the page's clamped delta of 2), so the bodies fall, rest and rise within
+// 600 frames: the images must match along the way, and the moved positions are written
+// into the resident geometry (nothing is created while they move).
+test('Points dynamic: the random walk matches as the bodies fall and rise',async({page},info)=>{
+ test.setTimeout(900000);await page.setViewportSize({width:512,height:512});
+ await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...a){creates++;return original.apply(this,a);};}});
+ const at=[150,300,450,600];const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_points_dynamic&samples=1':'/web/gallery/example.html?id=webgl_points_dynamic&still=1');
+  await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
+  const list=[];const counts=[];
+  for(let k=1;k<=600;k++){await frames(page,runtime,k*.2,1);if(at.includes(k)){list.push(PNG.sync.read(await page.locator('canvas').screenshot()));if(runtime==='rust')counts.push(await page.evaluate(()=>({creates,resources:Array.from(app.resource_counts())})));}}
+  shots[runtime]=list;
+  if(runtime==='rust')for(const c of counts.slice(1))expect(c).toEqual(counts[0]);
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ // Point rasterization bound (docs/texture-volumes.md): about 2.5% of WebGL's point
+ // squares (ANGLE's Metal point sprites) cover one pixel column or row more or less
+ // than the exact square the port rasterizes, and the bloom spreads each difference.
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.03);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.45);}
+});
