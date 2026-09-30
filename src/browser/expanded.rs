@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Caustics(Box<super::caustics::Demo>),
+    ShadowmapOpacity(Box<super::shadowmap_opacity::Demo>),
+    LightsProjector(Box<super::lights_projector::Demo>),
+    ShadowmapVsm(Box<super::shadowmap_vsm::Demo>),
+    LightsDynamic(Box<super::lights_dynamic::Demo>),
+    LightsClustered(Box<super::lights_clustered::Demo>),
+    LinkedParticles(Box<super::linked_particles::Demo>),
+    Attractors(Box<super::attractors::Demo>),
+    SortBitonic(Box<super::sort_bitonic::Demo>),
+    ComputeBirds(Box<super::compute_birds::Demo>),
     FbxNurbs(Box<super::fbx_nurbs::Demo>),
     PointsDynamic(Box<super::points_dynamic::Demo>),
     PostprocessingAdvanced(Box<super::postprocessing_advanced::Demo>),
@@ -494,6 +504,97 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::FbxNurbs(Box::new(
                     super::fbx_nurbs::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            364 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ComputeBirds(Box::new(
+                    super::compute_birds::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            365 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.,
+                far: 2.,
+                elapsed: 0.,
+                content: Content::SortBitonic(Box::new(
+                    super::sort_bitonic::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            366 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Attractors(Box::new(
+                    super::attractors::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            367 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::LinkedParticles(Box::new(
+                    super::linked_particles::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            368 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::LightsClustered(Box::new(
+                    super::lights_clustered::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            369 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::LightsDynamic(Box::new(
+                    super::lights_dynamic::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            370 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::ShadowmapVsm(Box::new(
+                    super::shadowmap_vsm::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            371 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::LightsProjector(Box::new(
+                    super::lights_projector::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            372 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 40.,
+                elapsed: 0.,
+                content: Content::ShadowmapOpacity(Box::new(
+                    super::shadowmap_opacity::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            373 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.025,
+                far: 5.,
+                elapsed: 0.,
+                content: Content::Caustics(Box::new(
+                    super::caustics::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1388,6 +1489,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Caustics(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::FbxNurbs(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1837,6 +1968,36 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Caustics(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::PointsDynamic(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -1963,6 +2124,31 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::Caustics(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ShadowmapOpacity(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LightsProjector(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ShadowmapVsm(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LightsDynamic(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::ShadowmapViewer(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -1979,6 +2165,31 @@ impl Demo {
             return Some(target);
         }
         if let Content::TestMemory2(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LightsClustered(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LinkedParticles(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Attractors(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::SortBitonic(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ComputeBirds(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -2144,6 +2355,36 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Caustics(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::FbxNurbs(demo) = &mut self.content {
@@ -2357,6 +2598,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Caustics(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::FbxNurbs(demo) = &mut self.content {
@@ -2659,6 +2930,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Caustics(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::FbxNurbs(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -2865,6 +3166,46 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Caustics(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -3081,6 +3422,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Caustics(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::FbxNurbs(demo) = &mut self.content {
@@ -3361,6 +3732,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Caustics(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapOpacity(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LightsProjector(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapVsm(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LightsDynamic(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LightsClustered(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LinkedParticles(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Attractors(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SortBitonic(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::FbxNurbs(demo) = &mut self.content {

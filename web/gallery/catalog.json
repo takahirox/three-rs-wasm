@@ -10272,8 +10272,8 @@
     {
       "id": "webgl_shadowmap_vsm",
       "category": "webgl",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_shadowmap_vsm",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_vsm.html",
       "source_sha256": "c404df3b225269212fbf62cc5354352bc5d7f960227f8fbe60a9bd1cbeed9cdc",
       "requirements": {
@@ -10344,7 +10344,8 @@
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/libs/stats.module.js"
-      ]
+      ],
+      "preferred_example": "webgpu_shadowmap_vsm"
     },
     {
       "id": "webgl_shadowmesh",
@@ -12868,8 +12869,8 @@
     {
       "id": "webgl_gpgpu_birds",
       "category": "webgl / advanced",
-      "status": "not-ported",
-      "excluded_reason": null,
+      "status": "excluded",
+      "excluded_reason": "Equivalent WebGPU example preferred: webgpu_compute_birds",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_gpgpu_birds.html",
       "source_sha256": "d34ee0fbf6a43dea28f0bc0b1f5eb286013356b9d1648fd0492926e6c8779409",
       "requirements": {
@@ -12902,7 +12903,8 @@
         "three/addons/libs/lil-gui.module.min.js",
         "three/addons/libs/stats.module.js",
         "three/addons/misc/GPUComputationRenderer.js"
-      ]
+      ],
+      "preferred_example": "webgpu_compute_birds"
     },
     {
       "id": "webgl_gpgpu_birds_gltf",
@@ -14862,7 +14864,7 @@
     {
       "id": "webgpu_caustics",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_caustics.html",
       "source_sha256": "d13470d0749f6db0de3155b4a57069738b3973ca741e6141cedcb7138df48146",
@@ -14942,7 +14944,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 373,
+        "source": "src/browser/caustics.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Draco圧縮のduck.glbを両面・透過のMeshPhysicalMaterialにして回し、木目の床の上でスポットライトに照らす構成をRustで再現。影はハーフフロートの深度と投影側の色を記録し、ダックのcastShadowNodeは法線で視線を屈折させてCaustic_Freeテクスチャを引くため、影が明るいコースティクスになる。代わりのガラス板はcolors.pngを不透明度80%で落とす。毎フレーム、影（表裏両面）、床、透過物の裏面と表面を描き、裏面と表面はそれぞれ直前のフレームのミップマップ付きコピーを屈折させる。各段はページからthree.js r186が生成するWGSL（caustics/）を実行する。ダックの毎フレーム0.01ラジアンの回転は、比較用フィクスチャと同じく例の時計の60fps換算ステップで進める。material colorは実ページと同じくsetHex（sRGB）で反映するが、比較用フィクスチャの色設定は色成分を直接書き換えるため、この操作は画像比較の対象外。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -15369,7 +15378,7 @@
     {
       "id": "webgpu_compute_birds",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_birds.html",
       "source_sha256": "06b6a7bcde53aab686058e7942ffc5d40eb1c4770e8d5c4350ffab1e3540ebd1",
@@ -15449,7 +15458,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 364,
+        "source": "src/browser/compute_birds.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "8,192羽の群れ（他の全個体からの速度計算と位置・羽ばたき位相の2つのコンピュートパス）を常駐ストレージバッファ上で実行し、そのバッファを頂点段で読むインスタンス化した鳥として、頂点色のイコサヘドロンの空、線形フォグ、NeutralToneMapping、OrbitControlsとともにRustで再現。ポインターのレイが鳥を押しのける。コンピュートと描画はページのTSLからthree.jsが生成するWGSLに合わせる。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -16359,7 +16375,7 @@
     {
       "id": "webgpu_compute_sort_bitonic",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_sort_bitonic.html",
       "source_sha256": "733e90adfb7708eefbbe333267027eab26926ada3e17d77018eb936404b09f89",
@@ -16407,7 +16423,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 365,
+        "source": "src/browser/sort_bitonic.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "16,384個のシャッフルした値の2つのバイトニックソート（左はワークグループ共有配列での局所スワップと大域フリップ・ディスパース、右は全段を大域スワップ・整列・次段設定の3パスで実行）を、100ミリ秒ごと（完了後は1秒後に再開）のステップで、128×128のグリッドとスワップ領域の強調表示とともにRustで再現。すべて常駐ストレージバッファ上のコンピュートディスパッチ。原作の2つのキャンバスは1つのキャンバスの左右半分に描く。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/gpgpu/BitonicSort.js",
@@ -18527,7 +18550,7 @@
     {
       "id": "webgpu_lights_clustered",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_clustered.html",
       "source_sha256": "db51a819f4f8fe9f254c1a5ed837608782634f8834aaba8eb7b061a118dbe60f",
@@ -18593,7 +18616,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 368,
+        "source": "src/browser/lights_clustered.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r186が生成するWGSL（lights_clustered/）を、描画バッファの大きさに合わせたタイル格子で実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -18646,7 +18676,7 @@
     {
       "id": "webgpu_lights_dynamic",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_dynamic.html",
       "source_sha256": "32a9399b4d4f749799ef99e9f7c1aeb618db600d7275dd7629eee6b8ca7b65e2",
@@ -18694,7 +18724,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 369,
+        "source": "src/browser/lights_dynamic.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "50種の乱数PBRマテリアルを使う100個の形状と中央の金属球、床を、アンビエントライトと周回する点光源（MeshBasicMaterialの目印付き）で照らす構成をRustで再現。dynamicモードではDynamicLightingアドオンと同じく点光源を最大16個のユニフォーム配列にまとめ（超過分はアドオン同様に無視）、光源の追加・削除でシェーダーを再コンパイルしない。シーンパスはMSAA、前から後ろへの並び替えと視錐台カリング付きで、続いてsRGB出力パス。各段はページからthree.js r186が生成するWGSL（lights_dynamic/）を実行する。dynamicモードを切るとthree.jsは光源ごとのコードを持つ既定のライティングで光源数の変化ごとに再コンパイルするが、本移植は同じ計算の光源ループを全光源が入る大きさの配列で再構築して代用する。点光源数の表示は未実装。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -18996,7 +19033,7 @@
     {
       "id": "webgpu_lights_projector",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lights_projector.html",
       "source_sha256": "05aa131216c4daba346df9754cabd7cf1ca007eca16b2a4fe76ce1abecc4ccb7",
@@ -19078,7 +19115,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 371,
+        "source": "src/browser/lights_projector.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Lambertの床に立つLucy像を、周回するProjectorLight（半球光の補助、SpotLightHelper、ACES出力付き）で照らす構成をRustで再現。プロジェクターは1024²の深度マップによるPCFシャドウを落とし、手続き的なコースティクス（時間で動くWorleyノイズ）、Sintelの動画、colors.pngのいずれかを影行列で投影し、ProjectorLightNodeの箱型減衰で切り取る。各段はページからthree.js r186が生成するWGSL（lights_projector/）を実行し、ユニフォーム構造体は生成WGSLのフィールド順から詰める。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして深度パスを省く（結果は同じ）。動画モードは参照側のヘッドレス環境で再生されないため画像比較の対象外。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26175,7 +26219,7 @@
     {
       "id": "webgpu_shadowmap_opacity",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_opacity.html",
       "source_sha256": "d01887686352cfff8495939b31bbffaee43bf0354aaa7e047c1ae045adb8e8cb",
@@ -26225,7 +26269,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 372,
+        "source": "src/browser/shadowmap_opacity.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "DragonAttenuation.glbの透過する2体のドラゴン（KHR_materials_volumeの厚みマップと黄色・赤の減衰色）と布の背景を、アンビエントライトと平行光源で照らす構成をRustで再現。影は深度に加えて投影側の色も記録し（shadowMap.transmitted）、ドラゴンは色付きの影を落とす。影は原作と同じく一度だけ描く（autoUpdateオフ）。毎フレーム、背景を描いてから解決済みのフレームをミップマップ付きテクスチャへコピーして縮小を生成し、ドラゴンがそれを体積越しに屈折させて描き、AgXトーンマッピング（露出1.5）をかける。各段とミップ生成はページからthree.js r186が生成するWGSL（shadowmap_opacity/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26395,7 +26446,7 @@
     {
       "id": "webgpu_shadowmap_vsm",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_vsm.html",
       "source_sha256": "e2c079c3d1c40ce77c520098757d28b4f2cfc5c16d4c9310cc25290526084709",
@@ -26471,7 +26522,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 370,
+        "source": "src/browser/shadowmap_vsm.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "回転するトーラスノットと4本の柱、地面（すべてPhong）を、アンビエントライト、影を落とすスポットライト、グループごと回る平行光源で照らし、VSMシャドウと線形フォグで描く構成をRustで再現。毎フレーム2つの深度マップ、VSMの縦パス（列方向の深度の平均と標準偏差）と横パス、MSAAのシーンパス（前から後ろへの並び替えと視錐台カリング付き）、sRGB出力パスの順に描く。各段はページからthree.js r186が生成するWGSL（shadowmap_vsm/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -27420,7 +27478,7 @@
     {
       "id": "webgpu_tsl_compute_attractors_particles",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_compute_attractors_particles.html",
       "source_sha256": "56a909777cf22db89808377f6ad2b07c7821498960ae8d2b5089db36a2886998",
@@ -27512,7 +27570,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 366,
+        "source": "src/browser/attractors.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "3つの回転するアトラクターに引かれて回る262,144個の粒子（原作と同じ固定1/60秒刻みのコンピュートパスを毎フレーム1回）を速さで色付けした加算スプライトとして、アトラクターのリングと矢印のヘルパー、各アトラクターの回転TransformControlsとともにRustで再現。粒子は常駐ストレージバッファ上にあり、初期化と更新のパスとスプライト段はページのTSLからthree.jsが生成するWGSLに合わせる。ヘルパーはスプライトの前、ギズモは後に描き、原作のレンダーリストの順序を保つ。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/controls/TransformControls.js",
@@ -28026,7 +28091,7 @@
     {
       "id": "webgpu_tsl_vfx_linkedparticles",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_linkedparticles.html",
       "source_sha256": "40c68bb30d14a8ec89e979fa3cd09289d5dc68830540d9db146171342fe15045",
@@ -28128,7 +28193,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 367,
+        "source": "src/browser/linked_particles.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ポインターへ向けて毎フレーム5個生まれ、フラクタルノイズの乱流で動き、全粒子を走査して最も近い2つの生存粒子へ加算リボンで結ばれる8,192個の短命な粒子を、色相が巡る加算スプライトとして、周回する点光源に照らされたフラットシェーディングの金属イコサヘドロン、BloomNode、ACESトーンマッピング、自動回転のOrbitControlsとともにRustで再現。各段はページのTSLからthree.js r186が生成するWGSL（linked_particles/）を、スプライトとリボンが頂点属性として読む常駐ストレージバッファ上で実行する。粒子の更新パスは原作と同じく他の粒子の位置を書き込み中に読むため、原作自身も実行ごとにわずかに異なる。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",

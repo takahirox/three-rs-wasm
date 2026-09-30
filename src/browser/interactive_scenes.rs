@@ -26,7 +26,7 @@ pub(super) fn positions(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }
 /// `Color.setHSL`, returning sRGB components.
-fn hsl(h: f64, s: f64, l: f64) -> [f64; 3] {
+pub(super) fn hsl(h: f64, s: f64, l: f64) -> [f64; 3] {
     let hue = |p: f64, q: f64, t: f64| {
         let t = t.rem_euclid(1.);
         if t < 1. / 6. {

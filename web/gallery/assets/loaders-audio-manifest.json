@@ -648,5 +648,15 @@
   "file": "fbx/nurbs.fbx",
   "source": "examples/models/fbx/nurbs.fbx",
   "sha256": "18a1a98f97575e24f581ed38acdddfd194ce77edb6bad089ba9bbbe1223793c4"
+ },
+ {
+  "file": "gltf/duck.glb",
+  "source": "examples/models/gltf/duck.glb",
+  "sha256": "76c62e63a0aec09cd66f2e2c9452a6dcee428f2464dd2c6d845958a8f7f7cdd1"
+ },
+ {
+  "file": "opengameart/Caustic_Free.jpg",
+  "source": "examples/textures/opengameart/Caustic_Free.jpg",
+  "sha256": "79c32285c5a876716c4d39ddb01d3d4ac949ded1e73e401e48a8620af2b2331a"
  }
 ]

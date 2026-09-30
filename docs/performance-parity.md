@@ -841,3 +841,24 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   created once per target set.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Compute, clustered and dynamic lighting, VSM, projectors and transmission
+
+- **Compute.** The birds, both bitonic sorts, the attractors and the linked
+  particles run their compute passes over resident storage buffers that the
+  render passes read directly; nothing is read back or re-uploaded per frame.
+- **Lighting.** The clustered lights are sorted on the CPU into the light
+  texture each frame, as ClusteredLighting does (the same bytes as the
+  original), and assigned to clusters on the GPU. The dynamic point lights
+  fill uniform arrays; adding or removing lights recompiles nothing.
+- **Shadows.** The VSM, projector and caustics shadow maps are re-rendered
+  each frame, as their originals do, culled against each shadow camera's
+  frustum. The transmitted-shadow dragons render their shadow once
+  (`autoUpdate` off).
+- **Transmission.** The frame copy and its mip chain are GPU copies and
+  draws; the transmissive meshes read them on the GPU.
+- **Assets.** The PLY, glTF (including Draco) and images are decoded and
+  uploaded once, with mipmaps generated once on the GPU. The projector's
+  video frames are copied once each.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

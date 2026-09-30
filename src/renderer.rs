@@ -134,7 +134,7 @@ pub struct Renderer {
             crate::environment_gpu::GpuEnvironment,
         )>,
     >,
-    dfg: wgpu::TextureView,
+    pub(crate) dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
     ltc_sampler: wgpu::Sampler,
     physical_maps: RefCell<crate::physical_maps::Cache>,

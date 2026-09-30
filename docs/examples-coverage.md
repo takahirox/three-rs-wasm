@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-41 excluded for explicit WebGL APIs or equivalent WebGPU examples; 566 retained. 358 partial Rust ports; 208 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+43 excluded for explicit WebGL APIs or equivalent WebGPU examples; 564 retained. 368 partial Rust ports; 196 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -12,16 +12,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 
 | Required capability (source inventory, not current support status) | Examples mentioning it |
 | --- | ---: |
-| Full camera controls: pan, touch, damping and control variants | 365 |
-| Programmable materials / TSL equivalents | 219 |
+| Full camera controls: pan, touch, damping and control variants | 364 |
+| Programmable materials / TSL equivalents | 218 |
 | Inspector and per-example GUI parity | 175 |
-| Phong, Lambert, normal, depth, toon and matcap materials | 169 |
-| Additional procedural geometry builders | 167 |
-| Shadow maps and shadow filtering | 124 |
-| Hemisphere/spot/area lights, light probes and baking | 119 |
+| Phong, Lambert, normal, depth, toon and matcap materials | 168 |
+| Additional procedural geometry builders | 166 |
+| Shadow maps and shadow filtering | 123 |
+| Hemisphere/spot/area lights, light probes and baking | 118 |
 | Postprocessing passes and temporal history | 99 |
-| Distance and height fog | 91 |
 | Wireframe materials and scene helpers | 89 |
+| Distance and height fog | 89 |
 | Additional loaders and compressed assets | 78 |
 | Instance transforms and batched drawing | 73 |
 | Animation mixer and skeletal animation | 47 |
@@ -29,7 +29,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | Canvas, HTML, video and partial texture updates | 42 |
 | WebXR sessions, controllers and XR render targets | 32 |
 | Configurable blend equations and factors | 30 |
-| GPU compute and storage buffers | 30 |
+| GPU compute and storage buffers | 29 |
 | Volume rendering and layered textures | 18 |
 | Physics integration | 14 |
 | Curve interpolation and path builders | 11 |
@@ -62,6 +62,16 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_performance_renderbundle | `tests/browser/texture-volumes.spec.js` | 15種類のプリミティブからなる4,000個のメッシュ（それぞれランダム色のMeshToonNodeMaterial、DoubleSide）と10インスタンスのInstancedMeshをBundleGroupに入れ、平行光源と自動回転のOrbitControlsで描く構成をRustで再現。原作のBundleGroupと同じく全描画を一度WebGPUのレンダーバンドルに記録して毎フレーム再生し、dynamicでは毎フレーム回転させてバンドルを記録し直す。render bundleを切ると直接エンコードする。webgpuを切り替えても描画はWebGPUのまま。性能の完全な同等性は未保証。 |
 | webgl_marchingcubes | `tests/browser/texture-volumes.spec.js` | MarchingCubesのメタボールと平面を原作と同じく毎フレームCPUでポリゴン化（Float32のフィールド・法線キャッシュ・パレット）し、動的な位置・法線・UV・色属性として常駐バッファへ書き込む構成をRustで再現。平行光源・点光源・環境光の下、環境マップ付きStandardとLambert（反射・屈折）、テクスチャと頂点色のPhong、4つのToonShaderの13種のマテリアルとシミュレーションの全操作に対応。性能の完全な同等性は未保証。 |
 | webgl_test_memory2 | `tests/browser/texture-volumes.spec.js` | 1つのジオメトリを共有する100個の球のShaderMaterialを毎フレーム、ランダム色を埋め込んだ新しいフラグメントシェーダーで作り直して描画後に破棄する原作の挙動をRustで再現。原作が毎フレーム100個のプログラムをコンパイルするのと同じく、毎フレーム100個のシェーダーモジュールとパイプラインを作ってフレーム後に破棄する。球のジオメトリと行列は常駐させる。性能の完全な同等性は未保証。 |
+| webgpu_caustics | `tests/browser/compute-examples.spec.js` | Draco圧縮のduck.glbを両面・透過のMeshPhysicalMaterialにして回し、木目の床の上でスポットライトに照らす構成をRustで再現。影はハーフフロートの深度と投影側の色を記録し、ダックのcastShadowNodeは法線で視線を屈折させてCaustic_Freeテクスチャを引くため、影が明るいコースティクスになる。代わりのガラス板はcolors.pngを不透明度80%で落とす。毎フレーム、影（表裏両面）、床、透過物の裏面と表面を描き、裏面と表面はそれぞれ直前のフレームのミップマップ付きコピーを屈折させる。各段はページからthree.js r186が生成するWGSL（caustics/）を実行する。ダックの毎フレーム0.01ラジアンの回転は、比較用フィクスチャと同じく例の時計の60fps換算ステップで進める。material colorは実ページと同じくsetHex（sRGB）で反映するが、比較用フィクスチャの色設定は色成分を直接書き換えるため、この操作は画像比較の対象外。性能の完全な同等性は未保証。 |
+| webgpu_shadowmap_opacity | `tests/browser/compute-examples.spec.js` | DragonAttenuation.glbの透過する2体のドラゴン（KHR_materials_volumeの厚みマップと黄色・赤の減衰色）と布の背景を、アンビエントライトと平行光源で照らす構成をRustで再現。影は深度に加えて投影側の色も記録し（shadowMap.transmitted）、ドラゴンは色付きの影を落とす。影は原作と同じく一度だけ描く（autoUpdateオフ）。毎フレーム、背景を描いてから解決済みのフレームをミップマップ付きテクスチャへコピーして縮小を生成し、ドラゴンがそれを体積越しに屈折させて描き、AgXトーンマッピング（露出1.5）をかける。各段とミップ生成はページからthree.js r186が生成するWGSL（shadowmap_opacity/）を実行する。性能の完全な同等性は未保証。 |
+| webgpu_lights_projector | `tests/browser/compute-examples.spec.js` | Lambertの床に立つLucy像を、周回するProjectorLight（半球光の補助、SpotLightHelper、ACES出力付き）で照らす構成をRustで再現。プロジェクターは1024²の深度マップによるPCFシャドウを落とし、手続き的なコースティクス（時間で動くWorleyノイズ）、Sintelの動画、colors.pngのいずれかを影行列で投影し、ProjectorLightNodeの箱型減衰で切り取る。各段はページからthree.js r186が生成するWGSL（lights_projector/）を実行し、ユニフォーム構造体は生成WGSLのフィールド順から詰める。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして深度パスを省く（結果は同じ）。動画モードは参照側のヘッドレス環境で再生されないため画像比較の対象外。性能の完全な同等性は未保証。 |
+| webgpu_shadowmap_vsm | `tests/browser/compute-examples.spec.js` | 回転するトーラスノットと4本の柱、地面（すべてPhong）を、アンビエントライト、影を落とすスポットライト、グループごと回る平行光源で照らし、VSMシャドウと線形フォグで描く構成をRustで再現。毎フレーム2つの深度マップ、VSMの縦パス（列方向の深度の平均と標準偏差）と横パス、MSAAのシーンパス（前から後ろへの並び替えと視錐台カリング付き）、sRGB出力パスの順に描く。各段はページからthree.js r186が生成するWGSL（shadowmap_vsm/）を実行する。性能の完全な同等性は未保証。 |
+| webgpu_lights_dynamic | `tests/browser/compute-examples.spec.js` | 50種の乱数PBRマテリアルを使う100個の形状と中央の金属球、床を、アンビエントライトと周回する点光源（MeshBasicMaterialの目印付き）で照らす構成をRustで再現。dynamicモードではDynamicLightingアドオンと同じく点光源を最大16個のユニフォーム配列にまとめ（超過分はアドオン同様に無視）、光源の追加・削除でシェーダーを再コンパイルしない。シーンパスはMSAA、前から後ろへの並び替えと視錐台カリング付きで、続いてsRGB出力パス。各段はページからthree.js r186が生成するWGSL（lights_dynamic/）を実行する。dynamicモードを切るとthree.jsは光源ごとのコードを持つ既定のライティングで光源数の変化ごとに再コンパイルするが、本移植は同じ計算の光源ループを全光源が入る大きさの配列で再構築して代用する。点光源数の表示は未実装。性能の完全な同等性は未保証。 |
+| webgpu_lights_clustered | `tests/browser/compute-examples.spec.js` | 跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r186が生成するWGSL（lights_clustered/）を、描画バッファの大きさに合わせたタイル格子で実行する。性能の完全な同等性は未保証。 |
+| webgpu_tsl_vfx_linkedparticles | `tests/browser/compute-examples.spec.js` | ポインターへ向けて毎フレーム5個生まれ、フラクタルノイズの乱流で動き、全粒子を走査して最も近い2つの生存粒子へ加算リボンで結ばれる8,192個の短命な粒子を、色相が巡る加算スプライトとして、周回する点光源に照らされたフラットシェーディングの金属イコサヘドロン、BloomNode、ACESトーンマッピング、自動回転のOrbitControlsとともにRustで再現。各段はページのTSLからthree.js r186が生成するWGSL（linked_particles/）を、スプライトとリボンが頂点属性として読む常駐ストレージバッファ上で実行する。粒子の更新パスは原作と同じく他の粒子の位置を書き込み中に読むため、原作自身も実行ごとにわずかに異なる。性能の完全な同等性は未保証。 |
+| webgpu_tsl_compute_attractors_particles | `tests/browser/compute-examples.spec.js` | 3つの回転するアトラクターに引かれて回る262,144個の粒子（原作と同じ固定1/60秒刻みのコンピュートパスを毎フレーム1回）を速さで色付けした加算スプライトとして、アトラクターのリングと矢印のヘルパー、各アトラクターの回転TransformControlsとともにRustで再現。粒子は常駐ストレージバッファ上にあり、初期化と更新のパスとスプライト段はページのTSLからthree.jsが生成するWGSLに合わせる。ヘルパーはスプライトの前、ギズモは後に描き、原作のレンダーリストの順序を保つ。性能の完全な同等性は未保証。 |
+| webgpu_compute_sort_bitonic | `tests/browser/compute-examples.spec.js` | 16,384個のシャッフルした値の2つのバイトニックソート（左はワークグループ共有配列での局所スワップと大域フリップ・ディスパース、右は全段を大域スワップ・整列・次段設定の3パスで実行）を、100ミリ秒ごと（完了後は1秒後に再開）のステップで、128×128のグリッドとスワップ領域の強調表示とともにRustで再現。すべて常駐ストレージバッファ上のコンピュートディスパッチ。原作の2つのキャンバスは1つのキャンバスの左右半分に描く。性能の完全な同等性は未保証。 |
+| webgpu_compute_birds | `tests/browser/compute-examples.spec.js` | 8,192羽の群れ（他の全個体からの速度計算と位置・羽ばたき位相の2つのコンピュートパス）を常駐ストレージバッファ上で実行し、そのバッファを頂点段で読むインスタンス化した鳥として、頂点色のイコサヘドロンの空、線形フォグ、NeutralToneMapping、OrbitControlsとともにRustで再現。ポインターのレイが鳥を押しのける。コンピュートと描画はページのTSLからthree.jsが生成するWGSLに合わせる。性能の完全な同等性は未保証。 |
 | webgl_loader_fbx_nurbs | `tests/browser/texture-volumes.spec.js` | FBXLoaderのASCIIパーサーでnurbs.fbxを読み、5つのNurbsCurve（開曲線・閉曲線・周期曲線、3次と4次）をNURBSCurve.getPoints( 制御点数 × 12 )で線にし、ローダーと同じ0x3300ffのLineBasicMaterial、モデルのLcl変換とレイヤーグループ、GridHelper、OrbitControlsとともにRustで再現。曲線は原作と同じく読み込み時に一度だけ評価する。FBXの対応範囲はこのファイルの内容（ASCII形式、NurbsCurveジオメトリ、平行移動と拡大縮小）に限る。性能の完全な同等性は未保証。 |
 | webgl_points_dynamic | `tests/browser/texture-volumes.spec.js` | male02とfemale02のOBJ頂点を点として描く9体（各8複製）が崩れ落ちて元に戻る原作の挙動を、BloomPass・FilmPass・FocusShader・OutputPassのコンポーザーとともにRustで再現。原作と同じく頂点ごとのランダムウォークはCPUでFloat32の位置に対して行い（座標ごとにMath.randomを原作の順序で1回ずつ）、動いた体の位置だけを常駐頂点バッファへ書き込む（positions.needsUpdate）。複製は同じGPUバッファを描き、各点は頂点シェーダーで常駐位置からgl_PointSizeの正方形（距離減衰、最小1ピクセル）に展開する。複製の視錐台判定は原作と同じく最初の位置から一度だけ求めた境界球で行う。原作は2つのOBJの読み込み完了順で乱数の消費順が変わるため、比較用フィクスチャでは男性モデルのコールバックから女性モデルを読み込んで順序を固定する。性能の完全な同等性は未保証。 |
 | webgl_postprocessing_advanced | `tests/browser/texture-volumes.spec.js` | 背景クアッドとPhongの頭部を8ビット線形ターゲットに描き、頭部以外（反転MaskPass）をぼかすシーンコンポーザーと、その結果をコピーしてガンマ補正・フィルム・ビネット・ドットスクリーン・頭部内外で色の異なるColorify・セピア・ブルーム・ブリーチバイパスを連ね、画面の4分割に描く4つの半解像度コンポーザーをRustで再現。各ShaderPassは原作と同じくGPUターゲットへのフルスクリーン描画1回。ステンシルマスクは頭部をシーン解像度と半解像度のマスクターゲットに描いて代用し、マスク付きパスはマスク内でエフェクトを、マスク外で読み込みバッファのコピーを書く（EffectComposerのステンシル付きコピーパスと同じ結果）。半解像度のピンポンバッファは4つのコンポーザーで共有する。性能の完全な同等性は未保証。 |

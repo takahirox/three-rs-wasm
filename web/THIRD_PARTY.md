@@ -830,6 +830,15 @@ all distributed alongside `LICENSE-THREE`:
   `webgl_multiple_elements_text.html` (text, MathML and the view elements),
   without its scripts.
 
+The compute, lighting, VSM, projector, transmitted-shadow and caustics ports
+(`src/browser/compute_birds.rs` through `src/browser/caustics.rs`, and the
+`.wgsl` files beside them) embed WGSL that Three.js r186 (MIT;
+`LICENSE-THREE`) generates for the corresponding official WebGPU pages from
+their TSL, including the `WebGPUTexturePassUtils` mipmap shader. The birds,
+bitonic and attractor ports translate those modules with the same
+expressions. The `.wgsl` files are the generated modules, unchanged apart from
+removed subgroup directives and run-time placeholders.
+
 The test-memory to FBX NURBS batch adds unmodified r186 example assets, listed
 with their source paths and SHA-256 hashes in
 `gallery/assets/loaders-audio-manifest.json`, all distributed alongside
@@ -843,6 +852,11 @@ with their source paths and SHA-256 hashes in
   `readme.txt`; the female02 model is by Reallusion iClone, from Google 3D
   Warehouse.
 - `gallery/assets/fbx/nurbs.fbx`: `models/fbx/nurbs.fbx`.
+- `gallery/assets/gltf/duck.glb`: `models/gltf/duck.glb`, the Draco-compressed
+  glTF sample Duck (© 2006 Sony Computer Entertainment Inc., SCEA Shared
+  Source License 1.0, as listed by the Khronos glTF sample models).
+- `gallery/assets/opengameart/Caustic_Free.jpg`:
+  `textures/opengameart/Caustic_Free.jpg`, credited upstream to OpenGameArt.
 
 The marching cubes, advanced postprocessing and IES examples reuse the retained
 `environment-materials` SwedishRoyalCastle cube and `uv_grid_opengl.jpg`, the

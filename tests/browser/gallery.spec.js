@@ -6,7 +6,7 @@ const files=readFileSync('web/gallery/files.json','utf8');
 test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
  const listed=Object.values(JSON.parse(files)).flat();
  const excluded=catalog.examples.filter(e=>e.preferred_example);
- expect(excluded).toHaveLength(39);
+ expect(excluded).toHaveLength(41);
  for(const entry of excluded){
   expect(entry.status).toBe('excluded');expect(entry.port).toBeNull();
   expect(listed).not.toContain(entry.id);
@@ -46,8 +46,8 @@ test('unported examples show source evidence rather than a fake reproduction',as
  const requests=[];page.on('request',r=>requests.push(r.url()));
  await page.goto('/web/gallery/');
  await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port).length);
- await expect(page.locator('.card').filter({hasText:'compute / birds'})).toHaveCount(0);
- await page.goto('/web/gallery/example.html?id=webgpu_compute_birds');
+ await expect(page.locator('.card').filter({hasText:'compute / cloth'})).toHaveCount(0);
+ await page.goto('/web/gallery/example.html?id=webgpu_compute_cloth');
  await expect(page.locator('#diagnostic')).toBeVisible();
  await expect(page.locator('#diagnostic')).toContainText('GPU compute');
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module')||url.includes('three_rs_wasm'))).toBe(false);

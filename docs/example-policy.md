@@ -300,3 +300,14 @@ memory tests and dynamic points rebuild data on the CPU each frame because the
 originals do. The dynamic points page draws Math.random in whichever order its
 two OBJ files load, so the fixture fixes that order. A scoped bound covers the
 dynamic points' rasterization.
+
+The compute, clustered and dynamic lighting, VSM, projector, transmitted-shadow
+and caustics batch ([compute-examples.md](compute-examples.md)) is all WebGPU
+and is compared against the WebGPU renderer. `webgl_gpgpu_birds` (the same GPU
+flocking, with 1,024 birds) and `webgl_shadowmap_vsm` (the same scene) are
+listed only as equivalents of `webgpu_compute_birds` and
+`webgpu_shadowmap_vsm`. The shaders are the WGSL three.js generates for each
+page, run as captured or translated with the same expressions. A scoped bound
+covers the birds' velocity race, which the original shows against itself. The
+opacity example's captures render two frames, because of a start-up frame that
+is documented there.
