@@ -183,7 +183,9 @@ impl Demo {
             let index = &index_bytes[start..start + indices.count() * 2];
             // The dequantized positions' bounding sphere.
             let points: Vec<Vector3> = vertices
-                .chunks_exact(20)
+                .as_chunks::<20>()
+                .0
+                .iter()
                 .map(|v| {
                     let c = |k: usize| i16::from_le_bytes([v[k * 2], v[k * 2 + 1]]) as f64 / 32767.;
                     Vector3::new(c(0).max(-1.), c(1).max(-1.), c(2).max(-1.))
