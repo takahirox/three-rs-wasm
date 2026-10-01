@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 378,
-    "blocked-at-port-review": 186,
+    "runnable-partial": 388,
+    "blocked-at-port-review": 176,
     "excluded": 43
   },
   "examples": [
@@ -17919,10 +17919,10 @@
     },
     {
       "id": "webgl_gpgpu_protoplanet",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_gpgpu_protoplanet.html",
       "source_sha256": "d6fb9f50fa55f91f0827f8283519481f0a4d7ce675ac72e475275ae7bf1d959b",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -21197,10 +21197,10 @@
     },
     {
       "id": "webgpu_compute_cloth",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_cloth.html",
       "source_sha256": "8b6eeb76b0e18850ac79b68baec67852033629b9cc7eafa4a27141773da3058e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -21522,10 +21522,10 @@
     },
     {
       "id": "webgpu_compute_particles_fluid",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_particles_fluid.html",
       "source_sha256": "8a586f15a4ad508dc2e70112a279bc38a8040c5f730689c191cf202aa6f45719",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -22783,10 +22783,10 @@
     },
     {
       "id": "webgpu_cubemap_dynamic",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_dynamic.html",
       "source_sha256": "831efd57e239120fbdc6f9eb2ecb76592a048bc63e822e719439be567364eb5a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -23147,10 +23147,10 @@
     },
     {
       "id": "webgpu_deferred",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_deferred.html",
       "source_sha256": "880e89268fccee869aaa198b2ab42a4e327c3ffdcca89fd61f717be1f16e86c7",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -23784,10 +23784,10 @@
     },
     {
       "id": "webgpu_hdr",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_hdr.html",
       "source_sha256": "7e57e5e55adb46010d2997452a41d12b14270f1ca08bd00bcba1ef1f553647d6",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -24532,10 +24532,10 @@
     },
     {
       "id": "webgpu_lightprobes",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes.html",
       "source_sha256": "b05543e1514045e9341e617f3ac1fd1108ed2e46442accf3aaa9dcf9df8229ea",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -24580,10 +24580,10 @@
     },
     {
       "id": "webgpu_lightprobes_complex",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes_complex.html",
       "source_sha256": "42b4399e7e1d0d3d458dc2916cf77d2c5b0e109e16b3980e02c818915f5afe80",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -31204,10 +31204,10 @@
     },
     {
       "id": "webgpu_postprocessing_retro",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_retro.html",
       "source_sha256": "d2cc01b7d832290f503ffe8294edfe55d503e839b659b4df13b93b8d70776554",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -36458,10 +36458,10 @@
     },
     {
       "id": "webgpu_volume_caustics",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_caustics.html",
       "source_sha256": "11732a37ad0ab8a6f7dd00e88113e2752fa3ef46f5ccebae64ac6ae133ba1b5d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",

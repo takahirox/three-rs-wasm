@@ -77,7 +77,7 @@ fn parse_mdd(data: &[u8]) -> Result<(Vec<f64>, Vec<Vec<f32>>)> {
     Ok((times, targets))
 }
 /// BufferGeometryUtils.mergeVertices( geometry, 1e-4 ) over position, normal and uv.
-fn merge_vertices(
+pub(super) fn merge_vertices(
     positions: &[f32],
     normals: &[f32],
     uvs: &[f32],

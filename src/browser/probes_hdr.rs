@@ -86,7 +86,7 @@ async fn canvas_pixels(bytes: &[u8], size: Option<(u32, u32)>) -> Result<(u32, u
 /// UltraHDRLoader.parse: the MPF primary and gain-map JPEGs, the gain-map XMP,
 /// and the HDR recovery formula with the loader's sRGB table, stored with
 /// `DataUtils.toHalfFloat` (HalfFloatType, flipY: rows are top first).
-async fn ultra_hdr(bytes: &[u8]) -> Result<EnvironmentMap> {
+pub(super) async fn ultra_hdr(bytes: &[u8]) -> Result<EnvironmentMap> {
     let mut meta = GainMap::default();
     let (mut primary, mut gainmap) = (None, None);
     let mut offset = 0;

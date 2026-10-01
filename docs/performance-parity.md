@@ -882,3 +882,22 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
 Warmed cycles create no GPU resources beyond test memory's per-frame sphere.
 No GPU timing parity is claimed.
+
+### Protoplanet, retro, dynamic cubemap, deferred, cloth, caustic volumes, HDR, fluid and light probes
+
+- **Simulations.** The protoplanet's GPUComputationRenderer pair, the cloth's
+  Verlet buffers and the fluid's particles and grid stay on the GPU. Each
+  requested frame runs their passes, as the originals do per animate(); the
+  fluid writes its own indirect-dispatch counts.
+- **Per-frame passes.** The dynamic cubemap's six faces and PMREM, the
+  light-probe scenes' point shadows and the caustic volume's mipmapped frame
+  copies run every frame, as in the originals, on targets created once per
+  size.
+- **Bakes.** The light-probe grids bake on the GPU at load and on a
+  resolution change, with no readback. A rebake allocates new grids, as
+  LightProbeGrid does; the residency cycle leaves that parameter out.
+- **Assets.** Models, HDR and UltraHDR environments and textures are decoded
+  and uploaded once. Retro's helmet loads on first selection and stays
+  resident.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

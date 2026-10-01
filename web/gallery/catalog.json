@@ -13064,7 +13064,7 @@
     {
       "id": "webgl_gpgpu_protoplanet",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_gpgpu_protoplanet.html",
       "source_sha256": "d6fb9f50fa55f91f0827f8283519481f0a4d7ce675ac72e475275ae7bf1d959b",
@@ -13096,7 +13096,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 384,
+        "source": "src/browser/gpgpu_protoplanet.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "64×64のGPUComputationRendererで4,096個の破片をシミュレートする構成をRustで再現。毎フレーム、速度変数が他の全粒子からの重力を集め（衝突した粒子はidの小さい側へ合体）、位置変数が前フレームの速度で積分する。どちらも前フレームのテクスチャを読み、浮動小数点レンダーターゲットの組のもう片方へ描く（アドオンと同じ）。粒子は質量に応じた大きさの点として描く。ページのGLSLは同じ式でWGSLへ翻訳した。WebGLの点は、同じ制限付きの大きさの6頂点ビルボードとし、中心の深度で深度テストする。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -15491,7 +15498,7 @@
     {
       "id": "webgpu_compute_cloth",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_cloth.html",
       "source_sha256": "8b6eeb76b0e18850ac79b68baec67852033629b9cc7eafa4a27141773da3058e",
@@ -15589,7 +15596,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 388,
+        "source": "src/browser/compute_cloth.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "6点で吊った31×31のVerlet布を、triNoise3Dの風と揺れる球で動かす構成をRustで再現。毎フレーム1/360秒の固定ステップ（1フレーム最大1/60秒）で、ステップごとにばね力と頂点力のコンピュートパスを常駐ストレージバッファ上で実行する。布メッシュは頂点ステージで位置を読み、MeshPhysicalNodeMaterialのシーンで両面描画する。ワイヤーフレームではばねをインスタンス線、頂点をインスタンススプライトで描く。各段はページからthree.js r186が生成するWGSL（compute_cloth/、未使用のsubgroup組み込みを除く）を実行する。シミュレーションは要求フレームごとに進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -15787,7 +15801,7 @@
     {
       "id": "webgpu_compute_particles_fluid",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_particles_fluid.html",
       "source_sha256": "8a586f15a4ad508dc2e70112a279bc38a8040c5f730689c191cf202aa6f45719",
@@ -15861,7 +15875,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 391,
+        "source": "src/browser/fluid.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "64³グリッド上32,768粒子のMLS-MPM流体を、royal_esplanadeのUltraHDR空の下でインスタンス化した正二十面体として描く構成をRustで再現。毎フレーム常駐ストレージバッファ上でページのコンピュートカーネル（間接ディスパッチ数の書き込み、グリッドのクリア、固定小数点アトミックによる粒子→グリッドの2パス、グリッド更新、グリッド→粒子の移動とポインタ光線による力）を実行し、粒子は頂点ステージで位置を読む。各段はページからthree.js r186が生成するWGSL（fluid/、未使用のsubgroup組み込みを除く）を実行する。シミュレーションは要求フレームごとに進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -16826,7 +16847,7 @@
     {
       "id": "webgpu_cubemap_dynamic",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_cubemap_dynamic.html",
       "source_sha256": "831efd57e239120fbdc6f9eb2ecb76592a048bc63e822e719439be567364eb5a",
@@ -16862,7 +16883,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 386,
+        "source": "src/browser/cubemap_dynamic.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "pisaHDRの空を256²のCubeCameraで毎フレーム6面描画し（球は非表示）、PMREMNodeがそのキューブから鏡面球の環境（cubeUVとGGX 10段）を毎フレーム再生成する構成をRustで再現。箱とトーラスノットは空のPMREM（初回のみ生成）で照らし、4×MSAAのシーンをACESの出力パスに通す。各段はページからthree.js r186が生成するWGSL（cubemap_dynamic/）を実行する。毎フレームの回転と自動回転は60fps換算のステップとして時計に従う。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -17146,7 +17174,7 @@
     {
       "id": "webgpu_deferred",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_deferred.html",
       "source_sha256": "880e89268fccee869aaa198b2ab42a4e327c3ffdcca89fd61f717be1f16e86c7",
@@ -17184,7 +17212,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 387,
+        "source": "src/browser/deferred.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ティーポット、周回する8個の点光源と球、6枚の半透明両面板をroyal_esplanadeのUltraHDR空の下に置く構成をRustで再現。deferredでは不透明物を照明なしでMRT（拡散色、ビュー位置と金属度、ビュー法線と粗さ）に描き、全画面クアッドで空の背景の上に照明を解決し、不透明深度の上に半透明板を描いて合成する。forwardでは1パスで照明付きに描く。空は背景用にCubeMapNodeの1024²キューブ、照明用にlodMax 9のPMREMとする。各段はページからthree.js r186が生成するWGSL（deferred/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TeapotGeometry.js",
@@ -17727,7 +17762,7 @@
     {
       "id": "webgpu_hdr",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_hdr.html",
       "source_sha256": "7e57e5e55adb46010d2997452a41d12b14270f1ca08bd00bcba1ef1f553647d6",
@@ -17761,7 +17796,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 390,
+        "source": "src/browser/hdr.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ポインタに追従するHDRブラシ（強度4、硬さと半径による放射状フォールオフ）を白背景の正射影ピクセル空間パスへ加算で描き、AfterImageNode（減衰した前フレームを0.1超の部分だけ残し、明るい方を採る）を通して拡張sRGB出力にする構成をRustで再現。各段はページからthree.js r186が生成するWGSL（hdr/）を実行する。元は半精度の拡張レンジキャンバスに表示し、標準ディスプレイでは表示範囲にクランプされる。ポートは8ビット出力で同じくクランプする（HDRディスプレイでの1超の表示は再現しない）。残像は要求フレームで進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/inspector/Inspector.js",
@@ -18385,7 +18427,7 @@
     {
       "id": "webgpu_lightprobes",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes.html",
       "source_sha256": "b05543e1514045e9341e617f3ac1fd1108ed2e46442accf3aaa9dcf9df8229ea",
@@ -18429,7 +18471,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 392,
+        "source": "src/browser/lightprobes.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "点光源の影付きコーネルボックスに対し、LightProbeGridの6×6×6プローブのベイクをGPU上で再現（プローブごとに32²のHalfFloatキューブキャプチャ、512方向フィボナッチ球によるL2 SH射影を9×Nの浮動小数点バッチ行へ、7つのリパックパスでパディング付きRGBA16F 3Dアトラスへ）。メインパスはアトラスを参照するGI付き標準マテリアルを4× MSAAで描き、ACES出力パスを通す。GI切替、解像度変更（再ベイク）とプローブ表示に対応。各段はページからthree.js r186が生成するWGSL（lightprobes/）を実行する。11³以上のプローブ表示ではインスタンス行列をuniformの代わりにstorageバッファで渡す。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/LightProbeGridHelper.js",
@@ -18441,7 +18490,7 @@
     {
       "id": "webgpu_lightprobes_complex",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes_complex.html",
       "source_sha256": "42b4399e7e1d0d3d458dc2916cf77d2c5b0e109e16b3980e02c818915f5afe80",
@@ -18499,7 +18548,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 393,
+        "source": "src/browser/lightprobes.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "扉でつながる2部屋（暖色と寒色の影付き点光源、柱、テーブルと金色の球、段差ブロック、台座のトーラスノット、円錐の彫刻、背面描画の部屋シェル）を再現。2つのLightProbeGrid（各6×6×6、境界外でfalloff 1のフェード）を順にGPUでベイク（プローブごとの32²キューブキャプチャ、512方向SH射影、7つのリパックパスによるパディング付き3Dアトラス）し、両アトラスを参照するGI付き標準マテリアル（影あり・影なし・背面の3種）を4× MSAAで描いてACES出力パスを通す。GI切替、解像度変更（再ベイク）とプローブ表示に対応。各段はページからthree.js r186が生成するWGSL（lightprobes_complex/ ほか）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/helpers/LightProbeGridHelper.js",
@@ -24300,7 +24356,7 @@
     {
       "id": "webgpu_postprocessing_retro",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_retro.html",
       "source_sha256": "d2cc01b7d832290f503ffe8294edfe55d503e839b659b4df13b93b8d70776554",
@@ -24338,7 +24394,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 385,
+        "source": "src/browser/retro.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "焼き込みテクスチャのコーヒーマグと立ち上る煙を、星空のPS1風背景の下でRetroPassNodeとCRTの処理に通す構成をRustで再現。retroパスは描画バッファの1/4の解像度に4×MSAAで描き、各マテリアルをレトロ版（パス解像度への頂点スナップ、アフィンテクスチャ、レベル0の参照）に置き換える。barrelUVで最近傍に読み戻し、出力でカラーブリード、Bayerディザ、ポスタライズ、ビネット、走査線をかけてsRGBで出す。Damaged Helmetは選択時に読み込み、venice_sunset_1k.hdrをretro時はCubeMapNodeの512²キューブ、通常時はPMREM（cubeUV 768×1024、GGX 10段）として使う。各段はページからthree.js r186が生成するWGSL（retro/）を実行する。MSAAなしでは全状態で一致するが、4×MSAAでは原因未特定の差（ヘルメットで最大約8%の画素）が残り、MSAA時のみ許容幅を広げている。モデル切替後もポートは両モデルのバッファを保持し（元はジオメトリを破棄して再読込）、ヘルメットは環境マップの読込完了まで描かない（元は環境なしで先に描く）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -28626,7 +28689,7 @@
     {
       "id": "webgpu_volume_caustics",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_caustics.html",
       "source_sha256": "11732a37ad0ab8a6f7dd00e88113e2752fa3ef46f5ccebae64ac6ae133ba1b5d",
@@ -28732,7 +28795,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 389,
+        "source": "src/browser/volume_caustics.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "webgpu_causticsのガラスのアヒルを黒い床に置き、半精度スポットシャドウのコースティクス影と体積光パスを加えた構成をRustで再現。4×MSAAのシーンで影（表裏）、床、透過アヒルの裏面と表面（各々フレームのミップ付きコピー上）を描き、半解像度の体積パスで1.5×0.5×1.5の箱を128³のImprovedNoise煙、スポットライトと影の中でレイマーチする（フレームIDでずらしたbayer16ディザ、シーン深度で打ち切り）。BloomNode（ハイパスと5段のH/Vガウスぼかし、合成）を通し、出力でブルームの0.7倍をシーンに加える。各段はページからthree.js r186が生成するWGSL（volume_caustics/）を実行する。フレームIDは要求フレームで進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

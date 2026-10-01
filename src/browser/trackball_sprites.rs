@@ -1369,7 +1369,7 @@ impl FirstPerson {
 }
 /// Radiance RGBE (new-style RLE or flat scanlines) as `HDRLoader` reads it, converted with
 /// `RGBEByteToRGBHalf`: channel × 2^( e - 128 ) / 255, truncated to half floats.
-fn parse_rgbe(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
+pub(super) fn parse_rgbe(data: &[u8]) -> Result<(u32, u32, Vec<u16>)> {
     let bad = |m: &'static str| Error::Asset(format!("HDR: {m}"));
     let mut pos = 0;
     let mut line = || -> Option<String> {

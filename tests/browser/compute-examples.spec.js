@@ -10,6 +10,27 @@ const cases={
  // each capture is one more animate() on both sides.
  webgpu_test_memory:{transient:true,canvasBytes:262144,times:[0,1,2],parameters:[[1,true,1],[3,false,0],[2,false,0],[2,true,1],[4,null,1],[0,false,0],[0,true,1],[6,null,1],[5,null,1]],restore:[[3,true,1],[1,false,0]],at:0},
  webgpu_postprocessing_godrays:{times:[0],parameters:[[0,30,30],[1,.4,.4],[2,.8,.8],[3,1,1],[4,4,4],[5,1,1],[6,false,0],[6,true,1]],restore:[[0,60,60],[1,.7,.7],[2,.5,.5],[3,2,2],[4,2,2],[5,2,2]],at:0,drag:[[256,256],[300,280]],settle:true},
+ // A resolution change rebakes the grid; with the probes shown the rebake also captures the
+ // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
+ // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
+ webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // The original compiles its pipelines asynchronously and presents stale frames until they are ready.
+ // During an orbit drag the original's pointer ray reads the camera matrix OrbitControls has
+ // partly updated; the drag and resize captures differ by up to 0.7% of pixels.
+ webgpu_compute_particles_fluid:{antialias:true,delay:1500,limits:[.008,.5],times:[0,1,2.5],parameters:[[0,16384,16384],[0,32768,32768]],restore:[[0,32768,32768]],at:2.5,script:[['run',60,3,1/60,'last'],['move',300,200,null],['run',20,4,1/60,'last']],drag:[[256,256],[300,280]]},
+ // The brush follows the pointer; the after image fades its trail.
+ webgpu_hdr:{antialias:true,times:[0,1],parameters:[[0,8,8],[1,0.8,0.8],[2,1,1],[3,0.95,0.95]],restore:[[0,4,4],[1,0.4,0.4],[2,0.5,0.5],[3,0.985,0.985]],at:1,motion:[[256,256,1],[300,200,1],[320,180,1],[320,180,1],[320,180,1]]},
+ // The original's first frame after loading lights the volume differently: captures render two frames.
+ webgpu_volume_caustics:{antialias:true,frames:2,times:[0,1,2.5],parameters:[[0,5,5],[0,1,1]],restore:[[0,1,1]],at:2.5,drag:[[256,256],[300,280]]},
+ webgpu_compute_cloth:{antialias:true,times:[0,1,2.5],parameters:[[0,.4,.4],[3,3,3],[5,.5,.5],[6,.3,.3],[7,.8,.8],[2,false,0],[2,true,1],[1,true,1],[1,false,0]],restore:[[0,.2,.2],[3,1,1],[5,1,1],[6,1,1],[7,.5,.5]],at:2.5,
+  // The simulation advances per requested frame: runs of 1/60 s frames, the second in wireframe.
+  script:[['run',90,3,1/60,'last'],['param',1,true,1,null],['run',30,5,1/60,'last'],['param',1,false,0,null]],drag:[[256,256],[300,280]]},
+ webgpu_deferred:{times:[0,1,2.5],parameters:[[0,'forward',0],[1,false,0],[1,true,1],[0,'deferred',1]],restore:[[0,'deferred',1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ webgpu_cubemap_dynamic:{antialias:true,times:[0,1,2.5],parameters:[[0,.5,.5],[1,.5,.5],[2,1.5,1.5],[3,.5,.5],[4,.3,.3]],restore:[[0,.05,.05],[1,1,1],[2,1,1],[3,1,1],[4,1,1]],at:2.5,drag:[[256,256],[300,280]]},
+ webgpu_postprocessing_retro:{antialias:true,times:[0,1,2.5],parameters:[[2,.1,.1],[3,8,8],[4,.8,.8],[5,.5,.5],[6,.05,.05],[7,.7,.7],[8,.004,.004],[9,1,1],[10,true,1],[10,false,0],[1,false,0],[1,true,1]],restore:[[2,.02,.02],[3,32,32],[4,.3,.3],[5,1,1],[6,0,0],[7,.3,.3],[8,.001,.001],[9,0,0]],at:2.5,drag:[[256,256],[300,280]],settle:true,
+  // The helmet and its environment load on selection: the retro, filtered and plain (PMREM) helmet, the mug again, then the helmet for the drag and resize.
+  script:[['param',0,'Damaged Helmet',1,null],['wait',8000,2.5],['param',10,true,1,2.5],['param',10,false,0,null],['param',1,false,0,2.5],['param',1,true,1,null],['param',0,'Coffee Mug',0,null],['wait',3000,2.5],['param',0,'Damaged Helmet',1,null],['wait',3000,2.5]]},
  // TRAA accumulates over frames: each capture renders 60 frames, past three.js r186's first
  // resolves into its not yet resized 1 × 1 targets (see docs/shadow-volume-examples.md).
  webgpu_volume_lighting_traa:{frames:60,times:[0,1,2.5,3],parameters:[[2,6,6],[3,5,5],[4,150,150],[6,1,1],[1,false,0],[1,true,1],[0,false,0],[0,true,1]],restore:[[2,12,12],[3,3,3],[4,100,100],[6,2,2]],at:3},
@@ -44,13 +65,17 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
  else if(action==='press'){await page.keyboard.press(args[0]);}
  else if(action==='move'){const [x,y]=args;await page.mouse.move(x,y);}
  else if(action==='down'||action==='up'){const [b,x,y]=args;await page.mouse.move(x,y);await page.mouse[action]({button:button(b)});}
+ else if(action==='wait'){await page.waitForTimeout(args[0]);}
+ // n frames at t0, t0 + dt, ...: a capture time of 'last' captures the last frame's time.
+ else if(action==='run'){const [n,t0,dt]=args;let t=t0;for(let k=0;k<n;k++){t=t0+k*dt;await frames(page,runtime,t,1);}return time==='last'?t:time;}
  else if(action==='param'){const [i,reference,rust]=args;await page.evaluate(({runtime,i,reference,rust})=>{if(runtime!=='rust')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);},{runtime,i,reference,rust});}
  return time;
 };
 // Scoped bounds, documented in docs/compute-examples.md: the birds' velocity pass reads
 // other birds' velocities while they are written, as the original's does, so the original
 // differs from itself between runs; the birds are bounded with and without MSAA (spec.limits).
-const msaaLimits={};
+// MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
+const msaaLimits={webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -61,6 +86,8 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'+(spec.hide?spec.hide+'{visibility:hidden!important}':'')});
+  // Pages that compile their output pipelines asynchronously present stale frames until the compile finishes.
+  if(spec.delay)await page.waitForTimeout(spec.delay);
   const shots=[];
   const capture=async(t,parameter=null)=>{
    if(parameter)await page.evaluate(({runtime,parameter})=>{const [i,reference,rust]=parameter;if(runtime!=='rust')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);},{runtime,parameter});

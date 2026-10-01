@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    LightprobesComplex(Box<super::lightprobes::Demo>),
+    Lightprobes(Box<super::lightprobes::Demo>),
+    Fluid(Box<super::fluid::Demo>),
+    Hdr(Box<super::hdr::Demo>),
+    VolumeCaustics(Box<super::volume_caustics::Demo>),
+    ComputeCloth(Box<super::compute_cloth::Demo>),
+    Deferred(Box<super::deferred::Demo>),
+    CubemapDynamic(Box<super::cubemap_dynamic::Demo>),
+    Retro(Box<super::retro::Demo>),
+    GpgpuProtoplanet(Box<super::gpgpu_protoplanet::Demo>),
     ShadowmapPcss(Box<super::shadowmap_pcss::Demo>),
     VolumeTraa(Box<super::volume_traa::Demo>),
     VolumeRectarea(Box<super::volume_rectarea::Demo>),
@@ -675,6 +685,97 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::ShadowmapPcss(Box::new(
                     super::shadowmap_pcss::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            384 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 5.,
+                far: 15000.,
+                elapsed: 0.,
+                content: Content::GpgpuProtoplanet(Box::new(
+                    super::gpgpu_protoplanet::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            385 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Retro(Box::new(
+                    super::retro::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            386 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::CubemapDynamic(Box::new(
+                    super::cubemap_dynamic::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            387 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 20.,
+                elapsed: 0.,
+                content: Content::Deferred(Box::new(
+                    super::deferred::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            388 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::ComputeCloth(Box::new(
+                    super::compute_cloth::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            389 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.025,
+                far: 5.,
+                elapsed: 0.,
+                content: Content::VolumeCaustics(Box::new(
+                    super::volume_caustics::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            390 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2.,
+                elapsed: 0.,
+                content: Content::Hdr(Box::new(
+                    super::hdr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            391 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::Fluid(Box::new(
+                    super::fluid::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            392 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Lightprobes(Box::new(
+                    super::lightprobes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            393 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::LightprobesComplex(Box::new(
+                    super::lightprobes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1569,6 +1670,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1961,6 +2092,12 @@ impl Demo {
         x: f64,
         y: f64,
     ) -> Result<bool> {
+        if let Content::Hdr(demo) = &mut self.content {
+            return demo.gpu_pointer(x, y);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            return demo.gpu_pointer(scene, cam, x, y);
+        }
         if let Content::RefractionLoaders(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
@@ -2070,6 +2207,36 @@ impl Demo {
             return demo.render(renderer, scene, camera, target);
         }
         if let Content::Glitch(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
         if let Content::VolumeTraa(demo) = &mut self.content {
@@ -2249,6 +2416,56 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::Retro(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Fluid(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Lightprobes(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::LightprobesComplex(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Hdr(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::VolumeCaustics(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ComputeCloth(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Deferred(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::CubemapDynamic(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::VolumeTraa(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -2517,6 +2734,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -2782,6 +3029,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::ShadowmapPcss(demo) = &mut self.content {
@@ -3138,6 +3415,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -3398,6 +3705,46 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -3686,6 +4033,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::ShadowmapPcss(demo) = &mut self.content {
@@ -4020,6 +4397,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LightprobesComplex(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Lightprobes(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Fluid(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Hdr(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeCaustics(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ComputeCloth(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Deferred(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::CubemapDynamic(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Retro(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ShadowmapPcss(demo) = &mut self.content {

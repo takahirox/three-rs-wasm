@@ -32,6 +32,7 @@ const cases={
  webgl_loader_texture_pvrtc:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
  webgl_loader_texture_ktx:{times:[0,.8,1.7,3.1],parameters:[],at:3.1,antialias:true},
  webgpu_display_stereo:{backgroundSphere:true,times:[0,1,2.5],parameters:[[1,.1,.1],[0,'Anaglyph',1],[2,'Grey',1],[3,'Magenta / Cyan',1],[4,5,5],[2,'Compromise',6],[3,'Magenta / Green',2],[0,'ParallaxBarrier',2]],restore:[[0,'Stereo',0],[1,.064,.064],[2,'Dubois',4],[3,'Red / Cyan',0],[4,3,3]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_gpgpu_protoplanet:{times:[0,.5,1,2],parameters:[[0,300,300],[1,1,1],[9,0,1],[1,0.45,0.45],[0,100,100]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_shadowmap_pcss:{times:[0,.5,1.3,2],parameters:[],at:2,antialias:true,drag:[[256,300],[330,340]],wheel:[256,300,-300]},
  webgl_shadowmap_viewer:{times:[0,.5,1.3,2],parameters:[],at:2,antialias:true,drag:[[256,300],[330,340]],wheel:[256,300,-300]},
  webgl_materials_envmaps_exr:{backgroundBox:true,times:[0,1,2],parameters:[[1,.5,.5],[2,1,1],[3,.6,.6],[0,'PNG',1]],restore:[[0,'EXR',0],[1,0,0],[2,0,0],[3,1,1]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -528,4 +529,24 @@ test('Points dynamic: the random walk matches as the bodies fall and rise',async
  // squares (ANGLE's Metal point sprites) cover one pixel column or row more or less
  // than the exact square the port rasterizes, and the bloom spreads each difference.
  for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.03);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.45);}
+});
+
+// webgl_gpgpu_protoplanet steps its GPUComputationRenderer once per animate(): over 120
+// frames the particles gather, collide and merge, and the port must follow frame by frame.
+test('Protoplanet: the n-body simulation matches over 120 frames',async({page},info)=>{
+ test.setTimeout(300000);await page.setViewportSize({width:512,height:512});
+ const shots={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_gpgpu_protoplanet':'/web/gallery/example.html?id=webgl_gpgpu_protoplanet&still=1');
+  await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
+  await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
+  // A strong field makes the debris collide early.
+  await page.evaluate(runtime=>runtime==='rust'?app.tsl_parameter(0,1000):fixtureParameter(0,1000),runtime);
+  const list=[];
+  for(const n of [30,30,60]){await frames(page,runtime,0,n);list.push(PNG.sync.read(await page.locator('canvas').screenshot()));}
+  shots[runtime]=list;
+ }
+ const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
+ writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
+ for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
 });

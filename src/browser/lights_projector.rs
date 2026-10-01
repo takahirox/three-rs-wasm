@@ -51,7 +51,12 @@ pub(super) fn pack(source: &str, name: &str, values: &[(&str, &[f64])]) -> Resul
         };
         align_max = align_max.max(align);
         offset = offset.div_ceil(align) * align;
-        fields.push((field.trim(), offset, columns, kind == "i32"));
+        fields.push((
+            field.trim(),
+            offset,
+            columns,
+            kind == "i32" || kind == "u32",
+        ));
         offset += size;
     }
     let mut data = vec![0u8; offset.div_ceil(align_max) * align_max];

@@ -323,3 +323,16 @@ visible result and documents it: the PCSS replacement that never applies, the
 doubly sRGB-encoded TSL instancing output. The exceptions are TRAA's 1 × 1
 start-up frame and the TSL InstancedMesh that draws nothing after a rebuild,
 which the port does not reproduce and the tests avoid.
+
+The protoplanet, retro, dynamic-cubemap, deferred, cloth, volume-caustics,
+HDR, fluid and light-probe batch
+([probe-retro-examples.md](probe-retro-examples.md)) compares its nine WebGPU
+examples against the WebGPU renderer, running the WGSL three.js generates for
+each page. `webgl_gpgpu_protoplanet` has no WebGPU counterpart and is compared
+against WebGLRenderer at the default thresholds. Without MSAA the retro,
+cubemap, cloth and light-probe scenes match exactly in every state. With 4×
+MSAA their edges differ for a reason not identified, and the bounds for that
+are scoped to the MSAA captures. Where r186 behaves unexpectedly the port
+follows the original's visible result: the light-probe rebake that captures
+the old helpers as black spheres. The HDR page's values above 1 are compared
+only as a standard display clamps them.
