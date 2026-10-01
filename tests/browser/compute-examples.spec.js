@@ -6,6 +6,17 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ // A new sphere and canvas texture every frame (as the page builds and disposes them);
+ // each capture is one more animate() on both sides.
+ webgpu_test_memory:{transient:true,canvasBytes:262144,times:[0,1,2],parameters:[[1,true,1],[3,false,0],[2,false,0],[2,true,1],[4,null,1],[0,false,0],[0,true,1],[6,null,1],[5,null,1]],restore:[[3,true,1],[1,false,0]],at:0},
+ webgpu_postprocessing_godrays:{times:[0],parameters:[[0,30,30],[1,.4,.4],[2,.8,.8],[3,1,1],[4,4,4],[5,1,1],[6,false,0],[6,true,1]],restore:[[0,60,60],[1,.7,.7],[2,.5,.5],[3,2,2],[4,2,2],[5,2,2]],at:0,drag:[[256,256],[300,280]],settle:true},
+ // TRAA accumulates over frames: each capture renders 60 frames, past three.js r186's first
+ // resolves into its not yet resized 1 × 1 targets (see docs/shadow-volume-examples.md).
+ webgpu_volume_lighting_traa:{frames:60,times:[0,1,2.5,3],parameters:[[2,6,6],[3,5,5],[4,150,150],[6,1,1],[1,false,0],[1,true,1],[0,false,0],[0,true,1]],restore:[[2,12,12],[3,3,3],[4,100,100],[6,2,2]],at:3},
+ webgpu_volume_lighting_rectarea:{times:[0,1,2.5],parameters:[[0,.5,.5],[1,6,6],[2,.2,.2],[3,false,0],[3,true,1],[4,1.5,1.5],[5,.5,.5]],restore:[[0,.25,.25],[1,12,12],[2,.6,.6],[4,1,1],[5,2,2]],at:2.5,drag:[[256,256],[300,280]]},
+ webgpu_volume_lighting:{times:[0,1,2.5],parameters:[[0,.5,.5],[1,6,6],[2,.2,.2],[3,false,0],[3,true,1],[4,5,5],[5,40,40],[6,1.5,1.5],[7,.5,.5]],restore:[[0,.25,.25],[1,12,12],[2,.6,.6],[4,3,3],[5,100,100],[6,1,1],[7,2,2]],at:2.5,drag:[[256,256],[300,280]]},
+ webgpu_instancing_morph:{textureStream:true,times:[0,1,2.5,7],parameters:[],at:2.5,antialias:true},
+ webgpu_shadowmap_csm:{times:[0],parameters:[[3,'uniform',0],[3,'logarithmic',1],[3,'practical',2],[2,300,300],[4,.5,.5],[6,-.3,-.3],[7,50,50],[8,100,100],[1,false,0],[1,true,1],[10,true,1],[12,false,0],[13,false,0],[11,false,0],[0,true,1]],restore:[[0,false,0],[11,true,1],[12,true,1],[13,true,1],[10,false,0],[8,1,1],[7,200,200],[6,-1,-1],[4,-1,-1],[2,1000,1000]],at:0,antialias:true,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgpu_caustics:{times:[0,1,2.5],parameters:[[0,5,5],[0,20,20],[2,'glass',1]],restore:[[2,'duck',0]],at:2.5,antialias:true,drag:[[256,256],[300,280]]},
  // The dragons' first frames after a load can differ slightly (docs/compute-examples.md):
  // each capture renders two frames.
@@ -13,7 +24,7 @@ const cases={
  webgpu_lights_projector:{times:[0,1,2.5],parameters:[[2,300,300],[3,15,15],[4,.8,.8],[5,.2,.2],[6,1,1],[7,.5,.5],[8,false,0],[8,true,1],[0,'texture',2],[1,0xff8800,0xff8800]],restore:[[0,'procedural',0],[1,0xffffff,0xffffff],[2,100,100],[3,0,0],[4,Math.PI/6,Math.PI/6],[5,1,1],[6,2,2],[7,1,1]],at:2.5,antialias:true,drag:[[256,256],[300,280]]},
  webgpu_shadowmap_vsm:{times:[0,1,2.5],parameters:[[0,10,10],[1,3,3],[2,0,0],[3,20,20],[4,false,0]],restore:[[0,4,4],[1,8,8],[2,4,4],[3,8,8],[4,true,1]],at:2.5,antialias:true,drag:[[256,256],[300,280]]},
  webgpu_lights_dynamic:{times:[0,1,2.5],parameters:[[2,0,1],[2,0,1],[3,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[2,0,1],[4,0,1]],restore:[[2,0,1],[2,0,1]],at:2.5,antialias:true,drag:[[256,256],[300,280]],settle:true},
- webgpu_lights_clustered:{lightTexture:true,times:[0,1,2.5],parameters:[[0,2,2],[2,.5,.5],[3,10,10],[1,false,0]],restore:[[0,1,1],[2,0,0],[3,20,20],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],settle:true},
+ webgpu_lights_clustered:{textureStream:true,times:[0,1,2.5],parameters:[[0,2,2],[2,.5,.5],[3,10,10],[1,false,0]],restore:[[0,1,1],[2,0,0],[3,20,20],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],settle:true},
  webgpu_tsl_vfx_linkedparticles:{times:[0,.1,.2,.3,.5],parameters:[[16,2,2],[15,.2,.2],[17,.5,.5],[4,2,2]],restore:[[16,.75,.75],[15,.5,.5],[17,.1,.1],[4,1,1]],at:.5,antialias:true},
  webgpu_tsl_compute_attractors_particles:{times:[0,1,2.5],parameters:[[2,4,4],[3,.05,.05],[4,5,5],[5,.02,.02],[6,5,5],[10,false,0],[10,true,1]],restore:[[2,8,8],[3,.1,.1],[4,2.75,2.75],[5,.008,.008],[6,8,8]],at:2.5,antialias:true,drag:[[60,450],[100,470]],script:[['drag',256,256,300,280,0,2.5]]},
  webgpu_compute_birds:{times:[0,1,2.5],parameters:[[0,30,30],[1,40,40],[2,10,10]],restore:[[0,15,15],[1,20,20],[2,20,20]],at:2.5,antialias:true,drag:[[256,256],[300,280]],limits:[.04,4]},
@@ -113,6 +124,9 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
    // A surface rebuilt each frame streams its attributes as the original does (bounded by
    // the workload test); it must still create nothing and keep residency flat.
    if(spec.streamsGeometry){delete before.transfers;delete after.transfers;}
+   // A page that builds and disposes its mesh every frame creates on every frame; what
+   // stays flat is the resident set.
+   if(spec.transient){for(const r of [before,after]){delete r.creates;delete r.transfers;}}
    expect(after).toEqual(before);
   }
   writeFileSync(info.outputPath('residency.json'),JSON.stringify(reports,null,2));await expect(page.locator(view)).not.toHaveAttribute('data-error',/.+/);
@@ -167,8 +181,12 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   if(spec.batch)expect.soft(pair.rust.attributeBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes*1.25);
   else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
   else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
-  // ClusteredLighting rewrites its sorted light texture each frame, as the port does.
-  if(spec.lightTexture)expect.soft(pair.rust.textureBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes);
+  // ClusteredLighting's sorted light texture and the horses' morph influences are rewritten
+  // each frame by the originals, as by the ports.
+  // test_memory fills one new 256 × 256 canvas texture per frame, uploaded as the
+  // original's CanvasTexture is.
+  if(spec.canvasBytes)expect.soft(pair.rust.textureBytes,kind).toBe(spec.canvasBytes);
+  else if(spec.textureStream)expect.soft(pair.rust.textureBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes);
   else expect.soft(pair.rust.textureBytes,kind).toBe(0);
  }
  writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report,null,2));

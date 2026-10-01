@@ -114,7 +114,7 @@ impl Demo {
             _ => 1.,
         };
         let (fov, near, far, position) = match id {
-            258 | 259 => (45., 0.1, 100., Vector3::new(4., 2., 4.)),
+            258 | 259 | 383 => (45., 0.1, 100., Vector3::new(4., 2., 4.)),
             260 => (70., 1., 1000., Vector3::new(0., 0., 400.)),
             261 => (40., 1., 100., Vector3::new(0., 0., 13.)),
             _ => (50., 0.1, 100., Vector3::new(-4., 2., 4.)),
@@ -143,7 +143,7 @@ impl Demo {
             exposure: None,
         };
         match id {
-            258 | 259 => d.box_scene(s, c)?,
+            258 | 259 | 383 => d.box_scene(s, c)?,
             260 => {
                 s.insert(NodeKind::Light(Light::Ambient {
                     color: Color::WHITE,
@@ -168,7 +168,8 @@ impl Demo {
         }
         Ok(d)
     }
-    /// The STL and PLY exporters' box on a shadowed, fogged ground with a grid.
+    /// The STL and PLY exporters' box (the Draco exporter's torus knot) on a
+    /// shadowed, fogged ground with a grid.
     fn box_scene(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
         let ply = self.id == 259;
         s.background = Color::from_hex(0xa0a0a0);
@@ -213,7 +214,12 @@ impl Demo {
             m.properties.transparent = true;
         }
         s.insert(NodeKind::Line(grid));
-        let mut geometry = BoxGeometry::build(1., 1., 1.)?;
+        let draco = self.id == 383;
+        let mut geometry = if draco {
+            TorusKnotGeometry::build(0.75, 0.2, 200, 30, 2, 3)?
+        } else {
+            BoxGeometry::build(1., 1., 1.)?
+        };
         let mut material = MeshPhongMaterial::default();
         let mut colors = None;
         if ply {
@@ -238,13 +244,14 @@ impl Demo {
         )));
         let n = s.get_mut(mesh)?;
         n.cast_shadow = true;
-        n.position.y = 0.5;
+        let y = if draco { 1.5 } else { 0.5 };
+        n.position.y = y;
         s.update()?;
         let mut exported = Exported::new(s, mesh)?;
         exported.colors = colors;
         self.exported = vec![exported];
         let mut controls = Controls::new(None, (0., f64::INFINITY), PI, true);
-        controls.set_target(Vector3::new(0., 0.5, 0.));
+        controls.set_target(Vector3::new(0., y, 0.));
         controls.update(s, c)?;
         self.controls = Some(controls);
         Ok(())
@@ -639,7 +646,7 @@ impl Demo {
     /// Export buttons store the file for `take_export`; other controls change the scene.
     pub fn parameter(&mut self, index: usize, value: f32) -> Result<()> {
         match (self.id, index) {
-            (258, 0 | 1) | (259, 0..=2) | (260, 6) => {
+            (258, 0 | 1) | (259, 0..=2) | (260, 6) | (383, 0) => {
                 let items = self.exported.iter().map(Exported::item).collect::<Vec<_>>();
                 self.export = Some(match (self.id, index) {
                     (258, 0) => ("box.stl".into(), formats::stl(&items, false)),
@@ -647,6 +654,10 @@ impl Demo {
                     (259, 0) => ("box.ply".into(), formats::ply(&items, false, false)),
                     (259, 1) => ("box.ply".into(), formats::ply(&items, true, false)),
                     (259, _) => ("box.ply".into(), formats::ply(&items, true, true)),
+                    (383, _) => (
+                        "file.drc".into(),
+                        formats::drc(&items[0]).map_err(|_| Error::Invalid("draco encode"))?,
+                    ),
                     _ => ("object.obj".into(), formats::obj(&items)),
                 });
             }

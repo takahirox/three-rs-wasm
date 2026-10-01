@@ -3,7 +3,7 @@
 const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
 </script></head><body><script type="module">
 import * as THREE from 'three';
-const id=new URLSearchParams(location.search).get('id');if(!['webgl_loader_bvh','webgl_framebuffer_texture','webgl_read_float_buffer','webgl_interactive_cubes_gpu','webgl_instancing_performance'].includes(id))throw Error('invalid fixture');
+const id=new URLSearchParams(location.search).get('id');if(!['webgl_loader_bvh','webgl_framebuffer_texture','webgl_read_float_buffer','webgl_interactive_cubes_gpu','webgl_instancing_performance','webgl_tsl_instancing'].includes(id))throw Error('invalid fixture');
 window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
 const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
 // WebGL render is an instance method: wrap construction so static examples expose it too.
@@ -24,9 +24,11 @@ window.runFixtureTimers=now=>{for(;;){const next=fixtureTimers.filter(x=>x.at<=n
 source=source.replace('timer = new THREE.Timer();','timer = new THREE.Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureSeconds * 1000 );');
 if(id==='webgl_framebuffer_texture'){const sel=document.getElementById('selection');sel.style.cssText='position:fixed;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;width:100%;top:0;z-index:999';sel.firstElementChild.style.cssText='height:128px;width:128px;border:1px solid white';source=source.replace('offset -= 25;','offset -= 25 * Math.max(0,Math.round(window.fixtureStep));');}
 if(id==='webgl_read_float_buffer')source=source.replace("if ( material.uniforms[ 'time' ].value > 1 ||","for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++){ if ( material.uniforms[ 'time' ].value > 1 ||").replace("material.uniforms[ 'time' ].value += delta;","material.uniforms[ 'time' ].value += delta; }");
-if(['webgl_interactive_cubes_gpu','webgl_instancing_performance'].includes(id))source=source.replace('controls.update();','for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)controls.update();');
+if(['webgl_interactive_cubes_gpu','webgl_instancing_performance','webgl_tsl_instancing'].includes(id))source=source.replace('controls.update();','for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)controls.update();');
 // Quaternion.random() draws from Math.random: only there, since UUIDs draw from it too.
-if(id==='webgl_instancing_performance')source=source.replace('quaternion.random();','{const r=Math.random;Math.random=fixtureRandom;quaternion.random();Math.random=r;}');
+if(['webgl_instancing_performance','webgl_tsl_instancing'].includes(id))source=source.replace('quaternion.random();','{const r=Math.random;Math.random=fixtureRandom;quaternion.random();Math.random=r;}');
+// WebGLNodesHandler's NodeFrame times TSL from performance.now(): the example clock instead.
+if(id==='webgl_tsl_instancing')source=source.replace('renderer.setNodesHandler( new WebGLNodesHandler() );','{const handler=new WebGLNodesHandler();const update=handler.nodeFrame.update.bind(handler.nodeFrame);handler.nodeFrame.update=function(){update();this.time=window.fixtureSeconds;};renderer.setNodesHandler(handler);}');
 await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
 // webgl_loader_obj creates its renderer after awaiting the loaders.
 while(!window.fixtureRenderer)await new Promise(r=>setTimeout(r,10));

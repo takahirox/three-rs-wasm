@@ -367,6 +367,9 @@ pub(super) struct Demo {
     built: Option<(usize, usize)>,
     suzanne: Option<Arc<BufferGeometry>>,
     meshes: Vec<Object3D>,
+    /// webgl_tsl_instancing's MeshPhongNodeMaterial colorNode: sines of the
+    /// world position over TSL time (u.custom[0].x).
+    phong_color: Option<Arc<ShaderProgram>>,
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, id: u32, r: &Renderer) -> Result<Self> {
@@ -409,13 +412,14 @@ impl Demo {
             built: None,
             suzanne: None,
             meshes: vec![],
+            phong_color: None,
         };
         match id {
             228 => d.bvh(s, r).await?,
             229 => d.framebuffer_scene(s, r).await?,
             230 => d.float_scene(r).await?,
             231 => d.pick_scene(s, c, r).await?,
-            _ => d.performance_scene(s).await?,
+            _ => d.performance_scene(s, r).await?,
         }
         if let Some(controls) = &mut d.controls {
             controls.update(s, c)?;
@@ -919,7 +923,7 @@ impl Demo {
         self.trackball = Some(t);
         Ok(())
     }
-    async fn performance_scene(&mut self, s: &mut Scene) -> Result<()> {
+    async fn performance_scene(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
         s.background = Color::WHITE;
         #[derive(serde::Deserialize)]
         struct Array<T> {
@@ -950,10 +954,54 @@ impl Demo {
         g.compute_vertex_normals()?;
         self.suzanne = Some(Arc::new(g));
         let mut controls = Controls::new(None, (0., f64::INFINITY), PI, true);
-        // autoRotate at the default speed 2.
-        controls.auto_rotate = Some(2.);
+        // autoRotate at the default speed 2 (webgl_tsl_instancing: 0.5).
+        controls.auto_rotate = Some(if self.id == 382 { 0.5 } else { 2. });
         self.controls = Some(controls);
+        if self.id == 382 {
+            s.insert(NodeKind::Light(Light::Ambient {
+                color: Color::WHITE,
+                intensity: 2.,
+            }));
+            let light = s.insert(NodeKind::Light(Light::Directional {
+                color: Color::WHITE,
+                intensity: 2.,
+                target: Vector3::ZERO,
+            }));
+            s.get_mut(light)?.position = Vector3::ONE;
+            // colorNode = vec3( sin( positionWorld × 0.1 + t ).x, … ) × 0.5 + 0.5
+            // with t = time × 4, replacing the diffuse color before lighting.
+            // WebGLNodesHandler's output node converts to sRGB and the
+            // WebGLRenderer program converts again: the lit color reaches the
+            // canvas sRGB-encoded twice, which the output hook reproduces.
+            self.phong_color = Some(Arc::new(
+                ShaderProgram::with_surface(
+                    r,
+                    "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;}\
+fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{let p=surface.position*0.1;let t=u.custom[0].x*4.0;\
+return vec4(sin(p.x+t)*0.5+0.5,sin(p.y+(t*0.5+2.0))*0.5+0.5,sin(p.z+(t*1.5+4.0))*0.5+0.5,base.a);}",
+                    crate::shader::DEFAULT_SURFACE,
+                    "fn transform_output(value:vec4<f32>)->vec4<f32>{let c=value.rgb;\
+return vec4(select(1.055*pow(max(c,vec3(0.0)),vec3(0.41666))-0.055,c*12.92,c<=vec3(0.0031308)),value.a);}",
+                    &[],
+                    &[],
+                )
+                .await?,
+            ));
+        }
         Ok(())
+    }
+    /// The material for this frame: MeshNormalMaterial, or the Phong node
+    /// material with TSL time.
+    fn performance_material(&self) -> Arc<Material> {
+        match &self.phong_color {
+            Some(program) => {
+                let mut m = MeshPhongMaterial::default();
+                m.properties.vertex_program = Some(program.clone());
+                m.properties.vertex_uniforms[0][0] = self.time as f32;
+                Arc::new(Material::Phong(m))
+            }
+            None => Arc::new(Material::Normal(MeshNormalMaterial::default())),
+        }
     }
     /// randomizeMatrix: position, Quaternion.random() and a uniform scale.
     fn random_matrix(&mut self) -> Matrix4 {
@@ -986,7 +1034,7 @@ impl Demo {
             s.dispose(h)?;
         }
         let g = self.suzanne.clone().ok_or(Error::Invalid("suzanne"))?;
-        let material = Arc::new(Material::Normal(MeshNormalMaterial::default()));
+        let material = self.performance_material();
         match method {
             0 => {
                 let h = s.insert(NodeKind::Mesh(Mesh::new(g, material)));
@@ -1142,6 +1190,15 @@ impl Demo {
                 if let Some(controls) = &mut self.controls {
                     for _ in 0..steps {
                         controls.frame_update(s, c)?;
+                    }
+                }
+                // TSL time advances the shared material's uniform.
+                if self.phong_color.is_some() {
+                    let material = self.performance_material();
+                    for &h in &self.meshes {
+                        if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {
+                            m.materials[0] = material.clone();
+                        }
                     }
                 }
             }
@@ -1342,8 +1399,8 @@ impl Demo {
     }
     pub fn parameter(&mut self, index: usize, value: f32) -> Result<()> {
         match (self.id, index) {
-            (232, 0) if (0. ..=2.).contains(&value) => self.params[0] = value,
-            (232, 1) if (1. ..=10000.).contains(&value) => self.params[1] = value.round(),
+            (232 | 382, 0) if (0. ..=2.).contains(&value) => self.params[0] = value,
+            (232 | 382, 1) if (1. ..=10000.).contains(&value) => self.params[1] = value.round(),
             _ => return Err(Error::Invalid("picking/buffers parameter")),
         }
         Ok(())

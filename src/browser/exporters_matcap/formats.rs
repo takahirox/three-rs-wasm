@@ -358,3 +358,73 @@ pub(super) fn obj(items: &[Item]) -> Vec<u8> {
     }
     out.into_bytes()
 }
+/// DRACOExporter.parseAsync( mesh ) with its defaults, as draco_encoder.js
+/// 1.5.7 runs it: MeshBuilder's position, face, normal and uv attributes in
+/// the geometry's local space, the encoder wrapper's attribute-value and
+/// point deduplication, then EdgeBreaker at speeds 5 / 5 with 16-bit
+/// positions and 8-bit normals and texture coordinates.
+pub(super) fn drc(item: &Item) -> Result<Vec<u8>, String> {
+    use draco_core::{
+        DataType, EncoderBuffer, EncoderOptions, FaceIndex, GeometryAttributeType as T, Mesh,
+        MeshEncoder, PointAttribute,
+    };
+    let attribute = |kind: T, size: usize, values: &[f32]| {
+        let mut a = PointAttribute::new();
+        a.init(
+            kind,
+            size as u8,
+            DataType::Float32,
+            false,
+            values.len() / size,
+        );
+        for (i, v) in values.iter().enumerate() {
+            a.buffer_mut().write(i * 4, &v.to_le_bytes());
+        }
+        a
+    };
+    let points = item.positions.len() / 3;
+    let mut mesh = Mesh::new();
+    mesh.set_num_points(points);
+    mesh.add_attribute(attribute(T::Position, 3, item.positions));
+    let sequential: Vec<u32>;
+    let index = match item.index {
+        Some(index) => index,
+        None => {
+            sequential = (0..points as u32).collect();
+            &sequential
+        }
+    };
+    mesh.set_num_faces(index.len() / 3);
+    for (f, face) in index.as_chunks::<3>().0.iter().enumerate() {
+        mesh.set_face(
+            FaceIndex(f as u32),
+            [face[0].into(), face[1].into(), face[2].into()],
+        );
+    }
+    if let Some(normals) = item.normals {
+        mesh.add_attribute(attribute(T::Normal, 3, normals));
+    }
+    if let Some(uvs) = item.uvs {
+        mesh.add_attribute(attribute(T::TexCoord, 2, uvs));
+    }
+    mesh.deduplicate_attribute_values()
+        .map_err(|e| format!("{e:?}"))?;
+    mesh.deduplicate_point_ids();
+    let mut options = EncoderOptions::new();
+    options.set_global_int("encoding_speed", 5);
+    options.set_global_int("decoding_speed", 5);
+    options.set_global_int("encoding_method", 1);
+    // Encoder.SetAttributeQuantization( type ) applies to each attribute of
+    // that type: here position, normal and texture coordinate, in order.
+    let bits = [16, 8, 8];
+    for (id, b) in bits.iter().enumerate().take(mesh.num_attributes() as usize) {
+        options.set_attribute_int(id as i32, "quantization_bits", *b);
+    }
+    let mut encoder = MeshEncoder::new();
+    encoder.set_mesh(mesh);
+    let mut buffer = EncoderBuffer::new();
+    encoder
+        .encode(&options, &mut buffer)
+        .map_err(|e| format!("{e:?}"))?;
+    Ok(buffer.data().to_vec())
+}

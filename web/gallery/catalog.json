@@ -13407,7 +13407,7 @@
     {
       "id": "webgl_shadowmap_pcss",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_pcss.html",
       "source_sha256": "96a1c9a3950bb77b78fe92b15563213e739b7fd171e6ce34a0ab4b36abcf9f7f",
@@ -13463,7 +13463,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 381,
+        "source": "src/browser/shadowmap_pcss.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "フォグの中で弾む20個のランダム色のPhongの球、柱、広い地面を、環境光とBasicShadowMapの平行光源で照らす構成をRustで再現。ページはPCSSの関数をshadowmap_pars_fragmentへ差し込むが、getShadowの呼び出しを置き換える2つ目の置換文字列がr186のチャンク（`if ( frustumTest ) {`の後に空行がある）と一致しないため、原作はBasicShadowMapの単純な比較で影を描く。本移植も同じくBasicShadowMapで描く。影カメラのCameraHelperは、ページが更新せずにfarを変えるため、構築時の射影（far 500）のまま描く。WebGLのみのシーンのため、WebGPUとの差はMSAAの解決とラスタライズの範囲に限って許容する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -14274,7 +14281,7 @@
     {
       "id": "webgl_tsl_instancing",
       "category": "webgl / tsl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_instancing.html",
       "source_sha256": "e1982ef17d9be75ee0724bffb78a0a57e409fab70882c6fc37ac5f8317f85796",
@@ -14312,7 +14319,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 382,
+        "source": "src/browser/picking_buffers.rs",
+        "test": "tests/browser/picking-buffers.spec.js",
+        "limitations": [
+          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれない（原作の不具合）が、本移植は描画する。GPUメモリ表示とStatsは未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -18067,7 +18081,7 @@
     {
       "id": "webgpu_instancing_morph",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instancing_morph.html",
       "source_sha256": "7c1dce4c3bb2a7e6c7fbf1abef6af3f646a0ac03e52f1ac13faaf469248b41e2",
@@ -18125,7 +18139,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 375,
+        "source": "src/browser/instancing_morph.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "32×32に並ぶ1,024頭のインスタンス化した馬が、それぞれの時間差で走る構成をRustで再現。原作と同じく毎フレーム、各インスタンスについて馬のモーフ重みトラックをCPUで評価してインスタンスごとの影響度テクスチャへ書き込み（setMorphAtとmorphTexture.needsUpdate）、頂点段で常駐する15個のモーフターゲットを合成する。SunLightは視錐台に合わせた2つのカスケードを1枚のアトラスに描き、地面は両者をフェードで混ぜて受ける。半球光、フォグ、周回するカメラ付き。各段はページからthree.js r186が生成するWGSL（instancing_morph/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/lights/SunLight.js",
@@ -23589,7 +23610,7 @@
     {
       "id": "webgpu_postprocessing_godrays",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_godrays.html",
       "source_sha256": "58cf1b8c7fcf7a1703e0d32ce2b348657aef5eb68570cc036718e45b2c542e43",
@@ -23645,7 +23666,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 377,
+        "source": "src/browser/godrays.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "godrays_demo.glbの柱と台座を黒い背景の壁で囲み、ピンクの点光源（2048²のキューブシャドウ）と光源位置の白い小球で照らす構成をRustで再現。シーンパスの後、GodraysNodeがカメラから光源の影の箱を半解像度でレイマーチし、2パスのバイラテラルブラーで平滑化し、depthAwareBlendが深度の整合する方向にずらしながらブレンド色をシーンへ混ぜる。各段はページからthree.js r186が生成するWGSL（godrays/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26149,7 +26177,7 @@
     {
       "id": "webgpu_shadowmap_csm",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_csm.html",
       "source_sha256": "bf01ee6570b1b9085451260d980cdb112660716be8c8edea7cfda207d03df495",
@@ -26207,7 +26235,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 374,
+        "source": "src/browser/shadowmap_csm.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "床の上に並ぶ2列40本ずつのPhongの箱を、アンビエントライト、暗い青の平行光源、CSMShadowNodeの影を持つ白い平行光源で照らす構成をRustで再現。視錐台を4つのカスケード（uniform・logarithmic・practical）に分け、各カスケードに2048²の正射影の影カメラを置いてスライスに合わせて大きさを決め、影のテクセルに合わせてずらす計算を、アドオンと同じく毎フレームCPUで行う。受け側は正射影深度でカスケードを選ぶ。CSMHelper（視錐台、カスケードの箱と面、影の範囲）と正射影カメラにも対応。ページと同じくピクセル比1で描く。各段はページからthree.js r186が生成するWGSL（shadowmap_csm/）を実行する。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして影パスを省く（結果は同じ）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/csm/CSMHelper.js",
@@ -27045,7 +27080,7 @@
     {
       "id": "webgpu_test_memory",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_test_memory.html",
       "source_sha256": "e8e29443575dc5dee189f5a95367ec9c881f18f6baccefabc2acacbf750f382d",
@@ -27111,7 +27146,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 378,
+        "source": "src/browser/memory_outline.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "原作と同じく毎フレーム、ランダムな分割数の球と、ランダムな単色の256×256キャンバステクスチャ（GPUでミップマップ生成）を新しく作り、前のフレームの球・テクスチャを破棄する構成をRustで再現。球はLambertで影を落とし、平行光源（512²のシャドウマップ）が灰色の床を照らす。Post ProcessingのEnableとOutlineでは、OutlineNodeが選択した球の深度マスク、半解像度の縮小とエッジ検出、半解像度と1/4解像度のブラー、合成を行い、シーンに加える。各段はページからthree.js r186が生成するWGSL（memory_outline/）を実行する。AOを有効にしてもページの構成ではGTAOの結果がLambertの描画に使われないため、本移植でも描画は変わらない。Cast Shadowをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして影パスを省く（結果は同じ）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/inspector/Inspector.js",
         "three/addons/tsl/display/GTAONode.js",
@@ -28926,7 +28968,7 @@
     {
       "id": "webgpu_volume_lighting",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting.html",
       "source_sha256": "eab563a26f0ddf9b90f7d503d77f0bdd9e2cfbf84d7465186ed0d8623796e90e",
@@ -29012,7 +29054,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 376,
+        "source": "src/browser/volume_lighting.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "回るティーポットと床を、動き回る点光源（キューブシャドウマップ）とcolors.pngを投影して振れるスポットライト（シャドウマップ）で照らし、20×10×20のフォグの箱で囲む構成をRustで再現。シーンパスの後、VolumeNodeMaterialが1/4解像度で箱をレイマーチし、両方の光源と影、128³のImprovedNoiseの煙テクスチャを、Bayerテクスチャでディザしながらシーンの深度まで積算する。2パスのガウシアンブラーでノイズを除き、出力でシーンに加えてNeutralToneMapping（露出2）をかける。各段はページからthree.js r186が生成するWGSL（volume_lighting/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TeapotGeometry.js",
@@ -29027,7 +29076,7 @@
     {
       "id": "webgpu_volume_lighting_rectarea",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting_rectarea.html",
       "source_sha256": "62f9def2abd19b95b9c8a5a049abab29e2cfd0dc26d48ec456eb9851be57ce60",
@@ -29119,7 +29168,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 379,
+        "source": "src/browser/volume_rectarea.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "チェッカー状のラフネスを持つ床の上の白いトーラスノットを、赤・緑・青の3枚の回転するRectAreaLight（発光する表面パネルと暗い裏面パネル付き）で照らし、50×40×50のフォグの箱で囲む構成をRustで再現。面光源はLTCテーブル（RectAreaLightTexturesLib）で評価する。シーンパスの後、VolumeNodeMaterialが1/4解像度で箱をレイマーチし、3つの面光源と128³のImprovedNoiseの煙テクスチャを、Bayerテクスチャでディザしながらシーンの深度まで積算する。2パスのガウシアンブラーでノイズを除き、出力でシーンに加えてNeutralToneMapping（露出2）をかける。各段はページからthree.js r186が生成するWGSL（volume_rectarea/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -29134,7 +29190,7 @@
     {
       "id": "webgpu_volume_lighting_traa",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting_traa.html",
       "source_sha256": "b2c7cb687db08701c9f8aacc18aa65e5254a716eef5dab5dc19705d5a7da9137",
@@ -29230,7 +29286,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 380,
+        "source": "src/browser/volume_traa.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "webgpu_volume_lightingと同じティーポット、床、点光源、スポットライトの構成で、フォグの箱をシーンパスの中で全解像度のまま加算描画し、TRAAで解決する構成をRustで再現。不透明物の深度プリパスがボリュームの遮蔽を与え、シーンパスは色と速度（MRT）を書き、ボリュームはフレームごとのHaltonオフセットで回転させたinterleaved gradient noiseでレイの開始位置をずらす。TRAANodeは32サンプルのHalton列でカメラをジッターし、速度で履歴を再投影し、前フレームの深度で隠れていた履歴を棄却し、フリッカー低減付きで混ぜる（原作と同じく最初の2回の解決は1×1の仮の深度を読む）。出力はNeutralToneMapping（露出2）。各段はページからthree.js r186が生成するWGSL（volume_traa/）を実行する。ページと同じくピクセル比1で描く。volumetric intensityはページでも描画に接続されていないため効果がない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/geometries/TeapotGeometry.js",
@@ -33534,7 +33597,7 @@
     {
       "id": "misc_exporter_draco",
       "category": "misc",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_draco.html",
       "source_sha256": "a948a09bf933a8496dabd2b6010da336e71c11debc11887be125630aeb6f20c8",
@@ -33602,7 +33665,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 383,
+        "source": "src/browser/exporters_matcap.rs",
+        "test": "tests/browser/exporters-matcap.spec.js",
+        "limitations": [
+          "misc_exporter_stlと同じ地面、グリッド、フォグ、半球光と影付き平行光源の上に緑のトーラスノットを置き、Export DRCでDRACOExporter.parseAsyncのDracoファイルを書き出す構成をRustで再現。エンコードはdraco_encoder.js 1.5.7と同じ手順（MeshBuilderの位置・面・法線・UV、属性値と点の重複除去、EdgeBreaker、速度5/5、位置16ビット・法線とUV 8ビットの量子化）をdraco-coreクレートで行い、出力ファイルは原作とバイト単位で一致する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

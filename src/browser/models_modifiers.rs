@@ -433,7 +433,7 @@ fn parse_3ds(data: &[u8]) -> Result<Tds> {
     Ok((meshes, materials, scale))
 }
 /// TeapotGeometry( size, segments, bottom, lid, body, fitLid, blinn ).
-fn teapot(
+pub(super) fn teapot(
     size: f64,
     segments: u32,
     bottom: bool,

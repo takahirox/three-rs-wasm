@@ -37,8 +37,10 @@ mod glitch;
 mod gltf_examples;
 mod gltf_normals;
 mod gltf_viewer;
+mod godrays;
 mod helpers_formats;
 mod ies_spotlight;
+mod instancing_morph;
 mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
@@ -57,6 +59,7 @@ mod marching_tables;
 mod material_textures;
 mod md2;
 mod md2_control;
+mod memory_outline;
 mod mesh_batch;
 mod models_modifiers;
 mod outline;
@@ -79,7 +82,9 @@ mod sao;
 mod selection_views;
 mod shader_geometry;
 mod shadow_rtt;
+mod shadowmap_csm;
 mod shadowmap_opacity;
+mod shadowmap_pcss;
 mod shadowmap_viewer;
 mod shadowmap_vsm;
 mod shapes;
@@ -120,6 +125,9 @@ mod tsl_viewport;
 mod uv_tests;
 mod views_loaders;
 mod volume_instancing;
+mod volume_lighting;
+mod volume_rectarea;
+mod volume_traa;
 mod wide_gamut;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -267,6 +275,7 @@ impl State {
             313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329,
             330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 351, 352, 353,
             354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373,
+            374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
         ]
         .contains(&self.example)
         {
@@ -1022,6 +1031,7 @@ impl BrowserApp {
                             248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
                             291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
                             343, 344, 345, 346, 349, 354, 355, 358, 359, 361, 362, 363, 365, 368,
+                            376, 377, 378, 379, 380,
                         ]
                         .contains(&example)
                         {
@@ -1040,7 +1050,7 @@ impl BrowserApp {
                             307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327,
                             329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343, 344, 345, 348,
                             352, 353, 354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368,
-                            369, 370, 371, 372, 373,
+                            369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
                         ]
                         .contains(&example),
                         format: if [
@@ -1057,7 +1067,7 @@ impl BrowserApp {
                             317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330,
                             331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 352,
                             353, 354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369,
-                            370, 371, 372, 373,
+                            370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
                         ]
                         .contains(&example)
                         {
@@ -1089,7 +1099,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=373).contains(&example) {
+            if (7..=383).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

@@ -862,3 +862,23 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   video frames are copied once each.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Cascaded shadows, instanced morphs, volumes, god rays, test memory and TRAA
+
+- **Shadows.** CSM cascades, the cube and spot shadows of the volumetric
+  scenes and the god rays' cube shadow are re-rendered each frame, as their
+  originals do, each pass culled against its camera.
+- **Morphs.** The 1,024 horses' influences are rewritten to their texture each
+  frame, as `setMorphAt` and `morphTexture.needsUpdate` do; the 15 morph
+  targets stay resident and are blended on the GPU.
+- **Volumes and TRAA.** The ray marches, blurs, pre-pass, velocity MRT and TRAA
+  resolve run on resident targets, created once per size; history copies are
+  GPU copies.
+- **Test memory.** The page builds and disposes a sphere and canvas texture
+  each frame; so does the port, and its resident set stays flat.
+- **WebGL and exporter scenes.** The PCSS and TSL instancing scenes use the
+  crate renderer with resident geometry. TSL time is a material uniform. The
+  Draco export encodes only on request.
+
+Warmed cycles create no GPU resources beyond test memory's per-frame sphere.
+No GPU timing parity is claimed.

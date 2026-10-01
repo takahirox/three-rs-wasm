@@ -311,3 +311,15 @@ page, run as captured or translated with the same expressions. A scoped bound
 covers the birds' velocity race, which the original shows against itself. The
 opacity example's captures render two frames, because of a start-up frame that
 is documented there.
+
+The cascaded-shadow, instanced-morph, volumetric, god-ray, test-memory, PCSS,
+TSL-instancing and Draco-exporter batch
+([shadow-volume-examples.md](shadow-volume-examples.md)) compares its seven
+WebGPU examples against the WebGPU renderer, running the WGSL three.js
+generates for each page. `webgl_shadowmap_pcss` and `webgl_tsl_instancing`
+have no WebGPU counterpart and are compared against WebGLRenderer, with scoped
+MSAA bounds. Where r186 itself misbehaves the port follows the original's
+visible result and documents it: the PCSS replacement that never applies, the
+doubly sRGB-encoded TSL instancing output. The exceptions are TRAA's 1 × 1
+start-up frame and the TSL InstancedMesh that draws nothing after a rebuild,
+which the port does not reproduce and the tests avoid.

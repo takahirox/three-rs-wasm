@@ -22,6 +22,14 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    ShadowmapPcss(Box<super::shadowmap_pcss::Demo>),
+    VolumeTraa(Box<super::volume_traa::Demo>),
+    VolumeRectarea(Box<super::volume_rectarea::Demo>),
+    MemoryOutline(Box<super::memory_outline::Demo>),
+    Godrays(Box<super::godrays::Demo>),
+    VolumeLighting(Box<super::volume_lighting::Demo>),
+    InstancingMorph(Box<super::instancing_morph::Demo>),
+    ShadowmapCsm(Box<super::shadowmap_csm::Demo>),
     Caustics(Box<super::caustics::Demo>),
     ShadowmapOpacity(Box<super::shadowmap_opacity::Demo>),
     LightsProjector(Box<super::lights_projector::Demo>),
@@ -597,6 +605,78 @@ impl Demo {
                     super::caustics::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            374 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::ShadowmapCsm(Box::new(
+                    super::shadowmap_csm::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            375 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 100.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::InstancingMorph(Box::new(
+                    super::instancing_morph::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            376 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::VolumeLighting(Box::new(
+                    super::volume_lighting::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            377 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Godrays(Box::new(
+                    super::godrays::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            378 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::MemoryOutline(Box::new(
+                    super::memory_outline::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            379 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 250.,
+                elapsed: 0.,
+                content: Content::VolumeRectarea(Box::new(
+                    super::volume_rectarea::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            380 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::VolumeTraa(Box::new(
+                    super::volume_traa::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            381 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::ShadowmapPcss(Box::new(
+                    super::shadowmap_pcss::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -696,7 +776,7 @@ impl Demo {
                     super::sky_water::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            258..=262 => Ok(Self {
+            258..=262 | 383 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
                 far: 5000.,
@@ -751,7 +831,7 @@ impl Demo {
                     super::helpers_formats::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            228..=232 => Ok(Self {
+            228..=232 | 382 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
                 far: 10000.,
@@ -1489,6 +1569,30 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Caustics(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -1968,6 +2072,27 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::Caustics(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -2124,6 +2249,41 @@ impl Demo {
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
+        if let Content::VolumeTraa(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::VolumeRectarea(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::MemoryOutline(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Godrays(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::VolumeLighting(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::InstancingMorph(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ShadowmapCsm(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::Caustics(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -2355,6 +2515,30 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Caustics(demo) = &mut self.content {
@@ -2598,6 +2782,30 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Caustics(demo) = &mut self.content {
@@ -2930,6 +3138,30 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Caustics(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -3166,6 +3398,38 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -3422,6 +3686,30 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Caustics(demo) = &mut self.content {
@@ -3732,6 +4020,30 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapPcss(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeTraa(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeRectarea(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::MemoryOutline(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Godrays(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeLighting(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::InstancingMorph(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Caustics(demo) = &mut self.content {

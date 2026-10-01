@@ -658,5 +658,10 @@
   "file": "opengameart/Caustic_Free.jpg",
   "source": "examples/textures/opengameart/Caustic_Free.jpg",
   "sha256": "79c32285c5a876716c4d39ddb01d3d4ac949ded1e73e401e48a8620af2b2331a"
+ },
+ {
+  "file": "gltf/godrays_demo.glb",
+  "source": "examples/models/gltf/godrays_demo.glb",
+  "sha256": "d257de1a31199c86e1ffec20f7d0de691a8fa3d05813e77f969a7bc68ed6653b"
  }
 ]

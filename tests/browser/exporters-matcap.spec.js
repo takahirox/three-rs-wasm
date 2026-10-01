@@ -7,13 +7,14 @@ const view='canvas';
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
  misc_exporter_stl:{times:[0],parameters:[],at:0,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_draco:{times:[0],parameters:[],at:0,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  misc_exporter_ply:{times:[0],parameters:[],at:0,antialias:true,drag:[[256,256],[330,300]]},
  misc_exporter_obj:{rebuilds:true,times:[0],parameters:[[1,0,1],[2,0,1],[3,0,1],[4,0,1],[5,0,1],[0,0,1]],at:0,antialias:true,drag:[[256,256],[330,300]]},
  webgpu_materials_matcap:{times:[0],parameters:[[0,0xff8844,0xff8844],[1,0.5,0.5],[0,0xffffff,0xffffff],[1,1,1]],at:0,antialias:true,drag:[[256,256],[330,300]]},
  webgpu_lights_physical:{rebuilds:true,times:[0,1,2.5,6],parameters:[[0,'50 lx (Living Room)',4],[1,'3500 lm (300W)',1],[2,0.9,0.9],[3,false,0],[3,true,1],[0,'0.0001 lx (Moonless Night)',0],[1,'400 lm (40W)',4],[2,0.68,0.68]],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
 };
 // Exporter buttons: [preceding controls..., export control]; files must match byte for byte.
-const exports={misc_exporter_stl:[[0],[1]],misc_exporter_ply:[[0],[1],[2]],misc_exporter_obj:[[6],[1,6],[2,6],[3,6],[4,6],[5,6],[0,6]]};
+const exports={misc_exporter_stl:[[0],[1]],misc_exporter_draco:[[0]],misc_exporter_ply:[[0],[1],[2]],misc_exporter_obj:[[6],[1,6],[2,6],[3,6],[4,6],[5,6],[0,6]]};
 const official=kind=>kind;
 const streams=[];
 // Perform one scripted input step; returns its capture time (or null).
@@ -30,7 +31,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/exporters-matcap.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={misc_exporter_stl:[.02,.4],misc_exporter_ply:[.02,.4],misc_exporter_obj:[.02,.4],webgpu_materials_matcap:[.02,.4]};
+const msaaLimits={misc_exporter_stl:[.02,.4],misc_exporter_draco:[.02,.4],misc_exporter_ply:[.02,.4],misc_exporter_obj:[.02,.4],webgpu_materials_matcap:[.02,.4]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Exporters and matcap official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));

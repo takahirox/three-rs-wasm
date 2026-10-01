@@ -3,7 +3,7 @@
 const id=new URLSearchParams(location.search).get('id');const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{three:`/.cache/three-r186/src/${new URLSearchParams(location.search).has('webgpuLines')?'Three.WebGPU':'Three'}.js`,'three/addons/':'/.cache/three-r186/examples/jsm/','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js'}});document.head.appendChild(map);
 </script></head><body><script type="module">
 import * as THREE from 'three';
-const id=new URLSearchParams(location.search).get('id');if(!['misc_exporter_stl','misc_exporter_ply','misc_exporter_obj','webgpu_materials_matcap','webgpu_lights_physical'].includes(id))throw Error('invalid fixture');
+const id=new URLSearchParams(location.search).get('id');if(!['misc_exporter_stl','misc_exporter_ply','misc_exporter_obj','misc_exporter_draco','webgpu_materials_matcap','webgpu_lights_physical'].includes(id))throw Error('invalid fixture');
 window.fixtureExports=[];{const create=URL.createObjectURL.bind(URL);URL.createObjectURL=blob=>{fixtureExports.push(blob);return create(blob);};}HTMLAnchorElement.prototype.click=function(){};
 window.fixtureSeconds=0;window.fixtureControls=[];let pending=0;
 const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager),end=THREE.DefaultLoadingManager.itemEnd.bind(THREE.DefaultLoadingManager);THREE.DefaultLoadingManager.itemStart=(...a)=>{pending++;start(...a);};THREE.DefaultLoadingManager.itemEnd=(...a)=>{end(...a);pending--;};
@@ -26,6 +26,8 @@ window.runFixtureTimers=now=>{for(;;){const next=fixtureTimers.filter(x=>x.at<=n
 source=source.replace('timer = new THREE.Timer();','timer = new THREE.Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureSeconds * 1000 );');
 // Per-frame easing, controls and random walks as 60 fps steps.
 const steps='for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)';
+// The page's classic <script> for DracoEncoderModule (draco 1.5.7).
+if(id==='misc_exporter_draco')await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/gh/google/draco@1.5.7/javascript/draco_encoder.js';script.onload=resolve;script.onerror=reject;document.head.appendChild(script);});
 await import(URL.createObjectURL(new Blob([source],{type:'text/javascript'})));
 // webgl_loader_obj creates its renderer after awaiting the loaders.
 while(!window.fixtureRenderer)await new Promise(r=>setTimeout(r,10));

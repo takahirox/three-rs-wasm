@@ -839,6 +839,16 @@ bitonic and attractor ports translate those modules with the same
 expressions. The `.wgsl` files are the generated modules, unchanged apart from
 removed subgroup directives and run-time placeholders.
 
+The cascaded-shadow, instanced-morph, volumetric, god-ray, test-memory outline
+and TRAA ports (`src/browser/shadowmap_csm.rs`, `instancing_morph.rs`,
+`volume_lighting.rs`, `volume_rectarea.rs`, `volume_traa.rs`, `godrays.rs`,
+`memory_outline.rs` and the `.wgsl` files beside them) likewise embed the WGSL
+Three.js r186 generates for those official WebGPU pages, unchanged.
+`volume_lighting/bayer16.png` is the Bayer matrix image embedded in r186's
+`examples/jsm/tsl/math/Bayer.js` (MIT). The Draco exporter port encodes with
+the `draco-core` crate (Apache-2.0), bit-compatible with Google's
+`draco_encoder.js` 1.5.7 that the page loads.
+
 The test-memory to FBX NURBS batch adds unmodified r186 example assets, listed
 with their source paths and SHA-256 hashes in
 `gallery/assets/loaders-audio-manifest.json`, all distributed alongside
@@ -855,6 +865,7 @@ with their source paths and SHA-256 hashes in
 - `gallery/assets/gltf/duck.glb`: `models/gltf/duck.glb`, the Draco-compressed
   glTF sample Duck (© 2006 Sony Computer Entertainment Inc., SCEA Shared
   Source License 1.0, as listed by the Khronos glTF sample models).
+- `gallery/assets/gltf/godrays_demo.glb`: `models/gltf/godrays_demo.glb`.
 - `gallery/assets/opengameart/Caustic_Free.jpg`:
   `textures/opengameart/Caustic_Free.jpg`, credited upstream to OpenGameArt.
 
