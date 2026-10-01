@@ -357,6 +357,15 @@ impl ThreeMixer {
         }
     }
     /// `mixer.update( delta )`.
+    /// `setTime( t )`: every action and the mixer restart at zero, then
+    /// update by `t`.
+    pub fn set_time(&mut self, scene: &mut Scene, t: f64) -> Result<()> {
+        self.time = 0.;
+        for action in &mut self.actions {
+            action.time = 0.;
+        }
+        self.update(scene, t)
+    }
     pub fn update(&mut self, scene: &mut Scene, delta: f64) -> Result<()> {
         self.update_with(scene, delta, &mut |_, _| {})
     }

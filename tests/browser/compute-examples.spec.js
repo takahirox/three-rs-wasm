@@ -10,6 +10,26 @@ const cases={
  // each capture is one more animate() on both sides.
  webgpu_test_memory:{transient:true,canvasBytes:262144,times:[0,1,2],parameters:[[1,true,1],[3,false,0],[2,false,0],[2,true,1],[4,null,1],[0,false,0],[0,true,1],[6,null,1],[5,null,1]],restore:[[3,true,1],[1,false,0]],at:0},
  webgpu_postprocessing_godrays:{times:[0],parameters:[[0,30,30],[1,.4,.4],[2,.8,.8],[3,1,1],[4,4,4],[5,1,1],[6,false,0],[6,true,1]],restore:[[0,60,60],[1,.7,.7],[2,.5,.5],[3,2,2],[4,2,2],[5,2,2]],at:0,drag:[[256,256],[300,280]],settle:true},
+ // TRAA accumulates over frames: each capture renders 60 frames ( see webgpu_volume_lighting_traa ).
+ // The retargeted clip is baked at load; both mixers follow the example's Timer.
+ webgpu_animation_retargeting:{antialias:true,times:[0,0.5,1.5],parameters:[],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // Each instance's mixer time follows the example's Timer; the orbit is damped.
+ webgpu_skinning_instancing_individual:{antialias:true,times:[0,0.5,1.5],parameters:[],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The cloud clock follows the example's Timer; the SunLight cascades are refitted to the view each frame.
+ webgpu_postprocessing_fog:{antialias:true,times:[0,2],parameters:[[0,'Gaussian Blur',1],[0,'Disabled',2],[0,'JBU',0],[15,'Grid',1],[15,'Solid Color',0],[1,.6,.6],[2,8,8],[3,.4,.4],[6,2,2],[8,6,6],[12,2,2],[13,60,60]],restore:[[1,.4,.4],[2,16,16],[3,.66,.66],[6,1.05,1.05],[8,3.5,3.5],[12,1.2,1.2],[13,30,30]],at:2,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The Timer follows the example clock (a fixture patch); the orbit auto-rotates each frame.
+ webgpu_backdrop_water:{times:[0,0.5,1.5],parameters:[[0,-.5,-.5],[0,.8,.8]],restore:[[0,.2,.2]],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // FirstPersonControls move only with time: the fixed-time drag leaves the view.
+ webgpu_custom_fog_scattering:{antialias:true,times:[0],parameters:[[1,4,4],[0,.05,.05],[2,false,0]],restore:[[1,2,2],[0,.11,.11],[2,true,1]],at:0,drag:[[256,256],[300,280]]},
+ webgpu_postprocessing_ssr:{times:[0],parameters:[[0,1,1],[2,.5,.5],[3,.5,.5],[4,.01,.01],[1,2,2],[1,3,3],[5,true,1],[7,.3,.3],[6,false,0]],restore:[[0,.5,.5],[2,1,1],[3,1,1],[4,.03,.03],[1,1,1],[5,false,0],[7,1,1],[6,true,1]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ webgpu_postprocessing_sss:{rebuilds:true,frames:60,times:[0],parameters:[[0,'Scene with Shadow Maps',1],[0,'SSS',2],[0,'Scene with Shadow Maps + SSS',0],[1,.5,.5],[2,.5,.5],[3,1,1],[4,.05,.05],[5,false,0],[5,true,1]],restore:[[1,1,1],[2,.2,.2],[3,.5,.5],[4,.01,.01]],at:0,drag:[[256,256],[300,280]],settle:true},
+ webgpu_postprocessing_ssgi:{frames:60,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[11,false,0],[11,true,1],[1,4,4],[2,16,16],[3,5,5],[7,2,2],[8,40,40],[9,true,1],[10,false,0]],restore:[[1,2,2],[2,8,8],[3,12,12],[7,1,1],[8,10,10],[9,false,0],[10,true,1]],at:0,drag:[[256,256],[300,280]]},
+ // Each requested frame counts toward the next height step ( every 7 − speed frames ).
+ webgpu_compute_water:{antialias:true,times:[0,1,2],parameters:[[3,1,1],[5,true,1],[5,false,0],[4,false,0],[4,true,1],[0,.3,.3],[1,1,1],[2,.9,.9]],restore:[[3,5,5],[0,.12,.12],[1,.5,.5],[2,.96,.96]],at:2,
+  // A drag on the water: the raycast ripple, with the orbit held until the pointer is up.
+  script:[['down',0,256,330,null],['run',2,2,1/60,null],['move',290,340,null],['run',2,2,1/60,null],['move',320,350,null],['run',2,2,1/60,'last'],['up',0,320,350,null],['run',6,2,1/60,'last']],drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // TSL time animates the Phong and basic graphs; the orbit controls are damped.
+ webgpu_tsl_graph:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // A resolution change rebakes the grid; with the probes shown the rebake also captures the
  // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
  // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
@@ -52,7 +72,9 @@ const cases={
 };
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
-const streams=[];
+// The skinning instances write each frame's bone and instance matrices to storage buffers,
+// as the original's needsUpdate storage attributes are.
+const streams=['webgpu_skinning_instancing_individual'];
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -75,7 +97,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 // other birds' velocities while they are written, as the original's does, so the original
 // differs from itself between runs; the birds are bounded with and without MSAA (spec.limits).
 // MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
-const msaaLimits={webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9]};
+const msaaLimits={webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));

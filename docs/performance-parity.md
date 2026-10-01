@@ -901,3 +901,22 @@ No GPU timing parity is claimed.
   resident.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### TSL graph, compute water, SSGI, SSS, SSR, fog scattering, backdrop water, volumetric fog, skinning instances and retargeting
+
+- **GPU state.** The water height field and ducks, and the thirty skinned
+  instances' vertices, stay on the GPU. The instances are skinned in one
+  compute pass, as in the original.
+- **CPU work as in the originals.** Animation sampling (thirty mixer poses per
+  frame for the instances), the SunLight cascade fitting and the bone and
+  instance matrix uploads run each frame. The trees, the tri-noise volume and
+  the retargeted clip are generated once at load.
+- **Per-frame passes.** The cascades' shadow atlas, the reflector's mirrored
+  view and the backdrop's color and depth copies run every frame on targets
+  created once per size.
+- **Variants.** SSR's refinement and blur variants are built at load, and the
+  volumetric fog keeps the targets of each resolution scale it visits. SSS
+  rebuilds its pipeline with the frame ID baked in, as SSSNode does, so its
+  residency cycle leaves the parameters out.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

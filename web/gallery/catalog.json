@@ -14348,7 +14348,7 @@
     {
       "id": "webgpu_animation_retargeting",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_animation_retargeting.html",
       "source_sha256": "cd2ff6db82363a8eea805cb3098ae8434e79b4811f02e9a311c399f6b3024516",
@@ -14420,7 +14420,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 403,
+        "source": "src/browser/retargeting.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "MichelleのSambaDanceをSkeletonUtils.retargetClipでSoldierへリターゲットし、両者を光速風の背景の下、反射する床（reflector）の上で踊らせる構成をRustで再現。リターゲットしたクリップはページと同じく読み込み時に一度CPUで焼き込む（ソースのポーズをフレームごとにサンプリングし、ターゲットのスケルトンをバインドポーズに戻して、対応するボーンにソースのワールド回転（ページのローカルオフセット込み）と腰の拡大した位置を与える。ローダーが古いまま残したワールド行列を含め、three.jsの行列の扱いに従う）。両キャラクターはミキサーのボーン行列でGPUスキニングし、reflectorが鏡像の視点をターゲットへ描いて床がそれを読む。4× MSAAとNeutralトーンマッピングを通す。各段はページからthree.js r186が生成するWGSL（retargeting/）を実行する。スケルトンヘルパーの表示は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -14631,7 +14638,7 @@
     {
       "id": "webgpu_backdrop_water",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_backdrop_water.html",
       "source_sha256": "1e4c7dff74aafd9c39f662fa26489836318f7ca1b6647fd386dad916121b3fad",
@@ -14727,7 +14734,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 400,
+        "source": "src/browser/backdrop_water.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "氷の柱の上で踊るスキニングされたMichelleと浮かぶ100個の氷の球を、背後のシーンを屈折・着色する水面（backdropノード）の下に置く構成をRustで再現。シーンパスはグラデーション背景、三平面マッピングの氷、太陽の影を落とすMichelle（ミキサーのボーン行列によるGPUスキニング）、ボロノイのコースティクスが動く柱を描き、フレームバッファの色と深度をコピーして半透明の水面（ボロノイの波紋、深度による屈折）に渡す。深度で強さが変わるガウスぼかしと水中の色調・ビネットで出力する。オービットは自動回転する。アニメーションはAnimationMixerと同じくCPUでサンプリングする。床の位置に対応。各段はページからthree.js r186が生成するWGSL（backdrop_water/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -16677,7 +16691,7 @@
     {
       "id": "webgpu_compute_water",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_water.html",
       "source_sha256": "fdd55a1a73cca76148830ed398d3898d0a17ac8f37b4092fc5fb9cb725b497da",
@@ -16779,7 +16793,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 395,
+        "source": "src/browser/compute_water.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "128×128の高さ場（SimplexNoise 15オクターブで初期化）をピンポンのストレージバッファに置き、7 − speedフレームごとにページのコンピュートカーネルでポインタのレイキャストによる波紋とともに更新し、100羽のインスタンス化したアヒルを第2のカーネルで水面に浮かべて流す構成をRustで再現。水面は頂点ステージで現在のバッファから高さと法線を読み、両面の半透明標準マテリアルとしてblouberg_sunriseの空（ぼかしたPMREM背景）とプールの縁の上に描き、4× MSAAとACESトーンマッピングを通す。ワイヤーフレーム、アヒルの表示、各パラメータに対応。各段はページからthree.js r186が生成するWGSL（compute_water/、未使用のsubgroup組み込みを除く）を実行する。シミュレーションは要求フレームごとに進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -17089,7 +17110,7 @@
     {
       "id": "webgpu_custom_fog_scattering",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_custom_fog_scattering.html",
       "source_sha256": "f70cfa61732d2d82ab0a2cb4c4bdaaa0c39da26d806cae5caa90c5195a7016b2",
@@ -17161,7 +17182,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 399,
+        "source": "src/browser/fog_scattering.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "TreeGeneratorの枯れ木の林をFogExp2の霧に置き、霧の散乱をポストで近似する構成をRustで再現。シーンパスを半解像度でぼかし（GaussianBlurNode、sigma 4、方向は散乱係数倍）、パスのビュー深度による密度フォグ係数でシャープな色に混ぜる。10種の木はページと同じくCPUで一度だけ生成し（mulberry32の乱数とthree.jsのVector3・Quaternionの演算順を再現）、シード付きの配置でインスタンス描画し、2本の手前の幹と黒い地面とともに4× MSAAで描く。FirstPersonControlsでカメラを動かす。霧の密度（far面の更新を含む）、散乱係数、散乱の有無に対応。各段はページからthree.js r186が生成するWGSL（fog_scattering/、インスタンス数はメッシュごと）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/FirstPersonControls.js",
         "three/addons/generators/TreeGenerator.js",
@@ -23471,7 +23499,7 @@
     {
       "id": "webgpu_postprocessing_fog",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_fog.html",
       "source_sha256": "0aedb394044646d204096d265b143c8cef6a960a868c9498504e09ca4a14ce48",
@@ -23579,7 +23607,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 401,
+        "source": "src/browser/fog_volume.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Lucy像（PLYLoader、computeVertexNormals）を地面の上に置き、半球光とSunLightアドオンの2段カスケード影で照らし、事前計算した96³のtriノイズテクスチャを縮小解像度でレイマーチするボリューメトリックな雲の霧を、ジョイントバイラテラル（またはガウスぼかし、なし）でアップサンプルする構成をRustで再現。カスケードはSunLightShadowと同じく毎フレームCPUでビュー錐台に合わせ、ノイズテクスチャはページと同じく一度だけ生成する。4× MSAAとACESの出力を通し、デノイザ、解像度、ステップ数、雲の閾値・スケール、霧の密度・高さ、レンジフォグ、地面のグリッドを含む各パラメータに対応。各段はページからthree.js r186が生成するWGSL（fog_volume/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -24586,7 +24621,7 @@
     {
       "id": "webgpu_postprocessing_ssgi",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssgi.html",
       "source_sha256": "e56ba1c9e1bb01bc55170706e7eccd55241961bfc17ad4d1d0b60cc588ae994f",
@@ -24666,7 +24701,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 396,
+        "source": "src/browser/ssgi.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "点光源の影付きコーネルボックス（赤と緑の壁、白い床・奥壁・天井と2つの箱、白い円柱）にSSGINodeのスクリーンスペースAOと1バウンスの間接光をかけ、TRAAで解決する構成をRustで再現。シーンパスは色、拡散色、パックしたビュー法線、速度をMRTに書き、SSGIパス（2スライス、8ステップ、frameIdに従うスライス回転とステップオフセット）がAO（r8unorm）とGI（rg11b10ufloat）を書く。合成（色×AO＋拡散色×GI）をTRAAがジッター、再投影、ブレンドし、sRGBで出力する。AO、GI、直接光の表示と時間フィルタなしの合成、各パラメータに対応。各段はページからthree.js r186が生成するWGSL（ssgi/）を実行する。TRAAは要求フレームで進む。ページはsetPixelRatioを呼ばないため常に画素比1で描く。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -24756,7 +24798,7 @@
     {
       "id": "webgpu_postprocessing_ssr",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssr.html",
       "source_sha256": "1a5d1daabf0cf7e12a66774043d87afe4b5b70de3b670e036b65477bce42cc85",
@@ -24832,7 +24874,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 398,
+        "source": "src/browser/ssr.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "steampunk_camera.glbのモデルを金属の床の上に置き、RoomEnvironmentのPMREMで照らし、SSRNodeのスクリーンスペース反射をビューティーパスに加算してSMAAをかける構成をRustで再現。シーンパスは色、パックしたビュー法線、金属度・粗さをMRTに書き、SSRパスが深度上で反射レイをマーチし、5段のミップのぼかしを粗さに応じて合成し、SMAAのエッジ、重み、ブレンドの各パスとACESの出力を通す。SSRなしの表示、ぼかし品質とバイナリリファイン（ページの各値のシェーダー）、モデルの粗さを含む各パラメータに対応。各段はページからthree.js r186が生成するWGSL（ssr/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",
@@ -24946,7 +24995,7 @@
     {
       "id": "webgpu_postprocessing_sss",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_sss.html",
       "source_sha256": "16b79207297cd60d63381fa74689e6ccc88d5839415038e2a91042f135cd05ed",
@@ -25054,7 +25103,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 397,
+        "source": "src/browser/sss.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Draco圧縮のnemetona.glbの像を霧のかかった地面に置き、半球光と影付きの平行光源で照らし、SSSNodeのスクリーンスペースシャドウを平行光源の影に加えてTRAAで解決する構成をRustで再現。プリパスが速度と深度を書き、SSSパスがプリパス深度上を光源方向にレイマーチ（オフセットはframeIdに従う）し、シーンパスが影のコンテキストでSSSを読み、TRAAがジッター、再投影、ブレンドしてsRGBで出力する。影のみ・SSSのみの表示、時間フィルタなし、各パラメータに対応。各段はページからthree.js r186が生成するWGSL（sss/）を実行する。r186のSSSNodeはframeIdをuniformではなく定数としてシェーダーに焼き込むため、ノードの再構築ごとにシェーダーを作り直す。TRAAは要求フレームで進む。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26742,7 +26798,7 @@
     {
       "id": "webgpu_skinning_instancing_individual",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_skinning_instancing_individual.html",
       "source_sha256": "0652b34ccaf62ba7987c3dd0d581c2f46b56f780ec798b52b7ddb987aeb2df5d",
@@ -26848,7 +26904,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 402,
+        "source": "src/browser/skinning_instances.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "それぞれ固有のアニメーション時刻、体の比率、お腹のモーフを持つ30体のMichelleを1回のコンピュートパスでスキニングし、1つのインスタンスメッシュとして描く構成をRustで再現。ページと同じく毎フレームCPUでミキサーを各インスタンスの時刻に合わせ、比率用のボーンを拡縮し、スケルトンのボーン行列と足を接地させたインスタンス行列を格納する。コンピュートカーネルが全インスタンスの頂点（お腹のモーフ込み）をストレージバッファへスキニングし、頂点ステージがそれを読む。半球光、SunLightアドオンの2段カスケード（影受け専用の地面に落とす）、リムライト、RoomEnvironmentのPMREMで照らし、画面空間のグラデーションの上に4× MSAAとNeutralトーンマッピングで描く。各段はページからthree.js r186が生成するWGSL（skinning_instances/、未使用のsubgroup組み込みを除く）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -27842,7 +27905,7 @@
     {
       "id": "webgpu_tsl_graph",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_graph.html",
       "source_sha256": "d7a8153536efd93aaaecf0a6ba20955f13867b714dfad3903820611d02d12fc3",
@@ -27886,7 +27949,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 394,
+        "source": "src/browser/tsl_graph.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ShaderBall.glbの4つのモデルに、ページのTSLグラフファイル（shaders/tsl-graphs.json）のマテリアル（物理マテリアルのtriNoise3D、標準マテリアルのフラクタルノイズの苔、時間で動くPhongのWorleyノイズ、時間で動く半透明のbasicマテリアル）を適用し、平行光源とmonochrome_studioのPMREMで照らして半透明グリッドの地面の上に描く構成をRustで再現。4× MSAAとNeutralToneMappingの出力パスを通す。量子化（KHR_mesh_quantization）された頂点はそのままGPUへ渡す。各段はページからthree.js r186が生成するWGSL（tsl_graph/）を実行する。TSLグラフエディタ（Inspectorの拡張）は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

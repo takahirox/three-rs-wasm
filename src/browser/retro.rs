@@ -78,10 +78,11 @@ pub(super) fn mipmapped(
     image: &crate::material::Texture,
     format: wgpu::TextureFormat,
 ) -> wgpu::TextureView {
-    mipmapped_raw(
+    upload(
         r,
         mipmaps,
         &image.rgba,
+        image.bitmap.as_deref(),
         (image.width, image.height),
         4,
         format,
@@ -92,6 +93,17 @@ pub(super) fn mipmapped_raw(
     r: &Renderer,
     mipmaps: &mut Mipmaps,
     data: &[u8],
+    size: (u32, u32),
+    bytes: u32,
+    format: wgpu::TextureFormat,
+) -> wgpu::TextureView {
+    upload(r, mipmaps, data, None, size, bytes, format)
+}
+fn upload(
+    r: &Renderer,
+    mipmaps: &mut Mipmaps,
+    data: &[u8],
+    bitmap: Option<&crate::material::BrowserBitmap>,
     size: (u32, u32),
     bytes: u32,
     format: wgpu::TextureFormat,
@@ -114,20 +126,48 @@ pub(super) fn mipmapped_raw(
     });
     // Textures load flipped ( flipY ), as TextureLoader's are; glTF images
     // are not, and the caller passes them already in their final row order.
-    r.queue.write_texture(
-        texture.as_image_copy(),
-        data,
-        wgpu::TexelCopyBufferLayout {
-            offset: 0,
-            bytes_per_row: Some(size.0 * bytes),
-            rows_per_image: Some(size.1),
-        },
-        wgpu::Extent3d {
-            width: size.0,
-            height: size.1,
-            depth_or_array_layers: 1,
-        },
-    );
+    // Images the browser decoded ( lossy WebP ) are copied from their bitmap.
+    #[cfg(target_arch = "wasm32")]
+    if let Some(bitmap) = bitmap {
+        r.queue.copy_external_image_to_texture(
+            &wgpu::CopyExternalImageSourceInfo {
+                source: wgpu::ExternalImageSource::ImageBitmap(bitmap.0.clone()),
+                origin: wgpu::Origin2d::ZERO,
+                flip_y: false,
+            },
+            wgpu::CopyExternalImageDestInfo {
+                texture: &texture,
+                mip_level: 0,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+                color_space: wgpu::PredefinedColorSpace::Srgb,
+                premultiplied_alpha: false,
+            },
+            wgpu::Extent3d {
+                width: size.0,
+                height: size.1,
+                depth_or_array_layers: 1,
+            },
+        );
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = bitmap;
+    if !data.is_empty() {
+        r.queue.write_texture(
+            texture.as_image_copy(),
+            data,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(size.0 * bytes),
+                rows_per_image: Some(size.1),
+            },
+            wgpu::Extent3d {
+                width: size.0,
+                height: size.1,
+                depth_or_array_layers: 1,
+            },
+        );
+    }
     let mut encoder = r.device.create_command_encoder(&Default::default());
     let levels = mipmaps.levels(r, &texture);
     mipmaps.encode(&mut encoder, format, &levels);

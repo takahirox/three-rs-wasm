@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Retargeting(Box<super::retargeting::Demo>),
+    SkinningInstances(Box<super::skinning_instances::Demo>),
+    FogVolume(Box<super::fog_volume::Demo>),
+    BackdropWater(Box<super::backdrop_water::Demo>),
+    FogScattering(Box<super::fog_scattering::Demo>),
+    Ssr(Box<super::ssr::Demo>),
+    Sss(Box<super::sss::Demo>),
+    Ssgi(Box<super::ssgi::Demo>),
+    ComputeWater(Box<super::compute_water::Demo>),
+    TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
     Lightprobes(Box<super::lightprobes::Demo>),
     Fluid(Box<super::fluid::Demo>),
@@ -776,6 +786,97 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::LightprobesComplex(Box::new(
                     super::lightprobes::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            394 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::TslGraph(Box::new(
+                    super::tsl_graph::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            395 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::ComputeWater(Box::new(
+                    super::compute_water::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            396 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Ssgi(Box::new(
+                    super::ssgi::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            397 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Sss(Box::new(
+                    super::sss::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            398 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 50.,
+                elapsed: 0.,
+                content: Content::Ssr(Box::new(
+                    super::ssr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            399 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 120.,
+                elapsed: 0.,
+                content: Content::FogScattering(Box::new(
+                    super::fog_scattering::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            400 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 30.,
+                elapsed: 0.,
+                content: Content::BackdropWater(Box::new(
+                    super::backdrop_water::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            401 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::FogVolume(Box::new(
+                    super::fog_volume::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            402 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 60.,
+                elapsed: 0.,
+                content: Content::SkinningInstances(Box::new(
+                    super::skinning_instances::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            403 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 50.,
+                elapsed: 0.,
+                content: Content::Retargeting(Box::new(
+                    super::retargeting::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1670,6 +1771,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Retargeting(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2209,6 +2340,36 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Retargeting(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -2427,6 +2588,56 @@ impl Demo {
             return Some(target);
         }
         if let Content::Lightprobes(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::TslGraph(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ComputeWater(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Ssgi(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Sss(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Ssr(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Retargeting(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::SkinningInstances(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::FogVolume(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::BackdropWater(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::FogScattering(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -2734,6 +2945,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Retargeting(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -3029,6 +3270,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Retargeting(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::LightprobesComplex(demo) = &mut self.content {
@@ -3415,6 +3686,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Retargeting(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -3705,6 +4006,46 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Retargeting(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -4033,6 +4374,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Retargeting(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::LightprobesComplex(demo) = &mut self.content {
@@ -4397,6 +4768,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Retargeting(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SkinningInstances(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::FogVolume(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::BackdropWater(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::FogScattering(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ssr(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Sss(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ssgi(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ComputeWater(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TslGraph(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::LightprobesComplex(demo) = &mut self.content {

@@ -283,7 +283,8 @@ impl Renderer {
                         | wgpu::Features::INDIRECT_FIRST_INSTANCE
                         | wgpu::Features::TEXTURE_COMPRESSION_BC
                         | wgpu::Features::TEXTURE_COMPRESSION_ETC2
-                        | wgpu::Features::TEXTURE_COMPRESSION_ASTC),
+                        | wgpu::Features::TEXTURE_COMPRESSION_ASTC
+                        | wgpu::Features::RG11B10UFLOAT_RENDERABLE),
                 required_limits: wgpu::Limits::default(),
                 ..Default::default()
             })

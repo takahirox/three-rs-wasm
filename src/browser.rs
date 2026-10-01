@@ -8,6 +8,7 @@ mod ascii;
 mod attractors;
 mod audio_timing;
 mod audio_visual;
+mod backdrop_water;
 mod buffer_particles;
 mod caustics;
 mod channels;
@@ -15,6 +16,7 @@ mod clipping_stencil;
 mod composer_passes;
 mod compute_birds;
 mod compute_cloth;
+mod compute_water;
 mod controls_attributes;
 mod cubemap_dynamic;
 mod dds;
@@ -34,6 +36,8 @@ mod exporters_matcap;
 mod exporters_video;
 mod fbx_nurbs;
 mod fluid;
+mod fog_scattering;
+mod fog_volume;
 mod gallery;
 mod gallery_scenes;
 mod geometry_materials;
@@ -83,6 +87,7 @@ mod pvrtc;
 mod raycaster_helper;
 mod refraction_loaders;
 mod render_bundle;
+mod retargeting;
 mod retro;
 mod reversed_depth;
 mod robot;
@@ -98,10 +103,14 @@ mod shadowmap_viewer;
 mod shadowmap_vsm;
 mod shapes;
 mod shapes_lights;
+mod skinning_instances;
 mod sky_water;
 mod sort_bitonic;
 mod spot_skinning;
 mod ssao;
+mod ssgi;
+mod ssr;
+mod sss;
 mod stereo_loaders;
 mod taa;
 mod teapot_data;
@@ -122,6 +131,7 @@ mod tsl_environment;
 mod tsl_examples;
 mod tsl_extended;
 mod tsl_filters;
+mod tsl_graph;
 mod tsl_lighting;
 mod tsl_materials;
 mod tsl_next;
@@ -286,7 +296,7 @@ impl State {
             330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 351, 352, 353,
             354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373,
             374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390,
-            391, 392, 393,
+            391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403,
         ]
         .contains(&self.example)
         {
@@ -1043,7 +1053,7 @@ impl BrowserApp {
                             291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
                             343, 344, 345, 346, 349, 354, 355, 358, 359, 361, 362, 363, 365, 368,
                             376, 377, 378, 379, 380, 384, 385, 386, 387, 388, 389, 390, 391, 392,
-                            393,
+                            393, 394, 395, 396, 397, 398, 400,
                         ]
                         .contains(&example)
                         {
@@ -1063,7 +1073,8 @@ impl BrowserApp {
                             329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343, 344, 345, 348,
                             352, 353, 354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368,
                             369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
-                            384, 385, 386, 387, 388, 389, 390, 391, 392, 393,
+                            384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
+                            398, 399, 400, 401, 402, 403,
                         ]
                         .contains(&example),
                         format: if [
@@ -1081,7 +1092,8 @@ impl BrowserApp {
                             331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 352,
                             353, 354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369,
                             370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
-                            384, 385, 386, 387, 388, 389, 390, 391, 392, 393,
+                            384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
+                            398, 399, 400, 401, 402, 403,
                         ]
                         .contains(&example)
                         {
@@ -1113,7 +1125,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=393).contains(&example) {
+            if (7..=403).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

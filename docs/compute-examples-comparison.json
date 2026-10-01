@@ -518,6 +518,1032 @@
             }
           },
           {
+            "kind": "webgpu_animation_retargeting",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 570,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 570,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_skinning_instancing_individual",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 126720,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 126720,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_fog",
+            "reference": {
+              "draws": [
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_backdrop_water",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 384,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 384,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_custom_fog_scattering",
+            "reference": {
+              "draws": [
+                {
+                  "count": 20388,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 18
+                },
+                {
+                  "count": 16008,
+                  "instances": 17
+                },
+                {
+                  "count": 15228,
+                  "instances": 17
+                },
+                {
+                  "count": 19884,
+                  "instances": 16
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 17244,
+                  "instances": 17
+                },
+                {
+                  "count": 17886,
+                  "instances": 14
+                },
+                {
+                  "count": 15114,
+                  "instances": 13
+                },
+                {
+                  "count": 20388,
+                  "instances": 22
+                },
+                {
+                  "count": 18222,
+                  "instances": 9
+                },
+                {
+                  "count": 16002,
+                  "instances": 13
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 20388,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 15114,
+                  "instances": 13
+                },
+                {
+                  "count": 16002,
+                  "instances": 13
+                },
+                {
+                  "count": 16008,
+                  "instances": 17
+                },
+                {
+                  "count": 20244,
+                  "instances": 18
+                },
+                {
+                  "count": 19884,
+                  "instances": 16
+                },
+                {
+                  "count": 15228,
+                  "instances": 17
+                },
+                {
+                  "count": 17244,
+                  "instances": 17
+                },
+                {
+                  "count": 17886,
+                  "instances": 14
+                },
+                {
+                  "count": 18222,
+                  "instances": 9
+                },
+                {
+                  "count": 20388,
+                  "instances": 22
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_ssr",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 19542,
+                  "instances": 1
+                },
+                {
+                  "count": 29061,
+                  "instances": 1
+                },
+                {
+                  "count": 192,
+                  "instances": 1
+                },
+                {
+                  "count": 13848,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 19542,
+                  "instances": 1
+                },
+                {
+                  "count": 29061,
+                  "instances": 1
+                },
+                {
+                  "count": 192,
+                  "instances": 1
+                },
+                {
+                  "count": 13848,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_sss",
+            "reference": {
+              "draws": [
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_ssgi",
+            "reference": {
+              "draws": [
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 768,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 768,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_compute_water",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 12636,
+                  "instances": 100
+                },
+                {
+                  "count": 288,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 12636,
+                  "instances": 100
+                },
+                {
+                  "count": 288,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_tsl_graph",
+            "reference": {
+              "draws": [
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 96,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 96,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
             "kind": "webgpu_lightprobes",
             "reference": {
               "draws": [
@@ -6724,12 +7750,74 @@
           }
         ]
       },
+      "compute-examples-Compute-e-0dcfe-y-webgpu-postprocessing-sss": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 157,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 157,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 219,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 219,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-147ba-e-particles-fluid-samples-4": {
         "comparison": [
           {
             "state": 0,
-            "fraction": 0.1387939453125,
-            "meanError": 3.4579849243164062
+            "fraction": 0.13878250122070312,
+            "meanError": 3.4579747517903647
           },
           {
             "state": 1,
@@ -7005,6 +8093,74 @@
           }
         ]
       },
+      "compute-examples-Compute-e-22a3c-ation-retargeting-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 3.4332275390625e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.288818359375e-05
+          },
+          {
+            "state": 2,
+            "fraction": 3.814697265625e-06,
+            "meanError": 7.375081380208333e-05
+          },
+          {
+            "state": 3,
+            "fraction": 1.1444091796875e-05,
+            "meanError": 0.000362396240234375
+          },
+          {
+            "state": 4,
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.0004361470540364583
+          },
+          {
+            "state": 5,
+            "fraction": 3.90625e-06,
+            "meanError": 0.00013151041666666666
+          }
+        ]
+      },
+      "compute-examples-Compute-e-23515-om-fog-scattering-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.00139617919921875
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 3.4332275390625e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.00016530354817708334
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.00018310546875
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.00018310546875
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.00022395833333333333
+          }
+        ]
+      },
       "compute-examples-Compute-e-259cc-webgpu-volume-lighting-traa": {
         "residency": [
           {
@@ -7129,6 +8285,132 @@
           }
         ]
       },
+      "compute-examples-Compute-e-2aaf5-ostprocessing-sss-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 3.4332275390625e-05,
+            "meanError": 0.046930948893229164
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.005597432454427083
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0.00435638427734375,
+            "meanError": 0.11511484781901042
+          },
+          {
+            "state": 4,
+            "fraction": 0.00067138671875,
+            "meanError": 0.061113993326822914
+          },
+          {
+            "state": 5,
+            "fraction": 0.00084686279296875,
+            "meanError": 0.067230224609375
+          },
+          {
+            "state": 6,
+            "fraction": 0.00054931640625,
+            "meanError": 0.06631088256835938
+          },
+          {
+            "state": 7,
+            "fraction": 0.00055694580078125,
+            "meanError": 0.06376266479492188
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.005537668863932292
+          },
+          {
+            "state": 10,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.0007616678873697916
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 4.6875e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-2be9f-nning-instancing-individual": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 221,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 221,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 251,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 251,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-2cc64-u-volume-caustics-samples-4": {
         "comparison": [
           {
@@ -7165,6 +8447,90 @@
             "state": 6,
             "fraction": 0.0024609375,
             "meanError": 0.09476953125
+          }
+        ]
+      },
+      "compute-examples-Compute-e-2d277-gpu-compute-water-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.000118255615234375,
+            "meanError": 0.0021158854166666665
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 2.5431315104166668e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 2.0345052083333332e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 2.288818359375e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 2.288818359375e-05
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 2.288818359375e-05
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 2.0345052083333332e-05
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 2.0345052083333332e-05
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 6.510416666666667e-06
           }
         ]
       },
@@ -7450,6 +8816,95 @@
                 0
               ]
             }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-3d6cf-ostprocessing-fog-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 3.814697265625e-06
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.9073486328125e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 0.000141143798828125
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 5.086263020833333e-06
+          },
+          {
+            "state": 16,
+            "fraction": 0,
+            "meanError": 0
           }
         ]
       },
@@ -7897,6 +9352,68 @@
           }
         ]
       },
+      "compute-examples-Compute-e-4fe80-ebgpu-animation-retargeting": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 187,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 187,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 249,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 249,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-571e6--lights-clustered-samples-1": {
         "comparison": [
           {
@@ -7943,6 +9460,295 @@
             "state": 8,
             "fraction": 2.34375e-05,
             "meanError": 0.00033203125
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5818f--residency-webgpu-tsl-graph": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 153,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 153,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 198,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 198,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5b071--webgpu-postprocessing-ssgi": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 151,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 151,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 216,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 216,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5ef34-om-fog-scattering-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0
+          }
+        ]
+      },
+      "compute-examples-Compute-e-62c06-y-webgpu-postprocessing-fog": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 158,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 158,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 267,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 267,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-63082-ostprocessing-ssr-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.0007451375325520834
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.0007692972819010416
+          },
+          {
+            "state": 2,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.0007489522298177084
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.000690460205078125
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.00070953369140625
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0007311503092447916
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0007425944010416666
+          },
+          {
+            "state": 7,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.0007947285970052084
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.0005404154459635416
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.0005060831705729166
+          },
+          {
+            "state": 10,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.0008290608723958334
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.0002848307291666667
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0.000203125
           }
         ]
       },
@@ -7997,6 +9803,122 @@
             "state": 9,
             "fraction": 0,
             "meanError": 0
+          }
+        ]
+      },
+      "compute-examples-Compute-e-6791d-dency-webgpu-backdrop-water": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 462,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 462,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 493,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 493,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-6992f--webgpu-tsl-graph-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 2.1616617838541668e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 2.34375e-05
           }
         ]
       },
@@ -8059,6 +9981,90 @@
                 0
               ]
             }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-70d4c-gpu-compute-water-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.03380584716796875,
+            "meanError": 0.6859614054361979
+          },
+          {
+            "state": 1,
+            "fraction": 0.033847808837890625,
+            "meanError": 0.6861127217610677
+          },
+          {
+            "state": 2,
+            "fraction": 0.033748626708984375,
+            "meanError": 0.6874287923177084
+          },
+          {
+            "state": 3,
+            "fraction": 0.033748626708984375,
+            "meanError": 0.6874287923177084
+          },
+          {
+            "state": 4,
+            "fraction": 0.3062896728515625,
+            "meanError": 6.120591481526692
+          },
+          {
+            "state": 5,
+            "fraction": 0.033748626708984375,
+            "meanError": 0.6874287923177084
+          },
+          {
+            "state": 6,
+            "fraction": 0.01026153564453125,
+            "meanError": 0.24954096476236978
+          },
+          {
+            "state": 7,
+            "fraction": 0.033748626708984375,
+            "meanError": 0.6874287923177084
+          },
+          {
+            "state": 8,
+            "fraction": 0.03418731689453125,
+            "meanError": 0.6902860005696615
+          },
+          {
+            "state": 9,
+            "fraction": 0.03418731689453125,
+            "meanError": 0.6902860005696615
+          },
+          {
+            "state": 10,
+            "fraction": 0.03418731689453125,
+            "meanError": 0.6902860005696615
+          },
+          {
+            "state": 11,
+            "fraction": 0.0342254638671875,
+            "meanError": 0.6887626647949219
+          },
+          {
+            "state": 12,
+            "fraction": 0.03371429443359375,
+            "meanError": 0.6716041564941406
+          },
+          {
+            "state": 13,
+            "fraction": 0.030254364013671875,
+            "meanError": 0.584863026936849
+          },
+          {
+            "state": 14,
+            "fraction": 0.03231048583984375,
+            "meanError": 0.6216138203938802
+          },
+          {
+            "state": 15,
+            "fraction": 0.02833984375,
+            "meanError": 0.5628138020833333
           }
         ]
       },
@@ -8350,6 +10356,68 @@
             "state": 14,
             "fraction": 0,
             "meanError": 2.604166666666667e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-7d299-idency-webgpu-compute-water": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 199,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 199,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 256,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 256,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
           }
         ]
       },
@@ -8745,6 +10813,50 @@
             "state": 8,
             "fraction": 0.00373828125,
             "meanError": 0.18968489583333334
+          }
+        ]
+      },
+      "compute-examples-Compute-e-845cc-pu-backdrop-water-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 2,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.0002721150716145833
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.3020833333333333e-06
           }
         ]
       },
@@ -9233,6 +11345,40 @@
           }
         ]
       },
+      "compute-examples-Compute-e-aad9c-ancing-individual-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.00139617919921875,
+            "meanError": 0.03243382771809896
+          },
+          {
+            "state": 1,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.0007718404134114584
+          },
+          {
+            "state": 2,
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.002101898193359375
+          },
+          {
+            "state": 3,
+            "fraction": 9.918212890625e-05,
+            "meanError": 0.005114237467447917
+          },
+          {
+            "state": 4,
+            "fraction": 3.0517578125e-05,
+            "meanError": 0.0014394124348958333
+          },
+          {
+            "state": 5,
+            "fraction": 2.734375e-05,
+            "meanError": 0.0011770833333333334
+          }
+        ]
+      },
       "compute-examples-Compute-e-ae230-dency-webgpu-lights-dynamic": {
         "residency": [
           {
@@ -9295,12 +11441,96 @@
           }
         ]
       },
+      "compute-examples-Compute-e-b692e-stprocessing-ssgi-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 9.5367431640625e-05,
+            "meanError": 0.14145024617513022
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.9073486328125e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0.00010172526041666667
+          },
+          {
+            "state": 3,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.000598907470703125
+          },
+          {
+            "state": 4,
+            "fraction": 3.814697265625e-06,
+            "meanError": 0.007273356119791667
+          },
+          {
+            "state": 5,
+            "fraction": 7.62939453125e-06,
+            "meanError": 0.0005060831705729166
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0023345947265625
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.00011444091796875
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 2.9246012369791668e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 4.7047932942708336e-05
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 5.0862630208333336e-05
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.00013987223307291666
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0.00015894571940104166
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 0.0003407796223958333
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 7.502237955729167e-05
+          },
+          {
+            "state": 15,
+            "fraction": 0.0001171875,
+            "meanError": 0.05711067708333333
+          }
+        ]
+      },
       "compute-examples-Compute-e-b8e2d-pu-lights-dynamic-samples-4": {
         "comparison": [
           {
             "state": 0,
-            "fraction": 0,
-            "meanError": 0
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.0006688435872395834
           },
           {
             "state": 1,
@@ -9602,6 +11832,102 @@
           }
         ]
       },
+      "compute-examples-Compute-e-c2175-ation-retargeting-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 3.1789143880208336e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 4.9591064453125e-05
+          },
+          {
+            "state": 3,
+            "fraction": 1.1444091796875e-05,
+            "meanError": 0.000232696533203125
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0001983642578125
+          },
+          {
+            "state": 5,
+            "fraction": 7.8125e-06,
+            "meanError": 0.00016145833333333333
+          }
+        ]
+      },
+      "compute-examples-Compute-e-c694c-y-webgpu-postprocessing-ssr": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 345,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 345,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 423,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 423,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-c8a69-ebgpu-test-memory-samples-1": {
         "comparison": [
           {
@@ -9787,6 +12113,149 @@
           }
         ]
       },
+      "compute-examples-Compute-e-d007c-ostprocessing-fog-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 2.288818359375e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 1.1444091796875e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.9073486328125e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 7.62939453125e-06
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 3.814697265625e-06
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 0.000400543212890625
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 3.814697265625e-06
+          },
+          {
+            "state": 16,
+            "fraction": 0,
+            "meanError": 3.90625e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-d3bd7--webgpu-tsl-graph-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.0133056640625,
+            "meanError": 0.31885401407877606
+          },
+          {
+            "state": 1,
+            "fraction": 0.013217926025390625,
+            "meanError": 0.32297643025716144
+          },
+          {
+            "state": 2,
+            "fraction": 0.013519287109375,
+            "meanError": 0.3383344014485677
+          },
+          {
+            "state": 3,
+            "fraction": 0.0109100341796875,
+            "meanError": 0.27924474080403644
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0.0074920654296875,
+            "meanError": 0.20726394653320312
+          },
+          {
+            "state": 6,
+            "fraction": 0.013519287109375,
+            "meanError": 0.3383344014485677
+          },
+          {
+            "state": 7,
+            "fraction": 0.013919830322265625,
+            "meanError": 0.3846422831217448
+          },
+          {
+            "state": 8,
+            "fraction": 0.01482391357421875,
+            "meanError": 0.3980979919433594
+          },
+          {
+            "state": 9,
+            "fraction": 0.01305078125,
+            "meanError": 0.35198828125
+          }
+        ]
+      },
       "compute-examples-Compute-e-d7459-ebgpu-lightprobes-samples-4": {
         "comparison": [
           {
@@ -9936,38 +12405,38 @@
           },
           {
             "state": 1,
-            "fraction": 0.0015716552734375,
-            "meanError": 0.1215502421061198
+            "fraction": 0.002925872802734375,
+            "meanError": 0.22545750935872397
           },
           {
             "state": 2,
-            "fraction": 0.019145965576171875,
-            "meanError": 1.4599978129069011
+            "fraction": 0.027591705322265625,
+            "meanError": 2.005284627278646
           },
           {
             "state": 3,
-            "fraction": 0.019145965576171875,
-            "meanError": 1.4599978129069011
+            "fraction": 0.027591705322265625,
+            "meanError": 2.005284627278646
           },
           {
             "state": 4,
-            "fraction": 0.019145965576171875,
-            "meanError": 1.4599978129069011
+            "fraction": 0.027591705322265625,
+            "meanError": 2.005284627278646
           },
           {
             "state": 5,
-            "fraction": 0.019145965576171875,
-            "meanError": 1.4599978129069011
+            "fraction": 0.027591705322265625,
+            "meanError": 2.005284627278646
           },
           {
             "state": 6,
-            "fraction": 0.018463134765625,
-            "meanError": 1.438916524251302
+            "fraction": 0.026004791259765625,
+            "meanError": 2.034620920817057
           },
           {
             "state": 7,
-            "fraction": 0.0124921875,
-            "meanError": 0.8893828125
+            "fraction": 0.0173828125,
+            "meanError": 1.2328763020833333
           }
         ]
       },
@@ -9980,38 +12449,72 @@
           },
           {
             "state": 1,
-            "fraction": 0.0010833740234375,
-            "meanError": 0.18417994181315103
+            "fraction": 0.001964569091796875,
+            "meanError": 0.3392168680826823
           },
           {
             "state": 2,
-            "fraction": 0.01242828369140625,
-            "meanError": 1.8635648091634114
+            "fraction": 0.017498016357421875,
+            "meanError": 2.7632293701171875
           },
           {
             "state": 3,
-            "fraction": 0.01242828369140625,
-            "meanError": 1.8635648091634114
+            "fraction": 0.017498016357421875,
+            "meanError": 2.7632293701171875
           },
           {
             "state": 4,
-            "fraction": 0.01242828369140625,
-            "meanError": 1.8635648091634114
+            "fraction": 0.017498016357421875,
+            "meanError": 2.7632293701171875
           },
           {
             "state": 5,
-            "fraction": 0.01242828369140625,
-            "meanError": 1.8635648091634114
+            "fraction": 0.017498016357421875,
+            "meanError": 2.7632293701171875
           },
           {
             "state": 6,
-            "fraction": 0.0121612548828125,
-            "meanError": 1.9515762329101562
+            "fraction": 0.01743316650390625,
+            "meanError": 2.8567186991373696
           },
           {
             "state": 7,
-            "fraction": 0.0077421875,
-            "meanError": 1.2487981770833334
+            "fraction": 0.01108984375,
+            "meanError": 1.82562890625
+          }
+        ]
+      },
+      "compute-examples-Compute-e-e19d1-ancing-individual-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.001956939697265625,
+            "meanError": 0.058849334716796875
+          },
+          {
+            "state": 1,
+            "fraction": 4.1961669921875e-05,
+            "meanError": 0.001495361328125
+          },
+          {
+            "state": 2,
+            "fraction": 5.7220458984375e-05,
+            "meanError": 0.0015385945638020833
+          },
+          {
+            "state": 3,
+            "fraction": 0.00038909912109375,
+            "meanError": 0.0116119384765625
+          },
+          {
+            "state": 4,
+            "fraction": 8.0108642578125e-05,
+            "meanError": 0.0020904541015625
+          },
+          {
+            "state": 5,
+            "fraction": 6.25e-05,
+            "meanError": 0.0016953125
           }
         ]
       },
@@ -10454,6 +12957,68 @@
             "state": 12,
             "fraction": 0.00069921875,
             "meanError": 0.15051822916666666
+          }
+        ]
+      },
+      "compute-examples-Compute-e-f4ea7-ebgpu-custom-fog-scattering": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 170,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 170,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 226,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 226,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
           }
         ]
       },
@@ -11244,6 +13809,1032 @@
                 },
                 {
                   "count": 1440,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_animation_retargeting",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 570,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 33558,
+                  "instances": 1
+                },
+                {
+                  "count": 570,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_skinning_instancing_individual",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 126720,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 30
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 126720,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_fog",
+            "reference": {
+              "draws": [
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 300000,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_backdrop_water",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 384,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 84318,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 384,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 960,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_custom_fog_scattering",
+            "reference": {
+              "draws": [
+                {
+                  "count": 20388,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 18
+                },
+                {
+                  "count": 16008,
+                  "instances": 17
+                },
+                {
+                  "count": 15228,
+                  "instances": 17
+                },
+                {
+                  "count": 19884,
+                  "instances": 16
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 17244,
+                  "instances": 17
+                },
+                {
+                  "count": 17886,
+                  "instances": 14
+                },
+                {
+                  "count": 15114,
+                  "instances": 13
+                },
+                {
+                  "count": 20388,
+                  "instances": 22
+                },
+                {
+                  "count": 18222,
+                  "instances": 9
+                },
+                {
+                  "count": 16002,
+                  "instances": 13
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 20388,
+                  "instances": 1
+                },
+                {
+                  "count": 20244,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 15114,
+                  "instances": 13
+                },
+                {
+                  "count": 16002,
+                  "instances": 13
+                },
+                {
+                  "count": 16008,
+                  "instances": 17
+                },
+                {
+                  "count": 20244,
+                  "instances": 18
+                },
+                {
+                  "count": 19884,
+                  "instances": 16
+                },
+                {
+                  "count": 15228,
+                  "instances": 17
+                },
+                {
+                  "count": 17244,
+                  "instances": 17
+                },
+                {
+                  "count": 17886,
+                  "instances": 14
+                },
+                {
+                  "count": 18222,
+                  "instances": 9
+                },
+                {
+                  "count": 20388,
+                  "instances": 22
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_ssr",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 19542,
+                  "instances": 1
+                },
+                {
+                  "count": 29061,
+                  "instances": 1
+                },
+                {
+                  "count": 192,
+                  "instances": 1
+                },
+                {
+                  "count": 13848,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 19542,
+                  "instances": 1
+                },
+                {
+                  "count": 29061,
+                  "instances": 1
+                },
+                {
+                  "count": 192,
+                  "instances": 1
+                },
+                {
+                  "count": 13848,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_sss",
+            "reference": {
+              "draws": [
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 961056,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_postprocessing_ssgi",
+            "reference": {
+              "draws": [
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 768,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 6,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 36,
+                  "instances": 1
+                },
+                {
+                  "count": 768,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_compute_water",
+            "reference": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 12636,
+                  "instances": 100
+                },
+                {
+                  "count": 288,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 5952,
+                  "instances": 1
+                },
+                {
+                  "count": 12636,
+                  "instances": 100
+                },
+                {
+                  "count": 288,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                },
+                {
+                  "count": 96774,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            }
+          },
+          {
+            "kind": "webgpu_tsl_graph",
+            "reference": {
+              "draws": [
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 96,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                }
+              ],
+              "attributeBytes": 0,
+              "transformBytes": 0,
+              "textureBytes": 0
+            },
+            "rust": {
+              "draws": [
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
+                  "instances": 1
+                },
+                {
+                  "count": 96,
+                  "instances": 1
+                },
+                {
+                  "count": 52368,
+                  "instances": 1
+                },
+                {
+                  "count": 212424,
                   "instances": 1
                 }
               ],
@@ -17459,12 +21050,74 @@
           }
         ]
       },
+      "compute-examples-Compute-e-0dcfe-y-webgpu-postprocessing-sss": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 157,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 157,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 219,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 219,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-147ba-e-particles-fluid-samples-4": {
         "comparison": [
           {
             "state": 0,
-            "fraction": 0.07534599304199219,
-            "meanError": 1.778018315633138
+            "fraction": 0.0753469467163086,
+            "meanError": 1.7780040105183919
           },
           {
             "state": 1,
@@ -17740,6 +21393,74 @@
           }
         ]
       },
+      "compute-examples-Compute-e-22a3c-ation-retargeting-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 6.67572021484375e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.765655517578125e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 2.1298726399739582e-05
+          },
+          {
+            "state": 3,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.00010172526041666667
+          },
+          {
+            "state": 4,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 7.661183675130208e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 2.9622395833333334e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-23515-om-fog-scattering-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-06
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 8.900960286458334e-06
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 8.328755696614583e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 7.724761962890625e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 7.724761962890625e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.00010709635416666666
+          }
+        ]
+      },
       "compute-examples-Compute-e-259cc-webgpu-volume-lighting-traa": {
         "residency": [
           {
@@ -17864,6 +21585,132 @@
           }
         ]
       },
+      "compute-examples-Compute-e-2aaf5-ostprocessing-sss-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 2.765655517578125e-05,
+            "meanError": 0.029766082763671875
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.0037326812744140625
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0.003826141357421875,
+            "meanError": 0.09176095326741536
+          },
+          {
+            "state": 4,
+            "fraction": 0.0006885528564453125,
+            "meanError": 0.046886444091796875
+          },
+          {
+            "state": 5,
+            "fraction": 0.0006933212280273438,
+            "meanError": 0.0487066904703776
+          },
+          {
+            "state": 6,
+            "fraction": 0.00037479400634765625,
+            "meanError": 0.04772059122721354
+          },
+          {
+            "state": 7,
+            "fraction": 0.00040149688720703125,
+            "meanError": 0.04724756876627604
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.004000663757324219
+          },
+          {
+            "state": 10,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 0.0002139409383138021
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 2.63671875e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-2be9f-nning-instancing-individual": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 221,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 221,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 251,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 251,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-2cc64-u-volume-caustics-samples-4": {
         "comparison": [
           {
@@ -17900,6 +21747,90 @@
             "state": 6,
             "fraction": 0.001015625,
             "meanError": 0.030368815104166665
+          }
+        ]
+      },
+      "compute-examples-Compute-e-2d277-gpu-compute-water-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.0001850128173828125,
+            "meanError": 0.0029732386271158853
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.9073486328125e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 3.5603841145833336e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 1.3669331868489584e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.52587890625e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.4940897623697916e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 1.4940897623697916e-05
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 1.4940897623697916e-05
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 1.7484029134114582e-05
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-06
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-06
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 1.0091145833333333e-05
           }
         ]
       },
@@ -18188,6 +22119,95 @@
           }
         ]
       },
+      "compute-examples-Compute-e-3d6cf-ostprocessing-fog-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 8.58306884765625e-06
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 8.265177408854166e-06
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.7801920572916668e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 6.993611653645833e-06
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 8.265177408854166e-06
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 7.311503092447917e-06
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 8.265177408854166e-06
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.239776611328125e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.8755594889322918e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 8.58306884765625e-06
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 5.086263020833333e-06
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 1.2715657552083333e-06
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 1.2715657552083333e-06
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 0.00010967254638671875
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 1.5894571940104167e-06
+          },
+          {
+            "state": 16,
+            "fraction": 0,
+            "meanError": 9.765625e-07
+          }
+        ]
+      },
       "compute-examples-Compute-e-3d74a-shadowmap-opacity-samples-4": {
         "comparison": [
           {
@@ -18207,8 +22227,8 @@
           },
           {
             "state": 3,
-            "fraction": 0.0027294921875,
-            "meanError": 0.04355859375
+            "fraction": 1.46484375e-05,
+            "meanError": 0.0017893880208333334
           }
         ]
       },
@@ -18632,6 +22652,68 @@
           }
         ]
       },
+      "compute-examples-Compute-e-4fe80-ebgpu-animation-retargeting": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 187,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 187,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 249,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 249,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
       "compute-examples-Compute-e-571e6--lights-clustered-samples-1": {
         "comparison": [
           {
@@ -18678,6 +22760,295 @@
             "state": 8,
             "fraction": 1.171875e-05,
             "meanError": 0.00036751302083333335
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5818f--residency-webgpu-tsl-graph": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 153,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 153,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 198,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 198,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5b071--webgpu-postprocessing-ssgi": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 151,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 151,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 216,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 216,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-5ef34-om-fog-scattering-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 2.9296875e-06
+          }
+        ]
+      },
+      "compute-examples-Compute-e-62c06-y-webgpu-postprocessing-fog": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 158,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 158,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 267,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 267,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-63082-ostprocessing-ssr-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.0007479985555013021
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0.0007638931274414062
+          },
+          {
+            "state": 2,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.0007441838582356771
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0.0006818771362304688
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0006965001424153646
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0007187525431315104
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0007273356119791666
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.0007616678873697916
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.0005388259887695312
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.0005025863647460938
+          },
+          {
+            "state": 10,
+            "fraction": 1.1444091796875e-05,
+            "meanError": 0.0008249282836914062
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.00032583872477213543
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0.00018294270833333332
           }
         ]
       },
@@ -18732,6 +23103,122 @@
             "state": 9,
             "fraction": 0,
             "meanError": 0
+          }
+        ]
+      },
+      "compute-examples-Compute-e-6791d-dency-webgpu-backdrop-water": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 462,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 462,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 493,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 493,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-6992f--webgpu-tsl-graph-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 1.621246337890625e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.5894571940104168e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.7484029134114582e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 8.58306884765625e-06
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.430511474609375e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.9709269205729168e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 9.440104166666667e-06
           }
         ]
       },
@@ -18794,6 +23281,90 @@
                 0
               ]
             }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-70d4c-gpu-compute-water-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.017000198364257812,
+            "meanError": 0.3647301991780599
+          },
+          {
+            "state": 1,
+            "fraction": 0.017009735107421875,
+            "meanError": 0.3648010889689128
+          },
+          {
+            "state": 2,
+            "fraction": 0.0171051025390625,
+            "meanError": 0.36945851643880206
+          },
+          {
+            "state": 3,
+            "fraction": 0.0171051025390625,
+            "meanError": 0.36945851643880206
+          },
+          {
+            "state": 4,
+            "fraction": 0.2544097900390625,
+            "meanError": 5.080288251241048
+          },
+          {
+            "state": 5,
+            "fraction": 0.0171051025390625,
+            "meanError": 0.36945851643880206
+          },
+          {
+            "state": 6,
+            "fraction": 0.004086494445800781,
+            "meanError": 0.12693373362223306
+          },
+          {
+            "state": 7,
+            "fraction": 0.0171051025390625,
+            "meanError": 0.36945851643880206
+          },
+          {
+            "state": 8,
+            "fraction": 0.017360687255859375,
+            "meanError": 0.3727887471516927
+          },
+          {
+            "state": 9,
+            "fraction": 0.017360687255859375,
+            "meanError": 0.3727887471516927
+          },
+          {
+            "state": 10,
+            "fraction": 0.017360687255859375,
+            "meanError": 0.3727887471516927
+          },
+          {
+            "state": 11,
+            "fraction": 0.017218589782714844,
+            "meanError": 0.37654844919840497
+          },
+          {
+            "state": 12,
+            "fraction": 0.017165184020996094,
+            "meanError": 0.36858463287353516
+          },
+          {
+            "state": 13,
+            "fraction": 0.015821456909179688,
+            "meanError": 0.30922476450602215
+          },
+          {
+            "state": 14,
+            "fraction": 0.016260147094726562,
+            "meanError": 0.3155988057454427
+          },
+          {
+            "state": 15,
+            "fraction": 0.01408984375,
+            "meanError": 0.275916015625
           }
         ]
       },
@@ -19013,8 +23584,8 @@
         "comparison": [
           {
             "state": 0,
-            "fraction": 0.0001316070556640625,
-            "meanError": 0.003987948099772136
+            "fraction": 0,
+            "meanError": 1.6530354817708332e-05
           },
           {
             "state": 1,
@@ -19085,6 +23656,68 @@
             "state": 14,
             "fraction": 0,
             "meanError": 1.8229166666666668e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-7d299-idency-webgpu-compute-water": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 199,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 199,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 256,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 256,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
           }
         ]
       },
@@ -19480,6 +24113,50 @@
             "state": 8,
             "fraction": 0.0039052734375,
             "meanError": 0.19578971354166666
+          }
+        ]
+      },
+      "compute-examples-Compute-e-845cc-pu-backdrop-water-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.86102294921875e-06
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 2.86102294921875e-06
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.2715657552083333e-06
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 3.814697265625e-06
+          },
+          {
+            "state": 5,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 9.854634602864583e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 5.7220458984375e-06
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 3.90625e-06
           }
         ]
       },
@@ -19968,6 +24645,40 @@
           }
         ]
       },
+      "compute-examples-Compute-e-aad9c-ancing-individual-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.0011720657348632812,
+            "meanError": 0.030057589213053387
+          },
+          {
+            "state": 1,
+            "fraction": 1.049041748046875e-05,
+            "meanError": 0.001117706298828125
+          },
+          {
+            "state": 2,
+            "fraction": 1.811981201171875e-05,
+            "meanError": 0.0017712910970052083
+          },
+          {
+            "state": 3,
+            "fraction": 9.441375732421875e-05,
+            "meanError": 0.006573041280110677
+          },
+          {
+            "state": 4,
+            "fraction": 1.621246337890625e-05,
+            "meanError": 0.0016393661499023438
+          },
+          {
+            "state": 5,
+            "fraction": 1.46484375e-05,
+            "meanError": 0.0009173177083333334
+          }
+        ]
+      },
       "compute-examples-Compute-e-ae230-dency-webgpu-lights-dynamic": {
         "residency": [
           {
@@ -20027,6 +24738,90 @@
                 0
               ]
             }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-b692e-stprocessing-ssgi-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 2.193450927734375e-05,
+            "meanError": 0.1111453374226888
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.002716064453125e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 9.1552734375e-05
+          },
+          {
+            "state": 3,
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.0005970001220703125
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.007174173990885417
+          },
+          {
+            "state": 5,
+            "fraction": 2.288818359375e-05,
+            "meanError": 0.0005076726277669271
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.002364476521809896
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.0001125335693359375
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 2.86102294921875e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 4.482269287109375e-05
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 4.9591064453125e-05
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0.00014495849609375
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 0.00016657511393229166
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 0.00033601125081380207
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 7.216135660807292e-05
+          },
+          {
+            "state": 15,
+            "fraction": 6.54296875e-05,
+            "meanError": 0.05054231770833333
           }
         ]
       },
@@ -20153,8 +24948,8 @@
         "comparison": [
           {
             "state": 0,
-            "fraction": 0,
-            "meanError": 0
+            "fraction": 8.58306884765625e-06,
+            "meanError": 0.00019073486328125
           },
           {
             "state": 1,
@@ -20334,6 +25129,102 @@
             "state": 12,
             "fraction": 0.0004150390625,
             "meanError": 0.010233072916666667
+          }
+        ]
+      },
+      "compute-examples-Compute-e-c2175-ation-retargeting-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 6.612141927083333e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 2.5431315104166668e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 2.2570292154947918e-05
+          },
+          {
+            "state": 3,
+            "fraction": 9.5367431640625e-07,
+            "meanError": 0.00010363260904947917
+          },
+          {
+            "state": 4,
+            "fraction": 2.86102294921875e-06,
+            "meanError": 0.00010553995768229167
+          },
+          {
+            "state": 5,
+            "fraction": 1.953125e-06,
+            "meanError": 4.9479166666666665e-05
+          }
+        ]
+      },
+      "compute-examples-Compute-e-c694c-y-webgpu-postprocessing-ssr": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 345,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 345,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 423,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            },
+            "after": {
+              "creates": 423,
+              "transfers": [
+                1,
+                2064,
+                16
+              ],
+              "resources": [
+                1,
+                1,
+                0
+              ]
+            }
           }
         ]
       },
@@ -20522,6 +25413,149 @@
           }
         ]
       },
+      "compute-examples-Compute-e-d007c-ostprocessing-fog-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 1.2079874674479166e-05
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 1.71661376953125e-05
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.621246337890625e-05
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 1.33514404296875e-05
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 1.71661376953125e-05
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 1.71661376953125e-05
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 1.71661376953125e-05
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 1.5576680501302082e-05
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 1.049041748046875e-05
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 6.357828776041667e-06
+          },
+          {
+            "state": 10,
+            "fraction": 0,
+            "meanError": 6.993611653645833e-06
+          },
+          {
+            "state": 11,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 12,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-07
+          },
+          {
+            "state": 13,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-07
+          },
+          {
+            "state": 14,
+            "fraction": 0,
+            "meanError": 0.00034872690836588543
+          },
+          {
+            "state": 15,
+            "fraction": 0,
+            "meanError": 6.357828776041666e-07
+          },
+          {
+            "state": 16,
+            "fraction": 0,
+            "meanError": 6.510416666666666e-07
+          }
+        ]
+      },
+      "compute-examples-Compute-e-d3bd7--webgpu-tsl-graph-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.006051063537597656,
+            "meanError": 0.1522219975789388
+          },
+          {
+            "state": 1,
+            "fraction": 0.006052970886230469,
+            "meanError": 0.15475781758626303
+          },
+          {
+            "state": 2,
+            "fraction": 0.0062503814697265625,
+            "meanError": 0.161102294921875
+          },
+          {
+            "state": 3,
+            "fraction": 0.0049839019775390625,
+            "meanError": 0.1317310333251953
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 5,
+            "fraction": 0.0035076141357421875,
+            "meanError": 0.10372447967529297
+          },
+          {
+            "state": 6,
+            "fraction": 0.0062503814697265625,
+            "meanError": 0.161102294921875
+          },
+          {
+            "state": 7,
+            "fraction": 0.006542205810546875,
+            "meanError": 0.18521626790364584
+          },
+          {
+            "state": 8,
+            "fraction": 0.006633758544921875,
+            "meanError": 0.18718751271565756
+          },
+          {
+            "state": 9,
+            "fraction": 0.0055458984375,
+            "meanError": 0.15623046875
+          }
+        ]
+      },
       "compute-examples-Compute-e-d7459-ebgpu-lightprobes-samples-4": {
         "comparison": [
           {
@@ -20667,42 +25701,42 @@
           {
             "state": 0,
             "fraction": 0,
-            "meanError": 1.2715657552083333e-06
+            "meanError": 0
           },
           {
             "state": 1,
-            "fraction": 0.0017871856689453125,
-            "meanError": 0.1779015858968099
+            "fraction": 0.0018930435180664062,
+            "meanError": 0.20404624938964844
           },
           {
             "state": 2,
-            "fraction": 0.019687652587890625,
-            "meanError": 1.7985862096150715
+            "fraction": 0.02069568634033203,
+            "meanError": 1.953920046488444
           },
           {
             "state": 3,
-            "fraction": 0.019687652587890625,
-            "meanError": 1.7985862096150715
+            "fraction": 0.02069568634033203,
+            "meanError": 1.953920046488444
           },
           {
             "state": 4,
-            "fraction": 0.019687652587890625,
-            "meanError": 1.7985862096150715
+            "fraction": 0.02069568634033203,
+            "meanError": 1.953920046488444
           },
           {
             "state": 5,
-            "fraction": 0.019687652587890625,
-            "meanError": 1.7985862096150715
+            "fraction": 0.02069568634033203,
+            "meanError": 1.953920046488444
           },
           {
             "state": 6,
-            "fraction": 0.01897716522216797,
-            "meanError": 1.8429142634073894
+            "fraction": 0.01998615264892578,
+            "meanError": 2.042408307393392
           },
           {
             "state": 7,
-            "fraction": 0.01304296875,
-            "meanError": 1.1743580729166667
+            "fraction": 0.01330859375,
+            "meanError": 1.2553001302083333
           }
         ]
       },
@@ -20715,38 +25749,72 @@
           },
           {
             "state": 1,
-            "fraction": 0.001644134521484375,
-            "meanError": 0.28720982869466144
+            "fraction": 0.001270294189453125,
+            "meanError": 0.22019672393798828
           },
           {
             "state": 2,
-            "fraction": 0.01682567596435547,
-            "meanError": 2.7523276011149087
+            "fraction": 0.013990402221679688,
+            "meanError": 2.1130336125691733
           },
           {
             "state": 3,
-            "fraction": 0.01682567596435547,
-            "meanError": 2.752325693766276
+            "fraction": 0.013990402221679688,
+            "meanError": 2.1130317052205405
           },
           {
             "state": 4,
-            "fraction": 0.01682567596435547,
-            "meanError": 2.752325693766276
+            "fraction": 0.013990402221679688,
+            "meanError": 2.1130317052205405
           },
           {
             "state": 5,
-            "fraction": 0.01682567596435547,
-            "meanError": 2.752325693766276
+            "fraction": 0.013990402221679688,
+            "meanError": 2.1130317052205405
           },
           {
             "state": 6,
-            "fraction": 0.01641368865966797,
-            "meanError": 2.796078681945801
+            "fraction": 0.014385223388671875,
+            "meanError": 2.3352931340535483
           },
           {
             "state": 7,
-            "fraction": 0.01037890625,
-            "meanError": 1.7685032552083333
+            "fraction": 0.0091875,
+            "meanError": 1.498140625
+          }
+        ]
+      },
+      "compute-examples-Compute-e-e19d1-ancing-individual-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0.0007877349853515625,
+            "meanError": 0.022744178771972656
+          },
+          {
+            "state": 1,
+            "fraction": 3.528594970703125e-05,
+            "meanError": 0.0012728373209635417
+          },
+          {
+            "state": 2,
+            "fraction": 4.291534423828125e-05,
+            "meanError": 0.0018027623494466145
+          },
+          {
+            "state": 3,
+            "fraction": 0.00027370452880859375,
+            "meanError": 0.009447097778320312
+          },
+          {
+            "state": 4,
+            "fraction": 7.62939453125e-05,
+            "meanError": 0.0024410883585611978
+          },
+          {
+            "state": 5,
+            "fraction": 5.17578125e-05,
+            "meanError": 0.0016787109375
           }
         ]
       },
@@ -21026,8 +26094,8 @@
           },
           {
             "state": 3,
-            "fraction": 0.015473365783691406,
-            "meanError": 0.3591114679972331
+            "fraction": 0.015816688537597656,
+            "meanError": 0.3612709045410156
           },
           {
             "state": 4,
@@ -21189,6 +26257,68 @@
             "state": 12,
             "fraction": 1.46484375e-05,
             "meanError": 0.1072900390625
+          }
+        ]
+      },
+      "compute-examples-Compute-e-f4ea7-ebgpu-custom-fog-scattering": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 170,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 170,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 226,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 226,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
           }
         ]
       },

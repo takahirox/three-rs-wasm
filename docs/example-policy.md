@@ -336,3 +336,17 @@ are scoped to the MSAA captures. Where r186 behaves unexpectedly the port
 follows the original's visible result: the light-probe rebake that captures
 the old helpers as black spheres. The HDR page's values above 1 are compared
 only as a standard display clamps them.
+
+The TSL graph, compute water, SSGI, SSS, SSR, fog scattering, backdrop
+water, volumetric fog, skinning-instance and retargeting batch
+([probe-ssr-examples.md](probe-ssr-examples.md)) compares its ten WebGPU
+examples against the WebGPU renderer, running the WGSL three.js generates for
+each page. Seven match exactly in every state with and without MSAA, and the
+skinning instances are within 0.2% of pixels. The TSL graph and compute water
+scenes match exactly without MSAA, and only their 4× MSAA edges use scoped
+bounds. Where r186 behaves unexpectedly the port follows the original's
+visible result: SSSNode's frame ID baked into each build of its shader, the
+velocity pre-pass that keeps its first frame's camera matrices, the
+auto-rotation step each OrbitControls.update() call takes, and the world
+matrices retargetClip reads while the loader has left them stale. The fixture
+patches are documented with the batch.

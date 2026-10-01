@@ -22,7 +22,7 @@ impl Random {
     }
 }
 /// SimplexNoise( r ): the permutation drawn from r.random(), and noise3d.
-struct Simplex {
+pub(super) struct Simplex {
     perm: [usize; 512],
 }
 impl Simplex {
@@ -40,15 +40,49 @@ impl Simplex {
         [0., 1., -1.],
         [0., -1., -1.],
     ];
-    fn new(random: &mut Random) -> Self {
+    pub(super) fn new(random: &mut Random) -> Self {
+        Self::from_random(|| random.next())
+    }
+    /// SimplexNoise( { random } ) over any random source.
+    pub(super) fn from_random(mut random: impl FnMut() -> f64) -> Self {
         let p: Vec<usize> = (0..256)
-            .map(|_| (random.next() * 256.).floor() as usize)
+            .map(|_| (random() * 256.).floor() as usize)
             .collect();
         let mut perm = [0; 512];
         for (i, v) in perm.iter_mut().enumerate() {
             *v = p[i & 255];
         }
         Self { perm }
+    }
+    /// noise( xin, yin ): 2D simplex noise.
+    pub(super) fn noise(&self, xin: f64, yin: f64) -> f64 {
+        let f2 = 0.5 * (3f64.sqrt() - 1.0);
+        let s = (xin + yin) * f2;
+        let (i, j) = ((xin + s).floor(), (yin + s).floor());
+        let g2 = (3.0 - 3f64.sqrt()) / 6.0;
+        let t = (i + j) * g2;
+        let (x0, y0) = (xin - (i - t), yin - (j - t));
+        let (i1, j1) = if x0 > y0 { (1, 0) } else { (0, 1) };
+        let (x1, y1) = (x0 - i1 as f64 + g2, y0 - j1 as f64 + g2);
+        let (x2, y2) = (x0 - 1.0 + 2.0 * g2, y0 - 1.0 + 2.0 * g2);
+        let (ii, jj) = ((i as i64 & 255) as usize, (j as i64 & 255) as usize);
+        let p = &self.perm;
+        let gi = [
+            p[ii + p[jj]] % 12,
+            p[ii + i1 + p[jj + j1]] % 12,
+            p[ii + 1 + p[jj + 1]] % 12,
+        ];
+        let corner = |t: f64, g: usize, x: f64, y: f64| {
+            if t < 0. {
+                0.
+            } else {
+                let t = t * t;
+                t * t * (Self::GRAD3[g][0] * x + Self::GRAD3[g][1] * y)
+            }
+        };
+        70.0 * (corner(0.5 - x0 * x0 - y0 * y0, gi[0], x0, y0)
+            + corner(0.5 - x1 * x1 - y1 * y1, gi[1], x1, y1)
+            + corner(0.5 - x2 * x2 - y2 * y2, gi[2], x2, y2))
     }
     fn noise3d(&self, xin: f64, yin: f64, zin: f64) -> f64 {
         let f3 = 1.0 / 3.0;

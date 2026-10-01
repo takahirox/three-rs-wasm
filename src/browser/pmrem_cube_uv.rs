@@ -381,3 +381,62 @@ pub(super) fn source_pipeline(
 ) -> wgpu::RenderPipeline {
     raw_pipeline(r, label, vs, fs, &LAYOUTS, HALF, 1, None, false)
 }
+/// An RGBE .hdr environment as HDRLoader loads it (half float, flipped,
+/// mipmapped on the GPU), through PMREMGenerator.fromEquirectangular at
+/// lodMax 8; also the equirect texture.
+pub(super) async fn rgbe_pmrem(
+    r: &Renderer,
+    clamp: &wgpu::Sampler,
+    url: &str,
+) -> Result<(Pmrem, wgpu::TextureView)> {
+    use super::gltf_viewer::fetch;
+    use super::retro::mipmapped_raw;
+    use super::shadowmap_opacity::Mipmaps;
+    const EQUIRECT_VS: &str = include_str!("retro/pmrem_equirect_vs.wgsl");
+    const EQUIRECT_FS: &str = include_str!("retro/pmrem_equirect_fs.wgsl");
+    let (width, height, texels) = super::trackball_sprites::parse_rgbe(&fetch(url).await?)?;
+    let row = width as usize * 4;
+    let texels: Vec<u16> = texels.chunks(row).rev().flatten().copied().collect();
+    let mut mipmaps = Mipmaps::new(r);
+    let equirect = mipmapped_raw(
+        r,
+        &mut mipmaps,
+        bytemuck::cast_slice(&texels),
+        (width, height),
+        8,
+        HALF,
+    );
+    let pmrem = Pmrem::new(r, clamp, 8, GGX_8)?;
+    let source = source_pipeline(r, "PMREM equirect", EQUIRECT_VS, EQUIRECT_FS);
+    let object = r
+        .device
+        .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("PMREM equirect"),
+            contents: &pack(
+                EQUIRECT_VS,
+                "objectStruct",
+                &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
+            )?,
+            usage: wgpu::BufferUsages::UNIFORM,
+        });
+    let groups = [
+        bind(
+            r,
+            source.get_bind_group_layout(0),
+            &[(0, flat_camera(r, EQUIRECT_VS)?.as_entire_binding())],
+        ),
+        bind(
+            r,
+            source.get_bind_group_layout(1),
+            &[
+                (0, wgpu::BindingResource::Sampler(clamp)),
+                (1, wgpu::BindingResource::TextureView(&equirect)),
+                (2, object.as_entire_binding()),
+            ],
+        ),
+    ];
+    let mut encoder = r.device.create_command_encoder(&Default::default());
+    pmrem.encode(&mut encoder, &source, [&groups[0], &groups[1]]);
+    r.queue.submit([encoder.finish()]);
+    Ok((pmrem, equirect))
+}
