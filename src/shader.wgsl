@@ -43,6 +43,8 @@ struct Uniforms {
 @group(0) @binding(14) var dfg_map: texture_2d<f32>;
 @group(0) @binding(15) var shadow_atlas:texture_depth_2d_array;
 @group(0) @binding(16) var shadow_sampler:sampler_comparison;
+@group(0) @binding(27) var vsm_maps:texture_2d_array<f32>;
+@group(0) @binding(28) var vsm_sampler:sampler;
 @group(0) @binding(24) var ltc_sampler:sampler;
 @group(0) @binding(17) var ltc_tables:texture_2d_array<f32>;
 @group(0) @binding(18) var transmission_map:texture_2d<f32>;
@@ -128,15 +130,18 @@ fn cubic_weights(a:vec2<f32>)->mat4x2<f32> {
         (a*a*(3.0*a-6.0)+4.0)/6.0,
         (a*(a*(-3.0*a+3.0)+3.0)+1.0)/6.0,a*a*a/6.0);
 }
-fn transmission_bicubic(uv:vec2<f32>,level:i32)->vec3<f32> {
+fn transmission_bicubic(uv:vec2<f32>,level:i32)->vec4<f32> {
     let size=vec2<f32>(textureDimensions(transmission_map,level));
     let pixel=uv*size+0.5;let base=floor(pixel);let w=cubic_weights(fract(pixel));
     let g0=w[0]+w[1];let g1=w[2]+w[3];
     let p0=(base-1.0+w[1]/g0-0.5)/size;let p1=(base+1.0+w[3]/g1-0.5)/size;
-    return g0.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,p0,f32(level)).rgb+g1.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p1.x,p0.y),f32(level)).rgb)
-        +g1.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p0.x,p1.y),f32(level)).rgb+g1.x*textureSampleLevel(transmission_map,transmission_sampler,p1,f32(level)).rgb);
+    return g0.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,p0,f32(level))+g1.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p1.x,p0.y),f32(level)))
+        +g1.y*(g0.x*textureSampleLevel(transmission_map,transmission_sampler,vec2(p0.x,p1.y),f32(level))+g1.x*textureSampleLevel(transmission_map,transmission_sampler,p1,f32(level)));
 }
-fn transmitted(surface:VertexOut,n:vec3<f32>,v:vec3<f32>,ior:f32,roughness:f32)->vec3<f32> {
+// The volume attenuation of the last transmitted() sample, for transmissionAlpha.
+var<private> transmission_attenuation:vec3<f32>;
+/// The attenuated transmitted light and the transmission sample's alpha.
+fn transmitted(surface:VertexOut,n:vec3<f32>,v:vec3<f32>,ior:f32,roughness:f32)->vec4<f32> {
     let world_normal=(transpose(u.view)*vec4(n,0.0)).xyz;
     let world_view=(transpose(u.view)*vec4(v,0.0)).xyz;
     let ray=normalize(refract(-world_view,world_normal,1.0/ior))*u.transmission[0].y*extension_sample(9u,surface).g*vec3(length(u.model[0].xyz),length(u.model[1].xyz),length(u.model[2].xyz));
@@ -145,11 +150,12 @@ fn transmitted(surface:VertexOut,n:vec3<f32>,v:vec3<f32>,ior:f32,roughness:f32)-
     let uv=u.transmission[2].xy+vec2(screen.x,1.0-screen.y)*u.transmission[2].zw;
     let size=vec2<f32>(textureDimensions(transmission_map));
     let lod=clamp(log2(size.x*u.transmission[2].z)*roughness*clamp(ior*2.0-2.0,0.0,1.0),0.0,f32(textureNumLevels(transmission_map)-1u));
-    var color=mix(transmission_bicubic(uv,i32(floor(lod))),transmission_bicubic(uv,i32(ceil(lod))),fract(lod));
+    let color=mix(transmission_bicubic(uv,i32(floor(lod))),transmission_bicubic(uv,i32(ceil(lod))),fract(lod));
+    transmission_attenuation=vec3(1.0);
     if u.transmission[0].z<1e30 {
-        color*=pow(max(u.transmission[1].rgb,vec3(0.000001)),vec3(length(ray)/u.transmission[0].z));
+        transmission_attenuation=pow(max(u.transmission[1].rgb,vec3(0.000001)),vec3(length(ray)/u.transmission[0].z));
     }
-    return color;
+    return vec4(color.rgb*transmission_attenuation,color.a);
 }
 fn ltc_uv(n:vec3<f32>,v:vec3<f32>,roughness:f32)->vec2<f32> {return vec2(roughness,sqrt(1.0-clamp(dot(n,v),0.0,1.0)))*(63.0/64.0)+0.5/64.0;}
 fn ltc_edge(a:vec3<f32>,b:vec3<f32>)->vec3<f32> {
@@ -181,6 +187,20 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z<0.0 || ndc.z>1.0 {return 1.0;}
     uv*=u.shadow_filters[i].z;
     let size=vec2<f32>(textureDimensions(shadow_atlas));
+    if u.shadow_filters[i].y>1.5 {
+        // VSMShadowMap: Chebyshev's upper bound from the blurred mean and
+        // deviation, light bleeding reduced by remapping 0.3..0.95.
+        let z=ndc.z+settings.y;
+        if z>1.0 {return 1.0;}
+        let distribution=textureSampleLevel(vsm_maps,vsm_sampler,uv,i32(layer),0.0).rg;
+        let mean=distribution.x;var variance=distribution.y*distribution.y;
+        let hard=step(z,mean);
+        if hard==1.0 {return 1.0;}
+        variance=max(variance,0.0000001);
+        let d=z-mean;
+        let p=clamp((variance/(variance+d*d)-0.3)/0.65,0.0,1.0);
+        return max(hard,p);
+    }
     if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
     let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
     var value=0.0;
@@ -337,6 +357,9 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if u.flags.x>0.5 {geometry_normal=normalize(cross(q0,q1));}
     let view_normal=geometry_normal;
     let derivative=max(abs(dpdx(view_normal)),abs(dpdy(view_normal)));
+    // bumpMap ( the normal slot when u.maps.x is 3 ): dHdxy_fwd's three height samples, the
+    // screen-space steps in WebGL's y-up derivative convention.
+    var bump=vec3(0.0);if NORMAL_MAP && u.maps.x>2.5 {let buv=map_uv(2u,in);bump=vec3(textureSample(normal_map,normal_sampler,buv).x,textureSample(normal_map,normal_sampler,buv+dpdx(buv)).x,textureSample(normal_map,normal_sampler,buv-dpdy(buv)).x);}
     var normal_sample=vec3(1.0);if NORMAL_MAP {normal_sample=textureSample(normal_map,normal_sampler,map_uv(2u,in)).xyz*2.0-1.0;if u.maps.x>1.5 {normal_sample=vec3(normal_sample.xy,sqrt(saturate(1.0-dot(normal_sample.xy,normal_sample.xy))));}}
     var base=u.color*in.color;if COLOR_MAP {base*=textureSample(color_map,color_sampler,map_uv(0u,in));}
     var clipping_opacity=1.0;
@@ -371,7 +394,15 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     let face=select(-1.0,1.0,front);
     var n=geometry_normal*face;
     let v=select(normalize(-in.view_position),vec3(0.0,0.0,1.0),u.projection[3][3]!=0.0);
-    if NORMAL_MAP && u.maps.x>0.5 {
+    if NORMAL_MAP && u.maps.x>2.5 {
+        // perturbNormalArb( -vViewPosition, normal, dHdxy_fwd(), faceDirection ).
+        let dhdxy=vec2(u.pbr.x*bump.y-u.pbr.x*bump.x,u.pbr.x*bump.z-u.pbr.x*bump.x);
+        let sigma_x=normalize(dpdx(-in.view_position));let sigma_y=normalize(-dpdy(-in.view_position));
+        let r1=cross(sigma_y,n);let r2=cross(n,sigma_x);
+        let det=dot(sigma_x,r1)*face;
+        let grad=sign(det)*(dhdxy.x*r1+dhdxy.y*r2);
+        n=normalize(abs(det)*n-grad);
+    } else if NORMAL_MAP && u.maps.x>0.5 {
         var t:vec3<f32>;var b:vec3<f32>;
         if abs(in.tangent.w)>0.5 {t=normalize(in.tangent.xyz);b=normalize(in.bitangent);}
         else {
@@ -383,6 +414,8 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
         n=normalize(t*sample.x*u.pbr.x*face+b*sample.y*u.pbr.y*face+n*sample.z);
     }
     if material_kind()==8.0 {return vec4(vec3(1.0-in.clip.z),base.a);}
+    // ShadowMaterial: opacity × ( 1 − getShadowMask() ), the product over every light's shadow.
+    if material_kind()==9.0 {var mask=1.0;if RECEIVE_SHADOW {for(var i=0u;i<light_count();i++){mask*=mix(shadow_visibility(i,in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz)),1.0,u.shadow_filters[i].w);}}return apply_fog(vec4(base.rgb,base.a*(1.0-mask)),-in.view_position.z);}
     if material_kind()==7.0 {
         let x=normalize(vec3(v.z,0.0,-v.x));let y=cross(v,x);
         let uv=vec2(dot(x,n),dot(y,n))*0.495+0.5;
@@ -588,9 +621,13 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             coat+=vec3(coatf*ggx(ccrough*ccrough,coatnl,coatnv,coatnh))*light_color*attenuation*coatnl;
         }
     }
+    var transmission_alpha=1.0;
     if transmission>0.0 {
         let ior=u.physical[0].w;
-        var color=transmitted(in,n,v,ior,roughness);
+        let sample=transmitted(in,n,v,ior,roughness);
+        var color=sample.rgb;
+        // transmissionAlpha: 1 − ( 1 − sample alpha ) × the mean transmittance.
+        transmission_alpha=mix(1.0,1.0-(1.0-sample.a)*dot(base.rgb*transmission_attenuation,vec3(1.0/3.0)),transmission);
         if u.transmission[0].w>0.0 {
             let spread=(ior-1.0)*0.025*u.transmission[0].w;
             color=vec3(transmitted(in,n,v,max(1.0,ior-spread),roughness).r,color.g,transmitted(in,n,v,ior+spread,roughness).b);
@@ -602,7 +639,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     if surface.backdrop.a>=0.0 {result+=mix(total_diffuse,surface.backdrop.rgb,surface.backdrop.a)-total_diffuse;}
     result+=sheen_light;
     if cc>0.0 {let nv=clamp(dot(coat_n,v),0.0,1.0);let fcc=0.04+0.96*exp2((-5.55473*nv-6.98316)*nv);result=result*(1.0-cc*fcc)+coat*cc;}
-    return apply_fog(max(vec4(result,base.a),vec4(0.0)),-in.view_position.z);
+    return apply_fog(max(vec4(result,base.a*transmission_alpha),vec4(0.0)),-in.view_position.z);
 }
 
 // r186 SunShadowNode: two view-depth cascades with five rotated Vogel PCF taps.

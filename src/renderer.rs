@@ -285,7 +285,15 @@ impl Renderer {
                         | wgpu::Features::TEXTURE_COMPRESSION_ETC2
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC
                         | wgpu::Features::RG11B10UFLOAT_RENDERABLE),
-                required_limits: wgpu::Limits::default(),
+                // The scene layout's VSM moments are a seventeenth sampled texture
+                // when a custom program adds its own: take what the adapter offers.
+                required_limits: wgpu::Limits {
+                    max_sampled_textures_per_shader_stage: adapter
+                        .limits()
+                        .max_sampled_textures_per_shader_stage
+                        .max(wgpu::Limits::default().max_sampled_textures_per_shader_stage),
+                    ..wgpu::Limits::default()
+                },
                 ..Default::default()
             })
             .await
@@ -332,6 +340,23 @@ impl Renderer {
                 binding: 16,
                 visibility: wgpu::ShaderStages::FRAGMENT,
                 ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Comparison),
+                count: None,
+            },
+            // VSMShadowMap: the blurred ( mean, deviation ) layers and their sampler.
+            wgpu::BindGroupLayoutEntry {
+                binding: 27,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Texture {
+                    sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                    view_dimension: wgpu::TextureViewDimension::D2Array,
+                    multisampled: false,
+                },
+                count: None,
+            },
+            wgpu::BindGroupLayoutEntry {
+                binding: 28,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
                 count: None,
             },
         ]);
@@ -800,7 +825,17 @@ impl Renderer {
             let background = cached.as_mut().expect("transmission target");
             background.viewport = target.viewport;
             background.scissor = target.scissor;
-            self.render_inner(scene, camera, background, ScenePass::Opaque, None, None)?;
+            // WebGLRenderer's transmission pass clears to white at alpha 0.5
+            // ( premultiplied ) when the clear alpha is below one.
+            let clear = (scene.background, scene.background_alpha);
+            if scene.background_alpha < 1.0 && !scene.background_environment {
+                scene.background = Color::WHITE;
+                scene.background_alpha = 0.5;
+            }
+            let opaque =
+                self.render_inner(scene, camera, background, ScenePass::Opaque, None, None);
+            (scene.background, scene.background_alpha) = clear;
+            opaque?;
             if self
                 .transmission_mips
                 .borrow()
@@ -1272,6 +1307,7 @@ impl Renderer {
                     Material::Toon(m) => (6.0, 1.0, 0.0, m.base.emissive.0),
                     Material::Matcap(_) => (7.0, 1.0, 0.0, Vector3::ZERO),
                     Material::Depth(_) => (8.0, 1.0, 0.0, Vector3::ZERO),
+                    Material::Shadow(_) => (9.0, 1.0, 0.0, Vector3::ZERO),
                     Material::Lambert(m) => (2.0, 1.0, 0.0, m.emissive.0),
                     Material::Phong(m) => (3.0, 1.0, 0.0, m.emissive.0),
                     Material::Shader(_) => (5.0, 1.0, 0.0, Vector3::ZERO),
@@ -1408,7 +1444,11 @@ impl Renderer {
                     pbr: match material {
                         Material::Standard(m)
                         | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
-                            m.normal_scale.x as f32,
+                            if m.normal_map.is_none() && m.bump_map.is_some() {
+                                m.bump_scale as f32
+                            } else {
+                                m.normal_scale.x as f32
+                            },
                             m.normal_scale.y as f32,
                             m.occlusion_strength as f32,
                             properties.alpha_test as f32,
@@ -1436,7 +1476,14 @@ impl Renderer {
                                 .as_ref()
                                 .is_some_and(|p| p.custom_environment)
                         {
-                            scene.environment_intensity as f32
+                            (scene.environment_intensity
+                                * match material {
+                                    Material::Standard(m)
+                                    | Material::Physical(MeshPhysicalMaterial {
+                                        base: m, ..
+                                    }) => m.env_map_intensity,
+                                    _ => 1.0,
+                                }) as f32
                         } else {
                             0.0
                         },
@@ -1450,7 +1497,11 @@ impl Renderer {
                     maps: match material {
                         Material::Standard(m)
                         | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
-                            normal_map_kind(m.normal_map.as_deref()),
+                            if m.normal_map.is_none() && m.bump_map.is_some() {
+                                3.0
+                            } else {
+                                normal_map_kind(m.normal_map.as_deref())
+                            },
                             f32::from(properties.transparent),
                             f32::from(m.emissive_map.is_some()),
                             f32::from(m.metallic_roughness_map.is_some()),
@@ -2143,6 +2194,14 @@ impl Renderer {
             wgpu::BindGroupEntry {
                 binding: 16,
                 resource: wgpu::BindingResource::Sampler(&self.shadows.sampler),
+            },
+            wgpu::BindGroupEntry {
+                binding: 27,
+                resource: wgpu::BindingResource::TextureView(&shadows.vsm_view),
+            },
+            wgpu::BindGroupEntry {
+                binding: 28,
+                resource: wgpu::BindingResource::Sampler(&self.shadows.vsm_sampler),
             },
         ]);
         let uses_viewport = custom.is_some_and(|p| p.viewport != 0);

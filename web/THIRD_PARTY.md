@@ -951,3 +951,63 @@ distributed alongside `LICENSE-THREE`:
   base color image the archive contains; and `venice_sunset_1k.hdr`:
   `textures/equirectangular/venice_sunset_1k.hdr` (Poly Haven, CC0); SHA-256
   `0e72ed46b5316cb5fb67fc81ff85b024a09146fd89ef3811a8d2299647ada118`.
+
+The USDZ exporter, shadow-map performance, GTAO, subdivision, BVH
+raycasting, spline editor, glTF exporter, arcball, video frame, G-code
+exporter, SVG, FBX, FPS game, random UV, transmission alpha, webcam, 3DM, IFC,
+watch and Lottie batch ports MIT-licensed three.js r186 code and these
+libraries' algorithms: three-subdivide 1.1.5 (MIT, Stephens Nunnally),
+three-mesh-bvh 0.9.10 (MIT, Garrett Johnson) and the subset of lottie-web
+5.13.0 (MIT, Airbnb) the animation uses. The bakes are produced by
+`tools/tsl/prepare-fbx-loader.mjs`, `prepare-3dm-loader.mjs` and
+`prepare-ifc-loader.mjs` from the pinned r186 example files with the r186
+loaders, rhino3dm 8.32.1 (MIT, Robert McNeel & Associates) and web-ifc 0.0.77
+(MPL-2.0, That Open Company), the versions the pages load. The batch adds these
+r186 example assets and derived bakes, distributed alongside `LICENSE-THREE`:
+
+- `gallery/assets/gltf/CarbonFrameBike.glb`: `models/gltf/CarbonFrameBike.glb`,
+  Carbon Frame Bike by prefrontal cortex, as the USDZ exporter page credits it;
+  SHA-256 `df83e23ad16d5bf947a00bf3660fbbeb0fd1176af3b1e29d2e9658ebf5be5328`.
+- `gallery/assets/gltf/Horse.glb`: `models/gltf/Horse.glb`, by mirada from
+  ro.me, as the shadow-map performance page credits it; SHA-256
+  `bebaa4a60ba373317e25bf20f049f26ad0f5c86d4731ab67d46eb8c93c920947`.
+- `gallery/assets/gltf/coffeemat.glb`: `models/gltf/coffeemat.glb`; SHA-256
+  `2cf091a8a32da5fc495f64beb02b1155fc57c0c9d3ef871ebce67981dedddf69`.
+- `gallery/assets/gltf/collision-world.glb`: `models/gltf/collision-world.glb`;
+  SHA-256 `07524c7fd5829c6dc354d0b129f78943c47a8737d141496c6d611f5ee2d00864`.
+- `gallery/assets/obj/cerberus/Cerberus_N.jpg` and `Cerberus_RM.jpg`: the
+  Cerberus model's normal and roughness / metalness maps from
+  `models/obj/cerberus/`, by Andrew Maximov as credited above; SHA-256
+  `b33ebfb148ce1ec2b96d744ebf256ae04da6f846f8a2faa032868fdaae411f26` and
+  `56409dc548e69e13f5bc17438ee54ec955de1e859ffeeededa5f28a09a50cf88`.
+- `gallery/assets/svg/`: the SVG loader page's files from `models/svg/`
+  (including the Ghostscript tiger and `tests/`), unchanged.
+- `gallery/assets/fbx-loader/`: FBXLoader's parse of the page's 14
+  `models/fbx/` models with the textures they reference; each `.json` records
+  its source path and SHA-256. The page credits its default character and
+  animation ( Samba Dancing ) to Mixamo; the Stanford Bunny is from the
+  Stanford 3D Scanning Repository.
+- `gallery/assets/random-uv/`: `models/gltf/ShaderBall2.glb` (SHA-256
+  `cf87e3a52cb8c9659935fa53541fd4e5f5302a9221420a9b8911a8f307b5efd2`),
+  `textures/jade.jpg` (`7bcf9e70dee0618841762521b0f974e36e8f605a16aca73d1c166701dcb7b59b`),
+  `textures/noise.png` (`755dd787816471602e1a9facb576af611f87c0b83fd29c1c622747ba2d0dc016`)
+  and `textures/shaderball_ds.jpg`
+  (`568b360e0e3502c9c90d14aa1b7b11396f962090b35f41335fefdcb788ec595e`).
+- `gallery/assets/3dm-loader/Rhino_Logo.bin` and `.json`: the 3DM loader's
+  object tree for `models/3dm/Rhino_Logo.3dm` (the Rhino logo, Robert McNeel &
+  Associates; SHA-256
+  `80cf6ce2b189d9999a4e009cd8c40bcb8fab4e05cd458de732572eda028b7e19`).
+- `gallery/assets/ifc-loader/rac_advanced_sample_project.bin` and `.json`:
+  web-ifc's streamed geometry and placements for
+  `models/ifc/rac_advanced_sample_project.ifc` (Autodesk's Revit advanced
+  sample project; SHA-256
+  `9440a72eb2d27e3ba9edeafdcdfb71945e6baec56d5b09211bcde743de7fe0a5`).
+- `gallery/assets/watch/rolex.glb`: `models/gltf/rolex.glb`; SHA-256
+  `48d6b6f427be44b7beb33ce4845cd6886a24db732c7ebefda37b9f70fa0922f4`.
+- `gallery/assets/lottie/24017-lottie-logo-animation.json`:
+  `textures/lottie/24017-lottie-logo-animation.json`, the LottieFiles logo
+  animation; SHA-256
+  `c83bb7f64ece17dbe73dc5a05060e3ddf9a65b575939e789bc6cd02c16edd3db`.
+- **Reuse.** The lobe and royal esplanade environments, DragonAttenuation,
+  the bunny, Littlest Tokyo, sintel.mp4 and the uv grid are reused from the
+  folders credited above.

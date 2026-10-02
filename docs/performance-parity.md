@@ -956,3 +956,24 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   per-bird values are the same in both.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### USDZ exporter, shadow-map performance, GTAO, subdivision, BVH raycasting, spline editor, glTF exporter, arcball, video frame, G-code exporter, SVG, FBX, FPS game, random UV, transmission alpha, webcam, 3DM, IFC, watch and Lottie
+
+- **GPU state.** The shadow maps ( PCF cascades, VSM moments and their
+  blurs ), GTAO's normal, AO and denoise targets, the transmission mip chain,
+  the TSL surface programs and every model's geometry stay on the GPU.
+- **CPU work as in the originals.**
+  - Each frame: the horses' morph weights, BVH ray casts, the FPS physics
+    substeps, the ArcballControls and tween cameras, and the Lottie canvas
+    drawing.
+  - On changes or at load: Loop subdivision on parameter changes; the spline
+    outlines when a point moves; the SVG shapes and strokes; the IFC merge.
+- **Uploads.**
+  - Unchanged geometry is not written in steady frames.
+  - The BVH rays' instance matrices and line positions are written each
+    frame, as the page updates them.
+  - Video, webcam and Lottie frames are copied into their textures when a
+    new frame is presented, as VideoTexture, VideoFrameTexture and
+    CanvasTexture upload them.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

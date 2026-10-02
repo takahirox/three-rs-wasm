@@ -972,6 +972,13 @@ impl TransformControls {
         s.get_mut(self.root)?.visible = true;
         Ok(())
     }
+    /// detach(): no object, no axis, the helper hidden.
+    pub(super) fn detach(&mut self, s: &mut Scene) -> Result<()> {
+        self.object = None;
+        self.axis = None;
+        s.get_mut(self.root)?.visible = false;
+        Ok(())
+    }
     /// reset(): restore the drag's start transform.
     pub(super) fn reset(&mut self, s: &mut Scene) -> Result<()> {
         if !self.enabled {

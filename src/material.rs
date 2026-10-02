@@ -308,6 +308,12 @@ pub struct MeshStandardMaterial {
     pub occlusion_map: Option<Arc<Texture>>,
     pub occlusion_strength: f64,
     pub emissive_map: Option<Arc<Texture>>,
+    /// bumpMap: a height map in the normal slot when no normal map is set,
+    /// perturbing the normal by its screen-space slope times bump_scale.
+    pub bump_map: Option<Arc<Texture>>,
+    pub bump_scale: f64,
+    /// envMapIntensity: scales the scene environment's contribution.
+    pub env_map_intensity: f64,
 }
 impl Default for MeshStandardMaterial {
     fn default() -> Self {
@@ -323,6 +329,9 @@ impl Default for MeshStandardMaterial {
             occlusion_map: None,
             occlusion_strength: 1.0,
             emissive_map: None,
+            bump_map: None,
+            bump_scale: 1.0,
+            env_map_intensity: 1.0,
         }
     }
 }
@@ -388,6 +397,23 @@ pub struct MeshMatcapMaterial {
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct MeshDepthMaterial {
     pub properties: MaterialProperties,
+}
+/// ShadowMaterial: the material color with opacity × ( 1 − the shadow mask
+/// of every shadow-casting light ), transparent by default.
+#[derive(Clone, Debug, Serialize)]
+pub struct ShadowMaterial {
+    pub properties: MaterialProperties,
+}
+impl Default for ShadowMaterial {
+    fn default() -> Self {
+        Self {
+            properties: MaterialProperties {
+                color: Color::BLACK,
+                transparent: true,
+                ..Default::default()
+            },
+        }
+    }
 }
 /// Layered PBR with independent base and extension texture maps.
 #[derive(Clone, Debug, Serialize)]
@@ -525,6 +551,7 @@ pub enum Material {
     Toon(MeshToonMaterial),
     Matcap(MeshMatcapMaterial),
     Depth(MeshDepthMaterial),
+    Shadow(ShadowMaterial),
     Line(LineBasicMaterial),
     Points(PointsMaterial),
 }
@@ -539,7 +566,7 @@ impl Material {
         match self {
             Self::Standard(m) | Self::Physical(MeshPhysicalMaterial { base: m, .. }) => {
                 maps[1] = m.metallic_roughness_map.as_ref();
-                maps[2] = m.normal_map.as_ref();
+                maps[2] = m.normal_map.as_ref().or(m.bump_map.as_ref());
                 maps[3] = m.occlusion_map.as_ref();
                 maps[4] = m.emissive_map.as_ref();
             }
@@ -577,6 +604,7 @@ impl Material {
             Self::Toon(m) => &m.base.properties,
             Self::Matcap(m) => &m.base.properties,
             Self::Depth(m) => &m.properties,
+            Self::Shadow(m) => &m.properties,
             Self::Line(m) => &m.properties,
             Self::Points(m) => &m.properties,
         }
@@ -593,6 +621,7 @@ impl Material {
             Self::Toon(m) => &mut m.base.properties,
             Self::Matcap(m) => &mut m.base.properties,
             Self::Depth(m) => &mut m.properties,
+            Self::Shadow(m) => &mut m.properties,
             Self::Line(m) => &mut m.properties,
             Self::Points(m) => &mut m.properties,
         }

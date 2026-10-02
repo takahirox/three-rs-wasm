@@ -14,6 +14,9 @@ const cases={
  // pointer, and the damped orbit's change events re-place it.
  webgpu_sculpt:{antialias:true,times:[0],parameters:[],at:0,script:[['move',300,200,0],['down',0,240,256,null],['move',260,250,null],['move',290,262,null],['move',320,240,null],['up',0,320,240,0],['param',0,'Brush',1,null],['down',0,200,300,null],['move',230,290,null],['move',260,300,null],['move',290,310,null],['up',0,290,310,0],['param',0,'Drag',7,null],['down',0,300,300,null],['move',320,290,null],['move',340,280,null],['up',0,340,280,0],['down',0,20,20,null],['move',60,30,null],['move',100,40,null],['up',0,100,40,null],['run',240,0,0,0]],residency:[['move',300,200,null],['move',200,300,null],['move',20,20,null]]},
  // The group turns by 0.001 rad per frame, as animate() does.
+ // The decoder runs as fast as it decodes: only the end state ( the plane removed after the
+ // flush ) is timing independent.
+ webgpu_video_frame:{noResize:true,times:[],parameters:[],at:0,script:[['until',0]],workload:[['until',0]]},
  webgpu_geometry_loft:{antialias:true,times:[0,1,2.5],parameters:[[0,true,1],[0,false,0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The orbit auto-rotates one step per frame. Building parameters regenerate the tower, as the
  // page does (a rebuild).
@@ -135,6 +138,8 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
  else if(action==='move'){const [x,y]=args;await page.mouse.move(x,y);}
  else if(action==='down'||action==='up'){const [b,x,y]=args;await page.mouse.move(x,y);await page.mouse[action]({button:button(b)});}
  else if(action==='wait'){await page.waitForTimeout(args[0]);}
+ // The video example's end state: the reference flag, or the Rust page's status attribute.
+ else if(action==='until'){const done=()=>page.evaluate(runtime=>runtime==='rust'?document.body.dataset.videoDone==='true':window.fixtureVideoDone===true,runtime);for(let k=0;k<600&&!await done();k++)await frames(page,runtime,0,1);expect(await done()).toBe(true);await frames(page,runtime,0,2);}
  // n frames at t0, t0 + dt, ...: a capture time of 'last' captures the last frame's time.
  else if(action==='run'){const [n,t0,dt]=args;let t=t0;for(let k=0;k<n;k++){t=t0+k*dt;await frames(page,runtime,t,1);}return time==='last'?t:time;}
  else if(action==='param'){const [i,reference,rust]=args;await page.evaluate(({runtime,i,reference,rust})=>{if(runtime!=='rust')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);},{runtime,i,reference,rust});}
@@ -144,7 +149,9 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 // other birds' velocities while they are written, as the original's does, so the original
 // differs from itself between runs; the birds are bounded with and without MSAA (spec.limits).
 // MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
-const msaaLimits={webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
+// At device pixel ratio 2 the 1,024 instanced horses' 4× MSAA edges reach 0.51% of the
+// pixels ( the same with the previous commit's build ).
+const msaaLimits={webgpu_instancing_morph:[.006,.6],webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -261,6 +268,8 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
    await page.goto(runtime==='reference'?`/reference/three-js/compute-examples.html?id=${official(kind)}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    // Per-frame solvers (the IK chain) converge before the measured frame.
+   // Steps a page must finish before its steady frames ( the decoded video's end ).
+   for(const step of spec.workload??[])await act(page,runtime,step);
    if(spec.frames)await frames(page,runtime,1,spec.frames);
    for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
    pair[runtime]=await page.evaluate(()=>work);

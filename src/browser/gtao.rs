@@ -111,8 +111,9 @@ fn standard(hex: u32, roughness: f64, metalness: f64) -> Standard {
     }
 }
 /// RoundedBoxGeometry( width, height, depth, segments, radius ): the
-/// non-indexed box with its vertices pushed onto the rounded corners.
-fn rounded_box(
+/// non-indexed box with its vertices pushed onto the rounded corners and its
+/// uvs spread over each side's arcs and plane.
+pub(super) fn rounded_box(
     width: f64,
     height: f64,
     depth: f64,
@@ -143,6 +144,8 @@ fn rounded_box(
     };
     let mut positions = vec![];
     let mut normals = vec![];
+    let mut uvs = vec![];
+    let face = position.count() * 3 / 6;
     for i in 0..position.count() {
         let p = [
             position.get_component(i, 0)? as f32 as f64,
@@ -157,8 +160,64 @@ fn rounded_box(
             positions.push((boxed[k] * sign(p[k]) + n[k] * radius) as f32);
             normals.push(n[k] as f32);
         }
+        // getUv( faceDirVector, normal, uvAxis, projectionAxis, radius, sideLength ).
+        let uv = |dir: [f64; 3], axis: usize, projection: usize, side: f64| {
+            let arc = 2. * PI * radius / 4.;
+            let center = (side - 2. * radius).max(0.);
+            let mut t = n;
+            t[projection] = 0.;
+            let length = (t[0] * t[0] + t[1] * t[1] + t[2] * t[2]).sqrt();
+            let angle = if length == 0. {
+                PI / 2.
+            } else {
+                let t = t.map(|v| v / length);
+                (t[0] * dir[0] + t[1] * dir[1] + t[2] * dir[2])
+                    .clamp(-1., 1.)
+                    .acos()
+            };
+            let arc_uv = 0.5 * arc / (arc + center);
+            let ratio = 1. - angle / (PI / 4.);
+            if sign(t[axis]) == 1. {
+                ratio * arc_uv
+            } else {
+                center / (arc + center) + arc_uv + arc_uv * (1. - ratio)
+            }
+        };
+        let (x, y, z) = (0, 1, 2);
+        let (u, v) = match i * 3 / face {
+            0 => (
+                uv([1., 0., 0.], z, y, depth),
+                1. - uv([1., 0., 0.], y, z, height),
+            ),
+            1 => (
+                1. - uv([-1., 0., 0.], z, y, depth),
+                1. - uv([-1., 0., 0.], y, z, height),
+            ),
+            2 => (
+                1. - uv([0., 1., 0.], x, z, width),
+                uv([0., 1., 0.], z, x, depth),
+            ),
+            3 => (
+                1. - uv([0., -1., 0.], x, z, width),
+                1. - uv([0., -1., 0.], z, x, depth),
+            ),
+            4 => (
+                1. - uv([0., 0., 1.], x, y, width),
+                1. - uv([0., 0., 1.], y, x, height),
+            ),
+            _ => (
+                uv([0., 0., -1.], x, y, width),
+                1. - uv([0., 0., -1.], y, x, height),
+            ),
+        };
+        uvs.extend([u as f32, v as f32]);
     }
-    geometry_from(&positions, Some(&normals), None)
+    let mut g = geometry_from(&positions, Some(&normals), None)?;
+    g.set_attribute(
+        "uv",
+        Attribute::F32(crate::attribute::BufferAttribute::new(uvs, 2, false)?),
+    );
+    Ok(g)
 }
 fn geometry_from(
     positions: &[f32],
@@ -375,7 +434,7 @@ const SHADERS: [[(&str, &str); 2]; 2] = [
     ],
 ];
 /// generateMagicSquareNoise( 5 ): rotation vectors in a 5 × 5 magic square.
-fn magic_square_noise() -> Vec<u8> {
+pub(super) fn magic_square_noise() -> Vec<u8> {
     let n = 5i32;
     let count = (n * n) as usize;
     let mut square = vec![0usize; count];

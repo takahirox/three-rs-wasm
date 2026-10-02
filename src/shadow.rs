@@ -7,6 +7,9 @@ pub enum ShadowFilter {
     #[default]
     Pcf,
     Basic,
+    /// VSMShadowMap: the depth blurred into mean and deviation, read by
+    /// Chebyshev's bound. Directional and spot lights only.
+    Vsm,
 }
 
 #[derive(Clone, Copy, Debug, serde::Serialize)]
@@ -28,6 +31,8 @@ pub struct Shadow {
     pub focus: f64,
     /// LightShadow.intensity: received shadows are mixed toward lit by 1 − intensity.
     pub intensity: f64,
+    /// LightShadow.blurSamples: the VSM blur's taps per pass.
+    pub blur_samples: u32,
 }
 impl Default for Shadow {
     fn default() -> Self {
@@ -42,6 +47,7 @@ impl Default for Shadow {
             filter: ShadowFilter::Pcf,
             focus: 1.0,
             intensity: 1.0,
+            blur_samples: 8,
         }
     }
 }
@@ -76,6 +82,8 @@ fn skinned_sphere(scene: &Scene, handle: Object3D) -> Result<Sphere> {
 }
 pub(crate) struct Atlas {
     pub view: wgpu::TextureView,
+    /// The VSM layers' blurred ( mean, deviation ), by shadow layer.
+    pub vsm_view: wgpu::TextureView,
     pub matrices: [[f32; 16]; 48],
     pub params: [[f32; 4]; 8],
     pub filters: [[f32; 4]; 8],
@@ -83,7 +91,7 @@ pub(crate) struct Atlas {
 }
 pub(crate) struct ShadowRenderer {
     layout: wgpu::BindGroupLayout,
-    pipelines: [wgpu::RenderPipeline; 8],
+    pipelines: [wgpu::RenderPipeline; 10],
     pub sampler: wgpu::Sampler,
     empty: wgpu::TextureView,
     white: Arc<Texture>,
@@ -98,6 +106,68 @@ pub(crate) struct ShadowRenderer {
     /// SkinnedMesh.boundingSphere: computed once from the pose at first use
     /// and kept, as three's frustum culling caches it.
     skinned_spheres: std::cell::RefCell<std::collections::HashMap<(usize, Object3D), Sphere>>,
+    vsm: std::cell::RefCell<Option<VsmTarget>>,
+    vsm_empty: wgpu::TextureView,
+    pub vsm_sampler: wgpu::Sampler,
+    vsm_layout: wgpu::BindGroupLayout,
+    vsm_pipelines: [wgpu::RenderPipeline; 2],
+}
+/// The VSM blur targets: the ( mean, deviation ) layers and the vertical pass.
+struct VsmTarget {
+    view: wgpu::TextureView,
+    layers: Vec<wgpu::TextureView>,
+    /// Per shadow layer: the vertical and horizontal passes' uniforms and bindings.
+    passes: Vec<[(wgpu::Buffer, wgpu::BindGroup); 2]>,
+    pass_view: wgpu::TextureView,
+    size: u32,
+}
+const VSM_WGSL: &str = "
+struct V{rect:vec4<f32>,params:vec4<f32>}
+@group(0)@binding(0) var<uniform> v:V;
+@group(0)@binding(1) var depth_map:texture_depth_2d;
+@group(0)@binding(2) var pass_map:texture_2d<f32>;
+@group(0)@binding(3) var linear_sampler:sampler;
+@vertex fn vs(@builtin(vertex_index) i:u32)->@builtin(position) vec4<f32>{let p=array(vec2(-1.0,-1.0),vec2(3.0,-1.0),vec2(-1.0,3.0));return vec4(p[i],0.0,1.0);}
+// vsm.glsl: VSM_SAMPLES taps radius apart across -1..1; the vertical pass reads
+// the depth ( nearest ), the horizontal the vertical result ( linear ).
+@fragment fn vertical(@builtin(position) p:vec4<f32>)->@location(0) vec4<f32>{
+ let samples=v.params.y;var mean=0.0;var squared=0.0;
+ let stride=select(2.0/(samples-1.0),0.0,samples<=1.0);let start=select(-1.0,0.0,samples<=1.0);
+ for(var i=0.0;i<samples;i+=1.0){
+  let q=p.xy+vec2(0.0,start+i*stride)*v.params.x;
+  let t=clamp(vec2<i32>(floor(q)),vec2<i32>(v.rect.xy),vec2<i32>(v.rect.xy+v.rect.zw)-1);
+  let d=textureLoad(depth_map,t,0);mean+=d;squared+=d*d;
+ }
+ mean/=samples;squared/=samples;
+ return vec4(mean,sqrt(max(0.0,squared-mean*mean)),0.0,1.0);
+}
+@fragment fn horizontal(@builtin(position) p:vec4<f32>)->@location(0) vec4<f32>{
+ let samples=v.params.y;var mean=0.0;var squared=0.0;
+ let stride=select(2.0/(samples-1.0),0.0,samples<=1.0);let start=select(-1.0,0.0,samples<=1.0);
+ let size=vec2<f32>(textureDimensions(pass_map));
+ for(var i=0.0;i<samples;i+=1.0){
+  let q=p.xy+vec2(start+i*stride,0.0)*v.params.x;
+  let d=textureSampleLevel(pass_map,linear_sampler,q/size,0.0).rg;
+  mean+=d.x;squared+=d.y*d.y+d.x*d.x;
+ }
+ mean/=samples;squared/=samples;
+ return vec4(mean,sqrt(max(0.0,squared-mean*mean)),0.0,1.0);
+}";
+fn vsm_texture(device: &wgpu::Device, size: u32, layers: u32) -> wgpu::Texture {
+    device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("vsm shadow map"),
+        size: wgpu::Extent3d {
+            width: size,
+            height: size,
+            depth_or_array_layers: layers,
+        },
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: wgpu::TextureFormat::Rg16Float,
+        usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
+        view_formats: &[],
+    })
 }
 struct ShadowTarget {
     texture: wgpu::Texture,
@@ -186,7 +256,86 @@ impl ShadowRenderer {
             dimension: Some(wgpu::TextureViewDimension::D2Array),
             ..Default::default()
         });
+        let vsm_empty = vsm_texture(device, 1, 1).create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::D2Array),
+            ..Default::default()
+        });
+        let texture_entry = |binding, sample_type| wgpu::BindGroupLayoutEntry {
+            binding,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture {
+                sample_type,
+                view_dimension: wgpu::TextureViewDimension::D2,
+                multisampled: false,
+            },
+            count: None,
+        };
+        let vsm_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("vsm blur"),
+            entries: &[
+                wgpu::BindGroupLayoutEntry {
+                    binding: 0,
+                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Uniform,
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                },
+                texture_entry(1, wgpu::TextureSampleType::Depth),
+                texture_entry(2, wgpu::TextureSampleType::Float { filterable: true }),
+                wgpu::BindGroupLayoutEntry {
+                    binding: 3,
+                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                    count: None,
+                },
+            ],
+        });
+        let vsm_module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("vsm blur"),
+            source: wgpu::ShaderSource::Wgsl(VSM_WGSL.into()),
+        });
+        let vsm_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            label: Some("vsm blur"),
+            bind_group_layouts: &[&vsm_layout],
+            push_constant_ranges: &[],
+        });
+        let vsm_pipelines = ["vertical", "horizontal"].map(|entry| {
+            device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some("vsm blur"),
+                layout: Some(&vsm_pipeline_layout),
+                vertex: wgpu::VertexState {
+                    module: &vsm_module,
+                    entry_point: Some("vs"),
+                    compilation_options: Default::default(),
+                    buffers: &[],
+                },
+                fragment: Some(wgpu::FragmentState {
+                    module: &vsm_module,
+                    entry_point: Some(entry),
+                    compilation_options: Default::default(),
+                    targets: &[Some(wgpu::TextureFormat::Rg16Float.into())],
+                }),
+                primitive: Default::default(),
+                depth_stencil: None,
+                multisample: Default::default(),
+                multiview: None,
+                cache: None,
+            })
+        });
+        let linear = wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        };
         Self {
+            vsm: Default::default(),
+            vsm_empty,
+            vsm_sampler: device.create_sampler(&linear),
+            vsm_layout,
+            vsm_pipelines,
             layout,
             pipelines,
             empty,
@@ -230,6 +379,7 @@ impl ShadowRenderer {
         let mut used = std::collections::HashSet::new();
         let mut atlas = Atlas {
             view: self.empty.clone(),
+            vsm_view: self.vsm_empty.clone(),
             matrices: [[0.0; 16]; 48],
             params: [[0.0; 4]; 8],
             filters: [[0.0; 4]; 8],
@@ -237,6 +387,8 @@ impl ShadowRenderer {
         };
         let mut cameras = Vec::new();
         let mut viewports = Vec::new();
+        // Per shadow layer: VSMShadowMap's blur ( radius, samples ).
+        let mut vsm_layers: Vec<Option<(f64, u32)>> = Vec::new();
         let mut size = 0;
         for &handle in lights {
             let node = scene.get(handle)?;
@@ -304,6 +456,7 @@ impl ShadowRenderer {
                     atlas.cascades[i * 2 + j] = c.range.extend(c.viewport.x).as_vec4().to_array();
                     viewports.push(c.viewport * scale);
                     cameras.push(c.projection_view);
+                    vsm_layers.push(None);
                 }
                 continue;
             }
@@ -361,12 +514,13 @@ impl ShadowRenderer {
                 shadow.normal_bias as f32,
                 if views.len() == 6 { 1.0 } else { 0.0 },
             ];
+            let vsm = matches!(shadow.filter, ShadowFilter::Vsm) && views.len() == 1;
             atlas.filters[i] = [
                 shadow.radius as f32,
-                if matches!(shadow.filter, ShadowFilter::Basic) {
-                    1.
-                } else {
-                    0.
+                match shadow.filter {
+                    ShadowFilter::Basic => 1.,
+                    ShadowFilter::Vsm if vsm => 2.,
+                    _ => 0.,
                 },
                 scale as f32,
                 (1.0 - shadow.intensity) as f32,
@@ -376,6 +530,7 @@ impl ShadowRenderer {
                 atlas.matrices[cameras.len()] = matrix.as_mat4().to_cols_array();
                 cameras.push(matrix);
                 viewports.push(Vector4::new(0., 0., scale, scale));
+                vsm_layers.push(vsm.then_some((shadow.radius, shadow.blur_samples)));
             }
         }
         // A pass without shadow casters (e.g. an overlay scene) keeps the
@@ -414,6 +569,11 @@ impl ShadowRenderer {
         }
         let target = cached.as_ref().expect("shadow target");
         atlas.view = target.view.clone();
+        if let Some(v) = self.vsm.borrow().as_ref()
+            && vsm_layers.iter().any(Option::is_some)
+        {
+            atlas.vsm_view = v.view.clone();
+        }
         if !scene.shadow_auto_update && self.rendered.get() {
             return Ok(atlas);
         }
@@ -422,13 +582,19 @@ impl ShadowRenderer {
             let mut draws = Vec::new();
             // WebGLShadowMap culls casters against each shadow camera's frustum.
             let frustum = crate::math::Frustum::from_projection(*camera);
+            // VSMShadowMap also draws the receivers.
+            let vsm = vsm_layers[layer].is_some();
             for &handle in visible {
                 let node = scene.get(handle)?;
-                if !node.cast_shadow {
+                if !(node.cast_shadow || (vsm && node.receive_shadow)) {
                     continue;
                 }
-                let NodeKind::Mesh(mesh) = &node.kind else {
-                    continue;
+                // WebGLShadowMap draws Line and LineSegments casters with their own
+                // primitives.
+                let (geometry, materials, line) = match &node.kind {
+                    NodeKind::Mesh(mesh) => (&mesh.geometry, mesh.materials.clone(), None),
+                    NodeKind::Line(l) => (&l.geometry, vec![l.material.clone()], Some(l.segments)),
+                    _ => continue,
                 };
                 if node.frustum_culled && node.skin.is_some() && node.instances.is_empty() {
                     let sphere = self.skinned_bounds(scene, handle)?;
@@ -441,13 +607,13 @@ impl ShadowRenderer {
                     && node.instances.is_empty()
                     && !frustum.intersects_sphere(
                         geometry_cache
-                            .sphere(&mesh.geometry)?
+                            .sphere(geometry)?
                             .transformed(node.matrix_world),
                     )
                 {
                     continue;
                 }
-                if mesh.materials.iter().any(|m| {
+                if materials.iter().any(|m| {
                     (matches!(m.as_ref(), crate::material::Material::Shader(_))
                         || m.properties().vertex_program.is_some())
                         && m.properties().shadow_program.is_none()
@@ -456,9 +622,10 @@ impl ShadowRenderer {
                         "custom WGSL shadow caster requires a shadow program",
                     ));
                 }
-                let g = &mesh.geometry;
+                let g = geometry;
                 let gpu = geometry_cache.get(device, queue, g, false, false, false, None)?;
-                let wire = if mesh.materials.iter().any(|m| m.properties().wireframe)
+                let wire = if line.is_none()
+                    && materials.iter().any(|m| m.properties().wireframe)
                     && g.indirect.is_none()
                     && g.gpu_indirect.is_none()
                 {
@@ -467,7 +634,7 @@ impl ShadowRenderer {
                     None
                 };
                 let deformation = deformation_cache.get(device, queue, scene, handle)?;
-                let groups = if mesh.materials.len() > 1 {
+                let groups = if materials.len() > 1 {
                     g.groups.clone()
                 } else {
                     vec![crate::geometry::Group {
@@ -477,8 +644,7 @@ impl ShadowRenderer {
                     }]
                 };
                 for (group_index, group) in groups.into_iter().enumerate() {
-                    let material = mesh
-                        .materials
+                    let material = materials
                         .get(group.material_index)
                         .ok_or(Error::Invalid("shadow material group"))?
                         .properties();
@@ -580,6 +746,7 @@ impl ShadowRenderer {
                     );
                     let mirrored = node.matrix_world.determinant() < 0.0;
                     let shadow_side = material.shadow_side.unwrap_or(match material.side {
+                        side if vsm => side,
                         Side::Front => Side::Back,
                         Side::Back => Side::Front,
                         Side::Double => Side::Double,
@@ -593,6 +760,24 @@ impl ShadowRenderer {
                         && material.shadow_program.is_none()
                         && start % 3 == 0
                         && end % 3 == 0;
+                    if let Some(segments) = line {
+                        let instanced = !node.instances.is_empty();
+                        draws.push((
+                            gpu.clone(),
+                            instance_buffer,
+                            bind,
+                            start as u32..end as u32,
+                            node.draw_instance_count(g)?,
+                            match (segments, instanced) {
+                                (true, true) => 6,
+                                (true, false) => 7,
+                                (false, true) => 8,
+                                (false, false) => 9,
+                            },
+                            None,
+                        ));
+                        continue;
+                    }
                     match (&wire, lines) {
                         (Some(wire), true) => draws.push((
                             wire.clone(),
@@ -652,6 +837,17 @@ impl ShadowRenderer {
                 }
             }
         }
+        if vsm_layers.iter().any(Option::is_some) {
+            atlas.vsm_view = self.blur_vsm(
+                device,
+                queue,
+                &mut encoder,
+                target,
+                &vsm_layers,
+                &viewports,
+                size,
+            )?;
+        }
         // Keep slots of casters culled this frame (they return as the light moves);
         // drop only removed nodes and layers beyond the current shadow cameras.
         slots.retain(|key, _| {
@@ -660,6 +856,143 @@ impl ShadowRenderer {
         queue.submit([encoder.finish()]);
         self.rendered.set(true);
         Ok(atlas)
+    }
+}
+impl ShadowRenderer {
+    /// VSMPass: per VSM layer, the vertical blur of the depth into the pass
+    /// target, then the horizontal blur into the layer's ( mean, deviation ).
+    #[allow(clippy::too_many_arguments)]
+    fn blur_vsm(
+        &self,
+        device: &wgpu::Device,
+        queue: &wgpu::Queue,
+        encoder: &mut wgpu::CommandEncoder,
+        target: &ShadowTarget,
+        vsm_layers: &[Option<(f64, u32)>],
+        viewports: &[Vector4],
+        size: u32,
+    ) -> Result<wgpu::TextureView> {
+        let mut cached = self.vsm.borrow_mut();
+        if cached
+            .as_ref()
+            .is_none_or(|v| v.size != size || v.layers.len() != vsm_layers.len())
+        {
+            let texture = vsm_texture(device, size, vsm_layers.len() as u32);
+            let view = texture.create_view(&wgpu::TextureViewDescriptor {
+                dimension: Some(wgpu::TextureViewDimension::D2Array),
+                ..Default::default()
+            });
+            let layers: Vec<wgpu::TextureView> = (0..vsm_layers.len())
+                .map(|layer| {
+                    texture.create_view(&wgpu::TextureViewDescriptor {
+                        dimension: Some(wgpu::TextureViewDimension::D2),
+                        base_array_layer: layer as u32,
+                        array_layer_count: Some(1),
+                        ..Default::default()
+                    })
+                })
+                .collect();
+            let pass_view =
+                vsm_texture(device, size, 1).create_view(&wgpu::TextureViewDescriptor {
+                    dimension: Some(wgpu::TextureViewDimension::D2),
+                    ..Default::default()
+                });
+            let passes = target
+                .layers
+                .iter()
+                .map(|depth| {
+                    std::array::from_fn(|k| {
+                        let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+                            label: Some("vsm blur"),
+                            size: 32,
+                            usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+                            mapped_at_creation: false,
+                        });
+                        // The vertical pass reads the depth; the horizontal the pass target.
+                        let group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+                            label: Some("vsm blur"),
+                            layout: &self.vsm_layout,
+                            entries: &[
+                                wgpu::BindGroupEntry {
+                                    binding: 0,
+                                    resource: buffer.as_entire_binding(),
+                                },
+                                wgpu::BindGroupEntry {
+                                    binding: 1,
+                                    resource: wgpu::BindingResource::TextureView(depth),
+                                },
+                                wgpu::BindGroupEntry {
+                                    binding: 2,
+                                    resource: wgpu::BindingResource::TextureView(if k == 0 {
+                                        &layers[0]
+                                    } else {
+                                        &pass_view
+                                    }),
+                                },
+                                wgpu::BindGroupEntry {
+                                    binding: 3,
+                                    resource: wgpu::BindingResource::Sampler(&self.vsm_sampler),
+                                },
+                            ],
+                        });
+                        (buffer, group)
+                    })
+                })
+                .collect();
+            *cached = Some(VsmTarget {
+                view,
+                layers,
+                passes,
+                pass_view,
+                size,
+            });
+        }
+        let v = cached.as_ref().ok_or(Error::Invalid("vsm target"))?;
+        for (layer, blur) in vsm_layers.iter().enumerate() {
+            let Some((radius, samples)) = blur else {
+                continue;
+            };
+            let rect = viewports[layer] * size as f64;
+            let data: [f32; 8] = [
+                rect.x as f32,
+                rect.y as f32,
+                rect.z as f32,
+                rect.w as f32,
+                *radius as f32,
+                *samples as f32,
+                0.,
+                0.,
+            ];
+            for (k, output) in [&v.pass_view, &v.layers[layer]].into_iter().enumerate() {
+                let (buffer, group) = &v.passes[layer][k];
+                queue.write_buffer(buffer, 0, bytemuck::cast_slice(&data));
+                let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                    label: Some("vsm blur"),
+                    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                        view: output,
+                        depth_slice: None,
+                        resolve_target: None,
+                        ops: wgpu::Operations {
+                            load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
+                            store: wgpu::StoreOp::Store,
+                        },
+                    })],
+                    ..Default::default()
+                });
+                pass.set_viewport(
+                    rect.x as f32,
+                    rect.y as f32,
+                    rect.z as f32,
+                    rect.w as f32,
+                    0.,
+                    1.,
+                );
+                pass.set_pipeline(&self.vsm_pipelines[k]);
+                pass.set_bind_group(0, group, &[]);
+                pass.draw(0..3, 0..1);
+            }
+        }
+        Ok(v.view.clone())
     }
 }
 /// The shadow camera's view: Object3D.lookAt through Matrix4.lookAt, which
@@ -711,12 +1044,13 @@ fn depth_pipelines(
     device: &wgpu::Device,
     pipeline_layout: &wgpu::PipelineLayout,
     shader: &wgpu::ShaderModule,
-) -> [wgpu::RenderPipeline; 8] {
+) -> [wgpu::RenderPipeline; 10] {
     // 0–5: triangles by side, instanced first; 6–7: wireframe lines, as the
-    // depth material inherits `wireframe`.
+    // depth material inherits `wireframe`, and LineSegments; 8–9: Line strips.
     std::array::from_fn(|i| {
         let lines = i >= 6;
-        let instanced = if lines { i == 6 } else { i < 3 };
+        let strip = i >= 8;
+        let instanced = if lines { i == 6 || i == 8 } else { i < 3 };
         let cull_mode = if lines {
             None
         } else {
@@ -769,7 +1103,9 @@ fn depth_pipelines(
                 targets: &[],
             }),
             primitive: wgpu::PrimitiveState {
-                topology: if lines {
+                topology: if strip {
+                    wgpu::PrimitiveTopology::LineStrip
+                } else if lines {
                     wgpu::PrimitiveTopology::LineList
                 } else {
                     wgpu::PrimitiveTopology::TriangleList
@@ -794,7 +1130,7 @@ fn depth_pipelines(
 /// Resident depth-only program. Shading returns alpha as a binary shadow mask.
 #[derive(Debug)]
 pub struct ShadowProgram {
-    pipelines: [wgpu::RenderPipeline; 8],
+    pipelines: [wgpu::RenderPipeline; 10],
     bindings: wgpu::BindGroup,
 }
 impl ShadowProgram {

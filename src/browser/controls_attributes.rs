@@ -323,6 +323,10 @@ impl Controls {
         }
         self.update(s, c)
     }
+    /// enableDamping with dampingFactor, or off.
+    pub(super) fn set_damping(&mut self, damping: Option<f64>) {
+        self.damping = damping;
+    }
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;
     }

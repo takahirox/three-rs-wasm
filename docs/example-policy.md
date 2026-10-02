@@ -379,3 +379,30 @@ Simple GI, subsurface scattering and VRML match at the default thresholds.
 The loaders' output is baked from the pinned loaders: FBX for the bunny and the
 Mixamo character, VRML and USD. The ports render the baked scenes, and the
 loaders' parsers are not ported.
+
+The USDZ exporter, shadow-map performance, GTAO, subdivision, BVH
+raycasting, spline editor, glTF exporter, arcball, video frame, G-code
+exporter, SVG, FBX, FPS game, random UV, transmission alpha, webcam, 3DM, IFC,
+watch and Lottie batch ([loader-exporter-examples.md](loader-exporter-examples.md))
+ports one WebGPU example, compared against the WebGPU renderer, and nineteen
+pages without an r186 WebGPU counterpart, compared against WebGLRenderer.
+`webgl_tsl_skinning`, `webgl_tsl_shadowmap` and `webgl_tsl_clearcoat` are
+excluded: they render the scenes of the listed `webgpu_skinning`,
+`webgpu_shadowmap` and `webgpu_clearcoat`.
+
+Backend tolerances are scoped in the spec to these causes:
+
+- thin geometry and shadow edges that rasterize, or resolve under 4× MSAA,
+  differently;
+- the blurred lobe background's gradient bands;
+- WebGL's PMREM and image-based multiple scattering on the transmission
+  alpha cloth and dragon, the watch's metals and the Lottie box's mirror face;
+- the IFC model's z-fighting coplanar faces.
+
+Pages that parse their assets with libraries outside three.js keep those
+libraries' output, baked from the versions the pages load: FBX through the
+pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,
+three-mesh-bvh, the Octree, SVGLoader, ArcballControls and the subset of
+lottie-web the animation uses are ported. The exporters' buttons, the
+watch's optional TAA and bloom, the FBX page's dynamic GUI and ArcballControls'
+multi-touch gestures are not ported. Each is listed with the example.

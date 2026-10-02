@@ -171,6 +171,7 @@ fn material(m: MaterialSpec, textures: &[Arc<Texture>]) -> Result<Arc<Material>>
             normal_map: map(textures, m.normal_map)?,
             emissive_map: map(textures, m.emissive_map)?,
             occlusion_map: map(textures, m.ao_map)?,
+            ..Default::default()
         }),
         _ => return Err(Error::Invalid("captured material")),
     }))

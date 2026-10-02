@@ -22,6 +22,26 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Lottie(Box<super::lottie::Demo>),
+    Watch(Box<super::watch::Demo>),
+    IfcLoader(Box<super::ifc_loader::Demo>),
+    Loader3dm(Box<super::loader_3dm::Demo>),
+    Webcam(Box<super::webcam::Demo>),
+    TransmissionAlpha(Box<super::transmission_alpha::Demo>),
+    RandomUv(Box<super::random_uv::Demo>),
+    GamesFps(Box<super::games_fps::Demo>),
+    FbxLoader(Box<super::fbx_loader::Demo>),
+    SvgLoader(Box<super::svg_loader::Demo>),
+    ExporterGcode(Box<super::exporter_gcode::Demo>),
+    VideoFrame(Box<super::video_frame::Demo>),
+    Arcball(Box<super::arcball::Demo>),
+    ExporterGltf(Box<super::exporter_gltf::Demo>),
+    SplineEditor(Box<super::spline_editor::Demo>),
+    RaycasterBvh(Box<super::raycaster_bvh::Demo>),
+    Subdivision(Box<super::subdivision::Demo>),
+    GtaoWebgl(Box<super::gtao_webgl::Demo>),
+    ShadowmapPerformance(Box<super::shadowmap_performance::Demo>),
+    UsdzExporter(Box<super::usdz_exporter::Demo>),
     Usdz(Box<super::usdz::Demo>),
     Vrml(Box<super::vrml::Demo>),
     BirdsGltf(Box<super::birds_gltf::Demo>),
@@ -1084,6 +1104,188 @@ impl Demo {
                     super::usdz::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            424 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 20.,
+                elapsed: 0.,
+                content: Content::UsdzExporter(Box::new(
+                    super::usdz_exporter::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            425 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 5.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::ShadowmapPerformance(Box::new(
+                    super::shadowmap_performance::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            426 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::GtaoWebgl(Box::new(
+                    super::gtao_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            427 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::Subdivision(Box::new(
+                    super::subdivision::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            428 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::RaycasterBvh(Box::new(
+                    super::raycaster_bvh::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            429 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::SplineEditor(Box::new(
+                    super::spline_editor::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            430 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::ExporterGltf(Box::new(
+                    super::exporter_gltf::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            431 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::Arcball(Box::new(
+                    super::arcball::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            432 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::VideoFrame(Box::new(
+                    super::video_frame::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            433 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::ExporterGcode(Box::new(
+                    super::exporter_gcode::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            434 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::SvgLoader(Box::new(
+                    super::svg_loader::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            435 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::FbxLoader(Box::new(
+                    super::fbx_loader::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            436 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::GamesFps(Box::new(
+                    super::games_fps::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            437 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 20.,
+                elapsed: 0.,
+                content: Content::RandomUv(Box::new(
+                    super::random_uv::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            438 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::TransmissionAlpha(Box::new(
+                    super::transmission_alpha::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            439 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Webcam(Box::new(
+                    super::webcam::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            440 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Loader3dm(Box::new(
+                    super::loader_3dm::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            441 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::IfcLoader(Box::new(
+                    super::ifc_loader::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            442 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 20.,
+                elapsed: 0.,
+                content: Content::Watch(Box::new(
+                    super::watch::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            443 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 10.,
+                elapsed: 0.,
+                content: Content::Lottie(Box::new(
+                    super::lottie::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1976,6 +2178,66 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Lottie(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Usdz(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2605,6 +2867,9 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::Usdz(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3027,6 +3292,11 @@ impl Demo {
         {
             return Some(target);
         }
+        if let Content::GtaoWebgl(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::GeneratorBuilding(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -3368,6 +3638,66 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Lottie(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Usdz(demo) = &mut self.content {
@@ -3755,6 +4085,66 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Lottie(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Usdz(demo) = &mut self.content {
@@ -4231,6 +4621,66 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Lottie(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Usdz(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -4611,6 +5061,86 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Lottie(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -5059,6 +5589,66 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Lottie(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Usdz(demo) = &mut self.content {
@@ -5513,6 +6103,66 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Lottie(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Watch(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::IfcLoader(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Loader3dm(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Webcam(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::TransmissionAlpha(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RandomUv(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GamesFps(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::FbxLoader(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SvgLoader(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ExporterGcode(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VideoFrame(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Arcball(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ExporterGltf(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SplineEditor(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RaycasterBvh(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Subdivision(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GtaoWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapPerformance(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::UsdzExporter(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Usdz(demo) = &mut self.content {

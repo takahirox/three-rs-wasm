@@ -4,6 +4,7 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod arcball;
 mod ascii;
 mod attractors;
 mod audio_timing;
@@ -37,14 +38,18 @@ mod expanded_lights;
 mod expanded_lines;
 mod expanded_morph_models;
 mod expanded_triangles;
+mod exporter_gcode;
+mod exporter_gltf;
 mod exporters_matcap;
 mod exporters_video;
+mod fbx_loader;
 mod fbx_nurbs;
 mod fluid;
 mod fog_scattering;
 mod fog_volume;
 mod gallery;
 mod gallery_scenes;
+mod games_fps;
 mod gaussian_splat;
 mod generator_building;
 mod geometry_loft;
@@ -56,9 +61,11 @@ mod gltf_viewer;
 mod godrays;
 mod gpgpu_protoplanet;
 mod gtao;
+mod gtao_webgl;
 mod hdr;
 mod helpers_formats;
 mod ies_spotlight;
+mod ifc_loader;
 mod instancing_morph;
 mod interactive_objects;
 mod interactive_scenes;
@@ -73,7 +80,9 @@ mod lights_probes;
 mod lights_projector;
 mod lines_raycast;
 mod linked_particles;
+mod loader_3dm;
 mod log_depth;
+mod lottie;
 mod marching_cubes;
 mod marching_tables;
 mod material_textures;
@@ -93,6 +102,8 @@ mod postprocessing_advanced;
 mod probes_hdr;
 mod pvr;
 mod pvrtc;
+mod random_uv;
+mod raycaster_bvh;
 mod raycaster_helper;
 mod refraction_loaders;
 mod render_bundle;
@@ -111,6 +122,7 @@ mod shadow_rtt;
 mod shadowmap_csm;
 mod shadowmap_opacity;
 mod shadowmap_pcss;
+mod shadowmap_performance;
 mod shadowmap_progressive;
 mod shadowmap_viewer;
 mod shadowmap_vsm;
@@ -120,6 +132,7 @@ mod simple_gi;
 mod skinning_instances;
 mod sky_water;
 mod sort_bitonic;
+mod spline_editor;
 mod spot_skinning;
 mod ssao;
 mod ssgi;
@@ -127,7 +140,9 @@ mod ssr;
 mod ssr_denoise;
 mod sss;
 mod stereo_loaders;
+mod subdivision;
 mod subsurface;
+mod svg_loader;
 mod taa;
 mod teapot_data;
 mod terrain_loaders;
@@ -142,6 +157,7 @@ mod threemf;
 mod trackball_sprites;
 mod transform_controls;
 mod transform_curves;
+mod transmission_alpha;
 mod tsl_compute;
 mod tsl_environment;
 mod tsl_examples;
@@ -158,7 +174,9 @@ mod tsl_procedural;
 mod tsl_surface;
 mod tsl_viewport;
 mod usdz;
+mod usdz_exporter;
 mod uv_tests;
+mod video_frame;
 mod views_loaders;
 mod volume_caustics;
 mod volume_instancing;
@@ -167,7 +185,9 @@ mod volume_rectarea;
 mod volume_traa;
 mod vrml;
 mod vxgi;
+mod watch;
 mod water;
+mod webcam;
 mod wgsl_bind;
 mod wide_gamut;
 
@@ -303,6 +323,8 @@ impl State {
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
+        // webgl_watch ( 442 ) renders linear half-float, as its outputBufferType asks, and is
+        // tone-mapped and encoded here.
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
@@ -318,7 +340,9 @@ impl State {
             354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373,
             374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390,
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
-            408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
+            408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
+            425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
+            443,
         ]
         .contains(&self.example)
         {
@@ -1053,7 +1077,7 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if [46, 50, 54, 55, 57, 351].contains(&example) {
+            if [46, 50, 54, 55, 57, 351, 431, 438].contains(&example) {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
@@ -1097,7 +1121,9 @@ impl BrowserApp {
                             369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
                             384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
+                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
+                            426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
+                            440, 441, 443,
                         ]
                         .contains(&example),
                         format: if [
@@ -1117,7 +1143,9 @@ impl BrowserApp {
                             370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
                             384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
+                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
+                            426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
+                            440, 441, 443,
                         ]
                         .contains(&example)
                         {
@@ -1149,7 +1177,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=423).contains(&example) {
+            if (7..=443).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

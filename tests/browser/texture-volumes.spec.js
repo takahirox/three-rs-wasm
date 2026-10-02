@@ -6,6 +6,14 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ // The horses gallop and run by the example's Timer; FirstPersonControls turn while dragging.
+ // The SunLight's PCF edges differ as in webgl_loader_md2_control ( collada-3mf.spec.js ).
+ // At 1280 × 720 one horse at the near cascade's boundary falls inside the port's cascade
+ // frustum and outside WebGL's: the port draws it into that cascade once more ( portDraws ).
+ webgl_shadowmap_performance:{portDraws:[[2952,1]],limits:[.035,.7],antialias:true,times:[0,.5,1,2.5],parameters:[],at:2.5},
+ // The bike's animation follows the example's Timer; the orbit is damped. With MSAA the thin
+ // frame's edges resolve differently ( msaaLimits ).
+ misc_exporter_usdz:{antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // The model under its PMREM environment; the orbit is undamped. With MSAA its silhouette's
  // edge samples resolve slightly differently ( msaaLimits, docs/probe-gi-dof-examples.md ).
  webgl_loader_usdz:{backgroundBox:true,antialias:true,times:[0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
@@ -33,6 +41,35 @@ const cases={
  webgl_postprocessing_advanced:{times:[0,1,2.5],parameters:[],at:2.5,maskDraws:[53052,6,2]},
  webgpu_postprocessing_outline:{times:[0],parameters:[],at:0,settle:true,script:[['move',256,256,0],['param',0,6,6,0],['param',1,.8,.8,0],['param',2,3,3,0],['param',4,0xff0000,0xff0000,0],['param',5,0x00ff00,0x00ff00,0],['param',3,2,2,1.3],['param',3,0,0,1.3],['move',140,320,1.3],['move',380,190,1.3],['move',30,30,1.3]],restore:[[0,3,3],[1,0,0],[2,1,1],[4,0xffffff,0xffffff],[5,0x4e3636,0x4e3636]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_postprocessing_sao:{times:[0,1,2.5],parameters:[[0,'SAO Only',1],[0,'Normal',2],[0,'Default',0],[1,.2,.2],[2,.5,.5],[3,3,3],[4,40,40],[5,.2,.2],[6,false,0],[6,true,1],[7,30,30],[8,10,10],[9,.05,.05],[10,false,0]],restore:[[1,.5,.5],[2,.18,.18],[3,1,1],[4,100,100],[5,0,0],[7,8,8],[8,4,4],[9,.01,.01],[10,true,1]],at:2.5},
+ // The mirror-smooth box reflects WebGL's RoomEnvironment PMREM a little differently.
+ webgl_loader_texture_lottie:{limits:[.025,.9],antialias:true,times:[0,.3,.6,.9,1.2,1.6,2.5,4],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // WebGL's image-based multiple scattering lights the gold and silver a little apart,
+ // most once the GUI roughens them.
+ webgl_watch:{limits:[.035,1.2],backgroundBox:true,antialias:true,times:[0,1,3,6.5],parameters:[[0,.5,.5],[1,.3,.3],[2,.3,.3]],restore:[[0,.1,.1],[1,1,1],[2,.8,.8]],at:6.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The model's coplanar faces z-fight a few pixels apart between the backends, and its
+ // thin mullions resolve differently under MSAA.
+ webgl_loader_ifc:{limits:[.01,.6],antialias:true,times:[0],parameters:[],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // With MSAA the 218 thin curves' edges resolve differently ( msaaLimits ).
+ webgl_loader_3dm:{antialias:true,times:[0],parameters:[[0,true,1],[1,true,1],[4,true,1],[5,true,1],[3,false,0],[2,false,0]],restore:[[0,false,0],[1,false,0],[4,false,0],[5,false,0],[3,true,1],[2,true,1]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The webcam is the fake camera's fixed canvas stream; the planes wait for its first frame.
+ webgl_materials_video_webcam:{fakeCamera:true,antialias:true,times:[],parameters:[],at:0,script:[['camera',0],['drag',256,256,330,300,0,0],['drag',330,300,256,256,0,0],['drag',300,200,150,260,0,0],['drag',150,260,300,200,0,0]]},
+ // WebGL's PMREM and transmission sampling light the cloth and the translucent dragon a
+ // few levels apart from the WebGPU path, over most of the frame once the dragon fades.
+ webgl_materials_physical_transmission_alpha:{limits:[.42,4.7],antialias:true,times:[0],parameters:[[1,.5,.5],[2,.6,.6],[4,.3,.3],[5,1.2,1.2],[6,1,1],[8,.5,.5],[9,.5,.5],[11,.5,.5],[12,.7,.7],[0,0xff8844,0xff8844],[7,0x88ccff,0x88ccff],[10,0x88ff88,0x88ff88]],restore:[[0,0xffffff,0xffffff],[1,1,1],[2,1,1],[4,0,0],[5,1.5,1.5],[6,2.27,2.27],[7,0xf6d148,0xf6d148],[8,.155,.155],[9,1,1],[10,0xffffff,0xffffff],[11,1,1],[12,1,1]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The blurred lobe background's gradient bands differ by a level between the backends.
+ webgl_random_uv:{limits:[.005,.9],backgroundBox:true,antialias:true,times:[0],parameters:[[2,.4,.4],[3,.5,.5],[7,true,1],[6,true,1],[5,false,0],[4,false,0],[0,.6,.6],[1,.5,.5]],restore:[[0,0,0],[1,0,0],[2,0,0],[3,.2,.2],[4,true,1],[5,true,1],[6,false,0],[7,false,0]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ games_fps:{limits:[.005,1.4],antialias:true,noResize:true,times:[0,.5,1,1.5,2,2.5],parameters:[[0,true,1],[0,false,0]],at:2.5,script:[['key','w',true,2.6],['wait',0,2.7],['wait',0,2.8],['key','d',true,2.9],['wait',0,3],['key','w',false,3.1],['key','d',false,3.2],['key',' ',true,3.3],['wait',0,3.4],['key',' ',false,3.5],['wait',0,3.6],['wait',0,3.7],['wait',0,3.8]]},
+ webgl_loader_fbx:{limits:[.008,.2],antialias:true,rebuilds:true,frames:40,times:[0,1,2.5],parameters:[[0,'morph_test',1],[0,'monkey',2],[0,'monkey_embedded_texture',3],[0,'vCube',4],[0,'archer/ArcherRi01',5],[0,'warrior/Warrior',6],[0,'stanford-bunny',7],[0,'mixamo',8],[0,'RotationTest',9],[0,'exampleWindow',10],[0,'Head_69',11],[0,'morph-translation',12],[0,'ball_anims_asc_2018',13],[0,'Samba Dancing',0]],at:2.5,drag:[[256,256],[330,300]],settle:true},
+ webgl_loader_svg:{antialias:true,rebuilds:true,settle:true,times:[0],parameters:[[0,'Joins and caps',1],[0,'Hexagon',2],[0,'Energy',3],[0,'Test 1',4],[0,'Test 2',5],[0,'Test 3',6],[0,'Test 4',7],[0,'Test 5',8],[0,'Test 6',9],[0,'Test 7',10],[0,'Test 8',11],[0,'Test 9',12],[0,'Units',13],[0,'Ordering',14],[0,'Defs',15],[0,'Defs2',16],[0,'Defs3',17],[0,'Defs4',18],[0,'Defs5',19],[0,'Style CSS inside defs',20],[0,'Styled Paths',21],[0,'Multiple CSS classes',22],[0,'Zero Radius',23],[0,'Styles in svg tag',24],[0,'Round join',25],[0,'Ellipse Transformations',26],[0,'singlePointTest',27],[0,'singlePointTest2',28],[0,'singlePointTest3',29],[0,'emptyPath',30],[0,'emoji',31],[0,'blueprint',32],[0,'wideStroke',33],[0,'letter',34],[0,'Tiger',0],[1,false,0],[1,true,1],[2,false,0],[2,true,1],[3,true,1],[4,true,1],[3,false,0],[4,false,0]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_gcode:{antialias:true,rebuilds:true,times:[0],parameters:[[6,null,1],[7,null,1],[8,null,1],[9,null,1],[5,null,1]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_controls_arcball:{antialias:true,residency:[['drag',256,256,330,300,0,0],['drag',256,256,300,200,2,0],['wheel',256,256,-300,0],['key','Shift',true,0],['wheel',256,256,250,0],['key','Shift',false,0],['dblclick',240,250,0],['drag',300,300,250,330,1,0]],times:[0],parameters:[[18,false,0],[14,false,0],[14,true,1]],at:0,script:[['drag',256,256,330,300,0,0],['drag',256,256,300,200,2,0],['wheel',256,256,-300,0],['key','Shift',true,0],['wheel',256,256,250,0],['key','Shift',false,0],['dblclick',240,250,0],['drag',300,300,250,330,1,0],['param',8,true,1,0],['wheel',256,256,400,0],['param',17,null,1,0],['param',0,'Orthographic',0,0],['drag',256,256,330,300,0,0],['wheel',256,256,-300,0],['drag',256,256,300,200,2,0],['param',17,null,1,0],['param',0,'Perspective',1,0]]},
+ // WebGL draws the line loop's five vertices as LINE_LOOP; the port closes it as a
+ // six-vertex strip ( maskDraws, portDraws ).
+ misc_exporter_gltf:{maskDraws:[5,1,0],portDraws:[[6,1]],limits:[.012,.7],antialias:true,times:[0,2,6,15],parameters:[],at:15},
+ webgl_geometry_spline_editor:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[2,false,0],[3,false,0],[0,true,1],[1,1,1],[1,0,0],[4,null,1],[4,null,1],[5,null,1],[2,true,1],[3,true,1],[5,null,1],[1,.5,.5]],at:0,hover:[[378,77]],draw:[[378,77],[400,95],[420,110]],drag:[[256,450],[330,470]],wheel:[256,256,-300]},
+ webgl_raycaster_bvh:{antialias:true,streamsGeometry:true,times:[0,.5,1,2],parameters:[[3,true,1],[4,5,5],[4,1,1],[0,600,600],[2,false,0],[1,false,0],[2,true,1]],restore:[[0,150,150],[3,false,0],[4,10,10],[1,true,1]],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_modifier_subdivision:{antialias:true,rebuilds:true,times:[0],parameters:[[0,'Capsule',1],[0,'Circle',2],[0,'Cone',3],[0,'Cylinder',4],[0,'Dodecahedron',5],[0,'Icosahedron',6],[0,'Lathe',7],[0,'Octahedron',8],[0,'Plane',9],[0,'Ring',10],[0,'Sphere',11],[0,'Tetrahedron',12],[0,'Torus',13],[0,'TorusKnot',14],[4,true,1],[5,true,1],[9,true,1],[7,true,1],[8,false,0],[1,5,5],[6,1000,1000],[0,'Box',0]],restore:[[4,false,0],[5,false,0],[9,false,0],[7,false,0],[8,true,1],[1,3,3],[6,25000,25000]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_postprocessing_gtao:{times:[0,1,2.5],parameters:[[0,0,0],[0,4,2],[0,2,4],[0,3,5],[0,1,1],[0,5,3],[2,.5,.5],[7,24,24],[8,true,1],[12,8,8],[14,4,4],[15,24,24]],restore:[[2,.25,.25],[7,16,16],[8,false,0],[12,4,4],[14,2,2],[15,16,16]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_postprocessing_ssao:{times:[0,1,2.5],parameters:[[0,'SSAO Only',1],[0,'SSAO Only + Blur',2],[0,'Depth',3],[0,'Normal',4],[0,'Default',0],[1,16,16],[2,.01,.01],[3,.2,.2],[4,false,0]],restore:[[1,8,8],[2,.005,.005],[3,.1,.1],[4,true,1]],at:2.5},
  webgpu_clipping_stencil:{times:[0,1,2.5],parameters:[[2,.3,.3],[5,-.2,-.2],[3,true,1],[8,.4,.4],[1,true,1],[4,true,1],[7,true,1],[0,false,0],[9,true,1]],restore:[[2,0,0],[5,0,0],[3,false,0],[8,0,0],[1,false,0],[4,false,0],[7,false,0],[0,true,1],[9,false,0]],at:2.5,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The slider's line and handle and the labels are page overlays, hidden in both.
@@ -69,6 +106,9 @@ const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // webgpu_display_stereo streams its 500 instance matrices each frame.
 const streams=['webgpu_display_stereo','webgl_marchingcubes'];
+// A deterministic webcam: getUserMedia returns a 1280 × 720 canvas stream of a fixed
+// gradient and shapes, redrawn each animation frame so the stream keeps presenting.
+const fakeCamera=()=>{if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia=async()=>{const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const g=canvas.getContext('2d');const draw=()=>{const gradient=g.createLinearGradient(0,0,1280,720);gradient.addColorStop(0,'#203080');gradient.addColorStop(.5,'#c04060');gradient.addColorStop(1,'#f0d040');g.fillStyle=gradient;g.fillRect(0,0,1280,720);g.fillStyle='#ffffff';g.fillRect(160,120,320,480);g.fillStyle='#10a050';g.beginPath();g.arc(900,360,220,0,Math.PI*2);g.fill();requestAnimationFrame(draw);};draw();return canvas.captureStream(30);};};
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -79,6 +119,9 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
  else if(action==='look'){const [x,y]=args;await page.evaluate(([x,y])=>document.dispatchEvent(new MouseEvent('mousemove',{movementX:x,movementY:y})),[x,y]);}
  else if(action==='type'){await page.keyboard.type(args[0]);}
  else if(action==='press'){await page.keyboard.press(args[0]);}
+ else if(action==='dblclick'){const [x,y]=args;await page.mouse.dblclick(x,y);}
+ else if(action==='wait'){if(args.length)await page.waitForTimeout(args[0]);}
+ else if(action==='camera'){await page.waitForFunction(()=>{const v=document.getElementById('video');return v&&v.readyState>=2&&v.currentTime>0;});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));}
  else if(action==='move'){const [x,y]=args;await page.mouse.move(x,y);}
  else if(action==='down'||action==='up'){const [b,x,y]=args;await page.mouse.move(x,y);await page.mouse[action]({button:button(b)});}
  else if(action==='param'){const [i,reference,rust]=args;await page.evaluate(({runtime,i,reference,rust})=>{if(runtime!=='rust')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);},{runtime,i,reference,rust});}
@@ -86,10 +129,11 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ if(spec.fakeCamera)await page.addInitScript(fakeCamera);
  await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
@@ -134,6 +178,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
 for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  test(`Texture arrays and volumes GPU residency: ${kind}`,async({page},info)=>{
   test.setTimeout(120000);
+  if(spec.fakeCamera)await page.addInitScript(fakeCamera);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
   await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const reports=[];
@@ -203,6 +248,9 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // times over two resolutions (six draws); the port draws one mask per resolution (two).
   // A list of [count, reference, rust] triples masks several kinds of draw.
   if(spec.maskDraws)for(const [count,reference,rust] of Array.isArray(spec.maskDraws[0])?spec.maskDraws:[spec.maskDraws])for(let k=0;k<reference-rust;k++){const i=pair.reference.draws.findIndex(d=>d.count===count);if(i>=0)pair.reference.draws.splice(i,1);}
+  // The port's side of a scoped difference: [count, draws] the port issues beyond the
+  // reference's ( each explained at its case ).
+  if(spec.portDraws)for(const [count,n] of spec.portDraws)for(let k=0;k<n;k++){const i=pair.rust.draws.findIndex(d=>d.count===count);if(i>=0)pair.rust.draws.splice(i,1);}
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
   // 36-index box and WebGPU a 5,952-index sphere. The stereo port draws its cube

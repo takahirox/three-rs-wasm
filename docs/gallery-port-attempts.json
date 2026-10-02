@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 418,
-    "blocked-at-port-review": 146,
+    "runnable-partial": 438,
+    "blocked-at-port-review": 126,
     "excluded": 43
   },
   "examples": [
@@ -2659,10 +2659,10 @@
     },
     {
       "id": "webgl_geometry_spline_editor",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_spline_editor.html",
       "source_sha256": "fb552fe113bb287d28d563dbf579245138edadc869370240991d88ab50fb164c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -5224,10 +5224,10 @@
     },
     {
       "id": "webgl_loader_3dm",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dm.html",
       "source_sha256": "37fde3f49f1f8efe06fcd045cb8ec18803ad19a4f6db4747fcca7b3f1029d677",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -5879,10 +5879,10 @@
     },
     {
       "id": "webgl_loader_fbx",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_fbx.html",
       "source_sha256": "9ad3920575e7a36a2a7797f9ed520d901eccca50de17ec016c3ab1070fe0b839",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -6802,10 +6802,10 @@
     },
     {
       "id": "webgl_loader_ifc",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ifc.html",
       "source_sha256": "16bb9fbfac63210fb315a06d81edb95b105052aae5917e21232b9b5186012f56",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7706,10 +7706,10 @@
     },
     {
       "id": "webgl_loader_svg",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_svg.html",
       "source_sha256": "c0dbe3673ea93e298bc267f823a1a478ab85bb42975a16a74843478df610eb52",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -7977,10 +7977,10 @@
     },
     {
       "id": "webgl_loader_texture_lottie",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_texture_lottie.html",
       "source_sha256": "7f90e7315a5e0646e6da8fe4fd30006ed5737a6194d86f79a04428bf7a6962a8",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -9904,10 +9904,10 @@
     },
     {
       "id": "webgl_materials_physical_transmission_alpha",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_physical_transmission_alpha.html",
       "source_sha256": "0e2d88df8deaf5881d1c3667c7dc11d788f10093830ab98a91c12d6c02272804",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "asset-extension",
@@ -10510,10 +10510,10 @@
     },
     {
       "id": "webgl_materials_video_webcam",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_video_webcam.html",
       "source_sha256": "5e31f0edbe18c6bc30d521443eccff058af9e6a7fe655539ebef5213c75a069a",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -11174,10 +11174,10 @@
     },
     {
       "id": "webgl_modifier_subdivision",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_modifier_subdivision.html",
       "source_sha256": "b1031a5d9a62176dcace1dc7bcf19ff4a0cf425fe1b1698e07765aca7980ddda",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -12279,10 +12279,10 @@
     },
     {
       "id": "webgl_random_uv",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_random_uv.html",
       "source_sha256": "a4ffb12f8d6ad45c5901abe401b0435418c83c61e11109ae66b9601b8ee73564",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -12374,10 +12374,10 @@
     },
     {
       "id": "webgl_raycaster_bvh",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_bvh.html",
       "source_sha256": "ec3276652a9c3c0591dcbd1bf55505a894e6ce67d1fff07d5e334fa484c18207",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -13328,10 +13328,10 @@
     },
     {
       "id": "webgl_shadowmap_performance",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap_performance.html",
       "source_sha256": "d630dd50d8b46de46d1166bf0211042d331d8adb21b82aa90ba2e8fefe5863a0",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -14132,10 +14132,10 @@
     },
     {
       "id": "webgl_watch",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_watch.html",
       "source_sha256": "c64ffbdbce4187114d0ce016101f040b0ab9480a9206fbacdeaad4dd4e864242",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -15260,10 +15260,10 @@
     },
     {
       "id": "webgl_postprocessing_gtao",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_gtao.html",
       "source_sha256": "866c247da716612a4d8fef0ea15bb35029a95fad17e9471058504ba9d83d215f",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -36389,10 +36389,10 @@
     },
     {
       "id": "webgpu_video_frame",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_frame.html",
       "source_sha256": "36a558a7fb3690e17cae6f7dddba85be31650e97b9d9541367d0ef7dbeede196",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -41468,10 +41468,10 @@
     },
     {
       "id": "games_fps",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/games_fps.html",
       "source_sha256": "693a33bedc395d5a5b3f9f08108c9d14df8604db30e3cdcf47ebbc501b399cc3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43093,10 +43093,10 @@
     },
     {
       "id": "misc_controls_arcball",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_controls_arcball.html",
       "source_sha256": "6955cb1c2e35da9be81cdd9cb4889d4ff75b197467c18c51cbd33604dcda2692",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -43803,10 +43803,10 @@
     },
     {
       "id": "misc_exporter_gcode",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_gcode.html",
       "source_sha256": "092702ba85b709f502a0a1aebaa61abc0a673ce350b502d6a902193accaf8ebb",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -43886,10 +43886,10 @@
     },
     {
       "id": "misc_exporter_gltf",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_gltf.html",
       "source_sha256": "509b912e2508834c2b8320d0c69f388a81731b5ec9a30458066ba07316365ad3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44400,10 +44400,10 @@
     },
     {
       "id": "misc_exporter_usdz",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_usdz.html",
       "source_sha256": "4993f4c850f43fa3be699b702418ad7de1f319aa8038940b26084736dcefab1c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
