@@ -43,8 +43,6 @@ struct Uniforms {
 @group(0) @binding(14) var dfg_map: texture_2d<f32>;
 @group(0) @binding(15) var shadow_atlas:texture_depth_2d_array;
 @group(0) @binding(16) var shadow_sampler:sampler_comparison;
-@group(0) @binding(27) var vsm_maps:texture_2d_array<f32>;
-@group(0) @binding(28) var vsm_sampler:sampler;
 @group(0) @binding(24) var ltc_sampler:sampler;
 @group(0) @binding(17) var ltc_tables:texture_2d_array<f32>;
 @group(0) @binding(18) var transmission_map:texture_2d<f32>;
@@ -192,7 +190,7 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
         // deviation, light bleeding reduced by remapping 0.3..0.95.
         let z=ndc.z+settings.y;
         if z>1.0 {return 1.0;}
-        let distribution=textureSampleLevel(vsm_maps,vsm_sampler,uv,i32(layer),0.0).rg;
+        let distribution=textureSampleLevel(ltc_tables,ltc_sampler,uv,i32(layer),0.0).rg;
         let mean=distribution.x;var variance=distribution.y*distribution.y;
         let hard=step(z,mean);
         if hard==1.0 {return 1.0;}

@@ -82,8 +82,10 @@ fn skinned_sphere(scene: &Scene, handle: Object3D) -> Result<Sphere> {
 }
 pub(crate) struct Atlas {
     pub view: wgpu::TextureView,
-    /// The VSM layers' blurred ( mean, deviation ), by shadow layer.
-    pub vsm_view: wgpu::TextureView,
+    /// The VSM layers' blurred ( mean, deviation ), by shadow layer, when a light
+    /// uses VSM. It takes the LTC tables' binding, so a scene with VSM shadows has
+    /// no rect area lights.
+    pub vsm_view: Option<wgpu::TextureView>,
     pub matrices: [[f32; 16]; 48],
     pub params: [[f32; 4]; 8],
     pub filters: [[f32; 4]; 8],
@@ -107,7 +109,6 @@ pub(crate) struct ShadowRenderer {
     /// and kept, as three's frustum culling caches it.
     skinned_spheres: std::cell::RefCell<std::collections::HashMap<(usize, Object3D), Sphere>>,
     vsm: std::cell::RefCell<Option<VsmTarget>>,
-    vsm_empty: wgpu::TextureView,
     pub vsm_sampler: wgpu::Sampler,
     vsm_layout: wgpu::BindGroupLayout,
     vsm_pipelines: [wgpu::RenderPipeline; 2],
@@ -153,6 +154,18 @@ struct V{rect:vec4<f32>,params:vec4<f32>}
  mean/=samples;squared/=samples;
  return vec4(mean,sqrt(max(0.0,squared-mean*mean)),0.0,1.0);
 }";
+/// The VSM layers take the LTC tables' binding: a scene with VSM shadows can have
+/// no rect area lights.
+fn rect_area_free(scene: &Scene) -> Result<()> {
+    for root in scene.roots() {
+        for h in scene.traverse(root, true)? {
+            if matches!(scene.get(h)?.kind, NodeKind::Light(Light::RectArea { .. })) {
+                return Err(Error::Invalid("VSM shadows with rect area lights"));
+            }
+        }
+    }
+    Ok(())
+}
 fn vsm_texture(device: &wgpu::Device, size: u32, layers: u32) -> wgpu::Texture {
     device.create_texture(&wgpu::TextureDescriptor {
         label: Some("vsm shadow map"),
@@ -256,10 +269,6 @@ impl ShadowRenderer {
             dimension: Some(wgpu::TextureViewDimension::D2Array),
             ..Default::default()
         });
-        let vsm_empty = vsm_texture(device, 1, 1).create_view(&wgpu::TextureViewDescriptor {
-            dimension: Some(wgpu::TextureViewDimension::D2Array),
-            ..Default::default()
-        });
         let texture_entry = |binding, sample_type| wgpu::BindGroupLayoutEntry {
             binding,
             visibility: wgpu::ShaderStages::FRAGMENT,
@@ -332,7 +341,6 @@ impl ShadowRenderer {
         };
         Self {
             vsm: Default::default(),
-            vsm_empty,
             vsm_sampler: device.create_sampler(&linear),
             vsm_layout,
             vsm_pipelines,
@@ -379,7 +387,7 @@ impl ShadowRenderer {
         let mut used = std::collections::HashSet::new();
         let mut atlas = Atlas {
             view: self.empty.clone(),
-            vsm_view: self.vsm_empty.clone(),
+            vsm_view: None,
             matrices: [[0.0; 16]; 48],
             params: [[0.0; 4]; 8],
             filters: [[0.0; 4]; 8],
@@ -572,7 +580,8 @@ impl ShadowRenderer {
         if let Some(v) = self.vsm.borrow().as_ref()
             && vsm_layers.iter().any(Option::is_some)
         {
-            atlas.vsm_view = v.view.clone();
+            rect_area_free(scene)?;
+            atlas.vsm_view = Some(v.view.clone());
         }
         if !scene.shadow_auto_update && self.rendered.get() {
             return Ok(atlas);
@@ -838,7 +847,8 @@ impl ShadowRenderer {
             }
         }
         if vsm_layers.iter().any(Option::is_some) {
-            atlas.vsm_view = self.blur_vsm(
+            rect_area_free(scene)?;
+            atlas.vsm_view = Some(self.blur_vsm(
                 device,
                 queue,
                 &mut encoder,
@@ -846,7 +856,7 @@ impl ShadowRenderer {
                 &vsm_layers,
                 &viewports,
                 size,
-            )?;
+            )?);
         }
         // Keep slots of casters culled this frame (they return as the light moves);
         // drop only removed nodes and layers beyond the current shadow cameras.

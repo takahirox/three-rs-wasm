@@ -285,15 +285,7 @@ impl Renderer {
                         | wgpu::Features::TEXTURE_COMPRESSION_ETC2
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC
                         | wgpu::Features::RG11B10UFLOAT_RENDERABLE),
-                // The scene layout's VSM moments are a seventeenth sampled texture
-                // when a custom program adds its own: take what the adapter offers.
-                required_limits: wgpu::Limits {
-                    max_sampled_textures_per_shader_stage: adapter
-                        .limits()
-                        .max_sampled_textures_per_shader_stage
-                        .max(wgpu::Limits::default().max_sampled_textures_per_shader_stage),
-                    ..wgpu::Limits::default()
-                },
+                required_limits: wgpu::Limits::default(),
                 ..Default::default()
             })
             .await
@@ -340,23 +332,6 @@ impl Renderer {
                 binding: 16,
                 visibility: wgpu::ShaderStages::FRAGMENT,
                 ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Comparison),
-                count: None,
-            },
-            // VSMShadowMap: the blurred ( mean, deviation ) layers and their sampler.
-            wgpu::BindGroupLayoutEntry {
-                binding: 27,
-                visibility: wgpu::ShaderStages::FRAGMENT,
-                ty: wgpu::BindingType::Texture {
-                    sample_type: wgpu::TextureSampleType::Float { filterable: true },
-                    view_dimension: wgpu::TextureViewDimension::D2Array,
-                    multisampled: false,
-                },
-                count: None,
-            },
-            wgpu::BindGroupLayoutEntry {
-                binding: 28,
-                visibility: wgpu::ShaderStages::FRAGMENT,
-                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
                 count: None,
             },
         ]);
@@ -2172,9 +2147,13 @@ impl Renderer {
             binding: 24,
             resource: wgpu::BindingResource::Sampler(&self.ltc_sampler),
         });
+        // The LTC tables, or the VSM layers in their place ( they share the sampler's
+        // linear magnification at level 0 ).
         bindings.push(wgpu::BindGroupEntry {
             binding: 17,
-            resource: wgpu::BindingResource::TextureView(&self.ltc),
+            resource: wgpu::BindingResource::TextureView(
+                shadows.vsm_view.as_ref().unwrap_or(&self.ltc),
+            ),
         });
         bindings.push(wgpu::BindGroupEntry {
             binding: 18,
@@ -2194,14 +2173,6 @@ impl Renderer {
             wgpu::BindGroupEntry {
                 binding: 16,
                 resource: wgpu::BindingResource::Sampler(&self.shadows.sampler),
-            },
-            wgpu::BindGroupEntry {
-                binding: 27,
-                resource: wgpu::BindingResource::TextureView(&shadows.vsm_view),
-            },
-            wgpu::BindGroupEntry {
-                binding: 28,
-                resource: wgpu::BindingResource::Sampler(&self.shadows.vsm_sampler),
             },
         ]);
         let uses_viewport = custom.is_some_and(|p| p.viewport != 0);

@@ -44,7 +44,10 @@ considered and left out: they render the same scenes as `webgpu_skinning`,
   an RG16F array with the receivers drawn, blurred vertically and
   horizontally with `blur_samples` taps over the shadow radius, and read
   with the Chebyshev bound and three's 0.3 / 0.65 remap. games_fps and
-  random UV use it.
+  random UV use it. The moments take the LTC tables' texture binding, which
+  keeps the scene layout within WebGPU's 16 sampled textures per stage. A
+  scene with VSM shadows therefore cannot have rect area lights, and reports
+  an error if it does.
 - **Line shadow casters**: Line and LineSegments draw into shadow maps, as
   the spline editor's outlines cast.
 - **Transmission alpha**: the transmission sample's alpha gives
