@@ -2676,7 +2676,7 @@ pub(super) fn update_ranges(vertices: &[u32]) -> Vec<(usize, usize)> {
     }
     let gap = |i: usize| merged[i].0 as isize - merged[i - 1].0 as isize - merged[i - 1].1 as isize;
     let mut splits: Vec<usize> = (1..merged.len()).collect();
-    splits.sort_by(|&a, &b| gap(b).cmp(&gap(a)));
+    splits.sort_by_key(|&a| std::cmp::Reverse(gap(a)));
     splits.truncate(MAX_UPDATE_RANGES - 1);
     splits.sort_unstable();
     let mut out = vec![merged[0]];
