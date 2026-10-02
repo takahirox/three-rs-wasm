@@ -39,13 +39,13 @@ macro_rules! wgsl {
 const OUTPUT_VS: &str = include_str!("compute_cloth/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("compute_cloth/output_fs.wgsl");
 /// PropertyBinding.sanitizeNodeName: GLTFLoader's node names.
-fn sanitize(name: &str) -> String {
+pub(super) fn sanitize(name: &str) -> String {
     name.chars()
         .filter(|c| !"[]\\.:/".contains(*c))
         .map(|c| if c.is_whitespace() { '_' } else { c })
         .collect()
 }
-fn linear(hex: u32, intensity: f64) -> Vec<f64> {
+pub(super) fn linear(hex: u32, intensity: f64) -> Vec<f64> {
     [16, 8, 0]
         .map(|shift| {
             let c = ((hex >> shift) & 255) as f64 / 255.;
@@ -61,24 +61,24 @@ fn linear(hex: u32, intensity: f64) -> Vec<f64> {
 /// An Object3D of the retargeting simulation: three.js's transform state,
 /// with world matrices that only change when updateMatrixWorld runs.
 #[derive(Clone)]
-struct SimNode {
-    name: String,
-    parent: Option<usize>,
-    children: Vec<usize>,
-    position: Vector3,
-    quaternion: Quaternion,
-    scale: Vector3,
-    matrix: Matrix4,
-    world: Matrix4,
-    needs_update: bool,
+pub(super) struct SimNode {
+    pub(super) name: String,
+    pub(super) parent: Option<usize>,
+    pub(super) children: Vec<usize>,
+    pub(super) position: Vector3,
+    pub(super) quaternion: Quaternion,
+    pub(super) scale: Vector3,
+    pub(super) matrix: Matrix4,
+    pub(super) world: Matrix4,
+    pub(super) needs_update: bool,
 }
-struct Sim {
-    nodes: Vec<SimNode>,
+pub(super) struct Sim {
+    pub(super) nodes: Vec<SimNode>,
 }
 impl Sim {
     /// The glTF node tree as GLTFLoader leaves it: locals from the TRS and
     /// worlds from the load-time scene.updateMatrixWorld() at the origin.
-    fn from_gltf(asset: &gltf::Gltf) -> Result<(Self, Vec<usize>)> {
+    pub(super) fn from_gltf(asset: &gltf::Gltf) -> Result<(Self, Vec<usize>)> {
         let mut nodes: Vec<SimNode> = asset
             .nodes()
             .map(|n| {
@@ -148,14 +148,14 @@ impl Sim {
     }
 }
 /// A retargeted bone's keys: the hip's positions, if any, and the rotations.
-type BoneKeys = (Option<Vec<[f32; 3]>>, Vec<[f32; 4]>);
+pub(super) type BoneKeys = (Option<Vec<[f32; 3]>>, Vec<[f32; 4]>);
 /// A baked bone: its node, keys and Float32 times.
-type BakedBone = (usize, Option<Vec<[f32; 3]>>, Vec<[f32; 4]>, Vec<f32>);
+pub(super) type BakedBone = (usize, Option<Vec<[f32; 3]>>, Vec<[f32; 4]>, Vec<f32>);
 /// SkeletonUtils.retargetClip( target, source skeleton, clip, options ) for
 /// the page's options: the bones' bind pose from `inverses`, the source
 /// pose sampled by `sample` per frame.
 #[allow(clippy::too_many_arguments)]
-fn retarget_clip(
+pub(super) fn retarget_clip(
     target: &mut Sim,
     mesh: usize,
     bones: &[usize],
@@ -267,6 +267,61 @@ fn retarget_clip(
         .filter_map(|(k, d)| d.map(|(p, q)| (bones[k], p, q, times.clone())))
         .collect())
 }
+/// The reflector's virtual camera and oblique projection for the camera's
+/// world matrix and projection ( the mirror is the plane y = 0 facing up ):
+/// its view and projection.
+pub(super) fn reflector_camera(world: Matrix4, projection: Matrix4) -> (Matrix4, Matrix4) {
+    // The reflector's virtual camera and oblique projection ( the
+    // mirror is the plane y = 0 facing up ).
+    let normal = Vector3::Y;
+    let camera_position = world.w_axis.truncate();
+    let reflect = |v: Vector3| v - normal * (2. * v.dot(normal));
+    let mirror_view = -reflect(-camera_position);
+    let rotation = Matrix4::from_mat3(glam::DMat3::from_mat4(world));
+    let look_at = rotation.transform_vector3(Vector3::new(0., 0., -1.)) + camera_position;
+    let target = -reflect(-look_at);
+    let up = reflect(rotation.transform_vector3(Vector3::Y));
+    let virtual_world = {
+        // Object3D.lookAt for a camera: −z towards the target.
+        let z = (mirror_view - target).normalize();
+        let mut x = up.cross(z);
+        if x.length_squared() == 0. {
+            x = Vector3::X;
+        }
+        let x = x.normalize();
+        let y = z.cross(x);
+        Matrix4::from_cols(
+            x.extend(0.),
+            y.extend(0.),
+            z.extend(0.),
+            mirror_view.extend(1.),
+        )
+    };
+    let virtual_view = virtual_world.inverse();
+    let mut virtual_projection = projection;
+    {
+        // Plane.setFromNormalAndCoplanarPoint( n, 0 ) into view space.
+        let plane_normal = virtual_view.transform_vector3(normal).normalize();
+        let point = virtual_view.transform_point3(Vector3::ZERO);
+        let constant = -point.dot(plane_normal);
+        let mut clip = plane_normal.extend(constant);
+        let e = virtual_projection.to_cols_array();
+        let q = Vector4::new(
+            (clip.x.signum() + e[8]) / e[0],
+            (clip.y.signum() + e[9]) / e[5],
+            -1.,
+            (1. + e[10]) / e[14],
+        );
+        clip *= 1. / clip.dot(q);
+        let mut e = e;
+        e[2] = clip.x;
+        e[6] = clip.y;
+        e[10] = clip.z;
+        e[14] = clip.w;
+        virtual_projection = Matrix4::from_cols_array(&e);
+    }
+    (virtual_view, virtual_projection)
+}
 /// A skinned mesh: its buffers, skeleton, material maps and the sphere
 /// SkinnedMesh.computeBoundingSphere takes at the first culling.
 struct Skinned {
@@ -293,48 +348,65 @@ impl Skinned {
     /// getVertexPosition for every vertex into Sphere.expandByPoint.
     fn bounding_sphere(&self, s: &Scene) -> Result<Sphere> {
         let world = s.get(self.node)?.matrix_world;
-        let bind_inverse = world.inverse();
         let matrices: Vec<Matrix4> = self
             .bones
             .iter()
             .map(|(h, inverse)| Ok(s.get(*h)?.matrix_world * *inverse))
             .collect::<Result<_>>()?;
-        let mut sphere: Option<Sphere> = None;
-        for i in 0..self.positions.len() / 3 {
-            let base = Vector3::new(
-                self.positions[i * 3] as f64,
-                self.positions[i * 3 + 1] as f64,
-                self.positions[i * 3 + 2] as f64,
-            );
-            let mut p = Vector3::ZERO;
-            for k in 0..4 {
-                let w = self.weights[i * 4 + k] as f64;
-                if w != 0. {
-                    p += matrices[self.joints[i * 4 + k] as usize].transform_point3(base) * w;
-                }
+        skinned_sphere(
+            &self.positions,
+            &self.joints,
+            &self.weights,
+            &matrices,
+            world.inverse(),
+        )
+    }
+}
+/// SkinnedMesh.computeBoundingSphere: every vertex skinned by the bone
+/// matrices and brought back by the bind matrix inverse, into
+/// Sphere.expandByPoint.
+pub(super) fn skinned_sphere(
+    positions: &[f32],
+    joints: &[u32],
+    weights: &[f32],
+    matrices: &[Matrix4],
+    bind_inverse: Matrix4,
+) -> Result<Sphere> {
+    let mut sphere: Option<Sphere> = None;
+    for i in 0..positions.len() / 3 {
+        let base = Vector3::new(
+            positions[i * 3] as f64,
+            positions[i * 3 + 1] as f64,
+            positions[i * 3 + 2] as f64,
+        );
+        let mut p = Vector3::ZERO;
+        for k in 0..4 {
+            let w = weights[i * 4 + k] as f64;
+            if w != 0. {
+                p += matrices[joints[i * 4 + k] as usize].transform_point3(base) * w;
             }
-            let p = bind_inverse.transform_point3(p);
-            match &mut sphere {
-                None => {
-                    sphere = Some(Sphere {
-                        center: p,
-                        radius: 0.,
-                    })
-                }
-                Some(s) => {
-                    let v = p - s.center;
-                    let length_sq = v.length_squared();
-                    if length_sq > s.radius * s.radius {
-                        let length = length_sq.sqrt();
-                        let delta = (length - s.radius) * 0.5;
-                        s.center += v * (delta / length);
-                        s.radius += delta;
-                    }
+        }
+        let p = bind_inverse.transform_point3(p);
+        match &mut sphere {
+            None => {
+                sphere = Some(Sphere {
+                    center: p,
+                    radius: 0.,
+                })
+            }
+            Some(s) => {
+                let v = p - s.center;
+                let length_sq = v.length_squared();
+                if length_sq > s.radius * s.radius {
+                    let length = length_sq.sqrt();
+                    let delta = (length - s.radius) * 0.5;
+                    s.center += v * (delta / length);
+                    s.radius += delta;
                 }
             }
         }
-        sphere.ok_or(Error::Invalid("skinned mesh vertices"))
     }
+    sphere.ok_or(Error::Invalid("skinned mesh vertices"))
 }
 struct Targets {
     width: u32,
@@ -1208,55 +1280,7 @@ impl Demo {
         s.update()?;
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
-        // The reflector's virtual camera and oblique projection ( the
-        // mirror is the plane y = 0 facing up ).
-        let normal = Vector3::Y;
-        let camera_position = world.w_axis.truncate();
-        let reflect = |v: Vector3| v - normal * (2. * v.dot(normal));
-        let mirror_view = -reflect(-camera_position);
-        let rotation = Matrix4::from_mat3(glam::DMat3::from_mat4(world));
-        let look_at = rotation.transform_vector3(Vector3::new(0., 0., -1.)) + camera_position;
-        let target = -reflect(-look_at);
-        let up = reflect(rotation.transform_vector3(Vector3::Y));
-        let virtual_world = {
-            // Object3D.lookAt for a camera: −z towards the target.
-            let z = (mirror_view - target).normalize();
-            let mut x = up.cross(z);
-            if x.length_squared() == 0. {
-                x = Vector3::X;
-            }
-            let x = x.normalize();
-            let y = z.cross(x);
-            Matrix4::from_cols(
-                x.extend(0.),
-                y.extend(0.),
-                z.extend(0.),
-                mirror_view.extend(1.),
-            )
-        };
-        let virtual_view = virtual_world.inverse();
-        let mut virtual_projection = projection;
-        {
-            // Plane.setFromNormalAndCoplanarPoint( n, 0 ) into view space.
-            let plane_normal = virtual_view.transform_vector3(normal).normalize();
-            let point = virtual_view.transform_point3(Vector3::ZERO);
-            let constant = -point.dot(plane_normal);
-            let mut clip = plane_normal.extend(constant);
-            let e = virtual_projection.to_cols_array();
-            let q = Vector4::new(
-                (clip.x.signum() + e[8]) / e[0],
-                (clip.y.signum() + e[9]) / e[5],
-                -1.,
-                (1. + e[10]) / e[14],
-            );
-            clip *= 1. / clip.dot(q);
-            let mut e = e;
-            e[2] = clip.x;
-            e[6] = clip.y;
-            e[10] = clip.z;
-            e[14] = clip.w;
-            virtual_projection = Matrix4::from_cols_array(&e);
-        }
+        let (virtual_view, virtual_projection) = reflector_camera(world, projection);
         let write = |buffer: &wgpu::Buffer,
                      source: &str,
                      name: &str,

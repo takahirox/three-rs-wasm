@@ -1,0 +1,24 @@
+{
+  "file": "helmet-lods.bin",
+  "vertexCount": 14556,
+  "meshlets": [
+    271,
+    162,
+    97,
+    84,
+    16,
+    13
+  ],
+  "errors": [
+    0,
+    0.0073041109693479656,
+    0.03710348089155274,
+    0.135767187809756,
+    0.22799676627254356,
+    0.6034520117024409
+  ],
+  "source": "examples/webgpu_compute_rasterizer_ibl.html",
+  "source_sha256": "5664e0b11ae25612ccb183504a1d742138d4a58498639cd4c5c4d3467b0c2dd1",
+  "meshoptimizer": "1.1",
+  "sha256": "98a5bc3a6b647e24dfe99105271a13407e1afa2d936af3fe73b68bd7c532c2e2"
+}

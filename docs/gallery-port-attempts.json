@@ -2,8 +2,8 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 408,
-    "blocked-at-port-review": 156,
+    "runnable-partial": 418,
+    "blocked-at-port-review": 146,
     "excluded": 43
   },
   "examples": [
@@ -8217,10 +8217,10 @@
     },
     {
       "id": "webgl_loader_usdz",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_usdz.html",
       "source_sha256": "d45e9756fe5456e94acc6084db833a7ec7d2bf278bb254c1277f42e46cf1b046",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -8307,10 +8307,10 @@
     },
     {
       "id": "webgl_loader_vrml",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vrml.html",
       "source_sha256": "2fcc9406cffb725ee89f140037b5d825449f4d1c516d469e7da065391085d065",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -9971,10 +9971,10 @@
     },
     {
       "id": "webgl_materials_subsurface_scattering",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_subsurface_scattering.html",
       "source_sha256": "ebb175bc77ccc8b493c49f7c15ccaba5e70d39bbc5634c407d59e943b454e8e3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -14910,10 +14910,10 @@
     },
     {
       "id": "webgl_postprocessing_dof2",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_dof2.html",
       "source_sha256": "c68085e65ad3192e205aa5b7900d9bc597f2ba272ee09af693d340997c267d59",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -17634,10 +17634,10 @@
     },
     {
       "id": "webgl_gpgpu_birds_gltf",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_gpgpu_birds_gltf.html",
       "source_sha256": "f3196d89cb4b6e0cd4a237d94caa8d5462c4dba9673501cd8e5a1e3db60e8dbc",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -18598,10 +18598,10 @@
     },
     {
       "id": "webgl_simple_gi",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_simple_gi.html",
       "source_sha256": "bd832f6f9b7cdfba466ab440e9bf72de074f95cbb7c7a93ed5a9caeaa0890972",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -19841,10 +19841,10 @@
     },
     {
       "id": "webgpu_animation_retargeting_readyplayer",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_animation_retargeting_readyplayer.html",
       "source_sha256": "646e28b055080708785038c5d3dca4d9763584d76c2fa78588acdafdd8aa3a2e",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -22058,10 +22058,10 @@
     },
     {
       "id": "webgpu_compute_rasterizer_ibl",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_rasterizer_ibl.html",
       "source_sha256": "5664e0b11ae25612ccb183504a1d742138d4a58498639cd4c5c4d3467b0c2dd1",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -31780,10 +31780,10 @@
     },
     {
       "id": "webgpu_postprocessing_ssr_denoise",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssr_denoise.html",
       "source_sha256": "814c692e151a8e22390efb4d967ad4ffa4ab3e37d9dbc111571f7142ddc69d65",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -33672,10 +33672,10 @@
     },
     {
       "id": "webgpu_shadowmap_progressive",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_progressive.html",
       "source_sha256": "86a5e737f64cc11207a41a4a184c5f3af8554ef48101b70b6d67c1465c4f2db1",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",

@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Usdz(Box<super::usdz::Demo>),
+    Vrml(Box<super::vrml::Demo>),
+    BirdsGltf(Box<super::birds_gltf::Demo>),
+    Subsurface(Box<super::subsurface::Demo>),
+    Dof2(Box<super::dof2::Demo>),
+    SimpleGi(Box<super::simple_gi::Demo>),
+    SsrDenoise(Box<super::ssr_denoise::Demo>),
+    RetargetingReadyplayer(Box<super::retargeting_readyplayer::Demo>),
+    ShadowmapProgressive(Box<super::shadowmap_progressive::Demo>),
+    ComputeRasterizerIbl(Box<super::compute_rasterizer_ibl::Demo>),
     Sculpt(Box<super::sculpt::Demo>),
     GeometryLoft(Box<super::geometry_loft::Demo>),
     GeneratorBuilding(Box<super::generator_building::Demo>),
@@ -981,6 +991,99 @@ impl Demo {
                     super::sculpt::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            414 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 1000000.,
+                elapsed: 0.,
+                content: Content::ComputeRasterizerIbl(Box::new(
+                    super::compute_rasterizer_ibl::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            415 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::ShadowmapProgressive(Box::new(
+                    super::shadowmap_progressive::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            416 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 50.,
+                elapsed: 0.,
+                content: Content::RetargetingReadyplayer(Box::new(
+                    super::retargeting_readyplayer::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            417 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 8.,
+                elapsed: 0.,
+                content: Content::SsrDenoise(Box::new(
+                    super::ssr_denoise::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            418 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::SimpleGi(Box::new(
+                    super::simple_gi::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            419 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::Dof2(Box::new(
+                    super::dof2::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            420 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Subsurface(Box::new(
+                    super::subsurface::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            421 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::BirdsGltf(Box::new(
+                    super::birds_gltf::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            422 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1e10,
+                elapsed: 0.,
+                content: Content::Vrml(Box::new(
+                    super::vrml::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            423 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Usdz(Box::new(
+                    super::usdz::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1873,6 +1976,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Usdz(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2472,6 +2605,36 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Usdz(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -2810,6 +2973,56 @@ impl Demo {
             return Some(target);
         }
         if let Content::ComputeRasterizer(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ShadowmapProgressive(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::SsrDenoise(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::SimpleGi(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Dof2(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Subsurface(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::BirdsGltf(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Vrml(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Usdz(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -3155,6 +3368,36 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Usdz(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Sculpt(demo) = &mut self.content {
@@ -3512,6 +3755,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Usdz(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Sculpt(demo) = &mut self.content {
@@ -3958,6 +4231,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Usdz(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Sculpt(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -4308,6 +4611,46 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Usdz(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -4716,6 +5059,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Usdz(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Sculpt(demo) = &mut self.content {
@@ -5140,6 +5513,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Usdz(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Vrml(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::BirdsGltf(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Subsurface(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Dof2(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SimpleGi(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SsrDenoise(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RetargetingReadyplayer(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapProgressive(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Sculpt(demo) = &mut self.content {

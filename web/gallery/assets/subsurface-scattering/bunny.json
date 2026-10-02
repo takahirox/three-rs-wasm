@@ -1,0 +1,1 @@
+{"source":"examples/models/fbx/stanford-bunny.fbx","source_sha256":"d93bc888e6bd7d205792a90ac21443286eb189bc15f56326b3b8becff17665e5","vertices":91014,"attributes":["position","normal","uv"],"rotation":[0,0,0],"file":"bunny.bin","sha256":"9765afaaf51e60617c9876b676d17b65ecbba295d814f4ebe94d807b9e10f2cb"}

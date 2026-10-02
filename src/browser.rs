@@ -9,6 +9,7 @@ mod attractors;
 mod audio_timing;
 mod audio_visual;
 mod backdrop_water;
+mod birds_gltf;
 mod buffer_particles;
 mod caustics;
 mod channels;
@@ -17,12 +18,14 @@ mod composer_passes;
 mod compute_birds;
 mod compute_cloth;
 mod compute_rasterizer;
+mod compute_rasterizer_ibl;
 mod compute_water;
 mod controls_attributes;
 mod cubemap_dynamic;
 mod custom_fog;
 mod dds;
 mod deferred;
+mod dof2;
 mod draco_variants;
 mod elements_text;
 mod environment_materials;
@@ -94,6 +97,7 @@ mod raycaster_helper;
 mod refraction_loaders;
 mod render_bundle;
 mod retargeting;
+mod retargeting_readyplayer;
 mod retro;
 mod reversed_depth;
 mod robot;
@@ -107,10 +111,12 @@ mod shadow_rtt;
 mod shadowmap_csm;
 mod shadowmap_opacity;
 mod shadowmap_pcss;
+mod shadowmap_progressive;
 mod shadowmap_viewer;
 mod shadowmap_vsm;
 mod shapes;
 mod shapes_lights;
+mod simple_gi;
 mod skinning_instances;
 mod sky_water;
 mod sort_bitonic;
@@ -118,8 +124,10 @@ mod spot_skinning;
 mod ssao;
 mod ssgi;
 mod ssr;
+mod ssr_denoise;
 mod sss;
 mod stereo_loaders;
+mod subsurface;
 mod taa;
 mod teapot_data;
 mod terrain_loaders;
@@ -149,6 +157,7 @@ mod tsl_primitives;
 mod tsl_procedural;
 mod tsl_surface;
 mod tsl_viewport;
+mod usdz;
 mod uv_tests;
 mod views_loaders;
 mod volume_caustics;
@@ -156,8 +165,10 @@ mod volume_instancing;
 mod volume_lighting;
 mod volume_rectarea;
 mod volume_traa;
+mod vrml;
 mod vxgi;
 mod water;
+mod wgsl_bind;
 mod wide_gamut;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -307,7 +318,7 @@ impl State {
             354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373,
             374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390,
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
-            408, 409, 410, 411, 412, 413,
+            408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
         ]
         .contains(&self.example)
         {
@@ -1086,7 +1097,7 @@ impl BrowserApp {
                             369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
                             384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-                            412, 413,
+                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
                         ]
                         .contains(&example),
                         format: if [
@@ -1106,7 +1117,7 @@ impl BrowserApp {
                             370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383,
                             384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-                            412, 413,
+                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423,
                         ]
                         .contains(&example)
                         {
@@ -1138,7 +1149,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=413).contains(&example) {
+            if (7..=423).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

@@ -18,6 +18,21 @@ const cases={
  // The orbit auto-rotates one step per frame. Building parameters regenerate the tower, as the
  // page does (a rebuild).
  webgpu_generator_building:{antialias:true,rebuilds:true,times:[0,1,2.5],parameters:[[8,9,9],[0,3,3],[1,160,160],[6,0,0],[7,3,3],[8,17,17]],restore:[[0,7,7],[1,100,100],[6,5,5],[7,1.5,1.5]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // The retargeted clip is baked at load; both mixers follow the example's Timer.
+ webgpu_animation_retargeting_readyplayer:{antialias:true,times:[0,0.5,1.5],parameters:[],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // SSR's noise and the denoise follow frameId and TRAA's Halton jitter, which the fixture
+ // restarts after loading; each capture renders 60 frames. The orbit is damped.
+ webgpu_postprocessing_ssr_denoise:{frames:60,times:[0],parameters:[[1,.6,.6],[2,.2,.2],[5,1,1],[6,2,2],[7,.05,.05],[8,1,1],[9,.6,.6],[11,1.5,1.5],[12,40,40],[13,.6,.6],[14,10,10],[15,.5,.5],[16,.9,.9],[17,.2,.2],[10,false,0],[10,true,1],[18,4,4],[19,.8,.8],[20,0,0],[21,false,0],[21,true,1],[22,5,5],[24,-5,-5],[25,35,35]],restore:[[1,.25,.25],[2,.5,.5],[5,.4,.4],[6,1,1],[7,.1,.1],[8,3.14,3.14],[9,.3,.3],[11,.75,.75],[12,20,20],[13,.3,.3],[14,5,5],[15,1.5,1.5],[16,.725,.725],[17,.5,.5],[18,16,16],[19,.25,.25],[20,1,1],[22,-10.9,-10.9],[24,10.75,10.75],[25,20,20]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // Each frame accumulates the lightmap from the four lights, which then move by the seeded
+ // Math.random; each capture renders 30 frames. The orbit slides there and back, so the
+ // residency cycle returns to the same view.
+ webgpu_shadowmap_progressive:{antialias:true,frames:30,times:[0],parameters:[[2,50,50],[3,100,100],[4,.2,.2],[1,false,0],[0,false,0],[0,true,1]],restore:[[1,true,1],[2,200,200],[3,50,50],[4,.5,.5]],at:0,slide:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The helmets turn by the TSL time; each frame culls against the previous frame's depth
+ // pyramid. FirstPersonControls leave the camera still without input.
+ // At DPR 2 the first frame after the switch to the XZ grid (capture 12), whose occlusion test
+ // reads the previous grid's pyramid, culls more distant chunks in the original than in the port
+ // (docs/probe-gi-dof-examples.md); every other capture uses the default bounds.
+ webgpu_compute_rasterizer_ibl:{stateLimits:{12:[.035,2.8]},times:[0,1,2.5],parameters:[[0,'Meshlet Debug',1],[0,'Geometry Normal',2],[0,'UV',4],[0,'Emissive',8],[0,'Default',0],[1,'SW Only',0],[1,'HW Only',1],[1,'Both',2],[2,'XYZ',1],[2,'XZ',0],[3,0,0],[4,8,8],[5,.5,.5]],restore:[[3,.0008,.0008],[4,3,3],[5,1,1]],at:2.5},
  // The teapots turn by the TSL time. FirstPersonControls leave the camera still without input.
  webgpu_compute_rasterizer:{times:[0,1,2.5],parameters:[[0,'Texture',1],[1,'SW Only',0],[1,'HW Only',1],[1,'Both',2],[2,.5,.5]],restore:[[0,'Meshlet Debug',0],[2,1,1]],at:2.5},
  // The light orbits by the loop's time and the knot turns by the Timer; the tile helpers follow
@@ -173,7 +188,8 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));expect(errors).toEqual([]);
  writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
  const [limit,meanLimit]=(samples===4&&msaaLimits[kind])||spec.limits||[.005,.6];
- for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(limit);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(meanLimit);}
+ // stateLimits scope a bound to one documented capture.
+ for(const r of results){const [l,m]=spec.stateLimits?.[r.state]??[limit,meanLimit];expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(l);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(m);}
 });
 
 for(const [kind,spec] of Object.entries(cases)){const id=official(kind);

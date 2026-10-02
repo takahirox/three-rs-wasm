@@ -908,3 +908,46 @@ distributed alongside `LICENSE-THREE` and their upstream licenses:
 - `environments/moonless_golf_2k.hdr.jpg`:
   `textures/equirectangular/moonless_golf_2k.hdr.jpg` (Poly Haven, CC0);
   SHA-256 `ac051dede91a9bb8d63f8ee4b384f0af5b9ed64a93e3947452a692a3de9fa285`.
+
+The compute rasterizer IBL, progressive shadow map, Ready Player Me
+retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU
+birds, VRML and USDZ batch runs the WGSL three.js r186 generates for its
+WebGPU pages (`compute_rasterizer_ibl/`, `shadowmap_progressive/`,
+`retargeting_readyplayer/` and `ssr_denoise/`) and WGSL translations of the
+GLSL WebGLRenderer builds for its WebGL pages; both derive from MIT-licensed
+three.js. The bakes are produced by `tools/tsl/prepare-*.mjs` from the pinned
+r186 example files with the r186 loaders and libraries (meshoptimizer 1.1 for
+the helmet LODs). The batch adds these r186 example assets and derived bakes,
+distributed alongside `LICENSE-THREE`:
+
+- `gallery/assets/rasterizer-ibl/helmet-lods.bin` and `.json`: the
+  DamagedHelmet geometry's Meshopt LODs and meshlets, as the page builds them
+  at load; the helmet's credit and notice are the DamagedHelmet ones above
+  (`models/DamagedHelmet/README.md`, theblueturtle_).
+- `gallery/assets/gltf/ShadowmappableMesh.glb`: `models/gltf/ShadowmappableMesh.glb`;
+  SHA-256 `1a5d49c27bf0b884b5cf70562c9023a3b931a90e05944eed02f3c5c226ff1c5d`.
+- `gallery/assets/gltf/readyplayer.me.glb`: `models/gltf/readyplayer.me.glb`, a
+  Ready Player Me avatar; SHA-256
+  `b69cec7a5cc7dc7e1c1f19c324024d090ae06e1315441a7bce4bf236112addc1`.
+- `gallery/assets/retargeting-readyplayer/mixamo.bin` and `.json`: FBXLoader's
+  parse of `models/fbx/mixamo.fbx` (a Mixamo character and dance; SHA-256
+  `062bfc75d03a68b8a4aaa4cae6d50c6624bef45684df8aca5302ab1023e27d6c`).
+- `gallery/assets/gltf/Parrot.glb`: `models/gltf/Parrot.glb`, by mirada from
+  ro.me, as the r186 birds examples credit the set; SHA-256
+  `adcc5dae04d0b16957ce20b7bebb84d41c3bff1c01bf5ab1cf56d06345bc5170`.
+- `gallery/assets/subsurface-scattering/bunny.bin` and `.json`: FBXLoader's
+  parse of `models/fbx/stanford-bunny.fbx` (the Stanford Bunny from the
+  Stanford 3D Scanning Repository; SHA-256
+  `d93bc888e6bd7d205792a90ac21443286eb189bc15f56326b3b8becff17665e5`), and
+  `bunny_thickness.jpg`: `models/fbx/bunny_thickness.jpg`; SHA-256
+  `e9af62ada3f96ce8d88470ed612d6a2741e96ccb695358a3864f83608e6dea61`.
+- `gallery/assets/vrml/scenes.bin` and `.json`: VRMLLoader's parse of the
+  sixteen `models/vrml/*.wrl` samples (their SHA-256 hashes are in
+  `scenes.json`), and `map.gif`: `models/vrml/map.gif`; SHA-256
+  `a890f0a89eadc083cb39bfbe597c1395d7acf47a19f673b5643d4a9c174ea52f`.
+- `gallery/assets/usdz/saeukkang.bin`, `.json` and `.png`: USDLoader's parse
+  of `models/usdz/saeukkang.usdz` (SHA-256
+  `dcc70e52a2468aeea3f63da3505ffe371bc7cf7c22e81b6c53b7f909a3e44d42`) and the
+  base color image the archive contains; and `venice_sunset_1k.hdr`:
+  `textures/equirectangular/venice_sunset_1k.hdr` (Poly Haven, CC0); SHA-256
+  `0e72ed46b5316cb5fb67fc81ff85b024a09146fd89ef3811a8d2299647ada118`.

@@ -362,3 +362,20 @@ state. Custom fog's first frame uses bounds scoped to that capture. Where r186
 behaves unexpectedly the port follows the original's visible result or leaves
 the state out: the water page's transmission copy fails validation after a
 resize, so that resize is not compared.
+
+The compute rasterizer IBL, progressive shadow map, Ready Player Me
+retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU
+birds, VRML and USDZ batch ([probe-gi-dof-examples.md](probe-gi-dof-examples.md))
+ports four WebGPU examples and six WebGL-only ones. The WebGPU four run the
+WGSL three.js generates for each page and are compared against the WebGPU
+renderer. The six WebGL scenes have no r186 WebGPU counterpart. They run WGSL
+translations of the GLSL WebGLRenderer builds and are compared against
+WebGLRenderer. Their backend tolerances are scoped to two causes:
+
+- facet edges that rasterize to the neighboring facet (DoF 2 and the birds);
+- 4× MSAA edge samples that resolve differently (the birds and USDZ).
+
+Simple GI, subsurface scattering and VRML match at the default thresholds.
+The loaders' output is baked from the pinned loaders: FBX for the bunny and the
+Mixamo character, VRML and USD. The ports render the baked scenes, and the
+loaders' parsers are not ported.

@@ -939,3 +939,20 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   reallocates its arrays.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Compute rasterizer IBL, progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
+
+- **GPU state.** The compute rasterizer's queues, visibility buffers and
+  depth pyramid, the progressive lightmap, the SSR, reprojection, denoise and
+  TRAA histories, the simple GI vertex colors and the birds' simulation
+  textures stay on the GPU.
+- **CPU work as in the originals.** The retargeted clip, the helmet LODs and
+  the potpack layout are built once. The SunLight cascade fitting, the scenes'
+  culling and ordering, and the DoF raycast autofocus run each frame.
+- **CPU work moved to the GPU.** SimpleGI's per-vertex readback and byte sum
+  run in a compute pass that writes the vertex colors in place.
+- **Uploads.** No vertex or index data is written in steady frames. The birds
+  draw one instanced bird where the page builds a merged geometry. The page's
+  per-bird values are the same in both.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

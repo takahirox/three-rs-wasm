@@ -6,6 +6,28 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
+ // The model under its PMREM environment; the orbit is undamped. With MSAA its silhouette's
+ // edge samples resolve slightly differently ( msaaLimits, docs/probe-gi-dof-examples.md ).
+ webgl_loader_usdz:{backgroundBox:true,antialias:true,times:[0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // Each asset loads, replaces the scene and resets the damped controls.
+ webgl_loader_vrml:{times:[0],parameters:[[0,'creaseAngle',0],[0,'crystal',1],[0,'elevationGrid1',3],[0,'elevationGrid2',4],[0,'extrusion1',5],[0,'extrusion2',6],[0,'extrusion3',7],[0,'lines',8],[0,'linesTransparent',9],[0,'meshWithLines',10],[0,'meshWithTexture',11],[0,'pixelTexture',12],[0,'points',13],[0,'camera',14],[0,'multilineString',15],[0,'house',2]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // Each frame steps the flock by the clock's delta ( capped at a second ); the first frame's
+ // predator sits at the center, later ones at the last pointer move. The thousands of small
+ // flat facets' edges rasterize and resolve differently between WebGL and WebGPU
+ // (docs/probe-gi-dof-examples.md): bounded here and, with MSAA, in msaaLimits.
+ webgl_gpgpu_birds_gltf:{limits:[.01,.6],antialias:true,times:[0,.1,.2,.4],parameters:[[3,.3,.3],[4,2048,2048],[0,60,60],[1,5,5],[2,50,50]],restore:[[0,20,20],[1,20,20],[2,20,20],[3,.2,.2],[4,1024,1024]],at:.4,script:[['move',300,200,.5]]},
+ // The bunny turns by the clock.
+ webgl_materials_subsurface_scattering:{antialias:true,times:[0,1,2.5],parameters:[[0,.5,.5],[1,1,1],[2,2,2],[3,6,6],[4,30,30]],restore:[[0,.1,.1],[1,.4,.4],[2,.8,.8],[3,2,2],[4,16,16]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // The camera orbits by the clock; each frame raycasts the pointer for the autofocus, eases
+ // the focus and moves the leaves. The pointer moves ( focus ray and coordinates ) before the
+ // parameters. The flat-shaded heads' facet edges rasterize to the neighboring facet in a few
+ // pixels between WebGL's and WebGPU's conventions (docs/probe-gi-dof-examples.md). Both
+ // passes draw the cube background as a 36-index box in WebGL, and the composite a 6-index
+ // quad; the port draws full-screen triangles for both.
+ webgl_postprocessing_dof2:{maskDraws:[[36,2,0],[6,1,0]],limits:[.035,.6],times:[0,1,2.5],parameters:[[4,5,5],[5,2,2],[10,.2,.2],[11,10,10],[12,1,1],[13,2,2],[16,.001,.001],[6,true,1],[8,true,1],[9,true,1],[17,true,1],[7,true,1],[2,true,1],[1,false,0],[3,50,50],[14,60,60],[18,5,5],[19,6,6],[0,false,0]],restore:[[0,true,1],[18,3,3],[19,4,4],[14,35,35],[1,true,1],[2,false,0],[7,false,0],[17,false,0],[9,false,0],[8,false,0],[6,false,0],[16,.0001,.0001],[13,.7,.7],[12,.5,.5],[11,2,2],[10,.5,.5],[5,1,1],[4,2.2,2.2]],at:2.5,script:[['move',300,200,2.5],['move',120,380,2.5]]},
+ // SimpleGI computes 32 vertices per frame after the render: each capture renders 134 frames,
+ // one bounce; the third bounce ends the computation.
+ webgl_simple_gi:{frames:134,times:[0,0,0,0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgl_loader_fbx_nurbs:{times:[0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,200]},
  webgl_points_dynamic:{times:[0,1,2.5],parameters:[],at:2.5,cycle:[0,.1,.2,.1,0],limits:[.03,.45]},
  webgl_postprocessing_advanced:{times:[0,1,2.5],parameters:[],at:2.5,maskDraws:[53052,6,2]},
@@ -64,7 +86,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -179,7 +201,8 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   if(spec.backgroundBox){const i=pair.reference.draws.findIndex(d=>d.count===36&&d.instances===1);if(i>=0)pair.reference.draws.splice(i,1);}
   // The advanced composers' MaskPasses draw the head into both ping-pong buffers, three
   // times over two resolutions (six draws); the port draws one mask per resolution (two).
-  if(spec.maskDraws){const [count,reference,rust]=spec.maskDraws;for(let k=0;k<reference-rust;k++){const i=pair.reference.draws.findIndex(d=>d.count===count);if(i>=0)pair.reference.draws.splice(i,1);}}
+  // A list of [count, reference, rust] triples masks several kinds of draw.
+  if(spec.maskDraws)for(const [count,reference,rust] of Array.isArray(spec.maskDraws[0])?spec.maskDraws:[spec.maskDraws])for(let k=0;k<reference-rust;k++){const i=pair.reference.draws.findIndex(d=>d.count===count);if(i>=0)pair.reference.draws.splice(i,1);}
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
   // 36-index box and WebGPU a 5,952-index sphere. The stereo port draws its cube

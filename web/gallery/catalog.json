@@ -6128,7 +6128,7 @@
     {
       "id": "webgl_loader_usdz",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_usdz.html",
       "source_sha256": "d45e9756fe5456e94acc6084db833a7ec7d2bf278bb254c1277f42e46cf1b046",
@@ -6154,7 +6154,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 423,
+        "source": "src/browser/usdz.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "saeukkangのUSDZモデルを、venice_sunsetのHDR環境だけで照らし、同じHDRを粗さ0.5でぼかした背景、ACES Filmic（露出2）、OrbitControlsで見る構成をRustで再現。モデルは固定版USDLoaderによるアーカイブの解析結果を準備スクリプト（tools/tsl/prepare-usdz.mjs）で焼いたもの（非インデックス属性のメッシュ1つと、粗さ1・IOR 1.5・アーカイブのベースカラー画像のMeshPhysicalMaterial）で、ページが実行時に行うUSDの解析は移植していない。WebGLRendererは正距円筒HDRを環境とぼかし背景の両方に使うPMREMのcubeUVテクスチャへ前処理する（PMREMGenerator.fromEquirectangular、GGX VNDF重点サンプリング）。移植ではWebGPUレンダラーが生成するr186のPMREM生成器（同じアルゴリズムと配置で、WebGPUの上下向きで格納し、参照側で考慮する）を実行する。モデルのシェーダーは、光源なしでCUBE_UV環境を持つMeshPhysicalMaterialにWebGLRendererが組み立てるGLSL（IBLの放射輝度と放射照度、r186のDFG LUTによる多重散乱）のWGSL移植で、背景は各ピクセルの視線方向のcubeUV参照。キャンバスへはシェーダーでトーンマップとsRGB変換を行い、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -6214,7 +6221,7 @@
     {
       "id": "webgl_loader_vrml",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_vrml.html",
       "source_sha256": "2fcc9406cffb725ee89f140037b5d825449f4d1c516d469e7da065391085d065",
@@ -6230,7 +6237,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 422,
+        "source": "src/browser/vrml.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "16個のVRMLサンプル（既定はhouse）を環境光と平行光源の下に置き、アセットの読み込みでリセットされる減衰付きOrbitControlsで見る構成をRustで再現。シーンは固定版VRMLLoaderによる各ファイルの解析結果を準備スクリプト（tools/tsl/prepare-vrml.mjs）でローダーが残した形のまま焼いたもの（PhongとBasicのメッシュ、BackgroundノードのSkyとGroundの球、線分、点、ワールド行列・ジオメトリ・マテリアル・テクスチャ（map.gifとPixelTextureのデータ））で、ページが実行時に行うVRMLの構文解析は移植していない。16個すべてを読み込み時にGPUへ載せるため、アセットの切り替えでは何も生成しない。毎フレーム、WebGLRendererと同じくカリングと並べ替え（不透明はグループ順・描画順・マテリアルID・境界球中心のクリップ空間z・ID、半透明は奥から手前で両面は裏・表の2パス）を行う。シェーダーはWebGLRendererがMeshPhongMaterial、MeshBasicMaterial、LineBasicMaterial、PointsMaterial（減衰付きgl_PointSizeの正方形）に組み立てるGLSLのWGSL移植で、キャンバスへはWebGLと同じくシェーダーでsRGBに変換してから合成する。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -7543,7 +7557,7 @@
     {
       "id": "webgl_materials_subsurface_scattering",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_subsurface_scattering.html",
       "source_sha256": "ebb175bc77ccc8b493c49f7c15ccaba5e70d39bbc5634c407d59e943b454e8e3",
@@ -7575,7 +7589,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 420,
+        "source": "src/browser/subsurface.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "時計で回るStanford bunnyを、SubsurfaceScatteringShader（MeshPhongMaterialのプログラムに、厚みマップの赤チャンネルをthicknessColorで着色し、歪めたハーフベクトルで表面越しに照らす半透明項を各直接光へ加えたもの）で、環境光、弱い平行光源、範囲付きの2つの点光源（小さな球で表示）の下に描く構成をRustで再現。バニーは固定版FBXLoaderの解析結果（ローダーの非インデックス属性）を準備スクリプト（tools/tsl/prepare-bunny.mjs）で焼いたもの。シェーダーはWebGLRendererがShaderMaterial（lights: true、USE_MAPなし）とMeshBasicMaterialに組み立てるGLSLのWGSL移植で、キャンバスへはシェーダーでsRGBに変換し、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -11032,7 +11053,7 @@
     {
       "id": "webgl_postprocessing_dof2",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_dof2.html",
       "source_sha256": "c68085e65ad3192e205aa5b7900d9bc597f2ba272ee09af693d340997c267d59",
@@ -11062,7 +11083,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 419,
+        "source": "src/browser/dof2.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "落ちる100枚の両面の葉、20個のフラットシェーディングのSuzanne、20個の色付きの球を、Bridge2のキューブ環境を乗算反射するPhongで、環境光と2つの平行光源の下に置き、BokehShader2の被写界深度で仕上げる構成をRustで再現。カメラは時計で周回し、毎フレーム、ページと同じくポインタ方向のレイキャストをCPUで行って（葉が動く前の、前回描画時の行列で）焦点距離を3%ずつ近づけ、背景キューブ付きのシーンを半精度ターゲットへ、BokehDepthShaderの上書きマテリアルで再度描き（背景は自分のマテリアルのまま）、全画面でボケを合成する。ターゲットはページと同じくCSSピクセルの大きさ。シェーダーはWebGLRendererが組み立てるGLSL（環境キューブ付きPhong、背景キューブ、深度シェーダー、RINGS/SAMPLES定義付きのBokehShader2）のWGSL移植で、葉・頭・球は1つのオブジェクト用ストレージバッファからインスタンス描画する（毎フレーム変わるのは葉の行列だけ）。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -12909,7 +12937,7 @@
     {
       "id": "webgl_gpgpu_birds_gltf",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_gpgpu_birds_gltf.html",
       "source_sha256": "f3196d89cb4b6e0cd4a237d94caa8d5462c4dba9673501cd8e5a1e3db60e8dbc",
@@ -12961,7 +12989,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 421,
+        "source": "src/browser/birds_gltf.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "64×64のGPUComputationRendererで群れる4,096羽の鳥を、ページのシード付き乱数が選ぶParrotのglTFとしてモーフアニメーションで羽ばたかせる構成をRustで再現。毎フレーム、速度変数（分離・整列・結合、ポインタの捕食者からの逃避、中心への引力）と位置変数を前フレームのテクスチャから浮動小数点のレンダーターゲット対の他方へ描き（アドオンと同じ）、ページのGLSLを同じ式とループ順のWGSLへ移植した。ページは読み込み時にモーフを毎秒60行の浮動小数点テクスチャへ焼き、鳥ごとに複製した1つのジオメトリ（各頂点に鳥の参照テクセルとシード）を作るが、移植では同じテクスチャを焼き、頂点ごと（位置・色・番号）と鳥ごと（参照とシード、ページと同じ値）の属性でインスタンス描画する。マテリアルはMeshStandardMaterial（頂点色、フラット、粗さ1）とページのonBeforeCompileの頂点段で、半球光・平行光源・線形フォグの下、WebGLRendererの物理シェーディング（r186のDFG LUT、多重散乱補償、sRGB変換後のフォグ）をWGSLへ移植した。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -13558,7 +13593,7 @@
     {
       "id": "webgl_simple_gi",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_simple_gi.html",
       "source_sha256": "bd832f6f9b7cdfba466ab440e9bf72de074f95cbb7c7a93ed5a9caeaa0890972",
@@ -13592,7 +13627,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 418,
+        "source": "src/browser/simple_gi.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "頂点カラーのトーラスノットを8色のランダムな色の箱（裏面）の中に置き、SimpleGIで頂点ごとの間接光を3バウンス分焼き込む構成をRustで再現。毎フレーム、ページの描画のあと次の32頂点について、頂点から法線方向を向く90°のカメラでシーンの複製を32×32のターゲットへ描き、その平均色を頂点色にする（全頂点が終わると複製が現在の色を受け取り次のバウンスへ進む。最初の複製は色属性がなくWebGLでは黒になる）。元はビューごとにreadRenderTargetPixelsで同期的に読み戻してCPUで合計するが、移植ではフレーム内の32ビューを1枚の1024×32ターゲットのタイルに描き、各タイルの8ビット値をコンピュートパスで合計して頂点色バッファへ直接書く（色はGPU上に留まり、複製の色はGPU上のコピー）。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js"
@@ -14440,7 +14482,7 @@
     {
       "id": "webgpu_animation_retargeting_readyplayer",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_animation_retargeting_readyplayer.html",
       "source_sha256": "646e28b055080708785038c5d3dca4d9763584d76c2fa78588acdafdd8aa3a2e",
@@ -14514,7 +14556,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 416,
+        "source": "src/browser/retargeting_readyplayer.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "mixamo.fbxのダンスをSkeletonUtils.retargetClipでreadyplayer.meのアバターへリターゲットし、半球ライトと2つの平行光源の下、反射床の上で両方を踊らせる構成をRustで再現。FBXは固定版FBXLoaderの解析結果を準備スクリプト（tools/tsl/prepare-mixamo.mjs）でローダーが残したワールド行列ごと焼いたものを使い、リターゲット後のクリップはページと同じく読み込み時に一度CPUで焼く（three.jsの行列の扱いを再現するretargetingのシミュレーション）。アバター10個とキャラクター2個のスキンメッシュはボーン行列でGPUスキニングし、初回カリング時のスキン境界球での視錐台判定と、r186の不透明物の順序（境界球中心のクリップ空間z）で描く。リフレクターは鏡映ビューを床が参照するターゲットへ描く。各段はページからthree.js r186が生成するWGSL（retargeting_readyplayer/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -16288,7 +16337,7 @@
     {
       "id": "webgpu_compute_rasterizer_ibl",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_rasterizer_ibl.html",
       "source_sha256": "5664e0b11ae25612ccb183504a1d742138d4a58498639cd4c5c4d3467b0c2dd1",
@@ -16356,7 +16405,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 414,
+        "source": "src/browser/compute_rasterizer_ibl.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "15,625個の回転するDamagedHelmet（125×125の平面または25³の立体）を、コンピュートシェーダーのソフトウェアラスタライザとハードウェアのフォールバックで描き、royal_esplanadeのPMREMで照らす構成をRustで再現。ページが読み込み時にMeshopt（meshoptimizer 1.1）で作るLODと64三角形メッシュレットは、公式ライブラリの出力を準備スクリプト（tools/tsl/prepare-rasterizer-ibl.mjs）で焼いたものを使い、ページと同じく読み込み時にストレージバッファへ詰める。毎フレーム、クリア、前フレームの深度ピラミッドによるオクルージョンを含むインスタンスとチャンクの錐台カリングとLOD選択、間接ディスパッチ、深度付きアトミックのラスタライズ、間接描画引数のコンピュートパスを実行し、ぼかした背景、可視バッファを標準マテリアル（またはメッシュレット・各チャンネル表示）で解決する全画面パスと深度、キューの大きい三角形の間接描画を描いたあと、HZBカーネルで次フレームの深度ピラミッドを作り、ブリットと出力パスでトーンマップする。ページの最初のフレームは、レンダラーがカメラをWebGPUのクリップ空間へ切り替える前の行列で計算する点も再現する。各段はページからthree.js r186が生成するWGSL（compute_rasterizer_ibl/、未使用のsubgroup宣言を除く）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/FirstPersonControls.js",
@@ -24939,7 +24995,7 @@
     {
       "id": "webgpu_postprocessing_ssr_denoise",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssr_denoise.html",
       "source_sha256": "814c692e151a8e22390efb4d967ad4ffa4ab3e37d9dbc111571f7142ddc69d65",
@@ -25017,7 +25073,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 417,
+        "source": "src/browser/ssr_denoise.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "dungeon_warkarmaのダンジョン（粗さ0.3、法線マップなし）をSunLightの2段カスケードの影とquarryのHDR環境の下で描き、確率的なSSRNodeの反射をTemporalReprojectNodeで再投影してRecurrentDenoiseNodeでノイズ除去し（その結果を次フレームのSSRの履歴にする）、シーン色に足してAgX・コントラスト・彩度・ガンマで調整し、TRAAとシャープ化で仕上げる構成をRustで再現。毎フレーム、TRAAのHaltonジッタを全パスのカメラに掛け、カスケードの影、シーンのMRT（色・法線と粗さ・速度・拡散色と金属度）、SSR、再投影（最初のフレームは履歴を入力で初期化）、ノイズ除去、合成と調整、TRAA、シャープ化、出力の順に描き、深度・法線・解決結果の履歴をノードと同じくコピーする。視錐台カリングとr186の不透明物の順序（境界球中心のクリップ空間z）はカメラとカスケードごと。各段はページからthree.js r186が生成するWGSL（ssr_denoise/）を実行する。出力モードの切り替え、step exponent、binary refine（シェーダーの再構築）は再現せず、ギャラリーにも置かない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -26575,7 +26638,7 @@
     {
       "id": "webgpu_shadowmap_progressive",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_progressive.html",
       "source_sha256": "86a5e737f64cc11207a41a4a184c5f3af8554ef48101b70b6d67c1465c4f2db1",
@@ -26643,7 +26706,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 415,
+        "source": "src/browser/shadowmap_progressive.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ProgressiveLightMapGPUが、ランダムに置いた4つの平行光源の柔らかい影を、地面とShadowmappableMeshのモデルにまたがる1024²の浮動小数点ライトマップへ毎フレーム蓄積する構成をRustで再現。読み込み時にpotpackで2つのUV箱を1枚のライトマップに詰め（addObjectsToLightMapと同じ）、毎フレーム、OrbitControls（減衰付き）の更新、4枚のシャドウマップ、継ぎ目をぼかす平面と両オブジェクトの第2UVでのピンポン描画（ブレンド幅で前回と混ぜる）、フィクスチャの乱数による光源の移動（光源の原点寄り、または半球上の環境遮蔽用）、ライトマップと線形フォグでの地面とモデルの描画、2つのTransformControls（光源の原点とモデル）のギズモ、出力パスを実行する。各段はページからthree.js r186が生成するWGSL（shadowmap_progressive/）を実行する。ライトマップのデバッグ表示は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/controls/TransformControls.js",
