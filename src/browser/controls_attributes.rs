@@ -326,6 +326,10 @@ impl Controls {
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;
     }
+    /// minDistance and maxDistance.
+    pub(super) fn set_distances(&mut self, min: f64, max: f64) {
+        self.distance = (min, max);
+    }
     pub(super) fn target(&self) -> Vector3 {
         self.target
     }

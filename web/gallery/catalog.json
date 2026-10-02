@@ -16200,7 +16200,7 @@
     {
       "id": "webgpu_compute_rasterizer",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_rasterizer.html",
       "source_sha256": "3ef5db9c7957b2582227257078a1c43586dd76061426a5cb2c693b5f1a15dd0d",
@@ -16268,7 +16268,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 410,
+        "source": "src/browser/compute_rasterizer.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "400×400個の回転するティーポット（7段階のLODのTeapotGeometry）を、コンピュートシェーダーのソフトウェアラスタライザとハードウェアのフォールバックで描く構成をRustで再現。LODの頂点・インデックス・メッシュレットID・64三角形チャンクの境界球はページと同じく読み込み時に一度CPUで詰めてストレージバッファに載せる。毎フレーム、クリア、インスタンスとチャンクの錐台カリングとLOD選択（作業キューへの追加）、間接ディスパッチ引数、小さい三角形を深度付きでアトミックにパックするラスタライズ（大きい三角形はハードウェアキューへ）、間接描画引数の5つのコンピュートパスを実行し、全画面の四角形が可視バッファ（メッシュレット色またはUVグリッド）と深度を解決し、キューの三角形を間接描画で深度テスト付きで重ねる。各段はページからthree.js r186が生成するWGSL（compute_rasterizer/、未使用のsubgroup組み込みを除く）を実行する。四角形の後にページが挟む、最終出力で上書きされる中間の出力パスは繰り返さない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/FirstPersonControls.js",
@@ -16974,7 +16981,7 @@
     {
       "id": "webgpu_custom_fog",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_custom_fog.html",
       "source_sha256": "a08fe7746b23c3c037bd8faecc791f8e81a24a2a05f1a327a94cb8819d16b06a",
@@ -17034,7 +17041,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 406,
+        "source": "src/browser/custom_fog.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "TerrainGeneratorの侵食した512²の地形とForestGeneratorの50万本のインスタンス化した木を、ページのカスタムフォグ（谷に溜まるtriNoise3Dの帯と距離のもや）の中でRustで再現。ジェネレータはページと同じく読み込み時に一度CPUで生成し（Float32Arrayへの格納とthree.jsの行列合成の順序に合わせる）、太陽の仰角・方位でSkyMeshをキューブカメラからPMREM（fromScene）に焼き、4096²のシャドウは必要なとき（最初と太陽の変更・再生成時）だけ描く。FirstPersonControlsで歩き、森の距離カリングはカメラに追従する。各段はページからthree.js r186が生成するWGSL（custom_fog/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         " );\n\t\t\t\tforestFolder.add( forest.to, ",
         "three/addons/controls/FirstPersonControls.js",
@@ -17521,7 +17535,7 @@
     {
       "id": "webgpu_gaussian_splat",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_gaussian_splat.html",
       "source_sha256": "294335cc13bf17444bfef36e7b5cd7891311d7daa6e77578e9dff5208fff9d55",
@@ -17547,7 +17561,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 404,
+        "source": "src/browser/gaussian_splat.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ライオン（SPZ v3）、ムカデ（SPLAT）、トマト（SPZ v4、zstd）のガウシアンスプラットをRustで再現。ローダーはページと同じく読み込み時に一度CPUで復号し、中心・共分散・色・球面調和係数をGPUへ載せる。視線方向がしきい値を超えて回るとGPUの4096ビンのカウンティングソート（リセット、ヒストグラム、プレフィックス、スキャッター）で奥行き順を作り、カメラが動くと球面調和の色をコンピュートで更新し、ソート順を読むインスタンス化した四角形で描く。各段はページからthree.js r186が生成するWGSL（gaussian_splat/）を実行する。クリックしたスプラットのマーカー表示は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -17560,7 +17581,7 @@
     {
       "id": "webgpu_generator_building",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_building.html",
       "source_sha256": "52cc413c5c9e099b7ba4510aadb6811d70ad48c30134c946f0f15a226ca74a93",
@@ -17610,7 +17631,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 411,
+        "source": "src/browser/generator_building.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "SkyscraperGeneratorの1棟の高層ビル（シードで選ぶ石材色、partIdで塗り分ける単一マテリアルの煉瓦積み・汚れ・ガラス越しのインテリアマッピング）を、SkyMeshの空、SunLightアドオンの2段カスケード影、影だけを受ける透明な地面、ACES（露出0.25）、自動回転するOrbitControlsとともにRustで再現。ジェネレータはページと同じく建物パラメータの変更時にCPUで動き（Float32Arrayへの格納、法線行列と再正規化、computeVertexNormalsを含むthree.jsのジオメトリ変換に合わせ、元の出力とビット単位で一致）、1つの非インデックスジオメトリに焼いて各パスで1回のドローで描く。updateSun()は時刻から太陽を置き、太陽円盤なしの空をPMREM（fromScene）に焼く。毎フレーム、カスケードを視錐台に合わせて両方に建物を描き、4× MSAAでシーンを描く。各段はページからthree.js r186が生成するWGSL（generator_building/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/generators/city/SkyscraperGenerator.js",
@@ -17705,7 +17733,7 @@
     {
       "id": "webgpu_geometry_loft",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_geometry_loft.html",
       "source_sha256": "22a57f739cb19177c7c15fa7465c668aa75063ad340bc43ed49d67080ff0634c",
@@ -17775,7 +17803,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 412,
+        "source": "src/browser/geometry_loft.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "LoftGeometryで作った展示品（コーヒーカップ・ソーサー・持ち手、花瓶、巻貝、ねじれた星、金のリボン、歯磨きチューブ、カボチャ、キノコ、銅のゴブレット）を大理石の台座に並べ、支柱とロープの柵、劇場のカーテンで囲んだ回転台をRustで再現。各メッシュはページのプロシージャルなノードマテリアルで、SunLightアドオンの4096²の2段カスケード影、RoomEnvironmentのPMREM、画面空間のビネット背景、NeutralToneMappingとOrbitControlsで描く。グループはページのanimate()と同じく1フレームごとに0.001ラジアン回る。ロフトと円のジオメトリはページと同じく一度だけCPUで作り（元の出力とビット単位で一致）、各メッシュを両カスケードと4× MSAAのシーンパスでそれぞれ1回のドローで描く。sections表示は各ロフトの断面リングを線分で描く。各段はページからthree.js r186が生成するWGSL（geometry_loft/）を実行する。wireframe表示は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",
@@ -22948,7 +22983,7 @@
     {
       "id": "webgpu_postprocessing_ao",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ao.html",
       "source_sha256": "83a910fc8490639f25d63765a69e8c5d9b51aea281dc67376f1210978cd86e30",
@@ -23048,7 +23083,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 408,
+        "source": "src/browser/gtao.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "チェッカーボードの床、壁、台座、柱、トーラスノット、旋盤形状の花瓶、角丸ボックスのアームチェア、サイドテーブル、ラグ、押し出し成形の額縁、DracoのTennyson胸像からなるギャラリーを、3つのスポットライトとRoomEnvironmentのPMREMの下でRustで再現。GTAONodeのアンビエントオクルージョンをマテリアルの環境項に入れ、TRAA（サブピクセル補正なし）で時間方向に解決する。プリパス（法線と速度）、半解像度のGTAO（frameIdでスライスを回転、5×5の魔方陣ノイズ）、シーンパス、TRAA、出力（Neutralトーンマッピング）の順に描く。各段はページからthree.js r186が生成するWGSL（gtao/）を実行する。SSAOへの切り替え、サンプル数（シェーダー定数）、半透明メッシュの表示は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",
@@ -25893,7 +25935,7 @@
     {
       "id": "webgpu_sculpt",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_sculpt.html",
       "source_sha256": "d86ae51e6bbfbeea13d719c2d74d96682cbefbe463abddeb137481ab5ec3ce6e",
@@ -25947,7 +25989,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 413,
+        "source": "src/browser/sculpt.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Sculptorアドオンによる動的トポロジのスカルプトを、IcosahedronGeometry( 1, 50 )の球（MeshStandardMaterial）、2つの平行光と環境光、減衰付きOrbitControls、ブラシカーソル（リングと点）とともにRustで再現。ストロークはアドオンと同じくCPUで処理し（頂点の溶接、面のオクツリー、分割と間引き、9種のツールをsculpt/sculptor.rsに移植し、アドオンの出力とビット単位で一致）、変更頂点はアドオンの更新範囲どおりに位置と法線を部分書き込みし、トポロジ変更時はインデックスを書き直し、アドオンが配列を再確保したときだけバッファを作り直す。各段はページからthree.js r186が生成するWGSL（sculpt/）を実行する。wireframe表示とGLBの書き出しは再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/exporters/GLTFExporter.js",
@@ -26173,7 +26222,7 @@
     {
       "id": "webgpu_shadowmap_array",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_shadowmap_array.html",
       "source_sha256": "fbb5195d9d2f5d88bdd31ae23d0d7a55711741ce6353c808b25360e91186a63c",
@@ -26283,7 +26332,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 409,
+        "source": "src/browser/shadow_array.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "インスタンス化した柱・立方体・球・トーラス、バッチ描画の森、回転するトーラスノットをノイズ色の地面に並べ、周回する平行光の影をTileShadowNodeで4096²の深度配列の2×2タイルに分けてRustで再現。毎フレーム、タイルカメラを光源に合わせ、各レイヤーにそのタイルカメラの影の投影体を描き（three.js r186はレイヤーごとにレンダーバンドルを記録する）、シーンは4タイルの最小値を読む。バッチ描画の木はBatchedMeshと同じくカメラごとにCPUで前後順に並べて間接テクスチャに書く。TileShadowNodeHelperの深度表示とCameraHelperは、ページが描画後に更新するのと同じく1フレーム遅れで描く。各段はページからthree.js r186が生成するWGSL（shadow_array/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",
@@ -29505,7 +29561,7 @@
     {
       "id": "webgpu_vxgi",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_vxgi.html",
       "source_sha256": "4fd5d05f8d1f751d4bc093689b0e53968c98c3e729819489dc8f03a5bb32e221",
@@ -29579,7 +29635,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 407,
+        "source": "src/browser/vxgi.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "SSGIの例と同じコーネルボックスに、VXGINodeのボクセルコーントレースによるAOと間接光、TRAAを組み合わせてRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割）、GPUで72×56×72の不透明度ボリュームとミップにボクセル化し、点光源をキューブシャドウ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描く。各段はページからthree.js r186が生成するWGSL（vxgi/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/OrbitControls.js",
@@ -29677,7 +29740,7 @@
     {
       "id": "webgpu_water",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_water.html",
       "source_sha256": "f62c9e0891026b821f610e9a0b55f00dcc588c6a53c42346424203e1393d44f4",
@@ -29737,7 +29800,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 405,
+        "source": "src/browser/water.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。元のr186はリサイズ後に透過のコピーで検証エラーになるため、比較はリサイズを除く。各段はページからthree.js r186が生成するWGSL（water/）を実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

@@ -52,14 +52,24 @@ pub(super) struct Path {
     current: P2,
 }
 impl Path {
-    fn move_to(&mut self, p: P2) {
+    /// moveTo( first ), lineTo( each next ), closePath().
+    pub(super) fn polygon(points: &[P2]) -> Self {
+        let mut path = Self::default();
+        path.move_to(points[0]);
+        for p in &points[1..] {
+            path.line_to(*p);
+        }
+        path.line_to(points[0]);
+        path
+    }
+    pub(super) fn move_to(&mut self, p: P2) {
         self.current = p;
     }
-    fn line_to(&mut self, p: P2) {
+    pub(super) fn line_to(&mut self, p: P2) {
         self.curves.push(Curve2::Line(self.current, p));
         self.current = p;
     }
-    fn quadratic_to(&mut self, c: P2, p: P2) {
+    pub(super) fn quadratic_to(&mut self, c: P2, p: P2) {
         self.curves.push(Curve2::Quadratic(self.current, c, p));
         self.current = p;
     }
@@ -1296,7 +1306,7 @@ fn earcut(data: &[f64], holes: &[usize]) -> Vec<usize> {
     e.out
 }
 /// ShapeUtils.triangulateShape( contour, holes ), after removeDupEndPts.
-fn triangulate(contour: &mut Vec<P2>, holes: &mut [Vec<P2>]) -> Vec<[usize; 3]> {
+pub(super) fn triangulate(contour: &mut Vec<P2>, holes: &mut [Vec<P2>]) -> Vec<[usize; 3]> {
     let trim = |p: &mut Vec<P2>| {
         if p.len() > 2 && p[p.len() - 1] == p[0] {
             p.pop();

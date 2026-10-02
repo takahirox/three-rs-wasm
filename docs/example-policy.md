@@ -350,3 +350,15 @@ velocity pre-pass that keeps its first frame's camera matrices, the
 auto-rotation step each OrbitControls.update() call takes, and the world
 matrices retargetClip reads while the loader has left them stale. The fixture
 patches are documented with the batch.
+
+The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array, compute
+rasterizer, building generator, loft geometry and sculpting batch
+([probe-sculpt-examples.md](probe-sculpt-examples.md)) compares its ten WebGPU
+examples against the WebGPU renderer, running the WGSL three.js generates for
+each page. The CPU generators the pages call (terrain and forest, the
+skyscraper, the loft sections and the Sculptor addon) are ported to match the
+original's output bit for bit. The sculpting scene matches exactly in every
+state. Custom fog's first frame uses bounds scoped to that capture. Where r186
+behaves unexpectedly the port follows the original's visible result or leaves
+the state out: the water page's transmission copy fails validation after a
+resize, so that resize is not compared.

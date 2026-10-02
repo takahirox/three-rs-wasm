@@ -358,17 +358,41 @@ impl Pmrem {
             groups,
             0,
         );
+        self.encode_levels(encoder);
+    }
+    /// Encodes the GGX levels over a level 0 already written ( as
+    /// fromScene's cube camera does ).
+    pub(super) fn encode_levels(&self, encoder: &mut wgpu::CommandEncoder) {
+        let pass = |encoder: &mut wgpu::CommandEncoder,
+                    view: &wgpu::TextureView,
+                    [x, y, w, h]: [f32; 4],
+                    group: &wgpu::BindGroup,
+                    lod: usize| {
+            let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("PMREM"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view,
+                    depth_slice: None,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Load,
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                ..Default::default()
+            });
+            pass.set_viewport(x, y, w, h, 0., 1.);
+            pass.set_pipeline(&self.ggx);
+            pass.set_bind_group(0, &self.camera, &[]);
+            pass.set_bind_group(1, group, &[]);
+            let range = lod as u64 * PLANES..(lod as u64 + 1) * PLANES;
+            pass.set_vertex_buffer(0, self.directions.slice(range.clone()));
+            pass.set_vertex_buffer(1, self.positions.slice(range));
+            pass.draw(0..36, 0..1);
+        };
         for p in &self.passes {
             let destination = if p.copy { &self.view } else { &self.ping_pong };
-            pass(
-                encoder,
-                destination,
-                false,
-                p.viewport,
-                &self.ggx,
-                [&self.camera, &p.group],
-                p.lod,
-            );
+            pass(encoder, destination, p.viewport, &p.group, p.lod);
         }
     }
 }

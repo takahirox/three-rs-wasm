@@ -872,3 +872,39 @@ with their source paths and SHA-256 hashes in
 The marching cubes, advanced postprocessing and IES examples reuse the retained
 `environment-materials` SwedishRoyalCastle cube and `uv_grid_opengl.jpg`, the
 `shadow-rtt` `Map-COL.jpg` and the `LeePerrySmith` normal map.
+
+The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array, compute
+rasterizer, building generator, loft geometry and sculpting batch embeds the
+WGSL Three.js r186 generates for those official WebGPU pages
+(`src/browser/gaussian_splat/`, `water/`, `custom_fog/`, `vxgi/`, `gtao/`,
+`shadow_array/`, `compute_rasterizer/`, `generator_building/`,
+`geometry_loft/` and `sculpt/`), with only unused subgroup directives
+removed. The terrain, forest, skyscraper, loft and Sculptor ports translate the
+MIT-licensed r186 addons. The batch adds these unmodified r186 example assets,
+distributed alongside `LICENSE-THREE` and their upstream licenses:
+
+- `gallery/assets/splat/millipede.splat`: `models/splat/millipede.splat`,
+  "millipede spec." by Fabian Plum (<https://superspl.at/scene/3d5482d4>),
+  CC BY 4.0; SHA-256
+  `3acc5dc9caee60f9405054d63267d2774efc7298455811cc5d1e166f316ba769`.
+- `gallery/assets/spz/lion.v3.spz`: `models/spz/lion.v3.spz`, "Lion" by Renaud
+  (<https://superspl.at/scene/56155c3f>), CC BY 4.0; SHA-256
+  `2b4f98e612fcf21dbc93a03bf0704955a1e0046a3607ab2ab15ffd000ff76310`.
+- `gallery/assets/spz/tomatoes.v4.spz`: `models/spz/tomatoes.v4.spz`, by Grail
+  (<https://superspl.at/scene/2826d2c0>), CC BY 4.0; SHA-256
+  `2dd673e3b6500f9e4f6b366cabf09dc1efa6b7a645cc4f4c6a9a7cd49620f0e9`.
+  The upstream `.license.txt` files sit beside the splats.
+- `gallery/assets/gltf/pool.glb`: `models/gltf/pool.glb`,
+  [The Night Pool](https://skfb.ly/6WOOR) by
+  [syntheticplants](https://sketchfab.com/syntheticplants), CC BY 4.0; SHA-256
+  `bf194fe1d36575da37ee015c307750afd7f7c6ae8254609dbbd7d05dcb1989a9`.
+- `gallery/assets/gltf/tennyson-bust.glb`: `models/gltf/tennyson-bust.glb`,
+  the Tennyson bust from [Three D Scans](https://threedscans.com/lincoln/tennyson/);
+  SHA-256 `1329f683b91864797dfbb20385c4eae2b582de7dcb8ca28ab9e6fc7bc5967d35`.
+- `gallery/assets/water/Water_1_M_Normal.jpg` and `Water_2_M_Normal.jpg`:
+  `textures/water/`; SHA-256
+  `6d7825469a374ff84700b4fb1a2890bd1fce0ca1f777bdd4d5ecdaf15833a804` and
+  `1f6f3fc5af584fb3ad7ff97df39b1835aaa184f53bf647c63120a83be7d63183`.
+- `environments/moonless_golf_2k.hdr.jpg`:
+  `textures/equirectangular/moonless_golf_2k.hdr.jpg` (Poly Haven, CC0);
+  SHA-256 `ac051dede91a9bb8d63f8ee4b384f0af5b9ed64a93e3947452a692a3de9fa285`.

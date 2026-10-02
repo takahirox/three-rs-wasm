@@ -10,6 +10,38 @@ const cases={
  // each capture is one more animate() on both sides.
  webgpu_test_memory:{transient:true,canvasBytes:262144,times:[0,1,2],parameters:[[1,true,1],[3,false,0],[2,false,0],[2,true,1],[4,null,1],[0,false,0],[0,true,1],[6,null,1],[5,null,1]],restore:[[3,true,1],[1,false,0]],at:0},
  webgpu_postprocessing_godrays:{times:[0],parameters:[[0,30,30],[1,.4,.4],[2,.8,.8],[3,1,1],[4,4,4],[5,1,1],[6,false,0],[6,true,1]],restore:[[0,60,60],[1,.7,.7],[2,.5,.5],[3,2,2],[4,2,2],[5,2,2]],at:0,drag:[[256,256],[300,280]],settle:true},
+ // Strokes run on the CPU in the Sculptor's pointer handlers. The hover cursor follows the
+ // pointer, and the damped orbit's change events re-place it.
+ webgpu_sculpt:{antialias:true,times:[0],parameters:[],at:0,script:[['move',300,200,0],['down',0,240,256,null],['move',260,250,null],['move',290,262,null],['move',320,240,null],['up',0,320,240,0],['param',0,'Brush',1,null],['down',0,200,300,null],['move',230,290,null],['move',260,300,null],['move',290,310,null],['up',0,290,310,0],['param',0,'Drag',7,null],['down',0,300,300,null],['move',320,290,null],['move',340,280,null],['up',0,340,280,0],['down',0,20,20,null],['move',60,30,null],['move',100,40,null],['up',0,100,40,null],['run',240,0,0,0]],residency:[['move',300,200,null],['move',200,300,null],['move',20,20,null]]},
+ // The group turns by 0.001 rad per frame, as animate() does.
+ webgpu_geometry_loft:{antialias:true,times:[0,1,2.5],parameters:[[0,true,1],[0,false,0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // The orbit auto-rotates one step per frame. Building parameters regenerate the tower, as the
+ // page does (a rebuild).
+ webgpu_generator_building:{antialias:true,rebuilds:true,times:[0,1,2.5],parameters:[[8,9,9],[0,3,3],[1,160,160],[6,0,0],[7,3,3],[8,17,17]],restore:[[0,7,7],[1,100,100],[6,5,5],[7,1.5,1.5]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // The teapots turn by the TSL time. FirstPersonControls leave the camera still without input.
+ webgpu_compute_rasterizer:{times:[0,1,2.5],parameters:[[0,'Texture',1],[1,'SW Only',0],[1,'HW Only',1],[1,'Both',2],[2,.5,.5]],restore:[[0,'Meshlet Debug',0],[2,1,1]],at:2.5},
+ // The light orbits by the loop's time and the knot turns by the Timer; the tile helpers follow
+ // one frame behind, as the page updates them after rendering. BatchedMesh rewrites its
+ // indirect texture each frame, as the original does.
+ webgpu_shadowmap_array:{textureStream:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ // GTAO turns its slices by frameId, which the fixture restarts after loading; TRAA accumulates
+ // over 60 frames per capture. The orbit is damped.
+ webgpu_postprocessing_ao:{frames:60,times:[0],parameters:[[3,.6,.6],[4,.5,.5],[5,1.5,1.5],[1,1,1],[6,false,0],[6,true,1],[13,true,1],[13,false,0]],restore:[[3,.4,.4],[4,.8,.8],[5,1,1],[1,.5,.5]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The volume is voxelized once and lit when the injection settings change; the cones turn by
+ // frameId, which the fixture restarts after loading. TRAA accumulates over 60 frames per capture.
+ webgpu_vxgi:{frames:60,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[11,false,0],[11,true,1],[3,6,6],[4,60,60],[5,1,1],[6,20,20],[7,2,2],[8,2,2],[9,2,2],[9,0,0]],restore:[[3,3,3],[4,40,40],[5,.5,.5],[6,0,0],[7,1.5,1.5],[8,1,1],[9,1,1]],at:0,drag:[[256,256],[300,280]]},
+ // The terrain and forest are generated at load; the sun's parameters rebake the sky PMREM and
+ // the on-demand shadow. FirstPersonControls move only with time: the fixed-time drag leaves the view.
+ // The first frame after loading differs in sparse forest pixels (0.35% without, 0.55% with
+ // MSAA); every later state matches exactly.
+ webgpu_custom_fog:{antialias:true,limits:[.006,.2],times:[0,1,2],parameters:[[0,20,20],[1,200,200],[2,-10,-10],[3,80,80],[4,.003,.003],[5,200,200],[6,400,400]],restore:[[0,11,11],[1,150,150],[2,-20,-20],[3,55,55],[4,.0012,.0012],[5,300,300],[6,620,620]],at:2,drag:[[256,256],[300,280]]},
+ // The water's flow follows the example clock (a fixture patch). After a resize r186 copies
+ // the transmission source at the new size from a target still at the old size, failing
+ // validation: resize is left out.
+ webgpu_water:{noResize:true,times:[0,1,2.5],parameters:[[1,5,5],[2,-.5,-.5],[3,.3,.3]],restore:[[1,2,2]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The splats are depth-sorted on the GPU when the view turns; the sources load on selection.
+ webgpu_gaussian_splat:{times:[0,1],parameters:[],at:1,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true,
+  script:[['param',0,'Millipede (SPLAT)',0,null],['wait',6000,1],['param',0,'Tomatoes (SPZ v4)',2,null],['wait',8000,1],['param',0,'Lion (SPZ)',1,null],['wait',3000,1]]},
  // TRAA accumulates over frames: each capture renders 60 frames ( see webgpu_volume_lighting_traa ).
  // The retargeted clip is baked at load; both mixers follow the example's Timer.
  webgpu_animation_retargeting:{antialias:true,times:[0,0.5,1.5],parameters:[],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
@@ -187,6 +219,11 @@ test('Compute examples resident geometry and official draw workload',async({page
  await page.addInitScript(()=>{
   window.resetWork=()=>window.work={draws:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
   for(const key of ['draw','drawIndexed']){const fn=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)work.draws.push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
+  // Render bundles (r186's per-layer shadow passes) count their draws each time a pass
+  // executes them.
+  for(const key of ['draw','drawIndexed']){const fn=GPURenderBundleEncoder.prototype[key];GPURenderBundleEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)(this.recorded??=[]).push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
+  const finish=GPURenderBundleEncoder.prototype.finish;GPURenderBundleEncoder.prototype.finish=function(...a){const bundle=finish.apply(this,a);bundle.recorded=this.recorded??[];return bundle;};
+  const execute=GPURenderPassEncoder.prototype.executeBundles;GPURenderPassEncoder.prototype.executeBundles=function(bundles){for(const b of bundles)work.draws.push(...(b.recorded??[]));return execute.call(this,bundles);};
   for(const key of ['drawArrays','drawElements']){const fn=WebGL2RenderingContext.prototype[key];WebGL2RenderingContext.prototype[key]=function(...a){const count=key==='drawArrays'?a[2]:a[1];// WebGL points become six-vertex WebGPU billboards.
 // Draws of three or fewer vertices (the port's fullscreen clear and present triangles, and
 // the two-vertex helper line) are left out on both sides.

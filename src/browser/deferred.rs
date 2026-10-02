@@ -163,6 +163,31 @@ pub(super) fn sampled_pipeline(
     (cw, blended): (bool, bool),
     (samples, topology): (u32, wgpu::PrimitiveTopology),
 ) -> wgpu::RenderPipeline {
+    culled_pipeline(
+        r,
+        label,
+        (vs, fs),
+        buffers,
+        formats,
+        depth,
+        (cw, blended),
+        (samples, topology),
+        Some(wgpu::Face::Back),
+    )
+}
+/// The same with the cull mode ( None for double-sided materials ).
+#[allow(clippy::too_many_arguments)]
+pub(super) fn culled_pipeline(
+    r: &Renderer,
+    label: &str,
+    (vs, fs): (&str, &str),
+    buffers: &[wgpu::VertexBufferLayout],
+    formats: &[wgpu::TextureFormat],
+    depth: Option<(wgpu::CompareFunction, bool)>,
+    (cw, blended): (bool, bool),
+    (samples, topology): (u32, wgpu::PrimitiveTopology),
+    cull: Option<wgpu::Face>,
+) -> wgpu::RenderPipeline {
     let module = |source: &str| {
         r.device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some(label),
@@ -214,7 +239,7 @@ pub(super) fn sampled_pipeline(
                 } else {
                     wgpu::FrontFace::Ccw
                 },
-                cull_mode: Some(wgpu::Face::Back),
+                cull_mode: cull,
                 ..Default::default()
             },
             depth_stencil: depth.map(|(compare, write)| wgpu::DepthStencilState {
@@ -1256,7 +1281,22 @@ pub(super) async fn esplanade(
     linear: &wgpu::Sampler,
     clamp: &wgpu::Sampler,
 ) -> Result<(wgpu::TextureView, u32, Pmrem, wgpu::RenderPipeline)> {
-    let sky = ultra_hdr(&fetch("/web/environments/royal_esplanade_2k.hdr.jpg").await?).await?;
+    ultra_hdr_environment(
+        r,
+        linear,
+        clamp,
+        "/web/environments/royal_esplanade_2k.hdr.jpg",
+    )
+    .await
+}
+/// A 2k UltraHDR equirect at `url` the same way.
+pub(super) async fn ultra_hdr_environment(
+    r: &Renderer,
+    linear: &wgpu::Sampler,
+    clamp: &wgpu::Sampler,
+    url: &str,
+) -> Result<(wgpu::TextureView, u32, Pmrem, wgpu::RenderPipeline)> {
+    let sky = ultra_hdr(&fetch(url).await?).await?;
     let row = sky.width as usize * 4;
     let texels: Vec<half::f16> = sky.rgba.chunks(row).rev().flatten().copied().collect();
     let mut mipmaps = Mipmaps::new(r);
@@ -1316,7 +1356,7 @@ pub(super) async fn esplanade(
 }
 /// CubeMapNode: the equirect texture rendered into a size² cube by a
 /// CubeCamera ( near 1, far 10 ) inside a 5 × 5 × 5 back-faced box.
-fn render_cube(
+pub(super) fn render_cube(
     r: &Renderer,
     sampler: &wgpu::Sampler,
     equirect: &wgpu::TextureView,

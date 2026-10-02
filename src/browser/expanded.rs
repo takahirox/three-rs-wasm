@@ -22,6 +22,16 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Sculpt(Box<super::sculpt::Demo>),
+    GeometryLoft(Box<super::geometry_loft::Demo>),
+    GeneratorBuilding(Box<super::generator_building::Demo>),
+    ComputeRasterizer(Box<super::compute_rasterizer::Demo>),
+    ShadowArray(Box<super::shadow_array::Demo>),
+    Gtao(Box<super::gtao::Demo>),
+    Vxgi(Box<super::vxgi::Demo>),
+    CustomFog(Box<super::custom_fog::Demo>),
+    Water(Box<super::water::Demo>),
+    GaussianSplat(Box<super::gaussian_splat::Demo>),
     Retargeting(Box<super::retargeting::Demo>),
     SkinningInstances(Box<super::skinning_instances::Demo>),
     FogVolume(Box<super::fog_volume::Demo>),
@@ -877,6 +887,98 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::Retargeting(Box::new(
                     super::retargeting::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            404 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.01,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::GaussianSplat(Box::new(
+                    super::gaussian_splat::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            405 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::Water(Box::new(
+                    super::water::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            406 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 20000.,
+                elapsed: 0.,
+                content: Content::CustomFog(Box::new(
+                    super::custom_fog::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            407 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Vxgi(Box::new(
+                    super::vxgi::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            408 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 50.,
+                elapsed: 0.,
+                content: Content::Gtao(Box::new(
+                    super::gtao::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            409 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::ShadowArray(Box::new(
+                    super::shadow_array::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            410 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 1000000.,
+                elapsed: 0.,
+                content: Content::ComputeRasterizer(Box::new(
+                    super::compute_rasterizer::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            411 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 20000.,
+                elapsed: 0.,
+                content: Content::GeneratorBuilding(Box::new(
+                    super::generator_building::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            412 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::GeometryLoft(Box::new(
+                    super::geometry_loft::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            413 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Sculpt(Box::new(
+                    super::sculpt::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             333 => Ok(Self {
@@ -1771,6 +1873,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Sculpt(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2340,6 +2472,36 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Sculpt(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -2618,6 +2780,56 @@ impl Demo {
             return Some(target);
         }
         if let Content::Retargeting(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::GaussianSplat(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Water(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::CustomFog(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Vxgi(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Gtao(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ComputeRasterizer(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::GeneratorBuilding(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::GeometryLoft(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Sculpt(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::ShadowArray(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -2945,6 +3157,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Sculpt(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Water(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::Retargeting(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -3270,6 +3512,36 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Sculpt(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Retargeting(demo) = &mut self.content {
@@ -3686,6 +3958,36 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Sculpt(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Retargeting(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -4006,6 +4308,46 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Sculpt(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Water(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -4374,6 +4716,36 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Sculpt(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::Retargeting(demo) = &mut self.content {
@@ -4768,6 +5140,36 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Sculpt(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GeometryLoft(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GeneratorBuilding(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ComputeRasterizer(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowArray(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Gtao(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Vxgi(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::CustomFog(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Water(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Retargeting(demo) = &mut self.content {

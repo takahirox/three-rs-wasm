@@ -15,6 +15,7 @@ gltf = { version = "1.4", default-features = false, features = ["utils", "names"
 draco-core = { version = "2.1.0", default-features = false, features = ["decoder", "encoder", "edgebreaker_valence_decode", "legacy_bitstream_decode"] }
 optimesh = "1.1.0"
 miniz_oxide = "0.8.9"
+ruzstd = { version = "0.7.3", default-features = false, features = ["std"] }
 basisu = "0.1.0"
 glam = { version = "0.30.9", features = ["serde", "bytemuck"] }
 serde = { version = "1", features = ["derive", "rc"] }

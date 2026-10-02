@@ -80,9 +80,25 @@ pub(super) fn cascades(
     far: f64,
     shadow_far: f64,
 ) -> [Cascade; CASCADES] {
+    cascades_sized(
+        light,
+        camera_world,
+        projection,
+        (near, far, shadow_far),
+        MAP,
+    )
+}
+/// `cascades` for a `map`² shadow map per cascade.
+pub(super) fn cascades_sized(
+    light: Vector3,
+    camera_world: Matrix4,
+    projection: Matrix4,
+    (near, far, shadow_far): (f64, f64, f64),
+    map: u32,
+) -> [Cascade; CASCADES] {
     let shadow_near = 0.5f64;
-    let inset = 0.25f64.min((1f64.ceil() + 1.) / MAP as f64);
-    let resolution_x = MAP as f64 * (1. - 2. * inset);
+    let inset = 0.25f64.min((1f64.ceil() + 1.) / map as f64);
+    let resolution_x = map as f64 * (1. - 2. * inset);
     let resolution = resolution_x;
     let camera_far = (near + 1e-6).max(shadow_far.min(far));
     let mut splits = [0.; CASCADES + 1];
@@ -202,10 +218,10 @@ pub(super) fn cascades(
             matrix: bias * projection * view,
             data: data[i],
             viewport: [
-                (viewport[0] * MAP as f64) as f32,
-                (viewport[1] * MAP as f64) as f32,
-                (viewport[2] * MAP as f64) as f32,
-                (viewport[3] * MAP as f64) as f32,
+                (viewport[0] * map as f64) as f32,
+                (viewport[1] * map as f64) as f32,
+                (viewport[2] * map as f64) as f32,
+                (viewport[3] * map as f64) as f32,
             ],
         }
     })

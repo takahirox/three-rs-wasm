@@ -920,3 +920,22 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   residency cycle leaves the parameters out.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, compute rasterizer, building generator, loft geometry and sculpting
+
+- **GPU state.** The splat sort, the VXGI opacity and radiance volumes, the
+  compute rasterizer's work queues, indirect arguments and visibility buffers,
+  and the shadow-map array stay on the GPU. The splat sort runs only when the
+  view turns, and the radiance volume is re-injected only when its inputs
+  change, as in the originals.
+- **CPU work as in the originals.** The splat decoding, the terrain and
+  forest, the voxelization triangles, the teapot LODs, the loft geometry and
+  the skyscraper are generated once, or when a parameter regenerates them. The
+  SunLight cascade fitting and BatchedMesh's tree sorting run each frame.
+  Sculpting runs the Sculptor addon's strokes on the CPU, as the addon does.
+- **Uploads.** No vertex or index data is written in steady frames. A
+  sculpting stroke uploads only the addon's attribute update ranges and, when
+  the topology changes, the index. Buffers are recreated only when the addon
+  reallocates its arrays.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
