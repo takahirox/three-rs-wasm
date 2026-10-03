@@ -17,7 +17,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_animation_skinning_morph](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_skinning_morph.html) | runnable-partial | tests/browser/core-robot.spec.js |
 | [webgl_animation_multiple](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_multiple.html) | runnable-partial | tests/browser/spot-skinning.spec.js |
 | [webgl_animation_walk](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_animation_walk.html) | runnable-partial | tests/browser/spot-skinning.spec.js |
-| [webgl_batch_lod_bvh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html) | blocked-at-port-review | PMREMGenerator; RoomEnvironment; MapControls; BatchedMesh |
+| [webgl_batch_lod_bvh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_camera](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera.html) | excluded | CameraHelper |
 | [webgl_camera_array](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_array.html) | excluded | ArrayCamera; MeshPhongMaterial |
 | [webgl_camera_logarithmicdepthbuffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_camera_logarithmicdepthbuffer.html) | excluded | FontLoader; TextGeometry; MeshPhongMaterial |
@@ -36,7 +36,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_geometry_colors](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_colors.html) | runnable-partial | tests/browser/expanded.spec.js |
 | [webgl_geometry_colors_lookuptable](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_colors_lookuptable.html) | runnable-partial | tests/browser/geometry-materials.spec.js |
 | [webgl_geometry_convex](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_convex.html) | runnable-partial | tests/browser/shapes.spec.js |
-| [webgl_geometry_csg](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_csg.html) | blocked-at-port-review | HemisphereLight; ShadowMaterial |
+| [webgl_geometry_csg](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_csg.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_geometry_cube](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_cube.html) | runnable-partial | tests/browser/migration.spec.js |
 | [webgl_geometry_extrude_shapes](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_shapes.html) | runnable-partial | tests/browser/shapes-lights.spec.js |
 | [webgl_geometry_extrude_splines](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_extrude_splines.html) | runnable-partial | tests/browser/text-clipping.spec.js |
@@ -110,7 +110,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_loader_ifc](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ifc.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_loader_imagebitmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_imagebitmap.html) | runnable-partial | tests/browser/stereo-loaders.spec.js |
 | [webgl_loader_kmz](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_kmz.html) | runnable-partial | tests/browser/refraction-loaders.spec.js |
-| [webgl_loader_ldraw](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ldraw.html) | blocked-at-port-review | PMREMGenerator; RoomEnvironment; LDrawLoader |
+| [webgl_loader_ldraw](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ldraw.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_loader_md2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_md2.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
 | [webgl_loader_md2_control](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_md2_control.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
 | [webgl_loader_mdd](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_mdd.html) | runnable-partial | tests/browser/models-modifiers.spec.js |
@@ -302,7 +302,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_volume_cloud](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_volume_cloud.html) | blocked-at-port-review | CanvasTexture; ImprovedNoise; Data3DTexture; RawShaderMaterial |
 | [webgl_volume_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_volume_instancing.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_volume_perlin](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_volume_perlin.html) | blocked-at-port-review | ImprovedNoise; Data3DTexture; RawShaderMaterial |
-| [webgl_worker_offscreencanvas](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_worker_offscreencanvas.html) | blocked-at-port-review | new Worker |
+| [webgl_worker_offscreencanvas](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_worker_offscreencanvas.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_performance](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_performance.html) | excluded | dungeon_warkarma.glb; EXT_texture_webp |
 | [webgl_tsl_shadowmap](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_shadowmap.html) | blocked-at-port-review | Fog; SpotLight; MeshPhongNodeMaterial; WebGLNodesHandler |
 | [webgl_tsl_skinning](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_tsl_skinning.html) | blocked-at-port-review | AnimationMixer; WebGLNodesHandler; Michelle.glb; KHR_materials_specular |
@@ -526,7 +526,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_video_panorama](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_video_panorama.html) | runnable-partial | tests/browser/sky-water.spec.js |
 | [webgpu_volume_caustics](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_caustics.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_volume_cloud](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_cloud.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
-| [webgpu_volume_fire](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_fire.html) | blocked-at-port-review | ImprovedNoise; Storage3DTexture; TeapotGeometry; VolumeNodeMaterial |
+| [webgpu_volume_fire](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_fire.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_volume_lighting](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_volume_lighting_rectarea](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting_rectarea.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_volume_lighting_traa](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_lighting_traa.html) | runnable-partial | tests/browser/compute-examples.spec.js |

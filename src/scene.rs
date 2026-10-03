@@ -206,6 +206,11 @@ pub struct Node {
     /// Direct draws only; indirect commands own their instance counts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instance_count: Option<u32>,
+    /// This node's index range in a geometry shared with other nodes ( the
+    /// draws of a BatchedMesh's LODs ), intersected with the geometry's own
+    /// draw range. Nodes sharing one geometry share its GPU buffers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub draw_range: Option<crate::geometry::DrawRange>,
     pub user_data: serde_json::Map<String, serde_json::Value>,
     #[serde(skip)]
     parent: Option<Object3D>,
@@ -241,6 +246,7 @@ impl Default for Node {
             skin: None,
             instances: Vec::new(),
             instance_count: None,
+            draw_range: None,
             user_data: Default::default(),
             parent: None,
             children: Vec::new(),

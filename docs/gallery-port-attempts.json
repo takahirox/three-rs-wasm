@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 438,
-    "blocked-at-port-review": 126,
-    "excluded": 43
+    "runnable-partial": 443,
+    "excluded": 43,
+    "blocked-at-port-review": 121
   },
   "examples": [
     {
@@ -919,10 +919,10 @@
     },
     {
       "id": "webgl_batch_lod_bvh",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html",
       "source_sha256": "4bdcb5a0f3075db8d9905fcf1de3b116b6945d1fcabf1982ea731027e7b74016",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -2149,10 +2149,10 @@
     },
     {
       "id": "webgl_geometry_csg",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_csg.html",
       "source_sha256": "19b9ddb7e5eab66fd40ee01367d90294e0652cb496ca1e4e8faea7be522233ba",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -6939,10 +6939,10 @@
     },
     {
       "id": "webgl_loader_ldraw",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ldraw.html",
       "source_sha256": "ca8c1279fecd8707e599961882a65e4243aa22abcbecb511c3189fdfda679837",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -19265,10 +19265,10 @@
     },
     {
       "id": "webgl_worker_offscreencanvas",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_worker_offscreencanvas.html",
       "source_sha256": "541155a55102491f17004b94cdbc70285ff4ddfd59e28e1a4191438fc5a98ccc",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "behavior",
@@ -36724,10 +36724,10 @@
     },
     {
       "id": "webgpu_volume_fire",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_fire.html",
       "source_sha256": "9a775774ee3e4a51230afdca46a6c53dbb79b8849fb29e50e020c5ce3909386c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

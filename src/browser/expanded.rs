@@ -22,6 +22,11 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    GeometryCsg(Box<super::geometry_csg::Demo>),
+    Ldraw(Box<super::ldraw::Demo>),
+    BatchLodBvh(Box<super::batch_lod_bvh::Demo>),
+    VolumeFire(Box<super::volume_fire::Demo>),
+    Offscreen(Box<super::offscreen::Demo>),
     Lottie(Box<super::lottie::Demo>),
     Watch(Box<super::watch::Demo>),
     IfcLoader(Box<super::ifc_loader::Demo>),
@@ -1286,6 +1291,51 @@ impl Demo {
                     super::lottie::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            444 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Offscreen(Box::new(
+                    super::offscreen::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            445 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::VolumeFire(Box::new(
+                    super::volume_fire::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            446 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::BatchLodBvh(Box::new(
+                    super::batch_lod_bvh::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            447 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::Ldraw(Box::new(
+                    super::ldraw::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            448 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::GeometryCsg(Box::new(
+                    super::geometry_csg::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2178,6 +2228,21 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::Lottie(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2867,6 +2932,9 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::GtaoWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3332,6 +3400,11 @@ impl Demo {
         {
             return Some(target);
         }
+        if let Content::VolumeFire(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::FogScattering(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -3638,6 +3711,21 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Lottie(demo) = &mut self.content {
@@ -4085,6 +4173,21 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Lottie(demo) = &mut self.content {
@@ -4621,6 +4724,21 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Lottie(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5061,6 +5179,26 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -5591,6 +5729,21 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::Lottie(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -6103,6 +6256,21 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GeometryCsg(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ldraw(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::BatchLodBvh(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::VolumeFire(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Offscreen(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Lottie(demo) = &mut self.content {

@@ -7,6 +7,7 @@
     "webgl_animation_skinning_morph",
     "webgl_animation_multiple",
     "webgl_animation_walk",
+    "webgl_batch_lod_bvh",
     "webgl_clipping_advanced",
     "webgl_clipping_intersection",
     "webgl_decals",
@@ -20,6 +21,7 @@
     "webgl_geometry_colors",
     "webgl_geometry_colors_lookuptable",
     "webgl_geometry_convex",
+    "webgl_geometry_csg",
     "webgl_geometry_cube",
     "webgl_geometry_extrude_shapes",
     "webgl_geometry_extrude_splines",
@@ -69,6 +71,7 @@
     "webgl_loader_ifc",
     "webgl_loader_imagebitmap",
     "webgl_loader_kmz",
+    "webgl_loader_ldraw",
     "webgl_loader_md2",
     "webgl_loader_md2_control",
     "webgl_loader_mdd",
@@ -196,7 +199,8 @@
     "webgl_texture3d_partialupdate",
     "webgl_ubo",
     "webgl_ubo_arrays",
-    "webgl_volume_instancing"
+    "webgl_volume_instancing",
+    "webgl_worker_offscreencanvas"
   ],
   "webgl / tsl": [
     "webgl_tsl_instancing"
@@ -412,6 +416,7 @@
     "webgpu_video_panorama",
     "webgpu_volume_caustics",
     "webgpu_volume_cloud",
+    "webgpu_volume_fire",
     "webgpu_volume_lighting",
     "webgpu_volume_lighting_rectarea",
     "webgpu_volume_lighting_traa",

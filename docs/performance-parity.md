@@ -977,3 +977,28 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
     CanvasTexture upload them.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### OffscreenCanvas worker, volume fire, batched LOD BVH, LDraw and CSG
+
+- **GPU state.**
+  - The fire's eight voxel grids and the compute kernels stay on the GPU.
+    Each simulation step dispatches the page's seven kernels.
+  - The batched knots' matrices and colors are resident instance buffers.
+  - The LDraw parts' geometries are shared by every instance of a part.
+  - The CSG result's buffers are reused at their grown capacity.
+- **CPU work as in the originals.**
+  - Each frame: the batch's BVH culling, LOD selection and sort; the CSG
+    evaluation.
+  - On pointer moves: the batch's hover ray casts and the fire's DragControls
+    ray cast.
+  - At load and on reloads: the LDraw parse.
+- **Uploads.**
+  - Steady frames write no geometry for the fire, the batch or LDraw.
+  - The batch writes the visible instances only when the culled set changes,
+    where the original rewrites its indirect texture every frame.
+  - The CSG result streams each frame, as the original's does. Its 80-byte
+    interleaved vertex makes the stream up to 2.5 times WebGL's.
+- **Draws.** The batch draws one instanced draw per knot LOD where WebGL issues
+  one multi-draw entry per instance; the drawn instances match one for one.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

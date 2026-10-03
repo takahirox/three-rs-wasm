@@ -1011,3 +1011,24 @@ r186 example assets and derived bakes, distributed alongside `LICENSE-THREE`:
 - **Reuse.** The lobe and royal esplanade environments, DragonAttenuation,
   the bunny, Littlest Tokyo, sintel.mp4 and the uv grid are reused from the
   folders credited above.
+
+The OffscreenCanvas worker, volume fire, batched LOD BVH, LDraw and CSG batch
+ports MIT-licensed three.js r186 code ( LDrawLoader, LDrawConditionalLineMaterial
+and the examples' page code ) and these libraries' algorithms:
+three-bvh-csg 0.0.18 (MIT, Garrett Johnson), three-mesh-bvh 0.9.10 (MIT,
+Garrett Johnson), @three.ez/batched-mesh-extensions 0.0.11 (MIT, Andrea
+Gargaro) and bvh.js 0.0.13 (MIT, Andrea Gargaro). The batch adds these r186
+example assets and derived bakes, distributed alongside `LICENSE-THREE`:
+
+- `gallery/assets/offscreen/matcap-porcelain-white.jpg`:
+  `textures/matcaps/matcap-porcelain-white.jpg`; SHA-256
+  `bf1c51469cd0bd5720b5ac0bb7023f5263c31f5f392e7710f7a6ca5df6b417b5`.
+- `gallery/assets/batch_lod/lods.bin`: the four LOD indices
+  @three.ez/simplify-geometry 0.0.1 (MIT, Andrea Gargaro) builds for the
+  page's ten torus knots with meshoptimizer 1.1.1 (MIT, Arseny Kapoulkine),
+  baked by `tools/tsl/prepare-batch-lod.mjs`; SHA-256
+  `1cb11eef18dc97077f20d04e092a1dffe2e727515570473525bfe245f789ea77`.
+- `gallery/assets/ldraw/`: the page's seventeen packed models from
+  `models/ldraw/officialLibrary/models/`, unchanged. They pack parts of the
+  LDraw.org Parts Library, redistributable under the Creative Commons
+  Attribution License 2.0 ( `CAlicense.txt`, copied beside them ).

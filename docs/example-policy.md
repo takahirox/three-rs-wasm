@@ -399,6 +399,16 @@ Backend tolerances are scoped in the spec to these causes:
   alpha cloth and dragon, the watch's metals and the Lottie box's mirror face;
 - the IFC model's z-fighting coplanar faces.
 
+The OffscreenCanvas worker, volume fire, batched LOD BVH, LDraw and CSG batch
+([offscreen-fire-batch-ldraw-csg-examples.md](offscreen-fire-batch-ldraw-csg-examples.md))
+ports one WebGPU example, compared against the WebGPU renderer, and four pages
+without an r186 WebGPU counterpart, compared against WebGLRenderer. Their
+tolerances are scoped to two causes:
+
+- the volume fire emission's voxel write race, which makes the original differ
+  from itself by up to 5.8 % of the pixels;
+- 4× MSAA edges of sub-pixel knots and one-pixel lines.
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

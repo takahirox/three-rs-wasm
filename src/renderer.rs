@@ -1217,8 +1217,8 @@ impl Renderer {
                 if !properties.visible {
                     continue;
                 }
-                let start = group.start.max(geometry.draw_range.start);
-                let end = group
+                let mut start = group.start.max(geometry.draw_range.start);
+                let mut end = group
                     .start
                     .saturating_add(group.count)
                     .min(geometry.draw_count())
@@ -1228,6 +1228,14 @@ impl Renderer {
                             .start
                             .saturating_add(geometry.draw_range.count.unwrap_or(usize::MAX)),
                     );
+                if let Some(range) = n.draw_range {
+                    start = start.max(range.start);
+                    end = end.min(
+                        range
+                            .start
+                            .saturating_add(range.count.unwrap_or(usize::MAX)),
+                    );
+                }
                 if end <= start {
                     continue;
                 }

@@ -565,7 +565,7 @@
     {
       "id": "webgl_batch_lod_bvh",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_batch_lod_bvh.html",
       "source_sha256": "4bdcb5a0f3075db8d9905fcf1de3b116b6945d1fcabf1982ea731027e7b74016",
@@ -617,7 +617,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 446,
+        "source": "src/browser/batch_lod_bvh.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "10種のトーラスノットを50万インスタンス並べたBatchedMesh（MeshStandardMaterial、metalness 1、roughness 0.8、RoomEnvironmentのPMREM、ACES露出0.8）をRustで再現。708×708の格子にページの乱数で形状・回転・HSL色を与える。各ノットの4段のLODは@three.ez/simplify-geometryがmeshoptimizerで作る結果をtools/tsl/prepare-batch-lod.mjsでベイク（ノット自体はロード時に生成し、位置のハッシュで一致を確認）し、1つのインデックスバッファで共有する。@three.ez/batched-mesh-extensionsのonBeforeRenderと同じく毎フレームCPUでBVHによる視錐台カリング（bvh.jsの単精度の平面と箱）、画面サイズの指標によるLOD選択、手前からの順序付けを行う（useBVHオフでは境界球の線形カリング）。行列と色はGPUに常駐し、ノットとLODごとに可視インスタンスを1回のインスタンス描画で描く（WebGLはインスタンスごとのマルチドロー項目。描画順はLOD単位でまとまる）。ポインタ移動ではオリジナル同様にCPUでインスタンスの箱とノットの三角形（three-mesh-bvhの最初の交差）をレイキャストし、ホバー中のインスタンスを赤にする。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "@three.ez/batched-mesh-extensions",
         "@three.ez/simplify-geometry",
@@ -1533,7 +1540,7 @@
     {
       "id": "webgl_geometry_csg",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_geometry_csg.html",
       "source_sha256": "19b9ddb7e5eab66fd40ee01367d90294e0652cb496ca1e4e8faea7be522233ba",
@@ -1605,7 +1612,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 448,
+        "source": "src/browser/geometry_csg.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "回転する正二十面体のブラシから、回転しながら太さが変わる円柱ブラシを毎フレーム減算（交差・加算）する構成を、three-bvh-csg 0.0.18（既定のLegacyTriangleSplitter）とthree-mesh-bvh 0.9.10のMeshBVH（CENTER分割、葉3三角形、間接バッファ、単精度の境界）のRust移植（csg_eval.rs）でページ同様CPUで再現。bvhcastで交差する三角形の組を集め、分割三角形は中点からのレイキャストで、分割されない三角形はハーフエッジで塗りつぶして内外を判定し、出力属性は単精度で書く。結果（正二十面体由来はフラットな白、円柱由来は青緑）とオレンジのコアを半球ライトとPCF影の平行光、影のみの平面で描く。結果ジオメトリは毎フレーム同じ常駐バッファに書き直し、ワイヤーフレームはページ同様に結果の変換なしでそれを共有する。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three-bvh-csg",
@@ -5123,7 +5137,7 @@
     {
       "id": "webgl_loader_ldraw",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_ldraw.html",
       "source_sha256": "ca8c1279fecd8707e599961882a65e4243aa22abcbecb511c3189fdfda679837",
@@ -5157,7 +5171,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 447,
+        "source": "src/browser/ldraw.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ページの17種のパック済みLDrawモデルを、LDrawLoaderのRust移植（ldraw_loader.rs：行パーサ、!COLOURマテリアルとエッジ・条件付きエッジ、BFCの巻き順、パーツをグループ・プリミティブをパーツへ結合するサブオブジェクト階層、ソフトエッジをまたぐ法線スムージング、色コードごとのグループ、ビルドステップ）でロード時に解析し、RoomEnvironmentのPMREMとACES Filmic（半精度出力）、X軸180°回転で表示する。条件付き線はLDrawConditionalLineMaterialの頂点判定（2つの制御点が画面上で線分の異なる側にあれば破棄）を実行する。モデルごとに境界ボックスへ減衰付きオービットをリセットし、GUIでモデル、フラットカラー、マージ、ビルドステップ、法線スムージング、2種の線を切り替える。マージはページと同じくビルドステップがNaNになりモデルが非表示になる（マージ済みジオメトリは作らない）。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -14195,12 +14216,19 @@
     {
       "id": "webgl_worker_offscreencanvas",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_worker_offscreencanvas.html",
       "source_sha256": "541155a55102491f17004b94cdbc70285ff4ddfd59e28e1a4191438fc5a98ccc",
       "requirements": {},
-      "port": null,
+      "port": {
+        "example": 444,
+        "source": "src/browser/offscreen.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ページのscene.js（sin関数の疑似乱数で配置した100個のマットキャップ二十面体、フォグ、Date.nowで回るグループ）を左右2つのキャンバスに描画。左はメインスレッドのギャラリーアプリ、右はOffscreenCanvasをモジュールWorker（web/gallery/offscreen-worker.js）へ渡し、Worker内で同じパッケージの別レンダラーと独自のアニメーションフレームで描画（ページのWorkerと同じ構成）。START JANKは1/60秒ごとにMath.randomを1000万回呼んでメインスレッドを塞ぎ、左のキャンバスだけを止める。ギャラリー時計の下では両方がDate.nowとしてギャラリー時間を使う。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/offscreen/jank.js",
         "three/addons/offscreen/scene.js"
@@ -29183,7 +29211,7 @@
     {
       "id": "webgpu_volume_fire",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_volume_fire.html",
       "source_sha256": "9a775774ee3e4a51230afdca46a6c53dbb79b8849fb29e50e020c5ce3909386c",
@@ -29321,7 +29349,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 445,
+        "source": "src/browser/volume_fire.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ティーポットから立ち上るGPU流体の炎をRustで再現。シミュレーションはページのアキュムレータどおり（1/120秒×速度、1フレーム最大1/30秒）にステップし、100×100×200の半精度ボクセル格子で速度の移流（浮力、カールノイズの乱流、ティーポットの風）、発散、2回のヤコビ圧力反復、射影、染料の移流、ティーポット頂点からの放出をコンピュートで実行し、染料格子をピンポンする。カールノイズはロード時に1回計算する。各フレームはボリュームの影キャスタからスポットライトの色付き影マップ、シーン（溶岩のティーポットと炎のポイントライトで照らす床、キャスタの色なし描画）、半解像度のレイマーチしたボリューム、そのガウスぼかし、BloomNode（ハイパス、5段のH/V、合成）、ACES Filmicの出力を描く。各段はページからthree.js r186が生成するWGSL（volume_fire/、ブルーム段はvolume_caustics/と共有）を実行する。DragControlsはオリジナルと同じくティーポットの三角形へのCPUレイキャストで動かす。床のマテリアルは静的なため、オリジナル同様に床の炎ライト入力は初回描画時の値のまま。トーンマッピングの切り替えと露出のGUIは未対応。ブルーム無効時は出力が黒のブルームテクスチャを読む（オリジナルはブルーム項のないシェーダー）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/DragControls.js",

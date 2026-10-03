@@ -92,6 +92,12 @@ const cases={
  // The brush follows the pointer; the after image fades its trail.
  webgpu_hdr:{antialias:true,times:[0,1],parameters:[[0,8,8],[1,0.8,0.8],[2,1,1],[3,0.95,0.95]],restore:[[0,4,4],[1,0.4,0.4],[2,0.5,0.5],[3,0.985,0.985]],at:1,motion:[[256,256,1],[300,200,1],[320,180,1],[320,180,1],[320,180,1]]},
  // The original's first frame after loading lights the volume differently: captures render two frames.
+ // The fluid steps on the page's accumulator ( 1 / 120 s × the simulation speed, at most a
+ // 1 / 30 s frame ): the fire builds over runs of 60 fps frames on the example clock.
+ // Parameters capture without a step. The emission kernel stores from every teapot vertex,
+ // and vertices sharing a voxel race: the original differs from itself by 1.2-5.8% of the
+ // pixels ( mean 0.15-1.4 ) over these states, the port's bounds (docs/loader-exporter-examples.md).
+ webgpu_volume_fire:{limits:[.1,3],times:[0],parameters:[],at:1.5+20/60,script:[['run',60,1/60,1/60,'last'],['param',7,1,1,1],['param',7,.1,.1,null],['param',4,false,0,1],['param',4,true,1,null],['param',6,false,0,1],['param',6,true,1,null],['param',3,32,32,1],['param',3,16,16,null],['param',11,90,90,1],['param',11,0,0,null],['param',2,1,1,1],['param',2,.5,.5,null],['run',30,1+1/60,1/60,'last'],['drag',256,322,330,330,0,null],['run',20,1.5+1/60,1/60,'last']],residency:[['run',30,1/60,1/60,'last'],['param',7,1,1,1],['param',7,.1,.1,null]],drag:[[256,200],[300,220]]},
  webgpu_volume_caustics:{antialias:true,frames:2,times:[0,1,2.5],parameters:[[0,5,5],[0,1,1]],restore:[[0,1,1]],at:2.5,drag:[[256,256],[300,280]]},
  webgpu_compute_cloth:{antialias:true,times:[0,1,2.5],parameters:[[0,.4,.4],[3,3,3],[5,.5,.5],[6,.3,.3],[7,.8,.8],[2,false,0],[2,true,1],[1,true,1],[1,false,0]],restore:[[0,.2,.2],[3,1,1],[5,1,1],[6,1,1],[7,.5,.5]],at:2.5,
   // The simulation advances per requested frame: runs of 1/60 s frames, the second in wireframe.

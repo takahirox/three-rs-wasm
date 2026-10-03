@@ -327,6 +327,10 @@ impl Controls {
     pub(super) fn set_damping(&mut self, damping: Option<f64>) {
         self.damping = damping;
     }
+    /// `_panOffset.copy( offset )`: MapControls' ground-grab pan.
+    pub(super) fn set_pan(&mut self, offset: Vector3) {
+        self.pan = offset;
+    }
     pub(super) fn set_target(&mut self, target: Vector3) {
         self.target = target;
     }

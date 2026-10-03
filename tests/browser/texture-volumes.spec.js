@@ -41,6 +41,29 @@ const cases={
  webgl_postprocessing_advanced:{times:[0,1,2.5],parameters:[],at:2.5,maskDraws:[53052,6,2]},
  webgpu_postprocessing_outline:{times:[0],parameters:[],at:0,settle:true,script:[['move',256,256,0],['param',0,6,6,0],['param',1,.8,.8,0],['param',2,3,3,0],['param',4,0xff0000,0xff0000,0],['param',5,0x00ff00,0x00ff00,0],['param',3,2,2,1.3],['param',3,0,0,1.3],['move',140,320,1.3],['move',380,190,1.3],['move',30,30,1.3]],restore:[[0,3,3],[1,0,0],[2,1,1],[4,0xffffff,0xffffff],[5,0x4e3636,0x4e3636]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_postprocessing_sao:{times:[0,1,2.5],parameters:[[0,'SAO Only',1],[0,'Normal',2],[0,'Default',0],[1,.2,.2],[2,.5,.5],[3,3,3],[4,40,40],[5,.2,.2],[6,false,0],[6,true,1],[7,30,30],[8,10,10],[9,.05,.05],[10,false,0]],restore:[[1,.5,.5],[2,.18,.18],[3,1,1],[4,100,100],[5,0,0],[7,8,8],[8,4,4],[9,.01,.01],[10,true,1]],at:2.5},
+ // Both canvases are captured: the main thread's and the worker's. Each capture waits for
+ // the worker's frames ( pick ); the first waits for the worker to load. With MSAA the
+ // spheres' silhouettes resolve differently ( msaaLimits ).
+ // The CSG result is evaluated on the CPU each frame and streamed, as the page's
+ // three-bvh-csg result is. The wireframe shares the result without its transform.
+ // The port's interleaved vertex is 80 bytes against WebGL's 32 ( position, normal
+ // and UV ): its stream is bounded at 2.5 times the original's. Showing the wireframe
+ // builds its line index again, as WebGL's wireframe attribute is: the residency cycle
+ // leaves the parameters out.
+ webgl_geometry_csg:{antialias:true,streamsGeometry:true,rebuilds:true,streamRatio:2.5,times:[0,1,2.5],parameters:[[0,'INTERSECTION',1],[0,'ADDITION',2],[0,'SUBTRACTION',0],[1,true,1],[1,false,0],[2,false,0],[2,true,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The packed models parse at load ( and on each model, flat-color, merge or smoothing
+ // change ); merging hides the model, as the page's NaN building step does. The orbit
+ // is damped.
+ webgl_loader_ldraw:{antialias:true,rebuilds:true,frames:40,times:[0],parameters:[[5,false,0],[5,true,1],[6,false,0],[6,true,1],[3,2,2],[3,99,99],[1,true,1],[1,false,0],[4,false,0],[4,true,1],[2,true,1],[2,false,0],[0,'Radar Truck',2],[0,'Lighthouse',7],[0,'Car',0]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300],settle:true},
+ // BatchedMesh culls, picks LODs and sorts on the CPU each frame ( the extensions'
+ // onBeforeRender ); WebGL multi-draws one entry per instance, which the workload
+ // compares with the port's instanced draws expanded per instance. Pointer moves
+ // raycast and recolor the hovered instance. Freeze keeps the last culling while the
+ // view pans.
+ webgl_batch_lod_bvh:{antialias:true,multiDraw:true,times:[0],parameters:[[3,false,0],[3,true,1],[2,false,0],[2,true,1]],at:0,script:[['move',256,300,0],['move',150,330,0],['param',1,true,1,null],['drag',256,256,330,256,0,0],['param',1,false,0,0]],residency:[['move',256,300,0],['move',150,330,0]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The main thread's scene renders on its own animation frames, which may run before a
+ // request reaches them: the workload holds the clock at 0 so every frame turns the same.
+ webgl_worker_offscreencanvas:{workloadTimes:[0,0,0,0,0,0],view:'#container',pick:true,antialias:true,times:[],parameters:[],at:0,script:[['wait',2000,0],['wait',0,1],['wait',0,2.5]]},
  // The mirror-smooth box reflects WebGL's RoomEnvironment PMREM a little differently.
  webgl_loader_texture_lottie:{limits:[.025,.9],antialias:true,times:[0,.3,.6,.9,1.2,1.6,2.5,4],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // WebGL's image-based multiple scattering lights the gold and silver a little apart,
@@ -105,7 +128,7 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // webgpu_display_stereo streams its 500 instance matrices each frame.
-const streams=['webgpu_display_stereo','webgl_marchingcubes'];
+const streams=['webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg'];
 // A deterministic webcam: getUserMedia returns a 1280 × 720 canvas stream of a fixed
 // gradient and shapes, redrawn each animation frame so the stream keeps presenting.
 const fakeCamera=()=>{if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia=async()=>{const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const g=canvas.getContext('2d');const draw=()=>{const gradient=g.createLinearGradient(0,0,1280,720);gradient.addColorStop(0,'#203080');gradient.addColorStop(.5,'#c04060');gradient.addColorStop(1,'#f0d040');g.fillStyle=gradient;g.fillRect(0,0,1280,720);g.fillStyle='#ffffff';g.fillRect(160,120,320,480);g.fillStyle='#10a050';g.beginPath();g.arc(900,360,220,0,Math.PI*2);g.fill();requestAnimationFrame(draw);};draw();return canvas.captureStream(30);};};
@@ -129,7 +152,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -147,7 +170,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
    await frames(page,runtime,t,spec.frames??1);
    if(spec.pick)for(let k=0;k<3;k++){await page.waitForTimeout(100);await frames(page,runtime,t,1);}
    expect(await page.evaluate(()=>window.fixtureError)).toBeNull();
-   shots.push(PNG.sync.read(await page.locator(view).screenshot()));
+   shots.push(PNG.sync.read(await page.locator(spec.view??view).screenshot()));
   };
   const t=spec.at;
   for(const time of spec.times)await capture(time);
@@ -207,7 +230,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
    if(spec.streamsGeometry){delete before.transfers;delete after.transfers;}
    expect(after).toEqual(before);
   }
-  writeFileSync(info.outputPath('residency.json'),JSON.stringify(reports,null,2));await expect(page.locator(view)).not.toHaveAttribute('data-error',/.+/);
+  writeFileSync(info.outputPath('residency.json'),JSON.stringify(reports,null,2));await expect(page.locator(view).first()).not.toHaveAttribute('data-error',/.+/);
  });
 }
 
@@ -216,6 +239,8 @@ test('Texture arrays and volumes resident geometry and official draw workload',a
  await page.addInitScript(()=>{
   window.resetWork=()=>window.work={draws:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
   for(const key of ['draw','drawIndexed']){const fn=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)work.draws.push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
+  // BatchedMesh draws through WEBGL_multi_draw: one entry per instance.
+  const extension=WebGL2RenderingContext.prototype.getExtension;WebGL2RenderingContext.prototype.getExtension=function(name){const e=extension.call(this,name);if(name==='WEBGL_multi_draw'&&e&&!e.counted){e.counted=true;const fn=e.multiDrawElementsWEBGL.bind(e);e.multiDrawElementsWEBGL=(mode,counts,countsOffset,type,offsets,offsetsOffset,drawCount)=>{for(let i=0;i<drawCount;i++)work.draws.push({count:counts[countsOffset+i],instances:1});return fn(mode,counts,countsOffset,type,offsets,offsetsOffset,drawCount);};}return e;};
   for(const key of ['drawArrays','drawElements']){const fn=WebGL2RenderingContext.prototype[key];WebGL2RenderingContext.prototype[key]=function(...a){const count=key==='drawArrays'?a[2]:a[1];// WebGL points become six-vertex WebGPU billboards.
 // Draws of three or fewer vertices (the port's fullscreen clear and present triangles, and
 // the two-vertex helper line) are left out on both sides.
@@ -238,7 +263,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    // Per-frame solvers (the IK chain) converge before the measured frame.
    if(spec.frames)await frames(page,runtime,1,spec.frames);
-   for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
+   for(const [n,t] of (spec.workloadTimes??[1,2,3,1,2,3]).entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
    pair[runtime]=await page.evaluate(()=>work);
   }
   // WebGL draws an equirectangular background as a 36-index box; the port's
@@ -251,6 +276,8 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // The port's side of a scoped difference: [count, draws] the port issues beyond the
   // reference's ( each explained at its case ).
   if(spec.portDraws)for(const [count,n] of spec.portDraws)for(let k=0;k<n;k++){const i=pair.rust.draws.findIndex(d=>d.count===count);if(i>=0)pair.rust.draws.splice(i,1);}
+  // The port draws each LOD's visible instances with one instanced draw.
+  if(spec.multiDraw)pair.rust.draws=pair.rust.draws.flatMap(d=>Array.from({length:d.instances},()=>({count:d.count,instances:1})));
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
   // The port draws equirectangular backgrounds with a fullscreen triangle; WebGL uses a
   // 36-index box and WebGPU a 5,952-index sphere. The stereo port draws its cube
@@ -261,11 +288,15 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // Each instance's matrix and color stream together (80 bytes) as resident draw data;
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
   if(spec.batch)expect.soft(pair.rust.attributeBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes*1.25);
-  else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
+  // spec.streamRatio scopes a documented vertex format difference.
+  else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*(spec.streamRatio??1.25));
   else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
   expect.soft(pair.rust.textureBytes,kind).toBe(0);
  }
- writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report,null,2));
+ // The record keeps each draw shape's tally ( the comparison is order-free ), as the batched
+ // knots issue tens of thousands of multi-draw entries.
+ const tally=draws=>{const m=new Map();for(const d of draws){const k=d.count+'x'+d.instances;m.set(k,(m.get(k)??0)+1);}return [...m].map(([k,n])=>{const [count,instances]=k.split('x').map(Number);return {count,instances,n};}).sort((a,b)=>a.count-b.count||a.instances-b.instances);};
+ writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report.map(r=>({...r,reference:{...r.reference,draws:tally(r.reference.draws)},rust:{...r.rust,draws:tally(r.rust.draws)}})),null,2));
 });
 
 for(const kind of ['webgl_texture2darray_layerupdate','webgl_texture3d'])test(`Texture arrays and volumes on-demand scene stays idle: ${kind}`,async({page})=>{

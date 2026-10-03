@@ -10,6 +10,7 @@ mod attractors;
 mod audio_timing;
 mod audio_visual;
 mod backdrop_water;
+mod batch_lod_bvh;
 mod birds_gltf;
 mod buffer_particles;
 mod caustics;
@@ -22,6 +23,7 @@ mod compute_rasterizer;
 mod compute_rasterizer_ibl;
 mod compute_water;
 mod controls_attributes;
+mod csg_eval;
 mod cubemap_dynamic;
 mod custom_fog;
 mod dds;
@@ -52,6 +54,7 @@ mod gallery_scenes;
 mod games_fps;
 mod gaussian_splat;
 mod generator_building;
+mod geometry_csg;
 mod geometry_loft;
 mod geometry_materials;
 mod glitch;
@@ -73,6 +76,8 @@ mod interactive_shaders;
 mod kinect;
 mod ktx;
 mod ktx2;
+mod ldraw;
+mod ldraw_loader;
 mod lightprobes;
 mod lights_clustered;
 mod lights_dynamic;
@@ -91,6 +96,7 @@ mod md2_control;
 mod memory_outline;
 mod mesh_batch;
 mod models_modifiers;
+mod offscreen;
 mod outline;
 mod passes_decals;
 mod picking_buffers;
@@ -179,6 +185,7 @@ mod uv_tests;
 mod video_frame;
 mod views_loaders;
 mod volume_caustics;
+mod volume_fire;
 mod volume_instancing;
 mod volume_lighting;
 mod volume_rectarea;
@@ -323,8 +330,8 @@ impl State {
             .get_current_texture()
             .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
-        // webgl_watch ( 442 ) renders linear half-float, as its outputBufferType asks, and is
-        // tone-mapped and encoded here.
+        // webgl_watch ( 442 ) and webgl_loader_ldraw ( 447 ) render linear half-float, as their
+        // outputBufferType asks, and are tone-mapped and encoded here.
         let format = if [
             16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118,
             120, 126, 127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167,
@@ -342,7 +349,7 @@ impl State {
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
-            443,
+            443, 444, 445, 446, 448,
         ]
         .contains(&self.example)
         {
@@ -1123,7 +1130,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443,
+                            440, 441, 443, 444, 445, 446, 448,
                         ]
                         .contains(&example),
                         format: if [
@@ -1145,7 +1152,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443,
+                            440, 441, 443, 444, 445, 446, 448,
                         ]
                         .contains(&example)
                         {
@@ -1177,7 +1184,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=443).contains(&example) {
+            if (7..=448).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
