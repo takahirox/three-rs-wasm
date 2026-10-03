@@ -13,7 +13,7 @@
 //! `geometry_loft/`; the background vertex stage, the default shadow stages,
 //! the line material and the output are the skinning_instances, fog_volume,
 //! custom_fog, cubemap_dynamic and compute_cloth modules, byte-identical ).
-mod shapes;
+pub(super) mod shapes;
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, culled_pipeline, set};
 use super::fog_volume::{Cascade, cascades_sized};

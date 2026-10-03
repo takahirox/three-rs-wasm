@@ -12,7 +12,7 @@
 //! three.js r186 generates for the page ( in `generator_building/`; the sky,
 //! the PMREM capture and blur and the output are the custom_fog, retro and
 //! cubemap_dynamic modules, byte-identical ).
-mod skyscraper;
+pub(super) mod skyscraper;
 use super::controls_attributes::{Controls, camera_state};
 use super::custom_fog::{
     Buffers, FACE_PROJECTION, FACE_VIEWS, TEXEL, layouts, pipeline, two_groups, upload,
@@ -1009,5 +1009,8 @@ fn settings(p: &[f64; 9]) -> Settings {
         bay_width: p[5],
         chamfer: p[6],
         setback: p[7],
+        pier: None,
+        chamfer_corner: (1., 1.),
+        string_course_every: 6,
     }
 }

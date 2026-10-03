@@ -9,11 +9,11 @@ use std::f64::consts::PI;
 type V3 = [f64; 3];
 /// An indexed geometry's Float32Array attributes.
 #[derive(Clone, Default)]
-pub(super) struct Geometry {
-    pub(super) position: Vec<f32>,
-    pub(super) normal: Vec<f32>,
-    pub(super) uv: Vec<f32>,
-    pub(super) index: Vec<u32>,
+pub(in crate::browser) struct Geometry {
+    pub(in crate::browser) position: Vec<f32>,
+    pub(in crate::browser) normal: Vec<f32>,
+    pub(in crate::browser) uv: Vec<f32>,
+    pub(in crate::browser) index: Vec<u32>,
     /// The page's section rings as line segments ( every `step`-th section
     /// and the last ), for the sections view.
     pub(super) skeleton: Vec<f32>,
@@ -71,7 +71,12 @@ fn smoothstep(x: f64, min: f64, max: f64) -> f64 {
     x * x * (3. - 2. * x)
 }
 /// LoftGeometry( sections, { closed, capStart, capEnd } ).
-pub(super) fn loft(sections: &[Vec<V3>], closed: bool, cap_start: bool, cap_end: bool) -> Geometry {
+pub(in crate::browser) fn loft(
+    sections: &[Vec<V3>],
+    closed: bool,
+    cap_start: bool,
+    cap_end: bool,
+) -> Geometry {
     let rows = sections.len();
     let columns = sections[0].len();
     let per_row = if closed { columns + 1 } else { columns };

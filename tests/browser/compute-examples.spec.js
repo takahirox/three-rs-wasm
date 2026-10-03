@@ -20,6 +20,8 @@ const cases={
  webgpu_geometry_loft:{antialias:true,times:[0,1,2.5],parameters:[[0,true,1],[0,false,0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The orbit auto-rotates one step per frame. Building parameters regenerate the tower, as the
  // page does (a rebuild).
+ // The probe bake fills one row of ten probes per frame: the runs reach its end ( 112 frames ).
+ webgpu_generator_city:{antialias:true,times:[0],parameters:[],at:7,script:[['run',115,1/60,1/60,'last'],['param',2,.3,.3,2],['param',2,.13,.13,null],['param',3,false,0,2],['param',3,true,1,null],['param',1,9,9,2+1/60],['run',115,2+2/60,1/60,'last'],['param',0,57,57,null],['run',115,4+2/60,1/60,'last'],['down',0,256,256,null],['move',300,280,null],['run',30,6+2/60,1/60,'last'],['up',0,300,280,null],['run',10,6.6,1/60,'last']],residency:[['run',4,1/60,1/60,'last'],['param',2,.3,.3,null],['param',2,.13,.13,null],['param',3,false,0,null],['param',3,true,1,null]]},
  webgpu_generator_building:{antialias:true,rebuilds:true,times:[0,1,2.5],parameters:[[8,9,9],[0,3,3],[1,160,160],[6,0,0],[7,3,3],[8,17,17]],restore:[[0,7,7],[1,100,100],[6,5,5],[7,1.5,1.5]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The retargeted clip is baked at load; both mixers follow the example's Timer.
  webgpu_animation_retargeting_readyplayer:{antialias:true,times:[0,0.5,1.5],parameters:[],at:1.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},

@@ -35724,6 +35724,176 @@
             "meanError": 0
           }
         ]
+      },
+      "compute-examples-Compute-e-103a5-dency-webgpu-generator-city": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 1571,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 1571,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 1720,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 1720,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-3a101-pu-generator-city-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 1.2715657552083333e-06
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.2715657552083333e-06
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 2.5431315104166665e-06
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0017140706380208333
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0017191569010416667
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.00304412841796875
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.0029703776041666665
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.002925872802734375
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.016924479166666666
+          }
+        ]
+      },
+      "compute-examples-Compute-e-475e1-pu-generator-city-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0.00016148885091145834
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0016390482584635417
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0016377766927083333
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.00321197509765625
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.003009796142578125
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.00290679931640625
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.017526041666666665
+          }
+        ]
       }
     },
     "dpr2": {
@@ -68729,47 +68899,47 @@
           {
             "state": 3,
             "fraction": 0,
-            "meanError": 0.0003331502278645833
+            "meanError": 0.0003560384114583333
           },
           {
             "state": 4,
             "fraction": 0,
-            "meanError": 0.00042184193929036457
+            "meanError": 0.0004628499348958333
           },
           {
             "state": 5,
             "fraction": 0,
-            "meanError": 0.0005706151326497396
+            "meanError": 0.0006249745686848959
           },
           {
             "state": 6,
             "fraction": 0,
-            "meanError": 0.00041294097900390625
+            "meanError": 0.00041230519612630207
           },
           {
             "state": 7,
             "fraction": 0,
-            "meanError": 0.000415802001953125
+            "meanError": 0.00041548411051432293
           },
           {
             "state": 8,
             "fraction": 0,
-            "meanError": 7.088979085286458e-05
+            "meanError": 6.961822509765625e-05
           },
           {
             "state": 9,
             "fraction": 1.52587890625e-05,
-            "meanError": 0.00041866302490234375
+            "meanError": 0.00040912628173828125
           },
           {
             "state": 10,
             "fraction": 0.00046825408935546875,
-            "meanError": 0.004960695902506511
+            "meanError": 0.004954973856608073
           },
           {
             "state": 11,
             "fraction": 0.000271484375,
-            "meanError": 0.0031793619791666665
+            "meanError": 0.0031748046875
           }
         ]
       },
@@ -70362,37 +70532,37 @@
           {
             "state": 3,
             "fraction": 0,
-            "meanError": 0.00037384033203125
+            "meanError": 0.00031948089599609375
           },
           {
             "state": 4,
             "fraction": 0,
-            "meanError": 0.0005060831705729166
+            "meanError": 0.000415802001953125
           },
           {
             "state": 5,
             "fraction": 0,
-            "meanError": 0.0007022221883138021
+            "meanError": 0.0005769729614257812
           },
           {
             "state": 6,
             "fraction": 0,
-            "meanError": 0.00042502085367838543
+            "meanError": 0.0004183451334635417
           },
           {
             "state": 7,
             "fraction": 0,
-            "meanError": 0.00043201446533203125
+            "meanError": 0.00042756398518880207
           },
           {
             "state": 8,
             "fraction": 0,
-            "meanError": 6.834665934244792e-05
+            "meanError": 6.771087646484375e-05
           },
           {
             "state": 9,
             "fraction": 1.430511474609375e-05,
-            "meanError": 0.0008560816446940104
+            "meanError": 0.0008563995361328125
           },
           {
             "state": 10,
@@ -71446,6 +71616,176 @@
             "state": 3,
             "fraction": 0,
             "meanError": 0
+          }
+        ]
+      },
+      "compute-examples-Compute-e-103a5-dency-webgpu-generator-city": {
+        "residency": [
+          {
+            "resize": false,
+            "before": {
+              "creates": 1571,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 1571,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          {
+            "resize": true,
+            "before": {
+              "creates": 1720,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            },
+            "after": {
+              "creates": 1720,
+              "transfers": [
+                0,
+                0,
+                0
+              ],
+              "resources": [
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        ]
+      },
+      "compute-examples-Compute-e-3a101-pu-generator-city-samples-4": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 6.357828776041666e-07
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-07
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 3.178914388020833e-07
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.003360748291015625
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0028839111328125
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0038569768269856772
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.003723780314127604
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.003609339396158854
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.007501302083333333
+          }
+        ]
+      },
+      "compute-examples-Compute-e-475e1-pu-generator-city-samples-1": {
+        "comparison": [
+          {
+            "state": 0,
+            "fraction": 0,
+            "meanError": 0
+          },
+          {
+            "state": 1,
+            "fraction": 0,
+            "meanError": 9.5367431640625e-07
+          },
+          {
+            "state": 2,
+            "fraction": 0,
+            "meanError": 1.5894571940104167e-06
+          },
+          {
+            "state": 3,
+            "fraction": 0,
+            "meanError": 3.178914388020833e-07
+          },
+          {
+            "state": 4,
+            "fraction": 0,
+            "meanError": 0.0032955805460611978
+          },
+          {
+            "state": 5,
+            "fraction": 0,
+            "meanError": 0.0028063456217447915
+          },
+          {
+            "state": 6,
+            "fraction": 0,
+            "meanError": 0.0039361317952473955
+          },
+          {
+            "state": 7,
+            "fraction": 0,
+            "meanError": 0.003761927286783854
+          },
+          {
+            "state": 8,
+            "fraction": 0,
+            "meanError": 0.003730138142903646
+          },
+          {
+            "state": 9,
+            "fraction": 0,
+            "meanError": 0.007717122395833333
           }
         ]
       }

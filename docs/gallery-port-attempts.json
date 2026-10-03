@@ -23559,10 +23559,10 @@
     },
     {
       "id": "webgpu_generator_city",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_city.html",
       "source_sha256": "8ada80e761005c9c343ad175bafc1963af658ab44d163e59d37c7acb48063bdc",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",

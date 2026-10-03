@@ -17835,7 +17835,7 @@
     {
       "id": "webgpu_generator_city",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_city.html",
       "source_sha256": "8ada80e761005c9c343ad175bafc1963af658ab44d163e59d37c7acb48063bdc",
@@ -17899,7 +17899,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 449,
+        "source": "src/browser/generator_city.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "CityGeneratorによる2×2街区の街並み（ロットごとにシードしたSkyscraperGeneratorの高層ビル24棟、角丸の歩道スラブと縁石、街灯・信号・ゴミ箱・ベンチ・消火栓・揺れる街路樹・駐車中と走行中の3車種の車・歩く人と立つ人のインスタンス配置、濡れたアスファルトの道路と車線・横断歩道）をRustで再現。ジェネレータはページと同じくシード変更時にCPUで動き（three.jsのプリミティブ、BufferGeometryの変換、mergeVertices・mergeGeometries、LoftGeometry、ExtrudeGeometryを含め、元の出力とビット単位で一致）、各ビルは1ドロー、家具はジェネレータごとに1回のインスタンス描画で描く。SkyMeshの空、時刻から決める太陽光と街区に合わせた4096²の影、空から焼くPMREM環境（環境強度0.05）、10×7×8のLightProbeGrid（タワーの箱プロキシ・地面・空を16²のキューブでキャプチャし、毎フレーム10プローブずつ直接光のパス、続いてそのスナップショットからのバウンスパス）、4× MSAA、1/4解像度のBloomNode（0.05）、ACES（露出0.13）、FirstPersonControlsを再現。各段はページからthree.js r186が生成するWGSL（generator_city/ ほか）を実行する。GIオフはマテリアルを再コンパイルせずグリッドの寄与を0にする（演算結果は同一だが、グリッドのテクスチャ読み込みは残る）。プローブ表示（LightProbeGridHelper）は未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/FirstPersonControls.js",
         "three/addons/generators/CityGenerator.js",

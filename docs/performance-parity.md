@@ -1002,3 +1002,20 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   one multi-draw entry per instance; the drawn instances match one for one.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### City generator
+
+- **GPU state.**
+  - The towers, sidewalks and furniture are resident after a build. Each
+    tower is one draw; each furniture generator is one instanced draw with
+    its matrices in a uniform array, as r186's InstanceNode keeps them.
+  - The probe bake runs on the GPU: per probe the six 16² captures and the
+    SH projection, then the rows' repack into the atlas. The bounce pass
+    snapshots the atlas with a texture copy.
+- **CPU work as in the original.** The generators run when the seed changes;
+  the light-space shadow fit and the PMREM bake when the time of day does.
+- **Uploads.** Steady frames write uniforms only.
+- **Draws.** The scene, shadow and probe-capture draws match the original's
+  one for one.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

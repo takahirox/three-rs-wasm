@@ -22,6 +22,7 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    GeneratorCity(Box<super::generator_city::Demo>),
     GeometryCsg(Box<super::geometry_csg::Demo>),
     Ldraw(Box<super::ldraw::Demo>),
     BatchLodBvh(Box<super::batch_lod_bvh::Demo>),
@@ -1336,6 +1337,15 @@ impl Demo {
                     super::geometry_csg::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            449 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 20000.,
+                elapsed: 0.,
+                content: Content::GeneratorCity(Box::new(
+                    super::generator_city::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2228,6 +2238,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::GeneratorCity(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::GeometryCsg(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -2932,6 +2945,9 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::GeneratorCity(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::VolumeFire(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3405,6 +3421,11 @@ impl Demo {
         {
             return Some(target);
         }
+        if let Content::GeneratorCity(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::FogScattering(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -3711,6 +3732,9 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::GeneratorCity(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::GeometryCsg(demo) = &mut self.content {
@@ -4173,6 +4197,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::GeometryCsg(demo) = &mut self.content {
@@ -4724,6 +4751,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::GeneratorCity(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5179,6 +5209,10 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::GeneratorCity(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -5729,6 +5763,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::GeneratorCity(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -6256,6 +6293,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::GeometryCsg(demo) = &mut self.content {

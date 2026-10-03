@@ -61,7 +61,7 @@ fn hypot(values: &[f64]) -> f64 {
     sum.sqrt() * max
 }
 /// pickBuildingColor( seed ).
-pub(super) fn pick_building_color(seed: f64) -> u32 {
+pub(in crate::browser) fn pick_building_color(seed: f64) -> u32 {
     let h = ((seed * 12.9898).sin() * 43758.5453).abs();
     PALETTE[((h - h.floor()) * PALETTE.len() as f64).floor() as usize]
 }
@@ -149,10 +149,10 @@ fn translation(p: V3) -> M4 {
 }
 /// A non-indexed geometry's Float32Array attributes.
 #[derive(Clone, Default)]
-pub(super) struct Geo {
-    pub(super) position: Vec<f32>,
-    pub(super) normal: Vec<f32>,
-    pub(super) uv: Vec<f32>,
+pub(in crate::browser) struct Geo {
+    pub(in crate::browser) position: Vec<f32>,
+    pub(in crate::browser) normal: Vec<f32>,
+    pub(in crate::browser) uv: Vec<f32>,
 }
 impl Geo {
     /// An indexed geometry's toNonIndexed().
@@ -448,15 +448,20 @@ struct Params {
 }
 /// The page's GUI parameters.
 #[derive(Clone, Copy)]
-pub(super) struct Settings {
-    pub(super) seed: f64,
-    pub(super) height: f64,
-    pub(super) width: f64,
-    pub(super) depth: f64,
-    pub(super) floor_height: f64,
-    pub(super) bay_width: f64,
-    pub(super) chamfer: f64,
-    pub(super) setback: f64,
+pub(in crate::browser) struct Settings {
+    pub(in crate::browser) seed: f64,
+    pub(in crate::browser) height: f64,
+    pub(in crate::browser) width: f64,
+    pub(in crate::browser) depth: f64,
+    pub(in crate::browser) floor_height: f64,
+    pub(in crate::browser) bay_width: f64,
+    pub(in crate::browser) chamfer: f64,
+    pub(in crate::browser) setback: f64,
+    /// The caller's pierWidth and pierDepth over the seeded style's.
+    pub(in crate::browser) pier: Option<(f64, f64)>,
+    /// chamferCornerX and chamferCornerZ: the corner the chamfer cuts.
+    pub(in crate::browser) chamfer_corner: (f64, f64),
+    pub(in crate::browser) string_course_every: usize,
 }
 #[derive(Clone)]
 struct Frame {
@@ -495,10 +500,11 @@ fn box_matrix(frame: &Frame, u: f64, v: f64, w: f64, size: V3) -> M4 {
         frame.point(u, v, w),
     )
 }
-fn footprint(width: f64, depth: f64, chamfer: f64) -> Vec<[f64; 2]> {
+fn footprint(width: f64, depth: f64, chamfer: f64, corner: (f64, f64)) -> Vec<[f64; 2]> {
     let (hw, hd) = (width / 2., depth / 2.);
     let c = chamfer.min(hw).min(hd);
     let corners = [[hw, hd], [-hw, hd], [-hw, -hd], [hw, -hd]];
+    let (corner_x, corner_z) = corner;
     let sign = |v: f64| {
         if v > 0. {
             1.
@@ -511,7 +517,7 @@ fn footprint(width: f64, depth: f64, chamfer: f64) -> Vec<[f64; 2]> {
     let mut points = vec![];
     for i in 0..4 {
         let corner = corners[i];
-        if c > 0. && sign(corner[0]) == 1. && sign(corner[1]) == 1. {
+        if c > 0. && sign(corner[0]) == corner_x && sign(corner[1]) == corner_z {
             for other in [corners[(i + 3) % 4], corners[(i + 1) % 4]] {
                 let (dx, dy) = (corner[0] - other[0], corner[1] - other[1]);
                 let distance = (dx * dx + dy * dy).sqrt();
@@ -940,15 +946,15 @@ fn finial_geometry(p: &Params) -> Geo {
     )
 }
 /// The baked building: the vertex attributes and the bounding sphere.
-pub(super) struct Building {
-    pub(super) position: Vec<f32>,
-    pub(super) normal: Vec<f32>,
-    pub(super) uv: Vec<f32>,
-    pub(super) part_id: Vec<f32>,
-    pub(super) room_center: Vec<f32>,
-    pub(super) room_size: Vec<f32>,
-    pub(super) center: V3,
-    pub(super) radius: f64,
+pub(in crate::browser) struct Building {
+    pub(in crate::browser) position: Vec<f32>,
+    pub(in crate::browser) normal: Vec<f32>,
+    pub(in crate::browser) uv: Vec<f32>,
+    pub(in crate::browser) part_id: Vec<f32>,
+    pub(in crate::browser) room_center: Vec<f32>,
+    pub(in crate::browser) room_size: Vec<f32>,
+    pub(in crate::browser) center: V3,
+    pub(in crate::browser) radius: f64,
 }
 struct Group {
     geometry: Geo,
@@ -1025,15 +1031,18 @@ fn bake(groups: &[Group]) -> Building {
     b
 }
 /// SkyscraperGenerator( parameters ).build().
-pub(super) fn build(s: &Settings) -> Building {
+pub(in crate::browser) fn build(s: &Settings) -> Building {
     let mut random = create_random(s.seed as u32);
     // randomStyle( random ), in its property order.
     let tier_base = 0.10 + random() * 0.07;
     let tier_crown = 0.08 + random() * 0.08;
     let _style_width = 26. + random() * 18.;
     let _style_depth = 20. + random() * 14.;
-    let pier_width = 0.4 + random() * 0.4;
-    let pier_depth = 0.3 + random() * 0.3;
+    let mut pier_width = 0.4 + random() * 0.4;
+    let mut pier_depth = 0.3 + random() * 0.3;
+    if let Some((w, d)) = s.pier {
+        (pier_width, pier_depth) = (w, d);
+    }
     let window_reveal = 0.12 + random() * 0.1;
     let string_course_height = 0.5 + random() * 0.5;
     let arch_bay_width_ratio = round(1.5 + random() * 1.5);
@@ -1047,7 +1056,7 @@ pub(super) fn build(s: &Settings) -> Building {
         floor_height,
         window_height: round(floor_height * WINDOW_HEIGHT_RATIO / v_module) * v_module,
         bay_width: (BRICK_LENGTH * 3.).max(round(s.bay_width / BRICK_LENGTH) * BRICK_LENGTH),
-        string_course_every: 6,
+        string_course_every: s.string_course_every,
         chamfer_width: s.chamfer,
         setback_depth: s.setback,
         ac_chance: 0.12,
@@ -1072,13 +1081,19 @@ pub(super) fn build(s: &Settings) -> Building {
     let base_top = base_height;
     let shaft_top = base_height + shaft_height;
     let mut parts = Parts::default();
-    let full = footprint(p.footprint[0], p.footprint[1], p.chamfer_width);
+    let full = footprint(
+        p.footprint[0],
+        p.footprint[1],
+        p.chamfer_width,
+        s.chamfer_corner,
+    );
     let full_faces = faces(&full);
     let inset = p.setback_depth * p.bay_width;
     let crown = footprint(
         (p.footprint[0] - inset * 2.).max(p.bay_width * 2.),
         (p.footprint[1] - inset * 2.).max(p.bay_width * 2.),
         (p.chamfer_width - inset).max(0.),
+        s.chamfer_corner,
     );
     let crown_faces = faces(&crown);
     let crown_cornice = p.string_course_height * 1.6;
@@ -1220,7 +1235,7 @@ pub(super) fn build(s: &Settings) -> Building {
 }
 /// The page's shadow-catching ground: PlaneGeometry( size, size )
 /// .rotateX( -π / 2 ), non-indexed.
-pub(super) fn ground(size: f64) -> Geo {
+pub(in crate::browser) fn ground(size: f64) -> Geo {
     let mut g = plane(size, size);
     g.apply(&rotation_x(-std::f64::consts::PI / 2.));
     g

@@ -353,7 +353,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_furnace_test](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_furnace_test.html) | runnable-partial | tests/browser/shapes.spec.js |
 | [webgpu_gaussian_splat](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_gaussian_splat.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_generator_building](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_building.html) | runnable-partial | tests/browser/compute-examples.spec.js |
-| [webgpu_generator_city](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_city.html) | blocked-at-port-review | PMREMGenerator; SkyMesh; FirstPersonControls; CityGenerator |
+| [webgpu_generator_city](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_generator_city.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_geometry_loft](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_geometry_loft.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_hdr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_hdr.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_instance_mesh](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_instance_mesh.html) | runnable-partial | tests/browser/tsl-compute.spec.js |
