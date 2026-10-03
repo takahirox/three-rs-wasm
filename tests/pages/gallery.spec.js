@@ -10,7 +10,10 @@ test('site entry opens the gallery under the project prefix', async ({page}) => 
 
 for (const entry of catalog.examples.filter(e => e.port)) {
   test(`published gallery: ${entry.id}`, async ({page}) => {
-    test.setTimeout(120000);
+    // The city bakes 60 probe-cube faces per frame beside its 4096² shadow and 4×
+    // MSAA scene: on the software GPU its first frames take minutes.
+    const heavy = [449].includes(entry.port.example);
+    test.setTimeout(heavy ? 600000 : 120000);
     const errors = [];
     const badResponses = [];
     const escapedAssets = [];
@@ -29,7 +32,7 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.
     const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236, 237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319].includes(entry.port.example);
-    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(onDemand ? 0 : 2);
+    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: heavy ? 570000 : 90000}).toBeGreaterThan(onDemand ? 0 : 2);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
     if (entry.port.example === 4) {
       await viewer.locator('#model').selectOption('5');
