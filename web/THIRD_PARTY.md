@@ -1032,3 +1032,26 @@ example assets and derived bakes, distributed alongside `LICENSE-THREE`:
   `models/ldraw/officialLibrary/models/`, unchanged. They pack parts of the
   LDraw.org Parts Library, redistributable under the Creative Commons
   Attribution License 2.0 ( `CAlicense.txt`, copied beside them ).
+
+The compute reduce and MaterialX loader batch ports MIT-licensed three.js r186
+page code and runs the WGSL r186 generates for those pages. The MaterialX
+loader's ShaderBall tangents are generated with the `mikktspace` 0.3.0 crate
+(MIT/Apache-2.0, the gltf-rs port of Morten S. Mikkelsen's MikkTSpace) and its
+`nalgebra` 0.26 dependency (BSD-3-Clause, dimforge). The batch adds these
+assets:
+
+- `gallery/assets/materialx/resources/`: the twelve standard-surface sample
+  documents of `resources/Materials/Examples/StandardSurface/` and the images
+  they reference ( `resources/Images/` ), unchanged from MaterialX
+  ( Academy Software Foundation ) at commit
+  `30e80703d9e508b77711ce314ca1620a8425c383`, Apache-2.0; the license is
+  copied beside them ( `LICENSE.txt` ) and in `../LICENSE-MATERIALX`.
+- `gallery/assets/materialx/three/grid.png`: the r186
+  `examples/materialx/resources/Images/grid.png` the page's local test
+  documents reference; SHA-256
+  `e9d6a722f957302a8661a66d292144abf06cdb9689945421bc4e0ee63270f084`.
+- `gallery/assets/gltf/ShaderBall.glb`: r186 `models/gltf/ShaderBall.glb`,
+  unchanged ( also used by the TSL graph example ); SHA-256
+  `0f99ab2ffc65b6f1972fca3958ad4cbcea90f1a6a3db6c35b20ae947f3b573d2`.
+- **Reuse.** The san_giuseppe_bridge environment is reused from the folder
+  credited above.

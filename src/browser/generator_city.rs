@@ -19,9 +19,9 @@
 //! byte-identical ).
 mod city;
 mod furniture;
-mod geo;
+pub(super) mod geo;
 mod prims;
-mod uniforms;
+pub(super) mod uniforms;
 use super::custom_fog::{
     Buffers, FACE_PROJECTION, FACE_VIEWS, layouts, pipeline, two_groups, upload,
 };

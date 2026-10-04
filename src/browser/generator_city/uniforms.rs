@@ -36,7 +36,7 @@ pub(super) struct Render {
     pub(super) time: f64,
 }
 /// A struct's fields ( name, type ) in declaration order.
-pub(super) fn fields(source: &str, name: &str) -> Vec<(String, String)> {
+pub(crate) fn fields(source: &str, name: &str) -> Vec<(String, String)> {
     let Some(start) = source.find(&format!("struct {name} {{")) else {
         return vec![];
     };
@@ -53,7 +53,7 @@ pub(super) fn fields(source: &str, name: &str) -> Vec<(String, String)> {
         .collect()
 }
 /// The lines using `<group>.<name>` ( not a longer name ).
-fn uses<'a>(sources: &[&'a str], group: &str, name: &str) -> Vec<&'a str> {
+pub(crate) fn uses<'a>(sources: &[&'a str], group: &str, name: &str) -> Vec<&'a str> {
     let needle = format!("{group}.{name}");
     let mut out = vec![];
     for source in sources {
@@ -71,7 +71,7 @@ fn uses<'a>(sources: &[&'a str], group: &str, name: &str) -> Vec<&'a str> {
     }
     out
 }
-pub(super) fn inverse(m: &M4) -> M4 {
+pub(crate) fn inverse(m: &M4) -> M4 {
     // Matrix4.invert(), as three.js r186 computes it.
     let (n11, n21, n31, n41) = (m[0], m[1], m[2], m[3]);
     let (n12, n22, n32, n42) = (m[4], m[5], m[6], m[7]);

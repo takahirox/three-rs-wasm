@@ -413,6 +413,17 @@ pub(super) async fn rgbe_pmrem(
     clamp: &wgpu::Sampler,
     url: &str,
 ) -> Result<(Pmrem, wgpu::TextureView)> {
+    rgbe_pmrem_at(r, clamp, url, None).await
+}
+/// The same at `lod_max` with its GGX WGSL, or ( None ) at lodMax 8 with
+/// the equirect mipmapped. With a lodMax given the equirect keeps one level,
+/// as HDRLoader's texture does: the source pass reads level 0 only.
+pub(super) async fn rgbe_pmrem_at(
+    r: &Renderer,
+    clamp: &wgpu::Sampler,
+    url: &str,
+    lod: Option<(i32, (&str, &str))>,
+) -> Result<(Pmrem, wgpu::TextureView)> {
     use super::gltf_viewer::fetch;
     use super::retro::mipmapped_raw;
     use super::shadowmap_opacity::Mipmaps;
@@ -421,16 +432,45 @@ pub(super) async fn rgbe_pmrem(
     let (width, height, texels) = super::trackball_sprites::parse_rgbe(&fetch(url).await?)?;
     let row = width as usize * 4;
     let texels: Vec<u16> = texels.chunks(row).rev().flatten().copied().collect();
-    let mut mipmaps = Mipmaps::new(r);
-    let equirect = mipmapped_raw(
-        r,
-        &mut mipmaps,
-        bytemuck::cast_slice(&texels),
-        (width, height),
-        8,
-        HALF,
-    );
-    let pmrem = Pmrem::new(r, clamp, 8, GGX_8)?;
+    let (equirect, pmrem) = match lod {
+        None => {
+            let mut mipmaps = Mipmaps::new(r);
+            let equirect = mipmapped_raw(
+                r,
+                &mut mipmaps,
+                bytemuck::cast_slice(&texels),
+                (width, height),
+                8,
+                HALF,
+            );
+            (equirect, Pmrem::new(r, clamp, 8, GGX_8)?)
+        }
+        Some((lod_max, ggx)) => {
+            let equirect = r.device.create_texture_with_data(
+                &r.queue,
+                &wgpu::TextureDescriptor {
+                    label: Some("PMREM equirect"),
+                    size: wgpu::Extent3d {
+                        width,
+                        height,
+                        depth_or_array_layers: 1,
+                    },
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: wgpu::TextureDimension::D2,
+                    format: HALF,
+                    usage: wgpu::TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
+                },
+                wgpu::util::TextureDataOrder::LayerMajor,
+                bytemuck::cast_slice(&texels),
+            );
+            (
+                equirect.create_view(&Default::default()),
+                Pmrem::new(r, clamp, lod_max, ggx)?,
+            )
+        }
+    };
     let source = source_pipeline(r, "PMREM equirect", EQUIRECT_VS, EQUIRECT_FS);
     let object = r
         .device

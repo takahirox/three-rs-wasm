@@ -16554,7 +16554,7 @@
     {
       "id": "webgpu_compute_reduce",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_reduce.html",
       "source_sha256": "e1b31d91c25e9103931d7e830b9dfb9e075d97c175623e3e44fb3dc3685067af",
@@ -16602,7 +16602,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 450,
+        "source": "src/browser/compute_reduce.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "262,144個の1を足し合わせる6種のリダクション（N/2のパス連鎖、単純な累積、ワークグループ縮約、サブグループ縮約、ベクトル化バッファでの最適化サブグループ縮約、誤ったベースライン）を、ページの2つのレンダラーと同じく左右半分ずつでRustで再現。各半分は1秒ごとのstepAnimationでアルゴリズムの実行、検証（要素0が要素数なら緑、違えば赤）、バッファのリセットを繰り返し、4種の表示モード（512×512グリッド、2の累乗番目の要素、要素0、ワークグループ和）で表示する。全計算・描画段はページからthree.js r186が生成するWGSL（compute_reduce/ ほか）を実行し、デバイスのsubgroups機能を使う。デバッグのBuffer to Log／Log Left・Right Sideはバッファを読み戻してコンソールに出力する。GPUタイムスタンプの表示（#info内）とサブグループ説明パネルのDOMアニメーションは未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/libs/lil-gui.module.min.js",
@@ -20297,7 +20304,7 @@
     {
       "id": "webgpu_loader_materialx",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_materialx.html",
       "source_sha256": "59a8df3aecc9ef9d3fce11cbef003f6464f97cd170d7ea9441f292dc5ce182eb",
@@ -20335,7 +20342,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 451,
+        "source": "src/browser/loader_materialx.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ShaderBall.glbの36個のモデルを6×6に並べ、MaterialXLoaderが読むMaterialXの標準サーフェスのサンプル12種とページのローカルテスト文書24種（OpenPBR、glTF PBRの分散ガラスを含む）のマテリアルを適用し、san_giuseppe_bridgeのPMREM（lodMax 9）で照らして半透明グリッドの地面の上に描く構成をRustで再現。ShaderBallのメッシュはページのcomputePrefabTangentsと同じく非インデックス化してMikkTSpaceの接線を付け（元の接線とビット単位で一致）、属性ごとのバッファで渡す。文書の画像はImageBitmapLoader同様に色変換・反転なしでデコードしてGPUでミップマップを作る。不透明物を手前から、透過物があれば解決済みフレームをミップ付きでコピーして透過物の裏面、透明リストを奥から描き、LinearToneMapping（露出0.5）の出力パスを通す。各マテリアルはページからthree.js r186が生成するWGSL（loader_materialx/）を実行する。MaterialX文書の解析とノードグラフのコンパイルは行わず、r186がページ向けに生成したシェーダーを使う。ページでは文書ごとに別テクスチャとなるgrid.pngは1枚を共有する。Inspectorの表示は再現しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/inspector/Inspector.js",

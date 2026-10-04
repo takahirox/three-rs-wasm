@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 443,
+    "runnable-partial": 446,
     "excluded": 43,
-    "blocked-at-port-review": 121
+    "blocked-at-port-review": 118
   },
   "examples": [
     {
@@ -22182,10 +22182,10 @@
     },
     {
       "id": "webgpu_compute_reduce",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_compute_reduce.html",
       "source_sha256": "e1b31d91c25e9103931d7e830b9dfb9e075d97c175623e3e44fb3dc3685067af",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -26326,10 +26326,10 @@
     },
     {
       "id": "webgpu_loader_materialx",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_loader_materialx.html",
       "source_sha256": "59a8df3aecc9ef9d3fce11cbef003f6464f97cd170d7ea9441f292dc5ce182eb",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",

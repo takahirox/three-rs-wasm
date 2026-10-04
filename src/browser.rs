@@ -21,6 +21,7 @@ mod compute_birds;
 mod compute_cloth;
 mod compute_rasterizer;
 mod compute_rasterizer_ibl;
+mod compute_reduce;
 mod compute_water;
 mod controls_attributes;
 mod csg_eval;
@@ -87,6 +88,7 @@ mod lights_projector;
 mod lines_raycast;
 mod linked_particles;
 mod loader_3dm;
+mod loader_materialx;
 mod log_depth;
 mod lottie;
 mod marching_cubes;
@@ -350,7 +352,7 @@ impl State {
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
-            443, 444, 445, 446, 448, 449,
+            443, 444, 445, 446, 448, 449, 450, 451,
         ]
         .contains(&self.example)
         {
@@ -1131,7 +1133,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443, 444, 445, 446, 448, 449,
+                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451,
                         ]
                         .contains(&example),
                         format: if [
@@ -1153,7 +1155,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443, 444, 445, 446, 448, 449,
+                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451,
                         ]
                         .contains(&example)
                         {
@@ -1185,7 +1187,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=449).contains(&example) {
+            if (7..=451).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

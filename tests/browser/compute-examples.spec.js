@@ -20,6 +20,8 @@ const cases={
  webgpu_geometry_loft:{antialias:true,times:[0,1,2.5],parameters:[[0,true,1],[0,false,0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The orbit auto-rotates one step per frame. Building parameters regenerate the tower, as the
  // page does (a rebuild).
+ // Two renderers side by side: the captures take the whole view, without the page's panels.
+ webgpu_compute_reduce:{page:true,hide:'#reduction-panel,#info',times:[.5],parameters:[],at:19,script:[['param', 0, 'Reduce 0 (N/2)', 0, null], ['param', 1, 'Reduce 3 (Subgroup Reduce)', 3, null], ['param', 2, 'Input Grid', 0, null], ['param', 3, 'Input Log2', 1, null], ['run', 1, 1, 0, 'last'], ['run', 1, 2, 0, 'last'], ['run', 1, 3, 0, 'last'], ['param', 0, 'Reduce 1 (Naive Accumulate)', 1, null], ['param', 1, 'Reduce 4 (Subgroup Optimized)', 4, null], ['param', 2, 'Input Log2', 1, null], ['param', 3, 'Input Element 0', 2, null], ['run', 1, 4, 0, 'last'], ['run', 1, 5, 0, 'last'], ['run', 1, 6, 0, 'last'], ['param', 0, 'Reduce 2 (Workgroup Reduction)', 2, null], ['param', 1, 'Incorrect Baseline', 5, null], ['param', 2, 'Input Element 0', 2, null], ['param', 3, 'Workgroup Sum Grid', 3, null], ['run', 1, 7, 0, 'last'], ['run', 1, 8, 0, 'last'], ['run', 1, 9, 0, 'last'], ['param', 0, 'Reduce 3 (Subgroup Reduce)', 3, null], ['param', 1, 'Reduce 0 (N/2)', 0, null], ['param', 2, 'Workgroup Sum Grid', 3, null], ['param', 3, 'Input Grid', 0, null], ['run', 1, 10, 0, 'last'], ['run', 1, 11, 0, 'last'], ['run', 1, 12, 0, 'last'], ['param', 0, 'Reduce 4 (Subgroup Optimized)', 4, null], ['param', 1, 'Reduce 1 (Naive Accumulate)', 1, null], ['param', 2, 'Input Grid', 0, null], ['param', 3, 'Input Log2', 1, null], ['run', 1, 13, 0, 'last'], ['run', 1, 14, 0, 'last'], ['run', 1, 15, 0, 'last'], ['param', 0, 'Incorrect Baseline', 5, null], ['param', 1, 'Reduce 2 (Workgroup Reduction)', 2, null], ['param', 2, 'Input Log2', 1, null], ['param', 3, 'Input Element 0', 2, null], ['run', 1, 16, 0, 'last'], ['run', 1, 17, 0, 'last'], ['run', 1, 18, 0, 'last']],residency:[['run',3,1,1,'last'],['param',0,'Reduce 2 (Workgroup Reduction)',2,null],['param',2,'Input Grid',0,null],['run',3,4,1,'last'],['param',0,'Reduce 0 (N/2)',0,null],['param',2,'Input Log2',1,null]]},
  // The probe bake fills one row of ten probes per frame: the runs reach its end ( 112 frames ).
  webgpu_generator_city:{antialias:true,times:[0],parameters:[],at:7,script:[['run',115,1/60,1/60,'last'],['param',2,.3,.3,2],['param',2,.13,.13,null],['param',3,false,0,2],['param',3,true,1,null],['param',1,9,9,2+1/60],['run',115,2+2/60,1/60,'last'],['param',0,57,57,null],['run',115,4+2/60,1/60,'last'],['down',0,256,256,null],['move',300,280,null],['run',30,6+2/60,1/60,'last'],['up',0,300,280,null],['run',10,6.6,1/60,'last']],residency:[['run',4,1/60,1/60,'last'],['param',2,.3,.3,null],['param',2,.13,.13,null],['param',3,false,0,null],['param',3,true,1,null]]},
  webgpu_generator_building:{antialias:true,rebuilds:true,times:[0,1,2.5],parameters:[[8,9,9],[0,3,3],[1,160,160],[6,0,0],[7,3,3],[8,17,17]],restore:[[0,7,7],[1,100,100],[6,5,5],[7,1.5,1.5]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
@@ -82,6 +84,7 @@ const cases={
   script:[['down',0,256,330,null],['run',2,2,1/60,null],['move',290,340,null],['run',2,2,1/60,null],['move',320,350,null],['run',2,2,1/60,'last'],['up',0,320,350,null],['run',6,2,1/60,'last']],drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // TSL time animates the Phong and basic graphs; the orbit controls are damped.
  webgpu_tsl_graph:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ webgpu_loader_materialx:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // A resolution change rebakes the grid; with the probes shown the rebake also captures the
  // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
  // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
@@ -178,7 +181,8 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
    await frames(page,runtime,t,spec.frames??1);
    if(spec.pick)for(let k=0;k<3;k++){await page.waitForTimeout(100);await frames(page,runtime,t,1);}
    expect(await page.evaluate(()=>window.fixtureError)).toBeNull();
-   shots.push(PNG.sync.read(await page.locator(view).screenshot()));
+   // spec.page: pages of several canvases capture the whole view.
+   shots.push(PNG.sync.read(await (spec.page?page:page.locator(view)).screenshot()));
   };
   const t=spec.at;
   for(const time of spec.times)await capture(time);

@@ -151,7 +151,7 @@ pub(super) fn multiply(a: &M4, b: &M4) -> M4 {
     out
 }
 /// Matrix3.getNormalMatrix( m ): setFromMatrix4, invert, transpose.
-fn normal_matrix(m: &M4) -> [f64; 9] {
+pub(crate) fn normal_matrix(m: &M4) -> [f64; 9] {
     let (n11, n21, n31) = (m[0], m[1], m[2]);
     let (n12, n22, n32) = (m[4], m[5], m[6]);
     let (n13, n23, n33) = (m[8], m[9], m[10]);

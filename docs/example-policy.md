@@ -409,6 +409,12 @@ tolerances are scoped to two causes:
   from itself by up to 5.8 % of the pixels;
 - 4× MSAA edges of sub-pixel knots and one-pixel lines.
 
+The compute reduce and MaterialX loader batch
+([compute-reduce-materialx-examples.md](compute-reduce-materialx-examples.md))
+ports two WebGPU examples, compared against the WebGPU renderer at the default
+thresholds. The two Sponza examples are not added: the model's license does
+not grant redistribution of its files.
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

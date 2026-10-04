@@ -1019,3 +1019,21 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   one for one.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Compute reduce and MaterialX loader
+
+- **GPU state.**
+  - The reduction buffers stay resident. Each step dispatches the selected
+    algorithm's kernels with the page's workgroup counts, and the
+    validation and reset run on the GPU. Only the log buttons read a buffer
+    back.
+  - The ShaderBall's de-indexed attributes, the documents' mipmapped images
+    and the PMREM are uploaded once. The transmission copy and its mipmaps
+    run on the GPU when a transmissive ball is visible.
+- **CPU work as in the original.** The MikkTSpace tangents are computed once
+  at load; each frame culls and sorts the 72 meshes.
+- **Uploads.** Steady frames write uniforms only.
+- **Draws.** The MaterialX frame's draws and passes match the original's
+  one for one.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.
