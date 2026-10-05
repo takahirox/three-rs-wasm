@@ -28,7 +28,7 @@ impl Random {
     }
 }
 /// `Color.offsetHSL( 0, s, l )` in the working ( linear ) color space.
-fn offset_hsl(c: Color, ds: f64, dl: f64) -> Color {
+pub(super) fn offset_hsl(c: Color, ds: f64, dl: f64) -> Color {
     let v = c.0;
     let (max, min) = (v.max_element(), v.min_element());
     let l = (min + max) / 2.;

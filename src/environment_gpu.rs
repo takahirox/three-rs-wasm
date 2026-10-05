@@ -53,6 +53,35 @@ fn filter(
     captured: bool,
     sigma: f32,
 ) -> Result<GpuEnvironment> {
+    let (env, filter) = filter_passes(device, source, max_mip, captured, sigma)?;
+    let mut encoder = device.create_command_encoder(&Default::default());
+    filter.encode(&mut encoder);
+    queue.submit([encoder.finish()]);
+    Ok(env)
+}
+/// The PMREM passes over one source and atlas, built once and dispatched on
+/// every regeneration.
+pub(crate) struct FilterPasses {
+    pipeline: wgpu::ComputePipeline,
+    passes: Vec<(wgpu::BindGroup, u32)>,
+}
+impl FilterPasses {
+    pub(crate) fn encode(&self, encoder: &mut wgpu::CommandEncoder) {
+        for (bindings, size) in &self.passes {
+            let mut pass = encoder.begin_compute_pass(&Default::default());
+            pass.set_pipeline(&self.pipeline);
+            pass.set_bind_group(0, bindings, &[]);
+            pass.dispatch_workgroups((size * 3).div_ceil(8), (size * 2).div_ceil(8), 1);
+        }
+    }
+}
+fn filter_passes(
+    device: &wgpu::Device,
+    source: wgpu::TextureView,
+    max_mip: u32,
+    captured: bool,
+    sigma: f32,
+) -> Result<(GpuEnvironment, FilterPasses)> {
     let cube_size = 1 << max_mip;
     let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
         mag_filter: wgpu::FilterMode::Linear,
@@ -112,7 +141,7 @@ fn filter(
     });
     let layout = pipeline.get_bind_group_layout(0);
     let levels = max_mip - 4 + 1 + 6;
-    let mut encoder = device.create_command_encoder(&Default::default());
+    let mut built = vec![];
     let passes: Vec<(u32, u32)> = if captured {
         let mut p = vec![(0, 3)];
         if sigma > 0.0 {
@@ -192,22 +221,22 @@ fn filter(
                 },
             ],
         });
-        {
-            let mut pass = encoder.begin_compute_pass(&Default::default());
-            pass.set_pipeline(&pipeline);
-            pass.set_bind_group(0, &bindings, &[]);
-            pass.dispatch_workgroups((size * 3).div_ceil(8), (size * 2).div_ceil(8), 1);
-        }
+        built.push((bindings, size));
     }
-    queue.submit([encoder.finish()]);
-    Ok(GpuEnvironment {
-        texture: atlas,
-        view,
-        source,
-        sampler,
-        max_mip: max_mip as f32,
-        source_is_cube_uv: captured,
-    })
+    Ok((
+        GpuEnvironment {
+            texture: atlas,
+            view,
+            source,
+            sampler,
+            max_mip: max_mip as f32,
+            source_is_cube_uv: captured,
+        },
+        FilterPasses {
+            pipeline,
+            passes: built,
+        },
+    ))
 }
 
 impl EnvironmentMap {
@@ -470,5 +499,163 @@ impl EnvironmentMap {
         })();
         scene.dispose(camera)?;
         result
+    }
+}
+
+/// A CubeCamera's resident capture and its PMREM ( PMREMGenerator.fromCubemap
+/// on the cube render target ): the six faces render into one half-float
+/// cube target, then convert and filter into one atlas, all resident, so
+/// regenerating it every frame allocates nothing. `environment` stays the
+/// same map, for materials' envMap.
+pub struct CubeCapture {
+    target: crate::render_target::RenderTarget,
+    convert: (wgpu::ComputePipeline, wgpu::BindGroup),
+    filter: FilterPasses,
+    size: u32,
+    pub environment: std::sync::Arc<EnvironmentMap>,
+}
+impl CubeCapture {
+    pub fn new(renderer: &crate::renderer::Renderer, size: u32) -> Result<Self> {
+        use crate::render_target::*;
+        let device = &renderer.device;
+        if size < 16
+            || !size.is_power_of_two()
+            || size > device.limits().max_texture_dimension_2d / 4
+        {
+            return Err(Error::Invalid("cube capture size"));
+        }
+        let target = RenderTarget::with_options(
+            device,
+            size,
+            size,
+            RenderTargetOptions {
+                depth: 6,
+                format: wgpu::TextureFormat::Rgba16Float,
+                ..Default::default()
+            },
+        )?;
+        let cube = target.texture.create_view(&wgpu::TextureViewDescriptor {
+            dimension: Some(wgpu::TextureViewDimension::Cube),
+            ..Default::default()
+        });
+        let atlas = device
+            .create_texture(&wgpu::TextureDescriptor {
+                label: Some("cube PMREM source"),
+                size: wgpu::Extent3d {
+                    width: 3 * size.max(112),
+                    height: 4 * size,
+                    depth_or_array_layers: 1,
+                },
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: wgpu::TextureFormat::Rgba16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::STORAGE_BINDING,
+                view_formats: &[],
+            })
+            .create_view(&Default::default());
+        let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("cube to PMREM"),
+            source: wgpu::ShaderSource::Wgsl(
+                format!(
+                    "{}\n{}",
+                    include_str!("shaders/cube_uv.wgsl"),
+                    include_str!("shaders/cube_to_pmrem.wgsl")
+                )
+                .into(),
+            ),
+        });
+        let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+            label: Some("cube to PMREM"),
+            layout: None,
+            module: &module,
+            entry_point: Some("main"),
+            compilation_options: Default::default(),
+            cache: None,
+        });
+        let params = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: None,
+            contents: bytemuck::cast_slice(&[size, 0, 0, 0, 0, 0, 0, 0]),
+            usage: wgpu::BufferUsages::UNIFORM,
+        });
+        let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: None,
+            layout: &pipeline.get_bind_group_layout(0),
+            entries: &[
+                wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: wgpu::BindingResource::TextureView(&cube),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 1,
+                    resource: wgpu::BindingResource::Sampler(&sampler),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 2,
+                    resource: wgpu::BindingResource::TextureView(&atlas),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 3,
+                    resource: params.as_entire_binding(),
+                },
+            ],
+        });
+        let (env, filter) = filter_passes(device, atlas, size.ilog2(), true, 0.0)?;
+        Ok(Self {
+            target,
+            convert: (pipeline, bindings),
+            filter,
+            size,
+            environment: std::sync::Arc::new(EnvironmentMap {
+                width: 3 * size.max(112),
+                height: 4 * size,
+                rgba: vec![],
+                gpu: Some(env),
+            }),
+        })
+    }
+    /// CubeCamera.update(): the six faces from `camera` ( a 90° perspective
+    /// camera node in `scene` ) at `position`, then the PMREM.
+    pub fn update(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        position: crate::math::Vector3,
+    ) -> Result<()> {
+        use crate::math::*;
+        scene.get_mut(camera)?.position = position;
+        // CubeCamera uses negative FOV; reversing its up vectors is equivalent.
+        for (i, (direction, up)) in [
+            (Vector3::NEG_X, Vector3::Y),
+            (Vector3::X, Vector3::Y),
+            (Vector3::Y, Vector3::NEG_Z),
+            (Vector3::NEG_Y, Vector3::Z),
+            (Vector3::Z, Vector3::Y),
+            (Vector3::NEG_Z, Vector3::Y),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            scene.get_mut(camera)?.up = up;
+            scene.look_at(camera, position + direction)?;
+            self.target.set_layer(i as u32)?;
+            renderer.render(scene, camera, &self.target)?;
+        }
+        let mut encoder = renderer.device.create_command_encoder(&Default::default());
+        {
+            let mut pass = encoder.begin_compute_pass(&Default::default());
+            pass.set_pipeline(&self.convert.0);
+            pass.set_bind_group(0, &self.convert.1, &[]);
+            pass.dispatch_workgroups((3 * self.size).div_ceil(8), (2 * self.size).div_ceil(8), 1);
+        }
+        self.filter.encode(&mut encoder);
+        renderer.queue.submit([encoder.finish()]);
+        Ok(())
     }
 }

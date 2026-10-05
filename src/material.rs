@@ -205,6 +205,10 @@ impl Texture {
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct MaterialProperties {
+    /// Material.envMap: an environment of its own instead of the scene's
+    /// ( Standard and Physical materials ), at envMapIntensity, unrotated.
+    #[serde(skip)]
+    pub env_map: Option<Arc<crate::environment::EnvironmentMap>>,
     pub color: Color,
     pub opacity: f64,
     pub alpha_test: f64,
@@ -286,6 +290,7 @@ impl Default for MaterialProperties {
             vertex_program: None,
             shadow_program: None,
             vertex_uniforms: [[0.0; 4]; 16],
+            env_map: None,
         }
     }
 }

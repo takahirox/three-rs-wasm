@@ -24,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -168,7 +168,7 @@ fn ltc_evaluate(n:vec3<f32>,v:vec3<f32>,p:vec3<f32>,inverse:mat3x3<f32>,rect:arr
  let form=ltc_edge(a,b)+ltc_edge(b,c)+ltc_edge(c,d)+ltc_edge(d,a);let length=length(form);
  return max((length*length+form.z)/(length+1.0),0.0);
 }
-fn shadow_map_uv(i:u32,uv:vec2<f32>)->vec2<f32>{let halfTexel=0.5/vec2<f32>(textureDimensions(shadow_atlas));return clamp(uv,halfTexel,vec2(u.shadow_filters[i].z)-halfTexel);}
+fn shadow_map_uv(i:u32,uv:vec2<f32>)->vec2<f32>{let halfTexel=0.5/vec2<f32>(textureDimensions(shadow_atlas));return clamp(uv,halfTexel,u.shadow_scales[i].xy-halfTexel);}
 fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     let settings=u.shadow_params[i];
     if settings.x==0.0 || u.flags.y==0.0 {return 1.0;}
@@ -182,8 +182,9 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     }
     let projected=u.shadow_matrices[layer]*vec4(position+normal*settings.z,1.0);
     let ndc=projected.xyz/projected.w;var uv=ndc.xy*vec2(0.5,-0.5)+0.5;
-    if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z<0.0 || ndc.z>1.0 {return 1.0;}
-    uv*=u.shadow_filters[i].z;
+    if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z<0.0 {return 1.0;}
+    if ndc.z>1.0 {return select(1.0,0.0,u.shadow_scales[i].z>0.5);}
+    uv*=u.shadow_scales[i].xy;
     let size=vec2<f32>(textureDimensions(shadow_atlas));
     if u.shadow_filters[i].y>1.5 {
         // VSMShadowMap: Chebyshev's upper bound from the blurred mean and
@@ -220,12 +221,14 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
             else if da.y>=da.z {face+=select(3u,2u,dir.y>=0.0);}
             else {face+=select(5u,4u,dir.z>=0.0);}
             let q=u.shadow_matrices[face]*vec4(light+dir,1.0);
-            let quv=(q.xy/q.w*vec2(0.5,-0.5)+0.5)*u.shadow_filters[i].z;
+            let quv=(q.xy/q.w*vec2(0.5,-0.5)+0.5)*u.shadow_scales[i].xy;
             value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,quv),i32(face),ndc.z+settings.y);
         }
         return value*0.2;
     }
-    for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*u.shadow_filters[i].x/size;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
+    // r186 PCF: the radius is in the map's x texels on both axes.
+    let aspect=vec2(1.0,u.shadow_scales[i].y/u.shadow_scales[i].x);
+    for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*u.shadow_filters[i].x/size*aspect;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
     return value*0.2;
 }
 fn default_environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32> {
@@ -647,7 +650,7 @@ fn sun_cascade_sample(i:u32,layer:u32,position:vec3<f32>,normal:vec3<f32>,inset:
  let ndc=projected.xyz/projected.w;
  var uv=(ndc.xy*vec2(0.5,-0.5)+0.5)*(1.0-2.0*inset)+inset;
  if projected.w<=0.0 || any(uv<vec2(0.0)) || any(uv>vec2(1.0)) || ndc.z>1.0 {return 1.0;}
- uv*=u.shadow_filters[i].z;
+ uv*=u.shadow_scales[i].xy;
     let size=vec2<f32>(textureDimensions(shadow_atlas));
  if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
  let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;

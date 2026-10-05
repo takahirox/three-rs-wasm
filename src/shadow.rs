@@ -14,8 +14,15 @@ pub enum ShadowFilter {
 
 #[derive(Clone, Copy, Debug, serde::Serialize)]
 pub struct Shadow {
-    /// Per-light square map resolution; None inherits Scene::shadow_map_size.
+    /// Per-light map width; None inherits Scene::shadow_map_size.
     pub map_size: Option<u32>,
+    /// A directional or spot light's map height when it differs from its
+    /// width ( LightShadow.mapSize ); the map takes that part of its layer.
+    pub map_height: Option<u32>,
+    /// WebGLRenderer( { reversedDepthBuffer: true } ): the map is compared
+    /// greater-equal against a depth cleared to 0, so receivers beyond the
+    /// shadow camera's far plane ( inside its x / y frustum ) read shadowed.
+    pub reversed_depth: bool,
     pub near: f64,
     pub far: f64,
     /// Half width/height of a directional light's orthographic shadow camera.
@@ -38,6 +45,8 @@ impl Default for Shadow {
     fn default() -> Self {
         Self {
             map_size: None,
+            map_height: None,
+            reversed_depth: false,
             near: 0.5,
             far: 500.0,
             extent: 5.0,
@@ -90,6 +99,8 @@ pub(crate) struct Atlas {
     pub params: [[f32; 4]; 8],
     pub filters: [[f32; 4]; 8],
     pub cascades: [[f32; 4]; 16],
+    /// Per light, its map's extent in its layers ( x, y ).
+    pub scales: [[f32; 4]; 8],
 }
 pub(crate) struct ShadowRenderer {
     layout: wgpu::BindGroupLayout,
@@ -392,6 +403,7 @@ impl ShadowRenderer {
             params: [[0.0; 4]; 8],
             filters: [[0.0; 4]; 8],
             cascades: [[0.; 4]; 16],
+            scales: [[0.0; 4]; 8],
         };
         let mut cameras = Vec::new();
         let mut viewports = Vec::new();
@@ -402,10 +414,14 @@ impl ShadowRenderer {
             let node = scene.get(handle)?;
             if node.cast_shadow {
                 let resolution = node.shadow.map_size.unwrap_or(scene.shadow_map_size);
-                if resolution == 0 || resolution > device.limits().max_texture_dimension_2d {
+                let height = node.shadow.map_height.unwrap_or(resolution);
+                if resolution == 0
+                    || height == 0
+                    || resolution.max(height) > device.limits().max_texture_dimension_2d
+                {
                     return Err(Error::Invalid("shadow map size"));
                 }
-                size = size.max(resolution);
+                size = size.max(resolution).max(height);
             }
         }
 
@@ -417,6 +433,8 @@ impl ShadowRenderer {
             let shadow = node.shadow;
             let resolution = shadow.map_size.unwrap_or(scene.shadow_map_size);
             let scale = resolution as f64 / size as f64;
+            let scale_y = shadow.map_height.unwrap_or(resolution) as f64 / size as f64;
+            atlas.scales[i] = [scale as f32, scale as f32, 0., 0.];
             if ![
                 shadow.near,
                 shadow.far,
@@ -522,6 +540,10 @@ impl ShadowRenderer {
                 shadow.normal_bias as f32,
                 if views.len() == 6 { 1.0 } else { 0.0 },
             ];
+            if views.len() == 1 {
+                atlas.scales[i][1] = scale_y as f32;
+            }
+            atlas.scales[i][2] = f32::from(u8::from(shadow.reversed_depth));
             let vsm = matches!(shadow.filter, ShadowFilter::Vsm) && views.len() == 1;
             atlas.filters[i] = [
                 shadow.radius as f32,
@@ -533,11 +555,17 @@ impl ShadowRenderer {
                 scale as f32,
                 (1.0 - shadow.intensity) as f32,
             ];
+            let cube = views.len() == 6;
             for v in views {
                 let matrix = projection * v;
                 atlas.matrices[cameras.len()] = matrix.as_mat4().to_cols_array();
                 cameras.push(matrix);
-                viewports.push(Vector4::new(0., 0., scale, scale));
+                // A point light's cube faces stay square.
+                viewports.push(if !cube {
+                    Vector4::new(0., 0., scale, scale_y)
+                } else {
+                    Vector4::new(0., 0., scale, scale)
+                });
                 vsm_layers.push(vsm.then_some((shadow.radius, shadow.blur_samples)));
             }
         }

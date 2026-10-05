@@ -22,6 +22,14 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    CubemapWebgl(Box<super::cubemap_webgl::Demo>),
+    SsrWebgl(Box<super::ssr_webgl::Demo>),
+    LutWebgl(Box<super::lut_webgl::Demo>),
+    ShadowmapWebgl(Box<super::shadowmap_webgl::Demo>),
+    DofWebgl(Box<super::dof_webgl::Demo>),
+    SobelWebgl(Box<super::sobel_webgl::Demo>),
+    PortalWebgl(Box<super::portal_webgl::Demo>),
+    RefractionWebgl(Box<super::refraction_webgl::Demo>),
     MirrorWebgl(Box<super::mirror_webgl::Demo>),
     AfterimageWebgl(Box<super::afterimage_webgl::Demo>),
     MsaaRenderbuffers(Box<super::msaa_renderbuffers::Demo>),
@@ -1407,6 +1415,78 @@ impl Demo {
                     super::mirror_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            456 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 500.,
+                elapsed: 0.,
+                content: Content::RefractionWebgl(Box::new(
+                    super::refraction_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            457 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::PortalWebgl(Box::new(
+                    super::portal_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            458 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::SobelWebgl(Box::new(
+                    super::sobel_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            459 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::DofWebgl(Box::new(
+                    super::dof_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            460 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 10.,
+                far: 3000.,
+                elapsed: 0.,
+                content: Content::ShadowmapWebgl(Box::new(
+                    super::shadowmap_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            461 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.25,
+                far: 20.,
+                elapsed: 0.,
+                content: Content::LutWebgl(Box::new(
+                    super::lut_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            462 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 15.,
+                elapsed: 0.,
+                content: Content::SsrWebgl(Box::new(
+                    super::ssr_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            463 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::CubemapWebgl(Box::new(
+                    super::cubemap_webgl::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2299,6 +2379,30 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -3024,6 +3128,30 @@ impl Demo {
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3543,6 +3671,11 @@ impl Demo {
         {
             return Some(target);
         }
+        if let Content::ShadowmapWebgl(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
         if let Content::FogScattering(demo) = &self.content
             && let Some(target) = demo.output()
         {
@@ -3849,6 +3982,30 @@ impl Demo {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
         if let Content::MirrorWebgl(demo) = &mut self.content {
@@ -4332,6 +4489,30 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::MirrorWebgl(demo) = &mut self.content {
@@ -4904,6 +5085,30 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5380,6 +5585,38 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -5958,6 +6195,30 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -6506,6 +6767,30 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::CubemapWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SsrWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LutWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::ShadowmapWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::DofWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::SobelWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PortalWebgl(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::MirrorWebgl(demo) = &mut self.content {

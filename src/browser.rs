@@ -27,10 +27,12 @@ mod compute_water;
 mod controls_attributes;
 mod csg_eval;
 mod cubemap_dynamic;
+mod cubemap_webgl;
 mod custom_fog;
 mod dds;
 mod deferred;
 mod dof2;
+mod dof_webgl;
 mod draco_variants;
 mod elements_text;
 mod environment_materials;
@@ -93,6 +95,7 @@ mod loader_3dm;
 mod loader_materialx;
 mod log_depth;
 mod lottie;
+mod lut_webgl;
 mod marching_cubes;
 mod marching_tables;
 mod material_textures;
@@ -111,6 +114,7 @@ mod pmrem_cube_uv;
 mod point_clouds;
 mod point_lights;
 mod points_dynamic;
+mod portal_webgl;
 mod postprocessing_advanced;
 mod probes_hdr;
 mod pvr;
@@ -119,6 +123,7 @@ mod random_uv;
 mod raycaster_bvh;
 mod raycaster_helper;
 mod refraction_loaders;
+mod refraction_webgl;
 mod render_bundle;
 mod retargeting;
 mod retargeting_readyplayer;
@@ -139,11 +144,13 @@ mod shadowmap_performance;
 mod shadowmap_progressive;
 mod shadowmap_viewer;
 mod shadowmap_vsm;
+mod shadowmap_webgl;
 mod shapes;
 mod shapes_lights;
 mod simple_gi;
 mod skinning_instances;
 mod sky_water;
+mod sobel_webgl;
 mod sort_bitonic;
 mod spline_editor;
 mod spot_skinning;
@@ -151,6 +158,7 @@ mod ssao;
 mod ssgi;
 mod ssr;
 mod ssr_denoise;
+mod ssr_webgl;
 mod sss;
 mod stereo_loaders;
 mod subdivision;
@@ -356,7 +364,8 @@ impl State {
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
-            443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
+            443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
+            461, 462, 463,
         ]
         .contains(&self.example)
         {
@@ -1138,6 +1147,7 @@ impl BrowserApp {
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
+                            456, 457, 458, 459, 460, 461, 462, 463,
                         ]
                         .contains(&example),
                         format: if [
@@ -1160,6 +1170,7 @@ impl BrowserApp {
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
+                            456, 457, 458, 459, 460, 461, 462, 463,
                         ]
                         .contains(&example)
                         {
@@ -1191,7 +1202,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=455).contains(&example) {
+            if (7..=463).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

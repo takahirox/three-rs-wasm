@@ -64,6 +64,39 @@ const cases={
  // 4× MSAA targets on both sides: their edges resolve differently ( also msaaLimits ). The
  // resolution GUI resizes the reflection targets, as the page's setSize does.
  webgl_mirror:{limits:[.008,.3],rebuilds:true,antialias:true,times:[0,1,2.5],parameters:[[0,.5,.5],[0,1,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The Refractor renders the room behind it from the camera with its oblique near plane, then
+ // draws the refraction through the scrolling dudv distortion.
+ webgl_refraction:{antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // Each frame renders both portal views ( the left one showing the right one's previous frame ).
+ webgl_portal:{antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // RenderPass, luminosity and the Sobel operator straight to the canvas; enable off renders directly.
+ webgl_postprocessing_sobel:{times:[0],parameters:[[0,false,0],[0,true,1]],at:0,drag:[[256,256],[330,300]]},
+ // The hues follow the clock; the camera eases toward the pointer once per frame. BokehPass
+ // renders the depth with RGBA packing, then blurs around the focus.
+ // The residency cycle leaves the pointer out: the easing camera keeps changing which of the
+ // 1,764 spheres the frustum culls.
+ webgl_postprocessing_dof:{residency:[],times:[0,1,2.5],parameters:[[0,1000,1000],[1,8,8],[2,.005,.005]],restore:[[0,500,500],[1,5,5],[2,.01,.01]],at:2.5,script:[['move',400,150,2.5],['wait',2.6],['wait',2.7],['move',100,400,2.8],['wait',2.9]]},
+ // The morphs run by the timer; the T key shows the shadow map HUD.
+ webgl_shadowmap:{antialias:true,times:[0,.5,1,2.5],parameters:[],at:2.5,script:[['key','t',true,2.5],['key','t',false,null],['wait',2.6],['key','t',true,null],['key','t',false,2.7]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // RenderPass, OutputPass and LUTPass straight to the canvas; each table, the intensity, and
+ // the disabled pass ( OutputPass to the canvas ).
+ // The helmet's textured surface and the background's highlights differ in 1–2 % of the
+ // pixels on every state, LUT or not ( unresolved ).
+ webgl_postprocessing_3dlut:{limits:[.025,.75],backgroundBox:true,times:[0],parameters:[[1,'Chemical 168.CUBE',1],[1,'Clayton 33.CUBE',2],[1,'Cubicle 99.CUBE',3],[1,'Remy 24.CUBE',4],[1,'Presetpro-Cinematic.3dl',5],[1,'NeutralLUT',6],[1,'B&WLUT',7],[1,'NightLUT',8],[2,.5,.5],[0,false,0],[0,true,1],[1,'Bourbon 64.CUBE',0],[2,1,1]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // SSRPass with the ground reflector; the camera auto-rotates by the clock. The outputs, then
+ // the passes' switches. After a jump of the clock the original's ground reflection shows a
+ // stale band for one frame: each capture renders two frames. At resolutionScale 0.5 the
+ // objects' reflections differ in 1.2 % of the pixels ( unresolved; the half-resolution march
+ // samples the full-resolution buffers between texels ). resolutionScale resizes the SSR
+ // targets, as the page's setSize does: the residency cycle leaves the parameters out.
+ webgl_postprocessing_ssr:{limits:[.015,.45],rebuilds:true,frames:2,times:[0,1,2.5],parameters:[[11,'SSR Only',1],[11,'Beauty',2],[11,'Depth',3],[11,'Normal',4],[11,'Metalness',5],[11,'Default',0],[13,false,0],[13,true,1],[3,.05,.05],[4,true,1],[4,false,0],[6,false,0],[7,false,0],[8,.3,.3],[12,.5,.5],[9,false,0],[9,true,1],[1,false,0],[1,true,1],[2,.5,.5],[0,false,0],[0,true,1]],restore:[[6,true,1],[7,true,1],[8,.1,.1],[12,1,1],[3,.018,.018],[2,1,1]],at:2.5},
+ // Each frame the CubeCamera captures the scene and its PMREM reflects in the mirror sphere;
+ // the box and knot circle by the clock and turn per frame; the orbit auto-rotates. At
+ // roughness 0.4 the mirror reads the PMREM's blurred levels: 0.5 % of the pixels differ.
+ // The CubeCamera's six faces draw the equirectangular background as 36-index boxes and
+ // PMREMGenerator draws its 21 cube-to-UV and blur passes on 36-vertex face sets; the
+ // port draws both as fullscreen triangles.
+ webgl_materials_cubemap_dynamic:{maskDraws:[36,27,0],limits:[.006,.45],backgroundBox:true,antialias:true,times:[0,.5,1,2.5],parameters:[[0,.4,.4],[1,.5,.5],[2,1.5,1.5]],restore:[[0,.05,.05],[1,1,1],[2,1,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_geometry_csg:{antialias:true,streamsGeometry:true,rebuilds:true,streamRatio:2.5,times:[0,1,2.5],parameters:[[0,'INTERSECTION',1],[0,'ADDITION',2],[0,'SUBTRACTION',0],[1,true,1],[1,false,0],[2,false,0],[2,true,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The packed models parse at load ( and on each model, flat-color, merge or smoothing
  // change ); merging hides the model, as the page's NaN building step does. The orbit
@@ -166,7 +199,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_mirror:[.012,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={webgl_materials_cubemap_dynamic:[.008,.45],webgl_mirror:[.012,.3],webgl_shadowmap:[.015,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));

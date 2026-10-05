@@ -418,7 +418,8 @@ not grant redistribution of its files.
 WebGL pages whose same-named r186 WebGPU example is a different scene
 ([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only
 examples and compared against WebGLRenderer. Their tolerances cover 4× MSAA
-lines and edges only.
+lines and edges, and two unresolved differences listed there ( the 3D LUT
+helmet and SSR at half resolution ).
 
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the

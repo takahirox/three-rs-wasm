@@ -111,6 +111,8 @@ struct Uniforms {
     iridescence: [f32; 4],
     line: [[f32; 4]; 2],
     output: [f32; 4],
+    /// Per light, its shadow map's extent in the atlas layer ( x, y ).
+    shadow_scales: [[f32; 4]; 8],
 }
 
 pub use crate::render_target::{RenderTarget, RenderTarget3D, RenderTargetOptions};
@@ -130,6 +132,13 @@ pub struct Renderer {
     white: Arc<Texture>,
     environment: RefCell<
         Option<(
+            Weak<crate::environment::EnvironmentMap>,
+            crate::environment_gpu::GpuEnvironment,
+        )>,
+    >,
+    /// Materials' own environments ( Material.envMap ), filtered once each.
+    material_environments: RefCell<
+        Vec<(
             Weak<crate::environment::EnvironmentMap>,
             crate::environment_gpu::GpuEnvironment,
         )>,
@@ -261,6 +270,28 @@ impl Renderer {
         {
             *self.environment.borrow_mut() = None;
         }
+        self.material_environments
+            .borrow_mut()
+            .retain(|(owner, _)| owner.strong_count() > 0);
+    }
+    /// A material's own environment, filtered on first use.
+    fn material_environment(
+        &self,
+        image: &Arc<crate::environment::EnvironmentMap>,
+    ) -> Result<crate::environment_gpu::GpuEnvironment> {
+        let mut cache = self.material_environments.borrow_mut();
+        let weak = Arc::downgrade(image);
+        if let Some((_, env)) = cache.iter().find(|(owner, _)| owner.ptr_eq(&weak)) {
+            return Ok(env.clone());
+        }
+        cache.retain(|(owner, _)| owner.strong_count() > 0);
+        if image.gpu.is_none() {
+            self.environment_builds
+                .set(self.environment_builds.get() + 1);
+        }
+        let env = crate::environment_gpu::build(&self.device, &self.queue, image)?;
+        cache.push((weak, env.clone()));
+        Ok(env)
     }
     pub async fn new() -> Result<Self> {
         let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
@@ -477,6 +508,7 @@ impl Renderer {
             textures: RefCell::new(Default::default()),
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false)?),
             environment: RefCell::new(None),
+            material_environments: RefCell::new(Vec::new()),
             dfg,
             ltc,
             ltc_sampler,
@@ -876,24 +908,24 @@ impl Renderer {
         self.physical_maps.borrow_mut().prune();
         {
             let mut cached = self.environment.borrow_mut();
-            if let Some(image) = &scene.environment {
-                if !cached
+            if let Some(image) = &scene.environment
+                && !cached
                     .as_ref()
                     .is_some_and(|(owner, _)| owner.ptr_eq(&Arc::downgrade(image)))
-                {
-                    // A map already prefiltered on the GPU is reused without filtering.
-                    if image.gpu.is_none() {
-                        self.environment_builds
-                            .set(self.environment_builds.get() + 1);
-                    }
-                    *cached = Some((
-                        Arc::downgrade(image),
-                        crate::environment_gpu::build(&self.device, &self.queue, image)?,
-                    ));
+            {
+                // A map already prefiltered on the GPU is reused without filtering.
+                if image.gpu.is_none() {
+                    self.environment_builds
+                        .set(self.environment_builds.get() + 1);
                 }
-            } else {
-                *cached = None;
+                *cached = Some((
+                    Arc::downgrade(image),
+                    crate::environment_gpu::build(&self.device, &self.queue, image)?,
+                ));
             }
+            // A scene without an environment ( a full-screen pass between two
+            // renders of the environment's scene ) keeps the filtered map
+            // resident: it is not bound for lighting or the background.
         }
         self.deformation.borrow_mut().prune(scene);
         scene.update()?;
@@ -913,7 +945,7 @@ impl Renderer {
         let frustum = Frustum::from_projection(view_projection);
         let camera_layers = scene.get(camera)?.layers;
         let camera_position = camera_world.w_axis.truncate();
-        let background = if scene.background_environment {
+        let background = if scene.background_environment && scene.environment.is_some() {
             self.environment.borrow().as_ref().map(|(_, env)| {
                 crate::background::prepare(
                     &mut self.backgrounds.borrow_mut(),
@@ -1453,31 +1485,47 @@ impl Renderer {
                         ],
                         _ => [1.0, 1.0, 1.0, properties.alpha_test as f32],
                     },
-                    environment: [
-                        if scene.environment.is_some()
-                            || properties
-                                .vertex_program
+                    environment: if let Some(own) = &properties.env_map {
+                        [
+                            match material {
+                                Material::Standard(m)
+                                | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => {
+                                    m.env_map_intensity as f32
+                                }
+                                _ => 1.0,
+                            },
+                            0.0,
+                            self.material_environment(own)?.max_mip,
+                            0.0,
+                        ]
+                    } else {
+                        [
+                            if scene.environment.is_some()
+                                || properties
+                                    .vertex_program
+                                    .as_ref()
+                                    .is_some_and(|p| p.custom_environment)
+                            {
+                                (scene.environment_intensity
+                                    * match material {
+                                        Material::Standard(m)
+                                        | Material::Physical(MeshPhysicalMaterial {
+                                            base: m,
+                                            ..
+                                        }) => m.env_map_intensity,
+                                        _ => 1.0,
+                                    }) as f32
+                            } else {
+                                0.0
+                            },
+                            scene.environment_rotation as f32,
+                            self.environment
+                                .borrow()
                                 .as_ref()
-                                .is_some_and(|p| p.custom_environment)
-                        {
-                            (scene.environment_intensity
-                                * match material {
-                                    Material::Standard(m)
-                                    | Material::Physical(MeshPhysicalMaterial {
-                                        base: m, ..
-                                    }) => m.env_map_intensity,
-                                    _ => 1.0,
-                                }) as f32
-                        } else {
-                            0.0
-                        },
-                        scene.environment_rotation as f32,
-                        self.environment
-                            .borrow()
-                            .as_ref()
-                            .map_or(0.0, |(_, e)| e.max_mip),
-                        0.0,
-                    ],
+                                .map_or(0.0, |(_, e)| e.max_mip),
+                            0.0,
+                        ]
+                    },
                     maps: match material {
                         Material::Standard(m)
                         | Material::Physical(MeshPhysicalMaterial { base: m, .. }) => [
@@ -1653,6 +1701,7 @@ impl Renderer {
                     shadow_params: shadows.params,
                     shadow_filters: shadows.filters,
                     shadow_cascades: shadows.cascades,
+                    shadow_scales: shadows.scales,
                 };
                 // WebGL keeps the ALPHA_TO_COVERAGE clipping shader without MSAA: edge
                 // fragments with nonzero clip opacity survive. WebGPU outputs clip hard.
@@ -1681,6 +1730,7 @@ impl Renderer {
                             u.light_direction[count] = light_direction[index];
                             u.shadow_params[count] = shadows.params[index];
                             u.shadow_filters[count] = shadows.filters[index];
+                            u.shadow_scales[count] = shadows.scales[index];
                             u.shadow_cascades[count * 2] = shadows.cascades[index * 2];
                             u.shadow_cascades[count * 2 + 1] = shadows.cascades[index * 2 + 1];
 
@@ -2094,8 +2144,14 @@ impl Renderer {
             .map(|image| cache.get(&self.device, &self.queue, image.unwrap_or(&self.white)))
             .collect::<Result<Vec<_>>>()?;
         let fallback = cache.get(&self.device, &self.queue, &self.white)?;
+        let own = material
+            .properties()
+            .env_map
+            .as_ref()
+            .map(|image| self.material_environment(image))
+            .transpose()?;
         let environment = self.environment.borrow();
-        let env = environment.as_ref().map(|(_, e)| e);
+        let env = own.as_ref().or(environment.as_ref().map(|(_, e)| e));
         let mut bindings = vec![wgpu::BindGroupEntry {
             binding: 0,
             resource: uniform_buffer.as_entire_binding(),

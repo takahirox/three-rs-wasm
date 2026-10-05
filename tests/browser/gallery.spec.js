@@ -46,10 +46,10 @@ test('unported examples show source evidence rather than a fake reproduction',as
  const requests=[];page.on('request',r=>requests.push(r.url()));
  await page.goto('/web/gallery/');
  await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port).length);
- await expect(page.locator('.card').filter({hasText:'compute / reduce'})).toHaveCount(0);
- await page.goto('/web/gallery/example.html?id=webgpu_compute_reduce');
+ await expect(page.locator('.card').filter({hasText:'postprocessing / ssgi / ballpool'})).toHaveCount(0);
+ await page.goto('/web/gallery/example.html?id=webgpu_postprocessing_ssgi_ballpool');
  await expect(page.locator('#diagnostic')).toBeVisible();
- await expect(page.locator('#diagnostic')).toContainText('GPU compute');
+ await expect(page.locator('#diagnostic')).toContainText('Postprocessing passes');
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module')||url.includes('three_rs_wasm'))).toBe(false);
  await page.goto('/web/gallery/example.html?id=unknown');await expect(page.locator('#diagnostic')).toContainText('Unknown example');
 });

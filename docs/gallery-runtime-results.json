@@ -3362,7 +3362,7 @@
       "id": "webgl_materials_cubemap_dynamic",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_dynamic.html",
       "source_sha256": "5cb03de22a45e53c571d9a9ac331113ae7ac33560028981de7f4ba7f89f05169",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_cubemap_dynamic",
         "source_sha256": "5cb03de22a45e53c571d9a9ac331113ae7ac33560028981de7f4ba7f89f05169",
@@ -4537,7 +4537,7 @@
       "id": "webgl_portal",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_portal.html",
       "source_sha256": "f6b24f2cacf3c38da74f42d8851753ac6791aeacc0cb77110babddaca5f7072f",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_portal",
         "source_sha256": "f6b24f2cacf3c38da74f42d8851753ac6791aeacc0cb77110babddaca5f7072f",
@@ -4730,7 +4730,7 @@
       "id": "webgl_refraction",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_refraction.html",
       "source_sha256": "526ca2f257e812620ee09fed771494f01608000f5ee78fbe0c97ead4b529c18c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_refraction",
         "source_sha256": "526ca2f257e812620ee09fed771494f01608000f5ee78fbe0c97ead4b529c18c",
@@ -4902,7 +4902,7 @@
       "id": "webgl_shadowmap",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap.html",
       "source_sha256": "2289caa0a22dfdb8bcdafd08397dbf6470ea737a767d12e67eeb8c129623a731",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_shadowmap",
         "source_sha256": "2289caa0a22dfdb8bcdafd08397dbf6470ea737a767d12e67eeb8c129623a731",
@@ -5246,7 +5246,7 @@
       "id": "webgl_postprocessing_3dlut",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_3dlut.html",
       "source_sha256": "3f57b9d77cee8978fcf614285016bf76a3de40c529aada12a238afc0fe7f68e3",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_3dlut",
         "source_sha256": "3f57b9d77cee8978fcf614285016bf76a3de40c529aada12a238afc0fe7f68e3",
@@ -5373,7 +5373,7 @@
       "id": "webgl_postprocessing_dof",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_dof.html",
       "source_sha256": "fb11d4701c625832db304996ebe8fcf70c04da92b6bc3c19b6c61e1fe83e4462",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_dof",
         "source_sha256": "fb11d4701c625832db304996ebe8fcf70c04da92b6bc3c19b6c61e1fe83e4462",
@@ -5704,7 +5704,7 @@
       "id": "webgl_postprocessing_sobel",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_sobel.html",
       "source_sha256": "267051684a9a15db3fe1529650beaf04e3e88cce3a9e325f41cd51a63acc68b7",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_sobel",
         "source_sha256": "267051684a9a15db3fe1529650beaf04e3e88cce3a9e325f41cd51a63acc68b7",
@@ -5754,7 +5754,7 @@
       "id": "webgl_postprocessing_ssr",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_ssr.html",
       "source_sha256": "c358f3cc7c563e469dc11be2d7dbb0579f100e5d2ff860b439ac8e8c524c8349",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_ssr",
         "source_sha256": "c358f3cc7c563e469dc11be2d7dbb0579f100e5d2ff860b439ac8e8c524c8349",

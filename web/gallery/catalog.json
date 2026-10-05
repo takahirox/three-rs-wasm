@@ -6902,7 +6902,7 @@
     {
       "id": "webgl_materials_cubemap_dynamic",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_cubemap_dynamic.html",
       "source_sha256": "5cb03de22a45e53c571d9a9ac331113ae7ac33560028981de7f4ba7f89f05169",
@@ -6928,7 +6928,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 463,
+        "source": "src/browser/cubemap_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "毎フレームCubeCameraでシーンをキャプチャし、そのキューブレンダーターゲットのPMREM（WebGLがマテリアルのenvMapのために作り直すもの）を映す鏡面の球と、その周りを回る箱とトーラスノットを、quarryのHDR背景・環境、ACES Filmic、自動回転するOrbitControlsとともにRustで再現。シーンはy軸まわりに0.5回転し、シーン外のキューブカメラは原点に留まる。キャプチャはレンダーターゲットと同じくトーンマッピングなしで描く。キャプチャ用のキューブターゲット、変換、PMREMのパスは一度だけ作り、毎フレーム同じテクスチャへ書き直す。roughness・metalness・exposureのGUIに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -9323,7 +9330,7 @@
     {
       "id": "webgl_portal",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_portal.html",
       "source_sha256": "f6b24f2cacf3c38da74f42d8851753ac6791aeacc0cb77110babddaca5f7072f",
@@ -9403,7 +9410,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 457,
+        "source": "src/browser/portal_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "箱型の部屋の2枚のポータルをRustで再現。毎アニメーションフレーム、左ポータルを通して反射したカメラを右ポータルの後ろに置き、右ポータルの四隅でフレーミング（CameraUtils.frameCorners）して左の256²のsRGBターゲットへ描き、続いて右ポータルの視界を同様に描く（左は右の前フレームの結果を、右は直前に描いた左を映す）。2つの跳ねる二十面体はz=0の平面でクリップする。ポータルの描画はトーンマッピングなしでsRGBを書き、本描画はACES Filmicをかける。アニメーションフレームでない再描画は本描画のみ。OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -9722,7 +9736,7 @@
     {
       "id": "webgl_refraction",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_refraction.html",
       "source_sha256": "526ca2f257e812620ee09fed771494f01608000f5ee78fbe0c97ead4b529c18c",
@@ -9762,7 +9776,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 456,
+        "source": "src/browser/refraction_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "箱型の部屋の中央にRefractor（WaterRefractionShaderとスクロールするwaterdudvのゆがみ）を置き、跳ねる二十面体と4つの点光源とともにRustで再現。Refractorはページと同じくonBeforeRenderで、背面から見ていなければカメラの斜めのニアプレーンを屈折面に置いた投影（手前を切り取る）で、自身を隠してシーンを1024²の4×マルチサンプル半精度ターゲットへ描き、透明物としてテクスチャ行列とゆがみ越しにそれを読む。OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -10093,7 +10114,7 @@
     {
       "id": "webgl_shadowmap",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_shadowmap.html",
       "source_sha256": "2289caa0a22dfdb8bcdafd08397dbf6470ea737a767d12e67eeb8c129623a731",
@@ -10159,7 +10180,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 460,
+        "source": "src/browser/shadowmap_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "6頭の馬、フラミンゴ、コウノトリ、オウム（glTFのモーフアニメーション、メッシュごとのアクションの位相）が押し出した「THREE.JS」の文字と2つのブロックの前をx方向に走る構成を、環境光と平行光の2048×1024のPCFシャドウマップ、線形フォグ、OrbitControlsとともにRustで再現。モーフの重みはAnimationMixerと同じくクリップの線形キーフレームからCPUでサンプルする。TキーでShadowMapViewerのHUD（光源のシャドウマップ）を切り替える。エンジンのシャドウアトラスは非正方のマップを層の一部として扱う。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -10896,7 +10924,7 @@
     {
       "id": "webgl_postprocessing_3dlut",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_3dlut.html",
       "source_sha256": "3f57b9d77cee8978fcf614285016bf76a3de40c529aada12a238afc0fe7f68e3",
@@ -10922,7 +10950,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 461,
+        "source": "src/browser/lut_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "royal esplanadeのUltraHDRを背景と環境にしたDamagedHelmetを、RenderPass、OutputPass（ACES Filmic、sRGB）、LUTPassの順に通す構成をRustで再現。ページの9種のLUT（.CUBE×5、.3dl×1、画像ストリップ×3）はページのローダーと同じくUnsignedByteの3Dテクスチャとして読む。LUTPassはコンポーザーの最後のパスとして、グレーディングしたsRGB値をそのままキャンバスへ書く（出力ターゲットのsRGBエンコードの前に戻す）。無効時はOutputPassがキャンバスへ描く。enabled・lut・intensityのGUIとOrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -11149,7 +11184,7 @@
     {
       "id": "webgl_postprocessing_dof",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_dof.html",
       "source_sha256": "fb11d4701c625832db304996ebe8fcf70c04da92b6bc3c19b6c61e1fe83e4462",
@@ -11165,7 +11200,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 459,
+        "source": "src/browser/dof_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "14×9×14個の球（それぞれ専用のMeshBasicMaterialでSwedishRoyalCastleのキューブを乗算で映す）を毎フレーム色相を回して色付けし、ポインタへ毎フレーム近づくカメラから、RenderPass、BokehPass、OutputPassを通す構成をRustで再現。BokehPassはページと同じくMeshDepthMaterialのRGBA深度パッキングでシーンを白でクリアした半精度ターゲットへもう一度描き、BokehShaderの41タップでフォーカスからの距離に応じてぼかす。Basicマテリアルの環境反射はページと同じく頂点ごとの反射ベクトルで引く。focus・aperture・maxblurのGUIに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -11922,7 +11964,7 @@
     {
       "id": "webgl_postprocessing_sobel",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_sobel.html",
       "source_sha256": "267051684a9a15db3fe1529650beaf04e3e88cce3a9e325f41cd51a63acc68b7",
@@ -11960,7 +12002,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 458,
+        "source": "src/browser/sobel_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "カメラに付いた点光源と環境光で照らす黄色いPhongのトーラスノットを、RenderPass、LuminosityShader、SobelOperatorShaderの順に通す構成をRustで再現。Sobelのパスはコンポーザーの最後でOutputPassなしにキャンバスへ書くため、勾配の大きさをそのまま出す（出力ターゲットのsRGBエンコードの前に戻す）。enableオフでは直接描画する。ズームなしのOrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -12032,7 +12081,7 @@
     {
       "id": "webgl_postprocessing_ssr",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_ssr.html",
       "source_sha256": "c358f3cc7c563e469dc11be2d7dbb0579f100e5d2ff860b439ac8e8c524c8349",
@@ -12116,7 +12165,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 462,
+        "source": "src/browser/ssr_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "Dracoのウサギ、箱、二十面体、円錐をフォグの中のPhongの地面に置き、半球光とスポットライトで照らし、SSRPassとOutputPass、ReflectorForSSRPassの地面ミラーを通す構成をRustで再現。毎フレーム、SSRPass.renderと同じく、地面リフレクターが鏡像カメラからグローバルなクリップ面で切ってシーンを半精度ターゲット（16ビット深度テクスチャ付き）へ描き、リフレクター込みのビューティー描画、MeshNormalMaterialで置き換えた法線描画、セレクトの金属度描画（セレクトは白、他は黒、背景・フォグなし）、SSRShaderの画面空間マーチ、SSRBlurShader×2、出力モードに応じたコピー（反射をビューティーへ合成、bouncing時は前フレームの結果を経由）を行う。GUIの全項目とカメラの自動回転に対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

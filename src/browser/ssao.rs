@@ -179,7 +179,7 @@ pub(super) struct Pass {
     quad: Object3D,
 }
 impl Pass {
-    fn new(material: ShaderMaterial) -> Result<Self> {
+    pub(super) fn new(material: ShaderMaterial) -> Result<Self> {
         let mut scene = Scene::new();
         scene.background = Color::BLACK;
         let camera = scene.insert(NodeKind::Camera(Camera::Orthographic(OrthographicCamera {

@@ -108,3 +108,4 @@ impl PrefilteredEnvironment {
         &self.texture
     }
 }
+pub use crate::environment_gpu::CubeCapture;

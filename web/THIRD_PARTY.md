@@ -1055,3 +1055,20 @@ assets:
   `0f99ab2ffc65b6f1972fca3958ad4cbcea90f1a6a3db6c35b20ae947f3b573d2`.
 - **Reuse.** The san_giuseppe_bridge environment is reused from the folder
   credited above.
+
+The WebGL pages without a WebGPU counterpart port MIT-licensed three.js r186
+page and addon code ( EffectComposer passes, FXAAShader, AfterimageShader,
+Reflector, Refractor and WaterRefractionShader, CameraUtils.frameCorners,
+SobelOperatorShader, BokehShader, ShadowMapViewer, LUTPass, SSRPass,
+SSRShader and ReflectorForSSRPass ). They add these r186 example assets,
+distributed alongside `LICENSE-THREE`:
+
+- `gallery/assets/refraction/waterdudv.jpg`: `textures/waterdudv.jpg`;
+  SHA-256 `84dd625b243e1b6f23236972679d3a861ab704e2e7fdb0677a2d7a933976cdd2`.
+- `gallery/assets/gltf/Stork.glb`: `models/gltf/Stork.glb`, by mirada from
+  ro.me; SHA-256
+  `60ca9355daaddeab33d93d6856d99c12b7ed086f989bf1a1ba288f7e96e1559b`.
+- **Reuse.** Horse, Flamingo and Parrot, the helvetiker font, the
+  DamagedHelmet, the royal esplanade environment, the LUTs, the
+  SwedishRoyalCastle cube and the Draco bunny are reused from the folders
+  credited above.
