@@ -1037,3 +1037,17 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   one for one.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### WebGL pages without a WebGPU counterpart
+
+- **GPU state.** The scenes are resident. The split screens render each
+  composer's targets on the GPU; the afterimage history ping-pongs between
+  two resident targets; the mirrors' reflections render into resident
+  targets, three per mirror.
+- **CPU work as in the original.** The reflection cameras and their oblique
+  projections, per render.
+- **Uploads.** Steady frames write uniforms only.
+- **Draws.** One scene render per composer, and one per Reflector
+  onBeforeRender, as on the pages.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

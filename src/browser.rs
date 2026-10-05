@@ -4,6 +4,7 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+mod afterimage_webgl;
 mod arcball;
 mod ascii;
 mod attractors;
@@ -50,6 +51,7 @@ mod fbx_nurbs;
 mod fluid;
 mod fog_scattering;
 mod fog_volume;
+mod fxaa_webgl;
 mod gallery;
 mod gallery_scenes;
 mod games_fps;
@@ -98,7 +100,9 @@ mod md2;
 mod md2_control;
 mod memory_outline;
 mod mesh_batch;
+mod mirror_webgl;
 mod models_modifiers;
+mod msaa_renderbuffers;
 mod offscreen;
 mod outline;
 mod passes_decals;
@@ -352,7 +356,7 @@ impl State {
             391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407,
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
-            443, 444, 445, 446, 448, 449, 450, 451,
+            443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
         ]
         .contains(&self.example)
         {
@@ -1133,7 +1137,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451,
+                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                         ]
                         .contains(&example),
                         format: if [
@@ -1155,7 +1159,7 @@ impl BrowserApp {
                             398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
                             412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451,
+                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                         ]
                         .contains(&example)
                         {
@@ -1187,7 +1191,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=451).contains(&example) {
+            if (7..=455).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

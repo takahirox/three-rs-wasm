@@ -4037,7 +4037,7 @@
       "id": "webgl_mirror",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_mirror.html",
       "source_sha256": "1ca2cf1c05ea2ab4792fe1e24c109f403743fca3b6e3fd85193e25d30088af9d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_mirror",
         "source_sha256": "1ca2cf1c05ea2ab4792fe1e24c109f403743fca3b6e3fd85193e25d30088af9d",
@@ -5296,7 +5296,7 @@
       "id": "webgl_postprocessing_afterimage",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_afterimage.html",
       "source_sha256": "756d8a42b4ab624feffa2d6f3a538239033ccf03766410dd8dcf90f6e31796d0",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_afterimage",
         "source_sha256": "756d8a42b4ab624feffa2d6f3a538239033ccf03766410dd8dcf90f6e31796d0",
@@ -5423,7 +5423,7 @@
       "id": "webgl_postprocessing_fxaa",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_fxaa.html",
       "source_sha256": "cb9af97322fbcf4ef08336e41d2a60f20d1c41fa78f8cc1871705fd22d5b17c2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_postprocessing_fxaa",
         "source_sha256": "cb9af97322fbcf4ef08336e41d2a60f20d1c41fa78f8cc1871705fd22d5b17c2",
@@ -6548,7 +6548,7 @@
       "id": "webgl_multisampled_renderbuffers",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multisampled_renderbuffers.html",
       "source_sha256": "3ac5cd6ec3ebf82fbff6204c6d5afa9e1716b1b984727faa0fea56b964d0239e",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_multisampled_renderbuffers",
         "source_sha256": "3ac5cd6ec3ebf82fbff6204c6d5afa9e1716b1b984727faa0fea56b964d0239e",

@@ -415,6 +415,11 @@ ports two WebGPU examples, compared against the WebGPU renderer at the default
 thresholds. The two Sponza examples are not added: the model's license does
 not grant redistribution of its files.
 
+WebGL pages whose same-named r186 WebGPU example is a different scene
+([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only
+examples and compared against WebGLRenderer. Their tolerances cover 4× MSAA
+lines and edges only.
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

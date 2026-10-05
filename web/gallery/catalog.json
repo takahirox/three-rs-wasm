@@ -8327,7 +8327,7 @@
     {
       "id": "webgl_mirror",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_mirror.html",
       "source_sha256": "1ca2cf1c05ea2ab4792fe1e24c109f403743fca3b6e3fd85193e25d30088af9d",
@@ -8375,7 +8375,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 455,
+        "source": "src/browser/mirror_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "箱型の部屋（Phongの5枚の壁）に回る半球とキャップ、時計で跳ねる二十面体、2枚のReflector（床の円と奥の壁）を置き、4つの点光源（減衰なし）で照らす構成をRustで再現。各Reflectorはページと同じく、描かれる直前（onBeforeRender）に鏡像カメラから鏡の位置に斜めのニアプレーン（clipBias 0.003）を置いてシーンを4×マルチサンプルの半精度ターゲットへ描き、その描画の中で他方の鏡のonBeforeRenderも走る。移植はこの順序を再現し、各描画パスが鏡のターゲットの新しい版を書き、各ドローは描かれた時点の版とテクスチャ行列（鏡が背を向けている・描かれない場合の古いものを含む）を読む。版は鏡ごとに3枚のターゲットを巡回し、マテリアルは一度だけ作る。resolutionのGUIとOrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -10996,7 +11003,7 @@
     {
       "id": "webgl_postprocessing_afterimage",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_afterimage.html",
       "source_sha256": "756d8a42b4ab624feffa2d6f3a538239033ccf03766410dd8dcf90f6e31796d0",
@@ -11024,7 +11031,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 454,
+        "source": "src/browser/afterimage_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "黒いフォグの中で回るMeshNormalMaterialの箱を、AfterimagePassとOutputPassを通す構成をRustで再現。毎アニメーションフレーム、シーンを描き、前フレームの合成結果（減衰させ、0.1以下の成分は落とす）と新しい描画のチャンネルごとの最大を合成し、コンポーザーの書き込みバッファへ写して2枚の半精度の履歴ターゲットを入れ替える。アニメーションフレームでない再描画（ポインタ入力やリサイズ）は最後の結果を再表示する（ページはanimate()でのみ描くため）。dampとenableのGUIに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",
@@ -11213,7 +11227,7 @@
     {
       "id": "webgl_postprocessing_fxaa",
       "category": "webgl / postprocessing",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_postprocessing_fxaa.html",
       "source_sha256": "cb9af97322fbcf4ef08336e41d2a60f20d1c41fa78f8cc1871705fd22d5b17c2",
@@ -11261,7 +11275,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 452,
+        "source": "src/browser/fxaa_webgl.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "乱数で配置した100個のフラットシェーディングの四面体（1つのインスタンスメッシュ、MeshStandardMaterial）を半球光と平行光で照らし、2つのEffectComposerで描く構成をRustで再現。左半分はRenderPassとOutputPass、右半分はOutputPassの後にFXAAPass（FXAAShader）を通す。各コンポーザーはシーンを自分の半精度ターゲットに描き、画面への最後のパスだけをシザーで切る（WebGLRendererのシザーはキャンバスにのみ効くため）。OrbitControlsは毎フレーム自動回転する。FXAAの結果はsRGB値のため、出力ターゲットのsRGBエンコードの前に線形へ戻す（往復の丸め差が残りうる）。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -13371,7 +13392,7 @@
     {
       "id": "webgl_multisampled_renderbuffers",
       "category": "webgl / advanced",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_multisampled_renderbuffers.html",
       "source_sha256": "3ac5cd6ec3ebf82fbff6204c6d5afa9e1716b1b984727faa0fea56b964d0239e",
@@ -13415,7 +13436,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 453,
+        "source": "src/browser/msaa_renderbuffers.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "乱数で配置した50個の赤いLambertの球（ポリゴンオフセット付き）とその白いワイヤーフレームの複製を、半球光と線形フォグの下でy軸まわりに回すグループとしてRustで再現。2つのEffectComposerで毎フレーム描き、左半分は通常の半精度ターゲット、右半分はページと同じ4×マルチサンプルの半精度ターゲットを通す。各RenderPassはターゲット全体を描き、キャンバスへのOutputPassだけをシザーで切る（間の1列はページの白い背景が見える）。animateのGUIに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差（ワイヤーフレームの線とMSAAの解決）は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/libs/lil-gui.module.min.js",

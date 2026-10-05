@@ -50,6 +50,20 @@ const cases={
  // and UV ): its stream is bounded at 2.5 times the original's. Showing the wireframe
  // builds its line index again, as WebGL's wireframe attribute is: the residency cycle
  // leaves the parameters out.
+ // The orbit auto-rotates one step per frame; the left half without FXAA, the right with it.
+ webgl_postprocessing_fxaa:{times:[0,.5,1],parameters:[],at:1,drag:[[300,256],[360,300]],wheel:[300,256,-300]},
+ // The group turns each frame; the left half through a plain target, the right through a 4× MSAA one.
+ // The left half matches; the right half's dense one-pixel wireframe lines resolve differently
+ // under WebGL's and WebGPU's 4× MSAA ( docs/webgl-only-examples.md ).
+ webgl_multisampled_renderbuffers:{limits:[.1,3],times:[0,.5,1],parameters:[[0,false,0]],at:1},
+ // Each frame composites the new render with the damped previous composite: every capture
+ // renders one frame on both sides, so the history matches.
+ webgl_postprocessing_afterimage:{times:[0,.5,1,2],parameters:[[0,.5,.5],[0,.9,.9],[1,false,0],[1,true,1]],at:2,noResize:true},
+ // The sphere group turns per frame and the icosahedron follows the clock. Each Reflector
+ // renders inside the render that draws it ( the other mirror's included ). The reflections are
+ // 4× MSAA targets on both sides: their edges resolve differently ( also msaaLimits ). The
+ // resolution GUI resizes the reflection targets, as the page's setSize does.
+ webgl_mirror:{limits:[.008,.3],rebuilds:true,antialias:true,times:[0,1,2.5],parameters:[[0,.5,.5],[0,1,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgl_geometry_csg:{antialias:true,streamsGeometry:true,rebuilds:true,streamRatio:2.5,times:[0,1,2.5],parameters:[[0,'INTERSECTION',1],[0,'ADDITION',2],[0,'SUBTRACTION',0],[1,true,1],[1,false,0],[2,false,0],[2,true,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The packed models parse at load ( and on each model, flat-color, merge or smoothing
  // change ); merging hides the model, as the page's NaN building step does. The orbit
@@ -152,7 +166,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={webgl_mirror:[.012,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
