@@ -81,3 +81,13 @@ test('PMREM sphere grid matches original physical materials and background node'
  const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let different=0;for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),actual);writeFileSync(info.outputPath('reference.png'),reference);writeFileSync(info.outputPath('comparison.json'),JSON.stringify({different,fraction:different/(256*256)}));expect(different/(256*256)).toBeLessThanOrEqual(.005);
 });
+
+// The comparison tests step the clock with gallery_time(): these ports keep
+// their clock in the seek, so the free-running gallery must advance it too.
+for(const id of ['webgl_gpgpu_birds_gltf','webgl_postprocessing_dof2','webgl_materials_subsurface_scattering'])test(`free-running gallery animates: ${id}`,async({page})=>{
+ await page.setViewportSize({width:512,height:512});
+ await page.goto(`/web/gallery/example.html?id=${id}`);
+ await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:60000});
+ await page.waitForTimeout(1000);const a=await page.screenshot();await page.waitForTimeout(1500);const b=await page.screenshot();
+ expect(a.equals(b)).toBe(false);
+});

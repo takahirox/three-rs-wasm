@@ -805,7 +805,11 @@ impl Demo {
                 cache: None,
             })
     }
-    pub fn update(&mut self, _s: &mut Scene, _c: Object3D, _dt: f64, animate: bool) -> Result<()> {
+    pub fn update(&mut self, _s: &mut Scene, _c: Object3D, dt: f64, animate: bool) -> Result<()> {
+        // The clock advances on animation frames; a seek sets it.
+        if animate {
+            self.elapsed += dt;
+        }
         self.pending |= animate;
         Ok(())
     }
