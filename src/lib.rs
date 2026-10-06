@@ -30,6 +30,7 @@ pub mod material;
 pub mod math;
 pub mod mipmap;
 mod physical_maps;
+pub mod physics;
 pub mod postprocessing;
 pub mod raycast;
 pub mod reflection;

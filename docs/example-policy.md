@@ -421,6 +421,14 @@ examples and compared against WebGLRenderer. Their tolerances cover 4× MSAA
 lines and edges, and two unresolved differences listed there ( the 3D LUT
 helmet and SSR at half resolution ).
 
+The six Rapier physics pages ([physics-examples.md](physics-examples.md)) link
+rapier3d 0.26.1, the crate rapier.js 0.17.3 is built from, through the same
+binding calls and defaults. They are compared against WebGLRenderer within the
+time each scene follows rapier.js's steps: rapier.js orders contact pairs by
+an address-seeded hash and does not reproduce its own runs once bodies pile up.
+Their tolerances cover one-pixel line rasterization and the instancing page's
+small edges. The ammo.js, Jolt and bounce pages are not ported.
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

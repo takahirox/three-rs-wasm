@@ -1051,3 +1051,17 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   onBeforeRender, as on the pages.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### Rapier physics
+
+- **CPU work as in the original.** rapier3d 0.26.1 steps in wasm on the
+  page's 16 ms interval, and each step writes the bodies' poses to the meshes
+  or instance matrices. The controllers and the per-frame wake-ups run per
+  rendered frame.
+- **GPU state.** The scenes are resident. RapierHelper's lines are written
+  into the geometry's resident vertex buffer each frame; the page replaces
+  its attributes each frame. The bound is 3× the page's bytes, for the
+  engine's 80-byte vertex against the page's 28.
+- **Draws.** They match the page's, by count.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

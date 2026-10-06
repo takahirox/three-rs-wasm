@@ -1072,3 +1072,11 @@ distributed alongside `LICENSE-THREE`:
   DamagedHelmet, the royal esplanade environment, the LUTs, the
   SwedishRoyalCastle cube and the Draco bunny are reused from the folders
   credited above.
+
+# Rapier physics
+
+`assets/physics/grid.png` is copied unchanged from Three.js r186, commit
+`148ef33ecb6d2502ff796d4554abd1549c95d519`, `examples/textures/grid.png`,
+under the Three.js MIT terms in ../LICENSE-THREE. The physics examples link
+rapier3d 0.26.1, parry3d 0.21.1, nalgebra 0.33 and simba 0.9; their Apache-2.0
+license is in ../LICENSE-RAPIER.

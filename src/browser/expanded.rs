@@ -22,6 +22,12 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    PhysicsRapierVehicleController(Box<super::physics_rapier_vehicle_controller::Demo>),
+    PhysicsRapierCharacterController(Box<super::physics_rapier_character_controller::Demo>),
+    PhysicsRapierTerrain(Box<super::physics_rapier_terrain::Demo>),
+    PhysicsRapierJoints(Box<super::physics_rapier_joints::Demo>),
+    PhysicsRapierInstancing(Box<super::physics_rapier_instancing::Demo>),
+    PhysicsRapierBasic(Box<super::physics_rapier_basic::Demo>),
     CubemapWebgl(Box<super::cubemap_webgl::Demo>),
     SsrWebgl(Box<super::ssr_webgl::Demo>),
     LutWebgl(Box<super::lut_webgl::Demo>),
@@ -1487,6 +1493,72 @@ impl Demo {
                     super::cubemap_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            464 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierBasic(Box::new(
+                    super::physics_rapier_basic::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            465 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierInstancing(Box::new(
+                    super::physics_rapier_instancing::Demo::create(
+                        scene, camera, example, renderer,
+                    )
+                    .await?,
+                )),
+            }),
+            466 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierJoints(Box::new(
+                    super::physics_rapier_joints::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            467 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.2,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierTerrain(Box::new(
+                    super::physics_rapier_terrain::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            468 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierCharacterController(Box::new(
+                    super::physics_rapier_character_controller::Demo::create(
+                        scene, camera, example, renderer,
+                    )
+                    .await?,
+                )),
+            }),
+            469 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsRapierVehicleController(Box::new(
+                    super::physics_rapier_vehicle_controller::Demo::create(
+                        scene, camera, example, renderer,
+                    )
+                    .await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2377,6 +2449,24 @@ impl Demo {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::CubemapWebgl(demo) = &mut self.content {
@@ -3984,6 +4074,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4489,6 +4597,24 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::CubemapWebgl(demo) = &mut self.content {
@@ -5085,6 +5211,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5585,6 +5729,30 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6195,6 +6363,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -6767,6 +6953,24 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierJoints(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::CubemapWebgl(demo) = &mut self.content {

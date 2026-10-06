@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 458,
+    "runnable-partial": 464,
     "excluded": 43,
-    "blocked-at-port-review": 106
+    "blocked-at-port-review": 100
   },
   "examples": [
     {
@@ -42295,10 +42295,10 @@
     },
     {
       "id": "physics_rapier_basic",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_basic.html",
       "source_sha256": "20698a5545e896b7a119706e9d1d1a571d7f0fd6c3c0dadff8bc4d2334bcf6ca",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -42374,10 +42374,10 @@
     },
     {
       "id": "physics_rapier_instancing",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_instancing.html",
       "source_sha256": "79a21e85873bcc8eaf3a14118dd81c5bf4120927c72f4d05ae3aa6a22933d524",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -42494,10 +42494,10 @@
     },
     {
       "id": "physics_rapier_joints",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_joints.html",
       "source_sha256": "91ef6512760836f85be3712cd93faceb3412437fd60aae8afd12fd374bbeb9c7",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -42576,10 +42576,10 @@
     },
     {
       "id": "physics_rapier_character_controller",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_character_controller.html",
       "source_sha256": "6668411b03d10da6d200635d86969d26b8ea64c47cd42f803ce5fe97420a5ac3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -42666,10 +42666,10 @@
     },
     {
       "id": "physics_rapier_vehicle_controller",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_vehicle_controller.html",
       "source_sha256": "d29b84fde42702b3ea3b66121dcd6c78bc32568817c2d8e4e1cc1f7bef5d6737",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",
@@ -42756,10 +42756,10 @@
     },
     {
       "id": "physics_rapier_terrain",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_rapier_terrain.html",
       "source_sha256": "3676da584e5d47a35015a68035c5b990e35b67a1c0f9062958337b811c6f4f62",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

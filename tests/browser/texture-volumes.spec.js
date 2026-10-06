@@ -93,6 +93,23 @@ const cases={
  // Each frame the CubeCamera captures the scene and its PMREM reflects in the mirror sphere;
  // the box and knot circle by the clock and turn per frame; the orbit auto-rotates. At
  // roughness 0.4 the mirror reads the PMREM's blurred levels: 0.5 % of the pixels differ.
+ // RapierPhysics on its 16 ms interval drops a body a second onto the floor: the same
+ // rapier3d steps as rapier.js 0.17.3 until the bodies pile up ( the contact order follows a
+ // memory-address-seeded hash ), so the captures stay within the first seconds.
+ physics_rapier_terrain:{antialias:true,times:[0,1,3.5,4,4.5,6,8],parameters:[],at:8,drag:[[256,256],[330,300]]},
+ // The residency cycles walk forward and back the same frames, so the character returns. A
+ // drag would turn the camera further each cycle, culling the scattered bodies in and out.
+ physics_rapier_character_controller:{streamRatio:3,residency:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','s',true,4],['wait',4.5],['key','s',false,null]],limits:[.005,.6],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','d',true,4],['wait',4.5],['key','d',false,5]],wheel:[256,256,-300]},
+ physics_rapier_vehicle_controller:{streamRatio:3,limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['wait',4],['key','w',false,null],['key','a',true,4.5],['key','a',false,5],['key',' ',true,5.5],['key',' ',false,6],['key','r',true,6.5],['key','r',false,7]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // The links touch at their joints: which hash seed orders their contacts decides the swing.
+ // rapier.js runs the same chain two ways in one page, apart from the first step and by 3.4 cm
+ // after 600 steps, so the captures stay within the first second.
+ physics_rapier_joints:{streamRatio:3,streamsGeometry:true,antialias:true,times:[0,.5,1],parameters:[],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // 800 bodies start overlapping, so contacts order every step from the first: rapier.js
+ // itself moves the same world differently when it runs twice in one page ( 1,393 of the 2,400
+ // coordinates after one step, by up to 3.3 mm ). The captures take the first steps only.
+ physics_rapier_instancing:{limits:[.02,.8],antialias:true,times:[0,.016,.048],parameters:[[0,null,1]],at:.048,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ physics_rapier_basic:{streamRatio:3,limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5,4,8],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The CubeCamera's six faces draw the equirectangular background as 36-index boxes and
  // PMREMGenerator draws its 21 cube-to-UV and blur passes on 36-vertex face sets; the
  // port draws both as fullscreen triangles.
@@ -175,7 +192,9 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // webgpu_display_stereo streams its 500 instance matrices each frame.
-const streams=['webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg'];
+// RapierHelper replaces its line attributes every frame on the page; the port streams them in
+// the engine's 80-byte vertex ( the page's position and color are 28 bytes ).
+const streams=['physics_rapier_basic','physics_rapier_joints','physics_rapier_character_controller','physics_rapier_vehicle_controller','webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg'];
 // A deterministic webcam: getUserMedia returns a 1280 × 720 canvas stream of a fixed
 // gradient and shapes, redrawn each animation frame so the stream keeps presenting.
 const fakeCamera=()=>{if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia=async()=>{const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const g=canvas.getContext('2d');const draw=()=>{const gradient=g.createLinearGradient(0,0,1280,720);gradient.addColorStop(0,'#203080');gradient.addColorStop(.5,'#c04060');gradient.addColorStop(1,'#f0d040');g.fillStyle=gradient;g.fillRect(0,0,1280,720);g.fillStyle='#ffffff';g.fillRect(160,120,320,480);g.fillStyle='#10a050';g.beginPath();g.arc(900,360,220,0,Math.PI*2);g.fill();requestAnimationFrame(draw);};draw();return canvas.captureStream(30);};};
@@ -199,7 +218,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_materials_cubemap_dynamic:[.008,.45],webgl_mirror:[.012,.3],webgl_shadowmap:[.015,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={physics_rapier_character_controller:[.01,.4],physics_rapier_vehicle_controller:[.01,.3],physics_rapier_instancing:[.045,1],physics_rapier_basic:[.012,.35],webgl_materials_cubemap_dynamic:[.008,.45],webgl_mirror:[.012,.3],webgl_shadowmap:[.015,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
