@@ -93,6 +93,20 @@ impl EnvironmentMap {
         Ok(self.gpu.as_ref().unwrap())
     }
 }
+impl EnvironmentMap {
+    /// A prefiltered cube-UV PMREM atlas from a UASTC HDR KTX2 file, used as
+    /// `scene.environment` with CubeUVReflectionMapping.
+    pub fn from_cube_uv_ktx2(renderer: &crate::renderer::Renderer, bytes: &[u8]) -> Result<Self> {
+        let gpu = crate::environment_gpu::cube_uv_ktx2(&renderer.device, &renderer.queue, bytes)?;
+        let size = gpu.texture.size();
+        Ok(Self {
+            width: size.width,
+            height: size.height,
+            rgba: vec![],
+            gpu: Some(gpu),
+        })
+    }
+}
 impl PrefilteredEnvironment {
     pub fn view(&self) -> &wgpu::TextureView {
         &self.view

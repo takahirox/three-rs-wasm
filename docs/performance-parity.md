@@ -1065,3 +1065,16 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 - **Draws.** They match the page's, by count.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### FastHDR and the animation pointer
+
+- **GPU state.** The FastHDR atlas is transcoded once per loaded image and
+  sampled as the environment without filtering again. The animation pointer
+  model is resident; its clip changes material uniforms and the cloth's UV
+  transform each frame, sharing the cloth's GPU texture.
+- **CPU work as in the original.** The keyframe tracks are sampled per frame,
+  as AnimationMixer does.
+- **Draws.** They match the pages' by count, except WebGL's 36-index
+  background box, which the port draws as a fullscreen triangle.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

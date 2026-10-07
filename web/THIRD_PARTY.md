@@ -1080,3 +1080,18 @@ distributed alongside `LICENSE-THREE`:
 under the Three.js MIT terms in ../LICENSE-THREE. The physics examples link
 rapier3d 0.26.1, parry3d 0.21.1, nalgebra 0.33 and simba 0.9; their Apache-2.0
 license is in ../LICENSE-RAPIER.
+
+# Assets loaded from Needle at run time
+
+These files are not part of this repository; the examples fetch them from
+Needle, as the official pages do.
+
+- `webgl_materials_envmaps_fasthdr`: Needle's FastHDR encodings of the Poly
+  Haven HDRIs ( CC0 ) Ballroom, Brown Photostudio 02, Studio Small 09 and
+  Wide Street 01 by Sergej Majboroda; Cape Hill and The Sky Is On Fire by
+  Greg Zaal and Rico Cilliers; Cannon and Metro: Noord by Greg Zaal.
+- `webgl_loader_gltf_animation_pointer`: Needle's encoding of Khronos's
+  DragonAttenuation sample with an added KHR_animation_pointer clip. The
+  dragon is from the Stanford 3D Scanning Repository ( Stanford University
+  Computer Graphics Laboratory; conversion by Morgan McGuire's Computer
+  Graphics Archive ); the cloth backdrop is by Adobe ( CC0 ).

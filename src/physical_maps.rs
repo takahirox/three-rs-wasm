@@ -91,11 +91,28 @@ impl Cache {
         if let Some((_, view)) = self.entries.get(&key) {
             return Ok(view.clone());
         }
-        if maps.iter().flatten().any(|t| t.basis.is_some()) {
-            return Err(Error::Invalid(
-                "compressed physical-extension texture arrays are unsupported",
-            ));
-        }
+        // A Basis map ( KTX2 in KHR_texture_basisu ) joins the RGBA8 array as
+        // its RGBA32 transcode, keeping its sampling settings.
+        let decoded: Vec<Option<Arc<Texture>>> = maps
+            .iter()
+            .map(|m| {
+                m.map(|t| match &t.basis {
+                    Some(bytes) => {
+                        let rgba = crate::compression::decode_basis(bytes, t.srgb)?;
+                        let mut copy = (**t).clone();
+                        copy.basis = None;
+                        copy.width = rgba.width;
+                        copy.height = rgba.height;
+                        copy.rgba = rgba.rgba;
+                        Ok(Arc::new(copy))
+                    }
+                    None => Ok(t.clone()),
+                })
+                .transpose()
+            })
+            .collect::<Result<_>>()?;
+        let owners = maps;
+        let maps: [Option<&Arc<Texture>>; COUNT] = std::array::from_fn(|i| decoded[i].as_ref());
         let width = maps.iter().flatten().map(|t| t.width).max().unwrap_or(1);
         let height = maps.iter().flatten().map(|t| t.height).max().unwrap_or(1);
         let layers = maps.iter().flatten().count().max(1) as u32;
@@ -190,7 +207,7 @@ impl Cache {
         self.entries.insert(
             key,
             (
-                maps.iter().flatten().map(|t| Arc::downgrade(t)).collect(),
+                owners.iter().flatten().map(|t| Arc::downgrade(t)).collect(),
                 view.clone(),
             ),
         );

@@ -2102,7 +2102,7 @@
       "id": "webgl_loader_gltf_animation_pointer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_animation_pointer.html",
       "source_sha256": "43e8e73510ab4a689decf61fcdf8e4596336fdc6af6e2d5938ce0ca7d4e9b7e2",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gltf_animation_pointer",
         "source_sha256": "43e8e73510ab4a689decf61fcdf8e4596336fdc6af6e2d5938ce0ca7d4e9b7e2",
@@ -3557,7 +3557,7 @@
       "id": "webgl_materials_envmaps_fasthdr",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_fasthdr.html",
       "source_sha256": "c4a15cd7ecfee7ef26ffa057cc73151ec2458a95c2e6b342fd8e5f5cbcec4622",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_materials_envmaps_fasthdr",
         "source_sha256": "c4a15cd7ecfee7ef26ffa057cc73151ec2458a95c2e6b342fd8e5f5cbcec4622",

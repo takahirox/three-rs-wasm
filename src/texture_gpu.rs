@@ -364,9 +364,15 @@ impl GpuTexture {
         )
     }
 }
+/// A Basis payload's GPU texture, held while the payload lives.
+type SharedBasis = (Weak<Vec<u8>>, GpuTexture);
 #[derive(Default)]
 pub(crate) struct TextureCache {
     entries: HashMap<usize, (Weak<Texture>, GpuTexture)>,
+    /// Basis textures by their shared payload and sampler settings: a copy
+    /// that only changes the UV transform ( an animated offset or repeat )
+    /// reuses the upload, as a three.js texture keeps its WebGL texture.
+    basis: HashMap<(usize, String), SharedBasis>,
     pub uploads: u64,
     mip_pipelines: HashMap<wgpu::TextureFormat, wgpu::RenderPipeline>,
 }
@@ -374,6 +380,7 @@ impl TextureCache {
     pub fn prune(&mut self) {
         self.entries
             .retain(|_, (owner, _)| owner.strong_count() > 0);
+        self.basis.retain(|_, (owner, _)| owner.strong_count() > 0);
     }
     pub fn len(&self) -> usize {
         self.entries.len()
@@ -398,10 +405,30 @@ impl TextureCache {
             return Ok(gpu);
         }
         if let Some(bytes) = &image.basis {
-            let gpu = compressed_texture(device, queue, image, bytes)?;
+            let sampling = format!(
+                "{} {:?} {:?} {:?} {:?} {:?} {} {}",
+                image.srgb,
+                image.wrap_s,
+                image.wrap_t,
+                image.filter,
+                image.min_filter,
+                image.mipmap_filter,
+                image.anisotropy,
+                image.flip_y
+            );
+            let shared = (Arc::as_ptr(bytes) as usize, sampling);
+            let gpu = match self.basis.get(&shared) {
+                Some((owner, gpu)) if owner.strong_count() > 0 => gpu.clone(),
+                _ => {
+                    let gpu = compressed_texture(device, queue, image, bytes)?;
+                    self.basis
+                        .insert(shared, (Arc::downgrade(bytes), gpu.clone()));
+                    self.uploads += 1;
+                    gpu
+                }
+            };
             self.entries
                 .insert(key, (Arc::downgrade(image), gpu.clone()));
-            self.uploads += 1;
             return Ok(gpu);
         }
         let valid_data = image.rgba.len() == image.width as usize * image.height as usize * 4;

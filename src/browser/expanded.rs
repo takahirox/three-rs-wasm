@@ -22,6 +22,8 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    AnimationPointer(Box<super::animation_pointer::Demo>),
+    EnvmapsFasthdr(Box<super::envmaps_fasthdr::Demo>),
     PhysicsRapierVehicleController(Box<super::physics_rapier_vehicle_controller::Demo>),
     PhysicsRapierCharacterController(Box<super::physics_rapier_character_controller::Demo>),
     PhysicsRapierTerrain(Box<super::physics_rapier_terrain::Demo>),
@@ -1559,6 +1561,25 @@ impl Demo {
                     .await?,
                 )),
             }),
+            470 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 50.,
+                elapsed: 0.,
+                content: Content::EnvmapsFasthdr(Box::new(
+                    super::envmaps_fasthdr::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            471 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.2,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::AnimationPointer(Box::new(
+                    super::animation_pointer::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2449,6 +2470,12 @@ impl Demo {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
@@ -4074,6 +4101,12 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4597,6 +4630,12 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
@@ -5211,6 +5250,12 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5729,6 +5774,14 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6363,6 +6416,12 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -6953,6 +7012,12 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::AnimationPointer(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {

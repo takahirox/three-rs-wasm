@@ -188,6 +188,14 @@ impl OrbitViewer {
 pub(super) async fn load_asset(url: &str) -> Result<(gltf::Gltf, Vec<Vec<u8>>, Vec<Texture>)> {
     let base = url.rsplit_once('/').ok_or(Error::Invalid("asset URL"))?.0;
     let bytes = fetch(url).await?;
+    load_asset_bytes(&bytes, base).await
+}
+/// load_asset() for fetched bytes; relative URIs resolve against `base`.
+pub(super) async fn load_asset_bytes(
+    bytes: &[u8],
+    base: &str,
+) -> Result<(gltf::Gltf, Vec<Vec<u8>>, Vec<Texture>)> {
+    let bytes = bytes.to_vec();
     let asset = gltf::Gltf::from_slice_without_validation(&bytes)
         .map_err(|e| Error::Asset(e.to_string()))?;
     let mut buffers = Vec::new();

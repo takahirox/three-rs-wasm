@@ -4605,7 +4605,7 @@
     {
       "id": "webgl_loader_gltf_animation_pointer",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_animation_pointer.html",
       "source_sha256": "43e8e73510ab4a689decf61fcdf8e4596336fdc6af6e2d5938ce0ca7d4e9b7e2",
@@ -4645,7 +4645,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 471,
+        "source": "src/browser/animation_pointer.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "KhronosのDragonAttenuation（スタンフォードのドラゴンと透過・虹色・減衰のボリュームマテリアル、Adobeの布の背景）に、ドラゴンのマテリアル・ノードと布のテクスチャ変換を動かすKHR_animation_pointerのクリップを加えたモデルを、RoomEnvironmentとダンピング付きOrbitControlsで再現。モデル（DracoとKTX2）はページと同じくNeedle Cloudから実行時に読み込む（Needleが加えたアニメーションと圧縮後のファイルの再配布条件が明示されていないため同梱しない）。GLTFAnimationPointerExtensionと同じく、ノードのtranslation・rotationはノードのトラックに、マテリアルの値（baseColorFactorはcolorとopacity、alphaCutoffはalphaTest、テクスチャ変換はmapのrepeatとoffset）は線形補間のトラックにする。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "@needle-tools/three-animation-pointer",
         "three",
@@ -7278,7 +7285,7 @@
     {
       "id": "webgl_materials_envmaps_fasthdr",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_materials_envmaps_fasthdr.html",
       "source_sha256": "c4a15cd7ecfee7ef26ffa057cc73151ec2458a95c2e6b342fd8e5f5cbcec4622",
@@ -7314,7 +7321,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 470,
+        "source": "src/browser/envmaps_fasthdr.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "透過のガラス球と、粗い・鏡面・ヘアライン金属・光沢のある緑の球を、FastHDRの環境で照らすシーンを再現。FastHDRはPoly Haven（CC0）のHDRIをPMREMGeneratorのcube-UVアトラスに事前フィルタしてUASTC HDRのKTX2にしたもので、ページと同じくNeedleのCDNから実行時に読み込み、再フィルタせずにCubeUVReflectionMappingの環境と背景に使う（変換後のファイルの再配布条件が明示されていないため同梱しない）。KTX2LoaderにならいBC6H（未対応ならhalf float）へ変換。ACES Filmic、ダンピング付きOrbitControls、画像・露出・画角・背景のぼかしのGUIに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

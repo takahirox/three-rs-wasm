@@ -5,6 +5,7 @@ use crate::{
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
 mod afterimage_webgl;
+mod animation_pointer;
 mod arcball;
 mod ascii;
 mod attractors;
@@ -37,6 +38,7 @@ mod draco_variants;
 mod elements_text;
 mod environment_materials;
 mod envmap_exr;
+mod envmaps_fasthdr;
 mod expanded;
 mod expanded_geometry_colors;
 mod expanded_indexed;
@@ -372,7 +374,7 @@ impl State {
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
-            461, 462, 463, 464, 465, 466, 467, 468, 469,
+            461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
         ]
         .contains(&self.example)
         {
@@ -1155,6 +1157,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
+                            470, 471,
                         ]
                         .contains(&example),
                         format: if [
@@ -1178,6 +1181,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
+                            470, 471,
                         ]
                         .contains(&example)
                         {
@@ -1209,7 +1213,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=469).contains(&example) {
+            if (7..=471).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

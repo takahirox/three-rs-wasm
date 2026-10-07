@@ -429,6 +429,11 @@ an address-seeded hash and does not reproduce its own runs once bodies pile up.
 Their tolerances cover one-pixel line rasterization and the instancing page's
 small edges. The ammo.js, Jolt and bounce pages are not ported.
 
+`webgl_materials_envmaps_fasthdr` and `webgl_loader_gltf_animation_pointer`
+load files that Needle encoded and publishes without stated terms. Their ports
+fetch the same URLs at run time instead of redistributing the files, the only
+gallery examples that do so ([webgl-only-examples.md](webgl-only-examples.md)).
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

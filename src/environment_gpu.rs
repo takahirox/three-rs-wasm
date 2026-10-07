@@ -659,3 +659,155 @@ impl CubeCapture {
         Ok(())
     }
 }
+
+/// A cube-UV PMREM atlas stored as UASTC HDR in KTX2 ( FastHDR's
+/// `*.pmrem.ktx2` ), used as it is: KTX2Loader's transcode, then
+/// CubeUVReflectionMapping without filtering again. The transcode target
+/// follows KTX2Loader's order for UASTC HDR: BC6H where the device has BC
+/// textures, else half floats ( WebGPU has no ASTC HDR ). The engine's
+/// atlas holds each direction's radiance at the direction with y negated
+/// ( see prefilter.wgsl ): one compute pass copies the GPU's decode into an
+/// Rgba16Float atlas with every tile flipped vertically and the ±y faces
+/// swapped, a texel-exact permutation.
+pub(crate) fn cube_uv_ktx2(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    bytes: &[u8],
+) -> Result<GpuEnvironment> {
+    use basisu::{SourceFormat, TargetFormat};
+    let t = basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+    if t.source_format() != SourceFormat::UastcHdr4x4 || t.level_count() != 1 {
+        return Err(Error::Invalid("cube-UV KTX2: one UASTC HDR level"));
+    }
+    let (width, height) = t.base_dimensions();
+    // PMREMGenerator's atlas: 3 · max( cubeSize, 16 · 7 ) × 4 · cubeSize.
+    let cube_size = height / 4;
+    if !cube_size.is_power_of_two() || height != 4 * cube_size || width != 3 * cube_size.max(112) {
+        return Err(Error::Invalid("cube-UV KTX2 atlas dimensions"));
+    }
+    let (target, format) = if device
+        .features()
+        .contains(wgpu::Features::TEXTURE_COMPRESSION_BC)
+    {
+        (TargetFormat::Bc6h, wgpu::TextureFormat::Bc6hRgbUfloat)
+    } else {
+        (TargetFormat::RgbaHalf, wgpu::TextureFormat::Rgba16Float)
+    };
+    let data = t
+        .transcode_image(0, 0, 0, target, basisu::DecodeFlags::NONE)
+        .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+    let size = wgpu::Extent3d {
+        width,
+        height,
+        depth_or_array_layers: 1,
+    };
+    let decoded = device.create_texture_with_data(
+        queue,
+        &wgpu::TextureDescriptor {
+            label: Some("cube-UV KTX2 transcode"),
+            size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        },
+        wgpu::util::TextureDataOrder::LayerMajor,
+        &data,
+    );
+    let texture = device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("cube-UV KTX2 atlas"),
+        size,
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: wgpu::TextureFormat::Rgba16Float,
+        usage: wgpu::TextureUsages::TEXTURE_BINDING
+            | wgpu::TextureUsages::STORAGE_BINDING
+            | wgpu::TextureUsages::COPY_SRC,
+        view_formats: &[],
+    });
+    let view = texture.create_view(&Default::default());
+    let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        label: Some("cube-UV KTX2 flip"),
+        source: wgpu::ShaderSource::Wgsl(
+            format!(
+                "@group(0) @binding(0) var source: texture_2d<f32>;
+@group(0) @binding(1) var atlas: texture_storage_2d<rgba16float, write>;
+const CUBE: u32 = {cube_size}u;
+@compute @workgroup_size(8, 8) fn main(@builtin(global_invocation_id) id: vec3<u32>) {{
+ let size = textureDimensions(atlas);
+ if (id.x >= size.x || id.y >= size.y) {{ return; }}
+ var texel_from = id.xy;
+ // The level whose two tile rows hold this row: 4 ( CUBE - s ) <= y < 4 ( CUBE - s ) + 2 s.
+ var s = CUBE;
+ loop {{
+  let y0 = 4u * (CUBE - s);
+  if (id.y >= y0 && id.y < y0 + 2u * s) {{
+   // Levels under 16 texels share the 16-texel row, 48 texels apart.
+   let x = select(id.x, id.x % 48u, s == 16u);
+   let column = x / s;
+   if (column < 3u) {{
+    let row = (id.y - y0) / s;
+    let inner = id.y - y0 - row * s;
+    let mirrored = select(row, 1u - row, column == 1u);
+    texel_from = vec2(id.x, y0 + mirrored * s + (s - 1u - inner));
+   }}
+   break;
+  }}
+  if (s == 16u) {{ break; }}
+  s = s / 2u;
+ }}
+ let texel = textureLoad(source, texel_from, 0);
+ textureStore(atlas, id.xy, vec4(texel.rgb, 1.0));
+}}"
+            )
+            .into(),
+        ),
+    });
+    let pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+        label: Some("cube-UV KTX2 flip"),
+        layout: None,
+        module: &shader,
+        entry_point: Some("main"),
+        compilation_options: Default::default(),
+        cache: None,
+    });
+    let source = decoded.create_view(&Default::default());
+    let bindings = device.create_bind_group(&wgpu::BindGroupDescriptor {
+        label: Some("cube-UV KTX2 flip"),
+        layout: &pipeline.get_bind_group_layout(0),
+        entries: &[
+            wgpu::BindGroupEntry {
+                binding: 0,
+                resource: wgpu::BindingResource::TextureView(&source),
+            },
+            wgpu::BindGroupEntry {
+                binding: 1,
+                resource: wgpu::BindingResource::TextureView(&view),
+            },
+        ],
+    });
+    let mut encoder = device.create_command_encoder(&Default::default());
+    {
+        let mut pass = encoder.begin_compute_pass(&Default::default());
+        pass.set_pipeline(&pipeline);
+        pass.set_bind_group(0, &bindings, &[]);
+        pass.dispatch_workgroups(width.div_ceil(8), height.div_ceil(8), 1);
+    }
+    queue.submit([encoder.finish()]);
+    let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+        mag_filter: wgpu::FilterMode::Linear,
+        min_filter: wgpu::FilterMode::Linear,
+        ..Default::default()
+    });
+    Ok(GpuEnvironment {
+        texture,
+        source: view.clone(),
+        view,
+        sampler,
+        max_mip: cube_size.ilog2() as f32,
+        source_is_cube_uv: true,
+    })
+}

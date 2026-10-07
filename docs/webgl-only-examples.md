@@ -9,6 +9,9 @@ WebGLRenderer (`tests/browser/texture-volumes.spec.js`).
 `webgl_morphtargets_webcam` ( a webcam and MediaPipe face tracking ) is not
 ported.
 
+Two pages without any WebGPU example load their assets from Needle at run
+time, and so do their ports ( see "Assets loaded from Needle" below ).
+
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
 | `webgl_postprocessing_fxaa` | 452 | `fxaa_webgl.rs` | 100 instanced flat tetrahedrons, two EffectComposers per frame ( without and with FXAAPass ) in scissored halves, auto-rotating OrbitControls |
@@ -23,6 +26,8 @@ ported.
 | `webgl_postprocessing_3dlut` | 461 | `lut_webgl.rs` | The DamagedHelmet under the UltraHDR environment, OutputPass and LUTPass with the nine tables, the GUI |
 | `webgl_materials_cubemap_dynamic` | 463 | `cubemap_webgl.rs` | The CubeCamera's capture and its PMREM per frame for the mirror sphere's envMap, the circling box and knot, the quarry environment, ACES, auto-rotating OrbitControls, the GUI |
 | `webgl_postprocessing_ssr` | 462 | `ssr_webgl.rs` | SSRPass's beauty, normal, metalness, march, blur and output passes, ReflectorForSSRPass, every GUI control |
+| `webgl_materials_envmaps_fasthdr` | 470 | `envmaps_fasthdr.rs` | The five spheres under a FastHDR cube-UV atlas as environment and background, the eight images, exposure, fov and blurriness, ACES, damped OrbitControls |
+| `webgl_loader_gltf_animation_pointer` | 471 | `animation_pointer.rs` | DragonAttenuation with its 14 KHR_animation_pointer channels ( material values, the dragon's node, the cloth's texture transform ), RoomEnvironment, damped OrbitControls |
 
 ## Engine additions
 
@@ -40,6 +45,17 @@ ported.
 - **A resident environment across passes**: rendering a scene without an
   environment ( a full-screen pass ) no longer drops the filtered
   environment of the scene rendered before it.
+
+- **Cube-UV KTX2 environments** ( `EnvironmentMap::from_cube_uv_ktx2` ): a
+  UASTC HDR KTX2 holding PMREMGenerator's atlas is transcoded as KTX2Loader
+  does ( BC6H, or half floats without BC textures ) and used without
+  filtering again.
+- **Basis extension maps**: KHR_texture_basisu maps of the physical
+  extensions ( a volume's thickness map ) join the extension map array as
+  their RGBA32 transcode.
+- **Basis textures by payload**: copies of a Basis texture that change only
+  the UV transform share its GPU texture, as a three.js texture keeps its
+  WebGL texture when its offset or repeat animate.
 
 ## Port notes
 
@@ -140,6 +156,27 @@ texture; the depth textures are read at 16-bit precision. The normal and
 metalness renders use resident mirror scenes of the same meshes. A fragment
 that returns without writing outputs zero, as ANGLE initializes it.
 
+### Assets loaded from Needle ( 470, 471 )
+
+The FastHDR atlases are Poly Haven HDRIs ( CC0 ) that Needle prefiltered and
+encoded; the animation pointer model is Khronos's DragonAttenuation with
+Needle's added clip, Draco and KTX2. Needle states no terms for its encoded
+files, so they are not redistributed: the ports fetch the same URLs as the
+pages ( Needle's CDN allows the gallery's origin ). The examples stop working
+if Needle removes the files, as the pages do.
+
+The engine stores each PMREM direction at its y-mirror ( prefilter.wgsl ).
+The FastHDR atlas enters it through one compute pass: every tile flips
+vertically and the ±y faces swap, a texel-exact permutation.
+
+GLTFAnimationPointerExtension turns the pointers into tracks: node
+translation and rotation into node tracks; metalness, roughness, thickness,
+attenuation, iridescence, transmission, color with opacity, alphaTest and
+the map's repeat and offset into linear keyframe tracks. The `gltf` crate
+cannot read pointer channels ( they have no node ): the port takes them out
+of the document first. An animated texture transform recomputes the UV
+matrix, as Texture.updateMatrix does, instead of the importer's fixed one.
+
 ## Comparison tolerances
 
 - **4× MSAA lines and edges**: WebGL's and WebGPU's 4× MSAA resolve
@@ -159,6 +196,9 @@ that returns without writing outputs zero, as ANGLE initializes it.
   stale band for one frame, so each capture renders two frames.
 - **Dynamic cube map**: at roughness 0.4 the mirror reads the PMREM's
   blurred levels, where 0.5 % of the pixels differ ( 0.7 % with MSAA ).
+- **Animation pointer**: the dragon's specular and transmission sparkle
+  differs in scattered pixels from the first frame ( 0.9 %, 2.7 % with MSAA ).
+- **FastHDR**: within 0.03 % at every image, exposure, fov and blurriness.
 - FXAA, the afterimage, refraction, portal, Sobel and DoF match within the
   default thresholds; the afterimage, Sobel and portal ( without MSAA )
   exactly.
@@ -175,4 +215,6 @@ that returns without writing outputs zero, as ANGLE initializes it.
 - The dynamic cube map's draw comparison leaves out the reference's 36-count
   background boxes in the six cube faces and PMREMGenerator's face-set
   passes, which the port draws as fullscreen triangles.
+- The FastHDR image GUI and the pointer clip create no GPU resources once
+  loaded: an image change loads a new atlas, as the page does.
 - No timing parity is claimed.
