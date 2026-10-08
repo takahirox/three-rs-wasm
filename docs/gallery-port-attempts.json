@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 467,
+    "runnable-partial": 473,
     "excluded": 43,
-    "blocked-at-port-review": 97
+    "blocked-at-port-review": 91
   },
   "examples": [
     {
@@ -44718,10 +44718,10 @@
     },
     {
       "id": "css3d_mixed",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html",
       "source_sha256": "f956f2091fce709284c9fbacf25047e35e15ed742a47f85cd4eb843e0fe25eb5",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44831,10 +44831,10 @@
     },
     {
       "id": "css3d_molecules",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html",
       "source_sha256": "1bd321d6e9054d90e0ddb399508615952459ff6129c055a7a44cc48019cd2d3c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44892,10 +44892,10 @@
     },
     {
       "id": "css3d_orthographic",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html",
       "source_sha256": "56a9b5c525c675bec9e2afcb902c7050db08912918685971e0aa0bd7b895370b",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44942,10 +44942,10 @@
     },
     {
       "id": "css3d_periodictable",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_periodictable.html",
       "source_sha256": "504a0577e2a874405d87cebf930d250978a8a28f5bcbaa897dec375d8b684951",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -44989,10 +44989,10 @@
     },
     {
       "id": "css3d_sandbox",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html",
       "source_sha256": "5283127232f56ab4d1472cf130edae85865705705dfc97450a396ed39bb1a76c",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -45046,10 +45046,10 @@
     },
     {
       "id": "css3d_sprites",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html",
       "source_sha256": "280e29468154e4d147d41eed174bc998674820a6759b6a26ce98f9855ed87af6",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

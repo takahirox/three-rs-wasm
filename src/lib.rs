@@ -17,6 +17,7 @@ pub mod compression;
 pub mod compute;
 pub mod compute_skinning;
 pub mod css2d;
+pub mod css3d;
 pub mod curve;
 pub mod deformation;
 mod deformation_gpu;

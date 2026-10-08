@@ -73,19 +73,19 @@ fn slice(line: &str, start: usize, end: usize) -> &str {
 
 // ---------------------------------------------------------------- PDB
 
-pub(super) struct Atom {
+pub(in crate::browser) struct Atom {
     pub position: [f64; 3],
     pub color: [u8; 3],
     pub label: String,
 }
-pub(super) struct Molecule {
+pub(in crate::browser) struct Molecule {
     pub atoms: Vec<Atom>,
     /// Bond end positions, as the loader's bond geometry lists them.
     pub bonds: Vec<([f64; 3], [f64; 3])>,
 }
 include!("cpk.rs");
 /// PDBLoader.parse: ATOM/HETATM records and CONECT bonds without duplicates.
-pub(super) fn parse_pdb(text: &str) -> Result<Molecule> {
+pub(in crate::browser) fn parse_pdb(text: &str) -> Result<Molecule> {
     let (mut atoms, mut bonds) = (vec![], vec![]);
     let mut map: HashMap<i64, usize> = HashMap::new();
     let mut hashes = std::collections::HashSet::new();

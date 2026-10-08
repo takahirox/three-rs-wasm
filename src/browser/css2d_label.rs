@@ -166,6 +166,8 @@ impl Demo {
         labels.set_size(size.0, size.1);
         let element = labels.dom_element();
         element.set_id("css2d-label-renderer");
+        // OrbitControls( camera, labelRenderer.domElement ): the gallery's pointer input.
+        let _ = element.set_attribute("data-pointer-target", "");
         // The page is `<html lang="en">`: its generic sans-serif, not the gallery's Japanese one.
         let _ = element.set_attribute("lang", "en");
         let _ = element.style().set_property("position", "absolute");

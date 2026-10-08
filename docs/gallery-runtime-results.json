@@ -15262,7 +15262,7 @@
       "id": "css3d_mixed",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html",
       "source_sha256": "f956f2091fce709284c9fbacf25047e35e15ed742a47f85cd4eb843e0fe25eb5",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_mixed",
         "source_sha256": "f956f2091fce709284c9fbacf25047e35e15ed742a47f85cd4eb843e0fe25eb5",
@@ -15294,7 +15294,7 @@
       "id": "css3d_molecules",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html",
       "source_sha256": "1bd321d6e9054d90e0ddb399508615952459ff6129c055a7a44cc48019cd2d3c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_molecules",
         "source_sha256": "1bd321d6e9054d90e0ddb399508615952459ff6129c055a7a44cc48019cd2d3c",
@@ -15321,7 +15321,7 @@
       "id": "css3d_orthographic",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html",
       "source_sha256": "56a9b5c525c675bec9e2afcb902c7050db08912918685971e0aa0bd7b895370b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_orthographic",
         "source_sha256": "56a9b5c525c675bec9e2afcb902c7050db08912918685971e0aa0bd7b895370b",
@@ -15351,7 +15351,7 @@
       "id": "css3d_periodictable",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_periodictable.html",
       "source_sha256": "504a0577e2a874405d87cebf930d250978a8a28f5bcbaa897dec375d8b684951",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_periodictable",
         "source_sha256": "504a0577e2a874405d87cebf930d250978a8a28f5bcbaa897dec375d8b684951",
@@ -15375,7 +15375,7 @@
       "id": "css3d_sandbox",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html",
       "source_sha256": "5283127232f56ab4d1472cf130edae85865705705dfc97450a396ed39bb1a76c",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_sandbox",
         "source_sha256": "5283127232f56ab4d1472cf130edae85865705705dfc97450a396ed39bb1a76c",
@@ -15405,7 +15405,7 @@
       "id": "css3d_sprites",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html",
       "source_sha256": "280e29468154e4d147d41eed174bc998674820a6759b6a26ce98f9855ed87af6",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css3d_sprites",
         "source_sha256": "280e29468154e4d147d41eed174bc998674820a6759b6a26ce98f9855ed87af6",

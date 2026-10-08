@@ -606,12 +606,12 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [misc_exporter_ktx2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ktx2.html) | runnable-partial | tests/browser/exporters-video.spec.js |
 | [misc_raycaster_helper](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_raycaster_helper.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
 | [css2d_label](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
-| [css3d_mixed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html) | blocked-at-port-review | CSS3DRenderer; EdgesGeometry; HemisphereLight; CSS3DObject |
-| [css3d_molecules](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html) | blocked-at-port-review | PDBLoader; CSS3DRenderer; TrackballControls; CSS3DSprite |
-| [css3d_orthographic](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html) | blocked-at-port-review | CSS3DRenderer; CSS3DObject |
-| [css3d_periodictable](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_periodictable.html) | blocked-at-port-review | CSS3DObject; CSS3DRenderer; TrackballControls |
-| [css3d_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html) | blocked-at-port-review | CSS3DObject; CSS3DRenderer; TrackballControls |
-| [css3d_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html) | blocked-at-port-review | CSS3DSprite; CSS3DRenderer; TrackballControls |
+| [css3d_mixed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [css3d_molecules](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [css3d_orthographic](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [css3d_periodictable](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_periodictable.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [css3d_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [css3d_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [css3d_youtube](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_youtube.html) | blocked-at-port-review | CSS3DObject; CSS3DRenderer; TrackballControls |
 | [svg_lines](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html) | blocked-at-port-review | SVGRenderer; LineDashedMaterial |
 | [svg_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html) | blocked-at-port-review | BufferGeometryLoader; MeshLambertMaterial; SpriteMaterial; Sprite |

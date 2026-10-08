@@ -96,6 +96,18 @@ const cases={
  // RapierPhysics on its 16 ms interval drops a body a second onto the floor: the same
  // rapier3d steps as rapier.js 0.17.3 until the bodies pile up ( the contact order follows a
  // memory-address-seeded hash ), so the captures stay within the first seconds.
+ // CSS only; the buttons start each layout's tweens: the captures follow them.
+ css3d_periodictable:{view:'body',times:[0,1,2.5,5],parameters:[],at:5,script:[['click',227,480,5],['wait',6],['wait',9],['click',301,480,9],['wait',11],['click',365,480,13],['wait',14.5],['wait',17],['click',151,480,17],['wait',21]]},
+ // The page is CSS only ( no canvas ): the captures take the whole page. The sprites' transforms
+ // agree within 1e-6 ( the CSS3D test ); their images resample differently at some edges ( 1.5 % ).
+ css3d_mixed:{limits:[.015,.4],view:'body',antialias:true,frameSources:['/reference/three-js/','/web/gallery/'],times:[0,.5,1],parameters:[],at:1,drag:[[30,30],[90,60]],wheel:[30,30,-200]},
+ css3d_molecules:{view:'body',frames:40,times:[0,1,2.5],parameters:[[0,0,0],[0,1,1],[0,2,2],[1,'ethanol.pdb',0],[1,'buckyball.pdb',15],[1,'ybco.pdb',14]],at:2.5},
+ css3d_sprites:{limits:[.02,.5],view:'body',times:[0,1,3,6,7.5,12,13.5,19],parameters:[],at:19},
+ css3d_orthographic:{times:[0],parameters:[[0,null,1],[3,100,100],[4,50,50],[5,900,900],[7,null,1]],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ // CSS3DRenderer's divs over the canvas's wireframes: the captures include them. The page's
+ // requestAnimationFrame loop updates TrackballControls' inertia in real time, so drags land
+ // differently run to run; misc_controls_trackball compares the controls.
+ css3d_sandbox:{antialias:true,times:[0],parameters:[[0,null,1],[3,100,100],[4,50,50],[5,900,900],[7,null,1]],at:0},
  // The labels are CSS2DRenderer's elements over the canvas: the captures include them.
  css2d_label:{times:[0,1,2.5],parameters:[[0,null,1],[1,null,1],[2,null,1],[3,null,1],[2,null,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The pointer clip animates the dragon's material and node and the cloth's texture
@@ -213,6 +225,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
  else if(action==='wheel'){const [x,y,delta]=args;await page.mouse.move(x,y);await page.mouse.wheel(0,delta);}
  else if(action==='key'){const [key,down]=args;if(down)await page.keyboard.down(key);else await page.keyboard.up(key);}
+ else if(action==='click'){const [x,y]=args;await page.mouse.click(x,y);}
  else if(action==='video'){const [seconds]=args;await page.evaluate(async seconds=>{const v=document.getElementById('video');v.pause();v.currentTime=seconds;await new Promise(r=>v.addEventListener('seeked',r,{once:true}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));},seconds);}
  else if(action==='lock'){await page.evaluate(runtime=>{if(runtime!=='rust')fixtureLockControls.isLocked=true;else app.tsl_parameter(0,1);},runtime);}
  else if(action==='look'){const [x,y]=args;await page.evaluate(([x,y])=>document.dispatchEvent(new MouseEvent('mousemove',{movementX:x,movementY:y})),[x,y]);}
@@ -228,12 +241,14 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 };
 // WebGL/WebGPU MSAA resolve bounds, documented in docs/texture-volumes.md. The same
 // scenes must also pass the ordinary threshold with MSAA disabled on both sides.
-const msaaLimits={webgl_loader_gltf_animation_pointer:[.032,.7],physics_rapier_character_controller:[.01,.4],physics_rapier_vehicle_controller:[.01,.3],physics_rapier_instancing:[.045,1],physics_rapier_basic:[.012,.35],webgl_materials_cubemap_dynamic:[.008,.45],webgl_mirror:[.012,.3],webgl_shadowmap:[.015,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
+const msaaLimits={css3d_sandbox:[.012,.45],webgl_loader_gltf_animation_pointer:[.032,.7],physics_rapier_character_controller:[.01,.4],physics_rapier_vehicle_controller:[.01,.3],physics_rapier_instancing:[.045,1],physics_rapier_basic:[.012,.35],webgl_materials_cubemap_dynamic:[.008,.45],webgl_mirror:[.012,.3],webgl_shadowmap:[.015,.3],webgl_geometry_csg:[.02,.9],webgl_loader_ldraw:[.035,.9],webgl_batch_lod_bvh:[.12,2.6],webgl_worker_offscreencanvas:[.015,.3],webgl_loader_ifc:[.055,1.5],webgl_loader_3dm:[.015,.5],webgl_materials_video_webcam:[.008,.4],webgl_materials_physical_transmission_alpha:[.42,4.8],webgl_random_uv:[.01,.95],games_fps:[.025,2],webgl_loader_fbx:[.025,.5],webgl_loader_svg:[.08,3],misc_controls_arcball:[.018,.5],misc_exporter_gltf:[.055,1.7],webgl_geometry_spline_editor:[.1,1.5],webgl_raycaster_bvh:[.06,.8],webgl_modifier_subdivision:[.05,2],webgl_shadowmap_performance:[.06,.9],misc_exporter_usdz:[.035,1],webgl_gpgpu_birds_gltf:[.16,3.5],webgl_loader_usdz:[.008,.6],webgl_loader_nrrd:[.012,.45],webgl_shadowmap_viewer:[.025,.8],webgl_shadowmap_pcss:[.015,.4],webgl_loader_texture_pvrtc:[.008,.3]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Texture arrays and volumes official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  if(spec.fakeCamera)await page.addInitScript(fakeCamera);
  await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
+ // An iframe's page ( css3d_mixed's examples index and gallery ) is the same plain page in both.
+ for(const path of spec.frameSources??[])await page.route(u=>new URL(u).pathname===path,r=>r.fulfill({contentType:'text/html',body:'<body style="margin:0;background:linear-gradient(#3a6,#36a)"></body>'}));
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
   await page.goto(runtime!=='rust'?`/reference/three-js/texture-volumes.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
@@ -748,4 +763,28 @@ test('CSS2D labels: the elements carry the original inline styles',async({page})
   states[runtime]=list;
  }
  expect(states.rust).toEqual(states.reference);
+});
+
+// CSS3DRenderer writes the original's transforms: the camera element's perspective, matrix3d
+// and translation, the view element's offset and every object's matrix3d, compared as numbers
+// ( the camera's inverse and the rotations round differently ) and with the same text around them.
+const css3dPages={css3d_mixed:{times:[0,1],parameters:[],values:[],script:[['drag',30,30,90,60,0,1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wait',1],['wheel',30,30,-200,1],['wait',1],['wait',1]]},css3d_molecules:{frames:40,times:[0,1,2.5],parameters:[0,0,0,1,1],values:[1,0,2,'buckyball.pdb','graphite.pdb'],rust:[1,0,2,15,16]},css3d_periodictable:{times:[0,1,2.5,5],parameters:[],values:[],script:[['click',227,480,5],['wait',6],['wait',9],['click',301,480,9],['wait',11],['click',365,480,13],['wait',14.5],['wait',17],['click',151,480,17],['wait',21]]},css3d_sprites:{times:[0,1,3,6,7.5,12],parameters:[],values:[]},css3d_sandbox:{times:[0],parameters:[0,3,4,5,7],values:[null,100,50,900,null]},css3d_orthographic:{times:[0],parameters:[0,3,4,5,7],values:[null,100,50,900,null]}};
+for(const [id,spec] of Object.entries(css3dPages))test(`CSS3D elements: ${id} carries the original transforms`,async({page})=>{
+ test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
+ const states={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+  await page.waitForFunction(v=>{const c=document.querySelector(v);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:60000});
+  const read=()=>page.evaluate(async()=>{for(let i=0;i<2;i++)await new Promise(r=>requestAnimationFrame(r));return [...document.querySelectorAll('div,img,iframe')].filter(e=>e.style.transform||e.style.transformStyle).map(e=>[e.style.transform,e.style.display,e.style.width,e.style.height]);});
+  const list=[];
+  for(const t of spec.times){await frames(page,runtime,t,1);list.push(await read());}
+  for(const step of spec.script??[]){const time=await act(page,runtime,step);if(time!==null){await frames(page,runtime,time,1);list.push(await read());}}
+  for(const [k,i] of spec.parameters.entries()){const v=spec.values[k];await page.evaluate(({runtime,i,v})=>{if(runtime!=='rust')fixtureParameter(i,v);else app.tsl_parameter(i,v??1);},{runtime,i,v:runtime==='rust'&&spec.rust?spec.rust[k]:v});await frames(page,runtime,spec.times.at(-1),spec.frames??1);list.push(await read());}
+  states[runtime]=list;
+ }
+ const split=s=>String(s).split(/(-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)/);
+ expect(states.rust.length).toBe(states.reference.length);
+ for(const [k,ref] of states.reference.entries()){const rust=states.rust[k];expect(rust.length,`state ${k}`).toBe(ref.length);
+  for(const [j,r] of ref.entries())for(const [f,value] of r.entries()){const a=split(value),b=split(rust[j][f]);expect(b.length,`state ${k} element ${j}: ${rust[j][f]} vs ${value}`).toBe(a.length);
+   for(let x=0;x<a.length;x++){if(x%2===0)expect(b[x],`state ${k} element ${j}`).toBe(a[x]);else{const p=Number(a[x]),q=Number(b[x]);expect(Math.abs(p-q),`state ${k} element ${j}: ${rust[j][f]} vs ${value}`).toBeLessThanOrEqual(1e-6*Math.max(1,Math.abs(p)));}}}}
 });

@@ -1,6 +1,6 @@
 //! The PDB molecules with their CSS2D labels, the helper objects, the mesh
 //! simplifier, the AMF loader and the TIFF loader from the pinned WebGL examples.
-pub(super) mod formats;
+pub(in crate::browser) mod formats;
 use super::controls_attributes::{CameraState, Controls, camera_state, viewport_css};
 use super::gltf_viewer::{fetch, load_asset};
 use super::trackball_sprites::{Mode, Trackball};
@@ -109,7 +109,7 @@ fn wireframe_geometry(position: &[f32], index: &[u32]) -> Vec<f32> {
 }
 /// `EdgesGeometry( geometry, 1 )`: rounded position hashes, unpaired edges and
 /// edges whose faces meet at more than a degree, in the original's order.
-fn edges_geometry(position: &[f32], index: &[u32]) -> Vec<f32> {
+pub(super) fn edges_geometry(position: &[f32], index: &[u32]) -> Vec<f32> {
     let threshold = (PI / 180.).cos();
     let at = |i: u32| {
         let i = i as usize * 3;

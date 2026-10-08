@@ -22,6 +22,12 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Css3dMixed(Box<super::css3d_mixed::Demo>),
+    Css3dMolecules(Box<super::css3d_molecules::Demo>),
+    Css3dPeriodictable(Box<super::css3d_periodictable::Demo>),
+    Css3dSprites(Box<super::css3d_sprites::Demo>),
+    Css3dOrthographic(Box<super::css3d_orthographic::Demo>),
+    Css3dSandbox(Box<super::css3d_sandbox::Demo>),
     Css2dLabel(Box<super::css2d_label::Demo>),
     AnimationPointer(Box<super::animation_pointer::Demo>),
     EnvmapsFasthdr(Box<super::envmaps_fasthdr::Demo>),
@@ -1590,6 +1596,62 @@ impl Demo {
                     super::css2d_label::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            473 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Css3dSandbox(Box::new(
+                    super::css3d_sandbox::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            474 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::Css3dOrthographic(Box::new(
+                    super::css3d_orthographic::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            475 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Css3dSprites(Box::new(
+                    super::css3d_sprites::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            476 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::Css3dPeriodictable(Box::new(
+                    super::css3d_periodictable::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
+            477 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 5000.,
+                elapsed: 0.,
+                content: Content::Css3dMolecules(Box::new(
+                    super::css3d_molecules::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            478 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::Css3dMixed(Box::new(
+                    super::css3d_mixed::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2480,6 +2542,24 @@ impl Demo {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Css2dLabel(demo) = &mut self.content {
@@ -4114,6 +4194,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4646,6 +4744,24 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::Css2dLabel(demo) = &mut self.content {
@@ -5269,6 +5385,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5796,6 +5930,30 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6442,6 +6600,24 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -7041,6 +7217,24 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dMixed(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dMolecules(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dPeriodictable(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dSprites(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dOrthographic(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Css2dLabel(demo) = &mut self.content {

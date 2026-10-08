@@ -1373,6 +1373,16 @@ impl Renderer {
                     };
                     uv_transforms[i * 3..i * 3 + 3].copy_from_slice(&columns);
                 }
+                // u.maps.y: 0 writes alpha 1 ( OPAQUE: neither transparent nor
+                // NoBlending ), 1 keeps the material's alpha and 2 also
+                // premultiplies the output's rgb by it ( premultipliedAlpha ).
+                let output_alpha = if properties.transparent
+                    || properties.blending == Some(wgpu::BlendState::REPLACE)
+                {
+                    1.0 + f32::from(properties.premultiplied_alpha)
+                } else {
+                    0.0
+                };
                 let mut u = Uniforms {
                     output: [
                         scene.exposure as f32,
@@ -1534,13 +1544,13 @@ impl Renderer {
                             } else {
                                 normal_map_kind(m.normal_map.as_deref())
                             },
-                            f32::from(properties.transparent),
+                            output_alpha,
                             f32::from(m.emissive_map.is_some()),
                             f32::from(m.metallic_roughness_map.is_some()),
                         ],
                         Material::Phong(m) => [
                             normal_map_kind(m.normal_map.as_deref()),
-                            f32::from(properties.transparent),
+                            output_alpha,
                             0.0,
                             0.0,
                         ],
@@ -1548,11 +1558,11 @@ impl Renderer {
                         | Material::Toon(MeshToonMaterial { base: m, .. })
                         | Material::Matcap(MeshMatcapMaterial { base: m, .. }) => [
                             normal_map_kind(m.normal_map.as_deref()),
-                            f32::from(properties.transparent),
+                            output_alpha,
                             0.0,
                             0.0,
                         ],
-                        _ => [0.0, f32::from(properties.transparent), 0.0, 0.0],
+                        _ => [0.0, output_alpha, 0.0, 0.0],
                     },
                     light_position,
                     light_color,

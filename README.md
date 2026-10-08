@@ -72,6 +72,7 @@ implementation evidence fail; README files alone cannot satisfy a check.
 | Raycasting | `Raycaster`, `Raycast`, typed `Intersection` |
 | Events | Typed `EventDispatcher<E>` with listener tokens |
 | `CSS2DRenderer`, `CSS2DObject` | `css2d::CSS2DRenderer` ( browser builds ) and `NodeKind::CSS2DObject`; `render( scene, camera )`, `setSize`, `getSize`, `domElement`, `center`, `rotation2D` keep their names and output |
+| `CSS3DRenderer`, `CSS3DObject`, `CSS3DSprite` | `css3d::CSS3DRenderer` ( browser builds ), `NodeKind::CSS3DObject` and `NodeKind::CSS3DSprite`; `render( scene, camera )`, `setSize`, `getSize`, `domElement`, `rotation2D` keep their names and output |
 
 Call `Scene::update` before world-space queries; rendering does this automatically.
 Dropping the scene releases its shared resource references. `Scene::dispose`

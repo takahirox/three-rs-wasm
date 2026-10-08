@@ -330,7 +330,13 @@ struct LogarithmicDepthOut {@location(0) color:vec4<f32>,@builtin(frag_depth) de
     let depth=log2(-in.view_position.z/near)/log2(u.output.w/near);
     return LogarithmicDepthOut(color_output(in,front),depth);
 }
+// premultipliedAlpha ( u.maps.y 2 ): the output's rgb times its alpha.
 fn color_output(in:VertexOut,front:bool)->vec4<f32> {
+    let color=material_output(in,front);
+    if u.maps.y>1.5 {return vec4(color.rgb*color.a,color.a);}
+    return color;
+}
+fn material_output(in:VertexOut,front:bool)->vec4<f32> {
     fragment_surface=in;fragment_front=front;
     fragment_normal=normalize(in.normal)*select(-1.0,1.0,front);fragment_diffuse=vec4(0.0);fragment_emissive=vec3(0.0);
     fragment_position_world=in.position;fragment_view_z=-in.view_position.z;

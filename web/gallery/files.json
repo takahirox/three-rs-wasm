@@ -485,6 +485,14 @@
   "css2d": [
     "css2d_label"
   ],
+  "css3d": [
+    "css3d_mixed",
+    "css3d_molecules",
+    "css3d_orthographic",
+    "css3d_periodictable",
+    "css3d_sandbox",
+    "css3d_sprites"
+  ],
   "tests": [
     "misc_uv_tests"
   ]

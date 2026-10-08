@@ -28,6 +28,13 @@ mod compute_water;
 mod controls_attributes;
 mod csg_eval;
 mod css2d_label;
+mod css3d_common;
+mod css3d_mixed;
+mod css3d_molecules;
+mod css3d_orthographic;
+mod css3d_periodictable;
+mod css3d_sandbox;
+mod css3d_sprites;
 mod cubemap_dynamic;
 mod cubemap_webgl;
 mod custom_fog;
@@ -112,6 +119,7 @@ mod msaa_renderbuffers;
 mod offscreen;
 mod outline;
 mod passes_decals;
+mod periodic_table;
 mod physics_rapier_basic;
 mod physics_rapier_character_controller;
 mod physics_rapier_instancing;
@@ -375,7 +383,8 @@ impl State {
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
-            461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472,
+            461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
+            478,
         ]
         .contains(&self.example)
         {
@@ -1110,7 +1119,7 @@ impl BrowserApp {
             let mut configuration = surface
                 .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
                 .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if [46, 50, 54, 55, 57, 351, 431, 438].contains(&example) {
+            if [46, 50, 54, 55, 57, 351, 431, 438, 477, 478].contains(&example) {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
@@ -1158,7 +1167,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478,
                         ]
                         .contains(&example),
                         format: if [
@@ -1182,7 +1191,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478,
                         ]
                         .contains(&example)
                         {
@@ -1214,7 +1223,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=472).contains(&example) {
+            if (7..=478).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

@@ -241,6 +241,8 @@ pub struct MaterialProperties {
     /// None selects opaque replacement or normal alpha blending according to transparent.
     #[serde(skip)]
     pub blending: Option<wgpu::BlendState>,
+    /// premultipliedAlpha: the output's rgb times its alpha.
+    pub premultiplied_alpha: bool,
     /// Per-MRT blend overrides; empty uses `blending` for every attachment.
     #[serde(skip)]
     pub attachment_blending: Vec<Option<wgpu::BlendState>>,
@@ -282,6 +284,7 @@ impl Default for MaterialProperties {
             clip_intersection: false,
             clip_shadows: false,
             blending: None,
+            premultiplied_alpha: false,
             attachment_blending: Vec::new(),
             stencil: None,
             stencil_reference: 0,

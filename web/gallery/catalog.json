@@ -34923,7 +34923,7 @@
     {
       "id": "css3d_mixed",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html",
       "source_sha256": "f956f2091fce709284c9fbacf25047e35e15ed742a47f85cd4eb843e0fe25eb5",
@@ -34975,7 +34975,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 478,
+        "source": "src/browser/css3d_mixed.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ギャラリー自身（./#webgl_animation_keyframes）を表示するiframeをCSS3DRenderer（Rust版、src/css3d.rs）で配置し、NoBlending・premultipliedAlpha・不透明度0の切り抜き平面を通して、枠と部屋の線を描いたキャンバス（alpha、NeutralToneMapping）の下に見せるシーンを再現。キャンバスはポインターを通さず、その下の全画面要素で減衰付きOrbitControlsが動き、iframeが見える所ではiframeが操作を受ける。iframeの中身はオリジナル（three.jsのexamples一覧）ではなくこのギャラリー。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -34985,7 +34992,7 @@
     {
       "id": "css3d_molecules",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html",
       "source_sha256": "1bd321d6e9054d90e0ddb399508615952459ff6129c055a7a44cc48019cd2d3c",
@@ -35011,7 +35018,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 477,
+        "source": "src/browser/css3d_molecules.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "PDBの分子を、元素ごとに色付けしたボール画像のCSS3DSprite（原子）と、交差する2枚の細いdivのCSS3DObject（結合）で表し、ルートごと回転させるシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。GUIの表示種別と分子（17種）、CSSレンダラーの要素に付けたTrackballControlsに対応。ページにキャンバスはない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -35023,7 +35037,7 @@
     {
       "id": "css3d_orthographic",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html",
       "source_sha256": "56a9b5c525c675bec9e2afcb902c7050db08912918685971e0aa0bd7b895370b",
@@ -35055,7 +35069,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 474,
+        "source": "src/browser/css3d_orthographic.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "箱の3面と床の半透明の色付きのdivを正投影カメラのCSS3DRenderer（Rust版、src/css3d.rs）で配置し、それぞれに重なる黒いワイヤーフレームの平面をキャンバスに描くシーンを再現。CSSレンダラーの要素に付けたOrbitControls（正投影のズーム0.5〜2）、GUIのカメラのビューオフセットに対応。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
@@ -35066,7 +35087,7 @@
     {
       "id": "css3d_periodictable",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_periodictable.html",
       "source_sha256": "504a0577e2a874405d87cebf930d250978a8a28f5bcbaa897dec375d8b684951",
@@ -35092,7 +35113,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 476,
+        "source": "src/browser/css3d_periodictable.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "118個の元素のカードをCSS3DObjectとして、ランダムな位置からページのボタンで表・球・螺旋・格子の配置へtween.js（Exponential.InOut、2〜4秒）で動かすシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。元素の表とページのスタイルはオリジナルのページから写したもの。CSSレンダラーの要素に付けたTrackballControls（500〜6000）に対応。ページにキャンバスはない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -35103,7 +35131,7 @@
     {
       "id": "css3d_sandbox",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html",
       "source_sha256": "5283127232f56ab4d1472cf130edae85865705705dfc97450a396ed39bb1a76c",
@@ -35135,7 +35163,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 473,
+        "source": "src/browser/css3d_sandbox.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ランダムな位置・回転・拡大の色付きのdiv 10個（半分は半透明）をCSS3DRenderer（Rust版、src/css3d.rs）で配置し、それぞれに重なる黒いワイヤーフレームの平面をキャンバスに描くシーンを再現。CSSレンダラーの要素に付けたTrackballControls、GUIのカメラのビューオフセット（setViewOffsetと6つの値、clearViewOffset）に対応。各要素のtransformはオリジナルと同じ書式で設定する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
@@ -35146,7 +35181,7 @@
     {
       "id": "css3d_sprites",
       "category": "css3d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html",
       "source_sha256": "280e29468154e4d147d41eed174bc998674820a6759b6a26ce98f9855ed87af6",
@@ -35172,7 +35207,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 475,
+        "source": "src/browser/css3d_sprites.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "512個の画像のCSS3DSpriteを、6秒ごとに波の平面・立方体・ランダムな雲・球の配置へtween.js（Exponential.InOut、2〜4秒）で動かし、大きさを脈動させるシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。CSSレンダラーの要素に付けたTrackballControlsに対応。ページにキャンバスはなく、ギャラリーのキャンバスはCSSレンダラーの下でページと同じ白で塗るだけ。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/TrackballControls.js",
