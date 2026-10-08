@@ -605,7 +605,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [misc_exporter_exr](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_exr.html) | runnable-partial | tests/browser/exporters-video.spec.js |
 | [misc_exporter_ktx2](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_exporter_ktx2.html) | runnable-partial | tests/browser/exporters-video.spec.js |
 | [misc_raycaster_helper](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_raycaster_helper.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
-| [css2d_label](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html) | blocked-at-port-review | AxesHelper; MeshPhongMaterial; CSS2DObject; CSS2DRenderer |
+| [css2d_label](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [css3d_mixed](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_mixed.html) | blocked-at-port-review | CSS3DRenderer; EdgesGeometry; HemisphereLight; CSS3DObject |
 | [css3d_molecules](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_molecules.html) | blocked-at-port-review | PDBLoader; CSS3DRenderer; TrackballControls; CSS3DSprite |
 | [css3d_orthographic](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_orthographic.html) | blocked-at-port-review | CSS3DRenderer; CSS3DObject |

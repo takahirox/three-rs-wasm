@@ -149,6 +149,8 @@ pub enum NodeKind {
     Points(Points),
     Camera(Camera),
     Light(Light),
+    /// CSS2DRenderer's HTML element at the node's position.
+    CSS2DObject(crate::css2d::CSS2DObject),
 }
 
 type RenderCallback = Arc<dyn Fn(&mut Scene, Object3D) + Send + Sync>;
@@ -581,6 +583,12 @@ impl Scene {
         if let Some(parent) = self.get(child)?.parent {
             self.get_mut(parent)?.children.retain(|h| *h != child);
             self.get_mut(child)?.parent = None;
+            // CSS2DObject's `removed` listener: the subtree's elements leave the DOM.
+            for h in self.traverse(child, false)? {
+                if let NodeKind::CSS2DObject(o) = &self.get(h)?.kind {
+                    o.element.detach();
+                }
+            }
         }
         Ok(())
     }

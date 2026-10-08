@@ -34863,7 +34863,7 @@
     {
       "id": "css2d_label",
       "category": "css2d",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html",
       "source_sha256": "57ed61de69b2eb3195c5b2a4d4dd327ce6643a11a0a6dd167a083bfcfa9c2a0b",
@@ -34905,7 +34905,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 472,
+        "source": "src/browser/css2d_label.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "地球（カラー・スペキュラー・法線マップのPhong）とその周りを回る月に、名前と質量のラベルをCSS2DRenderer（Rust版、src/css2d.rs）でキャンバスの上に重ねて表示するシーンを再現。ラベルはカメラのレイヤー0と1に置き、GUIで切り替える。AxesHelper、ラベル要素に付けたOrbitControlsに対応。CSS2DObjectの要素のdisplay・transform-origin・transform・z-indexはオリジナルと同じ文字列で設定する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

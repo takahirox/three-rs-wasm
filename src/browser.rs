@@ -27,6 +27,7 @@ mod compute_reduce;
 mod compute_water;
 mod controls_attributes;
 mod csg_eval;
+mod css2d_label;
 mod cubemap_dynamic;
 mod cubemap_webgl;
 mod custom_fog;
@@ -374,7 +375,7 @@ impl State {
             408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424,
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
-            461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
+            461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472,
         ]
         .contains(&self.example)
         {
@@ -1157,7 +1158,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471,
+                            470, 471, 472,
                         ]
                         .contains(&example),
                         format: if [
@@ -1181,7 +1182,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471,
+                            470, 471, 472,
                         ]
                         .contains(&example)
                         {
@@ -1213,7 +1214,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=471).contains(&example) {
+            if (7..=472).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

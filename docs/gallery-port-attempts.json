@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 466,
+    "runnable-partial": 467,
     "excluded": 43,
-    "blocked-at-port-review": 98
+    "blocked-at-port-review": 97
   },
   "examples": [
     {
@@ -44640,10 +44640,10 @@
     },
     {
       "id": "css2d_label",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html",
       "source_sha256": "57ed61de69b2eb3195c5b2a4d4dd327ce6643a11a0a6dd167a083bfcfa9c2a0b",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

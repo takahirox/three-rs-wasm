@@ -482,6 +482,9 @@
     "misc_exporter_ktx2",
     "misc_raycaster_helper"
   ],
+  "css2d": [
+    "css2d_label"
+  ],
   "tests": [
     "misc_uv_tests"
   ]

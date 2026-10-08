@@ -22,6 +22,7 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    Css2dLabel(Box<super::css2d_label::Demo>),
     AnimationPointer(Box<super::animation_pointer::Demo>),
     EnvmapsFasthdr(Box<super::envmaps_fasthdr::Demo>),
     PhysicsRapierVehicleController(Box<super::physics_rapier_vehicle_controller::Demo>),
@@ -1580,6 +1581,15 @@ impl Demo {
                         .await?,
                 )),
             }),
+            472 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 200.,
+                elapsed: 0.,
+                content: Content::Css2dLabel(Box::new(
+                    super::css2d_label::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2470,6 +2480,9 @@ impl Demo {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::AnimationPointer(demo) = &mut self.content {
@@ -4101,6 +4114,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Css2dLabel(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4630,6 +4646,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::AnimationPointer(demo) = &mut self.content {
@@ -5250,6 +5269,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Css2dLabel(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5774,6 +5796,10 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::Css2dLabel(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6416,6 +6442,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::Css2dLabel(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -7012,6 +7041,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::AnimationPointer(demo) = &mut self.content {

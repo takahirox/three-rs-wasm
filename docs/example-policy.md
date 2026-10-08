@@ -434,6 +434,10 @@ load files that Needle encoded and publishes without stated terms. Their ports
 fetch the same URLs at run time instead of redistributing the files, the only
 gallery examples that do so ([webgl-only-examples.md](webgl-only-examples.md)).
 
+`css2d_label` runs on the Rust CSS2DRenderer ([css2d-renderer.md](css2d-renderer.md)),
+which keeps three.js's API names and writes the same element styles. CSS3D and
+SVG pages are not ported yet.
+
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the
 pinned FBXLoader, rhino3dm for 3DM and web-ifc for IFC. three-subdivide,

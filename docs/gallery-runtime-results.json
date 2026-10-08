@@ -15230,7 +15230,7 @@
       "id": "css2d_label",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css2d_label.html",
       "source_sha256": "57ed61de69b2eb3195c5b2a4d4dd327ce6643a11a0a6dd167a083bfcfa9c2a0b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "css2d_label",
         "source_sha256": "57ed61de69b2eb3195c5b2a4d4dd327ce6643a11a0a6dd167a083bfcfa9c2a0b",

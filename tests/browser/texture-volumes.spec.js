@@ -96,6 +96,8 @@ const cases={
  // RapierPhysics on its 16 ms interval drops a body a second onto the floor: the same
  // rapier3d steps as rapier.js 0.17.3 until the bodies pile up ( the contact order follows a
  // memory-address-seeded hash ), so the captures stay within the first seconds.
+ // The labels are CSS2DRenderer's elements over the canvas: the captures include them.
+ css2d_label:{times:[0,1,2.5],parameters:[[0,null,1],[1,null,1],[2,null,1],[3,null,1],[2,null,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The pointer clip animates the dragon's material and node and the cloth's texture
  // transform; the model loads from Needle Cloud, as on the page. The dragon's specular and
  // transmission sparkle differs in scattered pixels ( 0.9 %, 2.7 % with MSAA ) from the first frame.
@@ -725,4 +727,25 @@ test('Protoplanet: the n-body simulation matches over 120 frames',async({page},i
  const results=shots.reference.map((b,state)=>{const a=shots.rust[state];let bad=0,sum=0;for(let p=0;p<a.data.length;p+=4){let fail=false;for(let c=0;c<3;c++){const d=Math.abs(a.data[p+c]-b.data[p+c]);sum+=d;fail||=d>6;}if(fail)bad++;}writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));return {state,fraction:bad/(a.width*a.height),meanError:sum/(a.width*a.height*3)};});
  writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));
  for(const r of results){expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);expect(r.meanError,JSON.stringify(r)).toBeLessThanOrEqual(.6);}
+});
+
+// CSS2DRenderer writes the same inline styles as the original: every label's display,
+// transform-origin, transform and z-index strings, as the clock, the camera layers and
+// the controls change.
+test('CSS2D labels: the elements carry the original inline styles',async({page})=>{
+ test.setTimeout(120000);await page.setViewportSize({width:512,height:512});
+ const states={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=css2d_label':'/web/gallery/example.html?id=css2d_label&still=1');
+  await page.waitForFunction(v=>{const c=document.querySelector(v);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:60000});
+  await page.waitForFunction(()=>document.querySelectorAll('.label').length===4&&document.querySelector('.label').style.transform,null,{timeout:60000});
+  // The page updates its labels in its own requestAnimationFrame loop: read after two frames.
+  const read=()=>page.evaluate(async()=>{for(let i=0;i<2;i++)await new Promise(r=>requestAnimationFrame(r));return [...document.querySelectorAll('.label')].map(e=>[e.textContent,e.getAttribute('style'),e.parentElement===document.querySelector('.label').parentElement]);});
+  const list=[];
+  for(const t of [0,1,2.5,4]){await frames(page,runtime,t,1);list.push(await read());}
+  for(const i of [0,1,2,3,2]){await page.evaluate(({runtime,i})=>{if(runtime!=='rust')fixtureParameter(i,null);else app.tsl_parameter(i,1);},{runtime,i});await frames(page,runtime,4,1);list.push(await read());}
+  await page.mouse.move(256,256);await page.mouse.wheel(0,-300);await page.waitForTimeout(300);await frames(page,runtime,4,1);list.push(await read());
+  states[runtime]=list;
+ }
+ expect(states.rust).toEqual(states.reference);
 });
