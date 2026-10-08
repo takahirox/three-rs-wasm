@@ -91,7 +91,10 @@ impl Demo {
         // The image's load listener: the sprites at random positions, then transition().
         let image = element("img")?;
         image
-            .set_attribute("src", "/web/gallery/assets/css3d/sprite.png")
+            .set_attribute(
+                "src",
+                &super::asset_url("/web/gallery/assets/css3d/sprite.png")?,
+            )
             .map_err(|_| Error::Invalid("sprite image"))?;
         let mut objects = Scene::new();
         let mut sprites = vec![];
