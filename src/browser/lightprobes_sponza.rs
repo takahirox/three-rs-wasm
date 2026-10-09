@@ -50,7 +50,7 @@ pub(super) struct Demo {
     last: f64,
 }
 /// getSponzaModelURL(): the Sponza entry of the sample model index.
-async fn sponza_url() -> Result<String> {
+pub(super) async fn sponza_url() -> Result<String> {
     let index: serde_json::Value = serde_json::from_slice(&fetch(MODEL_INDEX_URL).await?)
         .map_err(|e| Error::Asset(e.to_string()))?;
     let sponza = index

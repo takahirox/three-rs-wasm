@@ -29992,7 +29992,7 @@
     {
       "id": "webgpu_vxgi_sponza",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_vxgi_sponza.html",
       "source_sha256": "3c831e54653627c6a0ee99b62efbc6199a8fdde23d11006e703395ad74814205",
@@ -30060,7 +30060,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 482,
+        "source": "src/browser/vxgi_sponza.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、影付きの平行光源と環境光・SkyMeshの下で、VXGINodeのボクセルコーントレースによるAOと間接光、TRAA、FirstPersonControlsとともにRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割し、アルベドは各テクスチャの64²縮小から重心で取る）、GPUで144×64×96の不透明度ボリュームとミップにボクセル化し、平行光源をシャドウマップ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、シャドウ、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描き、出力（Combined・Direct・AO・GI）と時間フィルタの切替も再現する。各段はページからthree.js r186が生成するWGSL（vxgi_sponza/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。オリジナルのボクセル化は各ボクセルの三角形IDを順序なく上書きするため、オリジナル自身も実行ごとにGIが変わる（比較テストは両側で最大IDを残す形に揃えて照合）。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/capabilities/WebGPU.js",
         "three/addons/controls/FirstPersonControls.js",

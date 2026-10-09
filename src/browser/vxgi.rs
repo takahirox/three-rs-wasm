@@ -63,7 +63,7 @@ const FACES: [([f64; 3], [f64; 3]); 6] = [
     ([0., 0., -1.], [0., -1., 0.]),
 ];
 /// TAAUtils' computeHaltonOffsets( 32 ): bases 2 and 3 from index 1.
-fn halton(index: usize) -> [f64; 2] {
+pub(super) fn halton(index: usize) -> [f64; 2] {
     let h = |mut index: usize, base: usize| {
         let (mut fraction, mut result) = (1., 0.);
         while index > 0 {
@@ -108,7 +108,7 @@ fn compose(p: [f64; 3], r: [f64; 3], s: [f64; 3]) -> Matrix4 {
     ])
 }
 /// Vector3.applyMatrix4 in three.js's operation order.
-fn apply(m: &Matrix4, v: [f64; 3]) -> [f64; 3] {
+pub(super) fn apply(m: &Matrix4, v: [f64; 3]) -> [f64; 3] {
     let e = m.to_cols_array();
     let w = 1. / (e[3] * v[0] + e[7] * v[1] + e[11] * v[2] + e[15]);
     [
@@ -153,7 +153,11 @@ impl Mesh {
         pass.draw_indexed(0..self.count, 0, 0..1);
     }
 }
-fn texture(r: &Renderer, size: (u32, u32, u32), format: wgpu::TextureFormat) -> wgpu::Texture {
+pub(super) fn texture(
+    r: &Renderer,
+    size: (u32, u32, u32),
+    format: wgpu::TextureFormat,
+) -> wgpu::Texture {
     r.device.create_texture(&wgpu::TextureDescriptor {
         label: Some("vxgi target"),
         size: wgpu::Extent3d {
@@ -172,10 +176,10 @@ fn texture(r: &Renderer, size: (u32, u32, u32), format: wgpu::TextureFormat) -> 
         view_formats: &[],
     })
 }
-fn view(t: &wgpu::Texture) -> wgpu::TextureView {
+pub(super) fn view(t: &wgpu::Texture) -> wgpu::TextureView {
     t.create_view(&Default::default())
 }
-fn color(
+pub(super) fn color(
     view: &wgpu::TextureView,
     clear: wgpu::Color,
 ) -> Option<wgpu::RenderPassColorAttachment<'_>> {
@@ -189,7 +193,9 @@ fn color(
         },
     })
 }
-fn depth(view: &wgpu::TextureView) -> Option<wgpu::RenderPassDepthStencilAttachment<'_>> {
+pub(super) fn depth(
+    view: &wgpu::TextureView,
+) -> Option<wgpu::RenderPassDepthStencilAttachment<'_>> {
     Some(wgpu::RenderPassDepthStencilAttachment {
         view,
         depth_ops: Some(wgpu::Operations {
@@ -401,7 +407,7 @@ fn collect_triangles(
     }
     out
 }
-fn compute_pipeline(r: &Renderer, label: &str, source: &str) -> wgpu::ComputePipeline {
+pub(super) fn compute_pipeline(r: &Renderer, label: &str, source: &str) -> wgpu::ComputePipeline {
     let module = r.device.create_shader_module(wgpu::ShaderModuleDescriptor {
         label: Some(label),
         source: wgpu::ShaderSource::Wgsl(source.into()),

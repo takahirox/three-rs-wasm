@@ -414,7 +414,10 @@ The compute reduce and MaterialX loader batch
 ports two WebGPU examples, compared against the WebGPU renderer at the default
 thresholds. The Sponza examples fetch the model at run time, as the pages
 do, because its license does not grant redistribution
-([sponza-examples.md](sponza-examples.md)).
+([sponza-examples.md](sponza-examples.md)). webgpu_vxgi_sponza's voxelization
+writes each voxel's triangle id without ordering, so the original's GI
+differs from itself between runs; its comparison makes both runtimes keep
+the largest id and then holds the default thresholds.
 
 WebGL pages whose same-named r186 WebGPU example is a different scene
 ([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only

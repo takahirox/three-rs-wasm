@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 476,
+    "runnable-partial": 477,
     "excluded": 43,
-    "blocked-at-port-review": 88
+    "blocked-at-port-review": 87
   },
   "examples": [
     {
@@ -37503,10 +37503,10 @@
     },
     {
       "id": "webgpu_vxgi_sponza",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_vxgi_sponza.html",
       "source_sha256": "3c831e54653627c6a0ee99b62efbc6199a8fdde23d11006e703395ad74814205",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

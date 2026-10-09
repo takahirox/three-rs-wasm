@@ -1,6 +1,8 @@
 import {test,expect} from '@playwright/test';
 import {PNG} from 'pngjs';
 import {readFileSync,writeFileSync} from 'node:fs';
+import {routeSampleAssets} from './sample-assets.js';
+test.beforeEach(async({page})=>routeSampleAssets(page));
 test.use({deviceScaleFactor:Number(process.env.COMPUTE_DPR||1)});
 const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
@@ -90,6 +92,8 @@ const cases={
  // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
  // Sponza loads from glTF-Sample-Assets; each capture renders 250 frames, the bake's four probes per frame.
  webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,frames:250,times:[0],parameters:[[0,false,0],[0,true,1],[9,true,1],[10,.5,.5],[9,false,0],[1,0,0],[8,0,0],[5,4,4]],at:0},
+ // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
+ webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The original compiles its pipelines asynchronously and presents stale frames until they are ready.
@@ -169,6 +173,12 @@ const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
+ // spec.serialVoxels: VXGIVolume's voxelize kernel stores each voxel's triangle id
+ // from every covering triangle without ordering, so which one wins (its albedo and
+ // normal) changes between runs of the original itself. Both runtimes' kernels keep
+ // the largest id ( atomicMax ) instead, at their shader-module creation, so the
+ // comparison checks everything else exactly (docs/sponza-examples.md).
+ if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/(NodeBuffer_\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
   await page.goto(runtime!=='rust'?`/reference/three-js/compute-examples.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);

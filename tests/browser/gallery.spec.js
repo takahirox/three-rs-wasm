@@ -1,6 +1,8 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {PNG} from 'pngjs';
+import {routeSampleAssets} from './sample-assets.js';
+test.beforeEach(async({page})=>routeSampleAssets(page));
 const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));
 const files=readFileSync('web/gallery/files.json','utf8');
 test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
@@ -54,8 +56,8 @@ test('unported examples show source evidence rather than a fake reproduction',as
  await page.goto('/web/gallery/example.html?id=unknown');await expect(page.locator('#diagnostic')).toContainText('Unknown example');
 });
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
- // Sponza ( 481 ) downloads about 50 MB from glTF-Sample-Assets at run time.
- const remote=[481].includes(entry.port.example);
+ // Sponza ( 481, 482 ) download about 50 MB from glTF-Sample-Assets at run time.
+ const remote=[481,482].includes(entry.port.example);
  test.setTimeout(remote?600000:120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
  // Audio needs a user gesture before it loads, as the original's start button does.

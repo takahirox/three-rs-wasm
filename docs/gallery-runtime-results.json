@@ -13247,7 +13247,7 @@
       "id": "webgpu_vxgi_sponza",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_vxgi_sponza.html",
       "source_sha256": "3c831e54653627c6a0ee99b62efbc6199a8fdde23d11006e703395ad74814205",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_vxgi_sponza",
         "source_sha256": "3c831e54653627c6a0ee99b62efbc6199a8fdde23d11006e703395ad74814205",
