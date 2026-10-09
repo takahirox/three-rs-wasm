@@ -40,6 +40,9 @@ pub struct ShaderProgram {
     pub(crate) outputs: u32,
     pub(crate) custom_environment: bool,
     pub(crate) viewport: u8,
+    /// The WGSL samples the LightProbeGrid atlas ( `grid_atlas` ), as
+    /// LightProbeGridHelper does: its group 0 then binds it.
+    pub(crate) grid: bool,
     pub(crate) module: wgpu::ShaderModule,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
@@ -429,15 +432,22 @@ impl ShaderProgram {
     ) -> Self {
         let device = &renderer.device;
         let mut source = format!(
-            "{}\n{}\n{wgsl}\n{output}\n{projection}\n{surface}",
+            "{}\n{}\n{}\n{wgsl}\n{output}\n{projection}\n{surface}",
             include_str!("shaders/cube_uv.wgsl"),
             concat!(
                 include_str!("shaders/deformation.wgsl"),
                 "\n",
                 include_str!("shaders/output.wgsl"),
                 "\n",
-                include_str!("shader.wgsl")
-            )
+                include_str!("shader.wgsl"),
+            ),
+            // Custom programs leave the LightProbeGrid atlas out of their group 0
+            // unless they sample it ( shaders/probe_grid.wgsl ).
+            if wgsl.contains("grid_atlas") {
+                include_str!("shaders/probe_grid.wgsl")
+            } else {
+                "fn probe_grid_irradiance(position:vec3<f32>,normal:vec3<f32>)->vec3<f32>{return vec3(0.0);}"
+            }
         );
         if projection.contains("fn project_motion(") {
             source.push_str("\nvar<private> tsl_motion_original_position:vec3<f32>;\n");
@@ -576,12 +586,14 @@ impl ShaderProgram {
                 &layout,
                 mrt.map_or(1, |(count, _)| count),
                 viewport != 0,
+                wgsl.contains("grid_atlas"),
             );
         }
         Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
             custom_environment: wgsl.contains("fn environment_sample("),
             viewport,
+            grid: wgsl.contains("grid_atlas"),
             outputs: mrt.map_or(1, |(count, _)| count),
             module,
             layout,

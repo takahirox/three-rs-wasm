@@ -52,6 +52,10 @@ and `LightProbeGridHelper`:
 
   The first visible baked grid applies. Only one grid is supported per
   render.
+  The atlas binds only into the built-in materials' pipelines and into custom
+  shader programs that sample it ( `shaders/probe_grid.wgsl` ). Other custom
+  programs leave it out, so their pipelines stay within the 16 sampled
+  textures per stage that WebGPU guarantees ( SwiftShader's limit ).
 - **Helper.** `light_probe_grid::helper()` draws one instanced sphere per
   probe, shaded by its SH irradiance, as LightProbeGridHelper does.
 

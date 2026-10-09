@@ -126,6 +126,7 @@ pub struct Renderer {
     pub queue: wgpu::Queue,
     layout: wgpu::BindGroupLayout,
     viewport_layout: wgpu::BindGroupLayout,
+    custom_layout: wgpu::BindGroupLayout,
     shader: wgpu::ShaderModule,
     pub(crate) shadows: crate::shadow::ShadowRenderer,
     geometry: RefCell<crate::geometry_gpu::Cache>,
@@ -217,6 +218,7 @@ impl Renderer {
         extra: &wgpu::BindGroupLayout,
         outputs: u32,
         viewport: bool,
+        grid: bool,
     ) {
         let layout = self
             .device
@@ -225,8 +227,10 @@ impl Renderer {
                 bind_group_layouts: &[
                     if viewport {
                         &self.viewport_layout
-                    } else {
+                    } else if grid {
                         &self.layout
+                    } else {
+                        &self.custom_layout
                     },
                     extra,
                 ],
@@ -426,7 +430,15 @@ impl Renderer {
             ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
             count: None,
         });
-        entries.push(wgpu::BindGroupLayoutEntry {
+        entries.extend(crate::deformation_gpu::layout_entries());
+        // Custom shader programs: no LightProbeGrid atlas ( shaders/probe_grid.wgsl )
+        // unless they sample it; the viewport layout leaves it out too.
+        let custom_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("custom draw layout"),
+            entries: &entries,
+        });
+        let mut grid_entries = entries.clone();
+        grid_entries.push(wgpu::BindGroupLayoutEntry {
             binding: 27,
             visibility: wgpu::ShaderStages::FRAGMENT,
             ty: wgpu::BindingType::Texture {
@@ -436,16 +448,15 @@ impl Renderer {
             },
             count: None,
         });
-        entries.push(wgpu::BindGroupLayoutEntry {
+        grid_entries.push(wgpu::BindGroupLayoutEntry {
             binding: 28,
             visibility: wgpu::ShaderStages::FRAGMENT,
             ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
             count: None,
         });
-        entries.extend(crate::deformation_gpu::layout_entries());
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("draw layout"),
-            entries: &entries,
+            entries: &grid_entries,
         });
         for binding in [25, 26] {
             entries.push(wgpu::BindGroupLayoutEntry {
@@ -501,7 +512,9 @@ impl Renderer {
                         "\n",
                         include_str!("shaders/output.wgsl"),
                         "\n",
-                        include_str!("shader.wgsl")
+                        include_str!("shader.wgsl"),
+                        "\n",
+                        include_str!("shaders/probe_grid.wgsl")
                     ),
                     crate::shader::DEFAULT_HOOKS,
                     crate::shader::DEFAULT_OUTPUT,
@@ -558,6 +571,7 @@ impl Renderer {
             queue,
             layout,
             viewport_layout,
+            custom_layout,
             shader,
             pipelines: RefCell::new(HashMap::new()),
             textures: RefCell::new(Default::default()),
@@ -2319,16 +2333,18 @@ impl Renderer {
             resource: wgpu::BindingResource::Sampler(&self.ltc_sampler),
         });
         let probe_grid = self.probe_grid.borrow();
-        bindings.push(wgpu::BindGroupEntry {
-            binding: 27,
-            resource: wgpu::BindingResource::TextureView(
-                probe_grid.as_ref().map_or(&self.grid_fallback, |g| &g.view),
-            ),
-        });
-        bindings.push(wgpu::BindGroupEntry {
-            binding: 28,
-            resource: wgpu::BindingResource::Sampler(&self.grid_sampler),
-        });
+        if custom.is_none_or(|p| p.grid && p.viewport == 0) {
+            bindings.push(wgpu::BindGroupEntry {
+                binding: 27,
+                resource: wgpu::BindingResource::TextureView(
+                    probe_grid.as_ref().map_or(&self.grid_fallback, |g| &g.view),
+                ),
+            });
+            bindings.push(wgpu::BindGroupEntry {
+                binding: 28,
+                resource: wgpu::BindingResource::Sampler(&self.grid_sampler),
+            });
+        }
         // The LTC tables, or the VSM layers in their place ( they share the sampler's
         // linear magnification at level 0 ).
         bindings.push(wgpu::BindGroupEntry {
@@ -2360,6 +2376,8 @@ impl Renderer {
         let uses_viewport = custom.is_some_and(|p| p.viewport != 0);
         let draw_layout = if uses_viewport {
             &self.viewport_layout
+        } else if custom.is_some_and(|p| !p.grid) {
+            &self.custom_layout
         } else {
             &self.layout
         };
