@@ -231,29 +231,24 @@ pub(super) fn page_css(scopes: &[&str], color: &str) -> String {
     )
 }
 
-/// Quaternion.setFromRotationMatrix() with three.js's operations ( columns
-/// x, y, z of the rotation ).
-pub(super) fn quaternion_from_rotation(
-    x: crate::math::Vector3,
-    y: crate::math::Vector3,
-    z: crate::math::Vector3,
-) -> crate::math::Quaternion {
-    let (m11, m12, m13) = (x.x, y.x, z.x);
-    let (m21, m22, m23) = (x.y, y.y, z.y);
-    let (m31, m32, m33) = (x.z, y.z, z.z);
-    let trace = m11 + m22 + m33;
-    let (qx, qy, qz, qw) = if trace > 0. {
-        let s = 0.5 / (trace + 1.).sqrt();
-        ((m32 - m23) * s, (m13 - m31) * s, (m21 - m12) * s, 0.25 / s)
-    } else if m11 > m22 && m11 > m33 {
-        let s = 2. * (1. + m11 - m22 - m33).sqrt();
-        (0.25 * s, (m12 + m21) / s, (m13 + m31) / s, (m32 - m23) / s)
-    } else if m22 > m33 {
-        let s = 2. * (1. + m22 - m11 - m33).sqrt();
-        ((m12 + m21) / s, 0.25 * s, (m23 + m32) / s, (m13 - m31) / s)
-    } else {
-        let s = 2. * (1. + m33 - m11 - m22).sqrt();
-        ((m13 + m31) / s, (m23 + m32) / s, 0.25 * s, (m21 - m12) / s)
-    };
-    crate::math::Quaternion::from_xyzw(qx, qy, qz, qw)
+pub(super) use crate::math::quaternion_from_rotation;
+
+/// The svg pages' SVGRenderer: window-sized at the top of the page, over the
+/// gallery's canvas and the target of its pointer input; `color_management`
+/// is THREE.ColorManagement.enabled.
+pub(super) fn svg_overlay(id: &str, color_management: bool) -> Result<crate::svg::SVGRenderer> {
+    let mut renderer = crate::svg::SVGRenderer::new()?;
+    renderer.color_management = color_management;
+    let (w, h) = window_size();
+    renderer.set_size(w, h);
+    let e = renderer.dom_element();
+    e.set_id(id);
+    let _ = e.set_attribute("data-pointer-target", "");
+    let _ = e.set_attribute("style", "position:absolute;top:0px;left:0px;display:block");
+    document()?
+        .body()
+        .ok_or(Error::Invalid("body"))?
+        .append_child(e)
+        .map_err(|_| Error::Invalid("svg overlay"))?;
+    Ok(renderer)
 }

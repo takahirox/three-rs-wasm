@@ -100,6 +100,8 @@ const cases={
  css3d_periodictable:{view:'body',times:[0,1,2.5,5],parameters:[],at:5,script:[['click',227,480,5],['wait',6],['wait',9],['click',301,480,9],['wait',11],['click',365,480,13],['wait',14.5],['wait',17],['click',151,480,17],['wait',21]]},
  // The page is CSS only ( no canvas ): the captures take the whole page. The sprites' transforms
  // agree within 1e-6 ( the CSS3D test ); their images resample differently at some edges ( 1.5 % ).
+ svg_lines:{view:'body',times:[0,1,2.5,7],parameters:[],at:7},
+ svg_sandbox:{view:'body',times:[0,.5,1,2.5],parameters:[],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  css3d_mixed:{limits:[.015,.4],view:'body',antialias:true,frameSources:['/reference/three-js/','/web/gallery/'],times:[0,.5,1],parameters:[],at:1,drag:[[30,30],[90,60]],wheel:[30,30,-200]},
  css3d_molecules:{view:'body',frames:40,times:[0,1,2.5],parameters:[[0,0,0],[0,1,1],[0,2,2],[1,'ethanol.pdb',0],[1,'buckyball.pdb',15],[1,'ybco.pdb',14]],at:2.5},
  css3d_sprites:{limits:[.02,.5],view:'body',times:[0,1,3,6,7.5,12,13.5,19],parameters:[],at:19},
@@ -763,6 +765,31 @@ test('CSS2D labels: the elements carry the original inline styles',async({page})
   states[runtime]=list;
  }
  expect(states.rust).toEqual(states.reference);
+});
+
+// SVGRenderer writes the original's paths: every child of the SVG element ( its
+// tag, path data, style, transform and shape rendering ) and the element's
+// background, numbers compared as numbers with the same text around them.
+const svgPages={svg_lines:{times:[0,1,2.5,7]},svg_sandbox:{times:[0,.5,1,2.5],script:[['drag',256,256,300,280,0,2.5],['wait',2.5],['wait',3],['wheel',256,256,-200,3],['wait',3.5]]}};
+for(const [id,spec] of Object.entries(svgPages))test(`SVG paths: ${id} writes the original's elements`,async({page})=>{
+ test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
+ const states={};
+ for(const runtime of ['reference','rust']){
+  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+  await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:60000});
+  const read=()=>page.evaluate(async()=>{for(let i=0;i<2;i++)await new Promise(r=>requestAnimationFrame(r));const svg=document.querySelector('svg');return [svg.style.backgroundColor,svg.getAttribute('viewBox'),...[...svg.children].map(e=>[e.tagName,e.getAttribute('d'),e.getAttribute('style'),e.getAttribute('transform'),e.getAttribute('shape-rendering')].join('|'))];});
+  const list=[];
+  for(const t of spec.times){await frames(page,runtime,t,1);list.push(await read());}
+  // The original places SVGObjects with the camera as its controls left it, one
+  // frame behind; the gallery renders on input, so each step settles for two frames.
+  for(const step of spec.script??[]){const time=await act(page,runtime,step);if(time!==null){await frames(page,runtime,time,2);list.push(await read());}}
+  states[runtime]=list;
+ }
+ const split=s=>String(s).split(/(-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)/);
+ expect(states.rust.length).toBe(states.reference.length);
+ for(const [k,ref] of states.reference.entries()){const rust=states.rust[k];expect(rust.length,`state ${k}`).toBe(ref.length);
+  for(const [j,value] of ref.entries()){const a=split(value),b=split(rust[j]);expect(b.length,`state ${k} element ${j}`).toBe(a.length);
+   for(let x=0;x<a.length;x++){if(x%2===0)expect(b[x],`state ${k} element ${j}`).toBe(a[x]);else{const p=Number(a[x]),q=Number(b[x]);expect(Math.abs(p-q),`state ${k} element ${j}: ${b.slice(Math.max(0,x-3),x+4).join('')} vs ${a.slice(Math.max(0,x-3),x+4).join('')}`).toBeLessThanOrEqual(1e-6*Math.max(1,Math.abs(p)));}}}}
 });
 
 // CSS3DRenderer writes the original's transforms: the camera element's perspective, matrix3d

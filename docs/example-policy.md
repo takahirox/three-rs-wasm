@@ -435,9 +435,10 @@ fetch the same URLs at run time instead of redistributing the files, the only
 gallery examples that do so ([webgl-only-examples.md](webgl-only-examples.md)).
 
 `css2d_label` and the `css3d_*` pages run on the Rust CSS2DRenderer and
-CSS3DRenderer ([css2d-renderer.md](css2d-renderer.md)), which keep three.js's
-API names and write the same element styles. `css3d_youtube`, which embeds
-YouTube, and the SVG pages are not ported.
+CSS3DRenderer ([css2d-renderer.md](css2d-renderer.md)), and the `svg_*` pages
+on the Rust SVGRenderer ([svg-renderer.md](svg-renderer.md)). These keep
+three.js's API names and write the same element styles and paths.
+`css3d_youtube`, which embeds YouTube, is not ported.
 
 Pages that parse their assets with libraries outside three.js keep those
 libraries' output, baked from the versions the pages load: FBX through the

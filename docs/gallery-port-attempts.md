@@ -613,7 +613,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [css3d_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sandbox.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [css3d_sprites](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_sprites.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [css3d_youtube](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/css3d_youtube.html) | blocked-at-port-review | CSS3DObject; CSS3DRenderer; TrackballControls |
-| [svg_lines](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html) | blocked-at-port-review | SVGRenderer; LineDashedMaterial |
-| [svg_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html) | blocked-at-port-review | BufferGeometryLoader; MeshLambertMaterial; SpriteMaterial; Sprite |
+| [svg_lines](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
+| [svg_sandbox](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_furnace_test](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_furnace_test.html) | blocked-at-port-review | MeshPhysicalMaterial; PMREMGenerator |
 | [misc_uv_tests](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/misc_uv_tests.html) | runnable-partial | tests/browser/texture-volumes.spec.js |

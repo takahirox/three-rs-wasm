@@ -15453,7 +15453,7 @@
       "id": "svg_lines",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html",
       "source_sha256": "06254ef0c89426b185af6e1afd2cbfce58492fc6ed2008a3d991a84ba7f758ec",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "svg_lines",
         "source_sha256": "06254ef0c89426b185af6e1afd2cbfce58492fc6ed2008a3d991a84ba7f758ec",
@@ -15476,7 +15476,7 @@
       "id": "svg_sandbox",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html",
       "source_sha256": "13290b6bf201692f756e81d5b7b3bdfab69540406b56fd8cb91bcd51d150246d",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "svg_sandbox",
         "source_sha256": "13290b6bf201692f756e81d5b7b3bdfab69540406b56fd8cb91bcd51d150246d",

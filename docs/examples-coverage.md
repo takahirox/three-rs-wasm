@@ -2,7 +2,7 @@
 
 Pinned reference: `148ef33ecb6d2502ff796d4554abd1549c95d519`. 607 examples inspected.
 
-43 excluded for explicit WebGL APIs or equivalent WebGPU examples; 564 retained. 473 partial Rust ports; 91 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
+43 excluded for explicit WebGL APIs or equivalent WebGPU examples; 564 retained. 475 partial Rust ports; 89 not yet ported. Only runnable ports appear in the gallery list. No complete-gallery reproduction claim.
 
 All entries, source hashes, source-line evidence and exclusions: [`catalog.json`](../web/gallery/catalog.json).
 
@@ -66,6 +66,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_deferred | `tests/browser/compute-examples.spec.js` | ティーポット、周回する8個の点光源と球、6枚の半透明両面板をroyal_esplanadeのUltraHDR空の下に置く構成をRustで再現。deferredでは不透明物を照明なしでMRT（拡散色、ビュー位置と金属度、ビュー法線と粗さ）に描き、全画面クアッドで空の背景の上に照明を解決し、不透明深度の上に半透明板を描いて合成する。forwardでは1パスで照明付きに描く。空は背景用にCubeMapNodeの1024²キューブ、照明用にlodMax 9のPMREMとする。各段はページからthree.js r186が生成するWGSL（deferred/）を実行する。性能の完全な同等性は未保証。 |
 | webgpu_compute_cloth | `tests/browser/compute-examples.spec.js` | 6点で吊った31×31のVerlet布を、triNoise3Dの風と揺れる球で動かす構成をRustで再現。毎フレーム1/360秒の固定ステップ（1フレーム最大1/60秒）で、ステップごとにばね力と頂点力のコンピュートパスを常駐ストレージバッファ上で実行する。布メッシュは頂点ステージで位置を読み、MeshPhysicalNodeMaterialのシーンで両面描画する。ワイヤーフレームではばねをインスタンス線、頂点をインスタンススプライトで描く。各段はページからthree.js r186が生成するWGSL（compute_cloth/、未使用のsubgroup組み込みを除く）を実行する。シミュレーションは要求フレームごとに進む。性能の完全な同等性は未保証。 |
 | css3d_periodictable | `tests/browser/texture-volumes.spec.js` | 118個の元素のカードをCSS3DObjectとして、ランダムな位置からページのボタンで表・球・螺旋・格子の配置へtween.js（Exponential.InOut、2〜4秒）で動かすシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。元素の表とページのスタイルはオリジナルのページから写したもの。CSSレンダラーの要素に付けたTrackballControls（500〜6000）に対応。ページにキャンバスはない。性能の完全な同等性は未保証。 |
+| svg_lines | `tests/browser/texture-volumes.spec.js` | 50分割の円を、幅10・ランダムな色の3本のLineBasicMaterialの線（大きさ1/3・2/3・1）と青い破線（大きさ2）で描き、シーンごと時計で回すシーンを、SVGRenderer（Rust版、src/svg.rs）でSVGのパスとして再現。オリジナルと同じく色管理を無効にしている。投影はオリジナルのSVGRendererと同じくCPUで行う。性能の完全な同等性は未保証。 |
+| svg_sandbox | `tests/browser/texture-volumes.spec.js` | QRコード（Lambert・頂点カラー）、立方体2つ、平面、円柱、1フレーム0.01ラジアンずつ回る100枚のランダムな三角形、スプライト50個、SVGの円50個とhexagon.svgを、環境光と平行光の下でSVGRenderer（Rust版、src/svg.rs、低品質）がSVGのパスとして書くシーンを再現。SVG要素に付けた減衰付きOrbitControlsに対応。オリジナルと同じく色管理を無効にし、投影はCPUで行う。Spriteはこのレンダラー用に追加したノードで、GPUのレンダラーはまだ描かない。性能の完全な同等性は未保証。 |
 | css3d_mixed | `tests/browser/texture-volumes.spec.js` | ギャラリー自身（./#webgl_animation_keyframes）を表示するiframeをCSS3DRenderer（Rust版、src/css3d.rs）で配置し、NoBlending・premultipliedAlpha・不透明度0の切り抜き平面を通して、枠と部屋の線を描いたキャンバス（alpha、NeutralToneMapping）の下に見せるシーンを再現。キャンバスはポインターを通さず、その下の全画面要素で減衰付きOrbitControlsが動き、iframeが見える所ではiframeが操作を受ける。iframeの中身はオリジナル（three.jsのexamples一覧）ではなくこのギャラリー。性能の完全な同等性は未保証。 |
 | css3d_molecules | `tests/browser/texture-volumes.spec.js` | PDBの分子を、元素ごとに色付けしたボール画像のCSS3DSprite（原子）と、交差する2枚の細いdivのCSS3DObject（結合）で表し、ルートごと回転させるシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。GUIの表示種別と分子（17種）、CSSレンダラーの要素に付けたTrackballControlsに対応。ページにキャンバスはない。性能の完全な同等性は未保証。 |
 | css3d_sprites | `tests/browser/texture-volumes.spec.js` | 512個の画像のCSS3DSpriteを、6秒ごとに波の平面・立方体・ランダムな雲・球の配置へtween.js（Exponential.InOut、2〜4秒）で動かし、大きさを脈動させるシーンをCSS3DRenderer（Rust版、src/css3d.rs）で再現。CSSレンダラーの要素に付けたTrackballControlsに対応。ページにキャンバスはなく、ギャラリーのキャンバスはCSSレンダラーの下でページと同じ白で塗るだけ。性能の完全な同等性は未保証。 |

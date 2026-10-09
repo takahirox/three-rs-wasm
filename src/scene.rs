@@ -20,6 +20,13 @@ pub struct Object3D {
     index: usize,
     generation: u64,
 }
+impl Object3D {
+    /// The node's slot: increasing in creation order, as Object3D.id is.
+    #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
+    pub(crate) fn index(&self) -> usize {
+        self.index
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct Layers {
@@ -155,6 +162,16 @@ pub enum NodeKind {
     CSS3DObject(crate::css3d::CSS3DObject),
     /// A CSS3DObject facing the camera.
     CSS3DSprite(crate::css3d::CSS3DSprite),
+    /// A camera-facing quad of a SpriteMaterial. SVGRenderer draws it; the
+    /// GPU renderer does not.
+    Sprite(Sprite),
+    /// SVGRenderer's SVG element at the node's projected position.
+    SVGObject(crate::svg::SVGObject),
+}
+/// Sprite: its material.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct Sprite {
+    pub material: Arc<crate::material::SpriteMaterial>,
 }
 
 type RenderCallback = Arc<dyn Fn(&mut Scene, Object3D) + Send + Sync>;
@@ -808,7 +825,8 @@ impl Scene {
         }
         x = x.normalize();
         let y = z.cross(x);
-        let mut q = Quaternion::from_mat3(&Matrix3::from_cols(x, y, z));
+        // Quaternion.setFromRotationMatrix(), as Object3D.lookAt() sets it.
+        let mut q = crate::math::quaternion_from_rotation(x, y, z);
         if let Some(parent) = node.parent {
             let m = self.get(parent)?.matrix_world;
             let rotation = Matrix3::from_cols(

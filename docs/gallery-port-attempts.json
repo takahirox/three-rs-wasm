@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 473,
+    "runnable-partial": 475,
     "excluded": 43,
-    "blocked-at-port-review": 91
+    "blocked-at-port-review": 89
   },
   "examples": [
     {
@@ -45140,10 +45140,10 @@
     },
     {
       "id": "svg_lines",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html",
       "source_sha256": "06254ef0c89426b185af6e1afd2cbfce58492fc6ed2008a3d991a84ba7f758ec",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "addon-api",
@@ -45190,10 +45190,10 @@
     },
     {
       "id": "svg_sandbox",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html",
       "source_sha256": "13290b6bf201692f756e81d5b7b3bdfab69540406b56fd8cb91bcd51d150246d",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

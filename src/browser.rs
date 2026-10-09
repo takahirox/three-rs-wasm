@@ -181,7 +181,9 @@ mod sss;
 mod stereo_loaders;
 mod subdivision;
 mod subsurface;
+mod svg_lines;
 mod svg_loader;
+mod svg_sandbox;
 mod taa;
 mod teapot_data;
 mod terrain_loaders;
@@ -384,7 +386,7 @@ impl State {
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
             461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
-            478,
+            478, 479, 480,
         ]
         .contains(&self.example)
         {
@@ -1167,7 +1169,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472, 473, 474, 475, 476, 477, 478,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480,
                         ]
                         .contains(&example),
                         format: if [
@@ -1191,7 +1193,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472, 473, 474, 475, 476, 477, 478,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480,
                         ]
                         .contains(&example)
                         {
@@ -1223,7 +1225,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=478).contains(&example) {
+            if (7..=480).contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

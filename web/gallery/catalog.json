@@ -35261,7 +35261,7 @@
     {
       "id": "svg_lines",
       "category": "svg",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_lines.html",
       "source_sha256": "06254ef0c89426b185af6e1afd2cbfce58492fc6ed2008a3d991a84ba7f758ec",
@@ -35283,7 +35283,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 479,
+        "source": "src/browser/svg_lines.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "50分割の円を、幅10・ランダムな色の3本のLineBasicMaterialの線（大きさ1/3・2/3・1）と青い破線（大きさ2）で描き、シーンごと時計で回すシーンを、SVGRenderer（Rust版、src/svg.rs）でSVGのパスとして再現。オリジナルと同じく色管理を無効にしている。投影はオリジナルのSVGRendererと同じくCPUで行う。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/renderers/SVGRenderer.js"
@@ -35292,7 +35299,7 @@
     {
       "id": "svg_sandbox",
       "category": "svg",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/svg_sandbox.html",
       "source_sha256": "13290b6bf201692f756e81d5b7b3bdfab69540406b56fd8cb91bcd51d150246d",
@@ -35330,7 +35337,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 480,
+        "source": "src/browser/svg_sandbox.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "QRコード（Lambert・頂点カラー）、立方体2つ、平面、円柱、1フレーム0.01ラジアンずつ回る100枚のランダムな三角形、スプライト50個、SVGの円50個とhexagon.svgを、環境光と平行光の下でSVGRenderer（Rust版、src/svg.rs、低品質）がSVGのパスとして書くシーンを再現。SVG要素に付けた減衰付きOrbitControlsに対応。オリジナルと同じく色管理を無効にし、投影はCPUで行う。Spriteはこのレンダラー用に追加したノードで、GPUのレンダラーはまだ描かない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

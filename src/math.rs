@@ -125,6 +125,28 @@ impl Color {
     }
 }
 
+/// Quaternion.setFromRotationMatrix() with three.js's operations, from the
+/// rotation's columns.
+pub fn quaternion_from_rotation(x: Vector3, y: Vector3, z: Vector3) -> Quaternion {
+    let (m11, m12, m13) = (x.x, y.x, z.x);
+    let (m21, m22, m23) = (x.y, y.y, z.y);
+    let (m31, m32, m33) = (x.z, y.z, z.z);
+    let trace = m11 + m22 + m33;
+    let (qx, qy, qz, qw) = if trace > 0. {
+        let s = 0.5 / (trace + 1.).sqrt();
+        ((m32 - m23) * s, (m13 - m31) * s, (m21 - m12) * s, 0.25 / s)
+    } else if m11 > m22 && m11 > m33 {
+        let s = 2. * (1. + m11 - m22 - m33).sqrt();
+        (0.25 * s, (m12 + m21) / s, (m13 + m31) / s, (m32 - m23) / s)
+    } else if m22 > m33 {
+        let s = 2. * (1. + m22 - m11 - m33).sqrt();
+        ((m12 + m21) / s, 0.25 * s, (m23 + m32) / s, (m13 - m31) / s)
+    } else {
+        let s = 2. * (1. + m33 - m11 - m22).sqrt();
+        ((m13 + m31) / s, (m23 + m32) / s, 0.25 * s, (m21 - m12) / s)
+    };
+    Quaternion::from_xyzw(qx, qy, qz, qw)
+}
 pub fn srgb_to_linear(v: f64) -> f64 {
     if v < 0.04045 {
         v / 12.92

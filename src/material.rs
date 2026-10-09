@@ -532,6 +532,25 @@ impl Default for LineBasicMaterial {
         }
     }
 }
+/// SpriteMaterial: a sprite's color, opacity and rotation.
+#[derive(Clone, Debug, Serialize)]
+pub struct SpriteMaterial {
+    pub properties: MaterialProperties,
+    pub rotation: f64,
+    pub size_attenuation: bool,
+}
+impl Default for SpriteMaterial {
+    fn default() -> Self {
+        Self {
+            properties: MaterialProperties {
+                transparent: true,
+                ..Default::default()
+            },
+            rotation: 0.,
+            size_attenuation: true,
+        }
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct PointsMaterial {
     pub properties: MaterialProperties,

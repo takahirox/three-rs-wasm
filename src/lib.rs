@@ -41,6 +41,7 @@ pub mod renderer;
 pub mod scene;
 pub mod shader;
 pub mod shadow;
+pub mod svg;
 mod texture_gpu;
 pub mod time;
 mod transmission;

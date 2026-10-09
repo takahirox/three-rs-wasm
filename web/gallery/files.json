@@ -493,6 +493,10 @@
     "css3d_sandbox",
     "css3d_sprites"
   ],
+  "svg": [
+    "svg_lines",
+    "svg_sandbox"
+  ],
   "tests": [
     "misc_uv_tests"
   ]
