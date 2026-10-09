@@ -1679,9 +1679,13 @@ impl Demo {
                 near: 0.1,
                 far: 1000.,
                 elapsed: 0.,
+                // Boxed: the Sponza loaders' futures would otherwise grow every
+                // example's create future past the wasm stack.
                 content: Content::LightprobesSponza(Box::new(
-                    super::lightprobes_sponza::Demo::create(scene, camera, example, renderer)
-                        .await?,
+                    Box::pin(super::lightprobes_sponza::Demo::create(
+                        scene, camera, example, renderer,
+                    ))
+                    .await?,
                 )),
             }),
             482 => Ok(Self {
@@ -1690,7 +1694,10 @@ impl Demo {
                 far: 1000.,
                 elapsed: 0.,
                 content: Content::VxgiSponza(Box::new(
-                    super::vxgi_sponza::Demo::create(scene, camera, example, renderer).await?,
+                    Box::pin(super::vxgi_sponza::Demo::create(
+                        scene, camera, example, renderer,
+                    ))
+                    .await?,
                 )),
             }),
             333 => Ok(Self {
