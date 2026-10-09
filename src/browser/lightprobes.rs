@@ -51,13 +51,13 @@ const SHADOW_FS: &str = include_str!("godrays/shadow_fs.wgsl");
 const OUTPUT_VS: &str = include_str!("cubemap_dynamic/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("cubemap_dynamic/output_fs.wgsl");
 const REPACK_FS: [&str; 7] = [
-    wgsl!("repack_0_fs"),
-    wgsl!("repack_1_fs"),
-    wgsl!("repack_2_fs"),
-    wgsl!("repack_3_fs"),
-    wgsl!("repack_4_fs"),
-    wgsl!("repack_5_fs"),
-    wgsl!("repack_6_fs"),
+    include_str!("../shaders/light_probe_grid/repack_0_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_1_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_2_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_3_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_4_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_5_fs.wgsl"),
+    include_str!("../shaders/light_probe_grid/repack_6_fs.wgsl"),
 ];
 /// PointShadowNode's WebGPU cube faces: directions and ups.
 const FACES: [([f64; 3], [f64; 3]); 6] = [
@@ -1112,8 +1112,8 @@ impl Demo {
         let sh_pipeline = raw_pipeline(
             r,
             "lightprobes SH",
-            wgsl!("sh_vs"),
-            wgsl!("sh_fs"),
+            include_str!("../shaders/light_probe_grid/sh_vs.wgsl"),
+            include_str!("../shaders/light_probe_grid/sh_fs.wgsl"),
             &[],
             FLOAT,
             1,
@@ -1124,7 +1124,7 @@ impl Demo {
             init(
                 "lightprobes SH render",
                 &pack(
-                    wgsl!("sh_fs"),
+                    include_str!("../shaders/light_probe_grid/sh_fs.wgsl"),
                     "renderStruct",
                     &[
                         ("cameraWorldMatrix", &m4(Matrix4::IDENTITY)),
@@ -1141,7 +1141,7 @@ impl Demo {
             init(
                 "lightprobes SH object",
                 &pack(
-                    wgsl!("sh_fs"),
+                    include_str!("../shaders/light_probe_grid/sh_fs.wgsl"),
                     "objectStruct",
                     &[
                         ("nodeUniform0", &[1.]),
@@ -1157,7 +1157,7 @@ impl Demo {
                 raw_pipeline(
                     r,
                     "lightprobes repack",
-                    wgsl!("repack_vs"),
+                    include_str!("../shaders/light_probe_grid/repack_vs.wgsl"),
                     fs,
                     &[],
                     HALF,

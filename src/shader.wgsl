@@ -24,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,probe_grid:array<vec4<f32>,3>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -50,6 +50,29 @@ struct Uniforms {
 @group(0) @binding(20) var extension_maps:texture_2d_array<f32>;
 @group(0) @binding(25) var viewport_color: texture_2d<f32>;
 @group(0) @binding(26) var viewport_depth: texture_2d<f32>;
+@group(0) @binding(27) var grid_atlas: texture_3d<f32>;
+@group(0) @binding(28) var grid_sampler: sampler;
+// LightProbeGridNode: the atlas's L2 SH at the normal-offset position, as
+// irradiance ( u.probe_grid: min and intensity, max and falloff, counts ).
+fn probe_grid_irradiance(position:vec3<f32>,normal:vec3<f32>)->vec3<f32>{
+ if u.probe_grid[2].w<0.5 {return vec3(0.0);}
+ let mn=u.probe_grid[0].xyz;let mx=u.probe_grid[1].xyz;let res=u.probe_grid[2].xyz;
+ let range=mx-mn;let rm1=res-1.0;let spacing=range/rm1;
+ let p=position+normal*spacing*0.5;
+ let uvw=clamp((p-mn)/range,vec3(0.0),vec3(1.0))*rm1/res+vec3(0.5,0.5,0.5)/res;
+ let base=uvw.z*res.z+1.0;let padded=res.z+2.0;let depth=padded*7.0;
+ var s:array<vec4<f32>,7>;
+ for(var t=0;t<7;t++){s[t]=textureSampleLevel(grid_atlas,grid_sampler,vec3(uvw.xy,(base+padded*f32(t))/depth),0.0);}
+ let sh=array<vec3<f32>,9>(s[0].xyz,vec3(s[0].w,s[1].xy),vec3(s[1].zw,s[2].x),s[2].yzw,s[3].xyz,vec3(s[3].w,s[4].xy),vec3(s[4].zw,s[5].x),s[5].yzw,s[6].xyz);
+ let n=normal;
+ let e=sh[0]*0.886227+sh[1]*1.023328*n.y+sh[2]*1.023328*n.z+sh[3]*1.023328*n.x+sh[4]*0.858086*n.x*n.y+sh[5]*0.858086*n.y*n.z+sh[6]*(n.z*n.z*0.743125-0.247708)+sh[7]*0.858086*n.x*n.z+sh[8]*0.429043*(n.x*n.x-n.y*n.y);
+ var irradiance=max(e,vec3(0.0))*u.probe_grid[0].w;
+ if u.probe_grid[1].w>0.0 {
+  let outside=max(mn-position,vec3(0.0))+max(position-mx,vec3(0.0));
+  irradiance*=1.0-smoothstep(0.0,u.probe_grid[1].w,length(outside));
+ }
+ return irradiance;
+}
 fn extension_uv(index:u32,surface:VertexOut)->vec2<f32> {
     let t=u.extension_matrices;let i=index*3u;
     let uv=select(surface.uv,surface.uv1,t[i+2u].w>0.5);
@@ -489,9 +512,10 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         direct_energy=vec3(1.0)+f0*(1.0/(dfg.x+dfg.y)-1.0);
     }
     var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
-    var result=ao*indirect_energy*diffuse*(u.ambient.xyz+surface.light_map)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
+    let grid_irradiance=probe_grid_irradiance(in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));
+    var result=ao*indirect_energy*diffuse*(u.ambient.xyz+surface.light_map+grid_irradiance)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
     var total_diffuse=result-surface.emissive;
-    sheen_light+=ao*u.ambient.xyz*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
+    sheen_light+=ao*(u.ambient.xyz+grid_irradiance)*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
         let nv=clamp(dot(n,v),0.0,1.0);
         let dfg=textureSampleLevel(dfg_map,environment_sampler,vec2(roughness,nv),0.0).rg;

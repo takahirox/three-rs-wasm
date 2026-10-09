@@ -412,8 +412,9 @@ tolerances are scoped to two causes:
 The compute reduce and MaterialX loader batch
 ([compute-reduce-materialx-examples.md](compute-reduce-materialx-examples.md))
 ports two WebGPU examples, compared against the WebGPU renderer at the default
-thresholds. The two Sponza examples are not added: the model's license does
-not grant redistribution of its files.
+thresholds. The Sponza examples fetch the model at run time, as the pages
+do, because its license does not grant redistribution
+([sponza-examples.md](sponza-examples.md)).
 
 WebGL pages whose same-named r186 WebGPU example is a different scene
 ([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only

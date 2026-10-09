@@ -8763,7 +8763,7 @@
       "id": "webgpu_lightprobes_sponza",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes_sponza.html",
       "source_sha256": "654cb9404fb2006858f5d66d53060cd8d730160c73068c0546dd9a9552937086",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_lightprobes_sponza",
         "source_sha256": "654cb9404fb2006858f5d66d53060cd8d730160c73068c0546dd9a9552937086",

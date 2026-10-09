@@ -54,13 +54,15 @@ test('unported examples show source evidence rather than a fake reproduction',as
  await page.goto('/web/gallery/example.html?id=unknown');await expect(page.locator('#diagnostic')).toContainText('Unknown example');
 });
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
- test.setTimeout(120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
+ // Sponza ( 481 ) downloads about 50 MB from glTF-Sample-Assets at run time.
+ const remote=[481].includes(entry.port.example);
+ test.setTimeout(remote?600000:120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
  // Audio needs a user gesture before it loads, as the original's start button does.
  if(entry.port.example===139)await viewer.getByRole('button',{name:'Play',exact:true}).click();
  // The photosensitivity warning starts the glitch example.
  if(entry.port.example===342)await viewer.locator('#startButton').click();
- await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan([16,28,38,153,156,157,193,195,206,213,220,224,226,235,236,237,240,242,255,277,283,296,308,313,314,315,318,319].includes(entry.port.example) ? 0 : 2);
+ await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:remote?480000:90000}).toBeGreaterThan([16,28,38,153,156,157,193,195,206,213,220,224,226,235,236,237,240,242,255,277,283,296,308,313,314,315,318,319].includes(entry.port.example) ? 0 : 2);
  await expect(viewer.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');await expect(canvas).not.toHaveAttribute('data-error',/.+/);
  if(entry.port.example===6)await expect(canvas).toHaveAttribute('data-meshes','30');
  // misc_uv_tests draws its UVsDebug canvases; the WebGPU canvas stays out of view.

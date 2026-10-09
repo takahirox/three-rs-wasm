@@ -42,7 +42,7 @@ macro_rules! wgsl {
 }
 const OUTPUT_VS: &str = include_str!("volume_traa/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("volume_traa/output_fs.wgsl");
-const FULLSCREEN_VS: &str = include_str!("lightprobes/repack_vs.wgsl");
+const FULLSCREEN_VS: &str = include_str!("../shaders/light_probe_grid/repack_vs.wgsl");
 /// GTAONode's per-frame slice rotations and step offsets.
 const TEMPORAL_ROTATIONS: [f64; 6] = [60., 300., 180., 240., 120., 0.];
 const SPATIAL_OFFSETS: [f64; 4] = [0., 0.5, 0.25, 0.75];

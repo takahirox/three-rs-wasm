@@ -28,6 +28,7 @@ pub mod event;
 pub mod geometry;
 mod geometry_gpu;
 pub mod identity;
+pub mod light_probe_grid;
 pub mod material;
 pub mod math;
 pub mod mipmap;

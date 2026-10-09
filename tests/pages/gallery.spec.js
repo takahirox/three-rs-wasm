@@ -11,8 +11,9 @@ test('site entry opens the gallery under the project prefix', async ({page}) => 
 for (const entry of catalog.examples.filter(e => e.port)) {
   test(`published gallery: ${entry.id}`, async ({page}) => {
     // The city bakes 60 probe-cube faces per frame beside its 4096² shadow and 4×
-    // MSAA scene: on the software GPU its first frames take minutes.
-    const heavy = [449].includes(entry.port.example);
+    // MSAA scene: on the software GPU its first frames take minutes. Sponza
+    // ( 481 ) downloads about 50 MB from glTF-Sample-Assets at run time.
+    const heavy = [449, 481].includes(entry.port.example);
     test.setTimeout(heavy ? 600000 : 120000);
     const errors = [];
     const badResponses = [];

@@ -22,6 +22,7 @@ enum Content {
     UvTests(Box<super::uv_tests::Demo>),
     ClippingStencil(Box<super::clipping_stencil::Demo>),
     Ascii(Box<super::ascii::Demo>),
+    LightprobesSponza(Box<super::lightprobes_sponza::Demo>),
     SvgSandbox(Box<super::svg_sandbox::Demo>),
     SvgLines(Box<super::svg_lines::Demo>),
     Css3dMixed(Box<super::css3d_mixed::Demo>),
@@ -1672,6 +1673,16 @@ impl Demo {
                     super::svg_sandbox::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
+            481 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 1000.,
+                elapsed: 0.,
+                content: Content::LightprobesSponza(Box::new(
+                    super::lightprobes_sponza::Demo::create(scene, camera, example, renderer)
+                        .await?,
+                )),
+            }),
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2562,6 +2573,9 @@ impl Demo {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
         if let Content::SvgSandbox(demo) = &mut self.content {
@@ -4220,6 +4234,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4776,6 +4793,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::SvgSandbox(demo) = &mut self.content {
@@ -5423,6 +5443,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -5974,6 +5997,10 @@ impl Demo {
             return Ok(());
         }
         if let Content::Ascii(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6652,6 +6679,9 @@ impl Demo {
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -7275,6 +7305,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ascii(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::SvgSandbox(demo) = &mut self.content {

@@ -113,6 +113,9 @@ struct Uniforms {
     output: [f32; 4],
     /// Per light, its shadow map's extent in the atlas layer ( x, y ).
     shadow_scales: [[f32; 4]; 8],
+    /// The LightProbeGrid: its box min and intensity, max and falloff, and
+    /// probe counts with w 1 when a baked grid applies.
+    probe_grid: [[f32; 4]; 3],
 }
 
 pub use crate::render_target::{RenderTarget, RenderTarget3D, RenderTargetOptions};
@@ -146,6 +149,11 @@ pub struct Renderer {
     pub(crate) dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
     ltc_sampler: wgpu::Sampler,
+    /// The 1×1×1 atlas bound without a grid, the grid's linear sampler, and
+    /// the atlas of the render in progress.
+    grid_fallback: wgpu::TextureView,
+    grid_sampler: wgpu::Sampler,
+    probe_grid: RefCell<Option<Arc<crate::light_probe_grid::GridAtlas>>>,
     physical_maps: RefCell<crate::physical_maps::Cache>,
     backgrounds: RefCell<crate::background::PipelineCache>,
     presentations:
@@ -317,7 +325,16 @@ impl Renderer {
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC
                         | wgpu::Features::RG11B10UFLOAT_RENDERABLE
                         | wgpu::Features::SUBGROUP),
-                required_limits: wgpu::Limits::default(),
+                // The lit materials bind up to 17 sampled textures ( a viewport
+                // material with a LightProbeGrid ): more than the default 16
+                // where the adapter offers them.
+                required_limits: wgpu::Limits {
+                    max_sampled_textures_per_shader_stage: adapter
+                        .limits()
+                        .max_sampled_textures_per_shader_stage
+                        .clamp(16, 32),
+                    ..wgpu::Limits::default()
+                },
                 ..Default::default()
             })
             .await
@@ -409,6 +426,22 @@ impl Renderer {
             ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
             count: None,
         });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 27,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture {
+                sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                view_dimension: wgpu::TextureViewDimension::D3,
+                multisampled: false,
+            },
+            count: None,
+        });
+        entries.push(wgpu::BindGroupLayoutEntry {
+            binding: 28,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+            count: None,
+        });
         entries.extend(crate::deformation_gpu::layout_entries());
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("draw layout"),
@@ -487,6 +520,28 @@ impl Renderer {
             min_filter: wgpu::FilterMode::Nearest,
             ..Default::default()
         });
+        let grid_fallback = device
+            .create_texture(&wgpu::TextureDescriptor {
+                label: Some("LightProbeGrid fallback"),
+                size: wgpu::Extent3d {
+                    width: 1,
+                    height: 1,
+                    depth_or_array_layers: 1,
+                },
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D3,
+                format: wgpu::TextureFormat::Rgba16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING,
+                view_formats: &[],
+            })
+            .create_view(&Default::default());
+        let grid_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("LightProbeGrid sampler"),
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
         let transmission_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("viewport refraction sampler"),
             mag_filter: wgpu::FilterMode::Nearest,
@@ -512,6 +567,9 @@ impl Renderer {
             dfg,
             ltc,
             ltc_sampler,
+            grid_fallback,
+            grid_sampler,
+            probe_grid: RefCell::new(None),
             physical_maps: Default::default(),
             backgrounds: RefCell::new(Default::default()),
             presentations: RefCell::new(Default::default()),
@@ -990,6 +1048,43 @@ impl Renderer {
         for root in scene.roots() {
             visible.extend(scene.traverse(root, true)?);
         }
+        // The first visible baked LightProbeGrid ( LightProbeGridNode ), else
+        // the first baked one, whose atlas helpers show without its light.
+        let mut probe_grid = [[0f32; 4]; 3];
+        let mut grid_atlas = None;
+        let mut grids = vec![];
+        for root in scene.roots() {
+            for h in scene.traverse(root, false)? {
+                if let NodeKind::LightProbeGrid(g) = &scene.get(h)?.kind
+                    && g.atlas.is_some()
+                {
+                    grids.push(h);
+                }
+            }
+        }
+        grids.sort_by_key(|h| !visible.contains(h));
+        for &h in grids.iter().take(1) {
+            let n = scene.get(h)?;
+            let applies = visible.contains(&h);
+            if let NodeKind::LightProbeGrid(g) = &n.kind
+                && let Some(atlas) = &g.atlas
+            {
+                let (min, max) = g.bounds(n.position);
+                let f = |v: f64| v as f32;
+                probe_grid = [
+                    [f(min.x), f(min.y), f(min.z), f(g.intensity)],
+                    [f(max.x), f(max.y), f(max.z), f(g.falloff)],
+                    [
+                        g.resolution[0] as f32,
+                        g.resolution[1] as f32,
+                        g.resolution[2] as f32,
+                        f32::from(u8::from(applies)),
+                    ],
+                ];
+                grid_atlas = Some(atlas.clone());
+            }
+        }
+        *self.probe_grid.borrow_mut() = grid_atlas;
         for &h in &visible {
             let n = scene.get(h)?;
             if !n.layers.test(camera_layers) {
@@ -1712,6 +1807,7 @@ impl Renderer {
                     shadow_filters: shadows.filters,
                     shadow_cascades: shadows.cascades,
                     shadow_scales: shadows.scales,
+                    probe_grid,
                 };
                 // WebGL keeps the ALPHA_TO_COVERAGE clipping shader without MSAA: edge
                 // fragments with nonzero clip opacity survive. WebGPU outputs clip hard.
@@ -2221,6 +2317,17 @@ impl Renderer {
         bindings.push(wgpu::BindGroupEntry {
             binding: 24,
             resource: wgpu::BindingResource::Sampler(&self.ltc_sampler),
+        });
+        let probe_grid = self.probe_grid.borrow();
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 27,
+            resource: wgpu::BindingResource::TextureView(
+                probe_grid.as_ref().map_or(&self.grid_fallback, |g| &g.view),
+            ),
+        });
+        bindings.push(wgpu::BindGroupEntry {
+            binding: 28,
+            resource: wgpu::BindingResource::Sampler(&self.grid_sampler),
         });
         // The LTC tables, or the VSM layers in their place ( they share the sampler's
         // linear magnification at level 0 ).

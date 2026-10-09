@@ -5,16 +5,27 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 
 pub(super) async fn fetch(url: &str) -> Result<Vec<u8>> {
+    finish_fetch(start_fetch(url)?).await
+}
+/// A request already sent: requests started together download in parallel,
+/// as the browser's loaders issue them.
+pub(super) struct Started(String, JsFuture);
+pub(super) fn start_fetch(url: &str) -> Result<Started> {
     let url = super::asset_url(url)?;
-    let response = JsFuture::from(
+    let request = JsFuture::from(
         web_sys::window()
             .ok_or(Error::Invalid("window"))?
             .fetch_with_str(&url),
-    )
-    .await
-    .map_err(|e| Error::Asset(format!("{e:?}")))?
-    .dyn_into::<web_sys::Response>()
-    .map_err(|_| Error::Invalid("response"))?;
+    );
+    Ok(Started(url, request))
+}
+pub(super) async fn finish_fetch(started: Started) -> Result<Vec<u8>> {
+    let Started(url, request) = started;
+    let response = request
+        .await
+        .map_err(|e| Error::Asset(format!("{e:?}")))?
+        .dyn_into::<web_sys::Response>()
+        .map_err(|_| Error::Invalid("response"))?;
     if !response.ok() {
         return Err(Error::Asset(format!("HTTP {}: {url}", response.status())));
     }
@@ -226,9 +237,20 @@ pub(super) async fn load_asset_bytes(
     let asset = prepared.asset;
     let buffers = prepared.buffers;
     let mut images = Vec::new();
+    let mut requests = asset
+        .images()
+        .map(|image| match image.source() {
+            gltf::image::Source::Uri { uri, .. } => Ok(Some(start_fetch(&external(base, uri)?)?)),
+            gltf::image::Source::View { .. } => Ok(None),
+        })
+        .collect::<Result<Vec<_>>>()?
+        .into_iter();
     for image in asset.images() {
+        let request = requests.next().flatten();
         let data = match image.source() {
-            gltf::image::Source::Uri { uri, .. } => fetch(&external(base, uri)?).await?,
+            gltf::image::Source::Uri { .. } => {
+                finish_fetch(request.ok_or(Error::Invalid("image request"))?).await?
+            }
             gltf::image::Source::View { view, .. } => {
                 let buffer = buffers
                     .get(view.buffer().index())

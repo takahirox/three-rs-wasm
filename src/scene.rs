@@ -167,6 +167,8 @@ pub enum NodeKind {
     Sprite(Sprite),
     /// SVGRenderer's SVG element at the node's projected position.
     SVGObject(crate::svg::SVGObject),
+    /// LightProbeGrid: diffuse irradiance for lit materials inside its box.
+    LightProbeGrid(Box<crate::light_probe_grid::LightProbeGrid>),
 }
 /// Sprite: its material.
 #[derive(Clone, Debug, Default, Serialize)]

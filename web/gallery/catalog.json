@@ -18924,7 +18924,7 @@
     {
       "id": "webgpu_lightprobes_sponza",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_lightprobes_sponza.html",
       "source_sha256": "654cb9404fb2006858f5d66d53060cd8d730160c73068c0546dd9a9552937086",
@@ -18968,7 +18968,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 481,
+        "source": "src/browser/lightprobes_sponza.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、影付きのSunLight・SkyMesh・ACESの下でFirstPersonControlsとともに描き、10×7×7のLightProbeGrid（エンジン機能として移植、src/light_probe_grid.rs）を1フレーム4プローブずつ2パスでGPUベイクして拡散GIを加えるシーンを再現。GUIのGI・光源・影・プローブ数・バウンス・プローブ表示に対応。Inspectorのパネルは未移植。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/FirstPersonControls.js",
         "three/addons/helpers/LightProbeGridHelper.js",

@@ -88,6 +88,8 @@ const cases={
  // A resolution change rebakes the grid; with the probes shown the rebake also captures the
  // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
  // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
+ // Sponza loads from glTF-Sample-Assets; each capture renders 250 frames, the bake's four probes per frame.
+ webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,frames:250,times:[0],parameters:[[0,false,0],[0,true,1],[9,true,1],[10,.5,.5],[9,false,0],[1,0,0],[8,0,0],[5,4,4]],at:0},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The original compiles its pipelines asynchronously and presents stale frames until they are ready.
@@ -162,7 +164,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 // MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
 // At device pixel ratio 2 the 1,024 instanced horses' 4× MSAA edges reach 0.51% of the
 // pixels ( the same with the previous commit's build ).
-const msaaLimits={webgpu_instancing_morph:[.006,.6],webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
+const msaaLimits={webgpu_lightprobes_sponza:[.035,1.2],webgpu_instancing_morph:[.006,.6],webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));

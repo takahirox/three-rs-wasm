@@ -578,8 +578,10 @@ impl ShadowRenderer {
             return Err(Error::Invalid("shadow map size"));
         }
         let mut cached = self.target.borrow_mut();
+        // The atlas only grows: a pass with fewer shadow cameras ( a bake's
+        // directional light between cascaded frames ) reuses its first layers.
         if cached.as_ref().is_none_or(|t| {
-            t.texture.width() != size || t.texture.depth_or_array_layers() != cameras.len() as u32
+            t.texture.width() != size || t.texture.depth_or_array_layers() < cameras.len() as u32
         }) {
             let texture = depth_texture(device, size, cameras.len() as u32);
             let view = texture.create_view(&wgpu::TextureViewDescriptor {
@@ -604,6 +606,7 @@ impl ShadowRenderer {
             self.rendered.set(false);
         }
         let target = cached.as_ref().expect("shadow target");
+        let atlas_layers = target.texture.depth_or_array_layers() as usize;
         atlas.view = target.view.clone();
         if let Some(v) = self.vsm.borrow().as_ref()
             && vsm_layers.iter().any(Option::is_some)
@@ -889,7 +892,7 @@ impl ShadowRenderer {
         // Keep slots of casters culled this frame (they return as the light moves);
         // drop only removed nodes and layers beyond the current shadow cameras.
         slots.retain(|key, _| {
-            used.contains(key) || (key.0 < cameras.len() && scene.get(key.1).is_ok())
+            used.contains(key) || (key.0 < atlas_layers && scene.get(key.1).is_ok())
         });
         queue.submit([encoder.finish()]);
         self.rendered.set(true);

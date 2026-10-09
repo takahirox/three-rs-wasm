@@ -86,9 +86,8 @@ drags and zoom.
   textures. The port shares one texture.
 - The Inspector's panels are not ported.
 
-## Not added
+## Sponza
 
 `webgpu_lightprobes_sponza` and `webgpu_vxgi_sponza` load Sponza from
-glTF-Sample-Assets. Its files are under the CRYENGINE Limited License
-Agreement, which does not grant redistribution of the asset files. They are
-not vendored, and the two examples remain unported.
+glTF-Sample-Assets at run time instead of redistributing it
+([sponza-examples.md](sponza-examples.md)).
