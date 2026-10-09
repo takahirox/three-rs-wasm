@@ -388,7 +388,7 @@ mod renderer {
     /// farthest position from it.
     fn bounding_sphere(positions: &[f64]) -> (V3, f64) {
         let (mut min, mut max) = ([f64::INFINITY; 3], [f64::NEG_INFINITY; 3]);
-        for p in positions.chunks_exact(3) {
+        for p in positions.as_chunks::<3>().0 {
             for k in 0..3 {
                 min[k] = min[k].min(p[k]);
                 max[k] = max[k].max(p[k]);
@@ -404,7 +404,7 @@ mod renderer {
             ]
         };
         let mut max_radius_sq = 0f64;
-        for p in positions.chunks_exact(3) {
+        for p in positions.as_chunks::<3>().0 {
             let d = sub(center, [p[0], p[1], p[2]]);
             max_radius_sq = max_radius_sq.max(dot(d, d));
         }
@@ -1111,7 +1111,9 @@ mod renderer {
                         let colors = g.attributes.get("color").map(numbers).unwrap_or_default();
                         let normal_matrix = normal_matrix(&model);
                         let vertices: Vec<Vertex> = positions
-                            .chunks_exact(3)
+                            .as_chunks::<3>()
+                            .0
+                            .iter()
                             .map(|p| {
                                 let position = [p[0], p[1], p[2]];
                                 let world = apply3(&model, position);
@@ -1194,7 +1196,9 @@ mod renderer {
                         };
                         let positions = numbers(position);
                         let vertices: Vec<V3> = positions
-                            .chunks_exact(3)
+                            .as_chunks::<3>()
+                            .0
+                            .iter()
                             .map(|p| [p[0], p[1], p[2]])
                             .collect();
                         let worlds: Vec<V3> = vertices.iter().map(|&p| apply3(&model, p)).collect();
@@ -1261,7 +1265,7 @@ mod renderer {
                             }
                             m => (m.properties().color, m.properties().opacity, None),
                         };
-                        for q in numbers(position).chunks_exact(3) {
+                        for q in numbers(position).as_chunks::<3>().0 {
                             let v = apply4(&mvp, [q[0], q[1], q[2], 1.]);
                             push_point(
                                 &mut elements,
