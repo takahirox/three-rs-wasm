@@ -444,6 +444,9 @@ pub struct Scene {
     pub environment_intensity: f64,
     pub environment_rotation: f64,
     pub background_environment: bool,
+    /// An equirectangular background texture of its own, as
+    /// `scene.background = texture` beside a different `scene.environment`.
+    pub background_map: Option<Arc<crate::environment::EnvironmentMap>>,
     /// With `background_environment`: sample the PMREM cube-UV atlas at the
     /// blurriness, as for `scene.background = pmremRenderTarget.texture`.
     pub background_pmrem: bool,
@@ -478,6 +481,7 @@ impl Default for Scene {
             environment_intensity: 1.0,
             environment_rotation: 0.0,
             background_environment: false,
+            background_map: None,
             background_pmrem: false,
             background_outputs: Vec::new(),
             background_blur: 0.0,

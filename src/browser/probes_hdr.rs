@@ -31,7 +31,10 @@ struct GainMap {
 }
 /// A JPEG decoded by the browser and drawn to a 2D canvas at `size`, as the
 /// loader's `drawImage` / `getImageData` do (the gain map is scaled by it).
-async fn canvas_pixels(bytes: &[u8], size: Option<(u32, u32)>) -> Result<(u32, u32, Vec<u8>)> {
+pub(super) async fn canvas_pixels(
+    bytes: &[u8],
+    size: Option<(u32, u32)>,
+) -> Result<(u32, u32, Vec<u8>)> {
     let fail = |e: wasm_bindgen::JsValue| Error::Asset(format!("UltraHDR image: {e:?}"));
     let cast = |_| Error::Invalid("UltraHDR image type");
     let parts = js_sys::Array::new();

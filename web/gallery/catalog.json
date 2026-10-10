@@ -9695,7 +9695,7 @@
     {
       "id": "webgl_renderer_pathtracer",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_renderer_pathtracer.html",
       "source_sha256": "44eed0eceac5fed0da348732afe0012e917b930778adb7047cd9f97935f5c647",
@@ -9735,7 +9735,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 485,
+        "source": "src/browser/pathtracer.rs",
+        "test": "tests/browser/pathtracer.spec.js",
+        "limitations": [
+          "three-gpu-pathtracer 0.0.24のWebGLPathTracerでLDrawのXウイング（7140）を放射状にフェードする金属の床の上でパストレースする構成をRustで再現。LDrawLoader（ldraw_loader.rs）、LDrawUtils.mergeObject、ページのマテリアル変更（粗さ×0.25、半透明部品の透過MeshPhysicalMaterial化）、PathTracingSceneGeneratorのマージとSAHのMeshBVH（three-mesh-bvh 0.9.10）をRustで行い、頂点・BVH・マテリアル・属性・乱数（層化サンプルとブルーノイズ）・床・グラデーション背景の各データテクスチャはページのアップロードとバイト単位で一致する。環境はUltraHDRのroyal_esplanadeをPMREMのcube UVとBlurredEnvMapGeneratorでぼかしてGPUから読み戻し、EquirectHdrInfoの重要度サンプリング表を作る（読み戻しはANGLEとDawnのフィルタの丸め差で最終桁が異なる）。PhysicalPathTracingMaterial・PMREM・ClampedInterpolationMaterialはページのGLSLをnaga（tools/pathtracer/）でWGSLへ変換して実行し、3×3タイルを1フレーム1枚ずつ蓄積する。WebGPUは浮動小数点ターゲットのブレンドを持たないため、NormalBlendingの蓄積は同じ積をタイルごとのパスで計算する。WebGLと同じく負の底のpowはexp2( y log2( x ) )（NaN）として評価する。サンプルが3に達するまでとフェードイン中はシーンのラスタ描画（ぼかした環境、グラデーション背景、ACES Filmic）にフォールバックする。OrbitControlsの操作でのリセット、enable、pause、toneMapping、transparentBackground（BlendMaterialによるアルファ蓄積とチェッカーボード）、resolutionScale、tiles、床の粗さと金属度、画像のダウンロードに対応。WebGL専用の例のため、ANGLEとDawnの浮動小数点演算の差によるパスのノイズ差とラスタ描画の透過部品の差を許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three-gpu-pathtracer",

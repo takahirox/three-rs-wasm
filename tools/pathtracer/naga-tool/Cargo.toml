@@ -1,0 +1,7 @@
+[package]
+name = "naga-tool"
+version = "0.1.0"
+edition = "2021"
+[workspace]
+[dependencies]
+naga = { version = "26.0.0", features = ["glsl-in", "wgsl-out"] }

@@ -373,16 +373,23 @@ fn hash_edge(a: Vector3, b: Vector3) -> EdgeHash {
 }
 /// toNormalizedRay: the direction and the origin projected onto the line through 0.
 fn normalized_ray(a: Vector3, b: Vector3) -> (Vector3, Vector3) {
-    let d = b - a;
-    let length = d.length();
-    let direction = if length == 0. { d } else { d / length };
+    let direction = normalize(b - a);
     let scalar = a.dot(direction);
     (a + direction * -scalar, direction)
 }
 fn face_normal(v: &[Vector3]) -> Vector3 {
-    let n = (v[1] - v[0]).cross(v[2] - v[1]);
-    let length = n.length();
-    if length == 0. { n } else { n / length }
+    normalize((v[1] - v[0]).cross(v[2] - v[1]))
+}
+/// Vector3.normalize: divideScalar( length() || 1 ), a multiplication by the
+/// inverse.
+fn normalize(v: Vector3) -> Vector3 {
+    let length = v.length();
+    v * (1.
+        / if length == 0. || length.is_nan() {
+            1.
+        } else {
+            length
+        })
 }
 /// smoothNormals: share normals across face edges that are neither hard
 /// lines nor sharper than about 75 degrees. Returns the normal vectors the
@@ -501,8 +508,7 @@ fn smooth_normals(faces: &mut [Face], lines: &[Segment], check_sub_segments: boo
         }
     }
     for &v in &created {
-        let length = vectors[v].length();
-        vectors[v] /= if length == 0. { 1. } else { length };
+        vectors[v] = normalize(vectors[v]);
     }
     // Resolve each face's wrappers to their final vectors.
     let resolved: Vec<Vector3> = wrappers.iter().map(|&v| vectors[v]).collect();
@@ -853,6 +859,9 @@ impl Loader {
         Ok(())
     }
     /// getData( fileName ): a copy whose vertices may be transformed.
+    /// cloneResult copies neither `doubleSided` nor the normals: a copied
+    /// face is one-sided, though `totalFaces` still counts both sides ( the
+    /// unwritten tail of the geometry stays zero ).
     fn data(&self, name: &str) -> Result<Info> {
         let mut info = self
             .parsed
@@ -864,6 +873,7 @@ impl Loader {
         for face in &mut info.faces {
             face.normals.iter_mut().for_each(|n| *n = None);
             face.face_normal = None;
+            face.double_sided = false;
         }
         Ok(info)
     }

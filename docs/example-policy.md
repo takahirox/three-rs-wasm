@@ -424,6 +424,12 @@ the largest id and then holds the default thresholds.
 bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
 ([ballpool.md](ballpool.md)).
 
+`webgl_renderer_pathtracer` is WebGL-only. It runs three-gpu-pathtracer's
+PhysicalPathTracingMaterial, converted from the GLSL the page compiles, over
+data textures that must match the original's uploads byte for byte. Its image
+tolerance covers ANGLE's and Dawn's float rounding, which makes individual
+paths diverge into scattered noise ([pathtracer.md](pathtracer.md)).
+
 `webgpu_tsl_transpiler` runs the r186 transpiler's port in Rust behind the
 page's own Monaco editors, and its output must match the original's text
 exactly ([tsl-transpiler.md](tsl-transpiler.md)).

@@ -207,7 +207,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_raycaster_sprite](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_sprite.html) | runnable-partial | tests/browser/interactive-objects.spec.js |
 | [webgl_raycaster_texture](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_raycaster_texture.html) | runnable-partial | tests/browser/texture-flares.spec.js |
 | [webgl_read_float_buffer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_read_float_buffer.html) | runnable-partial | tests/browser/picking-buffers.spec.js |
-| [webgl_renderer_pathtracer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_renderer_pathtracer.html) | blocked-at-port-review | LDrawLoader; MeshPhysicalMaterial; DataTexture |
+| [webgl_renderer_pathtracer](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_renderer_pathtracer.html) | runnable-partial | tests/browser/pathtracer.spec.js |
 | [webgl_refraction](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_refraction.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_rtt](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_rtt.html) | runnable-partial | tests/browser/shadow-rtt.spec.js |
 | [webgl_sculpt](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_sculpt.html) | blocked-at-port-review | GLTFExporter; Sculptor |

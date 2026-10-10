@@ -4702,7 +4702,7 @@
       "id": "webgl_renderer_pathtracer",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_renderer_pathtracer.html",
       "source_sha256": "44eed0eceac5fed0da348732afe0012e917b930778adb7047cd9f97935f5c647",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_renderer_pathtracer",
         "source_sha256": "44eed0eceac5fed0da348732afe0012e917b930778adb7047cd9f97935f5c647",

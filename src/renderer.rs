@@ -908,7 +908,10 @@ impl Renderer {
             // WebGLRenderer's transmission pass clears to white at alpha 0.5
             // ( premultiplied ) when the clear alpha is below one.
             let clear = (scene.background, scene.background_alpha);
-            if scene.background_alpha < 1.0 && !scene.background_environment {
+            if scene.background_alpha < 1.0
+                && !scene.background_environment
+                && scene.background_map.is_none()
+            {
                 scene.background = Color::WHITE;
                 scene.background_alpha = 0.5;
             }
@@ -1017,37 +1020,48 @@ impl Renderer {
         let frustum = Frustum::from_projection(view_projection);
         let camera_layers = scene.get(camera)?.layers;
         let camera_position = camera_world.w_axis.truncate();
-        let background = if scene.background_environment && scene.environment.is_some() {
-            self.environment.borrow().as_ref().map(|(_, env)| {
-                crate::background::prepare(
-                    &mut self.backgrounds.borrow_mut(),
-                    &self.device,
-                    &self.queue,
-                    target,
-                    env,
-                    projection,
-                    camera_world,
-                    [
-                        scene.environment_rotation,
-                        scene.background_blur,
-                        if env.source_is_cube_uv || scene.background_pmrem {
-                            -1.0
-                        } else if scene.background_equirectangular {
-                            1.0
-                        } else {
-                            0.0
-                        },
-                        scene.background_intensity,
-                        scene.exposure,
-                        if scene.background_tone_mapped {
-                            scene.output_tone_mapping() as u32 as f64
-                        } else {
-                            0.0
-                        },
-                    ],
-                    &scene.background_outputs,
-                )
-            })
+        let background_map = scene
+            .background_map
+            .as_ref()
+            .map(|map| self.material_environment(map))
+            .transpose()?;
+        let prepare_background = |env: &crate::environment_gpu::GpuEnvironment| {
+            crate::background::prepare(
+                &mut self.backgrounds.borrow_mut(),
+                &self.device,
+                &self.queue,
+                target,
+                env,
+                projection,
+                camera_world,
+                [
+                    scene.environment_rotation,
+                    scene.background_blur,
+                    if env.source_is_cube_uv || scene.background_pmrem {
+                        -1.0
+                    } else if scene.background_equirectangular {
+                        1.0
+                    } else {
+                        0.0
+                    },
+                    scene.background_intensity,
+                    scene.exposure,
+                    if scene.background_tone_mapped {
+                        scene.output_tone_mapping() as u32 as f64
+                    } else {
+                        0.0
+                    },
+                ],
+                &scene.background_outputs,
+            )
+        };
+        let background = if let Some(env) = &background_map {
+            Some(prepare_background(env))
+        } else if scene.background_environment && scene.environment.is_some() {
+            self.environment
+                .borrow()
+                .as_ref()
+                .map(|(_, env)| prepare_background(env))
         } else {
             None
         };

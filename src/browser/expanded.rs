@@ -110,6 +110,7 @@ enum Content {
     Sss(Box<super::sss::Demo>),
     Ssgi(Box<super::ssgi::Demo>),
     Ballpool(Box<super::ballpool::Demo>),
+    Pathtracer(Box<super::pathtracer::Demo>),
     ComputeWater(Box<super::compute_water::Demo>),
     TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
@@ -893,6 +894,15 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::Ssgi(Box::new(
                     super::ssgi::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            485 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::Pathtracer(Box::new(
+                    super::pathtracer::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             484 => Ok(Self {
@@ -2866,6 +2876,9 @@ impl Demo {
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Pathtracer(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -3552,6 +3565,9 @@ impl Demo {
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Pathtracer(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3796,6 +3812,11 @@ impl Demo {
             return Some(target);
         }
         if let Content::Ballpool(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Pathtracer(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -4547,6 +4568,9 @@ impl Demo {
         if let Content::Ballpool(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Pathtracer(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -5114,6 +5138,9 @@ impl Demo {
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
+        if let Content::Pathtracer(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -5427,6 +5454,7 @@ impl Demo {
             Content::GltfNormals(demo) => demo.take_export(),
             Content::RaycasterHelper(demo) => demo.take_export(),
             Content::ExportersVideo(demo) => demo.take_export(renderer),
+            Content::Pathtracer(demo) => demo.take_export(),
             _ => None,
         }
     }
@@ -5766,6 +5794,9 @@ impl Demo {
             demo.key(code, down);
         }
         if let Content::Ballpool(demo) = &mut self.content {
+            demo.key(code, down);
+        }
+        if let Content::Pathtracer(demo) = &mut self.content {
             demo.key(code, down);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -6419,6 +6450,10 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::Pathtracer(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -7016,6 +7051,9 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ballpool(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Pathtracer(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -7650,6 +7688,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ballpool(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Pathtracer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
