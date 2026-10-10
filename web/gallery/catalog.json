@@ -28572,12 +28572,19 @@
     {
       "id": "webgpu_tsl_transpiler",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_transpiler.html",
       "source_sha256": "c81b3adb3ba2f9d5623341de4b331ecd3e291c8c645bcc8e2dedab2fb087f841",
       "requirements": {},
-      "port": null,
+      "port": {
+        "example": 483,
+        "source": "src/transpiler/mod.rs",
+        "test": "tests/browser/tsl-transpiler.spec.js",
+        "limitations": [
+          "GLSLからTSL／WGSLへの変換器（examples/jsm/transpiler/のGLSLDecoder・Linker・TSLEncoder・WGSLEncoder）をRustで再現し、ページと同じMonacoエディタ2枚（CDNから読み込み）とEncoder／Decoderの選択で、入力の1秒後に再変換する。プリプロセッサ（#define・#if・関数マクロ）、トークン化、構文解析、参照の解決、出力の整形まで、出力テキストとエラーメッセージはオリジナルと1文字単位で一致する（three.jsのShaderChunkとexamplesのシェーダーの全GLSL、手書きの構文網羅ケース、壊した入力5,500件で照合）。描画はしないためWebGPUは使わない。"
+        ]
+      },
       "imports": [
         "three/addons/transpiler/GLSLDecoder.js",
         "three/addons/transpiler/TSLEncoder.js",

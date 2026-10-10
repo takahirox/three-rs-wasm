@@ -40,11 +40,16 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  explain(entry?.excluded_reason);
 } else {
  try {
-  if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
+  // The transpiler page renders nothing: it needs no WebGPU.
+  if (!navigator.gpu && entry.port.example !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
   const runtimeRevision = 'probe-gi-1';
-  const {default:init, BrowserApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
+  const {default:init, BrowserApp, tsl_transpile} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
   await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
+  if (entry.port.example === 483) {
+   const {startTranspiler} = await import(`./transpiler.js?v=${runtimeRevision}`);
+   await startTranspiler(tsl_transpile, loading);
+  } else {
   const resize = () => { if(entry.port.example===444){/* scene.js sizes its canvas once: a resize stretches it. */if(canvas.dataset.sized)return;if(canvas.clientWidth)canvas.dataset.sized='1';canvas.width=Math.max(1,Math.floor(canvas.clientWidth*devicePixelRatio));canvas.height=Math.max(1,Math.floor(canvas.clientHeight*devicePixelRatio));app?.request_render();return;} canvas.width = Math.max(1, Math.round(innerWidth * ([132,141,277,282,293,341,343,374,380,396,398,407,417,426,445,482].includes(entry.port.example)?1:entry.port.example===481?Math.min(devicePixelRatio,1.5):devicePixelRatio))); canvas.height = Math.max(1, Math.round(innerHeight * ([132,141,277,282,293,341,343,374,380,396,398,407,417,426,445,482].includes(entry.port.example)?1:entry.port.example===481?Math.min(devicePixelRatio,1.5):devicePixelRatio))); app?.request_render(); };
   if(entry.port.example===139){const {prepareAudio}=await import('./audio.js');await prepareAudio(loading);}
   if (entry.port.example === 444) {
@@ -414,6 +419,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
     settings.addEventListener('input', () => app.point_lights_controls(!document.querySelector('#animate').checked, Number(document.querySelector('#amount').value), Number(document.querySelector('#speed').value)));
    }
    new MutationObserver(() => { if (canvas.dataset.error && !closing) {closing = true; release(); settings.hidden = true; explain(canvas.dataset.error); document.body.dataset.status = 'error';} }).observe(canvas, {attributes:true, attributeFilter:['data-error']});
+  }
   }
  } catch (error) { app?.free(); app = null; explain(String(error)); document.body.dataset.status = 'error'; }
 }

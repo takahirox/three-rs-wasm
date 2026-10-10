@@ -75,6 +75,7 @@ implementation evidence fail; README files alone cannot satisfy a check.
 | `CSS3DRenderer`, `CSS3DObject`, `CSS3DSprite` | `css3d::CSS3DRenderer` ( browser builds ), `NodeKind::CSS3DObject` and `NodeKind::CSS3DSprite`; `render( scene, camera )`, `setSize`, `getSize`, `domElement`, `rotation2D` keep their names and output |
 | `SVGRenderer`, `SVGObject`, `Sprite` | `svg::SVGRenderer` ( browser builds ), `NodeKind::SVGObject` and `NodeKind::Sprite` with `SpriteMaterial`; `render( scene, camera )`, `setSize`, `setQuality`, `domElement` keep their names and output; the GPU renderer does not draw sprites yet |
 | `LightProbeGrid`, `LightProbeGridHelper` | `NodeKind::LightProbeGrid` with `light_probe_grid::bake( baker, renderer, scene, grid, options )` and `light_probe_grid::helper()`; lit materials add its irradiance as LightProbeGridNode does |
+| `Transpiler`, `GLSLDecoder`, `TSLEncoder`, `WGSLEncoder` | `transpiler::transpile( glsl, Encoder::Tsl \| Encoder::Wgsl )`; the output text and error messages are r186's ( [docs/tsl-transpiler.md](docs/tsl-transpiler.md) ) |
 
 Call `Scene::update` before world-space queries; rendering does this automatically.
 Dropping the scene releases its shared resource references. `Scene::dispose`

@@ -30,6 +30,15 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     if(entry.id==='webgpu_compute_audio')await viewer.getByRole('button',{name:'Play',exact:true}).click();
     if(entry.id==='webgl_postprocessing_glitch')await viewer.locator('#startButton').click();
     const canvas = viewer.locator('canvas').first();
+    // The transpiler page draws nothing: it transpiles its editor's GLSL in Rust.
+    if (entry.port.example === 483) {
+      await expect.poll(async () => Number(await viewer.locator('body').getAttribute('data-builds')), {timeout: 90000}).toBeGreaterThan(0);
+      await expect(viewer.locator('#result')).toContainText('Three.js Transpiler r186');
+      expect(errors).toEqual([]);
+      expect(badResponses).toEqual([]);
+      expect(escapedAssets).toEqual([]);
+      return;
+    }
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.
     const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236, 237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319].includes(entry.port.example);

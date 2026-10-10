@@ -439,6 +439,18 @@ impl State {
     }
 }
 
+/// webgpu_tsl_transpiler: `new Transpiler( new GLSLDecoder(), encoder ).parse(
+/// glsl )` with the TSL or WGSL encoder; it throws the original's error message.
+#[wasm_bindgen]
+pub fn tsl_transpile(glsl: &str, encoder: &str) -> std::result::Result<String, JsValue> {
+    let encoder = match encoder {
+        "TSL" => crate::transpiler::Encoder::Tsl,
+        "WGSL" => crate::transpiler::Encoder::Wgsl,
+        other => return Err(JsValue::from_str(&format!("Unknown encoder: {other}"))),
+    };
+    crate::transpiler::transpile(glsl, encoder).map_err(|e| JsValue::from_str(&e))
+}
+
 /// The JavaScript bootstrap owns one app lifetime. Scene state, rendering,
 /// animation and input handling all stay in Rust.
 #[wasm_bindgen]

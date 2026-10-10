@@ -1,0 +1,18 @@
+[
+"struct Light { vec3 color; float intensity; };\nuniform sampler2D map;\nuniform samplerCube env;\nuniform sampler3D vol;\nuniform vec3 tint;\nvarying vec2 vUv;\nLight make(vec3 c) { Light l; l.color = c; return l; }\nvoid main() {\n  vec4 a = texture(map, vUv);\n  vec4 b = texture2D(map, vUv, 1.0);\n  vec4 c = textureLod(map, vUv, 2.0);\n  vec4 d = texelFetch(map, ivec2(1, 2), 0);\n  vec4 e = textureGrad(map, vUv, vec2(0.1), vec2(0.2));\n  vec4 f = textureCube(env, vec3(1.0));\n  vec4 g = texture(vol, vec3(0.5));\n  gl_FragColor = a + b * c - d / e + f + g + vec4(tint, 1.0);\n}\n",
+"int f(int x) { switch (x) { case 0: case 1: return 1; case 2: { x += 2; break; } default: return x; } return 0; }\nfloat g(inout float v, out float w) { v *= 2.0; w = v; return v; }\nfloat h(float a) { a++; ++a; a--; a -= 1.0; return a > 0.0 ? a : -a; }\nfloat h(vec2 a) { return a.x; }\nvoid main() { int i = 0; do { i++; } while (i < 10); while (i > 0) { i--; if (i == 5) continue; } for (int j = 0; j < 4; j += 2) { i += j; } for (float k = 1.0; k <= 8.0; k *= 2.0) { i += int(k); } for (int m = 10; m > 0; m--) {} float arr[3] = float[](1.0, 2.0, 3.0); float b2 = arr[1]; bool t = !true && (false || i != 3) ^^ true; uint u = 3u; int hx = 0xFF; float ex = 1e-3; float neg = -1.0 * -2.0; int bits = (i << 2) | (i >> 1) & ~i ^ 5; i %= 3; i <<= 1; i >>= 1; i &= 7; i |= 8; i ^= 1; float fb = intBitsToFloat(i); int ib = floatBitsToInt(1.0); vec3 vb = uintBitsToFloat(uvec3(1u)); float m2 = mod(2.0, 1.5); vec3 m3 = mod(vec3(1.0), vec3(2.0)); if (fb > 1.0) { discard; } else if (fb < 0.0) { i = 1; } else { i = 2; } gl_FragColor = vec4(gl_FragCoord.xy, inversesqrt(2.0), 1.0); }\n",
+"#define PI 3.14159\n#define SQ(x) ((x)*(x))\n#define ADD(a, b) (a + b)\n#if defined(PI) && PI > 3\nfloat k = PI;\n#elif 0\nfloat k = 0.0;\n#else\nfloat k = 1.0;\n#endif\n#ifdef NOPE\nfloat z;\n#endif\n#ifndef NOPE\nfloat q = SQ(2.0) + ADD(1.0, SQ(3.0));\n#endif\n#if (1 + 2) * 3 == 9 || !defined FOO\nfloat r = 1.0;\n#endif\n#if 010\nfloat bad;\n#endif\n#undef PI\n#if defined PI\nfloat s;\n#endif\n#define LONG 1 + \\\n 2\nfloat t = LONG;\n",
+"float a = 1.0, b = 2.0, c;\nconst int N = 4;\nvec2 v = vec2(1.0, 2.0);\nmat3 m = mat3(1.0);\nfloat x = v.x + v[1] + m[0][1];\nfloat y = (a + b) * c;\nfloat w = a = b;\n",
+"void main() { float x = ; }",
+"void main() { if (x) ; }",
+"float f() { return; }",
+"void main() { for (;;) { break; } }",
+"vec3 f( vec3 p ) { p.x += 1.0; return p; }\nvoid main(){ vec3 q = f(vec3(0.0)); q.xy *= 2.0; q[0] = 1.0; }",
+"void main() { a.b.c(d, e)[f].g = h ? i : j ? k : l; }",
+"float f(float x) {\n  // leading comment\n  /* block */\n  float y = x; // trailing\n  return y;\n}\n// final\n",
+"void main() { int i = 0; i = i++ + ++i; float f = -(1.0); float g = -x; float h = +x; }",
+"struct S { int a };",
+"void f() { _bad = 1; }",
+"void f() { int x = 1 }",
+""
+]

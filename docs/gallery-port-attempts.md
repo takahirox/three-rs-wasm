@@ -515,7 +515,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_tsl_interoperability](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_interoperability.html) | runnable-partial | tests/browser/tsl.spec.js |
 | [webgpu_tsl_procedural_terrain](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_procedural_terrain.html) | runnable-partial | tests/browser/tsl-procedural.spec.js |
 | [webgpu_tsl_raging_sea](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_raging_sea.html) | runnable-partial | tests/browser/tsl-surface.spec.js |
-| [webgpu_tsl_transpiler](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_transpiler.html) | blocked-at-port-review | TSLEncoder; WGSLEncoder; GLSLDecoder; Transpiler |
+| [webgpu_tsl_transpiler](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_transpiler.html) | runnable-partial | tests/browser/tsl-transpiler.spec.js |
 | [webgpu_tsl_vfx_flames](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_flames.html) | runnable-partial | tests/browser/tsl-surface.spec.js |
 | [webgpu_tsl_vfx_linkedparticles](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_linkedparticles.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_tsl_vfx_tornado](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_vfx_tornado.html) | runnable-partial | tests/browser/tsl-surface.spec.js |

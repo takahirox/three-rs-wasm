@@ -419,6 +419,10 @@ writes each voxel's triangle id without ordering, so the original's GI
 differs from itself between runs; its comparison makes both runtimes keep
 the largest id and then holds the default thresholds.
 
+`webgpu_tsl_transpiler` runs the r186 transpiler's port in Rust behind the
+page's own Monaco editors, and its output must match the original's text
+exactly ([tsl-transpiler.md](tsl-transpiler.md)).
+
 WebGL pages whose same-named r186 WebGPU example is a different scene
 ([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only
 examples and compared against WebGLRenderer. Their tolerances cover 4× MSAA

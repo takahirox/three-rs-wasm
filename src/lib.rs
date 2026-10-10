@@ -46,6 +46,7 @@ pub mod svg;
 mod texture_gpu;
 pub mod time;
 mod transmission;
+pub mod transpiler;
 pub mod tsl;
 
 #[derive(Debug, thiserror::Error)]

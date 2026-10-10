@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 477,
+    "runnable-partial": 478,
     "excluded": 43,
-    "blocked-at-port-review": 87
+    "blocked-at-port-review": 86
   },
   "examples": [
     {
@@ -35730,10 +35730,10 @@
     },
     {
       "id": "webgpu_tsl_transpiler",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_transpiler.html",
       "source_sha256": "c81b3adb3ba2f9d5623341de4b331ecd3e291c8c645bcc8e2dedab2fb087f841",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tsl-transpiler.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

@@ -12793,7 +12793,7 @@
       "id": "webgpu_tsl_transpiler",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_transpiler.html",
       "source_sha256": "c81b3adb3ba2f9d5623341de4b331ecd3e291c8c645bcc8e2dedab2fb087f841",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_transpiler",
         "source_sha256": "c81b3adb3ba2f9d5623341de4b331ecd3e291c8c645bcc8e2dedab2fb087f841",

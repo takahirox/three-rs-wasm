@@ -60,6 +60,9 @@ for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime
  const remote=[481,482].includes(entry.port.example);
  test.setTimeout(remote?600000:120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
  await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
+ // The transpiler page draws nothing: it transpiles its editor's GLSL in Rust
+ // ( tests/browser/tsl-transpiler.spec.js compares the output ).
+ if(entry.port.example===483){await expect.poll(async()=>Number(await viewer.locator('body').getAttribute('data-builds')),{timeout:90000}).toBeGreaterThan(0);await expect(viewer.locator('#result')).toContainText('Three.js Transpiler r186');expect(errors).toEqual([]);return;}
  // Audio needs a user gesture before it loads, as the original's start button does.
  if(entry.port.example===139)await viewer.getByRole('button',{name:'Play',exact:true}).click();
  // The photosensitivity warning starts the glitch example.
