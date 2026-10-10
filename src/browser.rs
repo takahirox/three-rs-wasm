@@ -12,6 +12,7 @@ mod attractors;
 mod audio_timing;
 mod audio_visual;
 mod backdrop_water;
+mod ballpool;
 mod batch_lod_bvh;
 mod birds_gltf;
 mod buffer_particles;
@@ -388,7 +389,7 @@ impl State {
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
             461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
-            478, 479, 480, 481, 482,
+            478, 479, 480, 481, 482, 484,
         ]
         .contains(&self.example)
         {
@@ -1157,7 +1158,7 @@ impl BrowserApp {
                             291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
                             343, 344, 345, 346, 349, 354, 355, 358, 359, 361, 362, 363, 365, 368,
                             376, 377, 378, 379, 380, 384, 385, 386, 387, 388, 389, 390, 391, 392,
-                            393, 394, 395, 396, 397, 398, 400,
+                            393, 394, 395, 396, 397, 398, 400, 484,
                         ]
                         .contains(&example)
                         {
@@ -1183,7 +1184,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
                         ]
                         .contains(&example),
                         format: if [
@@ -1207,7 +1208,7 @@ impl BrowserApp {
                             426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482,
+                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
                         ]
                         .contains(&example)
                         {
@@ -1239,7 +1240,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=482).contains(&example) {
+            if (7..=482).contains(&example) || example == 484 {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
@@ -1485,4 +1486,100 @@ impl Drop for BrowserApp {
         s.animation = None;
         s.renderer.device.destroy();
     }
+}
+
+/// The ballpool's rigid-body world ( a port of @perplexdotgg/bounce ) for the
+/// browser oracle, which steps it beside the original package and compares
+/// every body's state bit for bit.
+#[wasm_bindgen]
+pub struct BounceWorld {
+    world: crate::bounce::World,
+}
+
+impl Default for BounceWorld {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[wasm_bindgen]
+impl BounceWorld {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> BounceWorld {
+        use crate::bounce::{Options, Vec3};
+        BounceWorld {
+            world: crate::bounce::World::new(Options {
+                gravity: Vec3::new(0., -9.81, 0.),
+                restitution: 0.4,
+                friction: 0.5,
+                solve_velocity_iterations: 6,
+                solve_position_iterations: 2,
+                linear_damping: 0.1,
+                angular_damping: 0.1,
+            }),
+        }
+    }
+    #[wasm_bindgen(js_name = createStaticBox)]
+    pub fn create_static_box(&mut self, size: &[f64], position: &[f64]) -> usize {
+        let shape = self.world.create_box(size[0], size[1], size[2]);
+        self.world.create_static_body(shape, vec3_of(position))
+    }
+    #[wasm_bindgen(js_name = createSphere)]
+    pub fn create_sphere(&mut self, radius: f64) -> usize {
+        self.world.create_sphere(radius)
+    }
+    #[wasm_bindgen(js_name = createDynamicBody)]
+    pub fn create_dynamic_body(
+        &mut self,
+        shape: usize,
+        position: &[f64],
+        mass: f64,
+        restitution: f64,
+        friction: f64,
+    ) -> usize {
+        self.world
+            .create_dynamic_body(shape, vec3_of(position), mass, restitution, friction)
+    }
+    pub fn respawn(&mut self, body: usize, position: &[f64]) {
+        self.world.respawn(body, vec3_of(position));
+    }
+    #[wasm_bindgen(js_name = applyLinearImpulse)]
+    pub fn apply_linear_impulse(&mut self, body: usize, impulse: &[f64]) {
+        self.world.apply_linear_impulse(body, vec3_of(impulse));
+    }
+    /// advanceTime( step, time ) at `now` ( performance.now() / 1000 ).
+    #[wasm_bindgen(js_name = advanceTime)]
+    pub fn advance_time(&mut self, step: f64, time: f64, now: f64) {
+        self.world.advance_time(step, time, now);
+    }
+    /// position, orientation, isSleeping, linearVelocity, angularVelocity.
+    pub fn state(&self, body: usize) -> Vec<f64> {
+        let b = self.world.body(body);
+        let (p, q, v, w) = (
+            b.position,
+            b.orientation,
+            b.linear_velocity,
+            b.angular_velocity,
+        );
+        vec![
+            p.x,
+            p.y,
+            p.z,
+            q.x,
+            q.y,
+            q.z,
+            q.w,
+            if b.is_sleeping { 1. } else { 0. },
+            v.x,
+            v.y,
+            v.z,
+            w.x,
+            w.y,
+            w.z,
+        ]
+    }
+}
+
+fn vec3_of(v: &[f64]) -> crate::bounce::Vec3 {
+    crate::bounce::Vec3::new(v[0], v[1], v[2])
 }

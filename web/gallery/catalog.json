@@ -25071,7 +25071,7 @@
     {
       "id": "webgpu_postprocessing_ssgi_ballpool",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssgi_ballpool.html",
       "source_sha256": "51ec1128add7de96163176ac19be7a5806aa51780a4551d7885970878a4e84ce",
@@ -25135,7 +25135,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 484,
+        "source": "src/browser/ballpool.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "ボールプール（@perplexdotgg/bounceの剛体ワールドをcrate::bounceとしてRustに移植し、元のパッケージとビット単位で一致することをtests/browser/bounce-physics.spec.jsで検証）を、ポインターに追従する影付き点光源で照らし、webgpu_postprocessing_ssgiと同じSSGI（2スライス、8ステップ）、合成、TRAA、ACES Filmicトーンマッピング（露出0.5）で描く構成をRustで再現。壁は白・赤・緑のMeshPhysicalMaterialの箱（手前の壁は剛体のみ）、ボールはページの10色のインスタンスカラーを持つ1つのInstancedMesh。ポインターの移動でレイ付近のボールを押し、光源を手前の面との交点へ動かし、押下（タッチは2本）で毎フレーム5個を再配置し、リサイズでアスペクトからワールド・箱の幅・ボール数を作り直す。毎フレームのadvanceTime( 1 / 60, dt )とインスタンス行列の更新はページと同じで、シーンパスは現在と前フレームの行列をInstanceNodeと同じ2つのバッファ（1,024個まではuniform配列、それを超えるとインスタンス属性）から読む。各段はページからthree.js r186が生成するWGSL（ballpool/）を実行する。ページはsetPixelRatioを呼ばないため常に画素比1で描く。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "@perplexdotgg/bounce",
         "three/addons/inspector/Inspector.js",

@@ -1426,6 +1426,7 @@ dependencies = [
  "half",
  "image",
  "js-sys",
+ "libm",
  "mikktspace",
  "miniz_oxide 0.8.9",
  "optimesh",

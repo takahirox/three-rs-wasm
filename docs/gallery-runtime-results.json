@@ -11314,7 +11314,7 @@
       "id": "webgpu_postprocessing_ssgi_ballpool",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssgi_ballpool.html",
       "source_sha256": "51ec1128add7de96163176ac19be7a5806aa51780a4551d7885970878a4e84ce",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_postprocessing_ssgi_ballpool",
         "source_sha256": "51ec1128add7de96163176ac19be7a5806aa51780a4551d7885970878a4e84ce",

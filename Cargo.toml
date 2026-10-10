@@ -23,6 +23,7 @@ serde = { version = "1", features = ["derive", "rc"] }
 serde_json = "1"
 thiserror = "2"
 bytemuck = { version = "1", features = ["derive"] }
+libm = "0.2"
 half = { version = "2", features = ["serde", "bytemuck"] }
 wgpu = { version = "26.0.1", default-features = false, features = ["std", "parking_lot", "metal", "vulkan", "dx12", "webgpu", "wgsl", "counters"] }
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "hdr", "webp"] }

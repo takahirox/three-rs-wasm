@@ -109,6 +109,7 @@ enum Content {
     Ssr(Box<super::ssr::Demo>),
     Sss(Box<super::sss::Demo>),
     Ssgi(Box<super::ssgi::Demo>),
+    Ballpool(Box<super::ballpool::Demo>),
     ComputeWater(Box<super::compute_water::Demo>),
     TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
@@ -892,6 +893,15 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::Ssgi(Box::new(
                     super::ssgi::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            484 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::Ballpool(Box::new(
+                    super::ballpool::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
             397 => Ok(Self {
@@ -2853,6 +2863,9 @@ impl Demo {
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::Ballpool(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -3536,6 +3549,9 @@ impl Demo {
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
+        if let Content::Ballpool(demo) = &mut self.content {
+            return demo.render(renderer, scene, camera, target);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
@@ -3775,6 +3791,11 @@ impl Demo {
             return Some(target);
         }
         if let Content::Ssgi(demo) = &self.content
+            && let Some(target) = demo.output()
+        {
+            return Some(target);
+        }
+        if let Content::Ballpool(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
@@ -4523,6 +4544,9 @@ impl Demo {
         if let Content::Ssgi(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::Ballpool(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -5085,6 +5109,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::Ssgi(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::Ballpool(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -5738,6 +5765,9 @@ impl Demo {
         if let Content::Ssgi(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::Ballpool(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -6385,6 +6415,10 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::Ballpool(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -6979,6 +7013,9 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::Ssgi(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::Ballpool(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -7610,6 +7647,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::Ssgi(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::Ballpool(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ComputeWater(demo) = &mut self.content {

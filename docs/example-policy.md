@@ -419,6 +419,11 @@ writes each voxel's triangle id without ordering, so the original's GI
 differs from itself between runs; its comparison makes both runtimes keep
 the largest id and then holds the default thresholds.
 
+`webgpu_postprocessing_ssgi_ballpool` steps a Rust port of the page's
+@perplexdotgg/bounce world, whose bodies must match the original package's
+bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
+([ballpool.md](ballpool.md)).
+
 `webgpu_tsl_transpiler` runs the r186 transpiler's port in Rust behind the
 page's own Monaco editors, and its output must match the original's text
 exactly ([tsl-transpiler.md](tsl-transpiler.md)).

@@ -9,6 +9,7 @@ pub mod animation;
 mod area_light;
 pub mod attribute;
 pub mod batching;
+pub mod bounce;
 #[cfg(target_arch = "wasm32")]
 pub mod browser;
 pub mod camera;

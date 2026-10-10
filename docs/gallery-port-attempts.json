@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 478,
+    "runnable-partial": 479,
     "excluded": 43,
-    "blocked-at-port-review": 86
+    "blocked-at-port-review": 85
   },
   "examples": [
     {
@@ -31557,10 +31557,10 @@
     },
     {
       "id": "webgpu_postprocessing_ssgi_ballpool",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_postprocessing_ssgi_ballpool.html",
       "source_sha256": "51ec1128add7de96163176ac19be7a5806aa51780a4551d7885970878a4e84ce",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
