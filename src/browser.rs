@@ -117,6 +117,7 @@ mod memory_outline;
 mod mesh_batch;
 mod mirror_webgl;
 mod models_modifiers;
+mod morphtargets_webcam;
 mod msaa_renderbuffers;
 mod offscreen;
 mod outline;
@@ -391,7 +392,7 @@ impl State {
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
             461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
-            478, 479, 480, 481, 482, 484, 485, 486,
+            478, 479, 480, 481, 482, 484, 485, 486, 487,
         ]
         .contains(&self.example)
         {
@@ -1187,7 +1188,7 @@ impl BrowserApp {
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
                             470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
-                            485, 486,
+                            485, 486, 487,
                         ]
                         .contains(&example),
                         format: if [
@@ -1212,7 +1213,7 @@ impl BrowserApp {
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
                             470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
-                            485, 486,
+                            485, 486, 487,
                         ]
                         .contains(&example)
                         {
@@ -1244,7 +1245,7 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=482).contains(&example) || [484, 485, 486].contains(&example) {
+            if (7..=482).contains(&example) || [484, 485, 486, 487].contains(&example) {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,

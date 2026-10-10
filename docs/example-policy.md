@@ -424,6 +424,11 @@ the largest id and then holds the default thresholds.
 bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
 ([ballpool.md](ballpool.md)).
 
+`webgl_morphtargets_webcam` runs MediaPipe's FaceLandmarker in the page's
+JavaScript, as the original does, and the scene in Rust. Its comparison
+scripts the landmarker's results and the webcam
+([morphtargets-webcam.md](morphtargets-webcam.md)).
+
 `webgl_loader_gltf_progressive_lod` streams its Needle Cloud models at run time,
 as the page does. Once the LODs settle, every mesh's geometry and texture levels
 must equal the original's ([progressive-lod.md](progressive-lod.md)).

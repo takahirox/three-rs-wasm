@@ -112,6 +112,7 @@ enum Content {
     Ballpool(Box<super::ballpool::Demo>),
     Pathtracer(Box<super::pathtracer::Demo>),
     ProgressiveLod(Box<super::progressive_lod::Demo>),
+    MorphtargetsWebcam(Box<super::morphtargets_webcam::Demo>),
     ComputeWater(Box<super::compute_water::Demo>),
     TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
@@ -913,6 +914,16 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::ProgressiveLod(Box::new(
                     super::progressive_lod::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            487 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 1.,
+                far: 10000.,
+                elapsed: 0.,
+                content: Content::MorphtargetsWebcam(Box::new(
+                    super::morphtargets_webcam::Demo::create(scene, camera, example, renderer)
+                        .await?,
                 )),
             }),
             484 => Ok(Self {
@@ -2892,6 +2903,9 @@ impl Demo {
         if let Content::ProgressiveLod(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -4590,6 +4604,9 @@ impl Demo {
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -5161,6 +5178,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::ProgressiveLod(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -5824,6 +5844,9 @@ impl Demo {
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -6483,6 +6506,10 @@ impl Demo {
             demo.draw(kind, x, y);
             return Ok(());
         }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
@@ -7086,6 +7113,9 @@ impl Demo {
             demo.seek(seconds);
         }
         if let Content::ProgressiveLod(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             demo.seek(seconds);
         }
         if let Content::ComputeWater(demo) = &mut self.content {
@@ -7726,6 +7756,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ProgressiveLod(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::ComputeWater(demo) = &mut self.content {

@@ -131,6 +131,7 @@
     "webgl_modifier_tessellation",
     "webgl_morphtargets_horse",
     "webgl_morphtargets_sphere",
+    "webgl_morphtargets_webcam",
     "webgl_multiple_elements_text",
     "webgl_multiple_scenes_comparison",
     "webgl_multiple_views",

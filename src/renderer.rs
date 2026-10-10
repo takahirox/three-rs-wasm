@@ -1510,7 +1510,10 @@ impl Renderer {
                 let mut u = Uniforms {
                     output: [
                         scene.exposure as f32,
-                        if material.properties().tone_mapped {
+                        // MeshNormalMaterial's shader has no tonemapping_fragment.
+                        if material.properties().tone_mapped
+                            && !matches!(material, Material::Normal(_))
+                        {
                             scene.output_tone_mapping() as u32 as f32
                         } else {
                             0.0

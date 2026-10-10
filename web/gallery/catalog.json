@@ -8915,7 +8915,7 @@
     {
       "id": "webgl_morphtargets_webcam",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_morphtargets_webcam.html",
       "source_sha256": "796c056faaf559a232adae07c74bbf0ca65bea8fee5e71450d11b2d404a83920",
@@ -8957,7 +8957,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 487,
+        "source": "src/browser/morphtargets_webcam.rs",
+        "test": "tests/browser/morphtargets-webcam.spec.js",
+        "limitations": [
+          "MediaPipeのFaceLandmarker（tasks-vision 0.10.35）でWebカメラの顔を追跡し、鏡像のWebカメラ映像の上でFace Capの頭部を動かす構成を再現。MediaPipeはページと同じくJavaScriptで同じモデル・オプション・detectForVideoを実行し、毎アニメーションフレームにRustがその結果を受け取って、姿勢行列をそのままコンテナへ、ブレンドシェイプをblendshapesMap経由でモーフターゲットへ、視線スコアを目の回転（±30°）へ適用する。MediaPipeの仮想カメラ（63°、1〜10000cm）、x方向の鏡像、位置合わせ変換、頭と歯のMeshNormalMaterial、環境光、ACES、錐台を埋めるビデオ平面、映像比率のレターボックス、閉じた状態のGUIと追跡値に追従する52個のスライダーはRustとページで再現。比較テストは両ページに同じ固定の映像と、時刻から決まる結果を返すMediaPipeの代替モジュールを与えて行い、実際のMediaPipeは別のテストで実行する。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35",
         "three",
