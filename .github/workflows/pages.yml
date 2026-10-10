@@ -15,16 +15,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -33,20 +29,48 @@ jobs:
           cargo install wasm-pack --locked --version 0.14.0
           wasm-pack build --target web --out-dir web/pkg --release --no-typescript
           python3 tools/build_site.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .cache/pages/three-rs-wasm
+
+  # The published-gallery check opens every ported example on a software GPU,
+  # so it runs in shards against the uploaded site.
+  check:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: .cache/pages-artifact
+      - name: Unpack the site
+        run: |
+          mkdir -p .cache/pages/three-rs-wasm
+          tar -xf .cache/pages-artifact/artifact.tar -C .cache/pages/three-rs-wasm
       - name: Check published layout and examples
         run: |
           sudo apt-get update
           sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium
-          npx playwright test --config playwright.pages.config.js
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: .cache/pages/three-rs-wasm
+          npx playwright test --config playwright.pages.config.js --shard=${{ matrix.shard }}/4
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: build
+    needs: [build, check]
     runs-on: ubuntu-24.04
     permissions:
       pages: write

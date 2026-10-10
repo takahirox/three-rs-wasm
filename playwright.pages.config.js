@@ -6,6 +6,8 @@ export default defineConfig({...base,
   // pipeline per blend state can keep the GPU busy into the next test's setup.
   timeout: 180000,
   testDir: './tests/pages',
+  // Lets CI shard the per-example tests of the single spec file.
+  fullyParallel: true,
   use: {...base.use, baseURL: 'http://127.0.0.1:28180'},
   webServer: {
     command: 'python3 -m http.server 28180 --bind 127.0.0.1 --directory .cache/pages',
