@@ -156,6 +156,17 @@ impl Cache {
                 })
                 .transpose()?
                 .unwrap_or([0.0; 2]);
+            let uv2 = geometry
+                .attributes
+                .get("uv2")
+                .map(|a| {
+                    Ok::<_, Error>([
+                        a.get_component(index, 0)? as f32,
+                        a.get_component(index, 1)? as f32,
+                    ])
+                })
+                .transpose()?
+                .unwrap_or([0.0; 2]);
             let mut color = [1.0; 4];
             if vertex_colors && let Some(a) = geometry.attributes.get("color") {
                 for (c, value) in color.iter_mut().enumerate().take(a.item_size().min(4)) {
@@ -186,6 +197,7 @@ impl Cache {
                 ],
                 tangent,
                 uv1,
+                uv2,
             });
         }
         if is_points {

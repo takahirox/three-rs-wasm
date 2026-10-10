@@ -35,6 +35,8 @@ pub struct AnimatedGltf {
 pub struct GltfInstance {
     pub roots: Vec<Object3D>,
     pub meshes: Vec<Object3D>,
+    /// Per mesh: its glTF mesh and primitive indices.
+    pub sources: Vec<(usize, usize)>,
     pub nodes: Vec<Object3D>,
     pub clips: Vec<Arc<Clip>>,
 }
@@ -212,6 +214,7 @@ impl AnimatedGltf {
                 scene.add(nodes[i], nodes[child])?;
             }
         }
+        let sources = self.imported.sources.clone();
         let mut meshes = Vec::new();
         let mut mesh_bindings = vec![Vec::new(); nodes.len()];
         for ((name, _, mesh), parent) in self
@@ -258,6 +261,7 @@ impl AnimatedGltf {
             clips.push(Arc::new(Clip { name, tracks }));
         }
         Ok(GltfInstance {
+            sources,
             roots: self.roots.into_iter().map(|i| nodes[i]).collect(),
             nodes,
             meshes,

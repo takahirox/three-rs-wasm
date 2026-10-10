@@ -40,7 +40,8 @@ for parity with GLTFLoader’s JPEG IDCT rounding, then passes owned RGBA pixels
 to `gltf::import_decoded`; native callers can use `gltf::import` with encoded images. Each imported
 mesh retains its static world transform and material assignment. Supported
 fixtures use triangle primitives, indices, normals, tangents (including their
-sign), TEXCOORD_0 and COLOR_0. Missing tangents use screen-space derivatives with
+sign), TEXCOORD_0 to TEXCOORD_2 ( texCoord 0 to 2, as three's uv, uv1 and uv2
+channels ) and COLOR_0. An accessor without a bufferView reads as zeros. Missing tangents use screen-space derivatives with
 the pinned GLTFLoader normal-scale convention. Required extensions and skins
 are rejected; morph primitives and unsupported UV channels fail explicitly.
 Animation playback, compressed textures/meshes and advanced physical extensions

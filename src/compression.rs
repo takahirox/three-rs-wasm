@@ -484,6 +484,42 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
             }
         }
     }
+    // An accessor without a bufferView or sparse data reads as zeros
+    // ( GLTFLoader's zero-filled attribute ): give it a zeroed view.
+    let accessor_count = document["accessors"].as_array().map_or(0, Vec::len);
+    for i in 0..accessor_count {
+        let accessor = &document["accessors"][i];
+        if !accessor["bufferView"].is_null() || !accessor["sparse"].is_null() {
+            continue;
+        }
+        let components = match accessor["type"].as_str() {
+            Some("SCALAR") => 1,
+            Some("VEC2") => 2,
+            Some("VEC3") => 3,
+            Some("VEC4") | Some("MAT2") => 4,
+            Some("MAT3") => 9,
+            Some("MAT4") => 16,
+            _ => return Err(Error::Invalid("glTF accessor type")),
+        };
+        let size = match accessor["componentType"].as_u64() {
+            Some(5120 | 5121) => 1,
+            Some(5122 | 5123) => 2,
+            _ => 4,
+        };
+        let length = (number(accessor, "count")? * components * size).max(1);
+        let buffer = buffers.len();
+        document["buffers"]
+            .as_array_mut()
+            .ok_or(Error::Invalid("glTF buffers"))?
+            .push(json!({"byteLength":length}));
+        buffers.push(vec![0; length]);
+        let views = document["bufferViews"]
+            .as_array_mut()
+            .ok_or(Error::Invalid("glTF bufferViews"))?;
+        views.push(json!({"buffer":buffer,"byteLength":length}));
+        let view = views.len() - 1;
+        document["accessors"][i]["bufferView"] = json!(view);
+    }
     let asset = gltf::Gltf::from_slice(
         &serde_json::to_vec(&document).map_err(|e| Error::Asset(e.to_string()))?,
     )

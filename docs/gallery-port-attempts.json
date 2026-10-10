@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 480,
+    "runnable-partial": 481,
     "excluded": 43,
-    "blocked-at-port-review": 84
+    "blocked-at-port-review": 83
   },
   "examples": [
     {
@@ -6231,10 +6231,10 @@
     },
     {
       "id": "webgl_loader_gltf_progressive_lod",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_progressive_lod.html",
       "source_sha256": "ebe4720fef3c7d36ea834967d27586f7d0bd963a93e3da86c3b51688b8011edf",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/progressive-lod.spec.js",
       "blockers": [
         {
           "kind": "core-api",

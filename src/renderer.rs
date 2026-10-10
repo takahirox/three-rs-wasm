@@ -56,6 +56,7 @@ pub(crate) struct Vertex {
     pub(crate) corner: [f32; 2],
     pub(crate) tangent: [f32; 4],
     pub(crate) uv1: [f32; 2],
+    pub(crate) uv2: [f32; 2],
 }
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
@@ -236,7 +237,7 @@ impl Renderer {
                 ],
                 push_constant_ranges: &[],
             });
-        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
+        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
     }
     /// Upload once and retain a sampled texture for custom material/effect bindings.
     pub fn upload_texture(&self, image: &Arc<crate::material::Texture>) -> Result<GpuTexture> {
@@ -1478,7 +1479,7 @@ impl Renderer {
                 let mut uv_transforms = [[0.0; 4]; 15];
                 for (i, map) in material.texture_maps().iter().enumerate() {
                     let columns = if let Some(t) = map {
-                        if t.tex_coord > 1 {
+                        if t.tex_coord > 2 {
                             return Err(Error::Invalid("texture coordinate channel"));
                         }
                         let mut columns = t.uv_matrix().to_cols_array_2d().map(|column| {
@@ -2527,7 +2528,7 @@ impl Renderer {
                 });
             let shader = custom.map_or(&self.shader, |p| &p.module);
             self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
-            vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2]},instance_layout(key.instanced)]},
+            vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(key.instanced)]},
             fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some(if key.logarithmic_depth {"fs_log_depth"} else {"fs_main"}),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&key.attachment_formats.iter().enumerate().map(|(i,&format)|Some(wgpu::ColorTargetState {format,blend:key.attachment_blending.get(i).copied().unwrap_or(key.blend),write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
             primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
             depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:wgpu::DepthBiasState{constant:key.depth_bias.0,slope_scale:f32::from_bits(key.depth_bias.1),clamp:0.0}}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),alpha_to_coverage_enabled:key.alpha_to_coverage,..Default::default()},multiview:None,cache:None})

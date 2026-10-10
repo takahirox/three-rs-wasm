@@ -52,7 +52,7 @@ struct Uniforms {
 @group(0) @binding(26) var viewport_depth: texture_2d<f32>;
 fn extension_uv(index:u32,surface:VertexOut)->vec2<f32> {
     let t=u.extension_matrices;let i=index*3u;
-    let uv=select(surface.uv,surface.uv1,t[i+2u].w>0.5);
+    let uv=select(select(surface.uv,surface.uv1,t[i+2u].w>0.5),surface.uv2,t[i+2u].w>1.5);
     return (mat3x3(t[i].xyz,t[i+1u].xyz,t[i+2u].xyz)*vec3(uv,1.0)).xy;
 }
 fn wrap_texel(coordinate:i32,size:i32,mode:f32)->i32 {
@@ -261,11 +261,12 @@ var<private> fragment_view_z:f32;
 struct VertexOut {
     @location(11) local_normal:vec3<f32>,
     @location(10) local_position:vec3<f32>,
+    @location(14) uv2:vec2<f32>,
     @builtin(position) clip: vec4<f32>, @location(0) position: vec3<f32>,
     @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32>, @location(3) color: vec4<f32>, @location(4) tangent:vec4<f32>, @location(5) bitangent:vec3<f32>, @location(6) view_position:vec3<f32>,@location(7) uv1:vec2<f32>,@location(8) line_distance:f32, @location(9) @interpolate(flat) instance_index:u32,
 };
 var<private> tsl_vertex_index:u32;
-@vertex fn vs_main(@builtin(vertex_index) vertex:u32,@builtin(instance_index) instance_index:u32,@location(0) input_position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) color:vec4<f32>, @location(4) corner:vec2<f32>, @location(5) tangent:vec4<f32>,@location(6) i0:vec4<f32>,@location(7) i1:vec4<f32>,@location(8) i2:vec4<f32>,@location(9) i3:vec4<f32>,@location(10) instance_color:vec4<f32>,@location(11) uv1:vec2<f32>)->VertexOut {
+@vertex fn vs_main(@builtin(vertex_index) vertex:u32,@builtin(instance_index) instance_index:u32,@location(0) input_position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) color:vec4<f32>, @location(4) corner:vec2<f32>, @location(5) tangent:vec4<f32>,@location(6) i0:vec4<f32>,@location(7) i1:vec4<f32>,@location(8) i2:vec4<f32>,@location(9) i3:vec4<f32>,@location(10) instance_color:vec4<f32>,@location(11) uv1:vec2<f32>,@location(12) uv2:vec2<f32>)->VertexOut {
     tsl_vertex_index=vertex;
     vertex_instance_index=instance_index;
     let animated=skin_morph(select(vertex,u32(tangent.z),u.line[0].x>0.0),input_position,normal,color,tangent);
@@ -279,7 +280,7 @@ var<private> tsl_vertex_index:u32;
         var size=u.point.z;if u.point.w>0.0 {size*=u.point.y*0.5/out.clip.w;}
         out.clip=vec4(out.clip.xy+corner*size/u.point.xy*out.clip.w,out.clip.zw);
     }
-    out.normal=normalize((u.view*vec4((u.normal*vec4(instance_normal,0.0)).xyz,0.0)).xyz);out.uv=uv;out.uv1=uv1;out.color=select(color,animated.color,u.flags.z>0.5);if INSTANCED {out.color*=instance_color;}out.tangent=vec4((model_view*instance*vec4(animated.tangent.xyz,0.0)).xyz,animated.tangent.w);out.bitangent=cross(normalize(out.normal),normalize(out.tangent.xyz))*tangent.w;out.line_distance=corner.x;
+    out.normal=normalize((u.view*vec4((u.normal*vec4(instance_normal,0.0)).xyz,0.0)).xyz);out.uv=uv;out.uv1=uv1;out.uv2=uv2;out.color=select(color,animated.color,u.flags.z>0.5);if INSTANCED {out.color*=instance_color;}out.tangent=vec4((model_view*instance*vec4(animated.tangent.xyz,0.0)).xyz,animated.tangent.w);out.bitangent=cross(normalize(out.normal),normalize(out.tangent.xyz))*tangent.w;out.line_distance=corner.x;
     if u.line[0].x>0.0 {
         let other=skin_morph(u32(tangent.w),normal,vec3(0.0,0.0,1.0),color,tangent);
         let world_a=u.model*instance*vec4(animated.position,1.0);let world_b=u.model*instance*vec4(other.position,1.0);
@@ -300,7 +301,7 @@ var<private> tsl_vertex_index:u32;
 }
 fn map_uv(index:u32,surface:VertexOut)->vec2<f32> {
  let start=index*3u;let t=u.uv_transforms;
- let uv=select(surface.uv,surface.uv1,t[start+2u].w>0.5);
+ let uv=select(select(surface.uv,surface.uv1,t[start+2u].w>0.5),surface.uv2,t[start+2u].w>1.5);
  return (mat3x3(t[start].xyz,t[start+1u].xyz,t[start+2u].xyz)*vec3(uv,1.0)).xy;
 }
 fn apply_fog(color:vec4<f32>,depth:f32)->vec4<f32> {

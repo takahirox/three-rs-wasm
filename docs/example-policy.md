@@ -424,6 +424,10 @@ the largest id and then holds the default thresholds.
 bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
 ([ballpool.md](ballpool.md)).
 
+`webgl_loader_gltf_progressive_lod` streams its Needle Cloud models at run time,
+as the page does. Once the LODs settle, every mesh's geometry and texture levels
+must equal the original's ([progressive-lod.md](progressive-lod.md)).
+
 `webgl_renderer_pathtracer` is WebGL-only. It runs three-gpu-pathtracer's
 PhysicalPathTracingMaterial, converted from the GLSL the page compiles, over
 data textures that must match the original's uploads byte for byte. Its image

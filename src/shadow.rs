@@ -1109,7 +1109,7 @@ fn depth_pipelines(
                 },
                 buffers: &[
                     wgpu::VertexBufferLayout {
-                        array_stride: 80,
+                        array_stride: std::mem::size_of::<crate::renderer::Vertex>() as u64,
                         step_mode: wgpu::VertexStepMode::Vertex,
                         attributes: &[
                             wgpu::VertexAttribute {
@@ -1131,6 +1131,11 @@ fn depth_pipelines(
                                 format: wgpu::VertexFormat::Float32x2,
                                 offset: 72,
                                 shader_location: 2,
+                            },
+                            wgpu::VertexAttribute {
+                                format: wgpu::VertexFormat::Float32x2,
+                                offset: 80,
+                                shader_location: 4,
                             },
                         ],
                     },

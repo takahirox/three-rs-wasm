@@ -16,6 +16,8 @@ pub struct ImportedGltf {
     /// ( variant indices, material ).
     pub variant_materials: Vec<VariantMaterials>,
     mesh_nodes: Vec<usize>,
+    /// Per mesh, in `instantiate` order: its glTF mesh and primitive indices.
+    pub sources: Vec<(usize, usize)>,
 }
 impl ImportedGltf {
     pub fn mesh_count(&self) -> usize {
@@ -156,6 +158,7 @@ fn import_internal(
     let mut meshes = Vec::new();
     let mut variant_materials = Vec::new();
     let mut mesh_nodes = Vec::new();
+    let mut sources = Vec::new();
     while let Some((node, parent)) = stack.pop() {
         let local = local_transform(node.transform());
         let world = parent * local;
@@ -215,6 +218,16 @@ fn import_internal(
                 if let Some(uv) = reader.read_tex_coords(1) {
                     geometry.set_attribute(
                         "uv1",
+                        Attribute::F32(BufferAttribute::new(
+                            uv.into_f32().flatten().collect(),
+                            2,
+                            false,
+                        )?),
+                    );
+                }
+                if let Some(uv) = reader.read_tex_coords(2) {
+                    geometry.set_attribute(
+                        "uv2",
                         Attribute::F32(BufferAttribute::new(
                             uv.into_f32().flatten().collect(),
                             2,
@@ -338,9 +351,9 @@ fn import_internal(
                     let pbr = source.pbr_metallic_roughness();
                     let factor = pbr.base_color_factor();
                     let get_texture = |index: usize, uv: u32, srgb: bool| -> Result<Arc<Texture>> {
-                        if uv > 1 {
+                        if uv > 2 {
                             return Err(Error::Invalid(
-                                "glTF texture coordinate set (only TEXCOORD_0/1 supported)",
+                                "glTF texture coordinate set (only TEXCOORD_0/1/2 supported)",
                             ));
                         }
                         let pair = textures.get(index).ok_or(Error::Invalid("glTF texture"))?;
@@ -657,6 +670,7 @@ fn import_internal(
                 }
                 triangles += geometry.draw_count() / 3;
                 mesh_nodes.push(node.index());
+                sources.push((mesh.index(), primitive.index()));
                 meshes.push((
                     node.name().unwrap_or("glTF mesh").to_owned(),
                     world,
@@ -676,6 +690,7 @@ fn import_internal(
         meshes,
         variant_materials,
         mesh_nodes,
+        sources,
     })
 }
 

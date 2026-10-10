@@ -2127,7 +2127,7 @@
       "id": "webgl_loader_gltf_progressive_lod",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_progressive_lod.html",
       "source_sha256": "ebe4720fef3c7d36ea834967d27586f7d0bd963a93e3da86c3b51688b8011edf",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_gltf_progressive_lod",
         "source_sha256": "ebe4720fef3c7d36ea834967d27586f7d0bd963a93e3da86c3b51688b8011edf",

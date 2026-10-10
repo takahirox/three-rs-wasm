@@ -4667,7 +4667,7 @@
     {
       "id": "webgl_loader_gltf_progressive_lod",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_gltf_progressive_lod.html",
       "source_sha256": "ebe4720fef3c7d36ea834967d27586f7d0bd963a93e3da86c3b51688b8011edf",
@@ -4695,7 +4695,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 486,
+        "source": "src/browser/progressive_lod.rs",
+        "test": "tests/browser/progressive-lod.spec.js",
+        "limitations": [
+          "@needle-tools/gltf-progressive 3.2.0でNeedle Cloudの3モデル（浮遊する世界、飛行船、騎士）をストリーミングする構成をRustで再現。モデルとLODファイルはページと同じく実行時にcloud.needle.toolsから同じAcceptヘッダーで取得し、Draco・KTX2・WebPをエンジンで復号する。NEEDLE_progressiveの登録、レンダーリスト（フラスタムカリングとソート）に沿ったLODsManagerの描画後更新、画面被覆率と密度20万によるメッシュLOD、画素高さによるテクスチャLOD、30フレームごとのスキンメッシュのCPUバウンディング、50並列のPromiseQueueとキャッシュ、copySettingsによるテクスチャ差し替えをパッケージのf64演算で移植した。収束後の39メッシュのメッシュLOD・頂点数・スロットごとのテクスチャLODは、初期カメラとオービット後のどちらでも参照と一致する。LODが現れるフレームは双方ともネットワーク遅延に依存するため、比較は収束後の状態で行う。線形フォグ、−π/2回転したquarryの環境、ACES、アニメーション、飛行船の上下動、OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "@needle-tools/gltf-progressive",
         "three",
