@@ -89,7 +89,7 @@ export class HtmlTextureSource {
 					<p style="writing-mode: vertical-rl;">
 					这是垂直文本
 					</p>
-					an inline image (<img width="150" src="/web/gallery/assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg">), and
+					an inline image (<img width="150" src="assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg">), and
 					<svg width="50" height="50">
 					<circle cx="25" cy="25" r="20" fill="green" />
 					<text x="25" y="30" font-size="15" text-anchor="middle" fill="#fff">
