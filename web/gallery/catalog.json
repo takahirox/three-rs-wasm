@@ -33131,7 +33131,7 @@
     {
       "id": "physics_jolt_instancing",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_jolt_instancing.html",
       "source_sha256": "d1f883a157936b83bd639198bb89ecde28f83fcd40b1ebd0a2c3507b7b1cbd85",
@@ -33207,7 +33207,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 490,
+        "source": "src/browser/physics_jolt_instancing.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ランダムな色の箱400個と球400個のInstancedMeshを、インスタンスごとのJoltの剛体で見えない床コライダーとShadowMaterialの平面の上に落とすWebGPURendererのシーンを再現。物理演算はページと同じjsdelivrのjolt-physics 1.0.0（wasm-compat）で行い、JoltPhysics.jsの衝突レイヤー・剛体・Timerによる16msのステップをそのまま呼ぶ（emscriptenのWasmはRustのWasmに組み込めないため、JavaScript経由で呼び出す）。16ms間隔で箱と球を1つずつ中央の上へ戻す処理（剛体の作り直し）とOrbitControlsに対応。インスタンス行列は物理のステップごとに更新する（オリジナルと同じくCPUで剛体の姿勢を書き込む）。オリジナルにはリサイズ処理がなく、キャンバスは最初の大きさを保つ。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/libs/stats.module.js",

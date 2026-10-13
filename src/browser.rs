@@ -91,6 +91,7 @@ mod instancing_morph;
 mod interactive_objects;
 mod interactive_scenes;
 mod interactive_shaders;
+mod jolt;
 mod kinect;
 mod ktx;
 mod ktx2;
@@ -126,6 +127,7 @@ mod passes_decals;
 mod pathtracer;
 mod periodic_table;
 mod physics_ammo_instancing;
+mod physics_jolt_instancing;
 mod physics_rapier_basic;
 mod physics_rapier_character_controller;
 mod physics_rapier_instancing;
@@ -395,7 +397,7 @@ impl State {
             425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441,
             443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460,
             461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
-            478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489,
+            478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489, 490,
         ]
         .contains(&self.example)
         {
@@ -1191,7 +1193,7 @@ impl BrowserApp {
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
                             470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
-                            485, 486, 487, 488, 489,
+                            485, 486, 487, 488, 489, 490,
                         ]
                         .contains(&example),
                         format: if [
@@ -1216,7 +1218,7 @@ impl BrowserApp {
                             440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
                             456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
                             470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
-                            485, 486, 487, 488, 489,
+                            485, 486, 487, 488, 489, 490,
                         ]
                         .contains(&example)
                         {
@@ -1248,7 +1250,9 @@ impl BrowserApp {
             let mut point_lights = None;
             let mut gltf = None;
             let mut gallery_scene = None;
-            if (7..=482).contains(&example) || [484, 485, 486, 487, 488, 489].contains(&example) {
+            if (7..=482).contains(&example)
+                || [484, 485, 486, 487, 488, 489, 490].contains(&example)
+            {
                 gallery_scene = Some(
                     gallery_scenes::GalleryScene::create(
                         &mut scene, camera, mesh, example, &renderer,
