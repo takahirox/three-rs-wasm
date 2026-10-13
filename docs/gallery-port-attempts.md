@@ -83,7 +83,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgl_lines_fat_wireframe](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_lines_fat_wireframe.html) | blocked-at-port-review | WireframeGeometry2; LineMaterial; Wireframe; WireframeGeometry |
 | [webgl_loader_3dm](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dm.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [webgl_loader_3ds](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3ds.html) | runnable-partial | tests/browser/models-modifiers.spec.js |
-| [webgl_loader_3dtiles](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dtiles.html) | blocked-at-port-review | DRACOLoader; TileCreasedNormalsPlugin; Data3DTexture |
+| [webgl_loader_3dtiles](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dtiles.html) | runnable-partial | tests/browser/tiles3d.spec.js |
 | [webgl_loader_3mf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
 | [webgl_loader_3mf_materials](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3mf_materials.html) | runnable-partial | tests/browser/collada-3mf.spec.js |
 | [webgl_loader_amf](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_amf.html) | runnable-partial | tests/browser/helpers-formats.spec.js |

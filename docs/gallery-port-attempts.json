@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 482,
+    "runnable-partial": 483,
     "excluded": 43,
-    "blocked-at-port-review": 82
+    "blocked-at-port-review": 81
   },
   "examples": [
     {
@@ -5267,10 +5267,10 @@
     },
     {
       "id": "webgl_loader_3dtiles",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dtiles.html",
       "source_sha256": "0d03162026f333914f1d961203b35cf4eccbe6dfee19eab29aeef2f1a70243c8",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/tiles3d.spec.js",
       "blockers": [
         {
           "kind": "addon-api",

@@ -3911,7 +3911,7 @@
     {
       "id": "webgl_loader_3dtiles",
       "category": "webgl",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dtiles.html",
       "source_sha256": "0d03162026f333914f1d961203b35cf4eccbe6dfee19eab29aeef2f1a70243c8",
@@ -3933,7 +3933,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 488,
+        "source": "src/browser/tiles3d.rs",
+        "test": "tests/browser/tiles3d.spec.js",
+        "limitations": [
+          "Cesium ion経由のGoogle Photorealistic 3D Tiles（東京）を3d-tiles-renderer 0.4.27で配信し、@takramの大気と体積雲で照らす構成をRustで再現。r186の原本はエフェクトにシーン深度が渡らず黒画面になるため、比較ページはthree.js devの修正（WebGLOutputの深度テクスチャとEffectPassAdapter）を適用し、ポートは修正済みのページを再現する。最適化トラバーサル、エラー・LRU優先度、LRUキャッシュ、ダウンロード・パース・processNodeのキュー、CesiumIonAuthからGoogleへの引き渡し、UpdateOnChange、TilesFadePlugin、TileCreasedNormalsPlugin（30°、CPU）をf64で移植し、ツリー位置で比較したタイルの使用・可視・アクティブは参照と一致する。描画はページからthree.js r186がコンパイルするGLSLをWGSLに変換して実行する: Brunetonの事前計算（float32、加算ブレンドは和のパスで代替）、HalfFloat出力と深度テクスチャへのタイル（フェードのBayerディザ、フラスタムカリング、ジオメトリは初表示時に一度だけ転送）、NormalPass、CloudsEffect（2段のカスケード影と時間解決、1/4解像度の雲のジッター・再投影・時間アップスケール）、AerialPerspectiveEffect（空・太陽光・天空光）、LensFlare、SMAA、ディザリング、AgX（露出10）。太陽方向はastronomy-engineのVSOP87地球・歳差・章動・恒星時を移植し、時刻スライダーに対応。GlobeControls（ドラッグで地球を回転、右・Shiftドラッグで注視点回転とピボットリング、ホイールでポインター方向へズーム、減衰、near/far）とタイルへのレイキャストを移植。比較テストは雲の流れを両ページで止めて行う。WebGL専用の例のため、雲のSTBN・Bayerジッター位相とタイル縁の差を許容誤差として記録。ギャラリーのポインター入力は1本のマウスのみのため、2本指のタッチ操作には届かない。雲のテクスチャの読み込み中は描画しない。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "3d-tiles-renderer",
         "3d-tiles-renderer/core/plugins",

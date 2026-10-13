@@ -1759,7 +1759,7 @@
       "id": "webgl_loader_3dtiles",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgl_loader_3dtiles.html",
       "source_sha256": "0d03162026f333914f1d961203b35cf4eccbe6dfee19eab29aeef2f1a70243c8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgl_loader_3dtiles",
         "source_sha256": "0d03162026f333914f1d961203b35cf4eccbe6dfee19eab29aeef2f1a70243c8",

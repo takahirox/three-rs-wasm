@@ -424,6 +424,12 @@ the largest id and then holds the default thresholds.
 bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
 ([ballpool.md](ballpool.md)).
 
+`webgl_loader_3dtiles` is broken on r186 ( its effects get no scene depth ).
+Its comparison page applies three.js dev's fix: WebGLOutput's depth texture
+and the page's updated EffectPassAdapter. The port reproduces the fixed page,
+and its Cesium ion key is in the public source, as the original's is
+([tiles3d.md](tiles3d.md)).
+
 `webgl_morphtargets_webcam` runs MediaPipe's FaceLandmarker in the page's
 JavaScript, as the original does, and the scene in Rust. Its comparison
 scripts the landmarker's results and the webcam
