@@ -140,16 +140,22 @@ export class AmmoWorld {
 // The soft body pages' btSoftRigidDynamicsWorld, with their createRigidBody
 // and the bodies' handles in creation order.
 export class AmmoSoftWorld {
-	constructor( AmmoLib, gravity ) {
+	// soft: btSoftRigidDynamicsWorld; otherwise the rigid-only btDiscreteDynamicsWorld.
+	constructor( AmmoLib, gravity, soft ) {
 		this.lib = AmmoLib;
-		const collisionConfiguration = new AmmoLib.btSoftBodyRigidBodyCollisionConfiguration();
+		const collisionConfiguration = soft ? new AmmoLib.btSoftBodyRigidBodyCollisionConfiguration() : new AmmoLib.btDefaultCollisionConfiguration();
 		const dispatcher = new AmmoLib.btCollisionDispatcher( collisionConfiguration );
 		const broadphase = new AmmoLib.btDbvtBroadphase();
 		const solver = new AmmoLib.btSequentialImpulseConstraintSolver();
-		const softBodySolver = new AmmoLib.btDefaultSoftBodySolver();
-		this.world = new AmmoLib.btSoftRigidDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration, softBodySolver );
-		this.world.setGravity( new AmmoLib.btVector3( 0, gravity, 0 ) );
-		this.world.getWorldInfo().set_m_gravity( new AmmoLib.btVector3( 0, gravity, 0 ) );
+		if ( soft ) {
+			const softBodySolver = new AmmoLib.btDefaultSoftBodySolver();
+			this.world = new AmmoLib.btSoftRigidDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration, softBodySolver );
+			this.world.setGravity( new AmmoLib.btVector3( 0, gravity, 0 ) );
+			this.world.getWorldInfo().set_m_gravity( new AmmoLib.btVector3( 0, gravity, 0 ) );
+		} else {
+			this.world = new AmmoLib.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+			this.world.setGravity( new AmmoLib.btVector3( 0, gravity, 0 ) );
+		}
 		this.transformAux1 = new AmmoLib.btTransform();
 		this.bodies = [];
 		this.dynamic = [];
@@ -159,9 +165,33 @@ export class AmmoSoftWorld {
 	}
 	// createRigidBody( object, shape, mass, pos, quat ) with a box ( half extents ) or a sphere.
 	rigid( kind, a, b, c, margin, mass, px, py, pz, qx, qy, qz, qw ) {
+		return this.body( kind, a, b, c, margin, mass, px, py, pz, qx, qy, qz, qw, true );
+	}
+	// A body with a box ( 0, half extents ), sphere ( 1, radius ), cylinder ( 2, half extents )
+	// or cone ( 3, radius and height ) shape; a negative margin keeps the shape's default.
+	// keepActive disables deactivation of a dynamic body.
+	body( kind, a, b, c, margin, mass, px, py, pz, qx, qy, qz, qw, keepActive ) {
 		const Ammo = this.lib;
-		const shape = kind === 0 ? new Ammo.btBoxShape( new Ammo.btVector3( a, b, c ) ) : new Ammo.btSphereShape( a );
+		const shape = kind === 0 ? new Ammo.btBoxShape( new Ammo.btVector3( a, b, c ) )
+			: kind === 1 ? new Ammo.btSphereShape( a )
+				: kind === 2 ? new Ammo.btCylinderShape( new Ammo.btVector3( a, b, c ) )
+					: new Ammo.btConeShape( a, b );
+		if ( margin >= 0 ) shape.setMargin( margin );
+		return this.addBody( shape, mass, px, py, pz, qx, qy, qz, qw, keepActive );
+	}
+	// physics_ammo_terrain's createTerrainShape(): a PHY_FLOAT heightfield in the Ammo heap,
+	// scaled to the extents, as a static body at ( 0, originY, 0 ).
+	heightfield( width, depth, heights, minHeight, maxHeight, scaleX, scaleZ, margin, originY ) {
+		const Ammo = this.lib;
+		const data = Ammo._malloc( 4 * width * depth );
+		Ammo.HEAPF32.set( heights, data >> 2 );
+		const shape = new Ammo.btHeightfieldTerrainShape( width, depth, data, 1, minHeight, maxHeight, 1, 'PHY_FLOAT', false );
+		shape.setLocalScaling( new Ammo.btVector3( scaleX, 1, scaleZ ) );
 		shape.setMargin( margin );
+		return this.addBody( shape, 0, 0, originY, 0, 0, 0, 0, 1, false );
+	}
+	addBody( shape, mass, px, py, pz, qx, qy, qz, qw, keepActive ) {
+		const Ammo = this.lib;
 		const transform = new Ammo.btTransform();
 		transform.setIdentity();
 		transform.setOrigin( new Ammo.btVector3( px, py, pz ) );
@@ -173,7 +203,7 @@ export class AmmoSoftWorld {
 		const body = new Ammo.btRigidBody( rbInfo );
 		if ( mass > 0 ) {
 			this.dynamic.push( body );
-			body.setActivationState( 4 );
+			if ( keepActive ) body.setActivationState( 4 );
 		}
 		this.world.addRigidBody( body );
 		this.bodies.push( body );
@@ -334,7 +364,40 @@ extern "C" {
 
     pub type AmmoSoftWorld;
     #[wasm_bindgen(constructor)]
-    fn new(lib: &JsValue, gravity: f64) -> AmmoSoftWorld;
+    fn new(lib: &JsValue, gravity: f64, soft: bool) -> AmmoSoftWorld;
+    #[wasm_bindgen(method)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn body(
+        this: &AmmoSoftWorld,
+        kind: u32,
+        a: f64,
+        b: f64,
+        c: f64,
+        margin: f64,
+        mass: f64,
+        px: f64,
+        py: f64,
+        pz: f64,
+        qx: f64,
+        qy: f64,
+        qz: f64,
+        qw: f64,
+        keep_active: bool,
+    ) -> u32;
+    #[wasm_bindgen(method)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn heightfield(
+        this: &AmmoSoftWorld,
+        width: u32,
+        depth: u32,
+        heights: &[f32],
+        min_height: f64,
+        max_height: f64,
+        scale_x: f64,
+        scale_z: f64,
+        margin: f64,
+        origin_y: f64,
+    ) -> u32;
     /// kind 0: a box with half extents ( a, b, c ); 1: a sphere of radius a.
     #[wasm_bindgen(method)]
     #[allow(clippy::too_many_arguments)]
@@ -466,7 +529,15 @@ pub(super) async fn soft_world(gravity: f64) -> crate::Result<AmmoSoftWorld> {
     let lib = ammo_load()
         .await
         .map_err(|e| crate::Error::Asset(format!("ammo.js: {e:?}")))?;
-    Ok(AmmoSoftWorld::new(&lib, gravity))
+    Ok(AmmoSoftWorld::new(&lib, gravity, true))
+}
+
+/// A rigid-only btDiscreteDynamicsWorld with the same bridge.
+pub(super) async fn rigid_world(gravity: f64) -> crate::Result<AmmoSoftWorld> {
+    let lib = ammo_load()
+        .await
+        .map_err(|e| crate::Error::Asset(format!("ammo.js: {e:?}")))?;
+    Ok(AmmoSoftWorld::new(&lib, gravity, false))
 }
 
 /// AmmoPhysics(): the library ( loaded once per page ) and a new world.

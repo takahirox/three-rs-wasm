@@ -32982,7 +32982,7 @@
     {
       "id": "physics_ammo_terrain",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_terrain.html",
       "source_sha256": "53fecc1e8ec3a5c2495c3e87692018c12797e5f757289bf12c74a264fbccce18",
@@ -33054,7 +33054,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 494,
+        "source": "src/browser/physics_ammo_terrain.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "正弦波のハイトフィールド地形（128×128）に、3秒ごとにランダムな球・箱・円柱・円錐（最大30個）を落とすシーンを再現。物理演算はページと同じjsdelivrのammo.wasm.js（BulletのWasm版）で行い、btDiscreteDynamicsWorld、Ammoヒープ上のPHY_FLOATのbtHeightfieldTerrainShape、各形状の剛体をページと同じ順にJavaScript経由で呼ぶ（emscriptenのWasmはRustのWasmに組み込めない）。オブジェクトの種類・大きさ・色・位置はページと同じ順に乱数を引く。毎フレームTimerのデルタで世界を進め、剛体の姿勢をメッシュへ写す（オリジナルと同じくCPUで行う）。グリッドを貼った地形、影、ズーム無効のOrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
