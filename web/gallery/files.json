@@ -459,6 +459,7 @@
     "games_fps"
   ],
   "physics": [
+    "physics_ammo_cloth",
     "physics_ammo_instancing",
     "physics_ammo_rope",
     "physics_jolt_instancing",

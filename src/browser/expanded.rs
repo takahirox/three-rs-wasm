@@ -117,6 +117,7 @@ enum Content {
     PhysicsAmmoInstancing(Box<super::physics_ammo_instancing::Demo>),
     PhysicsJoltInstancing(Box<super::physics_jolt_instancing::Demo>),
     PhysicsAmmoRope(Box<super::physics_ammo_rope::Demo>),
+    PhysicsAmmoCloth(Box<super::physics_ammo_cloth::Demo>),
     ComputeWater(Box<super::compute_water::Demo>),
     TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
@@ -918,6 +919,16 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::ProgressiveLod(Box::new(
                     super::progressive_lod::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            492 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.2,
+                far: 2000.,
+                elapsed: 0.,
+                content: Content::PhysicsAmmoCloth(Box::new(
+                    super::physics_ammo_cloth::Demo::create(scene, camera, example, renderer)
+                        .await?,
                 )),
             }),
             491 => Ok(Self {
@@ -2739,6 +2750,9 @@ impl Demo {
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -4460,6 +4474,9 @@ impl Demo {
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -5046,6 +5063,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
@@ -5724,6 +5744,9 @@ impl Demo {
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -6326,6 +6349,10 @@ impl Demo {
             return Ok(());
         }
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -7023,6 +7050,9 @@ impl Demo {
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -7676,6 +7706,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {

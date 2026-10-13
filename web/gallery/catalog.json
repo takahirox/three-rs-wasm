@@ -32718,7 +32718,7 @@
     {
       "id": "physics_ammo_cloth",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_cloth.html",
       "source_sha256": "1f9e5682bddc15a7f44675cdad7c50bf539b3f142029a17206d35a22e095ab4f",
@@ -32788,7 +32788,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 492,
+        "source": "src/browser/physics_ammo_cloth.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ammo.jsのソフトボディの布（CreatePatch、21×16ノード）をヒンジのアームから吊り、ランダムな色のレンガの壁の横で揺らすシーンを再現。物理演算はページと同じjsdelivrのammo.wasm.js（BulletのWasm版）で行い、btSoftRigidDynamicsWorld、布のパッチ、アームへのアンカー、ヒンジとモーターをページと同じ順にJavaScript経由で呼ぶ（emscriptenのWasmはRustのWasmに組み込めない）。毎フレームTimerのデルタで世界を進め、パッチのノードを布の頂点へ写して頂点法線を計算し直し、剛体の姿勢をメッシュへ写す（オリジナルと同じくCPUで行う）。Q・Aキーでのアーム操作、グリッドを貼った地面と両面の布、影、OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

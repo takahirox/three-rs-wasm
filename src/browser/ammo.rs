@@ -196,6 +196,21 @@ export class AmmoSoftWorld {
 		this.softBodies.push( body );
 		return this.softBodies.length - 1;
 	}
+	// softBodyHelpers.CreatePatch with the page's config, total mass and margin.
+	patch( c00x, c00y, c00z, c01x, c01y, c01z, c10x, c10y, c10z, c11x, c11y, c11z, resx, resy, fixeds, gendiags, viterations, piterations, mass, margin ) {
+		const Ammo = this.lib;
+		const V = ( x, y, z ) => new Ammo.btVector3( x, y, z );
+		const body = this.helpers.CreatePatch( this.world.getWorldInfo(), V( c00x, c00y, c00z ), V( c01x, c01y, c01z ), V( c10x, c10y, c10z ), V( c11x, c11y, c11z ), resx, resy, fixeds, gendiags );
+		const sbConfig = body.get_m_cfg();
+		sbConfig.set_viterations( viterations );
+		sbConfig.set_piterations( piterations );
+		body.setTotalMass( mass, false );
+		Ammo.castObject( body, Ammo.btCollisionObject ).getCollisionShape().setMargin( margin );
+		this.world.addSoftBody( body, 1, - 1 );
+		body.setActivationState( 4 );
+		this.softBodies.push( body );
+		return this.softBodies.length - 1;
+	}
 	appendAnchor( soft, node, body, disableCollision, influence ) {
 		this.softBodies[ soft ].appendAnchor( node, this.bodies[ body ], disableCollision, influence );
 	}
@@ -317,6 +332,31 @@ extern "C" {
         ez: f64,
         segments: u32,
         fixeds: u32,
+        viterations: u32,
+        piterations: u32,
+        mass: f64,
+        margin: f64,
+    ) -> u32;
+    #[wasm_bindgen(method)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn patch(
+        this: &AmmoSoftWorld,
+        c00x: f64,
+        c00y: f64,
+        c00z: f64,
+        c01x: f64,
+        c01y: f64,
+        c01z: f64,
+        c10x: f64,
+        c10y: f64,
+        c10z: f64,
+        c11x: f64,
+        c11y: f64,
+        c11z: f64,
+        resx: u32,
+        resy: u32,
+        fixeds: u32,
+        gendiags: bool,
         viterations: u32,
         piterations: u32,
         mass: f64,
