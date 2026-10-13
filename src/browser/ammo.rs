@@ -145,8 +145,10 @@ export class AmmoSoftWorld {
 		this.lib = AmmoLib;
 		const collisionConfiguration = soft ? new AmmoLib.btSoftBodyRigidBodyCollisionConfiguration() : new AmmoLib.btDefaultCollisionConfiguration();
 		const dispatcher = new AmmoLib.btCollisionDispatcher( collisionConfiguration );
+		this.dispatcher = dispatcher;
 		const broadphase = new AmmoLib.btDbvtBroadphase();
 		const solver = new AmmoLib.btSequentialImpulseConstraintSolver();
+		this.tempBtVec3_1 = new AmmoLib.btVector3( 0, 0, 0 );
 		if ( soft ) {
 			const softBodySolver = new AmmoLib.btDefaultSoftBodySolver();
 			this.world = new AmmoLib.btSoftRigidDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration, softBodySolver );
@@ -178,6 +180,99 @@ export class AmmoSoftWorld {
 					: new Ammo.btConeShape( a, b );
 		if ( margin >= 0 ) shape.setMargin( margin );
 		return this.addBody( shape, mass, px, py, pz, qx, qy, qz, qw, keepActive );
+	}
+	// physics_ammo_break's createRigidBody(): a box ( 0, half extents ), sphere ( 1, radius ) or
+	// convex hull ( 2, createConvexHullPhysicsShape over coords ) body with restitution and
+	// friction 0.5 and the given velocities. A tag ≥ 0 is set as the body's user pointer, as
+	// the debris' threeObject.
+	breakBody( kind, a, b, c, coords, margin, mass, px, py, pz, qx, qy, qz, qw, vx, vy, vz, wx, wy, wz, tag ) {
+		const Ammo = this.lib;
+		let shape;
+		if ( kind === 0 ) {
+			shape = new Ammo.btBoxShape( new Ammo.btVector3( a, b, c ) );
+		} else if ( kind === 1 ) {
+			shape = new Ammo.btSphereShape( a );
+		} else {
+			shape = new Ammo.btConvexHullShape();
+			for ( let i = 0, il = coords.length; i < il; i += 3 ) {
+				this.tempBtVec3_1.setValue( coords[ i ], coords[ i + 1 ], coords[ i + 2 ] );
+				const lastOne = ( i >= ( il - 3 ) );
+				shape.addPoint( this.tempBtVec3_1, lastOne );
+			}
+		}
+		shape.setMargin( margin );
+		const transform = new Ammo.btTransform();
+		transform.setIdentity();
+		transform.setOrigin( new Ammo.btVector3( px, py, pz ) );
+		transform.setRotation( new Ammo.btQuaternion( qx, qy, qz, qw ) );
+		const motionState = new Ammo.btDefaultMotionState( transform );
+		const localInertia = new Ammo.btVector3( 0, 0, 0 );
+		shape.calculateLocalInertia( mass, localInertia );
+		const rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, shape, localInertia );
+		rbInfo.set_m_restitution( 0.5 );
+		rbInfo.set_m_friction( 0.5 );
+		const body = new Ammo.btRigidBody( rbInfo );
+		if ( tag >= 0 ) {
+			body.setLinearVelocity( new Ammo.btVector3( vx, vy, vz ) );
+			body.setAngularVelocity( new Ammo.btVector3( wx, wy, wz ) );
+			const btVecUserData = new Ammo.btVector3( 0, 0, 0 );
+			btVecUserData.tag = tag;
+			body.setUserPointer( btVecUserData );
+		}
+		if ( mass > 0 ) {
+			this.dynamic.push( body );
+			body.setActivationState( 4 );
+		}
+		this.world.addRigidBody( body );
+		this.bodies.push( body );
+		return this.bodies.length - 1;
+	}
+	removeBody( body ) {
+		this.world.removeRigidBody( this.bodies[ body ] );
+	}
+	// updatePhysics' manifold scan: for each manifold touching a tagged body with a point
+	// in contact, [ tag0, tag1, impulse, impact point, impact normal, body 0's linear and
+	// angular velocity, body 1's linear and angular velocity ] ( -1 for an untagged body ).
+	contacts() {
+		const Ammo = this.lib;
+		const out = [];
+		const tagOf = rb => {
+			const tag = Ammo.castObject( rb.getUserPointer(), Ammo.btVector3 ).tag;
+			return tag === undefined ? - 1 : tag;
+		};
+		for ( let i = 0, il = this.dispatcher.getNumManifolds(); i < il; i ++ ) {
+			const contactManifold = this.dispatcher.getManifoldByIndexInternal( i );
+			const rb0 = Ammo.castObject( contactManifold.getBody0(), Ammo.btRigidBody );
+			const rb1 = Ammo.castObject( contactManifold.getBody1(), Ammo.btRigidBody );
+			const tag0 = tagOf( rb0 ), tag1 = tagOf( rb1 );
+			if ( tag0 < 0 && tag1 < 0 ) continue;
+			let contact = false;
+			let maxImpulse = 0;
+			const impact = [ 0, 0, 0, 0, 0, 0 ];
+			for ( let j = 0, jl = contactManifold.getNumContacts(); j < jl; j ++ ) {
+				const contactPoint = contactManifold.getContactPoint( j );
+				if ( contactPoint.getDistance() < 0 ) {
+					contact = true;
+					const impulse = contactPoint.getAppliedImpulse();
+					if ( impulse > maxImpulse ) {
+						maxImpulse = impulse;
+						const pos = contactPoint.get_m_positionWorldOnB();
+						const normal = contactPoint.get_m_normalWorldOnB();
+						impact.splice( 0, 6, pos.x(), pos.y(), pos.z(), normal.x(), normal.y(), normal.z() );
+					}
+					break;
+				}
+			}
+			if ( ! contact ) continue;
+			const v = [];
+			for ( const rb of [ rb0, rb1 ] ) {
+				const vel = rb.getLinearVelocity();
+				const angVel = rb.getAngularVelocity();
+				v.push( vel.x(), vel.y(), vel.z(), angVel.x(), angVel.y(), angVel.z() );
+			}
+			out.push( tag0, tag1, maxImpulse, ...impact, ...v );
+		}
+		return new Float64Array( out );
 	}
 	// physics_ammo_terrain's createTerrainShape(): a PHY_FLOAT heightfield in the Ammo heap,
 	// scaled to the extents, as a static body at ( 0, originY, 0 ).
@@ -384,6 +479,36 @@ extern "C" {
         qw: f64,
         keep_active: bool,
     ) -> u32;
+    #[wasm_bindgen(method, js_name = breakBody)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn break_body(
+        this: &AmmoSoftWorld,
+        kind: u32,
+        a: f64,
+        b: f64,
+        c: f64,
+        coords: &[f32],
+        margin: f64,
+        mass: f64,
+        px: f64,
+        py: f64,
+        pz: f64,
+        qx: f64,
+        qy: f64,
+        qz: f64,
+        qw: f64,
+        vx: f64,
+        vy: f64,
+        vz: f64,
+        wx: f64,
+        wy: f64,
+        wz: f64,
+        tag: i32,
+    ) -> u32;
+    #[wasm_bindgen(method, js_name = removeBody)]
+    pub fn remove_body(this: &AmmoSoftWorld, body: u32);
+    #[wasm_bindgen(method)]
+    pub fn contacts(this: &AmmoSoftWorld) -> js_sys::Float64Array;
     #[wasm_bindgen(method)]
     #[allow(clippy::too_many_arguments)]
     pub fn heightfield(

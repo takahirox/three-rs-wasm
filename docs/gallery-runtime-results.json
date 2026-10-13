@@ -14281,7 +14281,7 @@
       "id": "physics_ammo_break",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_break.html",
       "source_sha256": "e936ec1947a8284c1e84973e7dae31e70ee39df3d1234939908517aaa35daf38",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "physics_ammo_break",
         "source_sha256": "e936ec1947a8284c1e84973e7dae31e70ee39df3d1234939908517aaa35daf38",

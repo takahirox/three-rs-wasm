@@ -32640,7 +32640,7 @@
     {
       "id": "physics_ammo_break",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_break.html",
       "source_sha256": "e936ec1947a8284c1e84973e7dae31e70ee39df3d1234939908517aaa35daf38",
@@ -32706,7 +32706,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 495,
+        "source": "src/browser/physics_ammo_break.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "塔・橋・石・山を、クリックで投げたボールが十分な力積（250超）で当たった所から凸形状の破片に砕くシーンを再現。物理演算はページと同じjsdelivrのammo.wasm.js（BulletのWasm版）で行い、btDiscreteDynamicsWorld、剛体、btConvexHullShape、接触マニフォールドの走査をページと同じ順にJavaScript経由で呼ぶ（emscriptenのWasmはRustのWasmに組み込めない）。ConvexObjectBreaker（cutByPlane、subdivideByImpact）とConvexHull・ConvexGeometryはオリジナルと同じ演算順・乱数順でRustに移植。毎フレームTimerのデルタで世界を進め、剛体の姿勢をメッシュへ写す（オリジナルと同じくCPUで行う）。グリッドを貼った地面、影、OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
