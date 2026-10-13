@@ -9819,7 +9819,7 @@
       "id": "webgpu_materials_texture_html",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_texture_html.html",
       "source_sha256": "9cf77d003da873aedc8f68e56ed4f70d6656a8db1a36bfcecaf8022548f06dc8",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_materials_texture_html",
         "source_sha256": "9cf77d003da873aedc8f68e56ed4f70d6656a8db1a36bfcecaf8022548f06dc8",

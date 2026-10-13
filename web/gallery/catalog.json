@@ -21327,7 +21327,7 @@
     {
       "id": "webgpu_materials_texture_html",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_materials_texture_html.html",
       "source_sha256": "9cf77d003da873aedc8f68e56ed4f70d6656a8db1a36bfcecaf8022548f06dc8",
@@ -21343,7 +21343,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 496,
+        "source": "src/browser/html_texture.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "HTML要素（多行テキスト、絵文字、RTL・縦書き、揺れる画像、SVG、入力欄、ボタン）を回転する角丸の箱のマップにするHTMLTextureを再現。要素はレンダラのcanvas（layoutsubtree）の子に置き、ページと同じthree-html-render（HTML-in-CanvasのポリフィルをCDNから読み込み、0.1.2に固定）がブラウザで記録した描画を、paintごとにマップのGPUテクスチャへその場でコピーする（WebGPUバックエンドのcopyElementImageToTextureと同じ経路、最初のフレームはpaint待ち）。InteractionManagerのCSS matrix3dで実際の要素を箱の前面に重ねるので、入力欄とボタンはブラウザがそのまま操作できる。RoomEnvironment（sigma 0.02）のPMREM、NeutralToneMappingに対応。ネイティブのHTML-in-Canvas APIはwgpuのキューに渡せないため、常にポリフィルの描画を使う。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three-html-render/polyfill",

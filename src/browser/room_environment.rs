@@ -2,6 +2,13 @@
 use crate::{Result, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::sync::Arc;
 pub(super) fn environment(r: &Renderer) -> Result<Arc<crate::environment::EnvironmentMap>> {
+    environment_with_sigma(r, 0.04)
+}
+/// PMREMGenerator.fromScene( new RoomEnvironment(), sigma ).
+pub(super) fn environment_with_sigma(
+    r: &Renderer,
+    sigma: f32,
+) -> Result<Arc<crate::environment::EnvironmentMap>> {
     let mut s = Scene::new();
     s.background = Color::BLACK;
     let geometry = Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?);
@@ -73,6 +80,6 @@ pub(super) fn environment(r: &Renderer) -> Result<Arc<crate::environment::Enviro
     }));
     s.get_mut(h)?.position = Vector3::new(0.418, 16.199 - 3.5, 0.300);
     Ok(Arc::new(crate::environment::EnvironmentMap::from_scene(
-        r, &mut s, 256, 0.04,
+        r, &mut s, 256, sigma,
     )?))
 }
