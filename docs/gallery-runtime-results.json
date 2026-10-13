@@ -14415,7 +14415,7 @@
       "id": "physics_ammo_volume",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_volume.html",
       "source_sha256": "ad49b97c7ea96d2860624d5ee0b8a24a513e96448753c93c0dfdf26acd473e87",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "physics_ammo_volume",
         "source_sha256": "ad49b97c7ea96d2860624d5ee0b8a24a513e96448753c93c0dfdf26acd473e87",

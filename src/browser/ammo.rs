@@ -211,6 +211,42 @@ export class AmmoSoftWorld {
 		this.softBodies.push( body );
 		return this.softBodies.length - 1;
 	}
+	// softBodyHelpers.CreateFromTriMesh with the volume page's config.
+	triMesh( vertices, indices, randomize, viterations, piterations, collisions, kDF, kDP, kPR, kLST, kAST, mass, margin ) {
+		const Ammo = this.lib;
+		const body = this.helpers.CreateFromTriMesh( this.world.getWorldInfo(), Array.from( vertices ), Array.from( indices ), indices.length / 3, randomize );
+		const sbConfig = body.get_m_cfg();
+		sbConfig.set_viterations( viterations );
+		sbConfig.set_piterations( piterations );
+		sbConfig.set_collisions( collisions );
+		sbConfig.set_kDF( kDF );
+		sbConfig.set_kDP( kDP );
+		sbConfig.set_kPR( kPR );
+		body.get_m_materials().at( 0 ).set_m_kLST( kLST );
+		body.get_m_materials().at( 0 ).set_m_kAST( kAST );
+		body.setTotalMass( mass, false );
+		Ammo.castObject( body, Ammo.btCollisionObject ).getCollisionShape().setMargin( margin );
+		this.world.addSoftBody( body, 1, - 1 );
+		body.setActivationState( 4 );
+		this.softBodies.push( body );
+		return this.softBodies.length - 1;
+	}
+	setLinearVelocity( body, x, y, z ) {
+		this.bodies[ body ].setLinearVelocity( new this.lib.btVector3( x, y, z ) );
+	}
+	// The soft body's first `count` nodes: positions ( m_x ) then normals ( m_n ).
+	nodesWithNormals( soft, count ) {
+		const nodes = this.softBodies[ soft ].get_m_nodes();
+		const out = new Float32Array( count * 6 );
+		for ( let i = 0; i < count; i ++ ) {
+			const node = nodes.at( i );
+			const p = node.get_m_x();
+			const n = node.get_m_n();
+			out.set( [ p.x(), p.y(), p.z() ], i * 3 );
+			out.set( [ n.x(), n.y(), n.z() ], ( count + i ) * 3 );
+		}
+		return out;
+	}
 	appendAnchor( soft, node, body, disableCollision, influence ) {
 		this.softBodies[ soft ].appendAnchor( node, this.bodies[ body ], disableCollision, influence );
 	}
@@ -362,6 +398,28 @@ extern "C" {
         mass: f64,
         margin: f64,
     ) -> u32;
+    #[wasm_bindgen(method, js_name = triMesh)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn tri_mesh(
+        this: &AmmoSoftWorld,
+        vertices: &[f32],
+        indices: &[u32],
+        randomize: bool,
+        viterations: u32,
+        piterations: u32,
+        collisions: u32,
+        k_df: f64,
+        k_dp: f64,
+        k_pr: f64,
+        k_lst: f64,
+        k_ast: f64,
+        mass: f64,
+        margin: f64,
+    ) -> u32;
+    #[wasm_bindgen(method, js_name = setLinearVelocity)]
+    pub fn set_linear_velocity(this: &AmmoSoftWorld, body: u32, x: f64, y: f64, z: f64);
+    #[wasm_bindgen(method, js_name = nodesWithNormals)]
+    pub fn nodes_with_normals(this: &AmmoSoftWorld, soft: u32, count: u32) -> js_sys::Float32Array;
     #[wasm_bindgen(method, js_name = appendAnchor)]
     pub fn append_anchor(
         this: &AmmoSoftWorld,
