@@ -12,6 +12,8 @@ def main():
               ("three_rs_wasm.js", "three_rs_wasm_bg.wasm")]
     if not all(path.is_file() for path in bundle):
         raise SystemExit("Build web/pkg with wasm-pack --release first")
+    # wasm-bindgen's inline_js modules, which three_rs_wasm.js imports.
+    bundle += sorted(path for path in (ROOT / "web/pkg/snippets").rglob("*") if path.is_file())
     if SITE.exists():
         shutil.rmtree(SITE)
     files = subprocess.check_output(
