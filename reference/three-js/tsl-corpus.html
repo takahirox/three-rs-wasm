@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- webgpu_tsl_editor's build() over a list of programs on the pinned r186: the editor's scene, its
+     two renderers and the same calls, recording each program's shaders, thrown message and console. -->
+<html><head><meta charset="utf-8"><base href="/.cache/three-r186/examples/"></head><body style="margin:0;background:#000">
+<div id="renderer"></div>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js"}}</script>
+<script type="module">
+import * as THREE from 'three/webgpu';
+import { vec4 } from 'three/tsl';
+const log = [];
+for ( const level of [ 'log', 'warn', 'error' ] ) {
+	const original = console[ level ];
+	console[ level ] = ( ...args ) => {
+		log.push( [ level, args.map( a => a instanceof Error ? a.message : typeof a === 'object' ? ( a && a.constructor ? a.constructor.name : String( a ) ) : String( a ) ).join( ' ' ) ] );
+		original.apply( console, args );
+	};
+}
+// init(): the editor's preview.
+const camera = new THREE.PerspectiveCamera( 70, 1, 0.1, 10 );
+camera.position.z = .72;
+camera.lookAt( 0, 0, 0 );
+const scene = new THREE.Scene();
+scene.background = new THREE.Color( 0x222222 );
+const rendererDOM = document.getElementById( 'renderer' );
+const renderer = new THREE.WebGPURenderer( { antialias: true } );
+renderer.setPixelRatio( 1 );
+renderer.setSize( 200, 200 );
+renderer.debug.diagnostics.keywords = true;
+rendererDOM.appendChild( renderer.domElement );
+const material = new THREE.NodeMaterial();
+material.fragmentNode = vec4( 0, 0, 0, 1 );
+const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 1, 1 ), material );
+scene.add( mesh );
+const webGLRenderer = new THREE.WebGPURenderer( { forceWebGL: true } );
+webGLRenderer.debug.diagnostics.keywords = true;
+await renderer.init();
+renderer.render( scene, camera );
+// build(): the editor's, with the chosen output.
+const build = async ( code, output ) => {
+	try {
+		const AsyncFunction = async function () {}.constructor;
+		const tslCode = `let output = null;\n${ code }\nreturn { output };`;
+		const nodes = await ( new AsyncFunction( 'THREE', tslCode )( THREE ) );
+		mesh.material.fragmentNode = nodes.output;
+		mesh.material.needsUpdate = true;
+		mesh.visible = false;
+		const raw = output === 'WGSL' ? await renderer.debug.getShaderAsync( scene, camera, mesh ) : await webGLRenderer.debug.getShaderAsync( scene, camera, mesh );
+		mesh.visible = true;
+		return { vertex: raw.vertexShader, fragment: raw.fragmentShader };
+	} catch ( e ) {
+		mesh.visible = true;
+		return { error: 'Error: ' + e.message };
+	}
+};
+// One program: WGSL ( sRGB output ), GLSL ES 3.0, then WGSL with linear output; a frame after each.
+window.runProgram = async ( code ) => {
+	const result = {};
+	for ( const [ key, output, colorSpace ] of [ [ 'wgsl', 'WGSL', THREE.SRGBColorSpace ], [ 'glsl', 'GLSL ES 3.0', THREE.SRGBColorSpace ], [ 'wgslLinear', 'WGSL', THREE.LinearSRGBColorSpace ] ] ) {
+		renderer.outputColorSpace = colorSpace;
+		log.length = 0;
+		result[ key ] = await build( code, output );
+		try {
+			renderer.render( scene, camera );
+		} catch ( e ) {
+			log.push( [ 'render', e.message ] );
+		}
+		result[ key ].console = log.splice( 0 );
+	}
+	renderer.outputColorSpace = THREE.SRGBColorSpace;
+	return result;
+};
+window.tslExports = Object.keys( await import( 'three/tsl' ) ).map( name => [ name, typeof ( THREE.TSL[ name ] ) ] );
+window.ready = true;
+</script></body></html>
