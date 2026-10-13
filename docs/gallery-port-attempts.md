@@ -572,7 +572,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [games_fps](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/games_fps.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [physics_ammo_break](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_break.html) | blocked-at-port-review | MeshPhongMaterial; ConvexObjectBreaker; ConvexGeometry |
 | [physics_ammo_cloth](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_cloth.html) | blocked-at-port-review | MeshPhongMaterial; MeshLambertMaterial |
-| [physics_ammo_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_instancing.html) | blocked-at-port-review | HemisphereLight; ShadowMaterial; MeshLambertMaterial; InstancedMesh |
+| [physics_ammo_instancing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_instancing.html) | runnable-partial | tests/browser/texture-volumes.spec.js |
 | [physics_ammo_rope](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_rope.html) | blocked-at-port-review | MeshPhongMaterial |
 | [physics_ammo_terrain](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_terrain.html) | blocked-at-port-review | MeshPhongMaterial; ConeGeometry |
 | [physics_ammo_volume](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_volume.html) | blocked-at-port-review | MeshPhongMaterial |

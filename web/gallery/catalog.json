@@ -32798,7 +32798,7 @@
     {
       "id": "physics_ammo_instancing",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_instancing.html",
       "source_sha256": "f700cd6d3576f8567c40ad43949c7674b348ee3b6a1b2549a046a3b7c805a876",
@@ -32870,7 +32870,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 489,
+        "source": "src/browser/physics_ammo_instancing.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ランダムな色の箱400個と球400個のInstancedMeshを、インスタンスごとのammo.jsの剛体で見えない床コライダーとShadowMaterialの平面の上に落とすシーンを再現。物理演算はページと同じjsdelivrのammo.wasm.js（BulletのWasm版）で行い、AmmoPhysics.jsのワールド・剛体・16msのステップをそのまま呼ぶ（emscriptenのWasmはRustのWasmに組み込めないため、JavaScript経由で呼び出す）。16ms間隔で箱と球を1つずつ中央の上へ戻す処理とOrbitControlsに対応。インスタンス行列は物理のステップごとに更新する（オリジナルと同じくCPUで剛体の姿勢を書き込む）。同じammo.jsは同じ入力で決定的に動くため、物体が積み重なってもオリジナルと同じ軌道になる。オリジナルにはリサイズ処理がなく、キャンバスは最初の大きさを保つ。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",

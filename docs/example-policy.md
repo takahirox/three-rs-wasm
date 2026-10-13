@@ -424,6 +424,12 @@ the largest id and then holds the default thresholds.
 bit for bit after every frame, under the webgpu_postprocessing_ssgi pipeline
 ([ballpool.md](ballpool.md)).
 
+The physics_ammo pages run the same ammo.js build ( Bullet compiled to wasm
+with emscripten ) from the page's CDN. Its module has emscripten's own memory
+and glue, so it cannot be linked into this crate's wasm. The port calls it
+through JavaScript, as AmmoPhysics.js does, and builds the scene in Rust
+( `src/browser/ammo.rs` ).
+
 `webgl_loader_3dtiles` is broken on r186 ( its effects get no scene depth ).
 Its comparison page applies three.js dev's fix: WebGLOutput's depth texture
 and the page's updated EffectPassAdapter. The port reproduces the fixed page,

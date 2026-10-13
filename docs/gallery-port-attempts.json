@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 483,
+    "runnable-partial": 484,
     "excluded": 43,
-    "blocked-at-port-review": 81
+    "blocked-at-port-review": 80
   },
   "examples": [
     {
@@ -41783,10 +41783,10 @@
     },
     {
       "id": "physics_ammo_instancing",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_instancing.html",
       "source_sha256": "f700cd6d3576f8567c40ad43949c7674b348ee3b6a1b2549a046a3b7c805a876",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

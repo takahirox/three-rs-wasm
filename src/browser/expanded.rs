@@ -114,6 +114,7 @@ enum Content {
     ProgressiveLod(Box<super::progressive_lod::Demo>),
     MorphtargetsWebcam(Box<super::morphtargets_webcam::Demo>),
     Tiles3d(Box<super::tiles3d::Demo>),
+    PhysicsAmmoInstancing(Box<super::physics_ammo_instancing::Demo>),
     ComputeWater(Box<super::compute_water::Demo>),
     TslGraph(Box<super::tsl_graph::Demo>),
     LightprobesComplex(Box<super::lightprobes::Demo>),
@@ -915,6 +916,16 @@ impl Demo {
                 elapsed: 0.,
                 content: Content::ProgressiveLod(Box::new(
                     super::progressive_lod::Demo::create(scene, camera, example, renderer).await?,
+                )),
+            }),
+            489 => Ok(Self {
+                viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
+                near: 0.1,
+                far: 100.,
+                elapsed: 0.,
+                content: Content::PhysicsAmmoInstancing(Box::new(
+                    super::physics_ammo_instancing::Demo::create(scene, camera, example, renderer)
+                        .await?,
                 )),
             }),
             488 => Ok(Self {
@@ -2697,6 +2708,9 @@ impl Demo {
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
+            return demo.update(scene, camera, delta, animate);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -4409,6 +4423,9 @@ impl Demo {
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
+            demo.prepare(scene, camera, renderer)?;
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
@@ -4986,6 +5003,9 @@ impl Demo {
             return demo.parameter(index, value);
         }
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            return demo.parameter(index, value);
+        }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
@@ -5655,6 +5675,9 @@ impl Demo {
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.key(code, down);
         }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
+            demo.key(code, down);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.key(code, down);
         }
@@ -6245,6 +6268,10 @@ impl Demo {
             return Ok(());
         }
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            demo.draw(kind, x, y);
+            return Ok(());
+        }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
@@ -6933,6 +6960,9 @@ impl Demo {
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.seek(seconds);
         }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
+            demo.seek(seconds);
+        }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -7577,6 +7607,9 @@ impl Demo {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
+            return demo.input(scene, camera, dx, dy, wheel, pan, height);
+        }
+        if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {

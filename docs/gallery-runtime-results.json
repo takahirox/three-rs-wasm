@@ -14334,7 +14334,7 @@
       "id": "physics_ammo_instancing",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_instancing.html",
       "source_sha256": "f700cd6d3576f8567c40ad43949c7674b348ee3b6a1b2549a046a3b7c805a876",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "physics_ammo_instancing",
         "source_sha256": "f700cd6d3576f8567c40ad43949c7674b348ee3b6a1b2549a046a3b7c805a876",

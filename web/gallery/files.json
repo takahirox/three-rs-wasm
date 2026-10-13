@@ -459,6 +459,7 @@
     "games_fps"
   ],
   "physics": [
+    "physics_ammo_instancing",
     "physics_rapier_basic",
     "physics_rapier_instancing",
     "physics_rapier_joints",
