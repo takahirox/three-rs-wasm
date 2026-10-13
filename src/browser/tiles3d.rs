@@ -42,15 +42,29 @@ const FOV: f64 = 75.;
 type Cell<T> = Rc<RefCell<Option<std::result::Result<T, String>>>>;
 
 async fn fetch(url: &str) -> std::result::Result<web_sys::Response, String> {
+    fetch_with(url, None).await
+}
+/// fetch( url ) with a referrer policy: the ion key allows the gallery's path,
+/// and the default cross-origin referrer is only the page's origin.
+async fn fetch_with(
+    url: &str,
+    policy: Option<web_sys::ReferrerPolicy>,
+) -> std::result::Result<web_sys::Response, String> {
     let window = web_sys::window().ok_or("window")?;
-    JsFuture::from(window.fetch_with_str(url))
+    let init = web_sys::RequestInit::new();
+    if let Some(policy) = policy {
+        init.set_referrer_policy(policy);
+    }
+    JsFuture::from(window.fetch_with_str_and_init(url, &init))
         .await
         .map_err(|e| format!("{e:?}"))?
         .dyn_into::<web_sys::Response>()
         .map_err(|_| "response".into())
 }
 async fn fetch_bytes(url: &str) -> std::result::Result<Vec<u8>, String> {
-    let response = fetch(url).await?;
+    read_bytes(fetch(url).await?).await
+}
+async fn read_bytes(response: web_sys::Response) -> std::result::Result<Vec<u8>, String> {
     if !response.ok() {
         return Err(format!(
             "Failed to load model with error code {}",
@@ -85,7 +99,14 @@ struct Boot {
 }
 async fn boot() -> std::result::Result<Boot, String> {
     // CesiumIonAuth.refreshToken, then _initializeFromAsset's Google hand-off.
-    let asset = fetch_json(&with_params(ASSET, &[("access_token", ion_key::ION_KEY)])).await?;
+    // The full page URL as the referrer, which the key's allowed URL matches.
+    let response = fetch_with(
+        &with_params(ASSET, &[("access_token", ion_key::ION_KEY)]),
+        Some(web_sys::ReferrerPolicy::NoReferrerWhenDowngrade),
+    )
+    .await?;
+    let asset: serde_json::Value =
+        serde_json::from_slice(&read_bytes(response).await?).map_err(|e| e.to_string())?;
     let url = asset["options"]["url"]
         .as_str()
         .ok_or("ion asset url")?
