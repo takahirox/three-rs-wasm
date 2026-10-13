@@ -460,6 +460,7 @@
   ],
   "physics": [
     "physics_ammo_instancing",
+    "physics_ammo_rope",
     "physics_jolt_instancing",
     "physics_rapier_basic",
     "physics_rapier_instancing",

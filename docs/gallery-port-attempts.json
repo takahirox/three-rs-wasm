@@ -2,9 +2,9 @@
   "revision": "148ef33ecb6d2502ff796d4554abd1549c95d519",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 485,
+    "runnable-partial": 486,
     "excluded": 43,
-    "blocked-at-port-review": 79
+    "blocked-at-port-review": 78
   },
   "examples": [
     {
@@ -41903,10 +41903,10 @@
     },
     {
       "id": "physics_ammo_rope",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_rope.html",
       "source_sha256": "3c2e0ff413b28d8795bda6dab3f1df27ce69e64141db0884c2b1729fe3a94be9",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/texture-volumes.spec.js",
       "blockers": [
         {
           "kind": "core-api",

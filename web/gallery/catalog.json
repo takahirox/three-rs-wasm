@@ -32888,7 +32888,7 @@
     {
       "id": "physics_ammo_rope",
       "category": "physics",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/physics_ammo_rope.html",
       "source_sha256": "3c2e0ff413b28d8795bda6dab3f1df27ce69e64141db0884c2b1729fe3a94be9",
@@ -32958,7 +32958,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 491,
+        "source": "src/browser/physics_ammo_rope.rs",
+        "test": "tests/browser/texture-volumes.spec.js",
+        "limitations": [
+          "ammo.jsのソフトボディのロープで、ヒンジのアームから吊った球とランダムな色のレンガの壁を再現。物理演算はページと同じjsdelivrのammo.wasm.js（BulletのWasm版）で行い、btSoftRigidDynamicsWorld、CreateRopeのロープ、両端のアンカー、ヒンジとモーターをページと同じ順にJavaScript経由で呼ぶ（emscriptenのWasmはRustのWasmに組み込めない）。毎フレームTimerのデルタで世界を進め、ロープのノードを線の頂点へ、剛体の姿勢をメッシュへ写す（オリジナルと同じくCPUで書き込む）。Q・Aキーでのアーム操作、グリッドの地面、影、OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three",
         "three/addons/controls/OrbitControls.js",
