@@ -9,7 +9,7 @@ html,body{width:100%;height:100%;overflow:hidden}canvas{display:block;width:100%
 <script>{
 // The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
 // Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
-const tsl=new URLSearchParams(location.search).get('id')==='webgpu_tsl_editor',shim='./ui/three/shim.js';
+const tsl=(new URLSearchParams(location.search).get('id')??document.querySelector('meta[name="three-rs-example"]')?.content)==='webgpu_tsl_editor',shim='./ui/three/shim.js';
 const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports:{'three/tsl':tsl?'./tsl-module.js':shim,'three':shim,'three/webgpu':shim,'three/addons/':'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/'}});document.currentScript.after(map);
 }</script>
 <script type="module" src="example.js?v=probe-gi-1"></script></body></html>

@@ -4,8 +4,26 @@ import {readFileSync} from 'node:fs';
 const catalog = JSON.parse(readFileSync('web/gallery/catalog.json'));
 test('site entry opens the gallery under the project prefix', async ({page}) => {
   await page.goto('/three-rs-wasm/');
-  await expect(page).toHaveURL(/\/three-rs-wasm\/web\/gallery\/$/);
+  await expect(page).toHaveURL(/\/three-rs-wasm\/examples\/$/);
   await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e => e.port).length);
+});
+
+// threejs.org's URLs: examples/#<id> opens the example in the viewer, which loads
+// examples/<id>.html; that page also runs on its own. web/gallery/ stays served.
+test('official-style example URLs', async ({page}) => {
+  await page.goto('/three-rs-wasm/examples/#webgpu_materials');
+  const viewer = page.frameLocator('#viewer');
+  await expect(page.locator('#viewer')).toHaveAttribute('src', /examples\/webgpu_materials\.html$/);
+  await expect(viewer.locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
+  await expect.poll(async () => Number(await viewer.locator('canvas').first().getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(2);
+  await page.locator('.card a[href$="webgpu_xr_cubes.html"]').click();
+  await expect(page).toHaveURL(/\/examples\/#webgpu_xr_cubes$/);
+  await page.goto('/three-rs-wasm/examples/webgpu_materials.html');
+  await expect(page.locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
+  await page.goto('/three-rs-wasm/examples/webgl_loader_gltf.html');
+  await expect(page.locator('#diagnostic a[href$="examples/webgpu_loader_gltf.html"]')).toBeVisible();
+  await page.goto('/three-rs-wasm/web/gallery/#webgpu_materials');
+  await expect(page.frameLocator('#viewer').locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
 });
 
 for (const entry of catalog.examples.filter(e => e.port)) {

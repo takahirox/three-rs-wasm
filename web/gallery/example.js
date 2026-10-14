@@ -1,7 +1,10 @@
 import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
 const catalog = await (await fetch('catalog.json')).json();
-const id = new URLSearchParams(location.search).get('id');
+// ?id= on web/gallery/example.html, or the page's own id on examples/<id>.html
+// ( the published site's official-style URLs, tools/build_site.py ).
+const id = new URLSearchParams(location.search).get('id') ?? document.querySelector('meta[name="three-rs-example"]')?.content;
+const exampleHref = file => document.querySelector('meta[name="three-rs-example"]') ? `../../examples/${encodeURIComponent(file)}.html` : `example.html?id=${encodeURIComponent(file)}`;
 const entry = catalog.examples.find(example => example.id === id);
 const canvas = document.querySelector('canvas');
 const loading = document.querySelector('#loading');
@@ -20,7 +23,7 @@ function explain(error) {
  if (entry.preferred_example) {
   const preferred = catalog.examples.find(e => e.id === entry.preferred_example);
   const link = text('a', `WebGPU版: ${entry.preferred_example}${preferred?.port ? '' : '（移植待ち）'}`, diagnostic);
-  link.href = `example.html?id=${encodeURIComponent(entry.preferred_example)}`;
+  link.href = exampleHref(entry.preferred_example);
  }
  const preview = document.createElement('img'); preview.src = `screenshots/${entry.id}.jpg`; preview.alt = 'Three.js公式のプレビュー（Rustの実行結果ではありません）'; diagnostic.append(preview);
  text('p', preview.alt, diagnostic);

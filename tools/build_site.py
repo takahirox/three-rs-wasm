@@ -1,10 +1,30 @@
 """Package tracked demo assets and the release Wasm bundle for GitHub Pages."""
+import html
+import json
 from pathlib import Path
 import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / ".cache/pages/three-rs-wasm"
+
+
+def examples(site):
+    """threejs.org's URLs: examples/#<id> for the gallery and examples/<id>.html
+    for each example. The pages are web/gallery's, with a <base> there, so their
+    relative URLs and the Wasm's asset paths stay those of web/gallery/."""
+    gallery = site / "web/gallery"
+    out = site / "examples"
+    out.mkdir()
+    base = '<base href="../web/gallery/">'
+    index = (gallery / "index.html").read_text()
+    index = index.replace("<head>", f'<head>\n\t\t{base}<meta name="three-rs-layout" content="examples">', 1)
+    (out / "index.html").write_text(index)
+    page = (gallery / "example.html").read_text()
+    catalog = json.loads((gallery / "catalog.json").read_text())
+    for entry in catalog["examples"]:
+        meta = f'{base}<meta name="three-rs-example" content="{html.escape(entry["id"])}">'
+        (out / f'{entry["id"]}.html').write_text(page.replace("<head>", "<head>" + meta, 1))
 
 
 def main():
@@ -28,11 +48,12 @@ def main():
         target = SITE / source.relative_to(ROOT)
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
+    examples(SITE)
     (SITE / "index.html").write_text(
         '<!doctype html><html lang="en"><meta charset="utf-8">'
         '<title>three-rs-wasm examples</title>'
-        '<meta http-equiv="refresh" content="0;url=web/gallery/">'
-        '<a href="web/gallery/">Open the examples gallery</a></html>\n'
+        '<meta http-equiv="refresh" content="0;url=examples/">'
+        '<a href="examples/">Open the examples gallery</a></html>\n'
     )
     print(SITE.relative_to(ROOT))
 

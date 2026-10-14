@@ -14,7 +14,9 @@ backend in the browser; there is no JavaScript scene mirror or WebGL fallback.
 The main demo is the [examples gallery](https://takahirox.github.io/three-rs-wasm/):
 select an example from the list to launch its Rust/Wasm/WebGPU port. The gallery
 retains the pinned Three.js r186 browser's CSS, fonts, thumbnails, categories,
-search and mobile drawer. Only runnable ports appear in the list.
+search and mobile drawer. Only runnable ports appear in the list. Its URLs follow
+threejs.org's: `examples/#webgpu_materials` opens an example in the gallery, and
+`examples/webgpu_materials.html` opens it on its own.
 
 With the [development prerequisites](#development) installed, build an optimized
 browser package and start the local server from the repository root:
