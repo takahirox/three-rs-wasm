@@ -342,7 +342,9 @@ impl Renderer {
                         | wgpu::Features::TEXTURE_COMPRESSION_ETC2
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC
                         | wgpu::Features::RG11B10UFLOAT_RENDERABLE
-                        | wgpu::Features::SUBGROUP),
+                        | wgpu::Features::SUBGROUP
+                        // The gallery's Inspector times the passes ( web/gallery/ui/gpu-timing.js ).
+                        | wgpu::Features::TIMESTAMP_QUERY),
                 // The lit materials bind up to 17 sampled textures ( a viewport
                 // material with a LightProbeGrid ): more than the default 16
                 // where the adapter offers them.

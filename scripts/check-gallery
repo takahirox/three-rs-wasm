@@ -12,6 +12,7 @@ python3 tools/tsl/prepare.py
 # Prepare the original gallery reference on a clean checkout too.
 python3 tools/gallery/build.py --check
 python3 tools/gallery/check.py
+python3 tools/gallery/ui/page.py --check
 python3 tools/gallery/audit.py --check
 python3 tools/gallery/runtime/report.py --check
 cargo fmt --all -- --check

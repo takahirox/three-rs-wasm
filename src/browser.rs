@@ -257,6 +257,15 @@ mod xr_random;
 pub use xr_app::XrApp;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
+/// Calls `globalThis[ name ]()` when the page defines it.
+fn page_hook(name: &str) {
+    if let Ok(f) = js_sys::Reflect::get(&js_sys::global(), &JsValue::from_str(name))
+        && let Some(f) = f.dyn_ref::<js_sys::Function>()
+    {
+        let _ = f.call0(&JsValue::NULL);
+    }
+}
+
 fn asset_url(url: &str) -> Result<String> {
     let Some(path) = url.strip_prefix("/web/") else {
         return Ok(url.to_owned());
@@ -1420,10 +1429,14 @@ impl BrowserApp {
                 if let Some(state) = weak.upgrade() {
                     let mut state = state.borrow_mut();
                     state.request = None;
+                    // The page's stats.js and Inspector hooks around the frame
+                    // ( web/gallery/ui/ ), where the original calls them.
+                    page_hook("galleryFrameBegin");
                     if let Err(error) = state.render(time) {
                         let _ = state.canvas.set_attribute("data-error", &error.to_string());
                         return;
                     }
+                    page_hook("galleryFrameEnd");
                     // These official static scenes render only on load, input and resize.
                     if !([
                         16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236,

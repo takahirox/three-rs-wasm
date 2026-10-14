@@ -1095,3 +1095,16 @@ Needle, as the official pages do.
   dragon is from the Stanford 3D Scanning Repository ( Stanford University
   Computer Graphics Laboratory; conversion by Morgan McGuire's Computer
   Graphics Archive ); the cloth backdrop is by Adobe ( CC0 ).
+
+# The examples' UI ( gallery/ui )
+
+`gallery/ui/css/main.css` and `gallery/ui/css/example.css` ( the example
+pages' stylesheets ), `gallery/ui/three/constants.js` and
+`gallery/ui/three/EventDispatcher.js` are copied unchanged from the same
+pinned Three.js r186. `gallery/ui/specs.json` and `gallery/ui/pages.json`
+record the UI and page markup of the pinned examples ( text, labels and
+links ). The pages load stats.js, lil-gui and the WebGPU Inspector from the
+Three.js 0.186.0 package on jsDelivr, as the TSL editor loads lil-gui; they
+are identical to the pinned copies. Three.js attribution and MIT terms are in
+../LICENSE-THREE ( lil-gui is MIT, by George Michael Brower; stats.js is MIT,
+by mrdoob ).

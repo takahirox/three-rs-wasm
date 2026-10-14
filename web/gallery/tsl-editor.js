@@ -240,6 +240,7 @@ output = vec4( finalColor, opacity );
 
 		} );
 		window.tslEditor = { editor, result, options, build, gui };
+		document.body.dataset.ui = 'ready';
 
 	} );
 
