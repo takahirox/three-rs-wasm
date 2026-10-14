@@ -117,7 +117,10 @@ impl RenderTarget {
         {
             return Err(Error::Invalid("MRT color formats"));
         }
-        if options.depth > 1 && samples > 1 {
+        // A multisampled layer array renders one layer per pass through a
+        // single-layer multisampled color and depth attachment, resolved into
+        // the selected layer, as three's WebGPU backend does for XR targets.
+        if options.depth > 1 && samples > 1 && dimension == wgpu::TextureDimension::D3 {
             return Err(Error::Invalid("multisampling layered textures"));
         }
         if dimension == wgpu::TextureDimension::D3 && options.depth > max_size
@@ -181,7 +184,7 @@ impl RenderTarget {
                 size: wgpu::Extent3d {
                     width,
                     height,
-                    depth_or_array_layers: if options.use_array_depth_texture {
+                    depth_or_array_layers: if options.use_array_depth_texture && samples == 1 {
                         options.depth
                     } else {
                         1
@@ -266,7 +269,7 @@ impl RenderTarget {
         self.depth_texture.as_ref()
     }
     pub fn set_depth_texture(&mut self, texture: wgpu::Texture) -> Result<()> {
-        let expected_layers = if self.options.use_array_depth_texture {
+        let expected_layers = if self.array_depth() {
             self.options.depth
         } else {
             1
@@ -285,11 +288,7 @@ impl RenderTarget {
         self.depth_view = Some(Self::color_view(
             &texture,
             wgpu::TextureDimension::D2,
-            if self.options.use_array_depth_texture {
-                self.layer
-            } else {
-                0
-            },
+            if self.array_depth() { self.layer } else { 0 },
         ));
         self.depth_texture = Some(texture);
         Ok(())
@@ -329,7 +328,7 @@ impl RenderTarget {
             .map(|t| Self::color_view(t, self.dimension, layer))
             .collect();
         self.view = self.views[0].clone();
-        if self.options.use_array_depth_texture {
+        if self.array_depth() {
             self.depth_view = self
                 .depth_texture
                 .as_ref()
@@ -382,6 +381,10 @@ impl RenderTarget {
         if let Some(t) = self.depth_texture {
             t.destroy();
         }
+    }
+    /// One depth layer per color layer ( single-sampled array depth only ).
+    fn array_depth(&self) -> bool {
+        self.options.use_array_depth_texture && self.options.samples <= 1
     }
     pub(crate) fn depth_format(&self) -> Option<wgpu::TextureFormat> {
         self.depth_texture.as_ref().map(wgpu::Texture::format)

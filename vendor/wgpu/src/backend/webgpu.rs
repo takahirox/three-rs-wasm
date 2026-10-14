@@ -1257,6 +1257,26 @@ impl WebBuffer {
     }
 }
 
+/// Whether adapters are requested with `xrCompatible` ( `set_xr_compatible` ).
+pub(crate) static XR_COMPATIBLE: core::sync::atomic::AtomicBool =
+    core::sync::atomic::AtomicBool::new(false);
+
+impl WebDevice {
+    /// The device's `GPUDevice`.
+    pub(crate) fn raw(&self) -> JsValue {
+        self.inner.clone().into()
+    }
+
+    /// Wraps a `GPUTexture` made outside wgpu ( an XR projection layer's ).
+    pub(crate) fn wrap_texture(&self, texture: JsValue) -> dispatch::DispatchTexture {
+        WebTexture {
+            inner: texture.unchecked_into(),
+            ident: crate::cmp::Identifier::create(),
+        }
+        .into()
+    }
+}
+
 #[derive(Debug)]
 pub struct WebTexture {
     pub(crate) inner: webgpu_sys::GpuTexture,
@@ -1543,6 +1563,9 @@ impl dispatch::InstanceInterface for ContextWebGpu {
         };
         if let Some(mapped_pref) = mapped_power_preference {
             mapped_options.set_power_preference(mapped_pref);
+        }
+        if XR_COMPATIBLE.load(core::sync::atomic::Ordering::Relaxed) {
+            mapped_options.set_xr_compatible(true);
         }
 
         if let Some(gpu) = &self.gpu {

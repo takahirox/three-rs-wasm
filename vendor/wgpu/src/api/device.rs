@@ -287,6 +287,30 @@ impl Device {
         }
     }
 
+    /// The browser `GPUDevice` behind this device.
+    #[cfg(webgpu)]
+    pub fn as_web_device(&self) -> Option<wasm_bindgen::JsValue> {
+        self.inner.as_webgpu_opt().map(|d| d.raw())
+    }
+
+    /// Creates a [`Texture`] over a browser `GPUTexture` this device can use,
+    /// such as an XR projection layer's color texture. `desc` must describe it.
+    #[cfg(webgpu)]
+    pub fn create_texture_from_web(
+        &self,
+        texture: wasm_bindgen::JsValue,
+        desc: &TextureDescriptor<'_>,
+    ) -> Texture {
+        Texture {
+            inner: self.inner.as_webgpu().wrap_texture(texture),
+            descriptor: TextureDescriptor {
+                label: None,
+                view_formats: &[],
+                ..desc.clone()
+            },
+        }
+    }
+
     /// Creates a [`Texture`] from a wgpu-hal Texture.
     ///
     /// # Safety

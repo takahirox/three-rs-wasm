@@ -11,3 +11,10 @@ exercises multiple distinct slices in Chromium WebGPU.
 The web backend also maps `Features::SUBGROUP` to the `subgroups` GPU feature
 ( a `GpuFeatureName::Subgroups` variant ), which wgpu 26 leaves out, so that a
 device can be requested with it and run WGSL that enables subgroups.
+
+For WebXR on WebGPU ( docs/webxr-gpu.md ), the web backend also exposes what
+`XRGPUBinding` needs, without changing other behavior:
+`wgpu::set_xr_compatible( true )` requests later adapters with
+`xrCompatible`; `Device::as_web_device` returns the device's `GPUDevice`; and
+`Device::create_texture_from_web` wraps a `GPUTexture` made outside wgpu ( a
+projection layer's color texture ) as a `Texture` for rendering.

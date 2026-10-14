@@ -67,6 +67,12 @@ pub mod util;
 #[cfg(custom)]
 pub use backend::custom;
 
+/// Requests later browser WebGPU adapters with `xrCompatible` ( WebXR ).
+#[cfg(webgpu)]
+pub fn set_xr_compatible(enabled: bool) {
+    backend::webgpu::XR_COMPATIBLE.store(enabled, core::sync::atomic::Ordering::Relaxed);
+}
+
 pub use api::*;
 pub use wgt::{
     AdapterInfo, AddressMode, AllocatorReport, AstcBlock, AstcChannel, Backend, BackendOptions,

@@ -164,6 +164,7 @@ mod retargeting_readyplayer;
 mod retro;
 mod reversed_depth;
 mod robot;
+mod roller_coaster;
 mod room_environment;
 mod sao;
 mod sculpt;
@@ -250,6 +251,10 @@ mod water;
 mod webcam;
 mod wgsl_bind;
 mod wide_gamut;
+mod xr_app;
+mod xr_controller_model;
+mod xr_random;
+pub use xr_app::XrApp;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
 fn asset_url(url: &str) -> Result<String> {

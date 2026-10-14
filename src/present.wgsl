@@ -10,6 +10,9 @@
         if alpha==0.0 {return vec4(0.0);}
         return vec4(srgb_output(tone_output(value.rgb/alpha,options.x,options.y))*alpha,alpha);
     }
+    // An output pass into a non-sRGB view: tone mapping and the sRGB transfer
+    // in the shader ( three's renderOutput ).
+    if options.w>0.5 {return vec4(srgb_output(tone_output(value.rgb,options.x,options.y)),value.a);}
     if options.y<0.5 {return value;}
     return vec4(tone_output(value.rgb,options.x,options.y),value.a);
 }

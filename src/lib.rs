@@ -49,6 +49,7 @@ pub mod time;
 mod transmission;
 pub mod transpiler;
 pub mod tsl;
+pub mod xr;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

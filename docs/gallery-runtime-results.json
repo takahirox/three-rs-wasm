@@ -13300,7 +13300,7 @@
       "id": "webgpu_xr_rollercoaster",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_rollercoaster.html",
       "source_sha256": "c2c9c1d986eaacae36a313d9fab06da58c65e2958e1c2dda6e23046d52d7b495",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_xr_rollercoaster",
         "source_sha256": "c2c9c1d986eaacae36a313d9fab06da58c65e2958e1c2dda6e23046d52d7b495",
@@ -13328,7 +13328,7 @@
       "id": "webgpu_xr_cubes",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_cubes.html",
       "source_sha256": "9f0ae929d456debb17b715b468defaedbc0b19d3c76614cc4c0e4e9883733a5b",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_xr_cubes",
         "source_sha256": "9f0ae929d456debb17b715b468defaedbc0b19d3c76614cc4c0e4e9883733a5b",
@@ -13382,7 +13382,7 @@
       "id": "webgpu_xr_shadows",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_shadows.html",
       "source_sha256": "2a7f738c75e6b3d8c1c6993b2e3a8869cfaa979a8d87ff402b83772988482121",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_xr_shadows",
         "source_sha256": "2a7f738c75e6b3d8c1c6993b2e3a8869cfaa979a8d87ff402b83772988482121",

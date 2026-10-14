@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><title>WebXR WebGPU reference</title>
+<link type="text/css" rel="stylesheet" href="/.cache/three-r186/examples/main.css">
+<script>
+// The pinned r186 webgpu_xr_* page, unchanged except that its Math.random()
+// calls draw from the tests' seeded generator ( the gallery's ports draw the
+// same sequence through Math.random, which the tests replace ). Run it with
+// tests/browser/fake-xr.js.
+const imports={three:'/.cache/three-r186/src/Three.WebGPU.js','three/webgpu':'/.cache/three-r186/src/Three.WebGPU.js','three/tsl':'/.cache/three-r186/src/Three.TSL.js','three/addons/':'/.cache/three-r186/examples/jsm/'};
+// RollerCoaster.js draws the sky and trees from Math.random too.
+{const request=new XMLHttpRequest();request.open('GET','/.cache/three-r186/examples/jsm/misc/RollerCoaster.js',false);request.send();
+imports['three/addons/misc/RollerCoaster.js']=URL.createObjectURL(new Blob([request.responseText.replaceAll('Math.random()','fixtureRandom()')],{type:'text/javascript'}));}
+const map=document.createElement('script');map.type='importmap';map.textContent=JSON.stringify({imports});document.head.appendChild(map);
+</script></head><body><script type="module">
+const id=new URLSearchParams(location.search).get('id');
+if(!['webgpu_xr_cubes','webgpu_xr_rollercoaster','webgpu_xr_shadows'].includes(id))throw Error('invalid fixture');
+const html=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+let source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+source=source.replaceAll('Math.random()','fixtureRandom()');
+window.fixtureSeed=1;window.fixtureRandom=()=>((window.fixtureSeed=(Math.imul(window.fixtureSeed,1664525)+1013904223)>>>0)/4294967296);
+// Expose the renderer for the test, as the gallery exposes its app.
+source=source.replace(/const renderer = new THREE\.WebGPURenderer\( parameters \);/,'const renderer = new THREE.WebGPURenderer( parameters ); window.fixtureRenderer = renderer;');
+source+='\nwindow.fixtureScene = scene; window.fixtureCamera = camera;';
+for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('#info'))document.body.appendChild(document.importNode(node,true));
+const script=document.createElement('script');script.type='module';script.textContent=source;document.body.appendChild(script);
+</script></body></html>

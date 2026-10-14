@@ -48,10 +48,19 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    await startTslEditor(loading);
   } else {
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
-  const runtimeRevision = 'probe-gi-1';
-  const {default:init, BrowserApp, tsl_transpile} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
+  const runtimeRevision = 'xr-1';
+  const {default:init, BrowserApp, tsl_transpile, XrApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
   await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
-  if (entry.port.example === 483) {
+  if ([498, 499, 500].includes(entry.port.example)) {
+   // The WebXR examples: the page owns the XR session ( XRGPUBinding ), XrApp the scene.
+   canvas.hidden = false;
+   const {startXr} = await import(`./xr.js?v=${runtimeRevision}`);
+   app = await startXr(XrApp, canvas, entry.port.example, loading);
+   document.body.dataset.status = 'running';
+   document.body.dataset.backend = 'rust-wasm-webgpu';
+   const notice = document.querySelector('#notice'); notice.hidden = false;
+   for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
+  } else if (entry.port.example === 483) {
    const {startTranspiler} = await import(`./transpiler.js?v=${runtimeRevision}`);
    await startTranspiler(tsl_transpile, loading);
   } else {

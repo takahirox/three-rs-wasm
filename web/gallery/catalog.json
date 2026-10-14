@@ -30223,7 +30223,7 @@
     {
       "id": "webgpu_xr_rollercoaster",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_rollercoaster.html",
       "source_sha256": "c2c9c1d986eaacae36a313d9fab06da58c65e2958e1c2dda6e23046d52d7b495",
@@ -30281,7 +30281,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 499,
+        "source": "src/browser/xr_app.rs",
+        "test": "tests/browser/webxr-gpu.spec.js",
+        "limitations": [
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、localの基準空間、列車に載せたカメラ（親の変換の下のXRカメラ）、RollerCoaster.jsの線路・支柱・影・空・木のジオメトリ、回転する遊具をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/misc/RollerCoaster.js",
         "three/addons/webxr/VRButton.js",
@@ -30292,7 +30299,7 @@
     {
       "id": "webgpu_xr_cubes",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_cubes.html",
       "source_sha256": "9f0ae929d456debb17b715b468defaedbc0b19d3c76614cc4c0e4e9883733a5b",
@@ -30340,7 +30347,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 498,
+        "source": "src/browser/xr_app.rs",
+        "test": "tests/browser/webxr-gpu.spec.js",
+        "limitations": [
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。XRButton（immersive-arが使えればalpha-blendの透明背景）、コントローラーのレイ、選択による立方体の射出、レイが当たった立方体のハイライト、XRControllerModelFactoryとmotion-controllersによるコントローラーモデル（WebXR入力プロファイルのCDNから取得し、トリガーなどの入力で部品が動く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/geometries/BoxLineGeometry.js",
         "three/addons/webxr/WebGLXRFallback.js",
@@ -30456,7 +30470,7 @@
     {
       "id": "webgpu_xr_shadows",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_xr_shadows.html",
       "source_sha256": "2a7f738c75e6b3d8c1c6993b2e3a8869cfaa979a8d87ff402b83772988482121",
@@ -30534,7 +30548,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 500,
+        "source": "src/browser/xr_app.rs",
+        "test": "tests/browser/webxr-gpu.spec.js",
+        "limitations": [
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、PCFの影、霧、ACESトーンマッピング（オリジナルと同じく8ビットのフレームバッファから出力パスで書き出し）、両面の透過ガラス（WebGPURendererと同じく裏面を描き、新しいコピーの上に表面を描く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/webxr/VRButton.js",
         "three/addons/webxr/WebGLXRFallback.js",

@@ -171,12 +171,25 @@ pub struct Renderer {
     /// WebGPURenderer( { logarithmicDepthBuffer } ): built-in materials seen
     /// through a perspective camera write a logarithmic fragment depth.
     pub logarithmic_depth: std::cell::Cell<bool>,
+    /// An XR ArrayCamera's view-projection ( its union camera ): when set, a
+    /// render sorts with it instead of the render camera's, as three's
+    /// renderer sorts once for every sub-camera of an ArrayCamera. Culling
+    /// stays per view: three draws what any view's frustum holds.
+    pub array_camera_view_projection: std::cell::Cell<Option<Matrix4>>,
+    /// WebGPURenderer's transmission for 8-bit outputs too: the opaque pass is
+    /// snapshotted from the target itself ( viewportMipTexture ) whatever the
+    /// target's output buffer type. False keeps the separate half-float
+    /// backdrop pass for 8-bit targets.
+    pub viewport_transmission: std::cell::Cell<bool>,
 }
 #[derive(Clone, Copy, PartialEq)]
 enum ScenePass {
     All,
     Opaque,
     Transparent,
+    /// WebGPURenderer's back sides of double-sided transmissive meshes,
+    /// drawn over the opaque snapshot before the transparent pass.
+    TransmissionBack,
 }
 type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
@@ -597,6 +610,8 @@ impl Renderer {
             scene_draw_slots: Default::default(),
             present_slots: Default::default(),
             logarithmic_depth: Default::default(),
+            array_camera_view_projection: Default::default(),
+            viewport_transmission: Default::default(),
         })
     }
 
@@ -642,6 +657,24 @@ impl Renderer {
             view,
             format,
             [exposure as f32, tone_mapping as u32 as f32, 0.0, 0.0],
+        );
+    }
+    /// An output pass: tone mapping and the sRGB transfer function computed
+    /// in the shader, for a destination view without an sRGB format ( an XR
+    /// projection layer ).
+    pub fn blit_encoded(
+        &self,
+        target: &RenderTarget,
+        view: &wgpu::TextureView,
+        format: wgpu::TextureFormat,
+        exposure: f64,
+        tone_mapping: ToneMapping,
+    ) {
+        self.present(
+            target,
+            view,
+            format,
+            [exposure as f32, tone_mapping as u32 as f32, 0.0, 1.0],
         );
     }
     /// Convert a premultiplied linear target to premultiplied sRGB canvas output.
@@ -858,7 +891,9 @@ impl Renderer {
         // it directly, like WebGPU's viewport texture. Preserve the existing
         // path for encoded outputs and special render hooks/occlusion queries.
         let reuse_opaque = needs_transmission
-            && target.options.format == wgpu::TextureFormat::Rgba16Float
+            && (target.options.format == wgpu::TextureFormat::Rgba16Float
+                || self.viewport_transmission.get()
+                    && target.options.format == wgpu::TextureFormat::Rgba8Unorm)
             && !target.options.encode_srgb
             && target.dimension == wgpu::TextureDimension::D2
             && target.texture.depth_or_array_layers() == 1
@@ -877,6 +912,18 @@ impl Renderer {
             }
             let mips = mips.as_ref().unwrap();
             mips.update(&self.device, &self.queue, target);
+            if self.viewport_transmission.get() && has_double_pass_transmission(scene)? {
+                // The back sides, then the front sides over a fresh copy.
+                self.render_inner(
+                    scene,
+                    camera,
+                    target,
+                    ScenePass::TransmissionBack,
+                    Some(&mips.view),
+                    None,
+                )?;
+                mips.update(&self.device, &self.queue, target);
+            }
             self.render_inner(
                 scene,
                 camera,
@@ -968,7 +1015,7 @@ impl Renderer {
         queries: Option<&crate::occlusion::OcclusionQueries>,
     ) -> Result<()> {
         let opaque_only = phase == ScenePass::Opaque;
-        let resume = phase == ScenePass::Transparent;
+        let resume = matches!(phase, ScenePass::Transparent | ScenePass::TransmissionBack);
         let valid_rectangle = |r: [u32; 4]| {
             r[2] > 0
                 && r[3] > 0
@@ -1018,6 +1065,10 @@ impl Renderer {
         };
         let projection = camera_data.projection_matrix()?;
         let view_projection = projection * camera_world.inverse();
+        let sort_projection = self
+            .array_camera_view_projection
+            .get()
+            .unwrap_or(view_projection);
         let frustum = Frustum::from_projection(view_projection);
         let camera_layers = scene.get(camera)?.layers;
         let camera_position = camera_world.w_axis.truncate();
@@ -1371,6 +1422,29 @@ impl Renderer {
                 if (opaque_only && transparent) || (resume && !transparent) {
                     continue;
                 }
+                // WebGPURenderer's transparentDoublePass: a double-sided
+                // transmissive mesh draws its back side in the pass before the
+                // transparent pass and only its front side in that pass.
+                let double_pass = self.viewport_transmission.get()
+                    && matches!(material, Material::Physical(m) if m.transmission > 0.0)
+                    && properties.side == Side::Double
+                    && !properties.force_single_pass;
+                if phase == ScenePass::TransmissionBack && !double_pass {
+                    continue;
+                }
+                let sided;
+                let material = if double_pass && resume {
+                    let mut m = Material::clone(material);
+                    m.properties_mut().side = if phase == ScenePass::TransmissionBack {
+                        Side::Back
+                    } else {
+                        Side::Front
+                    };
+                    sided = m;
+                    &sided
+                } else {
+                    material
+                };
                 if !properties.visible {
                     continue;
                 }
@@ -1921,7 +1995,7 @@ impl Renderer {
                             .map(|n| n.render_order)
                     })
                     .unwrap_or(0);
-                draw.depth = view_projection.project_point3(n.world_position()).z;
+                draw.depth = sort_projection.project_point3(n.world_position()).z;
                 draw.range = (start as u32) * factor..(end as u32) * factor;
                 if let Some(segments) = wide {
                     if (geometry.indirect.is_some() || geometry.gpu_indirect.is_some())
@@ -2633,4 +2707,23 @@ impl Renderer {
         buffer.unmap();
         Ok(result)
     }
+}
+
+/// Whether a visible mesh has a double-sided transmissive material
+/// ( WebGPURenderer's transparentDoublePass ).
+fn has_double_pass_transmission(scene: &Scene) -> Result<bool> {
+    for root in scene.roots() {
+        for h in scene.traverse(root, true)? {
+            if let NodeKind::Mesh(mesh) = &scene.get(h)?.kind
+                && mesh.materials.iter().any(|m| {
+                    matches!(m.as_ref(), Material::Physical(p) if p.transmission > 0.0)
+                        && m.properties().side == Side::Double
+                        && !m.properties().force_single_pass
+                })
+            {
+                return Ok(true);
+            }
+        }
+    }
+    Ok(false)
 }
