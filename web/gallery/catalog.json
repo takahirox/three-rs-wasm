@@ -28241,7 +28241,7 @@
     {
       "id": "webgpu_tsl_editor",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_editor.html",
       "source_sha256": "0544dee229e2caf11dafc43a51a95aa348db82c06e9c2deaab40c8cebec13257",
@@ -28253,7 +28253,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 497,
+        "source": "tsl/src/three/order.rs",
+        "test": "tests/browser/tsl-editor.spec.js",
+        "limitations": [
+          "TSLエディタを再現。three.js r186のノードシステム全体（src/nodes、WGSL/GLSLノードビルダー、materials/nodes、renderers/common/nodes）とレンダラー、THREEの全モジュール（587）を、JavaScriptの意味論をRustで再現したオブジェクトモデル（tsl/src/rt）上のRustへ変換（tools/tsl/transpile.mjs）。ユーザーのTSLはオリジナルと同じくAsyncFunctionで実行し、THREEとthree/tslは移植版。生成されるWGSL・GLSL・例外・コンソールは、4,177本のコーパス（全TSL関数の呼び出しパターンと手書きのプログラム）でオリジナルと1文字単位で一致（tools/tsl/check.mjs）。プレビューは移植版のWebGPURendererがブラウザのGPUDeviceで描画（同期実行のため非同期パイプライン生成は即時に結果を返す）。Monaco・lil-guiはオリジナルと同じCDN。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/libs/lil-gui.module.min.js",
         "three/tsl",

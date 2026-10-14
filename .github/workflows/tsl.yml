@@ -1,0 +1,24 @@
+name: TSL node system corpus
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  corpus:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --locked --version 0.14.0
+      - name: Check every corpus program against the r186 goldens
+        run: |
+          npm ci --ignore-scripts
+          ./scripts/check-tsl

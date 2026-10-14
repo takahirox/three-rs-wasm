@@ -17,6 +17,7 @@ python3 tools/gallery/runtime/report.py --check
 cargo fmt --all -- --check
 cargo clippy --locked --target wasm32-unknown-unknown -- -D warnings
 wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+( cd tsl && wasm-pack build --target web --profile web --out-dir ../web/tsl-pkg --no-typescript )
 npm ci --ignore-scripts
 npx playwright test --config playwright.gallery.config.js
 echo 'Gallery UI, implemented ports and inventory: PASS (not full example coverage)'

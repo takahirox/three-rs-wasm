@@ -2,6 +2,8 @@
 //! String, JSON, Symbol, Reflect, Proxy, Map, Set, WeakMap, WeakSet, the
 //! Error classes, Promise, console, parseInt and friends, plus RegExp.
 use super::ops::*;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::JsCast;
 use super::*;
 
 /// `Symbol.iterator` as a property key.
@@ -778,6 +780,12 @@ fn react(on_ok: &Val, on_err: &Val, derived: &Val, fulfilled: bool, v: &Val) -> 
 
 /// `await v`: a settled promise's value or its rejection; other values as they are.
 pub fn await_val(v: Val) -> R<Val> {
+    #[cfg(target_arch = "wasm32")]
+    if let Val::Js(j) = &v
+        && let Some(value) = interop::settled(j)
+    {
+        return Ok(value);
+    }
     if let Val::Obj(o) = &v
         && let Kind::Promise(state) = &o.0.kind
     {
@@ -899,6 +907,11 @@ pub fn flush_frames() -> R<()> {
 
 fn install_timers(target: &Val) {
     let raf = func("requestAnimationFrame", 1, |_t, a| {
+        // The editor's preview animates on the browser's frames.
+        #[cfg(target_arch = "wasm32")]
+        if interop::real_gpu() {
+            return Ok(Val::Num(interop::request_frame(&arg(a, 0))));
+        }
         let id = NEXT_FRAME.with(|n| {
             let id = n.get();
             n.set(id + 1);
@@ -908,6 +921,11 @@ fn install_timers(target: &Val) {
         Ok(Val::Num(id as f64))
     });
     let cancel = func("cancelAnimationFrame", 1, |_t, a| {
+        #[cfg(target_arch = "wasm32")]
+        if interop::real_gpu() {
+            interop::cancel_frame(to_number(&arg(a, 0)));
+            return Ok(Val::Undef);
+        }
         let id = to_number(&arg(a, 0)) as u32;
         FRAMES.with(|f| f.borrow_mut().retain(|(i, _)| *i != id));
         Ok(Val::Undef)
@@ -1046,7 +1064,14 @@ const WGSL_LANGUAGE_FEATURES: &[&str] = &[
 pub fn now() -> f64 {
     #[cfg(target_arch = "wasm32")]
     {
-        js_sys::Date::now()
+        // The page's performance.now(), so a page's clock reaches the port.
+        let p = interop::js_global("performance");
+        js_sys::Reflect::get(&p, &wasm_bindgen::JsValue::from_str("now"))
+            .ok()
+            .and_then(|f| f.dyn_into::<js_sys::Function>().ok())
+            .and_then(|f| f.call0(&p).ok())
+            .and_then(|v| v.as_f64())
+            .unwrap_or_else(js_sys::Date::now)
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -1114,6 +1139,11 @@ pub fn json_stringify(v: &Val) -> R<String> {
 
 /// A global by name: the port's, then the embedding JavaScript's.
 pub fn glob(name: &str) -> Val {
+    // With a real GPU the browser's navigator answers ( features, preferred format ).
+    #[cfg(target_arch = "wasm32")]
+    if name == "navigator" && interop::real_gpu() {
+        return interop::global(name);
+    }
     let v = global(name);
     if !v.is_undef() || name == "undefined" {
         return v;

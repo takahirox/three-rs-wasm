@@ -2,6 +2,8 @@
 //! Function, Array, String, Number, Boolean, Error, Map, Set and WeakMap,
 //! plus helpers for the regular expressions the sources write as literals.
 use super::*;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::JsCast;
 
 fn this_obj(this: &Val) -> R<Obj> {
     match this {
@@ -373,6 +375,13 @@ fn install_typed() {
                 init: None,
                 construct: Some(Rc::new(move |_this, a| {
                     let first = arg(a, 0);
+                    // A view on the browser's memory ( a mapped GPUBuffer range ): the browser's typed array.
+                    #[cfg(target_arch = "wasm32")]
+                    if let Val::Js(j) = &first
+                        && (j.is_instance_of::<js_sys::ArrayBuffer>() || js_sys::ArrayBuffer::is_view(j))
+                    {
+                        return super::interop::construct(&super::interop::js_global(kind.name()), a);
+                    }
                     if let Val::Obj(b) = &first
                         && matches!(b.0.kind, Kind::ArrayBuffer(_))
                     {

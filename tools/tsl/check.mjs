@@ -89,6 +89,7 @@ if ( isMainThread ) {
 	fs.writeFileSync( ROOT + '.cache/tsl-check/failures.json', JSON.stringify( failures, null, 1 ) );
 	fs.writeFileSync( ROOT + '.cache/tsl-check/console.json', JSON.stringify( consoleFailures, null, 1 ) );
 	console.log( `${ pass } / ${ total } programs match; ${ crashes } chunks crashed; ${ consoleFailures.length } console mismatches` );
+	if ( pass !== total || crashes > 0 || consoleFailures.length > 0 ) process.exitCode = 1;
 	if ( args.includes( '--diff' ) ) {
 		for ( const f of failures.slice( 0, Number( opt( '--diff-count' ) ?? 3 ) ) ) {
 			if ( f.crash ) {

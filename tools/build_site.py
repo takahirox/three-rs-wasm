@@ -14,6 +14,11 @@ def main():
         raise SystemExit("Build web/pkg with wasm-pack --release first")
     # wasm-bindgen's inline_js modules, which three_rs_wasm.js imports.
     bundle += sorted(path for path in (ROOT / "web/pkg/snippets").rglob("*") if path.is_file())
+    # webgpu_tsl_editor's own Wasm: the three-tsl crate ( three r186 transpiled to Rust ).
+    tsl = [ROOT / "web/tsl-pkg" / name for name in ("three_tsl.js", "three_tsl_bg.wasm")]
+    if not all(path.is_file() for path in tsl):
+        raise SystemExit("Build web/tsl-pkg with wasm-pack ( tsl/, --profile web ) first")
+    bundle += tsl + sorted(path for path in (ROOT / "web/tsl-pkg/snippets").rglob("*") if path.is_file())
     if SITE.exists():
         shutil.rmtree(SITE)
     files = subprocess.check_output(

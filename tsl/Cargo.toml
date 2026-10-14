@@ -20,3 +20,10 @@ js-sys = "0.3"
 [profile.release]
 opt-level = 2
 codegen-units = 16
+
+# The gallery's editor page: size-optimized.
+[profile.web]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1

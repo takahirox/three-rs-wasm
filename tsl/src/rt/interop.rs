@@ -3,7 +3,7 @@
 //! both sides keep each other's identities. Exceptions cross as values.
 use super::*;
 use std::cell::RefCell;
-use wasm_bindgen::JsCast;
+pub use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(inline_js = r#"
@@ -131,8 +131,10 @@ export function rtToNumber( v ) {
 export function rtConsole( level, args ) {
 	console[ level ]( ...args );
 }
-export function rtError( kind, message ) {
-	return kind === 'TypeError' ? new TypeError( message ) : kind === 'RangeError' ? new RangeError( message ) : new Error( message );
+export function rtError( kind, message, rustStack ) {
+	const e = kind === 'TypeError' ? new TypeError( message ) : kind === 'RangeError' ? new RangeError( message ) : new Error( message );
+	e.rustStack = rustStack;
+	return e;
 }
 export function rtGlobal( name ) {
 	return globalThis[ name ];
@@ -142,6 +144,21 @@ export function rtGetPrototypeOf( v ) {
 }
 export function rtJson( v ) {
 	return JSON.stringify( v );
+}
+export function rtTyped( name, values ) {
+	return new globalThis[ name ]( values );
+}
+export function rtBuffer( bytes ) {
+	return bytes.slice().buffer;
+}
+export function rtSettled( v ) {
+	return ( v !== null && typeof v === 'object' && v.__tslSettled === true ) ? [ v.value ] : undefined;
+}
+export function rtFrame( cb ) {
+	return globalThis.requestAnimationFrame( cb );
+}
+export function rtCancelFrame( id ) {
+	globalThis.cancelAnimationFrame( id );
 }
 export function rtIterator( values ) {
 	return function* () {
@@ -189,7 +206,7 @@ extern "C" {
     #[wasm_bindgen(js_name = rtConsole)]
     fn rt_console(level: &str, args: &js_sys::Array);
     #[wasm_bindgen(js_name = rtError)]
-    fn rt_error(kind: &str, message: &str) -> JsValue;
+    fn rt_error(kind: &str, message: &str, rust_stack: &str) -> JsValue;
     #[wasm_bindgen(js_name = rtIterator)]
     fn rt_iterator(values: &js_sys::Array) -> JsValue;
     #[wasm_bindgen(js_name = rtGlobal)]
@@ -198,6 +215,39 @@ extern "C" {
     fn rt_get_prototype_of(v: &JsValue) -> JsValue;
     #[wasm_bindgen(js_name = rtJson)]
     fn rt_json(v: &JsValue) -> String;
+    #[wasm_bindgen(js_name = rtTyped)]
+    fn rt_typed(name: &str, values: &js_sys::Float64Array) -> JsValue;
+    #[wasm_bindgen(js_name = rtBuffer)]
+    fn rt_buffer(bytes: &[u8]) -> JsValue;
+    #[wasm_bindgen(js_name = rtSettled)]
+    fn rt_settled(v: &JsValue) -> Option<js_sys::Array>;
+    #[wasm_bindgen(js_name = rtFrame)]
+    fn rt_frame(cb: &JsValue) -> f64;
+    #[wasm_bindgen(js_name = rtCancelFrame)]
+    fn rt_cancel_frame(id: f64);
+}
+
+/// A settled thenable the editor's device returns ( `{ __tslSettled, value }` ).
+pub fn settled(j: &JsValue) -> Option<Val> {
+    rt_settled(j).map(|a| from_js(a.get(0)))
+}
+
+/// Whether the page gave the port a real GPUDevice ( the editor's preview ).
+pub fn real_gpu() -> bool {
+    !rt_global("__tslRealDevice").is_undefined()
+}
+
+/// The browser's requestAnimationFrame, for the preview's animation loop.
+pub fn request_frame(cb: &Val) -> f64 {
+    rt_frame(&to_js(cb))
+}
+pub fn cancel_frame(id: f64) {
+    rt_cancel_frame(id)
+}
+
+/// The embedding JavaScript's `globalThis[ name ]` as a raw value.
+pub fn js_global(name: &str) -> JsValue {
+    rt_global(name)
 }
 
 /// `globalThis[ name ]` of the embedding JavaScript.
@@ -246,7 +296,8 @@ pub fn exc_to_js(e: &Exc) -> JsValue {
                 "TypeError" | "RangeError" => kind,
                 _ => "Error".to_string(),
             };
-            rt_error(&kind, &error_message(&e.0))
+            let stack = display(&super::get(&e.0, "stack").unwrap_or(Val::Undef));
+            rt_error(&kind, &error_message(&e.0), &stack)
         }
         v => to_js(v),
     }
@@ -266,6 +317,16 @@ pub fn to_js(v: &Val) -> JsValue {
         Val::Num(n) => JsValue::from_f64(*n),
         Val::Str(s) => JsValue::from_str(s),
         Val::Js(j) => j.clone(),
+        Val::Obj(o) if matches!(o.0.kind, Kind::Typed(..)) => {
+            // The browser's APIs take typed arrays by value ( a copy ).
+            let Kind::Typed(kind, view) = &o.0.kind else { unreachable!() };
+            let values: Vec<f64> = view.values(*kind);
+            rt_typed(kind.name(), &js_sys::Float64Array::from(values.as_slice()))
+        }
+        Val::Obj(o) if matches!(o.0.kind, Kind::ArrayBuffer(_)) => {
+            let Kind::ArrayBuffer(bytes) = &o.0.kind else { unreachable!() };
+            rt_buffer(&bytes.borrow())
+        }
         Val::Obj(o) => {
             let callable = o.is_func() || matches!(&o.0.kind, Kind::Proxy(target, _) if target.type_of() == "function");
             let kind = if callable {
@@ -358,9 +419,11 @@ pub fn is_plain_object(j: &JsValue) -> bool {
     rt_is_plain_object(j)
 }
 pub fn iterate(j: &JsValue) -> R<Vec<Val>> {
-    rt_iterate(j)
-        .map(|a| a.iter().map(from_js).collect())
-        .map_err(js_exc)
+    rt_iterate(j).map(|a| a.iter().map(from_js).collect()).map_err(|e| {
+        let stack: Vec<String> = super::call_stack().iter().rev().map(|s| s.to_string()).collect();
+        let _ = js_sys::Reflect::set(&e, &JsValue::from_str("rustStack"), &JsValue::from_str(&stack.join(" < ")));
+        js_exc(e)
+    })
 }
 pub fn console(level: &str, args: &[Val]) {
     rt_console(level, &js_args(args));

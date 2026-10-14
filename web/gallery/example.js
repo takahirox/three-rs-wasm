@@ -42,6 +42,11 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
  try {
   // The transpiler page renders nothing: it needs no WebGPU.
   if (!navigator.gpu && entry.port.example !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
+  if (entry.port.example === 497) {
+   // webgpu_tsl_editor runs on the three-tsl crate's own Wasm ( web/tsl-pkg ), not this app.
+   const {startTslEditor} = await import('./tsl-editor.js?v=tsl-1');
+   await startTslEditor(loading);
+  } else {
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
   const runtimeRevision = 'probe-gi-1';
   const {default:init, BrowserApp, tsl_transpile} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
@@ -479,5 +484,6 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    new MutationObserver(() => { if (canvas.dataset.error && !closing) {closing = true; release(); settings.hidden = true; explain(canvas.dataset.error); document.body.dataset.status = 'error';} }).observe(canvas, {attributes:true, attributeFilter:['data-error']});
   }
   }
- } catch (error) { app?.free(); app = null; explain(String(error)); document.body.dataset.status = 'error'; }
+   }
+} catch (error) { app?.free(); app = null; explain(String(error)); document.body.dataset.status = 'error'; }
 }

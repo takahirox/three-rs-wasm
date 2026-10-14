@@ -508,7 +508,7 @@ The separate [glTF importer run](gallery-gltf-attempts.json) actually loads all 
 | [webgpu_tsl_angular_slicing](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_angular_slicing.html) | runnable-partial | tests/browser/tsl-procedural.spec.js |
 | [webgpu_tsl_compute_attractors_particles](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_compute_attractors_particles.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_tsl_earth](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_earth.html) | runnable-partial | tests/browser/tsl-extended.spec.js |
-| [webgpu_tsl_editor](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_editor.html) | blocked-at-port-review | NodeMaterial |
+| [webgpu_tsl_editor](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_editor.html) | runnable-partial | tests/browser/tsl-editor.spec.js |
 | [webgpu_tsl_galaxy](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_galaxy.html) | runnable-partial | tests/browser/tsl-particles.spec.js |
 | [webgpu_tsl_graph](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_graph.html) | runnable-partial | tests/browser/compute-examples.spec.js |
 | [webgpu_tsl_halftone](https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_halftone.html) | runnable-partial | tests/browser/tsl-surface.spec.js |

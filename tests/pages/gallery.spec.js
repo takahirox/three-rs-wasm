@@ -39,6 +39,17 @@ for (const entry of catalog.examples.filter(e => e.port)) {
       expect(escapedAssets).toEqual([]);
       return;
     }
+    // The TSL editor runs on the three-tsl crate: its builds fill the result editor and
+    // its preview canvas renders through the port's WebGPURenderer.
+    if (entry.port.example === 497) {
+      await expect.poll(async () => Number(await viewer.locator('body').getAttribute('data-builds')), {timeout: 110000}).toBeGreaterThan(0);
+      await expect(viewer.locator('#result')).toContainText('Three.js r186 - Node System');
+      await expect.poll(async () => Number(await viewer.locator('#renderer canvas').getAttribute('data-frames')), {timeout: 60000}).toBeGreaterThan(2);
+      expect(errors).toEqual([]);
+      expect(badResponses).toEqual([]);
+      expect(escapedAssets).toEqual([]);
+      return;
+    }
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.
     const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236, 237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319].includes(entry.port.example);

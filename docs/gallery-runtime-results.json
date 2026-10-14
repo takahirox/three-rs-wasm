@@ -12594,7 +12594,7 @@
       "id": "webgpu_tsl_editor",
       "source": "https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/webgpu_tsl_editor.html",
       "source_sha256": "0544dee229e2caf11dafc43a51a95aa348db82c06e9c2deaab40c8cebec13257",
-      "product_status": "not-ported",
+      "product_status": "partial",
       "browser": {
         "id": "webgpu_tsl_editor",
         "source_sha256": "0544dee229e2caf11dafc43a51a95aa348db82c06e9c2deaab40c8cebec13257",

@@ -45,7 +45,8 @@ class WebGLBackend extends WebGLBackendBase {
 		Backend.prototype.init.call( this, renderer );
 
 		const parameters = this.parameters;
-		this.gl = parameters.context !== undefined ? parameters.context : headlessContext();
+		// With a real GPU ( the editor ) the browser's WebGL 2 context answers the queries.
+		this.gl = parameters.context !== undefined ? parameters.context : ( typeof __tslRealDevice !== 'undefined' ? renderer.domElement.getContext( 'webgl2' ) : headlessContext() );
 		this.extensions = new WebGLExtensions( this );
 		this.capabilities = new WebGLCapabilities( this );
 
