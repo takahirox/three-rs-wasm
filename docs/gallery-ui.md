@@ -85,6 +85,8 @@ to the pinned copies.
 
 Automated rendering comparisons capture the canvas without this UI. Pages
 show it unless `navigator.webdriver` is set, and `?ui=1` shows it there too.
+Without the UI, the page neither counts its allocations nor requests
+`timestamp-query`.
 
 ## Verification
 
@@ -110,5 +112,6 @@ All 364 compared examples match.
   Geometries are the vertex buffers.
 - Controllers that listen to a property show its recorded value; the port's
   changing state is not read back.
-- Controllers the port has no parameter for are shown and do nothing. They
-  are listed per example in the test's `unbound.json`.
+- Controllers the port has no parameter for are shown disabled. They are
+  listed per example in the test's `unbound.json` and in each example's
+  limitations.

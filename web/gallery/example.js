@@ -480,7 +480,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    // The original's stats.js, lil-gui panels and Inspector ( web/gallery/ui/ ). Automated
    // rendering comparisons capture the canvas without them; ?ui=1 shows them there too
    // ( tests/browser/gallery-ui.spec.js ).
-   if (!navigator.webdriver || new URLSearchParams(location.search).has('ui')) {
+   if (window.galleryUi) {
     const {installUi} = await import(`./ui/ui.js?v=${runtimeRevision}`);
     await installUi(entry, app, settings).catch(e => {console.warn('gallery UI', e);document.body.dataset.uiError = String(e);document.body.dataset.ui = 'ready';});
    }

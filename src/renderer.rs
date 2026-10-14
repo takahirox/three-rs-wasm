@@ -320,6 +320,17 @@ impl Renderer {
         Ok(env)
     }
     pub async fn new() -> Result<Self> {
+        /// The gallery's Inspector times the passes ( web/gallery/ui/gpu-timing.js ),
+        /// on pages that show the original's UI ( example.html's `galleryUi` ).
+        fn timing_features() -> wgpu::Features {
+            #[cfg(target_arch = "wasm32")]
+            if js_sys::Reflect::get(&js_sys::global(), &"galleryUi".into())
+                .is_ok_and(|v| v.is_truthy())
+            {
+                return wgpu::Features::TIMESTAMP_QUERY;
+            }
+            wgpu::Features::empty()
+        }
         let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY | wgpu::Backends::BROWSER_WEBGPU,
             ..Default::default()
@@ -343,8 +354,7 @@ impl Renderer {
                         | wgpu::Features::TEXTURE_COMPRESSION_ASTC
                         | wgpu::Features::RG11B10UFLOAT_RENDERABLE
                         | wgpu::Features::SUBGROUP
-                        // The gallery's Inspector times the passes ( web/gallery/ui/gpu-timing.js ).
-                        | wgpu::Features::TIMESTAMP_QUERY),
+                        | timing_features()),
                 // The lit materials bind up to 17 sampled textures ( a viewport
                 // material with a LightProbeGrid ): more than the default 16
                 // where the adapter offers them.

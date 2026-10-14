@@ -7,7 +7,8 @@
 // sized by their code. Loaded before the Wasm creates its device.
 ( () => {
 
-	if ( typeof GPUDevice === 'undefined' ) return;
+	// Only on pages that show the original's UI ( example.html's galleryUi ).
+	if ( typeof GPUDevice === 'undefined' || ! window.galleryUi ) return;
 	const memory = {
 		attributes: 0, attributesSize: 0, geometries: 0, indexAttributes: 0, indexAttributesSize: 0,
 		indirectStorageAttributes: 0, indirectStorageAttributesSize: 0, programs: 0, programsSize: 0,
