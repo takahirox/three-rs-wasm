@@ -527,6 +527,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/webgl-fallback/WebGLBufferRenderer.js", super::renderers::webgl_fallback::web_gl_buffer_renderer::init)?;
     crate::reg::run_module("renderers/common/TimestampQueryPool.js", super::renderers::common::timestamp_query_pool::init)?;
     crate::reg::run_module("renderers/webgl-fallback/utils/WebGLTimestampQueryPool.js", super::renderers::webgl_fallback::utils::web_gl_timestamp_query_pool::init)?;
+    crate::reg::run_module("renderers/webgl-fallback/WebGLBackend.original.js", super::renderers::webgl_fallback::web_gl_backend_original::init)?;
     crate::reg::run_module("renderers/webgl-fallback/WebGLBackend.js", super::renderers::webgl_fallback::web_gl_backend::init)?;
     crate::reg::run_module("renderers/webgpu/utils/WebGPUConstants.js", super::renderers::webgpu::utils::web_gpu_constants::init)?;
     crate::reg::run_module("renderers/common/nodes/NodeSampler.js", super::renderers::common::nodes::node_sampler::init)?;
@@ -566,6 +567,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/webgpu/descriptors/GPUComputePassDescriptor.js", super::renderers::webgpu::descriptors::gpu_compute_pass_descriptor::init)?;
     crate::reg::run_module("renderers/webgpu/descriptors/GPURenderPassDepthStencilAttachment.js", super::renderers::webgpu::descriptors::gpu_render_pass_depth_stencil_attachment::init)?;
     crate::reg::run_module("renderers/webgpu/descriptors/GPURenderPassTimestampWrites.js", super::renderers::webgpu::descriptors::gpu_render_pass_timestamp_writes::init)?;
+    crate::reg::run_module("renderers/webgpu/WebGPUBackend.original.js", super::renderers::webgpu::web_gpu_backend_original::init)?;
     crate::reg::run_module("renderers/webgpu/WebGPUBackend.js", super::renderers::webgpu::web_gpu_backend::init)?;
     crate::reg::run_module("lights/webgpu/IESSpotLight.js", super::lights::webgpu::ies_spot_light::init)?;
     crate::reg::run_module("lights/webgpu/ProjectorLight.js", super::lights::webgpu::projector_light::init)?;
@@ -586,5 +588,6 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/webgpu/nodes/BasicNodeLibrary.js", super::renderers::webgpu::nodes::basic_node_library::init)?;
     crate::reg::run_module("objects/ClippingGroup.js", super::objects::clipping_group::init)?;
     crate::reg::run_module("Three.WebGPU.js", super::three_web_gpu::init)?;
+    crate::reg::run_module("Three.TSL.js", super::three_tsl::init)?;
     Ok(())
 }

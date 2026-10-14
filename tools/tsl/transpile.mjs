@@ -12,6 +12,17 @@ import path from 'node:path';
 const ROOT = new URL( '../../', import.meta.url ).pathname;
 const SRC = ROOT + '.cache/three-r186/src/';
 const OUT = ROOT + 'tsl/src/three/';
+const OVERRIDES = ROOT + 'tools/tsl/overrides/';
+// Bare specifiers the sources import.
+const BARE = { 'three/webgpu': 'Three.WebGPU.js', 'three': 'Three.WebGPU.js' };
+
+// The source of a module: an override replaces it, and the original stays
+// importable as `<name>.original.js`.
+export function sourceOf( jsPath ) {
+	if ( jsPath.endsWith( '.original.js' ) ) return fs.readFileSync( SRC + jsPath.replace( '.original.js', '.js' ), 'utf8' );
+	if ( fs.existsSync( OVERRIDES + jsPath ) ) return fs.readFileSync( OVERRIDES + jsPath, 'utf8' );
+	return fs.readFileSync( SRC + jsPath, 'utf8' );
+}
 
 const KEYWORDS = new Set( [ 'core', 'loop', 'type', 'match', 'mod', 'fn', 'impl', 'use', 'ref', 'self', 'super', 'move', 'box', 'where', 'const', 'static', 'struct', 'enum', 'trait', 'crate', 'extern', 'in', 'as', 'break', 'continue', 'else', 'if', 'for', 'while', 'return', 'true', 'false', 'let', 'mut', 'pub', 'unsafe', 'dyn', 'async', 'await', 'abstract', 'final', 'override', 'virtual', 'yield', 'try', 'macro', 'priv', 'typeof', 'unsized', 'do', 'become' ] );
 
@@ -25,6 +36,7 @@ export function snake( name ) {
 export function rustPath( js ) {
 	const parts = js.slice( 0, - 3 ).split( '/' );
 	const out = parts.map( snake );
+	if ( js.endsWith( '.original.js' ) ) return out;
 	const dir = SRC + parts.slice( 0, - 1 ).join( '/' );
 	const last = out[ out.length - 1 ];
 	if ( fs.existsSync( dir ) && fs.readdirSync( dir ).some( f => fs.statSync( dir + '/' + f ).isDirectory() && snake( f ) === last ) ) out[ out.length - 1 ] = last + '_mod';
@@ -394,6 +406,7 @@ class Gen {
 	}
 
 	resolveModule( spec ) {
+		if ( BARE[ spec ] ) return BARE[ spec ];
 		return path.normalize( path.join( path.dirname( this.jsPath ), spec ) );
 	}
 
@@ -1040,7 +1053,8 @@ class Gen {
 					const from = this.resolveModule( n.source.value );
 					return n.specifiers.map( sp => `export(M, ${ rustStr( sp.exported.name ) }, imp(${ rustStr( from ) }, ${ rustStr( sp.local.name ) }));` ).join( '\n' );
 				}
-				return ''; // local bindings export as they are written
+				// Local bindings export as they are written; imported ones re-export here.
+				return n.specifiers.filter( sp => this.moduleScope.lookup( sp.local.name )?.kind === 'import' ).map( sp => `export(M, ${ rustStr( sp.exported.name ?? sp.exported.value ) }, ${ this.read( sp.local.name, sp.local ) });` ).join( '\n' );
 			case 'ExportDefaultDeclaration': {
 				const d = n.declaration;
 				if ( ( d.type === 'ClassDeclaration' || d.type === 'FunctionDeclaration' ) && d.id ) return d.type === 'ClassDeclaration' ? this.stmt( d ) : '';
@@ -1048,6 +1062,7 @@ class Gen {
 				return `export(M, "default", ${ v });`;
 			}
 			case 'ExportAllDeclaration':
+				if ( n.exported ) return `export(M, ${ rustStr( n.exported.name ?? n.exported.value ) }, module_namespace(${ rustStr( this.resolveModule( n.source.value ) ) }));`;
 				return `reexport_all(${ rustStr( this.resolveModule( n.source.value ) ) }, M);`;
 			default:
 				throw new Error( `statement ${ n.type } in ${ this.jsPath }` );
@@ -1211,7 +1226,7 @@ function isInside( scope, ancestor ) {
 }
 
 export function transpile( jsPath ) {
-	const source = fs.readFileSync( SRC + jsPath, 'utf8' );
+	const source = sourceOf( jsPath );
 	const gen = new Gen( jsPath, source );
 	const code = gen.module();
 	const out = OUT + rustPath( jsPath ).join( '/' ) + '.rs';

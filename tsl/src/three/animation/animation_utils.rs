@@ -281,6 +281,6 @@ let t161 = { let d = t160.clone(); if d.is_undef() { Val::Num(30.0) } else { d }
 
 return Ok({ let f = imp(M, "makeClipAdditive"); let a = [v_targetClip.clone(), v_referenceFrame.clone(), v_referenceClip.clone(), v_fps.clone()]; call_f(&f, &a, "makeClipAdditive")? });
 #[allow(unreachable_code)] Ok(Val::Undef) }) }, false); t153.ctor.clone() };
-
+export(M, "isTypedArray", imp("utils.js", "isTypedArray"));
     Ok(())
 }

@@ -134,6 +134,15 @@ export function rtConsole( level, args ) {
 export function rtError( kind, message ) {
 	return kind === 'TypeError' ? new TypeError( message ) : kind === 'RangeError' ? new RangeError( message ) : new Error( message );
 }
+export function rtGlobal( name ) {
+	return globalThis[ name ];
+}
+export function rtGetPrototypeOf( v ) {
+	return Object.getPrototypeOf( v );
+}
+export function rtJson( v ) {
+	return JSON.stringify( v );
+}
 export function rtIterator( values ) {
 	return function* () {
 		yield* values;
@@ -183,6 +192,23 @@ extern "C" {
     fn rt_error(kind: &str, message: &str) -> JsValue;
     #[wasm_bindgen(js_name = rtIterator)]
     fn rt_iterator(values: &js_sys::Array) -> JsValue;
+    #[wasm_bindgen(js_name = rtGlobal)]
+    fn rt_global(name: &str) -> JsValue;
+    #[wasm_bindgen(js_name = rtGetPrototypeOf)]
+    fn rt_get_prototype_of(v: &JsValue) -> JsValue;
+    #[wasm_bindgen(js_name = rtJson)]
+    fn rt_json(v: &JsValue) -> String;
+}
+
+/// `globalThis[ name ]` of the embedding JavaScript.
+pub fn global(name: &str) -> Val {
+    from_js(rt_global(name))
+}
+pub fn get_prototype_of(j: &JsValue) -> Val {
+    from_js(rt_get_prototype_of(j))
+}
+pub fn json_stringify(j: &JsValue) -> String {
+    rt_json(j)
 }
 
 thread_local! {
@@ -241,7 +267,8 @@ pub fn to_js(v: &Val) -> JsValue {
         Val::Str(s) => JsValue::from_str(s),
         Val::Js(j) => j.clone(),
         Val::Obj(o) => {
-            let kind = if o.is_func() {
+            let callable = o.is_func() || matches!(&o.0.kind, Kind::Proxy(target, _) if target.type_of() == "function");
+            let kind = if callable {
                 2
             } else if o.is_array() {
                 1

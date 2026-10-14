@@ -356,8 +356,11 @@ let t218 = arg(args, 4);
 let t219 = { let d = t218.clone(); if d.is_undef() { Val::Num(1.0) } else { d } }; #[allow(unused_mut)] let mut v_amplitude: Val = t219.clone();
 
 Ok({ let t220 = { let f = imp("nodes/materialx/MaterialXNoise.js", "mx_fractal_noise_vec4"); let a = [v_position.clone(), { let f = imp("nodes/tsl/TSLBase.js", "int"); let a = [v_octaves.clone()]; call_f(&f, &a, "int")? }, v_lacunarity.clone(), v_diminish.clone()]; call_f(&f, &a, "fractal_noise_vec4")? }; let f = get(&t220, "mul")?; let a = [v_amplitude.clone()]; call_checked(&f, &t220, &a, "fractal_noise_vec4( position, int( octaves ), lacunarity, diminish ).mul")? }) }) }; export(M, "mx_fractal_noise_vec4", w.clone()); }
-
-
+export(M, "mx_rotate2d", imp("nodes/materialx/MaterialXCore.js", "mx_rotate2d"));
+export(M, "mx_rotate3d", imp("nodes/materialx/MaterialXCore.js", "mx_rotate3d"));
+export(M, "mx_hsvtorgb", imp("nodes/materialx/MaterialXColor.js", "mx_hsvtorgb"));
+export(M, "mx_rgbtohsv", imp("nodes/materialx/MaterialXColor.js", "mx_rgbtohsv"));
+export(M, "mx_srgb_texture_to_lin_rec709", imp("nodes/materialx/MaterialXColorTransform.js", "mx_srgb_texture_to_lin_rec709"));
 { let w = {  func("mx_add", 1, move |this_in: &Val, args: &[Val]| -> R<Val> { #[allow(unused_variables)] let args = args;
 #[allow(unused_mut)] let mut v_in1: Val = arg(args, 0);
 let t221 = arg(args, 1);

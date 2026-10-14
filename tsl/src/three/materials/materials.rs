@@ -38,6 +38,23 @@ pub fn init() -> R<()> {
 
 
 
-
+export(M, "ShadowMaterial", imp("materials/ShadowMaterial.js", "ShadowMaterial"));
+export(M, "SpriteMaterial", imp("materials/SpriteMaterial.js", "SpriteMaterial"));
+export(M, "RawShaderMaterial", imp("materials/RawShaderMaterial.js", "RawShaderMaterial"));
+export(M, "ShaderMaterial", imp("materials/ShaderMaterial.js", "ShaderMaterial"));
+export(M, "PointsMaterial", imp("materials/PointsMaterial.js", "PointsMaterial"));
+export(M, "MeshPhysicalMaterial", imp("materials/MeshPhysicalMaterial.js", "MeshPhysicalMaterial"));
+export(M, "MeshStandardMaterial", imp("materials/MeshStandardMaterial.js", "MeshStandardMaterial"));
+export(M, "MeshPhongMaterial", imp("materials/MeshPhongMaterial.js", "MeshPhongMaterial"));
+export(M, "MeshToonMaterial", imp("materials/MeshToonMaterial.js", "MeshToonMaterial"));
+export(M, "MeshNormalMaterial", imp("materials/MeshNormalMaterial.js", "MeshNormalMaterial"));
+export(M, "MeshLambertMaterial", imp("materials/MeshLambertMaterial.js", "MeshLambertMaterial"));
+export(M, "MeshDepthMaterial", imp("materials/MeshDepthMaterial.js", "MeshDepthMaterial"));
+export(M, "MeshDistanceMaterial", imp("materials/MeshDistanceMaterial.js", "MeshDistanceMaterial"));
+export(M, "MeshBasicMaterial", imp("materials/MeshBasicMaterial.js", "MeshBasicMaterial"));
+export(M, "MeshMatcapMaterial", imp("materials/MeshMatcapMaterial.js", "MeshMatcapMaterial"));
+export(M, "LineDashedMaterial", imp("materials/LineDashedMaterial.js", "LineDashedMaterial"));
+export(M, "LineBasicMaterial", imp("materials/LineBasicMaterial.js", "LineBasicMaterial"));
+export(M, "Material", imp("materials/Material.js", "Material"));
     Ok(())
 }

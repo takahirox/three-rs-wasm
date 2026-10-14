@@ -37,7 +37,7 @@ export(M, "DirectRenderPipeline", imp("renderers/common/DirectRenderPipeline.js"
 export(M, "PostProcessing", imp("renderers/common/PostProcessing.js", "default"));
 export(M, "ReadbackBuffer", imp("renderers/common/ReadbackBuffer.js", "default"));
 
-
+export(M, "RendererUtils", module_namespace("renderers/common/RendererUtils.js"));
 export(M, "CubeRenderTarget", imp("renderers/common/CubeRenderTarget.js", "default"));
 export(M, "StorageTexture", imp("renderers/common/StorageTexture.js", "default"));
 export(M, "Storage3DTexture", imp("renderers/common/Storage3DTexture.js", "default"));
@@ -60,6 +60,6 @@ export(M, "WGSLNodeBuilder", imp("renderers/webgpu/nodes/WGSLNodeBuilder.js", "d
 export(M, "ClippingGroup", imp("objects/ClippingGroup.js", "ClippingGroup"));
 reexport_all("nodes/Nodes.js", M);
 
-
+export(M, "TSL", module_namespace("nodes/TSL.js"));
     Ok(())
 }

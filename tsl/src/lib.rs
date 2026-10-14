@@ -13,3 +13,33 @@ pub mod rt;
 pub mod js;
 pub mod reg;
 pub mod three;
+
+/// The entry points the editor and the corpus check use.
+#[cfg(target_arch = "wasm32")]
+pub mod api {
+    use wasm_bindgen::prelude::*;
+
+    /// Evaluate every module ( once ).
+    #[wasm_bindgen]
+    pub fn tsl_init() -> Result<(), JsValue> {
+        thread_local! {
+            static DONE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+        }
+        if DONE.with(|d| d.replace(true)) {
+            return Ok(());
+        }
+        crate::three::order::init_all().map_err(|e| crate::rt::interop::exc_to_js(&e))
+    }
+
+    /// `import * as THREE from 'three/webgpu'`.
+    #[wasm_bindgen]
+    pub fn three_namespace() -> JsValue {
+        crate::rt::interop::to_js(&crate::reg::module_namespace("Three.WebGPU.js"))
+    }
+
+    /// `await import( 'three/tsl' )`.
+    #[wasm_bindgen]
+    pub fn tsl_namespace() -> JsValue {
+        crate::rt::interop::to_js(&crate::reg::module_namespace("Three.TSL.js"))
+    }
+}

@@ -247,7 +247,7 @@ thread_local! {
     static GLOBALS: RefCell<HashMap<&'static str, Val>> = RefCell::new(HashMap::new());
 }
 
-pub(crate) fn define_global(name: &'static str, v: impl Into<Val>) {
+pub fn define_global(name: &'static str, v: impl Into<Val>) {
     GLOBALS.with(|g| g.borrow_mut().insert(name, v.into()));
 }
 
@@ -742,6 +742,8 @@ fn install_string() {
                 Ok(Val::Num(text.find(&*needle).map_or(-1.0, |b| text[..b].encode_utf16().count() as f64)))
             }),
             native!("toUpperCase", 0, |this, _a| Ok(Val::from(this_str(this)?.to_uppercase()))),
+            // NFC: the sources normalize ASCII URLs and names.
+            native!("normalize", 0, |this, _a| Ok(Val::Str(this_str(this)?))),
             native!("toLowerCase", 0, |this, _a| Ok(Val::from(this_str(this)?.to_lowercase()))),
             native!("trim", 0, |this, _a| {
                 Ok(Val::from(this_str(this)?.trim_matches(|c: char| c.is_whitespace() || c == '\u{FEFF}').to_string()))

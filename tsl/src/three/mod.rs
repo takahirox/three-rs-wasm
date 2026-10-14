@@ -18,6 +18,7 @@ pub mod scenes;
 pub mod textures;
 pub mod three_core;
 pub mod three_legacy;
+pub mod three_tsl;
 pub mod three_web_gpu;
 pub mod utils;
 pub mod order;

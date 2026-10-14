@@ -59,7 +59,7 @@ export(M, "UniformNode", imp("nodes/core/UniformNode.js", "default"));
 export(M, "VarNode", imp("nodes/core/VarNode.js", "default"));
 export(M, "VaryingNode", imp("nodes/core/VaryingNode.js", "default"));
 
-
+export(M, "NodeUtils", module_namespace("nodes/core/NodeUtils.js"));
 export(M, "BufferAttributeNode", imp("nodes/accessors/BufferAttributeNode.js", "default"));
 export(M, "BufferNode", imp("nodes/accessors/BufferNode.js", "default"));
 export(M, "BuiltinNode", imp("nodes/accessors/BuiltinNode.js", "default"));

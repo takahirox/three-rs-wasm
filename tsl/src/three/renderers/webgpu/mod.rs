@@ -3,4 +3,5 @@ pub mod descriptors;
 pub mod nodes;
 pub mod utils;
 pub mod web_gpu_backend;
+pub mod web_gpu_backend_original;
 pub mod web_gpu_renderer;

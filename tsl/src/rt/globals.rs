@@ -778,6 +778,12 @@ pub fn await_val(v: Val) -> R<Val> {
 
 /// The result of an async function: its completion as a settled promise.
 pub fn async_result(r: R<Val>) -> R<Val> {
+    #[cfg(not(target_arch = "wasm32"))]
+    if let Err(e) = &r
+        && std::env::var("TSL_DEBUG").is_ok()
+    {
+        eprintln!("async rejection: {}\n{}", error_message(&e.0), display(&get(&e.0, "stack").unwrap_or(Val::Undef)));
+    }
     Ok(match r {
         Ok(v) => match await_val(v) {
             Ok(v) => promise(true, v),
@@ -860,15 +866,45 @@ fn install_promise() {
     ctor.define("prototype", p.clone(), false);
     p.define("constructor", ctor.clone(), false);
     define_global("Promise", Val::Obj(ctor));
-    // Frames run at once: the port's builds never wait on the display.
-    define_global("requestAnimationFrame", func("requestAnimationFrame", 1, |_t, a| {
-        call(&arg(a, 0), &Val::Undef, &[Val::Num(now())])?;
-        Ok(Val::Num(0.0))
-    }));
-    define_global("setTimeout", func("setTimeout", 2, |_t, a| {
-        call(&arg(a, 0), &Val::Undef, &[])?;
-        Ok(Val::Num(0.0))
-    }));
+}
+
+thread_local! {
+    static FRAMES: RefCell<Vec<(u32, Val)>> = const { RefCell::new(Vec::new()) };
+    static NEXT_FRAME: std::cell::Cell<u32> = const { std::cell::Cell::new(1) };
+}
+
+/// Run the callbacks queued with requestAnimationFrame / setTimeout ( the
+/// port drives frames itself; nothing runs on its own ).
+pub fn flush_frames() -> R<()> {
+    let queued = FRAMES.with(|f| std::mem::take(&mut *f.borrow_mut()));
+    for (_, cb) in queued {
+        call(&cb, &Val::Undef, &[Val::Num(now())])?;
+    }
+    Ok(())
+}
+
+fn install_timers(target: &Val) {
+    let raf = func("requestAnimationFrame", 1, |_t, a| {
+        let id = NEXT_FRAME.with(|n| {
+            let id = n.get();
+            n.set(id + 1);
+            id
+        });
+        FRAMES.with(|f| f.borrow_mut().push((id, arg(a, 0))));
+        Ok(Val::Num(id as f64))
+    });
+    let cancel = func("cancelAnimationFrame", 1, |_t, a| {
+        let id = to_number(&arg(a, 0)) as u32;
+        FRAMES.with(|f| f.borrow_mut().retain(|(i, _)| *i != id));
+        Ok(Val::Undef)
+    });
+    let _ = set(target, "requestAnimationFrame", raf.clone());
+    let _ = set(target, "cancelAnimationFrame", cancel.clone());
+    let _ = set(target, "setTimeout", raf.clone());
+    let _ = set(target, "clearTimeout", cancel.clone());
+    // scheduler.yield(): yieldToMain resolves at once.
+    let _ = set(target, "scheduler", object(&[("yield", func("yield", 0, |_t, _a| Ok(promise(true, Val::Undef))))]));
+    let _ = set(target, "devicePixelRatio", Val::Num(1.0));
 }
 
 fn install_misc() {
@@ -936,7 +972,15 @@ fn install_misc() {
     define_global("console", Val::Obj(console));
     let performance = native_obj(vec![nf!("now", 0, |_a| Ok(Val::Num(now())))]);
     define_global("performance", Val::Obj(performance));
-    define_global("navigator", object(&[("userAgent", Val::from(""))]));
+    // The reference browser's navigator ( tests/tsl/device.json ): the preferred
+    // canvas format and the user agent the sources test.
+    define_global(
+        "navigator",
+        object(&[
+            ("userAgent", Val::from("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36")),
+            ("gpu", object(&[("getPreferredCanvasFormat", func("getPreferredCanvasFormat", 0, |_t, _a| Ok(Val::from("bgra8unorm"))))])),
+        ]),
+    );
     define_global("structuredClone", func("structuredClone", 1, |_t, a| Ok(arg(a, 0))));
 }
 
@@ -1036,6 +1080,10 @@ pub(crate) fn install_globals() {
     install_promise();
     install_misc();
     let global_this = object(&[]);
+    install_timers(&global_this);
+    for name in ["requestAnimationFrame", "cancelAnimationFrame", "setTimeout", "clearTimeout"] {
+        define_global(name, get(&global_this, name).unwrap_or(Val::Undef));
+    }
     define_global("globalThis", global_this.clone());
     define_global("self", global_this.clone());
     define_global("window", global_this);

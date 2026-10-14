@@ -19,6 +19,8 @@ SRC = os.path.join(ROOT, '.cache/three-r186/src')
 def rust_path(js):
     parts = js[:-3].split('/')
     out = [snake(p) for p in parts]
+    if js.endswith('.original.js'):
+        return out
     d = os.path.join(SRC, *parts[:-1])
     if os.path.isdir(d) and any(os.path.isdir(os.path.join(d, f)) and snake(f) == out[-1] for f in os.listdir(d)):
         out[-1] += '_mod'
