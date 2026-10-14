@@ -62,6 +62,17 @@ if ( process.argv.includes( '--probe' ) ) {
 	for ( let i = 0; i < programs.length; i += size ) corpus.chunks.push( programs.slice( i, i + size ) );
 	fs.writeFileSync( corpusPath, JSON.stringify( corpus, null, 1 ) );
 }
+// --add: append the hand-written programs not yet in the corpus as new chunks.
+if ( process.argv.includes( '--add' ) ) {
+	const known = new Set( corpus.chunks.flat() );
+	const fresh = fs.readdirSync( root + 'tests/tsl/programs' ).filter( f => f !== 'editor.js' ).sort().map( f => fs.readFileSync( root + 'tests/tsl/programs/' + f, 'utf8' ) ).filter( code => ! known.has( code ) );
+	for ( let i = 0; i < fresh.length; i += 40 ) corpus.chunks.push( fresh.slice( i, i + 40 ) );
+	fs.writeFileSync( corpusPath, JSON.stringify( corpus, null, 1 ) );
+	console.log( `${ fresh.length } programs added` );
+}
+// Only these chunks are recorded again ( --chunks a,b ); the rest keep their goldens.
+const onlyChunks = process.argv.includes( '--chunks' ) ? process.argv[ process.argv.indexOf( '--chunks' ) + 1 ].split( ',' ).map( Number ) : null;
+const previous = fs.existsSync( root + 'tests/tsl/golden.json.gz' ) ? JSON.parse( zlib.gunzipSync( fs.readFileSync( root + 'tests/tsl/golden.json.gz' ) ) ) : null;
 // Text table: every distinct string once, results refer to it by index.
 const table = [];
 const index = new Map();
@@ -74,7 +85,16 @@ const intern = s => {
 const results = [];
 const hung = [];
 let done = 0;
-for ( const chunk of corpus.chunks ) {
+for ( const [ chunkIndex, chunk ] of corpus.chunks.entries() ) {
+	if ( onlyChunks !== null && ! onlyChunks.includes( chunkIndex ) && previous && previous.results[ chunkIndex ] ) {
+		// Keep the recorded results, re-interned into the new table.
+		const re = ( v ) => v.error !== undefined
+			? { error: intern( previous.table[ v.error ] ), console: v.console.map( ( [ l, i ] ) => [ l, intern( previous.table[ i ] ) ] ) }
+			: { vertex: intern( previous.table[ v.vertex ] ), fragment: intern( previous.table[ v.fragment ] ), console: v.console.map( ( [ l, i ] ) => [ l, intern( previous.table[ i ] ) ] ) };
+		results.push( previous.results[ chunkIndex ].map( r => r && { wgsl: re( r.wgsl ), glsl: re( r.glsl ), wgslLinear: re( r.wgslLinear ) } ) );
+		done += chunk.length;
+		continue;
+	}
 	let page = await open();
 	const chunkResults = [];
 	for ( const code of chunk ) {

@@ -467,22 +467,20 @@ pub fn install() {
         )
         .into_js_value(),
     );
+    // Iterable: a built-in collection, or an @@iterator read as JavaScript reads it ( through a Proxy's get trap ).
+    fn iterable(o: &Obj) -> bool {
+        matches!(o.0.kind, Kind::Array(_) | Kind::Map(_) | Kind::Set(_) | Kind::Typed(..))
+            || super::get(&Val::Obj(o.clone()), "@@iterator").is_ok_and(|f| f.type_of() == "function")
+    }
     add(
         "iterable",
-        Closure::<dyn Fn(u32) -> bool>::new(|h| {
-            let o = obj_of(h);
-            matches!(o.0.kind, Kind::Array(_) | Kind::Map(_) | Kind::Set(_))
-                || super::has(&Val::Obj(o), "@@iterator").unwrap_or(false)
-        })
-        .into_js_value(),
+        Closure::<dyn Fn(u32) -> bool>::new(|h| iterable(&obj_of(h))).into_js_value(),
     );
     add(
         "iterator",
         Closure::<dyn Fn(u32) -> JsValue>::new(|h| {
             let o = obj_of(h);
-            let iterable = matches!(o.0.kind, Kind::Array(_) | Kind::Map(_) | Kind::Set(_))
-                || super::has(&Val::Obj(o.clone()), "@@iterator").unwrap_or(false);
-            if !iterable {
+            if !iterable(&o) {
                 return JsValue::UNDEFINED;
             }
             match super::iterate(&Val::Obj(o)) {
