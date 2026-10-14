@@ -1,0 +1,17 @@
+[package]
+name = "three-tsl"
+version = "0.1.0"
+edition = "2024"
+description = "Three.js r186's node system ( TSL ) in Rust: the editor's WGSL and GLSL, character for character"
+license = "MIT"
+rust-version = "1.94"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+regex = "1"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+js-sys = "0.3"
