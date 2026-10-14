@@ -376,6 +376,20 @@ pub struct Func {
 
 thread_local! {
     static CONSTRUCTIBLE: RefCell<std::collections::HashSet<usize>> = RefCell::new(std::collections::HashSet::new());
+    static SOURCES: RefCell<HashMap<usize, &'static str>> = RefCell::new(HashMap::new());
+}
+
+/// Attach a function's source text ( Function.prototype.toString ).
+pub fn with_source(f: Val, source: &'static str) -> Val {
+    if let Val::Obj(o) = &f {
+        SOURCES.with(|s| s.borrow_mut().insert(o.ptr(), source));
+    }
+    f
+}
+
+/// A function's source text, if it was transpiled from JavaScript.
+pub fn source_of(o: &Obj) -> Option<&'static str> {
+    SOURCES.with(|s| s.borrow().get(&o.ptr()).copied())
 }
 
 /// A property slot.
@@ -429,6 +443,10 @@ impl PropMap {
         self.keys.push(key.clone());
         self.map.insert(key, prop);
     }
+    /// Symbol keys, in insertion order ( Object.getOwnPropertySymbols ).
+    pub fn symbol_keys(&self) -> Vec<Rc<str>> {
+        self.keys.iter().filter(|k| k.starts_with("@@")).cloned().collect()
+    }
     pub fn remove(&mut self, key: &str) -> bool {
         if self.map.remove(key).is_some() {
             self.keys.retain(|k| &**k != key);
@@ -437,11 +455,15 @@ impl PropMap {
             false
         }
     }
-    /// Keys in enumeration order: array indices ascending, then the rest as inserted.
+    /// Keys in enumeration order: array indices ascending, then the rest as
+    /// inserted. Symbol keys ( `@@…` ) are not string keys and are left out.
     pub fn keys(&self) -> Vec<Rc<str>> {
         let mut index: Vec<(u32, Rc<str>)> = vec![];
         let mut rest = vec![];
         for k in &self.keys {
+            if k.starts_with("@@") {
+                continue;
+            }
             match array_index(k) {
                 Some(i) => index.push((i, k.clone())),
                 None => rest.push(k.clone()),
@@ -883,6 +905,10 @@ pub fn make_error(kind: &'static str, message: &str) -> Val {
         stack.push_str("\n    at ");
         stack.push_str(if name.is_empty() { "<anonymous>" } else { name });
     }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var("TSL_DEBUG_ERRORS").is_ok() {
+        eprintln!("[error created] {stack}");
+    }
     o.define("stack", stack, false);
     Val::Obj(o)
 }
@@ -972,6 +998,88 @@ fn get_from(o: &Obj, key: &str, receiver: &Val) -> R<Val> {
         cur = c.proto();
     }
     Ok(Val::Undef)
+}
+
+/// Reflect.get( target, key, receiver ): getters see `receiver`.
+pub fn get_with_receiver(target: &Val, key: &str, receiver: &Val) -> R<Val> {
+    match target {
+        Val::Obj(o) => get_from(o, key, receiver),
+        v => get(v, key),
+    }
+}
+
+/// OrdinarySet ( Reflect.set( target, key, value, receiver ) ): a setter up
+/// the chain runs on `receiver`; otherwise the value is defined on
+/// `receiver` itself ( a Proxy receiver without traps defines on its target ).
+pub fn set_with_receiver(target: &Val, key: &str, value: Val, receiver: &Val) -> R<bool> {
+    let Val::Obj(t) = target else {
+        return Ok(false);
+    };
+    if receiver.strict_eq(target) {
+        set_on(t, key, value, receiver)?;
+        return Ok(true);
+    }
+    // A setter on the target's chain runs with the receiver.
+    let mut cur = Some(t.clone());
+    while let Some(c) = cur {
+        let prop = c.0.props.borrow().get(key).cloned();
+        if let Some(p) = prop {
+            match p.slot {
+                Slot::Accessor(_, Some(setter)) => {
+                    call(&setter, receiver, &[value])?;
+                    return Ok(true);
+                }
+                Slot::Accessor(_, None) => return Ok(false),
+                Slot::Data(_) => break,
+            }
+        }
+        cur = c.proto();
+    }
+    define_on_receiver(receiver, key, value)
+}
+
+fn define_on_receiver(receiver: &Val, key: &str, value: Val) -> R<bool> {
+    match receiver {
+        Val::Obj(r) => {
+            if let Kind::Proxy(target, handler) = &r.0.kind {
+                let trap = get(handler, "defineProperty")?;
+                if trap.type_of() == "function" {
+                    let d = object(&[("value", value), ("writable", Val::Bool(true)), ("enumerable", Val::Bool(true)), ("configurable", Val::Bool(true))]);
+                    return Ok(call(&trap, handler, &[target.clone(), Val::from(key), d])?.truthy());
+                }
+                return define_on_receiver(target, key, value);
+            }
+            if let Some(a) = r.array()
+                && let Some(i) = array_index(key)
+            {
+                let mut a = a.borrow_mut();
+                let i = i as usize;
+                if i >= a.len() {
+                    a.resize(i + 1, Val::Undef);
+                }
+                a[i] = value;
+                return Ok(true);
+            }
+            let existing = r.0.props.borrow().get(key).cloned();
+            match existing {
+                Some(Prop { slot: Slot::Accessor(..), .. }) => Ok(false),
+                Some(Prop { enumerable, .. }) => {
+                    r.define(key, value, enumerable);
+                    Ok(true)
+                }
+                None => {
+                    r.define(key, value, true);
+                    Ok(true)
+                }
+            }
+        }
+        #[cfg(target_arch = "wasm32")]
+        Val::Js(j) => {
+            interop::set(j, key, &value)?;
+            Ok(true)
+        }
+        _ => Ok(false),
+    }
 }
 
 /// `v[ key ]`.
@@ -1407,6 +1515,9 @@ pub fn super_get(parent: &Val, this: &Val, key: &str) -> R<Val> {
 
 /// `v instanceof C`.
 pub fn instance_of(v: &Val, c: &Val) -> R<bool> {
+    if c.type_of() != "function" {
+        return Err(type_error("Right-hand side of 'instanceof' is not callable"));
+    }
     let Val::Obj(o) = v else {
         #[cfg(target_arch = "wasm32")]
         if let Val::Js(j) = v {
@@ -1731,7 +1842,12 @@ pub fn assign(target: &Val, source: &Val) -> R<()> {
     if source.is_nullish() {
         return Ok(());
     }
-    for k in keys(source) {
+    // Object.assign copies own enumerable string keys, then symbols.
+    let symbols: Vec<Rc<str>> = match source {
+        Val::Obj(o) => o.0.props.borrow().symbol_keys(),
+        _ => vec![],
+    };
+    for k in keys(source).into_iter().chain(symbols) {
         let v = get(source, &k)?;
         set(target, &k, v)?;
     }

@@ -367,7 +367,28 @@ class Gen {
 	}
 
 	text( node ) {
-		return this.source.slice( node.start, node.end ).replace( /\s+/g, ' ' );
+		return this.v8( node );
+	}
+
+	// V8's CallPrinter: how an expression appears in "… is not a function".
+	v8( n ) {
+		switch ( n.type ) {
+			case 'Identifier': return n.name;
+			case 'ThisExpression': return 'this';
+			case 'Super': return 'super';
+			case 'Literal':
+				if ( typeof n.value === 'string' ) return JSON.stringify( n.value );
+				if ( n.regex ) return `/${ n.regex.pattern }/${ n.regex.flags }`;
+				return String( n.value );
+			case 'MemberExpression':
+				return n.computed ? `${ this.v8( n.object ) }[${ this.v8( n.property ) }]` : `${ this.v8( n.object ) }.${ n.property.name }`;
+			case 'ChainExpression': return this.v8( n.expression );
+			case 'CallExpression': return `${ this.v8( n.callee ) }(...)`;
+			case 'BinaryExpression':
+			case 'LogicalExpression': return `(${ this.v8( n.left ) } ${ n.operator } ${ this.v8( n.right ) })`;
+			case 'ParenthesizedExpression': return this.v8( n.expression );
+			default: return '(intermediate value)';
+		}
 	}
 
 	t() {
@@ -586,11 +607,11 @@ class Gen {
 				continue;
 			}
 			const k = this.propKey( p );
-			if ( p.kind === 'get' ) lines.push( `o.obj().unwrap().define_accessor(${ k }, Some(${ this.fnExpr( p.value, '', true ) }), get_setter(&o, ${ k }), true);` );
-			else if ( p.kind === 'set' ) lines.push( `o.obj().unwrap().define_accessor(${ k }, get_getter(&o, ${ k }), Some(${ this.fnExpr( p.value, '', true ) }), true);` );
+			if ( p.kind === 'get' ) lines.push( `o.obj().unwrap().define_accessor(${ k }, Some(${ this.fnExpr( p.value, '', true, p ) }), get_setter(&o, ${ k }), true);` );
+			else if ( p.kind === 'set' ) lines.push( `o.obj().unwrap().define_accessor(${ k }, get_getter(&o, ${ k }), Some(${ this.fnExpr( p.value, '', true, p ) }), true);` );
 			else {
 				const name = p.key.type === 'Identifier' ? p.key.name : '';
-				const v = p.value.type === 'FunctionExpression' || p.value.type === 'ArrowFunctionExpression' ? this.fnExpr( p.value, p.value.id ? p.value.id.name : name, p.method ) : this.expr( p.value );
+				const v = p.value.type === 'FunctionExpression' || p.value.type === 'ArrowFunctionExpression' ? this.fnExpr( p.value, p.value.id ? p.value.id.name : name, p.method, p.method ? p : p.value ) : this.expr( p.value );
 				lines.push( `o.obj().unwrap().define(${ k }, ${ v }, true);` );
 			}
 		}
@@ -629,8 +650,16 @@ class Gen {
 		return `('${ t }: { ${ go( n ) } })`;
 	}
 
+	// A call whose result is iterated: V8 adds "or its return value is not iterable".
+	iterExpr( n ) {
+		if ( n.type !== 'CallExpression' ) return this.expr( n );
+		this.iterableCall = n;
+		return this.expr( n );
+	}
+
 	callExpr( n ) {
 		const callee = n.callee;
+		const suffix = this.iterableCall === n ? ' or its return value is not iterable' : '';
 		if ( callee.type === 'Super' ) return `{ let a = ${ this.args( n.arguments ) }; super_init(&parent, &this_v, &a)?; Val::Undef }`;
 		if ( callee.type === 'MemberExpression' && callee.object.type === 'Super' ) {
 			return `{ let a = ${ this.args( n.arguments ) }; super_call(&parent, &this_v, ${ this.propKey( { computed: callee.computed, key: callee.property } ) }, &a)? }`;
@@ -638,9 +667,9 @@ class Gen {
 		if ( callee.type === 'MemberExpression' ) {
 			const t = this.t();
 			const key = callee.computed ? `&*key(&${ this.expr( callee.property ) })?` : rustStr( callee.property.name );
-			return `{ let ${ t } = ${ this.expr( callee.object ) }; let f = get(&${ t }, ${ key })?; let a = ${ this.args( n.arguments ) }; call_checked(&f, &${ t }, &a, ${ rustStr( this.text( callee ) ) })? }`;
+			return `{ let ${ t } = ${ this.expr( callee.object ) }; let f = get(&${ t }, ${ key })?; let a = ${ this.args( n.arguments ) }; call_checked_msg(&f, &${ t }, &a, ${ rustStr( this.text( callee ) + ' is not a function' + suffix ) })? }`;
 		}
-		return `{ let f = ${ this.expr( callee ) }; let a = ${ this.args( n.arguments ) }; call_f(&f, &a, ${ rustStr( this.text( callee ) ) })? }`;
+		return `{ let f = ${ this.expr( callee ) }; let a = ${ this.args( n.arguments ) }; call_f_msg(&f, &a, ${ rustStr( this.text( callee ) + ' is not a function' + suffix ) })? }`;
 	}
 
 	unary( n ) {
@@ -760,7 +789,7 @@ class Gen {
 			}
 			case 'ArrayPattern': {
 				const items = this.t();
-				const out = [ `let ${ items } = iterate_site(&${ src }, "")?;` ];
+				const out = [ `let ${ items } = iterate_site(&${ src }, ${ rustStr( this.sourceName( node ) || 'object' ) })?;` ];
 				p.elements.forEach( ( el, i ) => {
 					if ( ! el ) return;
 					const t = this.t();
@@ -779,7 +808,7 @@ class Gen {
 	}
 
 	sourceName( node ) {
-		return node.__sourceName || 'object';
+		return node.__sourceName || '';
 	}
 
 	memberWrite( m, value ) {
@@ -853,7 +882,14 @@ class Gen {
 
 	// A function value: `func( name, length, move | this, args | … )` with
 	// captured cells, `this` and the class parent cloned in.
-	fnExpr( n, name, isMethod = false ) {
+	// The source text Function.prototype.toString returns.
+	srcText( node ) {
+		let text = this.source.slice( node.start, node.end );
+		if ( node.type === 'MethodDefinition' && node.static ) text = text.replace( /^static\s+/, '' );
+		return text;
+	}
+
+	fnExpr( n, name, isMethod = false, srcNode = n ) {
 		const caps = this.captures( n );
 		const arrow = n.type === 'ArrowFunctionExpression';
 		const clones = caps.map( b => `let ${ this.local( b ) } = ${ this.local( b ) }.clone();` );
@@ -861,7 +897,7 @@ class Gen {
 		if ( this.fnStack.length && this.fnStack[ this.fnStack.length - 1 ].hasParent ) clones.push( 'let parent = parent.clone();' );
 		const body = this.fnBody( n, arrow );
 		const ctor = ! arrow && ! isMethod && ! n.async && ! n.generator ? 'func_ctor' : 'func';
-		return `{ ${ clones.join( ' ' ) } ${ ctor }(${ rustStr( name ) }, ${ this.paramLength( n.params ) }, move |this_in: &Val, args: &[Val]| -> R<Val> { ${ body } }) }`;
+		return `{ ${ clones.join( ' ' ) } with_source(${ ctor }(${ rustStr( name ) }, ${ this.paramLength( n.params ) }, move |this_in: &Val, args: &[Val]| -> R<Val> { ${ body } }), ${ rustStr( this.srcText( srcNode ) ) }) }`;
 	}
 
 	fnBody( n, arrow, extra = '' ) {
@@ -948,6 +984,7 @@ class Gen {
 		}
 		const clonesFor = ( caps ) => caps.map( b => `let ${ this.local( b ) } = ${ this.local( b ) }.clone();` ).join( ' ' );
 		lines.push( `let ${ t } = { ${ clonesFor( ctorFn.caps ) } let parent = parent.clone(); Class::new(${ rustStr( name ) }, if parent.is_undef() { None } else { Some(cls(&parent)) }.as_ref(), ${ ctorFn.length }, move |this_in: &Val, args: &[Val]| -> R<Val> { ${ ctorFn.body } }) };` );
+		lines.push( `with_source(${ t }.ctor.clone(), ${ rustStr( this.srcText( n.__srcNode || n ) ) });` );
 		if ( n.id && n.type === 'ClassExpression' ) {
 			lines.push( this.declareLocal( n.id.name, n.id, `${ t }.ctor.clone()` ) );
 		}
@@ -959,7 +996,7 @@ class Gen {
 			if ( m.type === 'PropertyDefinition' ) continue;
 			const k = this.propKey( m );
 			const fname = m.key.type === 'Identifier' ? m.key.name : ( m.key.type === 'Literal' ? String( m.key.value ) : '' );
-			const f = this.fnExpr( m.value, fname, true );
+			const f = this.fnExpr( m.value, fname, true, m );
 			const target = m.static ? `${ t }.ctor.obj().unwrap()` : `(&${ t }.prototype)`;
 			if ( m.kind === 'get' ) lines.push( `{ let o = ${ target }; o.define_accessor(${ k }, Some(${ f }), accessor_part(o, ${ k }, false), false); }` );
 			else if ( m.kind === 'set' ) lines.push( `{ let o = ${ target }; o.define_accessor(${ k }, accessor_part(o, ${ k }, true), Some(${ f }), false); }` );
@@ -997,8 +1034,8 @@ class Gen {
 				return `let _ = ${ this.expr( n.expression ) };`;
 			case 'VariableDeclaration':
 				return n.declarations.map( d => {
-					d.id.__sourceName = d.init ? this.text( d.init ) : '';
-					const value = d.init ? ( ( d.init.type === 'FunctionExpression' || d.init.type === 'ArrowFunctionExpression' ) && d.id.type === 'Identifier' ? this.fnExpr( d.init, d.init.id ? d.init.id.name : d.id.name ) : ( d.init.type === 'ClassExpression' && ! d.init.id && d.id.type === 'Identifier' ? this.classExpr( { ...d.init, id: { type: 'Identifier', name: d.id.name } } ) : this.expr( d.init ) ) ) : 'Val::Undef';
+					d.id.__sourceName = d.init ? this.v8( d.init ) : '';
+					const value = d.init ? ( ( d.init.type === 'FunctionExpression' || d.init.type === 'ArrowFunctionExpression' ) && d.id.type === 'Identifier' ? this.fnExpr( d.init, d.init.id ? d.init.id.name : d.id.name ) : ( d.init.type === 'ClassExpression' && ! d.init.id && d.id.type === 'Identifier' ? this.classExpr( { ...d.init, id: { type: 'Identifier', name: d.id.name } } ) : ( d.id.type === 'ArrayPattern' ? this.iterExpr( d.init ) : this.expr( d.init ) ) ) ) : 'Val::Undef';
 					if ( d.id.type === 'Identifier' ) return this.declareLocal( d.id.name, d.id, value );
 					const t = this.t();
 					return `let ${ t } = ${ value }; ${ this.pattern( d.id, t, 'let' ) }`;
@@ -1086,7 +1123,7 @@ class Gen {
 		return kind === 'break' ? `break ${ rustLabel };` : `break ${ rustLabel };`;
 	}
 
-	loop( n, init, head, body, tail, update = '' ) {
+	loop( n, init, head, body, tail, update = '', enter = '', leave = '' ) {
 		const id = this.tmp ++;
 		const label = `'l${ id }`, cont = `'c${ id }`;
 		const js = this.pendingLabel;
@@ -1094,7 +1131,7 @@ class Gen {
 		this.loops.push( { label, cont, js, depth: this.closureDepth } );
 		const b = this.stmt( body );
 		this.loops.pop();
-		return `${ label }: loop { ${ head } ${ cont }: { ${ b } } ${ update } ${ tail } }`;
+		return `${ label }: loop { ${ head } { ${ enter } ${ cont }: { ${ b } } ${ leave } } ${ update } ${ tail } }`;
 	}
 
 	forStmt( n ) {
@@ -1102,6 +1139,21 @@ class Gen {
 		if ( n.init ) init = n.init.type === 'VariableDeclaration' ? this.stmt( n.init ) : `let _ = ${ this.expr( n.init ) };`;
 		const head = n.test ? `if !(${ this.expr( n.test ) }).truthy() { break; }` : '';
 		const update = n.update ? `let _ = ${ this.expr( n.update ) };` : '';
+		// A captured `let` gets a fresh binding per iteration, copied back before the update.
+		let enter = '', leave = '';
+		if ( n.init && n.init.type === 'VariableDeclaration' && n.init.kind !== 'var' ) {
+			const scope = this.scopes.get( n );
+			for ( const b of scope.names.values() ) {
+				if ( ! b.captured ) continue;
+				const r = this.local( b );
+				enter += `let ${ r }_outer = ${ r }.clone(); let ${ r }: Var = var(${ r }_outer.borrow().clone()); `;
+				leave += `*${ r }_outer.borrow_mut() = ${ r }.borrow().clone(); `;
+			}
+			if ( enter ) {
+				// The update reads the outer cell again.
+				return `{ ${ init } ${ this.loop( n, null, head, n.body, '', update, enter, leave ) } }`;
+			}
+		}
 		return `{ ${ init } ${ this.loop( n, null, head, n.body, '', update ) } }`;
 	}
 
@@ -1122,7 +1174,7 @@ class Gen {
 		const b = this.stmt( n.body );
 		this.loops.pop();
 		const source = n.type === 'ForOfStatement'
-			? `iterate_site(&${ this.expr( n.right ) }, ${ rustStr( this.text( n.right ) ) })?`
+			? `iterate_site(&${ this.iterExpr( n.right ) }, ${ rustStr( this.text( n.right ) ) })?`
 			: `for_in_keys(&${ this.expr( n.right ) }).into_iter().map(Val::Str).collect::<Vec<_>>()`;
 		return `${ label }: for ${ item } in ${ source } { ${ bind } ${ cont }: { ${ b } } }`;
 	}
@@ -1191,7 +1243,7 @@ ${ fin }
 		for ( const st of body ) lines.push( this.stmt( st ) );
 		const out = [];
 		out.push( `//! Generated by tools/tsl/transpile.mjs from three r186 src/${ this.jsPath }. Do not edit.` );
-		out.push( '#![allow(unused_variables, unused_mut, unused_braces, unused_parens, unreachable_code, unused_labels, non_snake_case, clippy::all)]' );
+		out.push( '#![allow(unused_variables, unused_mut, unused_braces, unused_parens, unreachable_code, unused_labels, unused_assignments, unused_imports, dead_code, non_snake_case, clippy::all)]' );
 		out.push( 'use crate::reg::*;' );
 		out.push( 'use crate::rt::ops::*;' );
 		out.push( 'use crate::rt::*;' );

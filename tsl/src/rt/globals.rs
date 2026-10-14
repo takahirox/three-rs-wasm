@@ -258,6 +258,14 @@ fn install_number() {
     define_global("String", string);
 }
 
+/// ToObject's TypeError for undefined and null.
+fn to_object_check(v: &Val) -> R<()> {
+    if v.is_nullish() {
+        return Err(type_error("Cannot convert undefined or null to object"));
+    }
+    Ok(())
+}
+
 /// A property descriptor object for Object.getOwnPropertyDescriptor.
 fn descriptor(o: &Obj, k: &str) -> Val {
     if let Some(v) = o.own(k)
@@ -311,9 +319,13 @@ fn install_object() {
     let object_ctor = global("Object");
     let o = object_ctor.obj().unwrap().clone();
     for (name, length, body) in vec![
-        nf!("keys", 1, |a| Ok(array(keys(&arg(a, 0)).into_iter().map(Val::Str).collect()))),
+        nf!("keys", 1, |a| {
+            to_object_check(&arg(a, 0))?;
+            Ok(array(keys(&arg(a, 0)).into_iter().map(Val::Str).collect()))
+        }),
         nf!("values", 1, |a| {
             let v = arg(a, 0);
+            to_object_check(&v)?;
             let mut out = vec![];
             for k in keys(&v) {
                 out.push(get(&v, &k)?);
@@ -322,6 +334,7 @@ fn install_object() {
         }),
         nf!("entries", 1, |a| {
             let v = arg(a, 0);
+            to_object_check(&v)?;
             let mut out = vec![];
             for k in keys(&v) {
                 out.push(array(vec![Val::Str(k.clone()), get(&v, &k)?]));
@@ -330,6 +343,7 @@ fn install_object() {
         }),
         nf!("assign", 2, |a| {
             let target = arg(a, 0);
+            to_object_check(&target)?;
             for src in a.iter().skip(1) {
                 assign(&target, src)?;
             }
@@ -926,10 +940,21 @@ fn install_misc() {
     symbol.define("iterator", ITERATOR, false);
     define_global("Symbol", Val::Obj(symbol));
     let reflect = native_obj(vec![
-        nf!("get", 2, |a| get(&arg(a, 0), &key(&arg(a, 1))?)),
+        nf!("get", 2, |a| {
+            let target = arg(a, 0);
+            if !matches!(target.type_of(), "object" | "function") || target.is_null() {
+                return Err(type_error("Reflect.get called on non-object"));
+            }
+            let receiver = if a.len() > 2 { arg(a, 2) } else { target.clone() };
+            get_with_receiver(&target, &key(&arg(a, 1))?, &receiver)
+        }),
         nf!("set", 3, |a| {
-            set(&arg(a, 0), &key(&arg(a, 1))?, arg(a, 2))?;
-            Ok(Val::Bool(true))
+            let target = arg(a, 0);
+            if !matches!(target.type_of(), "object" | "function") || target.is_null() {
+                return Err(type_error("Reflect.set called on non-object"));
+            }
+            let receiver = if a.len() > 3 { arg(a, 3) } else { target.clone() };
+            Ok(Val::Bool(set_with_receiver(&target, &key(&arg(a, 1))?, arg(a, 2), &receiver)?))
         }),
         nf!("has", 2, |a| Ok(Val::Bool(has(&arg(a, 0), &key(&arg(a, 1))?)?))),
         nf!("apply", 3, |a| call(&arg(a, 0), &arg(a, 1), &iterate(&arg(a, 2))?)),
@@ -948,6 +973,10 @@ fn install_misc() {
             call: None,
             init: None,
             construct: Some(Rc::new(|_t, a| {
+                let is_object = |v: &Val| matches!(v.type_of(), "object" | "function") && !v.is_null();
+                if !is_object(&arg(a, 0)) || !is_object(&arg(a, 1)) {
+                    return Err(type_error("Cannot create proxy with a non-object as target or handler"));
+                }
                 Ok(Val::Obj(Obj::with(None, Kind::Proxy(arg(a, 0), arg(a, 1)))))
             })),
             forward: RefCell::new(None),
@@ -978,11 +1007,40 @@ fn install_misc() {
         "navigator",
         object(&[
             ("userAgent", Val::from("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36")),
-            ("gpu", object(&[("getPreferredCanvasFormat", func("getPreferredCanvasFormat", 0, |_t, _a| Ok(Val::from("bgra8unorm"))))])),
+            (
+                "gpu",
+                object(&[
+                    ("getPreferredCanvasFormat", func("getPreferredCanvasFormat", 0, |_t, _a| Ok(Val::from("bgra8unorm")))),
+                    ("wgslLanguageFeatures", {
+                        let set = new_set();
+                        for f in WGSL_LANGUAGE_FEATURES {
+                            let _ = super::m(&set, "add", &[Val::from(*f)]);
+                        }
+                        set
+                    }),
+                ]),
+            ),
         ]),
     );
     define_global("structuredClone", func("structuredClone", 1, |_t, a| Ok(arg(a, 0))));
 }
+
+/// navigator.gpu.wgslLanguageFeatures of the reference browser.
+const WGSL_LANGUAGE_FEATURES: &[&str] = &[
+    "buffer_view",
+    "immediate_address_space",
+    "linear_indexing",
+    "packed_4x8_integer_dot_product",
+    "pointer_composite_access",
+    "readonly_and_readwrite_storage_textures",
+    "subgroup_id",
+    "subgroup_uniformity",
+    "swizzle_assignment",
+    "texture_and_sampler_let",
+    "texture_formats_tier1",
+    "uniform_buffer_standard_layout",
+    "unrestricted_pointer_parameters",
+];
 
 /// performance.now() in milliseconds.
 pub fn now() -> f64 {
@@ -1059,6 +1117,12 @@ pub fn glob(name: &str) -> Val {
     let v = global(name);
     if !v.is_undef() || name == "undefined" {
         return v;
+    }
+    // Properties the port's modules put on globalThis.
+    if let Val::Obj(g) = global("globalThis")
+        && g.has_own(name)
+    {
+        return get(&Val::Obj(g), name).unwrap_or(Val::Undef);
     }
     #[cfg(target_arch = "wasm32")]
     {

@@ -15,7 +15,7 @@ const ROOT = new URL( '../../', import.meta.url ).pathname;
 // the stack locations of three's JavaScript sources have no counterpart in the port.
 export function normalizeConsole( lines ) {
 	return lines
-		.filter( ( [ level, text ] ) => level !== 'render' && ! /GPUValidationError|Render pipeline creation failed|renderPipeline_|Failed to execute|Failed to create texture/.test( text ) )
+		.filter( ( [ level, text ] ) => ! /GPUValidationError|Render pipeline creation failed|Compute pipeline creation failed|renderPipeline_|computePipeline_|Failed to create texture|A valid external Instance reference/.test( text ) )
 		.map( ( [ level, text ] ) => [ level, text.split( '\n' )[ 0 ].replace( / (?:"[^"]*\(\)" at )?"[^"]*:\d+"$/, '' ).replace( / \[Unknown location\]$/, '' ) ] );
 }
 
@@ -119,12 +119,27 @@ if ( isMainThread ) {
 
 async function runWorker() {
 	const { chunk, exports } = workerData;
-	// A document for the renderer's canvas and the TextureLoader's image ( nothing loads ).
-	const element = ( name ) => ( {
-		nodeName: name.toUpperCase(), style: {}, width: 300, height: 150,
-		getContext() { return null; }, addEventListener() {}, removeEventListener() {}, setAttribute() {}, getAttribute() { return null; },
+	// The browser classes three tests with instanceof, and a document for the
+	// renderer's canvas and the TextureLoader's image ( nothing loads ).
+	class HTMLElement {
+		constructor( name ) {
+			this.nodeName = name.toUpperCase();
+			this.style = {};
+			this.width = 300;
+			this.height = 150;
+		}
+		getContext() { return null; }
+		addEventListener() {}
+		removeEventListener() {}
+		setAttribute() {}
+		getAttribute() { return null; }
 		getBoundingClientRect() { return { left: 0, top: 0, width: this.width, height: this.height }; }
-	} );
+	}
+	class HTMLCanvasElement extends HTMLElement {}
+	class HTMLImageElement extends HTMLElement {}
+	class HTMLVideoElement extends HTMLElement {}
+	Object.assign( globalThis, { HTMLElement, HTMLCanvasElement, HTMLImageElement, HTMLVideoElement, ImageBitmap: class ImageBitmap {}, OffscreenCanvas: class OffscreenCanvas {}, VideoFrame: class VideoFrame {}, ImageData: class ImageData {} } );
+	const element = ( name ) => name === 'canvas' ? new HTMLCanvasElement( name ) : name === 'img' ? new HTMLImageElement( name ) : new HTMLElement( name );
 	globalThis.document = { createElementNS: ( ns, name ) => element( name ), createElement: ( name ) => element( name ) };
 	const require = createRequire( import.meta.url );
 	const log = [];

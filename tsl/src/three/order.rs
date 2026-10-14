@@ -568,6 +568,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/webgpu/descriptors/GPURenderPassDepthStencilAttachment.js", super::renderers::webgpu::descriptors::gpu_render_pass_depth_stencil_attachment::init)?;
     crate::reg::run_module("renderers/webgpu/descriptors/GPURenderPassTimestampWrites.js", super::renderers::webgpu::descriptors::gpu_render_pass_timestamp_writes::init)?;
     crate::reg::run_module("renderers/webgpu/WebGPUBackend.original.js", super::renderers::webgpu::web_gpu_backend_original::init)?;
+    crate::reg::run_module("renderers/webgpu/HeadlessGPU.js", super::renderers::webgpu::headless_gpu::init)?;
     crate::reg::run_module("renderers/webgpu/WebGPUBackend.js", super::renderers::webgpu::web_gpu_backend::init)?;
     crate::reg::run_module("lights/webgpu/IESSpotLight.js", super::lights::webgpu::ies_spot_light::init)?;
     crate::reg::run_module("lights/webgpu/ProjectorLight.js", super::lights::webgpu::projector_light::init)?;

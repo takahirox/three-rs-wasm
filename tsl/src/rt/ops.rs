@@ -203,7 +203,9 @@ pub fn spread_obj(target: &Val, source: &Val) -> R<()> {
         return Ok(());
     }
     if let Val::Obj(o) = source {
-        for k in o.keys() {
+        // Own enumerable string keys, then symbols, as spread copies them.
+        let symbols: Vec<Rc<str>> = o.0.props.borrow().symbol_keys();
+        for k in o.keys().into_iter().chain(symbols) {
             let v = get(source, &k)?;
             if let Val::Obj(t) = target {
                 t.define(&k, v, true);
@@ -226,10 +228,10 @@ pub fn template(parts: &[Val]) -> R<Val> {
 /// The value a destructuring pattern reads: V8's message for nullish sources.
 pub fn destructure(v: &Val, key: &str, site: &str) -> R<Val> {
     if v.is_nullish() {
-        return Err(type_error(&format!(
-            "Cannot destructure property '{key}' of '{site}' as it is {}.",
-            if v.is_undef() { "undefined" } else { "null" }
-        )));
+        let what = if v.is_undef() { "undefined" } else { "null" };
+        // A parameter has no source expression: V8 names the value.
+        let site = if site.is_empty() { what } else { site };
+        return Err(type_error(&format!("Cannot destructure property '{key}' of '{site}' as it is {what}.")));
     }
     get(v, key)
 }
@@ -333,4 +335,18 @@ pub fn object_rest(v: &Val, used: &[&str]) -> R<Val> {
         }
     }
     Ok(out)
+}
+
+/// A call with V8's whole message given ( "x is not a function …" ).
+pub fn call_checked_msg(f: &Val, recv: &Val, args: &[Val], message: &str) -> R<Val> {
+    if f.type_of() != "function" {
+        return Err(type_error(message));
+    }
+    call(f, recv, args)
+}
+pub fn call_f_msg(f: &Val, args: &[Val], message: &str) -> R<Val> {
+    if f.type_of() != "function" {
+        return Err(type_error(message));
+    }
+    call(f, &Val::Undef, args)
 }

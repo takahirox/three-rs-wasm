@@ -161,9 +161,10 @@ pub(crate) fn install() {
             native!("toString", 0, |this, _a| {
                 Ok(Val::from(match this {
                     Val::Obj(o) if o.is_array() => return Ok(Val::from(join(&o.items(), ",")?)),
-                    Val::Obj(o) if o.is_func() => {
-                        format!("function {}() {{ [native code] }}", o.func().unwrap().name.borrow())
-                    }
+                    Val::Obj(o) if o.is_func() => match source_of(o) {
+                        Some(src) => src.to_string(),
+                        None => format!("function {}() {{ [native code] }}", o.func().unwrap().name.borrow()),
+                    },
                     Val::Obj(o) if matches!(o.0.kind, Kind::Error) => {
                         let name = display(&get(this, "name")?);
                         let message = display(&get(this, "message")?);
@@ -433,6 +434,20 @@ fn install_typed() {
     );
     buffer_proto.define("constructor", buffer_ctor.clone(), false);
     GLOBALS.with(|g| g.borrow_mut().insert("ArrayBuffer", Val::Obj(buffer_ctor)));
+    // DataView: only its identity ( `instanceof DataView` ) is used.
+    let data_view = Obj::with(
+        Some(proto("Function")),
+        Kind::Func(Func {
+            name: RefCell::new(Rc::from("DataView")),
+            length: Cell::new(1),
+            call: None,
+            init: Some(Rc::new(|_this, _a| Ok(Val::Undef))),
+            construct: None,
+            forward: RefCell::new(None),
+        }),
+    );
+    data_view.define("prototype", Obj::with(Some(proto("Object")), Kind::Plain), false);
+    GLOBALS.with(|g| g.borrow_mut().insert("DataView", Val::Obj(data_view)));
     let array_ctor = Obj::with(
         Some(proto("Function")),
         Kind::Func(Func {

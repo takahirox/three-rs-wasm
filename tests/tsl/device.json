@@ -102,5 +102,20 @@
  "glUniformBufferLimit": 16384,
  "gpuUniformBufferLimit": 65536,
  "preferred": "bgra8unorm",
- "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+ "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+ "wgslLanguageFeatures": [
+  "buffer_view",
+  "immediate_address_space",
+  "linear_indexing",
+  "packed_4x8_integer_dot_product",
+  "pointer_composite_access",
+  "readonly_and_readwrite_storage_textures",
+  "subgroup_id",
+  "subgroup_uniformity",
+  "swizzle_assignment",
+  "texture_and_sampler_let",
+  "texture_formats_tier1",
+  "uniform_buffer_standard_layout",
+  "unrestricted_pointer_parameters"
+ ]
 }
