@@ -488,3 +488,8 @@ three-mesh-bvh, the Octree, SVGLoader, ArcballControls and the subset of
 lottie-web the animation uses are ported. The exporters' buttons, the
 watch's optional TAA and bloom, the FBX page's dynamic GUI and ArcballControls'
 multi-touch gestures are not ported. Each is listed with the example.
+
+Each port's limitations are recorded in the gallery catalog
+( `tools/gallery/build.py`, `web/gallery/catalog.json` ) and listed per
+example in [examples coverage](examples-coverage.md). The example pages
+themselves show only the original's page and UI.

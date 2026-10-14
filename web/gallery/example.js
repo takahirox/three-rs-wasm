@@ -61,8 +61,6 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    app = await startXr(XrApp, canvas, entry.port.example, loading);
    document.body.dataset.status = 'running';
    document.body.dataset.backend = 'rust-wasm-webgpu';
-   const notice = document.querySelector('#notice'); notice.hidden = false;
-   for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
   } else if (entry.port.example === 483) {
    const {startTranspiler} = await import(`./transpiler.js?v=${runtimeRevision}`);
    await startTranspiler(tsl_transpile, loading);
@@ -281,20 +279,6 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    loading.hidden = true;
    document.body.dataset.status = 'running';
    document.body.dataset.backend = 'rust-wasm-webgpu';
-   const notice = document.querySelector('#notice'); notice.hidden = false;
-   for (const limitation of entry.port.limitations) text('p', limitation, notice.querySelector('div'));
-   if ([30,31,32,33,34,103,104].includes(entry.port.example)) {
-    const credit=text('a','Model and environment credits',notice.querySelector('div'));
-    credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
-   }
-   if (entry.port.example === 28) {
-    const credit = text('a', 'Forest House — peachyroyalty · CC BY-NC 4.0', notice.querySelector('div'));
-    credit.href = '../THIRD_PARTY.md'; credit.target = '_blank'; credit.rel = 'noopener';
-   }
-   if (entry.port.example === 29) {
-    const credit=text('a','Iridescence Lamp — Wayfair / Eric Chadwick · CC BY 4.0',notice.querySelector('div'));
-    credit.href='../THIRD_PARTY.md';credit.target='_blank';credit.rel='noopener';
-   }
    addEventListener('resize', resize);
    if(entry.port.example===135)addEventListener('gallery-readback-ready',()=>app?.request_render());
    if([92,93].includes(entry.port.example))installElements(canvas,app,entry.port.example===93);

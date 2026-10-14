@@ -6,8 +6,7 @@ export function installElements(canvas,app,multipleCanvas=false){
  canvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
  .list-item{display:inline-block;margin:1em;padding:1em;box-shadow:1px 2px 4px 0 rgba(0,0,0,.25)}
  .list-item>div:first-child{width:200px;height:200px;touch-action:none}
- .list-item>div:nth-child(2){color:#888;font-family:sans-serif;font-size:large;font-weight:400;line-height:24px;width:200px;margin-top:.5em}
- #notice{z-index:2}`;document.head.append(style);
+ .list-item>div:nth-child(2){color:#888;font-family:sans-serif;font-size:large;font-weight:400;line-height:24px;width:200px;margin-top:.5em}`;document.head.append(style);
  const content=document.createElement('div');content.lang='en';content.id='elements-content';document.body.append(content);
  const views=[];const canvases=[];if(multipleCanvas){canvas.style.display='none';style.textContent+=' .list-item>canvas{position:static;display:block;width:200px;height:200px;pointer-events:auto}';}
  for(let i=0;i<40;i++){

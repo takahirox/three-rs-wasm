@@ -492,6 +492,8 @@ export async function installPage( entry ) {
 	const pages = await fetch( new URL( 'pages.json', import.meta.url ) ).then( r => r.ok ? r.json() : {} ).catch( () => ( {} ) );
 	const page = pages[ entry.id ];
 	if ( ! page ) return null;
+	// The originals are English pages: their generic fonts resolve as theirs do.
+	document.documentElement.lang = 'en';
 	if ( page.css ) {
 
 		const link = document.createElement( 'link' );
