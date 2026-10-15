@@ -70,8 +70,12 @@ to the pinned copies.
   - **Frames:** each port frame is one render ("Scene"), timed on the CPU
     around the frame.
   - **GPU time:** with `timestamp-query`, `gpu-timing.js` adds
-    `timestampWrites` to every pass of the frame. It reads the durations
-    back through resident buffers, as three's backend times its passes.
+    `timestampWrites` to every pass of the frame. As three's
+    WebGPUTimestampQueryPool does, one readback through a resident buffer
+    is in flight at a time, and the frames rendered meanwhile accumulate in
+    the query set. Only the last 16 frames' times are listed: the Inspector
+    looks up each listed frame on every frame, and a longer list slowed the
+    page to half its frame rate within seconds.
   - **Memory:** `gpu-memory.js` counts what the page allocates through
     WebGPU, in renderer.info.memory's categories:
     - buffers by usage;

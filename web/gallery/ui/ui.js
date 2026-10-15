@@ -388,7 +388,7 @@ function rendererFacade( canvas, timing ) {
 		hasInitialized: () => true,
 		init: async () => {},
 		hasFeature: name => name === 'timestamp-query' && timing !== null,
-		resolveTimestampsAsync: async () => {},
+		resolveTimestampsAsync: async () => timing?.settled(),
 		update() {
 
 			const now = performance.now();

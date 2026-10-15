@@ -1,23 +1,35 @@
 // GPU time of the port's frames, for the Inspector's Performance tab: when
 // the device has 'timestamp-query', each render and compute pass the page
 // begins gets timestampWrites into a resident query set, and each frame's
-// pass durations are resolved and read back through a ring of resident
-// buffers. three's WebGPU backend times its passes the same way.
-const CAPACITY = 512; // queries per frame ( 256 passes )
-const RING = 4;
+// pass durations are read back through a resident buffer. As three's
+// WebGPUTimestampQueryPool does, one readback is in flight at a time and the
+// frames rendered meanwhile accumulate in the query set until it returns.
+const CAPACITY = 2048; // queries ( 1024 passes ) between readbacks
+const HISTORY = 16; // frames listed
 
 export function installGpuTiming( device ) {
 
 	if ( ! device || ! device.features.has( 'timestamp-query' ) ) return null;
 	const querySet = device.createQuerySet( { type: 'timestamp', count: CAPACITY } );
 	const resolve = device.createBuffer( { size: CAPACITY * 8, usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC } );
-	const ring = Array.from( { length: RING }, () => ( { buffer: device.createBuffer( { size: CAPACITY * 8, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ } ), busy: false } ) );
+	const result = device.createBuffer( { size: CAPACITY * 8, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ } );
 	const results = new Map();
+	let frames = []; // { id, start, end, complete } since the last readback
 	let next = 0;
+	let start = 0;
+	let complete = true;
 	let active = false;
+	let pending = null; // the readback in flight
 	const inject = ( descriptor ) => {
 
-		if ( ! active || descriptor.timestampWrites || next + 2 > CAPACITY ) return descriptor;
+		if ( ! active || descriptor.timestampWrites ) return descriptor;
+		if ( next + 2 > CAPACITY ) {
+
+			complete = false;
+			return descriptor;
+
+		}
+
 		const index = next;
 		next += 2;
 		return { ...descriptor, timestampWrites: { querySet, beginningOfPassWriteIndex: index, endOfPassWriteIndex: index + 1 } };
@@ -38,40 +50,57 @@ export function installGpuTiming( device ) {
 
 	};
 
+	const read = () => {
+
+		const count = next;
+		const read = frames;
+		frames = [];
+		next = 0;
+		const encoder = device.createCommandEncoder();
+		encoder.resolveQuerySet( querySet, 0, count, resolve, 0 );
+		encoder.copyBufferToBuffer( resolve, 0, result, 0, count * 8 );
+		device.queue.submit( [ encoder.finish() ] );
+		pending = result.mapAsync( GPUMapMode.READ, 0, count * 8 ).then( () => {
+
+			const times = new BigUint64Array( result.getMappedRange( 0, count * 8 ) );
+			for ( const frame of read ) {
+
+				if ( ! frame.complete ) continue;
+				let ns = 0n;
+				for ( let i = frame.start; i < frame.end; i += 2 ) if ( times[ i + 1 ] > times[ i ] ) ns += times[ i + 1 ] - times[ i ];
+				results.set( frame.id, Number( ns ) / 1e6 );
+
+			}
+
+			result.unmap();
+			// The Inspector looks up every listed frame on each of its frames:
+			// list the last few, which it adds a frame after they render.
+			while ( results.size > HISTORY ) results.delete( results.keys().next().value );
+
+		} ).catch( () => {} ).finally( () => {
+
+			pending = null;
+
+		} );
+
+	};
+
 	return {
 		results,
+		// renderer.resolveTimestampsAsync(): the readback in flight.
+		settled: () => pending ?? Promise.resolve(),
 		begin() {
 
-			next = 0;
+			start = next;
+			complete = true;
 			active = true;
 
 		},
 		end( frameId ) {
 
 			active = false;
-			const count = next;
-			const slot = ring.find( s => ! s.busy );
-			if ( count === 0 || ! slot ) return;
-			slot.busy = true;
-			const encoder = device.createCommandEncoder();
-			encoder.resolveQuerySet( querySet, 0, count, resolve, 0 );
-			encoder.copyBufferToBuffer( resolve, 0, slot.buffer, 0, count * 8 );
-			device.queue.submit( [ encoder.finish() ] );
-			slot.buffer.mapAsync( GPUMapMode.READ, 0, count * 8 ).then( () => {
-
-				const times = new BigUint64Array( slot.buffer.getMappedRange( 0, count * 8 ) );
-				let ns = 0n;
-				for ( let i = 0; i < count; i += 2 ) if ( times[ i + 1 ] > times[ i ] ) ns += times[ i + 1 ] - times[ i ];
-				slot.buffer.unmap();
-				slot.busy = false;
-				results.set( frameId, Number( ns ) / 1e6 );
-				if ( results.size > 600 ) results.delete( results.keys().next().value );
-
-			} ).catch( () => {
-
-				slot.busy = false;
-
-			} );
+			if ( next > start ) frames.push( { id: frameId, start, end: next, complete } );
+			if ( ! pending && next > 0 ) read();
 
 		}
 	};
