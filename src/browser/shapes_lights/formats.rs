@@ -29,7 +29,7 @@ pub(super) fn parse_stl(data: &[u8]) -> Result<Stl> {
     let f32_at = |o: usize| -> Result<f32> { Ok(f32::from_bits(u32_at(o)?)) };
     let binary = data.len() >= 84 && {
         let faces = u32_at(80)? as usize;
-        80 + 4 + faces * 50 == data.len()
+        faces.checked_mul(50).and_then(|n| n.checked_add(84)) == Some(data.len())
             || !(0..5).any(|off| data.get(off..off + 5) == Some(b"solid"))
     };
     if binary {
