@@ -9,6 +9,9 @@ rust-version = "1.94"
 [lib]
 crate-type = ["rlib", "cdylib"]
 
+# Built on its own, outside the repository's workspace.
+[workspace]
+
 [dependencies]
 regex = "1"
 
