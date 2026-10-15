@@ -261,20 +261,25 @@ impl RenderTarget {
         })
     }
     /// Render color attachment 0 ( the resolve target when multisampled ) into
-    /// `texture`, a canvas's current texture of the same size and format, as
+    /// `texture`, a canvas's current texture of the same size and format ( or
+    /// its sRGB view format ), as
     /// three renders into the canvas when no output pass is needed. Returns
     /// the target's own texture for [`Self::restore_color`].
     pub fn alias_color(&mut self, texture: &wgpu::Texture) -> Result<ColorAlias> {
         if self.dimension != wgpu::TextureDimension::D2
             || self.options.count != 1
             || self.options.depth != 1
-            || texture.format() != self.texture.format()
+            || texture.format().add_srgb_suffix() != self.texture.format().add_srgb_suffix()
             || texture.width() != self.width
             || texture.height() != self.height
         {
             return Err(Error::Invalid("aliased color texture"));
         }
-        let view = Self::color_view(texture, self.dimension, 0);
+        // An sRGB target renders through the canvas's sRGB view format.
+        let view = texture.create_view(&wgpu::TextureViewDescriptor {
+            format: Some(self.texture.format()),
+            ..Default::default()
+        });
         self.textures[0] = texture.clone();
         self.views[0] = view.clone();
         Ok(ColorAlias(

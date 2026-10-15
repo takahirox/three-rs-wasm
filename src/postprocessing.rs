@@ -4,9 +4,9 @@ use crate::{Error, Result, renderer::*};
 pub struct Effect {
     layout: wgpu::BindGroupLayout,
     pipeline: wgpu::RenderPipeline,
-    /// The same pass for the other 8-bit unorm channel order: a canvas's
-    /// preferred format ( BGRA ) where the effect was made for RGBA.
-    swizzled: std::cell::OnceCell<wgpu::RenderPipeline>,
+    /// The same pass for the other 8-bit RGBA formats: a canvas's preferred
+    /// channel order ( BGRA ) or sRGB view where the effect was made for RGBA.
+    variants: std::cell::RefCell<Vec<(wgpu::TextureFormat, wgpu::RenderPipeline)>>,
     shader: wgpu::ShaderModule,
     pipeline_layout: wgpu::PipelineLayout,
     blend: Option<wgpu::BlendState>,
@@ -276,7 +276,7 @@ impl Effect {
             texture_count: textures.len(),
             has_depth: depth.is_some(),
             pipeline,
-            swizzled: Default::default(),
+            variants: Default::default(),
             shader,
             pipeline_layout,
             blend,
@@ -323,8 +323,9 @@ impl Effect {
         if input.texture == output.texture || history.texture == output.texture {
             return Err(Error::Invalid("effect input/output alias"));
         }
-        let swizzled = output.options().format == swizzle(self.format);
-        if output.options().format != self.format && !swizzled
+        let format = output.options().format;
+        let variant = format != self.format && rgba8(format) && rgba8(self.format);
+        if format != self.format && !variant
             || output.options().samples > 1
             || [input, history, output]
                 .iter()
@@ -403,16 +404,23 @@ impl Effect {
                 timestamp_writes: None,
                 occlusion_query_set: None,
             });
-            pass.set_pipeline(if swizzled {
-                self.swizzled.get_or_init(|| {
-                    effect_pipeline(
-                        &renderer.device,
-                        &self.pipeline_layout,
-                        &self.shader,
-                        swizzle(self.format),
-                        self.blend,
-                    )
-                })
+            let mut variants = self.variants.borrow_mut();
+            pass.set_pipeline(if variant {
+                let index = match variants.iter().position(|(f, _)| *f == format) {
+                    Some(index) => index,
+                    None => {
+                        let pipeline = effect_pipeline(
+                            &renderer.device,
+                            &self.pipeline_layout,
+                            &self.shader,
+                            format,
+                            self.blend,
+                        );
+                        variants.push((format, pipeline));
+                        variants.len() - 1
+                    }
+                };
+                &variants[index].1
             } else {
                 &self.pipeline
             });
@@ -484,13 +492,14 @@ pub mod ssaa;
 
 pub mod afterimage;
 
-/// Rgba8Unorm and Bgra8Unorm swap; other formats have no counterpart.
-fn swizzle(format: wgpu::TextureFormat) -> wgpu::TextureFormat {
-    match format {
-        wgpu::TextureFormat::Rgba8Unorm => wgpu::TextureFormat::Bgra8Unorm,
-        wgpu::TextureFormat::Bgra8Unorm => wgpu::TextureFormat::Rgba8Unorm,
-        other => other,
-    }
+fn rgba8(format: wgpu::TextureFormat) -> bool {
+    matches!(
+        format,
+        wgpu::TextureFormat::Rgba8Unorm
+            | wgpu::TextureFormat::Bgra8Unorm
+            | wgpu::TextureFormat::Rgba8UnormSrgb
+            | wgpu::TextureFormat::Bgra8UnormSrgb
+    )
 }
 fn effect_pipeline(
     device: &wgpu::Device,
