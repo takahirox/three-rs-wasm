@@ -4,6 +4,12 @@ use crate::{Error, Result, renderer::*};
 pub struct Effect {
     layout: wgpu::BindGroupLayout,
     pipeline: wgpu::RenderPipeline,
+    /// The same pass for the other 8-bit unorm channel order: a canvas's
+    /// preferred format ( BGRA ) where the effect was made for RGBA.
+    swizzled: std::cell::OnceCell<wgpu::RenderPipeline>,
+    shader: wgpu::ShaderModule,
+    pipeline_layout: wgpu::PipelineLayout,
+    blend: Option<wgpu::BlendState>,
     sampler: wgpu::Sampler,
     format: wgpu::TextureFormat,
     slots: std::cell::RefCell<Vec<(wgpu::Texture, wgpu::Texture, crate::draw_gpu::Slot)>>,
@@ -258,31 +264,7 @@ impl Effect {
             bind_group_layouts: &[&layout, &texture_layout],
             push_constant_ranges: &[],
         });
-        let pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("fullscreen effect"),
-            layout: Some(&pipeline_layout),
-            vertex: wgpu::VertexState {
-                module: &shader,
-                entry_point: Some("vs_main"),
-                compilation_options: Default::default(),
-                buffers: &[],
-            },
-            fragment: Some(wgpu::FragmentState {
-                module: &shader,
-                entry_point: Some("fs_main"),
-                compilation_options: Default::default(),
-                targets: &[Some(wgpu::ColorTargetState {
-                    format,
-                    blend,
-                    write_mask: wgpu::ColorWrites::ALL,
-                })],
-            }),
-            primitive: Default::default(),
-            depth_stencil: None,
-            multisample: Default::default(),
-            multiview: None,
-            cache: None,
-        });
+        let pipeline = effect_pipeline(device, &pipeline_layout, &shader, format, blend);
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }
@@ -294,6 +276,10 @@ impl Effect {
             texture_count: textures.len(),
             has_depth: depth.is_some(),
             pipeline,
+            swizzled: Default::default(),
+            shader,
+            pipeline_layout,
+            blend,
             format,
             sampler: device.create_sampler(&wgpu::SamplerDescriptor {
                 mag_filter: wgpu::FilterMode::Linear,
@@ -337,7 +323,8 @@ impl Effect {
         if input.texture == output.texture || history.texture == output.texture {
             return Err(Error::Invalid("effect input/output alias"));
         }
-        if output.options().format != self.format
+        let swizzled = output.options().format == swizzle(self.format);
+        if output.options().format != self.format && !swizzled
             || output.options().samples > 1
             || [input, history, output]
                 .iter()
@@ -416,7 +403,19 @@ impl Effect {
                 timestamp_writes: None,
                 occlusion_query_set: None,
             });
-            pass.set_pipeline(&self.pipeline);
+            pass.set_pipeline(if swizzled {
+                self.swizzled.get_or_init(|| {
+                    effect_pipeline(
+                        &renderer.device,
+                        &self.pipeline_layout,
+                        &self.shader,
+                        swizzle(self.format),
+                        self.blend,
+                    )
+                })
+            } else {
+                &self.pipeline
+            });
             pass.set_bind_group(0, &bind, &[]);
             pass.set_bind_group(1, &self.textures, &[]);
             pass.draw(0..3, 0..1);
@@ -484,3 +483,45 @@ fn extra_bindings(
 pub mod ssaa;
 
 pub mod afterimage;
+
+/// Rgba8Unorm and Bgra8Unorm swap; other formats have no counterpart.
+fn swizzle(format: wgpu::TextureFormat) -> wgpu::TextureFormat {
+    match format {
+        wgpu::TextureFormat::Rgba8Unorm => wgpu::TextureFormat::Bgra8Unorm,
+        wgpu::TextureFormat::Bgra8Unorm => wgpu::TextureFormat::Rgba8Unorm,
+        other => other,
+    }
+}
+fn effect_pipeline(
+    device: &wgpu::Device,
+    layout: &wgpu::PipelineLayout,
+    shader: &wgpu::ShaderModule,
+    format: wgpu::TextureFormat,
+    blend: Option<wgpu::BlendState>,
+) -> wgpu::RenderPipeline {
+    device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+        label: Some("fullscreen effect"),
+        layout: Some(layout),
+        vertex: wgpu::VertexState {
+            module: shader,
+            entry_point: Some("vs_main"),
+            compilation_options: Default::default(),
+            buffers: &[],
+        },
+        fragment: Some(wgpu::FragmentState {
+            module: shader,
+            entry_point: Some("fs_main"),
+            compilation_options: Default::default(),
+            targets: &[Some(wgpu::ColorTargetState {
+                format,
+                blend,
+                write_mask: wgpu::ColorWrites::ALL,
+            })],
+        }),
+        primitive: Default::default(),
+        depth_stencil: None,
+        multisample: Default::default(),
+        multiview: None,
+        cache: None,
+    })
+}

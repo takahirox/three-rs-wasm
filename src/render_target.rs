@@ -55,6 +55,10 @@ impl Default for RenderTargetOptions {
 
 /// Owns color/depth attachments. Clone and copy operations allocate independent
 /// attachments without copying pixels, as Three.js RenderTarget does.
+/// A render target's own color texture while it renders into another
+/// ( [`RenderTarget::alias_color`] ).
+#[must_use]
+pub struct ColorAlias(wgpu::Texture, wgpu::TextureView);
 pub struct RenderTarget {
     pub texture: wgpu::Texture,
     pub(crate) view: wgpu::TextureView,
@@ -255,6 +259,35 @@ impl RenderTarget {
             mip_level_count: Some(1),
             ..Default::default()
         })
+    }
+    /// Render color attachment 0 ( the resolve target when multisampled ) into
+    /// `texture`, a canvas's current texture of the same size and format, as
+    /// three renders into the canvas when no output pass is needed. Returns
+    /// the target's own texture for [`Self::restore_color`].
+    pub fn alias_color(&mut self, texture: &wgpu::Texture) -> Result<ColorAlias> {
+        if self.dimension != wgpu::TextureDimension::D2
+            || self.options.count != 1
+            || self.options.depth != 1
+            || texture.format() != self.texture.format()
+            || texture.width() != self.width
+            || texture.height() != self.height
+        {
+            return Err(Error::Invalid("aliased color texture"));
+        }
+        let view = Self::color_view(texture, self.dimension, 0);
+        self.textures[0] = texture.clone();
+        self.views[0] = view.clone();
+        Ok(ColorAlias(
+            std::mem::replace(&mut self.texture, texture.clone()),
+            std::mem::replace(&mut self.view, view),
+        ))
+    }
+    pub fn restore_color(&mut self, alias: ColorAlias) {
+        let ColorAlias(texture, view) = alias;
+        self.textures[0] = texture.clone();
+        self.views[0] = view.clone();
+        self.texture = texture;
+        self.view = view;
     }
     pub fn options(&self) -> &RenderTargetOptions {
         &self.options

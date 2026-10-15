@@ -304,6 +304,9 @@ struct State {
     gltf: Option<gltf_viewer::OrbitViewer>,
     load_generation: u64,
     gallery_scene: Option<gallery_scenes::GalleryScene>,
+    /// The last frame presented a gallery scene's own output target, which
+    /// may read the main target.
+    presented_output: bool,
 }
 impl State {
     fn request_render(&mut self) {
@@ -375,27 +378,6 @@ impl State {
                 width as f64 / height as f64,
             )?;
         }
-        let handled =
-            if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
-                demo.render(&self.renderer, &mut self.scene, self.camera, &self.target)?
-            } else {
-                false
-            };
-        if !handled {
-            self.renderer
-                .render(&mut self.scene, self.camera, &self.target)?;
-        }
-        if self.example == 93 {
-            self.frame += 1;
-            let _ = self
-                .canvas
-                .set_attribute("data-frames", &self.frame.to_string());
-            return Ok(());
-        }
-        let frame = self
-            .surface
-            .get_current_texture()
-            .map_err(|e| Error::Gpu(e.to_string()))?;
         // Raw/encoded targets contain display values; the CRT example requests linear output.
         // webgl_watch ( 442 ) and webgl_loader_ldraw ( 447 ) render linear half-float, as their
         // outputBufferType asks, and are tone-mapped and encoded here.
@@ -427,6 +409,64 @@ impl State {
         } else {
             self.configuration.format.add_srgb_suffix()
         };
+        let premultiplied = [50, 54, 55, 57, 58, 118, 120, 126, 127, 351].contains(&self.example);
+        let tone_mapping = if self.target.options.encode_srgb {
+            ToneMapping::None
+        } else {
+            self.scene.output_tone_mapping()
+        };
+        // Like three, render straight into the canvas when no output pass is
+        // needed: the target holds display values in the canvas's format.
+        let direct = self.example != 93
+            && !self.presented_output
+            && !premultiplied
+            && tone_mapping == ToneMapping::None
+            && format == self.target.options.format;
+        let frame = if direct {
+            Some(
+                self.surface
+                    .get_current_texture()
+                    .map_err(|e| Error::Gpu(e.to_string()))?,
+            )
+        } else {
+            None
+        };
+        let alias = match &frame {
+            Some(frame) => Some(self.target.alias_color(&frame.texture)?),
+            None => None,
+        };
+        let rendered = (|| -> Result<()> {
+            let handled = if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
+                &mut self.gallery_scene
+            {
+                demo.render(&self.renderer, &mut self.scene, self.camera, &self.target)?
+            } else {
+                false
+            };
+            if !handled {
+                self.renderer
+                    .render(&mut self.scene, self.camera, &self.target)?;
+            }
+            Ok(())
+        })();
+        if let Some(alias) = alias {
+            self.target.restore_color(alias);
+        }
+        rendered?;
+        if self.example == 93 {
+            self.frame += 1;
+            let _ = self
+                .canvas
+                .set_attribute("data-frames", &self.frame.to_string());
+            return Ok(());
+        }
+        let frame = match frame {
+            Some(frame) => frame,
+            None => self
+                .surface
+                .get_current_texture()
+                .map_err(|e| Error::Gpu(e.to_string()))?,
+        };
         let view = frame.texture.create_view(&wgpu::TextureViewDescriptor {
             format: Some(format),
             ..Default::default()
@@ -437,7 +477,10 @@ impl State {
             }
             _ => &self.target,
         };
-        if [50, 54, 55, 57, 58, 118, 120, 126, 127, 351].contains(&self.example) {
+        let presents_main = std::ptr::eq(presentation, &self.target);
+        if direct && presents_main {
+            // Rendered into the canvas.
+        } else if premultiplied {
             self.renderer.blit_premultiplied_srgb(
                 presentation,
                 &view,
@@ -458,6 +501,7 @@ impl State {
                 },
             );
         }
+        self.presented_output = !presents_main;
         frame.present();
         if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
             demo.presented(&self.canvas)?;
@@ -1170,6 +1214,12 @@ impl BrowserApp {
                 configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
             }
             configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
+            // The canvas texture serves as the main target's color when no
+            // output pass is needed, so it takes the target's usages.
+            configuration.usage = wgpu::TextureUsages::RENDER_ATTACHMENT
+                | wgpu::TextureUsages::TEXTURE_BINDING
+                | wgpu::TextureUsages::COPY_SRC
+                | wgpu::TextureUsages::COPY_DST;
             surface.configure(&renderer.device, &configuration);
             let target = RenderTarget::with_options(
                 &renderer.device,
@@ -1244,7 +1294,8 @@ impl BrowserApp {
                         ]
                         .contains(&example)
                         {
-                            wgpu::TextureFormat::Rgba8Unorm
+                            // The canvas's format, which it renders into.
+                            configuration.format
                         } else {
                             wgpu::TextureFormat::Rgba16Float
                         },
@@ -1423,6 +1474,7 @@ impl BrowserApp {
                 gltf,
                 load_generation: 0,
                 gallery_scene,
+                presented_output: true,
             }));
             let weak = Rc::downgrade(&state);
             let animation = Closure::wrap(Box::new(move |time: f64| {

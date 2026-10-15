@@ -928,7 +928,10 @@ impl Renderer {
         let reuse_opaque = needs_transmission
             && (target.options.format == wgpu::TextureFormat::Rgba16Float
                 || self.viewport_transmission.get()
-                    && target.options.format == wgpu::TextureFormat::Rgba8Unorm)
+                    && matches!(
+                        target.options.format,
+                        wgpu::TextureFormat::Rgba8Unorm | wgpu::TextureFormat::Bgra8Unorm
+                    ))
             && !target.options.encode_srgb
             && target.dimension == wgpu::TextureDimension::D2
             && target.texture.depth_or_array_layers() == 1
