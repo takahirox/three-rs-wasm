@@ -77,6 +77,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.paired.as_ref().map(|p| &p.output)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.paired.as_mut().map(|p| &mut p.output)
+    }
     pub fn pointer(&mut self, x: f64, y: f64) {
         if let Some(p) = &mut self.paired
             && let Some(w) = web_sys::window()

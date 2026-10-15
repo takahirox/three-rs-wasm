@@ -1806,6 +1806,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
     /// Queued pointer events, in CSS pixels.
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) {
         self.queue.push((kind, x, y));

@@ -242,6 +242,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.target.as_ref()
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.target.as_mut()
+    }
     /// The page's input: kind 1 steps x frames, 2 is a wheel of deltaY x, 3 a
     /// mouse move to ( x, y ) of the window and 4 the border dragged to x.
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) {

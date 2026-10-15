@@ -702,6 +702,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.grid.as_ref().and_then(|g| g.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.grid.as_mut().and_then(|g| g.output.as_mut())
+    }
     /// Absolute CSS-pixel pointer events, applied in prepare().
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) {
         if matches!(self.id, 255 | 256) {

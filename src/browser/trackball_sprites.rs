@@ -1041,6 +1041,15 @@ impl Demo {
             _ => None,
         }
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        match self.id {
+            215 if self.params[0] > 0.5 => self.output.as_mut(),
+            216 => self.output.as_mut(),
+            _ => None,
+        }
+    }
     /// Absolute CSS-pixel pointer events: kind 0 move, 10 + button down, 20 + button up.
     pub fn pointer(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
         match self.id {

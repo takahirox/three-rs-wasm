@@ -733,6 +733,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
     /// The canvas pointer: down ( 10 + button ), move ( 0 ), up ( 20 +
     /// button ), in CSS pixels. The Sculptor's listener runs first, then the
     /// page's cursor listener, then OrbitControls'.

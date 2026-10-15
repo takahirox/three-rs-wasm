@@ -95,6 +95,11 @@ impl PointsPass {
     pub(super) fn output(&self) -> &RenderTarget {
         &self.target
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub(super) fn output_mut(&mut self) -> &mut RenderTarget {
+        &mut self.target
+    }
     pub(super) fn render(
         &mut self,
         r: &Renderer,

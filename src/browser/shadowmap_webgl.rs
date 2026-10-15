@@ -447,6 +447,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.show_hud.then_some(()).and(self.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.show_hud.then_some(()).and(self.output.as_mut())
+    }
     pub fn draw(&mut self, _kind: u32, _x: f64, _y: f64) {}
     /// keydown: T ( keyCode 84 ) toggles the HUD.
     pub fn key(&mut self, code: u32, down: bool) {

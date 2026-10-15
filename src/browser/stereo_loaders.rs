@@ -1045,6 +1045,14 @@ impl Demo {
         }
         self.eyes.as_ref().and_then(|e| e.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        if self.id == 334 && self.stereo[0] >= 0.5 {
+            return None;
+        }
+        self.eyes.as_mut().and_then(|e| e.output.as_mut())
+    }
     /// The stereo effects use `( clientX - innerWidth / 2 ) * 0.01`.
     pub fn gpu_pointer(&mut self, x: f64, y: f64) {
         let window = web_sys::window();

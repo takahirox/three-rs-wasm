@@ -718,6 +718,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
     fn events(&mut self) {
         for a in &mut self.attractors {
             for e in std::mem::take(&mut a.controls.events) {

@@ -580,7 +580,8 @@ impl Demo {
             mip_level_count: 1,
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
-            format: wgpu::TextureFormat::Rgba8Unorm,
+            // The canvas target's format, which it copies.
+            format: crate::browser::canvas_format(),
             usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
             view_formats: &[],
         });
@@ -1325,6 +1326,14 @@ return vec4(select(1.055*pow(max(c,vec3(0.0)),vec3(0.41666))-0.055,c*12.92,c<=ve
     pub fn output(&self) -> Option<&RenderTarget> {
         match self.id {
             229 => self.framebuffer.as_ref().and_then(|f| f.output.as_ref()),
+            _ => None,
+        }
+    }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        match self.id {
+            229 => self.framebuffer.as_mut().and_then(|f| f.output.as_mut()),
             _ => None,
         }
     }

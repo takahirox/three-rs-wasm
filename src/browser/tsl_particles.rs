@@ -514,4 +514,10 @@ impl Demo {
             None
         }
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        // Its history is read again on the next frame.
+        None
+    }
 }

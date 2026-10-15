@@ -982,6 +982,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.output.as_ref()
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.output.as_mut()
+    }
     /// NDC pointer; the multiple-views example uses `clientX - innerWidth / 2`.
     pub fn gpu_pointer(&mut self, x: f64, y: f64) {
         let width = web_sys::window()

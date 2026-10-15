@@ -4,9 +4,12 @@ use crate::{Error, Result, renderer::*};
 pub struct Effect {
     layout: wgpu::BindGroupLayout,
     pipeline: wgpu::RenderPipeline,
-    /// The same pass for the other 8-bit RGBA formats: a canvas's preferred
-    /// channel order ( BGRA ) or sRGB view where the effect was made for RGBA.
-    variants: std::cell::RefCell<Vec<(wgpu::TextureFormat, wgpu::RenderPipeline)>>,
+    /// The same pass for an 8-bit RGBA target in another format: a canvas's
+    /// preferred channel order ( BGRA ) or sRGB view, or a canvas where the
+    /// effect was made for half-float.
+    /// Keyed by format and whether the pass applies the output transform.
+    variants: std::cell::RefCell<Vec<(wgpu::TextureFormat, bool, wgpu::RenderPipeline)>>,
+    output_layout: std::cell::OnceCell<wgpu::PipelineLayout>,
     shader: wgpu::ShaderModule,
     pipeline_layout: wgpu::PipelineLayout,
     blend: Option<wgpu::BlendState>,
@@ -206,7 +209,11 @@ impl Effect {
                 },
             ],
         });
-        let source = format!("{}\n{wgsl}", include_str!("shaders/effect.wgsl"));
+        let source = format!(
+            "{}\n{wgsl}\n{}",
+            include_str!("shaders/effect.wgsl"),
+            fused_output()
+        );
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("fullscreen effect"),
             source: wgpu::ShaderSource::Wgsl(source.into()),
@@ -264,7 +271,7 @@ impl Effect {
             bind_group_layouts: &[&layout, &texture_layout],
             push_constant_ranges: &[],
         });
-        let pipeline = effect_pipeline(device, &pipeline_layout, &shader, format, blend);
+        let pipeline = effect_pipeline(device, &pipeline_layout, &shader, format, blend, "fs_main");
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }
@@ -277,6 +284,7 @@ impl Effect {
             has_depth: depth.is_some(),
             pipeline,
             variants: Default::default(),
+            output_layout: Default::default(),
             shader,
             pipeline_layout,
             blend,
@@ -324,7 +332,11 @@ impl Effect {
             return Err(Error::Invalid("effect input/output alias"));
         }
         let format = output.options().format;
-        let variant = format != self.format && rgba8(format) && rgba8(self.format);
+        // A display pass made for another format renders into the canvas's.
+        let variant = format != self.format && rgba8(format);
+        // A half-float chain's last pass into an encoded target applies the
+        // output transform itself, as RenderPipeline's renderOutput does.
+        let fused = variant && !rgba8(self.format) && output.options().encode_srgb;
         if format != self.format && !variant
             || output.options().samples > 1
             || [input, history, output]
@@ -406,24 +418,55 @@ impl Effect {
             });
             let mut variants = self.variants.borrow_mut();
             pass.set_pipeline(if variant {
-                let index = match variants.iter().position(|(f, _)| *f == format) {
+                let index = match variants
+                    .iter()
+                    .position(|(f, o, _)| *f == format && *o == fused)
+                {
                     Some(index) => index,
                     None => {
-                        let pipeline = effect_pipeline(
-                            &renderer.device,
-                            &self.pipeline_layout,
-                            &self.shader,
-                            format,
-                            self.blend,
-                        );
-                        variants.push((format, pipeline));
+                        let pipeline = if fused {
+                            let layout = self.output_layout.get_or_init(|| {
+                                renderer.device.create_pipeline_layout(
+                                    &wgpu::PipelineLayoutDescriptor {
+                                        label: Some("fused output effect"),
+                                        bind_group_layouts: &[
+                                            &self.layout,
+                                            &self.texture_layout,
+                                            &renderer.output_binding().layout,
+                                        ],
+                                        push_constant_ranges: &[],
+                                    },
+                                )
+                            });
+                            effect_pipeline(
+                                &renderer.device,
+                                layout,
+                                &self.shader,
+                                format,
+                                self.blend,
+                                "fs_output",
+                            )
+                        } else {
+                            effect_pipeline(
+                                &renderer.device,
+                                &self.pipeline_layout,
+                                &self.shader,
+                                format,
+                                self.blend,
+                                "fs_main",
+                            )
+                        };
+                        variants.push((format, fused, pipeline));
                         variants.len() - 1
                     }
                 };
-                &variants[index].1
+                &variants[index].2
             } else {
                 &self.pipeline
             });
+            if fused {
+                pass.set_bind_group(2, &renderer.output_binding().group, &[]);
+            }
             pass.set_bind_group(0, &bind, &[]);
             pass.set_bind_group(1, &self.textures, &[]);
             pass.draw(0..3, 0..1);
@@ -507,6 +550,7 @@ fn effect_pipeline(
     shader: &wgpu::ShaderModule,
     format: wgpu::TextureFormat,
     blend: Option<wgpu::BlendState>,
+    fragment: &str,
 ) -> wgpu::RenderPipeline {
     device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
         label: Some("fullscreen effect"),
@@ -519,7 +563,7 @@ fn effect_pipeline(
         },
         fragment: Some(wgpu::FragmentState {
             module: shader,
-            entry_point: Some("fs_main"),
+            entry_point: Some(fragment),
             compilation_options: Default::default(),
             targets: &[Some(wgpu::ColorTargetState {
                 format,
@@ -533,4 +577,22 @@ fn effect_pipeline(
         multiview: None,
         cache: None,
     })
+}
+/// The output transform for a fused last pass: output.wgsl under its own
+/// names, since effects may include output.wgsl themselves.
+fn fused_output() -> String {
+    let mut wgsl = include_str!("shaders/output.wgsl").to_string();
+    for name in [
+        "aces_output",
+        "srgb_output",
+        "srgb_input",
+        "agx_output",
+        "tone_output",
+    ] {
+        wgsl = wgsl.replace(name, &format!("fused_{name}"));
+    }
+    wgsl + "@group(2) @binding(0) var<uniform> effect_output:vec4<f32>;\n\
+        @fragment fn fs_output(in:Out)->@location(0) vec4<f32> {\
+        let value=effect(in.uv);\
+        return vec4(fused_srgb_output(fused_tone_output(value.rgb,effect_output.x,effect_output.y)),value.a);}\n"
 }

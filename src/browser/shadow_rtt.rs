@@ -1013,6 +1013,11 @@ fn effect(uv:vec2<f32>)->vec4<f32>{{let size=vec2<f32>(textureDimensions(depth_t
     pub fn output(&self) -> Option<&RenderTarget> {
         self.rtt.as_ref().and_then(|k| k.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.rtt.as_mut().and_then(|k| k.output.as_mut())
+    }
     /// Absolute CSS pointer moves.
     pub fn draw(&mut self, _kind: u32, x: f64, y: f64) {
         self.pointer = Some(Vector2::new(x, y));

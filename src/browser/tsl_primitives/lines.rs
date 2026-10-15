@@ -172,6 +172,11 @@ impl Lines {
     pub fn output(&self) -> &RenderTarget {
         &self.target
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> &mut RenderTarget {
+        &mut self.target
+    }
     pub fn update(&self, s: &mut Scene, p: &[f32; 8]) -> Result<()> {
         let (width, world, coverage, dashed, scale, offset, ratio) = if self.wire {
             (p[1], 0., 1., p[2], p[3], 0., p[4])

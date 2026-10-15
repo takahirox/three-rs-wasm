@@ -650,6 +650,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.target.as_ref().map(|(t, _)| t)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.target.as_mut().map(|(t, _)| t)
+    }
     pub fn draw(&mut self, _kind: u32, _x: f64, _y: f64) {}
     pub fn key(&mut self, _code: u32, _down: bool) {}
     #[allow(clippy::too_many_arguments)]

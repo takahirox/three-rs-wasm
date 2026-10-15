@@ -730,6 +730,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.comparison.as_ref().and_then(|c| c.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.comparison.as_mut().and_then(|c| c.output.as_mut())
+    }
     pub fn gpu_pointer(&mut self, s: &mut Scene, c: Object3D, x: f64, y: f64) -> Result<bool> {
         self.pointer = Vector2::new(x, y);
         if self.id != 193 {

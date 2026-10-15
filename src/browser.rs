@@ -308,30 +308,67 @@ struct State {
     /// may read the main target.
     presented_output: bool,
 }
+/// navigator.gpu.getPreferredCanvasFormat(): the format of the canvas and of
+/// the 8-bit targets that render into it.
+pub(crate) fn canvas_format() -> wgpu::TextureFormat {
+    let preferred = (|| {
+        let gpu = js_sys::Reflect::get(&web_sys::window()?.navigator(), &"gpu".into()).ok()?;
+        let method = js_sys::Reflect::get(&gpu, &"getPreferredCanvasFormat".into()).ok()?;
+        js_sys::Function::from(method).call0(&gpu).ok()?.as_string()
+    })();
+    if preferred.as_deref() == Some("bgra8unorm") {
+        wgpu::TextureFormat::Bgra8Unorm
+    } else {
+        wgpu::TextureFormat::Rgba8Unorm
+    }
+}
+/// Examples whose linear, premultiplied output is encoded on output for a
+/// premultiplied canvas.
+const PREMULTIPLIED: &[u32] = &[50, 54, 55, 57, 58, 118, 120, 126, 127, 351];
 /// Examples whose target holds display values: raw shader output or
 /// output encoded in the shader. The CRT example requests linear output;
 /// webgl_watch ( 442 ) and webgl_loader_ldraw ( 447 ) render linear
 /// half-float, as their outputBufferType asks, and are tone-mapped and
 /// encoded on output.
 const RAW_OUTPUT: &[u32] = &[
-    16, 27, 28, 35, 45, 46, 50, 54, 55, 57, 58, 65, 70, 77, 90, 99, 101, 107, 111, 118, 120, 126,
-    127, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 172,
-    173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194,
-    195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213,
-    214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232,
-    233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
-    252, 253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285,
-    288, 289, 290, 291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310,
-    312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330,
-    331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 351, 352, 353, 354, 355, 358,
-    359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378,
-    379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
-    398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416,
-    417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435,
-    436, 437, 438, 439, 440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456,
-    457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475,
-    476, 477, 478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495,
-    496,
+    16, 27, 28, 35, 40, 41, 42, 43, 44, 45, 46, 47, 50, 54, 55, 57, 58, 65, 70, 71, 72, 73, 77, 87,
+    90, 91, 99, 100, 101, 107, 111, 112, 117, 118, 120, 126, 127, 141, 145, 146, 147, 154, 155,
+    156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 172, 173, 174, 175,
+    176, 177, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197,
+    198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216,
+    217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
+    236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
+    255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
+    291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314,
+    315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333,
+    335, 336, 337, 338, 341, 342, 343, 344, 345, 346, 348, 351, 352, 353, 354, 355, 358, 359, 361,
+    362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380,
+    381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399,
+    400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418,
+    419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437,
+    438, 439, 440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458,
+    459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
+    478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
+];
+/// Examples whose output is tone-mapped and encoded in the shader, as
+/// WebGLRenderer does and as a postprocessing chain's last pass does
+/// ( RenderPipeline's renderOutput ).
+const ENCODE_SRGB: &[u32] = &[
+    16, 28, 40, 41, 42, 43, 44, 47, 71, 72, 73, 87, 90, 91, 100, 112, 117, 141, 145, 146, 147, 154,
+    155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191, 193, 194, 195, 196, 197, 198, 199, 201,
+    202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224,
+    225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 243, 244, 245,
+    246, 247, 248, 249, 250, 253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280,
+    281, 282, 284, 285, 288, 289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
+    307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327, 329, 330, 331, 332, 333,
+    335, 337, 338, 341, 342, 343, 344, 345, 346, 348, 352, 353, 354, 355, 358, 359, 361, 362, 363,
+    364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
+    384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402,
+    403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421,
+    422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440,
+    441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461,
+    462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480,
+    481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
 ];
 /// Examples rendering into an 8-bit target rather than half-float.
 const UNORM_TARGET: &[u32] = &[
@@ -428,20 +465,29 @@ impl State {
         } else {
             self.configuration.format.add_srgb_suffix()
         };
-        let premultiplied = [50, 54, 55, 57, 58, 118, 120, 126, 127, 351].contains(&self.example);
-        let tone_mapping = if self.target.options.encode_srgb {
-            ToneMapping::None
-        } else {
-            self.scene.output_tone_mapping()
+        let premultiplied = PREMULTIPLIED.contains(&self.example);
+        // A target holds display values when the output pass would only copy
+        // it: no tone mapping or encoding left, in the canvas view's format.
+        let displays = |target: &RenderTarget, scene_tone: ToneMapping| {
+            !premultiplied
+                && (target.options.encode_srgb || scene_tone == ToneMapping::None)
+                && target.options.format == format
         };
+        let scene_tone = self.scene.output_tone_mapping();
         // Like three, render straight into the canvas when no output pass is
-        // needed: the target holds display values in the canvas's format.
-        let direct = self.example != 93
-            && !self.presented_output
-            && !premultiplied
-            && tone_mapping == ToneMapping::None
-            && format == self.target.options.format;
-        let frame = if direct {
+        // needed: the main target, or the example's own output target ( which
+        // the last frame presented ), renders into the canvas's texture.
+        let main =
+            self.example != 93 && !self.presented_output && displays(&self.target, scene_tone);
+        let output = self.example != 93
+            && self.presented_output
+            && match &mut self.gallery_scene {
+                Some(gallery_scenes::GalleryScene::Expanded(demo)) => demo
+                    .output_target_mut()
+                    .is_some_and(|t| displays(t, scene_tone)),
+                _ => false,
+            };
+        let frame = if main || output {
             Some(
                 self.surface
                     .get_current_texture()
@@ -450,12 +496,20 @@ impl State {
         } else {
             None
         };
-        // A canvas texture the target cannot render into falls back to the
+        // A canvas texture a target cannot render into falls back to the
         // output pass.
-        let alias = frame
+        let main_alias = frame
             .as_ref()
+            .filter(|_| main)
             .and_then(|frame| self.target.alias_color(&frame.texture).ok());
-        let direct = alias.is_some();
+        let output_alias = match (&frame, &mut self.gallery_scene) {
+            (Some(frame), Some(gallery_scenes::GalleryScene::Expanded(demo))) if output => demo
+                .output_target_mut()
+                .and_then(|t| t.alias_color(&frame.texture).ok()),
+            _ => None,
+        };
+        self.renderer
+            .set_output_transform(self.scene.exposure, scene_tone);
         let rendered = (|| -> Result<()> {
             let handled = if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
                 &mut self.gallery_scene
@@ -470,8 +524,27 @@ impl State {
             }
             Ok(())
         })();
-        if let Some(alias) = alias {
+        let presentation_texture = match &self.gallery_scene {
+            Some(gallery_scenes::GalleryScene::Expanded(demo)) => demo.output_target(),
+            _ => None,
+        }
+        .unwrap_or(&self.target)
+        .texture
+        .clone();
+        // Rendered into the canvas: the presented target still renders into its
+        // texture ( an example may have replaced its output target ).
+        let direct = frame
+            .as_ref()
+            .is_some_and(|frame| presentation_texture == frame.texture);
+        if let Some(alias) = main_alias {
             self.target.restore_color(alias);
+        }
+        if let (Some(alias), Some(frame), Some(gallery_scenes::GalleryScene::Expanded(demo))) =
+            (output_alias, &frame, &mut self.gallery_scene)
+            && let Some(target) = demo.output_target_mut()
+            && target.texture == frame.texture
+        {
+            target.restore_color(alias);
         }
         rendered?;
         if self.example == 93 {
@@ -499,7 +572,7 @@ impl State {
             _ => &self.target,
         };
         let presents_main = std::ptr::eq(presentation, &self.target);
-        if direct && presents_main {
+        if direct {
             // Rendered into the canvas.
         } else if premultiplied {
             self.renderer.blit_premultiplied_srgb(
@@ -527,12 +600,11 @@ impl State {
         // ( docs/performance-parity.md ).
         let path = format!(
             "{} {:?} {:?}",
-            if direct && presents_main {
-                "direct"
-            } else if presents_main {
-                "target"
-            } else {
-                "output"
+            match (direct, presents_main) {
+                (true, true) => "direct",
+                (true, false) => "direct-output",
+                (false, true) => "target",
+                (false, false) => "output",
             },
             presentation.options.format,
             self.scene.output_tone_mapping()
@@ -1285,36 +1357,17 @@ impl BrowserApp {
                         } else {
                             4
                         },
-                        encode_srgb: [
-                            16, 28, 90, 154, 155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191,
-                            193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204, 205, 206, 207,
-                            208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224, 225,
-                            226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
-                            241, 243, 244, 245, 246, 247, 248, 249, 250, 253, 254, 255, 256, 258,
-                            259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288,
-                            289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
-                            307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327,
-                            329, 330, 331, 332, 333, 335, 337, 338, 341, 342, 343, 344, 345, 348,
-                            352, 353, 354, 355, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368,
-                            369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
-                            384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397,
-                            398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-                            412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
-                            426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439,
-                            440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
-                            456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-                            470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 484,
-                            485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
-                        ]
-                        .contains(&example),
-                        // 8-bit targets take the canvas's format, which they render
-                        // into; linear ones its sRGB view, which encodes them.
-                        format: if !UNORM_TARGET.contains(&example) {
-                            wgpu::TextureFormat::Rgba16Float
-                        } else if RAW_OUTPUT.contains(&example) {
+                        encode_srgb: ENCODE_SRGB.contains(&example),
+                        // Display values take the canvas's format, which they render
+                        // into; linear 8-bit output its sRGB view, which encodes it.
+                        format: if RAW_OUTPUT.contains(&example)
+                            && !PREMULTIPLIED.contains(&example)
+                        {
                             configuration.format
-                        } else {
+                        } else if UNORM_TARGET.contains(&example) {
                             configuration.format.add_srgb_suffix()
+                        } else {
+                            wgpu::TextureFormat::Rgba16Float
                         },
                         // WebGLRenderer( { stencil: true } ) for ShadowMesh.
                         stencil_buffer: [278, 340].contains(&example),

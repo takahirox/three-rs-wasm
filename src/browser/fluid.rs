@@ -720,6 +720,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
     /// pointermove: the camera ray through the pointer, shifted by 0.5 in x
     /// and z ( the particles' offset ), and its hit on the y = 0 plane.
     pub fn gpu_pointer(&mut self, s: &Scene, c: Object3D, x: f64, y: f64) -> Result<bool> {

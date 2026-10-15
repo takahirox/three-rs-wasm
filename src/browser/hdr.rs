@@ -442,6 +442,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
     /// pointermove: the brush centre in CSS pixels, y up from the bottom.
     pub fn gpu_pointer(&mut self, x: f64, y: f64) -> Result<bool> {
         let (width, height, _) = viewport_css();

@@ -1145,6 +1145,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.camera.as_ref().and_then(|r| r.output.as_ref())
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.camera.as_mut().and_then(|r| r.output.as_mut())
+    }
     pub fn gpu_pointer(&mut self, x: f64, y: f64) {
         self.pointer = Vector2::new(x, y);
     }

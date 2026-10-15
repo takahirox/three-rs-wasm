@@ -514,6 +514,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.screen.as_ref()
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.screen.as_mut()
+    }
 
     /// The visible tiles' paths in the tree ( child indices from the root,
     /// through external tilesets ), sorted, for the comparison.

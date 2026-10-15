@@ -606,6 +606,15 @@ impl Demo {
             .or_else(|| self.points.as_ref().map(|p| p.output()))
             .or_else(|| self.elements.as_ref().map(|e| e.output()))
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub(super) fn output_target_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.layered
+            .as_mut()
+            .map(|p| p.output_mut())
+            .or_else(|| self.points.as_mut().map(|p| p.output_mut()))
+            .or_else(|| self.elements.as_mut().map(|e| e.output_mut()))
+    }
 }
 
 impl Demo {

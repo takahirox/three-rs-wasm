@@ -197,6 +197,16 @@ pub struct Renderer {
     /// target's output buffer type. False keeps the separate half-float
     /// backdrop pass for 8-bit targets.
     pub viewport_transmission: std::cell::Cell<bool>,
+    /// Exposure and tone mapping of the output a postprocessing chain's last
+    /// pass applies when it renders into an encoded target ( RenderPipeline's
+    /// renderOutput ), with its uniform binding.
+    output_transform: std::cell::Cell<[f32; 4]>,
+    output_binding: std::cell::OnceCell<OutputBinding>,
+}
+pub(crate) struct OutputBinding {
+    pub(crate) layout: wgpu::BindGroupLayout,
+    buffer: wgpu::Buffer,
+    pub(crate) group: wgpu::BindGroup,
 }
 #[derive(Clone, Copy, PartialEq)]
 enum ScenePass {
@@ -647,9 +657,65 @@ impl Renderer {
             logarithmic_depth: Default::default(),
             array_camera_view_projection: Default::default(),
             viewport_transmission: Default::default(),
+            output_transform: std::cell::Cell::new([1.0, 0.0, 0.0, 0.0]),
+            output_binding: Default::default(),
         })
     }
 
+    /// The scene's output exposure and tone mapping, which an effect applies
+    /// when it renders a chain's last pass into an encoded target.
+    pub fn set_output_transform(&self, exposure: f64, tone_mapping: ToneMapping) {
+        let value = [exposure as f32, tone_mapping as u32 as f32, 0.0, 0.0];
+        if self.output_transform.replace(value) != value
+            && let Some(binding) = self.output_binding.get()
+        {
+            self.queue
+                .write_buffer(&binding.buffer, 0, bytemuck::cast_slice(&value));
+        }
+    }
+    pub(crate) fn output_binding(&self) -> &OutputBinding {
+        self.output_binding.get_or_init(|| {
+            let layout = self
+                .device
+                .create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                    label: Some("effect output"),
+                    entries: &[wgpu::BindGroupLayoutEntry {
+                        binding: 0,
+                        visibility: wgpu::ShaderStages::FRAGMENT,
+                        ty: wgpu::BindingType::Buffer {
+                            ty: wgpu::BufferBindingType::Uniform,
+                            has_dynamic_offset: false,
+                            min_binding_size: None,
+                        },
+                        count: None,
+                    }],
+                });
+            let buffer = self.device.create_buffer(&wgpu::BufferDescriptor {
+                label: Some("effect output"),
+                size: 16,
+                usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+                mapped_at_creation: false,
+            });
+            self.queue.write_buffer(
+                &buffer,
+                0,
+                bytemuck::cast_slice(&self.output_transform.get()),
+            );
+            let group = self.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                label: Some("effect output"),
+                layout: &layout,
+                entries: &[wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: buffer.as_entire_binding(),
+                }],
+            });
+            OutputBinding {
+                layout,
+                buffer,
+                group,
+            }
+        })
+    }
     /// Present an offscreen color target to a canvas surface view.
     pub fn blit(
         &self,

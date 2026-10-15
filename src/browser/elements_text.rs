@@ -321,6 +321,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.target.as_ref()
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.target.as_mut()
+    }
     /// A view's OrbitControls, from the page's pointer events: kind is
     /// 1000 × ( view + 1 ) plus 10 + button (down), 0 (move), 20 (up) or 30
     /// (wheel, x = deltaY).

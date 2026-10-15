@@ -1645,6 +1645,11 @@ impl Demo {
     pub fn output(&self) -> Option<&RenderTarget> {
         self.targets.as_ref().map(|t| &t.screen)
     }
+    /// The target `output` returns, to render into the canvas ( see
+    /// RenderTarget::alias_color ).
+    pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
+        self.targets.as_mut().map(|t| &mut t.screen)
+    }
 
     /// Pointer events: 0 a move to normalized device coordinates ( x, y ),
     /// 1 a press and 2 a release of pointer x ( y 1 for touch ).
