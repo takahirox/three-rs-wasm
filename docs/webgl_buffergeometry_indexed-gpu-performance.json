@@ -1,20 +1,21 @@
 {
   "id": "webgl_buffergeometry_indexed",
-  "date": "2026-09-17T08:14:41.067Z",
+  "date": "2026-10-15T01:42:03.330Z",
   "warmupMs": 3000,
   "sampleMs": 3000,
   "gpuInstrumentation": true,
+  "workload": "animation",
   "results": [
     {
       "runtime": "three",
       "backend": "WebGPU",
       "gpuTimerAvailable": null,
       "gpuFrame": {
-        "p50": 0.0265,
-        "p95": 0.23674699999999999,
-        "max": 0.649116
+        "p50": 0.090791,
+        "p95": 0.092332,
+        "max": 0.11004
       },
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -25,13 +26,13 @@
       ],
       "frames": 180,
       "cpu": {
-        "p50": 0.20000004768371582,
-        "p95": 0.39999985694885254,
-        "max": 0.5
+        "p50": 0.20000028610229492,
+        "p95": 0.40000009536743164,
+        "max": 0.5999999046325684
       },
       "interval": {
         "p50": 16.699999999999818,
-        "p95": 16.700000000000728,
+        "p95": 16.800000000000182,
         "max": 16.800000000000182
       },
       "calls": {
@@ -91,9 +92,9 @@
       "after": null,
       "gpu": {
         "render": {
-          "p50": 0.013334,
-          "p95": 0.071207,
-          "max": 0.635532
+          "p50": 0.050915,
+          "p95": 0.053082,
+          "max": 0.070333
         }
       },
       "errors": []
@@ -103,11 +104,11 @@
       "backend": "WebGPU",
       "gpuTimerAvailable": null,
       "gpuFrame": {
-        "p50": 0.045832,
-        "p95": 0.320828,
-        "max": 0.81303
+        "p50": 0.09429000000000001,
+        "p95": 0.118166,
+        "max": 0.201622
       },
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -116,28 +117,28 @@
         512,
         512
       ],
-      "frames": 180,
+      "frames": 181,
       "cpu": {
-        "p50": 0.20000004768371582,
+        "p50": 0.20000028610229492,
         "p95": 0.3000001907348633,
-        "max": 0.40000009536743164
+        "max": 0.5
       },
       "interval": {
         "p50": 16.699999999999818,
-        "p95": 16.700000000000728,
+        "p95": 16.799999999999727,
         "max": 16.800000000000182
       },
       "calls": {
-        "writeBuffer": 180,
-        "drawIndexed": 180,
+        "writeBuffer": 181,
+        "drawIndexed": 181,
         "createBuffer": 240,
-        "submit": 360,
-        "draw": 180
+        "submit": 362,
+        "draw": 181
       },
-      "writeBytes": 32032,
-      "drawCalls": 360,
-      "triangles": 36180,
-      "logicalBufferBytes": 18512,
+      "writeBytes": 32012,
+      "drawCalls": 362,
+      "triangles": 36381,
+      "logicalBufferBytes": 13112,
       "textures": [
         {
           "size": [
@@ -164,6 +165,16 @@
             64,
             64,
             2
+          ],
+          "format": "rgba32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
           ],
           "format": "rgba16float",
           "samples": 1,
@@ -223,7 +234,7 @@
       "before": {
         "transfer": [
           1,
-          12080,
+          6040,
           16,
           16
         ],
@@ -236,7 +247,7 @@
       "after": {
         "transfer": [
           1,
-          12080,
+          6040,
           16,
           16
         ],
@@ -248,14 +259,14 @@
       },
       "gpu": {
         "scene": {
-          "p50": 0.036209,
-          "p95": 0.073457,
-          "max": 0.796238
+          "p50": 0.058207,
+          "p95": 0.082666,
+          "max": 0.109374
         },
         "present": {
-          "p50": 0.0095,
-          "p95": 0.176038,
-          "max": 0.259454
+          "p50": 0.035874,
+          "p95": 0.048374,
+          "max": 0.092331
         }
       },
       "errors": []

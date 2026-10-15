@@ -39,6 +39,10 @@ struct PipelineKey {
     attachment_formats: Vec<wgpu::TextureFormat>,
     mirrored: bool,
     logarithmic_depth: bool,
+    /// The geometry's vertex layout ( `geometry_gpu::Field` bits ), and for
+    /// line strips the index format.
+    attributes: u8,
+    strip_index_format: Option<wgpu::IndexFormat>,
 }
 
 /// u.maps.x: 0 without a normal map, 1 for RGB normal maps and 2 for packed
@@ -46,6 +50,18 @@ struct PipelineKey {
 fn normal_map_kind(map: Option<&Texture>) -> f32 {
     map.map_or(0.0, |t| if t.packed_rg() { 2.0 } else { 1.0 })
 }
+/// The attributes the scene shaders read ( field, location ): see
+/// `geometry_gpu::vertex_entry_points`.
+pub(crate) const VERTEX_INPUTS: &[(crate::geometry_gpu::Field, u32)] = &[
+    (crate::geometry_gpu::Field::Position, 0),
+    (crate::geometry_gpu::Field::Normal, 1),
+    (crate::geometry_gpu::Field::Uv, 2),
+    (crate::geometry_gpu::Field::Color, 3),
+    (crate::geometry_gpu::Field::Corner, 4),
+    (crate::geometry_gpu::Field::Tangent, 5),
+    (crate::geometry_gpu::Field::Uv1, 11),
+    (crate::geometry_gpu::Field::Uv2, 12),
+];
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
 pub(crate) struct Vertex {
@@ -195,6 +211,9 @@ type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
     key: (Object3D, usize, bool),
     vertices: wgpu::Buffer,
+    /// `geometry_gpu::Field` bits of `vertices`, and the index format.
+    attributes: u8,
+    index_format: wgpu::IndexFormat,
     deformation: crate::deformation_gpu::Bindings,
     instances: &'a [Instance],
     transmission_view: Option<&'a wgpu::TextureView>,
@@ -209,6 +228,7 @@ struct Draw {
     pipeline: wgpu::RenderPipeline,
     back_pipeline: Option<wgpu::RenderPipeline>,
     vertices: wgpu::Buffer,
+    index_format: wgpu::IndexFormat,
     bind_group: wgpu::BindGroup,
     range: std::ops::Range<u32>,
     instances: u32,
@@ -250,7 +270,7 @@ impl Renderer {
                 ],
                 push_constant_ranges: &[],
             });
-        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some("vs_main"),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
+        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some(&crate::geometry_gpu::entry_point(u8::MAX, VERTEX_INPUTS)),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
     }
     /// Upload once and retain a sampled texture for custom material/effect bindings.
     pub fn upload_texture(&self, image: &Arc<crate::material::Texture>) -> Result<GpuTexture> {
@@ -530,23 +550,26 @@ impl Renderer {
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("materials"),
             source: wgpu::ShaderSource::Wgsl(
-                format!(
-                    "{}\n{}\n{}\n{}\n{}\n{}\n{}",
-                    include_str!("shaders/cube_uv.wgsl"),
-                    concat!(
-                        include_str!("shaders/deformation.wgsl"),
-                        "\n",
-                        include_str!("shaders/output.wgsl"),
-                        "\n",
-                        include_str!("shader.wgsl"),
-                        "\n",
-                        include_str!("shaders/probe_grid.wgsl")
+                crate::geometry_gpu::vertex_entry_points(
+                    &format!(
+                        "{}\n{}\n{}\n{}\n{}\n{}\n{}",
+                        include_str!("shaders/cube_uv.wgsl"),
+                        concat!(
+                            include_str!("shaders/deformation.wgsl"),
+                            "\n",
+                            include_str!("shaders/output.wgsl"),
+                            "\n",
+                            include_str!("shader.wgsl"),
+                            "\n",
+                            include_str!("shaders/probe_grid.wgsl")
+                        ),
+                        crate::shader::DEFAULT_HOOKS,
+                        crate::shader::DEFAULT_OUTPUT,
+                        crate::shader::DEFAULT_PROJECTION,
+                        crate::shader::DEFAULT_SURFACE,
+                        crate::shader::DEFAULT_ENVIRONMENT
                     ),
-                    crate::shader::DEFAULT_HOOKS,
-                    crate::shader::DEFAULT_OUTPUT,
-                    crate::shader::DEFAULT_PROJECTION,
-                    crate::shader::DEFAULT_SURFACE,
-                    crate::shader::DEFAULT_ENVIRONMENT
+                    VERTEX_INPUTS,
                 )
                 .into(),
             ),
@@ -1967,6 +1990,8 @@ impl Renderer {
                     DrawGeometry {
                         key: (h, group_index, opaque_only),
                         vertices: gpu_geometry.vertices,
+                        attributes: gpu_geometry.attributes,
+                        index_format: gpu_geometry.index_format,
                         deformation: self.deformation.borrow_mut().get(
                             &self.device,
                             &self.queue,
@@ -2280,7 +2305,7 @@ impl Renderer {
                     pass.set_vertex_buffer(0, draw.vertices.slice(..));
                     pass.set_vertex_buffer(1, draw.instance_buffer.slice(..));
                     if let Some(indices) = &draw.indices {
-                        pass.set_index_buffer(indices.slice(..), wgpu::IndexFormat::Uint32);
+                        pass.set_index_buffer(indices.slice(..), draw.index_format);
                     }
                     if let Some(commands) = &draw.indirect {
                         for &offset in &draw.indirect_offsets {
@@ -2331,6 +2356,8 @@ impl Renderer {
         let DrawGeometry {
             key,
             vertices,
+            attributes,
+            index_format,
             deformation,
             instances,
             transmission_view,
@@ -2604,9 +2631,14 @@ impl Renderer {
             mirrored: uniforms.point[2] == 0.0
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
             logarithmic_depth: custom.is_none() && uniforms.output[3] > 0.0,
+            attributes,
+            strip_index_format: (topology == wgpu::PrimitiveTopology::LineStrip)
+                .then_some(index_format),
         };
         let mut pipelines = self.pipelines.borrow_mut();
         let create_pipeline = |key: &PipelineKey| {
+            let packed = crate::geometry_gpu::vertex_attributes(key.attributes, VERTEX_INPUTS);
+            let entry = crate::geometry_gpu::entry_point(key.attributes, VERTEX_INPUTS);
             let layout = self
                 .device
                 .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
@@ -2616,11 +2648,112 @@ impl Renderer {
                     push_constant_ranges: &[],
                 });
             let shader = custom.map_or(&self.shader, |p| &p.module);
-            self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("material pipeline"),layout:Some(&layout),
-            vertex:wgpu::VertexState {module:shader,entry_point:Some("vs_main"),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("INSTANCED",if key.instanced {1.0}else{0.0})],..Default::default()},buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(key.instanced)]},
-            fragment:Some(wgpu::FragmentState {module:shader,entry_point:Some(if key.logarithmic_depth {"fs_log_depth"} else {"fs_main"}),compilation_options:wgpu::PipelineCompilationOptions {constants:&[("LIGHT_COUNT",key.light_count as f64),("LIGHT_TYPES",key.light_types as f64),("COLOR_MAP",f64::from(key.texture_mask & 1 != 0)),("MR_MAP",f64::from(key.texture_mask & 2 != 0)),("NORMAL_MAP",f64::from(key.texture_mask & 4 != 0)),("AO_MAP",f64::from(key.texture_mask & 8 != 0)),("EMISSIVE_MAP",f64::from(key.texture_mask & 16 != 0)),("RECEIVE_SHADOW",f64::from(key.receive_shadow)),("MATERIAL_KIND",key.material_kind as f64),("PHYSICAL",if key.physical {1.0}else{0.0}),("EXTENSION_MAP_MASK",key.extension_mask as f64),("ENCODE_SRGB", f64::from(key.encode_srgb)),("ALPHA_MASK", if key.alpha_mask {1.0} else {0.0}),("CLIPPING",if key.clipping {1.0}else{0.0}),("LINE_DASH",if key.dashed {1.0}else{0.0})],..Default::default()},targets:&key.attachment_formats.iter().enumerate().map(|(i,&format)|Some(wgpu::ColorTargetState {format,blend:key.attachment_blending.get(i).copied().unwrap_or(key.blend),write_mask:if key.color_write {wgpu::ColorWrites::ALL}else{wgpu::ColorWrites::empty()}})).collect::<Vec<_>>()}),
-            primitive:wgpu::PrimitiveState {topology,front_face:if key.mirrored {wgpu::FrontFace::Cw} else {wgpu::FrontFace::Ccw},strip_index_format:if topology==wgpu::PrimitiveTopology::LineStrip {Some(wgpu::IndexFormat::Uint32)} else {None},cull_mode:match key.side {0=>Some(wgpu::Face::Back),1=>Some(wgpu::Face::Front),_=>None},..Default::default()},
-            depth_stencil:target.depth_format().map(|format|wgpu::DepthStencilState {format,depth_write_enabled:properties.depth_write && target.options.depth_buffer,depth_compare:if properties.depth_test {wgpu::CompareFunction::LessEqual} else {wgpu::CompareFunction::Always},stencil:key.stencil.clone().unwrap_or_default(),bias:wgpu::DepthBiasState{constant:key.depth_bias.0,slope_scale:f32::from_bits(key.depth_bias.1),clamp:0.0}}),multisample:wgpu::MultisampleState {count:target.options.samples.max(1),alpha_to_coverage_enabled:key.alpha_to_coverage,..Default::default()},multiview:None,cache:None})
+            self.device
+                .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                    label: Some("material pipeline"),
+                    layout: Some(&layout),
+                    vertex: wgpu::VertexState {
+                        module: shader,
+                        entry_point: Some(&entry),
+                        compilation_options: wgpu::PipelineCompilationOptions {
+                            constants: &[("INSTANCED", if key.instanced { 1.0 } else { 0.0 })],
+                            ..Default::default()
+                        },
+                        buffers: &[
+                            wgpu::VertexBufferLayout {
+                                array_stride: crate::geometry_gpu::packed_stride(key.attributes),
+                                step_mode: wgpu::VertexStepMode::Vertex,
+                                attributes: &packed,
+                            },
+                            instance_layout(key.instanced),
+                        ],
+                    },
+                    fragment: Some(wgpu::FragmentState {
+                        module: shader,
+                        entry_point: Some(if key.logarithmic_depth {
+                            "fs_log_depth"
+                        } else {
+                            "fs_main"
+                        }),
+                        compilation_options: wgpu::PipelineCompilationOptions {
+                            constants: &[
+                                ("LIGHT_COUNT", key.light_count as f64),
+                                ("LIGHT_TYPES", key.light_types as f64),
+                                ("COLOR_MAP", f64::from(key.texture_mask & 1 != 0)),
+                                ("MR_MAP", f64::from(key.texture_mask & 2 != 0)),
+                                ("NORMAL_MAP", f64::from(key.texture_mask & 4 != 0)),
+                                ("AO_MAP", f64::from(key.texture_mask & 8 != 0)),
+                                ("EMISSIVE_MAP", f64::from(key.texture_mask & 16 != 0)),
+                                ("RECEIVE_SHADOW", f64::from(key.receive_shadow)),
+                                ("MATERIAL_KIND", key.material_kind as f64),
+                                ("PHYSICAL", if key.physical { 1.0 } else { 0.0 }),
+                                ("EXTENSION_MAP_MASK", key.extension_mask as f64),
+                                ("ENCODE_SRGB", f64::from(key.encode_srgb)),
+                                ("ALPHA_MASK", if key.alpha_mask { 1.0 } else { 0.0 }),
+                                ("CLIPPING", if key.clipping { 1.0 } else { 0.0 }),
+                                ("LINE_DASH", if key.dashed { 1.0 } else { 0.0 }),
+                            ],
+                            ..Default::default()
+                        },
+                        targets: &key
+                            .attachment_formats
+                            .iter()
+                            .enumerate()
+                            .map(|(i, &format)| {
+                                Some(wgpu::ColorTargetState {
+                                    format,
+                                    blend: key
+                                        .attachment_blending
+                                        .get(i)
+                                        .copied()
+                                        .unwrap_or(key.blend),
+                                    write_mask: if key.color_write {
+                                        wgpu::ColorWrites::ALL
+                                    } else {
+                                        wgpu::ColorWrites::empty()
+                                    },
+                                })
+                            })
+                            .collect::<Vec<_>>(),
+                    }),
+                    primitive: wgpu::PrimitiveState {
+                        topology,
+                        front_face: if key.mirrored {
+                            wgpu::FrontFace::Cw
+                        } else {
+                            wgpu::FrontFace::Ccw
+                        },
+                        strip_index_format: key.strip_index_format,
+                        cull_mode: match key.side {
+                            0 => Some(wgpu::Face::Back),
+                            1 => Some(wgpu::Face::Front),
+                            _ => None,
+                        },
+                        ..Default::default()
+                    },
+                    depth_stencil: target.depth_format().map(|format| wgpu::DepthStencilState {
+                        format,
+                        depth_write_enabled: properties.depth_write && target.options.depth_buffer,
+                        depth_compare: if properties.depth_test {
+                            wgpu::CompareFunction::LessEqual
+                        } else {
+                            wgpu::CompareFunction::Always
+                        },
+                        stencil: key.stencil.clone().unwrap_or_default(),
+                        bias: wgpu::DepthBiasState {
+                            constant: key.depth_bias.0,
+                            slope_scale: f32::from_bits(key.depth_bias.1),
+                            clamp: 0.0,
+                        },
+                    }),
+                    multisample: wgpu::MultisampleState {
+                        count: target.options.samples.max(1),
+                        alpha_to_coverage_enabled: key.alpha_to_coverage,
+                        ..Default::default()
+                    },
+                    multiview: None,
+                    cache: None,
+                })
         };
         let pipeline = pipelines
             .entry(key.clone())
@@ -2643,6 +2776,7 @@ impl Renderer {
             pipeline,
             back_pipeline,
             vertices: vertex_buffer,
+            index_format,
             bind_group,
             range: 0..0,
             instances: 1,

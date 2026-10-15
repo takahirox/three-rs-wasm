@@ -158,9 +158,8 @@ so each frame's output is written into the same resident buffers.
 - The offscreen page's main-thread scene renders on its own animation
   frames. The workload holds the clock at 0 so that a frame drawn before the
   last request turns the group the same way.
-- The CSG result streams each frame on both sides. The port's interleaved
-  vertex is 80 bytes against WebGL's 32 ( position, normal and UV ), so its
-  stream is bounded at 2.5 times the original's.
+- The CSG result streams each frame on both sides, in the same 32-byte vertex
+  ( position, normal and UV ) as WebGL's.
 - Showing the CSG wireframe builds its line index again, as WebGL's
   wireframe attribute is. The residency cycle leaves that parameter out.
 - LDraw model, flat-color, merge and smoothing changes reload and parse the

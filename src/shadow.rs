@@ -104,7 +104,7 @@ pub(crate) struct Atlas {
 }
 pub(crate) struct ShadowRenderer {
     layout: wgpu::BindGroupLayout,
-    pipelines: [wgpu::RenderPipeline; 10],
+    pipelines: DepthPipelines,
     pub sampler: wgpu::Sampler,
     empty: wgpu::TextureView,
     white: Arc<Texture>,
@@ -229,10 +229,13 @@ impl ShadowRenderer {
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("shadow depth"),
             source: wgpu::ShaderSource::Wgsl(
-                concat!(
-                    include_str!("shaders/deformation.wgsl"),
-                    "\n",
-                    include_str!("shaders/shadow.wgsl")
+                crate::geometry_gpu::vertex_entry_points(
+                    concat!(
+                        include_str!("shaders/deformation.wgsl"),
+                        "\n",
+                        include_str!("shaders/shadow.wgsl")
+                    ),
+                    SHADOW_INPUTS,
                 )
                 .into(),
             ),
@@ -275,7 +278,7 @@ impl ShadowRenderer {
             bind_group_layouts: &[&layout],
             push_constant_ranges: &[],
         });
-        let pipelines = depth_pipelines(device, &pipeline_layout, &shader);
+        let pipelines = DepthPipelines::new(device, pipeline_layout, shader.clone());
         let empty = depth_texture(device, 1, 1).create_view(&wgpu::TextureViewDescriptor {
             dimension: Some(wgpu::TextureViewDimension::D2Array),
             ..Default::default()
@@ -858,11 +861,8 @@ impl ShadowRenderer {
             let v = viewports[layer] * size as f64;
             pass.set_viewport(v.x as f32, v.y as f32, v.z as f32, v.w as f32, 0., 1.);
             for (gpu, instances, bindings, range, count, side, program) in &draws {
-                pass.set_pipeline(
-                    program
-                        .as_ref()
-                        .map_or(&self.pipelines[*side], |p| &p.pipelines[*side]),
-                );
+                let pipelines = program.as_ref().map_or(&self.pipelines, |p| &p.pipelines);
+                pass.set_pipeline(&pipelines.get(*side, gpu.attributes, gpu.index_format));
                 pass.set_bind_group(0, bindings, &[]);
                 if let Some(program) = program {
                     pass.set_bind_group(1, &program.bindings, &[]);
@@ -870,7 +870,7 @@ impl ShadowRenderer {
                 pass.set_vertex_buffer(0, gpu.vertices.slice(..));
                 pass.set_vertex_buffer(1, instances.slice(..));
                 if let Some(indices) = &gpu.indices {
-                    pass.set_index_buffer(indices.slice(..), wgpu::IndexFormat::Uint32);
+                    pass.set_index_buffer(indices.slice(..), gpu.index_format);
                     pass.draw_indexed(range.clone(), 0, 0..*count);
                 } else {
                     pass.draw(range.clone(), 0..*count);
@@ -1081,14 +1081,66 @@ fn depth_texture(device: &wgpu::Device, size: u32, layers: u32) -> wgpu::Texture
     })
 }
 
-fn depth_pipelines(
-    device: &wgpu::Device,
-    pipeline_layout: &wgpu::PipelineLayout,
-    shader: &wgpu::ShaderModule,
-) -> [wgpu::RenderPipeline; 10] {
-    // 0–5: triangles by side, instanced first; 6–7: wireframe lines, as the
-    // depth material inherits `wireframe`, and LineSegments; 8–9: Line strips.
-    std::array::from_fn(|i| {
+/// The attributes the shadow shaders read ( field, location ).
+pub(crate) const SHADOW_INPUTS: &[(crate::geometry_gpu::Field, u32)] = &[
+    (crate::geometry_gpu::Field::Position, 0),
+    (crate::geometry_gpu::Field::Normal, 3),
+    (crate::geometry_gpu::Field::Uv, 1),
+    (crate::geometry_gpu::Field::Uv1, 2),
+    (crate::geometry_gpu::Field::Uv2, 4),
+];
+
+/// The depth-only pipelines of the shadow pass, made on first use for each
+/// variant ( 0–2: instanced front / back / double-sided culling; 3–5: the
+/// same uninstanced; 6–7: LineSegments, instanced or not, which the depth
+/// material inherits from `wireframe`; 8–9: Line strips ), geometry vertex
+/// layout ( `geometry_gpu::Field` bits ) and, for strips, index format.
+#[derive(Debug)]
+pub(crate) struct DepthPipelines {
+    device: wgpu::Device,
+    layout: wgpu::PipelineLayout,
+    shader: wgpu::ShaderModule,
+    // A Mutex, not a RefCell: materials holding a ShadowProgram stay Send + Sync.
+    cache: std::sync::Mutex<DepthPipelineCache>,
+}
+/// ( variant, vertex attributes, strip index format ) → pipeline.
+type DepthPipelineCache =
+    std::collections::HashMap<(usize, u8, Option<wgpu::IndexFormat>), wgpu::RenderPipeline>;
+impl DepthPipelines {
+    fn new(
+        device: &wgpu::Device,
+        layout: wgpu::PipelineLayout,
+        shader: wgpu::ShaderModule,
+    ) -> Self {
+        DepthPipelines {
+            device: device.clone(),
+            layout,
+            shader,
+            cache: Default::default(),
+        }
+    }
+    pub(crate) fn get(
+        &self,
+        i: usize,
+        attributes: u8,
+        index_format: wgpu::IndexFormat,
+    ) -> wgpu::RenderPipeline {
+        let strip = i >= 8;
+        let key = (i, attributes, strip.then_some(index_format));
+        self.cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .entry(key)
+            .or_insert_with(|| self.create(i, attributes, key.2))
+            .clone()
+    }
+    fn create(
+        &self,
+        i: usize,
+        attributes: u8,
+        strip_index_format: Option<wgpu::IndexFormat>,
+    ) -> wgpu::RenderPipeline {
+        use crate::geometry_gpu::{entry_point, packed_stride, vertex_attributes};
         let lines = i >= 6;
         let strip = i >= 8;
         let instanced = if lines { i == 6 || i == 8 } else { i < 3 };
@@ -1097,86 +1149,64 @@ fn depth_pipelines(
         } else {
             [Some(wgpu::Face::Back), Some(wgpu::Face::Front), None][i % 3]
         };
-        device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("shadow depth"),
-            layout: Some(pipeline_layout),
-            vertex: wgpu::VertexState {
-                module: shader,
-                entry_point: Some("vs_main"),
-                compilation_options: wgpu::PipelineCompilationOptions {
-                    constants: &[("INSTANCED", if instanced { 1.0 } else { 0.0 })],
+        let packed = vertex_attributes(attributes, SHADOW_INPUTS);
+        let entry = entry_point(attributes, SHADOW_INPUTS);
+        self.device
+            .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some("shadow depth"),
+                layout: Some(&self.layout),
+                vertex: wgpu::VertexState {
+                    module: &self.shader,
+                    entry_point: Some(&entry),
+                    compilation_options: wgpu::PipelineCompilationOptions {
+                        constants: &[("INSTANCED", if instanced { 1.0 } else { 0.0 })],
+                        ..Default::default()
+                    },
+                    buffers: &[
+                        wgpu::VertexBufferLayout {
+                            array_stride: packed_stride(attributes),
+                            step_mode: wgpu::VertexStepMode::Vertex,
+                            attributes: &packed,
+                        },
+                        crate::renderer::instance_layout(instanced),
+                    ],
+                },
+                fragment: Some(wgpu::FragmentState {
+                    module: &self.shader,
+                    entry_point: Some("fs_main"),
+                    compilation_options: Default::default(),
+                    targets: &[],
+                }),
+                primitive: wgpu::PrimitiveState {
+                    topology: if strip {
+                        wgpu::PrimitiveTopology::LineStrip
+                    } else if lines {
+                        wgpu::PrimitiveTopology::LineList
+                    } else {
+                        wgpu::PrimitiveTopology::TriangleList
+                    },
+                    strip_index_format,
+                    cull_mode,
                     ..Default::default()
                 },
-                buffers: &[
-                    wgpu::VertexBufferLayout {
-                        array_stride: std::mem::size_of::<crate::renderer::Vertex>() as u64,
-                        step_mode: wgpu::VertexStepMode::Vertex,
-                        attributes: &[
-                            wgpu::VertexAttribute {
-                                format: wgpu::VertexFormat::Float32x3,
-                                offset: 0,
-                                shader_location: 0,
-                            },
-                            wgpu::VertexAttribute {
-                                format: wgpu::VertexFormat::Float32x3,
-                                offset: 12,
-                                shader_location: 3,
-                            },
-                            wgpu::VertexAttribute {
-                                format: wgpu::VertexFormat::Float32x2,
-                                offset: 24,
-                                shader_location: 1,
-                            },
-                            wgpu::VertexAttribute {
-                                format: wgpu::VertexFormat::Float32x2,
-                                offset: 72,
-                                shader_location: 2,
-                            },
-                            wgpu::VertexAttribute {
-                                format: wgpu::VertexFormat::Float32x2,
-                                offset: 80,
-                                shader_location: 4,
-                            },
-                        ],
-                    },
-                    crate::renderer::instance_layout(instanced),
-                ],
-            },
-            fragment: Some(wgpu::FragmentState {
-                module: shader,
-                entry_point: Some("fs_main"),
-                compilation_options: Default::default(),
-                targets: &[],
-            }),
-            primitive: wgpu::PrimitiveState {
-                topology: if strip {
-                    wgpu::PrimitiveTopology::LineStrip
-                } else if lines {
-                    wgpu::PrimitiveTopology::LineList
-                } else {
-                    wgpu::PrimitiveTopology::TriangleList
-                },
-                cull_mode,
-                ..Default::default()
-            },
-            depth_stencil: Some(wgpu::DepthStencilState {
-                format: wgpu::TextureFormat::Depth32Float,
-                depth_write_enabled: true,
-                depth_compare: wgpu::CompareFunction::LessEqual,
-                stencil: Default::default(),
-                bias: Default::default(),
-            }),
-            multisample: Default::default(),
-            multiview: None,
-            cache: None,
-        })
-    })
+                depth_stencil: Some(wgpu::DepthStencilState {
+                    format: wgpu::TextureFormat::Depth32Float,
+                    depth_write_enabled: true,
+                    depth_compare: wgpu::CompareFunction::LessEqual,
+                    stencil: Default::default(),
+                    bias: Default::default(),
+                }),
+                multisample: Default::default(),
+                multiview: None,
+                cache: None,
+            })
+    }
 }
 
 /// Resident depth-only program. Shading returns alpha as a binary shadow mask.
 #[derive(Debug)]
 pub struct ShadowProgram {
-    pipelines: [wgpu::RenderPipeline; 10],
+    pipelines: DepthPipelines,
     bindings: wgpu::BindGroup,
 }
 impl ShadowProgram {
@@ -1231,7 +1261,9 @@ impl ShadowProgram {
         );
         let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("TSL shadow"),
-            source: wgpu::ShaderSource::Wgsl(source.into()),
+            source: wgpu::ShaderSource::Wgsl(
+                crate::geometry_gpu::vertex_entry_points(&source, SHADOW_INPUTS).into(),
+            ),
         });
         let resource_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("TSL shadow resources"),
@@ -1267,7 +1299,7 @@ impl ShadowProgram {
             bind_group_layouts: &[&renderer.shadows.layout, &resource_layout],
             push_constant_ranges: &[],
         });
-        let pipelines = depth_pipelines(device, &layout, &module);
+        let pipelines = DepthPipelines::new(device, layout, module);
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }

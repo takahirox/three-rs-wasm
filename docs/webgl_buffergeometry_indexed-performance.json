@@ -1,16 +1,17 @@
 {
   "id": "webgl_buffergeometry_indexed",
-  "date": "2026-09-17T08:09:31.658Z",
+  "date": "2026-10-15T01:41:49.034Z",
   "warmupMs": 3000,
   "sampleMs": 3000,
   "gpuInstrumentation": false,
+  "workload": "animation",
   "results": [
     {
       "runtime": "three",
       "backend": "WebGPU",
       "gpuTimerAvailable": null,
       "gpuFrame": null,
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -21,9 +22,9 @@
       ],
       "frames": 180,
       "cpu": {
-        "p50": 0.20000004768371582,
+        "p50": 0.19999980926513672,
         "p95": 0.3000001907348633,
-        "max": 0.5
+        "max": 0.39999961853027344
       },
       "interval": {
         "p50": 16.699999999999818,
@@ -92,7 +93,7 @@
       "backend": "WebGPU",
       "gpuTimerAvailable": null,
       "gpuFrame": null,
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -103,13 +104,13 @@
       ],
       "frames": 180,
       "cpu": {
-        "p50": 0.20000004768371582,
-        "p95": 0.2999999523162842,
+        "p50": 0.19999980926513672,
+        "p95": 0.3000001907348633,
         "max": 0.40000009536743164
       },
       "interval": {
         "p50": 16.699999999999818,
-        "p95": 16.799999999999272,
+        "p95": 16.700000000000728,
         "max": 16.800000000000182
       },
       "calls": {
@@ -118,10 +119,10 @@
         "submit": 360,
         "draw": 180
       },
-      "writeBytes": 32032,
+      "writeBytes": 31824,
       "drawCalls": 360,
       "triangles": 36180,
-      "logicalBufferBytes": 18512,
+      "logicalBufferBytes": 13112,
       "textures": [
         {
           "size": [
@@ -148,6 +149,16 @@
             64,
             64,
             2
+          ],
+          "format": "rgba32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
           ],
           "format": "rgba16float",
           "samples": 1,
@@ -207,7 +218,7 @@
       "before": {
         "transfer": [
           1,
-          12080,
+          6040,
           16,
           16
         ],
@@ -220,7 +231,7 @@
       "after": {
         "transfer": [
           1,
-          12080,
+          6040,
           16,
           16
         ],

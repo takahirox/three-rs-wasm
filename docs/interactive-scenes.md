@@ -29,8 +29,8 @@ inventory, so each is compared against the original WebGL renderer.
   - The per-frame raycast is the original's CPU query.
   - While a triangle is hit, the 4-vertex outline is rewritten through the mesh
     matrix. The original does the same with `applyMatrix4`. Each hovered frame
-    uploads 368 bytes: four 80-byte renderer vertices plus the 48-byte position
-    input.
+    uploads 96 bytes: four 12-byte renderer vertices ( the line has positions
+    only ) plus the 48-byte position input.
 - **Clipping.** The clipping planes and intersection mode use the existing
   resident clipping path. `PlaneHelper` is reproduced: an outline line strip and
   a one-sided translucent quad, placed with `lookAt( normal )` and

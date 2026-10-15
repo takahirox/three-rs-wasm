@@ -74,9 +74,9 @@ The broader implemented-demo audit and before/after measurements are recorded in
 The 160,000-triangle Phong port exposed unnecessary work in the common shader.
 Specializing material family, maps, shadow reception and light configuration
 reduced its scene GPU median from about 1.43 ms to 0.43 ms without reducing the
-workload or image threshold. The 80-byte vertex layout still doubles geometry
-memory versus Three in this scene; CPU attributes remain resident and GPU p95 is
-also higher. Both new examples remain explicitly partial, not full performance
+workload or image threshold. Vertex buffers now hold only each geometry's
+attributes, which brought its geometry memory to Three's (2026-10-15). CPU
+attributes remain resident and its GPU time stays higher. Both new examples remain explicitly partial, not full performance
 parity. See [scene validation and measurements](examples-2-worklog.md).
 
 ## Twenty additional TSL surface examples
@@ -997,8 +997,8 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   - Steady frames write no geometry for the fire, the batch or LDraw.
   - The batch writes the visible instances only when the culled set changes,
     where the original rewrites its indirect texture every frame.
-  - The CSG result streams each frame, as the original's does. Its 80-byte
-    interleaved vertex makes the stream up to 2.5 times WebGL's.
+  - The CSG result streams each frame, as the original's does, in the same
+    32-byte vertex ( position, normal and UV ) as WebGL's.
 - **Draws.** The batch draws one instanced draw per knot LOD where WebGL issues
   one multi-draw entry per instance; the drawn instances match one for one.
 
@@ -1061,8 +1061,8 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   rendered frame.
 - **GPU state.** The scenes are resident. RapierHelper's lines are written
   into the geometry's resident vertex buffer each frame; the page replaces
-  its attributes each frame. The bound is 3× the page's bytes, for the
-  engine's 80-byte vertex against the page's 28.
+  its attributes each frame, in the same 28-byte vertex ( position and
+  color ).
 - **Draws.** They match the page's, by count.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.

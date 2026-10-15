@@ -12420,7 +12420,7 @@
         "source": "src/browser/expanded_triangles.rs",
         "test": "tests/browser/expanded.spec.js",
         "limitations": [
-          "公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。"
+          "公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。GPUメモリは公式と同等だが、GPU時間は公式より長く、完全な性能同等性は未達。"
         ]
       },
       "imports": [
@@ -12864,7 +12864,7 @@
         "source": "src/browser/expanded_triangles.rs",
         "test": "tests/browser/expanded.spec.js",
         "limitations": [
-          "公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。汎用頂点形式のメモリ使用量は公式より大きい。"
+          "公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。頂点色を浮動小数で保持するため頂点メモリは公式より大きい。"
         ]
       },
       "imports": [

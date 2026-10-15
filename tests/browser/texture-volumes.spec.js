@@ -46,8 +46,8 @@ const cases={
  // spheres' silhouettes resolve differently ( msaaLimits ).
  // The CSG result is evaluated on the CPU each frame and streamed, as the page's
  // three-bvh-csg result is. The wireframe shares the result without its transform.
- // The port's interleaved vertex is 80 bytes against WebGL's 32 ( position, normal
- // and UV ): its stream is bounded at 2.5 times the original's. Showing the wireframe
+ // The port's vertex holds the same position, normal and UV as WebGL's 32 bytes.
+ // Showing the wireframe
  // builds its line index again, as WebGL's wireframe attribute is: the residency cycle
  // leaves the parameters out.
  // The orbit auto-rotates one step per frame; the left half without FXAA, the right with it.
@@ -123,22 +123,22 @@ const cases={
  physics_rapier_terrain:{antialias:true,times:[0,1,3.5,4,4.5,6,8],parameters:[],at:8,drag:[[256,256],[330,300]]},
  // The residency cycles walk forward and back the same frames, so the character returns. A
  // drag would turn the camera further each cycle, culling the scattered bodies in and out.
- physics_rapier_character_controller:{streamRatio:3,residency:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','s',true,4],['wait',4.5],['key','s',false,null]],limits:[.005,.6],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','d',true,4],['wait',4.5],['key','d',false,5]],wheel:[256,256,-300]},
- physics_rapier_vehicle_controller:{streamRatio:3,limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['wait',4],['key','w',false,null],['key','a',true,4.5],['key','a',false,5],['key',' ',true,5.5],['key',' ',false,6],['key','r',true,6.5],['key','r',false,7]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ physics_rapier_character_controller:{residency:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','s',true,4],['wait',4.5],['key','s',false,null]],limits:[.005,.6],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['key','w',false,null],['key','d',true,4],['wait',4.5],['key','d',false,5]],wheel:[256,256,-300]},
+ physics_rapier_vehicle_controller:{limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,script:[['key','w',true,3],['wait',3.5],['wait',4],['key','w',false,null],['key','a',true,4.5],['key','a',false,5],['key',' ',true,5.5],['key',' ',false,6],['key','r',true,6.5],['key','r',false,7]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The links touch at their joints: which hash seed orders their contacts decides the swing.
  // rapier.js runs the same chain two ways in one page, apart from the first step and by 3.4 cm
  // after 600 steps, so the captures stay within the first second.
- physics_rapier_joints:{streamRatio:3,streamsGeometry:true,antialias:true,times:[0,.5,1],parameters:[],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ physics_rapier_joints:{streamsGeometry:true,antialias:true,times:[0,.5,1],parameters:[],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // 800 bodies start overlapping, so contacts order every step from the first: rapier.js
  // itself moves the same world differently when it runs twice in one page ( 1,393 of the 2,400
  // coordinates after one step, by up to 3.3 mm ). The captures take the first steps only.
  physics_rapier_instancing:{limits:[.02,.8],antialias:true,times:[0,.016,.048],parameters:[[0,null,1]],at:.048,drag:[[256,256],[330,300]],wheel:[256,256,-300]},physics_ammo_rope:{limits:[.02,.8],antialias:true,streamsGeometry:true,times:[0,.5,1],parameters:[],at:3,script:[['key','q',true,1],['wait',2],['key','q',false,2],['key','a',true,2],['wait',3],['key','a',false,3]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},physics_ammo_cloth:{limits:[.02,.8],antialias:true,streamsGeometry:true,times:[0,.5,1],parameters:[],at:3,script:[['key','q',true,1],['wait',2],['key','q',false,2],['key','a',true,2],['wait',3],['key','a',false,3]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},physics_ammo_volume:{limits:[.02,.8],antialias:true,streamsGeometry:true,residency:[],times:[0,.5,1,2],parameters:[],at:3,script:[['click',300,200,2],['wait',2.5],['click',200,300,2.5],['wait',3]],wheel:[256,256,-300]},physics_ammo_terrain:{limits:[.02,.8],antialias:true,times:[0,1,3.5,3.6,4,6.6,7,7.16,7.32,7.48,7.64,7.8,7.96,8.12,8.28,8.44,8.6,8.76,8.92,9.08,9.24,10.1,10.26,10.42,10.58,10.74,10.9,11.06,11.22,11.38],parameters:[],at:11.38,cycle:[11.38,11.4,11.42,11.38],drag:[[256,256],[330,300]],wheel:[256,256,-300]},webgpu_materials_texture_html:{antialias:true,htmlPaint:true,initStyle:'#draw_element img{animation-play-state:paused!important}',times:[0,1,2,4],parameters:[],at:4,script:[['wait',100,4],['click',199,393,null],['wait',800,4],['click',203,376,null],['type','three.js',null],['click',500,20,null],['wait',800,4]]},physics_ammo_break:{limits:[.02,.8],antialias:true,times:[0,.5,1],parameters:[],at:3,residency:[],script:[['click',100,200,1],['wait',1.1],['wait',1.2],['wait',1.3],['wait',1.4],['wait',1.5],['wait',1.6],['wait',1.7],['wait',1.8],['wait',1.9],['wait',2.0],['click',360,170,2],['wait',2.1],['wait',2.2],['wait',2.3],['wait',2.4],['wait',2.5],['wait',2.6],['wait',2.7],['wait',2.8],['wait',2.9],['wait',3.0]],wheel:[256,256,-300]},physics_ammo_instancing:{limits:[.02,.8],antialias:true,noResize:true,times:[0,.016,.048,2],parameters:[],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},physics_jolt_instancing:{limits:[.02,.8],antialias:true,noResize:true,times:[0,.016,.048,2],parameters:[],at:2,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- physics_rapier_basic:{streamRatio:3,limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5,4,8],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ physics_rapier_basic:{limits:[.008,.3],streamsGeometry:true,antialias:true,times:[0,1,2.5,4,8],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The CubeCamera's six faces draw the equirectangular background as 36-index boxes and
  // PMREMGenerator draws its 21 cube-to-UV and blur passes on 36-vertex face sets; the
  // port draws both as fullscreen triangles.
  webgl_materials_cubemap_dynamic:{maskDraws:[36,27,0],limits:[.006,.45],backgroundBox:true,antialias:true,times:[0,.5,1,2.5],parameters:[[0,.4,.4],[1,.5,.5],[2,1.5,1.5]],restore:[[0,.05,.05],[1,1,1],[2,1,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- webgl_geometry_csg:{antialias:true,streamsGeometry:true,rebuilds:true,streamRatio:2.5,times:[0,1,2.5],parameters:[[0,'INTERSECTION',1],[0,'ADDITION',2],[0,'SUBTRACTION',0],[1,true,1],[1,false,0],[2,false,0],[2,true,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_geometry_csg:{antialias:true,streamsGeometry:true,rebuilds:true,times:[0,1,2.5],parameters:[[0,'INTERSECTION',1],[0,'ADDITION',2],[0,'SUBTRACTION',0],[1,true,1],[1,false,0],[2,false,0],[2,true,1]],at:2.5,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  // The packed models parse at load ( and on each model, flat-color, merge or smoothing
  // change ); merging hides the model, as the page's NaN building step does. The orbit
  // is damped.
@@ -216,8 +216,8 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // webgpu_display_stereo streams its 500 instance matrices each frame.
-// RapierHelper replaces its line attributes every frame on the page; the port streams them in
-// the engine's 80-byte vertex ( the page's position and color are 28 bytes ).
+// RapierHelper replaces its line attributes every frame on the page; the port streams the
+// same position and color ( 28 bytes a vertex ).
 const streams=['physics_rapier_basic','physics_rapier_joints','physics_rapier_character_controller','physics_rapier_vehicle_controller','webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg'];
 // A deterministic webcam: getUserMedia returns a 1280 × 720 canvas stream of a fixed
 // gradient and shapes, redrawn each animation frame so the stream keeps presenting.
@@ -385,8 +385,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   // Each instance's matrix and color stream together (80 bytes) as resident draw data;
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
   if(spec.batch)expect.soft(pair.rust.attributeBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes*1.25);
-  // spec.streamRatio scopes a documented vertex format difference.
-  else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*(spec.streamRatio??1.25));
+  else if(streams.includes(kind))expect.soft(pair.rust.attributeBytes+pair.rust.transformBytes,kind).toBeLessThanOrEqual(pair.reference.attributeBytes*1.25);
   else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
   expect.soft(pair.rust.textureBytes,kind).toBe(0);
  }

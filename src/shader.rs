@@ -485,7 +485,10 @@ impl ShaderProgram {
         }
         let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("custom mesh shader"),
-            source: wgpu::ShaderSource::Wgsl(source.into()),
+            source: wgpu::ShaderSource::Wgsl(
+                crate::geometry_gpu::vertex_entry_points(&source, crate::renderer::VERTEX_INPUTS)
+                    .into(),
+            ),
         });
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("custom mesh buffers"),

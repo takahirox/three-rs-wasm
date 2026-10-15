@@ -500,8 +500,8 @@ PORTS = {
  'webgpu_loader_gltf_transmission': {'example':32,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-physical.spec.js','limitations':['公式の透過・玉虫色材質・蓋のアニメーション・自動回転とOrbit操作を移植。情報表示とInspector UIは未一致。']},
  'webgpu_loader_gltf_iridescence': {'example':29,'source':'src/browser/gltf_examples.rs','test':'tests/browser/gltf-iridescence.spec.js','limitations':['公式IridescenceLamp・HDR環境・自動回転・Orbit操作を移植。情報表示は未一致。一般の屈折・拡張材質と性能の完全互換は未保証。']},
  'webgl_loader_gltf_avif': {'example':28,'source':'src/browser/expanded.rs','test':'tests/browser/gltf-avif.spec.js','limitations':['公式Forest HouseのDraco形状とAVIFテクスチャを読み込み、Orbit・パン・ズームと変更時のみの描画を移植。MSAAの輪郭と情報オーバーレイの外観は未一致。性能同等性は未保証。']},
- 'webgl_buffergeometry': {'example':26,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。']},
- 'webgl_buffergeometry_rawshader': {'example':27,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。汎用頂点形式のメモリ使用量は公式より大きい。']},
+ 'webgl_buffergeometry': {'example':26,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。GPUメモリは公式と同等だが、GPU時間は公式より長く、完全な性能同等性は未達。']},
+ 'webgl_buffergeometry_rawshader': {'example':27,'source':'src/browser/expanded_triangles.rs','test':'tests/browser/expanded.spec.js','limitations':['公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。頂点色を浮動小数で保持するため頂点メモリは公式より大きい。']},
  'webgl_geometry_colors': {'example': 21, 'source': 'src/browser/expanded_geometry_colors.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式3個の頂点色Icosahedron・ワイヤー・影画像・ポインターカメラを移植。']},
  'webgl_buffergeometry_indexed': {'example': 22, 'source': 'src/browser/expanded_indexed.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式のインデックス付き色グリッド・回転・ワイヤーフレーム切替を移植。']},
  'webgl_lines_colors': {'example': 23, 'source': 'src/browser/expanded_lines.rs', 'test': 'tests/browser/expanded.spec.js', 'limitations': ['公式の6色線・Hilbert/Catmull-Rom・回転・ポインターカメラを移植。']},
@@ -585,7 +585,17 @@ def main():
   write(OUT/'files/thumbnails.svg', read('examples/files/thumbnails.svg'))
   index = read('examples/index.html').decode()
   index = index.replace('<title>three.js examples</title>', '<title>three-rs-wasm examples</title>')
-  index = index.replace("file + '.html'", "'example.html?id=' + encodeURIComponent( file )")
+  index = index.replace("file + '.html'", "exampleHref( file )")
+  # web/gallery/example.html?id=…, or examples/<id>.html on the published site.
+  index = index.replace('\t\tfunction createLink( file, tags ) {', """\t\t// web/gallery/example.html?id=…, or examples/<id>.html on the published
+\t\t// site's official-style layout ( tools/build_site.py ).
+\t\tfunction exampleHref( file ) {
+
+\t\t\treturn document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'example.html?id=' + encodeURIComponent( file );
+
+\t\t}
+
+\t\tfunction createLink( file, tags ) {""")
   index = index.replace("'https://github.com/mrdoob/three.js/blob/master/examples/'", f"'https://github.com/mrdoob/three.js/blob/{REV}/examples/'")
   # Restore selection on browser back/forward as well as direct hash navigation.
   index = index.replace('// iOS iframe auto-resize workaround', """window.addEventListener( 'hashchange', () => {

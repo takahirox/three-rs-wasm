@@ -1,20 +1,21 @@
 {
   "id": "webgl_buffergeometry_rawshader",
-  "date": "2026-09-17T22:21:55.648Z",
+  "date": "2026-10-15T01:42:32.269Z",
   "warmupMs": 3000,
   "sampleMs": 3000,
   "gpuInstrumentation": true,
+  "workload": "animation",
   "results": [
     {
       "runtime": "three",
       "backend": "WebGL2",
       "gpuTimerAvailable": true,
       "gpuFrame": {
-        "p50": 0.029458,
-        "p95": 0.16,
-        "max": 0.629083
+        "p50": 0.082583,
+        "p95": 0.134958,
+        "max": 0.352124
       },
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -23,11 +24,11 @@
         512,
         512
       ],
-      "frames": 180,
+      "frames": 181,
       "cpu": {
         "p50": 0.09999990463256836,
-        "p95": 0.20000004768371582,
-        "max": 0.2999999523162842
+        "p95": 0.20000028610229492,
+        "max": 0.20000028610229492
       },
       "interval": {
         "p50": 16.699999999999818,
@@ -35,22 +36,22 @@
         "max": 16.800000000000182
       },
       "calls": {
-        "uniform1f": 180,
-        "uniformMatrix4fv": 180,
-        "drawArrays": 180
+        "uniform1f": 181,
+        "uniformMatrix4fv": 181,
+        "drawArrays": 181
       },
       "writeBytes": 0,
-      "drawCalls": 180,
-      "triangles": 36000,
+      "drawCalls": 181,
+      "triangles": 36200,
       "logicalBufferBytes": 9600,
       "textures": [],
       "before": null,
       "after": null,
       "gpu": {
         "WebGL scene": {
-          "p50": 0.029458,
-          "p95": 0.16,
-          "max": 0.629083
+          "p50": 0.082583,
+          "p95": 0.134958,
+          "max": 0.352124
         }
       },
       "errors": []
@@ -60,11 +61,11 @@
       "backend": "WebGPU",
       "gpuTimerAvailable": null,
       "gpuFrame": {
-        "p50": 0.025166,
-        "p95": 0.121038,
-        "max": 0.709323
+        "p50": 0.092208,
+        "p95": 0.102582,
+        "max": 0.35399600000000003
       },
-      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
       "adapter": {
         "vendor": "apple",
         "architecture": "metal-3"
@@ -75,13 +76,13 @@
       ],
       "frames": 180,
       "cpu": {
-        "p50": 0.20000004768371582,
+        "p50": 0.20000028610229492,
         "p95": 0.3000001907348633,
-        "max": 0.40000009536743164
+        "max": 0.5
       },
       "interval": {
         "p50": 16.699999999999818,
-        "p95": 16.700000000000728,
+        "p95": 16.799999999999272,
         "max": 16.800000000000182
       },
       "calls": {
@@ -90,10 +91,10 @@
         "createBuffer": 240,
         "submit": 360
       },
-      "writeBytes": 786960,
+      "writeBytes": 833040,
       "drawCalls": 360,
       "triangles": 36180,
-      "logicalBufferBytes": 54432,
+      "logicalBufferBytes": 28672,
       "textures": [
         {
           "size": [
@@ -120,6 +121,16 @@
             64,
             64,
             2
+          ],
+          "format": "rgba32float",
+          "samples": 1,
+          "mips": 1
+        },
+        {
+          "size": [
+            1,
+            1,
+            1
           ],
           "format": "rgba16float",
           "samples": 1,
@@ -169,7 +180,7 @@
       "before": {
         "transfer": [
           1,
-          48000,
+          21600,
           16,
           16
         ],
@@ -182,7 +193,7 @@
       "after": {
         "transfer": [
           1,
-          48000,
+          21600,
           16,
           16
         ],
@@ -194,14 +205,14 @@
       },
       "gpu": {
         "scene": {
-          "p50": 0.01525,
-          "p95": 0.028833,
-          "max": 0.134748
+          "p50": 0.056499,
+          "p95": 0.064958,
+          "max": 0.323037
         },
         "present": {
-          "p50": 0.009917,
-          "p95": 0.029459,
-          "max": 0.682199
+          "p50": 0.035875,
+          "p95": 0.037041,
+          "max": 0.03775
         }
       },
       "errors": []

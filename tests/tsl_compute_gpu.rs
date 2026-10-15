@@ -192,8 +192,8 @@ fn native_shader_points_draw_resident_instances_without_billboard_expansion() {
     r.render(&mut scene, cam, &target).unwrap();
     let transfers = r.transfer_counts();
     assert_eq!(
-        transfers.1, 88,
-        "one resident vertex, no billboard triangles"
+        transfers.1, 12,
+        "one resident vertex ( its position only ), no billboard triangles"
     );
     let pixels = r.read_rgba(&target).unwrap();
     assert_eq!(

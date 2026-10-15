@@ -88,9 +88,8 @@ steps:
   or to the instance matrices.
 - **Streamed lines.** RapierHelper replaces its line attributes every frame
   on the page. The port writes the frame's lines into the geometry's resident
-  vertex buffer, which grows only when they do not fit. The engine's vertex
-  is 80 bytes against the page's 28 ( position and color ), so the
-  streamed-bytes bound is 3×.
+  vertex buffer, which grows only when they do not fit. Its vertex holds the
+  page's position and color, 28 bytes.
 - **Residency.** Steady cycles create no GPU resources. The character's
   residency cycle walks forward and back, and leaves out the drag: a camera
   turning further each cycle culls the scattered bodies in and out, and the

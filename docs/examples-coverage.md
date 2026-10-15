@@ -517,8 +517,8 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_loader_gltf_transmission | `tests/browser/gltf-physical.spec.js` | 公式の透過・玉虫色材質・蓋のアニメーション・自動回転とOrbit操作を移植。情報表示とInspector UIは未一致。 |
 | webgpu_loader_gltf_iridescence | `tests/browser/gltf-iridescence.spec.js` | 公式IridescenceLamp・HDR環境・自動回転・Orbit操作を移植。情報表示は未一致。一般の屈折・拡張材質と性能の完全互換は未保証。 |
 | webgl_loader_gltf_avif | `tests/browser/gltf-avif.spec.js` | 公式Forest HouseのDraco形状とAVIFテクスチャを読み込み、Orbit・パン・ズームと変更時のみの描画を移植。MSAAの輪郭と情報オーバーレイの外観は未一致。性能同等性は未保証。 |
-| webgl_buffergeometry | `tests/browser/expanded.spec.js` | 公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。汎用頂点形式によるGPUメモリ増加が残り、完全な性能同等性は未達。 |
-| webgl_buffergeometry_rawshader | `tests/browser/expanded.spec.js` | 公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。汎用頂点形式のメモリ使用量は公式より大きい。 |
+| webgl_buffergeometry | `tests/browser/expanded.spec.js` | 公式の16万三角形・頂点RGBA・Phong照明・霧・回転を移植。比較用の固定乱数を使用。GPUメモリは公式と同等だが、GPU時間は公式より長く、完全な性能同等性は未達。 |
+| webgl_buffergeometry_rawshader | `tests/browser/expanded.spec.js` | 公式の200三角形・頂点RGBA・色アニメーションをWGSLへ移植。比較用の固定乱数を使用。頂点色を浮動小数で保持するため頂点メモリは公式より大きい。 |
 | webgl_geometry_colors | `tests/browser/expanded.spec.js` | 公式3個の頂点色Icosahedron・ワイヤー・影画像・ポインターカメラを移植。 |
 | webgl_buffergeometry_indexed | `tests/browser/expanded.spec.js` | 公式のインデックス付き色グリッド・回転・ワイヤーフレーム切替を移植。 |
 | webgl_lines_colors | `tests/browser/expanded.spec.js` | 公式の6色線・Hilbert/Catmull-Rom・回転・ポインターカメラを移植。 |

@@ -54,22 +54,41 @@ Chrome 153 / Apple Metal, 512x512 at DPR 1; 3-second warmup and 3-second sample 
 runtime. CPU/API and GPU timestamp runs are separate. GPU-frame figures sum all
 measured passes, including presentation; they are not display-capped frame rates.
 
+Remeasured on 2026-10-15 after the renderer's vertex buffers became
+per-geometry ( see below ). The machine carried other load that day: both
+runtimes' GPU times are about three times the 2026-09-17 figures, so only
+the figures of one run compare with each other.
+
 | Scene / runtime | CPU callback p50 / p95 (ms) | GPU frame p50 / p95 (ms) | Logical GPU buffer bytes |
 | --- | ---: | ---: | ---: |
-| Phong / Three WebGPU | 0.20 / 0.30 | 0.336 / 0.775 | 19,200,868 |
-| Phong / Rust WebGPU | 0.20 / 0.30 | 0.442 / 1.639 | 38,412,832 |
-| RawShader / Three WebGL | 0.10 / 0.20 | 0.029 / 0.160 | 9,600 |
-| RawShader / Rust WebGPU | 0.20 / 0.30 | 0.025 / 0.121 | 54,432 |
+| Phong / Three WebGPU | 0.20 / 0.90 | 1.105 / 1.220 | 19,200,868 |
+| Phong / Rust WebGPU | 0.20 / 0.40 | 1.570 / 1.642 | 19,214,112 |
+| RawShader / Three WebGL | 0.10 / 0.20 | 0.083 / 0.135 | 9,600 |
+| RawShader / Rust WebGPU | 0.20 / 0.30 | 0.092 / 0.103 | 28,672 |
 
 All runs retain geometry and textures through animation, with no steady-state
 GPU buffer, texture, bind-group or pipeline creation in the uninstrumented runs.
 Phong has two scene draws plus presentation in both WebGPU implementations.
 RawShader has one scene draw; Rust additionally presents its render target.
 
-The common 80-byte vertex layout remains larger than Three's scene-specific
-attributes, approximately doubling geometry memory in the Phong scene. The CPU
-attribute arrays also remain resident. The larger GPU p95 and memory footprint
-are unresolved parity limitations, not a successful full reproduction. No claim
+**Vertex layout.** The renderer used to interleave every geometry into one
+88-byte vertex ( position, normal, UV, color, line corner, tangent, UV1,
+UV2 ), whatever attributes it had. A geometry's vertex buffer now holds only
+the attributes it has, and indices are 16-bit when they fit, as Three's are.
+The Phong scene's geometry ( position, normal, color ) went from 42,254,112
+to 19,214,112 logical bytes, Three's 19,200,868 plus uniforms. In an A/B run
+of the same day, the Rust scene's GPU median fell from 1.625 to 1.565 ms
+against Three's 1.10 ms. The layout is not what makes the scene slower than
+Three's.
+
+Remaining differences:
+
+- RawShader's vertex colors are stored as four floats, where the page's
+  are normalized bytes, so its buffers stay larger than WebGL's.
+- The CPU attribute arrays remain resident.
+- The Phong scene's GPU time stays about 1.4 times Three's.
+
+These are unresolved parity limitations, not a successful full reproduction. No claim
 of scaling or hardware-independent timing parity is made. Logical buffer counts
 exclude textures/driver overhead; texture descriptors and all timing distributions
 are retained in the reports. Timestamp readback allocations belong to profiling.
