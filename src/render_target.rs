@@ -298,7 +298,19 @@ impl RenderTarget {
         &self.options
     }
     pub(crate) fn color_formats(&self) -> Vec<wgpu::TextureFormat> {
-        self.textures.iter().map(wgpu::Texture::format).collect()
+        // Attachment 0 may be a canvas texture rendered through its sRGB view
+        // ( alias_color ): the view's format is the target's.
+        self.textures
+            .iter()
+            .enumerate()
+            .map(|(i, t)| {
+                if i == 0 {
+                    self.options.format
+                } else {
+                    t.format()
+                }
+            })
+            .collect()
     }
     pub fn textures(&self) -> &[wgpu::Texture] {
         &self.textures
