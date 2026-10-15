@@ -69,6 +69,43 @@ timestamps (its diagnostic buffers are included in that run's API counts).
 The broader implemented-demo audit and before/after measurements are recorded in
 [gallery-performance.md](gallery-performance.md).
 
+## Canvas presentation (2026-10-15)
+
+Three's WebGPURenderer renders into the canvas unless it needs an output
+pass: with tone mapping or a color space conversion it renders into a
+half-float framebuffer and an output pass writes the canvas, and a
+RenderPipeline folds that conversion into its last pass. The port used to
+render every frame into its own target and copy it into the canvas.
+
+- A frame whose target holds display values ( raw or shader-encoded output,
+  or linear 8-bit output written through an sRGB view ) now renders into
+  the canvas's current texture. The target's own color texture stays
+  allocated for frames that cannot.
+- The canvas uses the preferred format, as three's does. Chrome warns that
+  another format "requires an extra copy".
+- Half-float targets keep their output pass, as three's framebuffer does.
+- Each canvas records how its frames reach it in `data-present`: `direct`,
+  `target` ( an output pass from the main target ) or `output` ( an output
+  pass from an example's own target ), with the target format and tone
+  mapping.
+
+Of the 495 ported examples ( 512×512, after 4 seconds ):
+
+| Path | Examples |
+| --- | ---: |
+| direct | 198 |
+| target, half-float with an output pass | 164 |
+| target, 8-bit: a static scene's first frame, or tone mapping on output | 25 |
+| output | 94 |
+| no canvas frame recorded ( audio, editors, XR, loading ) | 14 |
+
+The static scenes render their first frame through the output pass and later
+frames directly. The ports with postprocessing still write their last
+effect into a target and convert it in a separate output pass, where
+three's RenderPipeline converts in the last effect: one extra fullscreen
+pass remains in those ( `output`, and `target` for the
+`webgpu_postprocessing_*` ports ).
+
 ## Additional triangle scenes (2026-09-18)
 
 The 160,000-triangle Phong port exposed unnecessary work in the common shader.
