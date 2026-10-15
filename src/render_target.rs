@@ -75,6 +75,9 @@ pub struct RenderTarget {
     pub(crate) options: RenderTargetOptions,
     pub(crate) dimension: wgpu::TextureDimension,
     pub(crate) layer: u32,
+    /// Presents to a canvas: display passes made for other formats may
+    /// render into it ( postprocessing::Effect ).
+    pub(crate) canvas: bool,
 }
 impl RenderTarget {
     pub fn new(device: &wgpu::Device, width: u32, height: u32) -> Result<Self> {
@@ -233,6 +236,7 @@ impl RenderTarget {
             options,
             dimension,
             layer: 0,
+            canvas: false,
         })
     }
     fn color_view(
@@ -293,6 +297,10 @@ impl RenderTarget {
         self.views[0] = view.clone();
         self.texture = texture;
         self.view = view;
+    }
+    /// Mark a target that presents to a canvas ( see `canvas` ).
+    pub fn set_canvas(&mut self, canvas: bool) {
+        self.canvas = canvas;
     }
     pub fn options(&self) -> &RenderTargetOptions {
         &self.options
@@ -399,7 +407,9 @@ impl RenderTarget {
         if self.width != width || self.height != height || self.options.depth != depth {
             let mut options = self.options.clone();
             options.depth = depth;
+            let canvas = self.canvas;
             *self = Self::allocate(device, width, height, options, self.dimension)?;
+            self.canvas = canvas;
         }
         self.viewport = [0, 0, width, height];
         self.scissor = None;

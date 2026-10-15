@@ -332,8 +332,10 @@ impl Effect {
             return Err(Error::Invalid("effect input/output alias"));
         }
         let format = output.options().format;
-        // A display pass made for another format renders into the canvas's.
-        let variant = format != self.format && rgba8(format);
+        // A pass made for another 8-bit order or sRGB view renders into this
+        // one; a display pass made for half-float renders into a canvas's.
+        let variant =
+            format != self.format && rgba8(format) && (rgba8(self.format) || output.canvas);
         // A half-float chain's last pass into an encoded target applies the
         // output transform itself, as RenderPipeline's renderOutput does.
         let fused = variant && !rgba8(self.format) && output.options().encode_srgb;

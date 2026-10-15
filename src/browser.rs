@@ -661,6 +661,7 @@ impl BrowserApp {
             options,
         )
         .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.target.set_canvas(true);
         state.request_render();
         Ok(())
     }
@@ -1288,6 +1289,7 @@ impl BrowserApp {
                 state.canvas.height(),
                 state.target.options.clone(),
             )?;
+            state.target.set_canvas(true);
             state
                 .canvas
                 .set_attribute("data-rebuilt", "true")
@@ -1332,7 +1334,7 @@ impl BrowserApp {
                 | wgpu::TextureUsages::COPY_SRC
                 | wgpu::TextureUsages::COPY_DST;
             surface.configure(&renderer.device, &configuration);
-            let target = RenderTarget::with_options(
+            let mut target = RenderTarget::with_options(
                 &renderer.device,
                 canvas.width(),
                 canvas.height(),
@@ -1380,6 +1382,7 @@ impl BrowserApp {
                     }
                 },
             )?;
+            target.set_canvas(true);
             let mut scene = Scene::new();
             scene.background = Color::from_hex(0x102030);
             let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {

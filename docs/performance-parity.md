@@ -78,33 +78,39 @@ RenderPipeline folds that conversion into its last pass. The port used to
 render every frame into its own target and copy it into the canvas.
 
 - A frame whose target holds display values ( raw or shader-encoded output,
-  or linear 8-bit output written through an sRGB view ) now renders into
-  the canvas's current texture. The target's own color texture stays
-  allocated for frames that cannot.
+  or linear 8-bit output written through an sRGB view ) renders into the
+  canvas's current texture. The target's own color texture stays allocated
+  for frames that cannot.
+- An example's own output target renders into the canvas the same way when
+  it holds display values, as most ports' copies of three's generated
+  output pass do.
+- The ports of RenderPipeline examples ( `webgpu_postprocessing_*` and the
+  upscalers ) encode their output: their last effect applies the scene's
+  tone mapping and sRGB transfer as renderOutput does, into the canvas.
 - The canvas uses the preferred format, as three's does. Chrome warns that
   another format "requires an extra copy".
 - Half-float targets keep their output pass, as three's framebuffer does.
 - Each canvas records how its frames reach it in `data-present`: `direct`,
+  `direct-output` ( the example's output target rendered into the canvas ),
   `target` ( an output pass from the main target ) or `output` ( an output
-  pass from an example's own target ), with the target format and tone
-  mapping.
+  pass from the example's target ), with the target format and tone mapping.
 
 Of the 495 ported examples ( 512×512, after 4 seconds ):
 
 | Path | Examples |
 | --- | ---: |
-| direct | 198 |
-| target, half-float with an output pass | 164 |
+| direct | 230 |
+| direct-output | 76 |
+| target, half-float with an output pass | 135 |
 | target, 8-bit: a static scene's first frame, or tone mapping on output | 25 |
-| output | 94 |
-| no canvas frame recorded ( audio, editors, XR, loading ) | 14 |
+| output, with an output pass | 18 |
+| no canvas frame recorded ( audio, editors, XR, loading ) | 11 |
 
 The static scenes render their first frame through the output pass and later
-frames directly. The ports with postprocessing still write their last
-effect into a target and convert it in a separate output pass, where
-three's RenderPipeline converts in the last effect: one extra fullscreen
-pass remains in those ( `output`, and `target` for the
-`webgpu_postprocessing_*` ports ).
+frames directly. The examples with an output pass match three's architecture:
+a half-float framebuffer and an output pass. `webgpu_postprocessing_afterimage`
+keeps its history composite and an output pass, as AfterImageNode's
+composite and the RenderPipeline's pass are two in three.
 
 ## Additional triangle scenes (2026-09-18)
 
