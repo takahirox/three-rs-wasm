@@ -4,7 +4,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 
 | Official example | Runtime ID | Source |
 | --- | ---: | --- |
-| `webgpu_postprocessing_ssgi_ballpool` | 484 | `src/browser/ballpool.rs`, `src/bounce/` |
+| `webgpu_postprocessing_ssgi_ballpool` | 484 | `gallery/src/browser/ballpool.rs`, `src/bounce/` |
 
 The page fills a box with balls and steps them with the
 [@perplexdotgg/bounce](https://www.npmjs.com/package/@perplexdotgg/bounce)
@@ -64,7 +64,7 @@ orientation, sleep flag and velocities bit for bit after every frame:
 ## Rendering
 
 As in [compute-examples.md](compute-examples.md), every stage runs the WGSL
-three.js r186 generates for the page (`src/browser/ballpool/`). The SSGI,
+three.js r186 generates for the page (`gallery/src/browser/ballpool/`). The SSGI,
 composite and TRAA modules are byte-identical to webgpu_postprocessing_ssgi's
 and volume_traa's, and are shared with those ports.
 

@@ -59,7 +59,7 @@ impl Demo {
             let buffer = GpuBuffer::zeroed(r, 16, BufferAccess::Uniform)?;
             let source = format!(
                 "{}\n{}",
-                include_str!("../../tsl/noise.wgsl"),
+                crate::sources::TSL_NOISE_WGSL,
                 include_str!("volume_compute.wgsl")
             );
             let kernel = crate::compute::ComputeKernel::with_texture_dimensions(

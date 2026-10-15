@@ -111,9 +111,9 @@ fn ltc_tables(r: &Renderer) -> [wgpu::TextureView; 2] {
         },
         wgpu::util::TextureDataOrder::LayerMajor,
         if float32 {
-            include_bytes!("../shaders/ltc-r186-f32.bin").as_slice()
+            crate::sources::LTC_R186_F32
         } else {
-            include_bytes!("../shaders/ltc-r186.bin").as_slice()
+            crate::sources::LTC_R186
         },
     );
     [0, 1].map(|layer| {

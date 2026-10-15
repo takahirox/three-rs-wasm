@@ -8,7 +8,7 @@ repository = "https://github.com/takahirox/three-rs-wasm"
 rust-version = "1.94"
 
 [lib]
-crate-type = ["rlib", "cdylib"]
+crate-type = ["rlib"]
 
 [dependencies]
 gltf = { version = "1.4", default-features = false, features = ["utils", "names", "extensions", "KHR_materials_unlit", "KHR_materials_emissive_strength", "KHR_materials_ior", "KHR_materials_specular", "KHR_texture_transform"] }
@@ -40,6 +40,11 @@ web-sys = { version = "0.3", features = ["Window", "Document", "HtmlCanvasElemen
 
 [dev-dependencies]
 pollster = "0.4"
+
+[workspace]
+# The examples gallery's ports, built on the library. tsl/ builds on its own.
+members = [".", "gallery"]
+exclude = ["tsl"]
 
 [profile.release]
 lto = true

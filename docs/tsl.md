@@ -84,7 +84,7 @@ python3 tools/compat/prepare_reference.py
 python3 tools/gallery/build.py
 python3 tools/tsl/prepare.py
 cargo test --test tsl --test tsl_gpu --test programming
-wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+scripts/build-gallery
 npx playwright test tests/browser/tsl.spec.js tests/browser/tsl-passes.spec.js
 ```
 

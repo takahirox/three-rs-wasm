@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 for name in path_tracing equirect_to_cube_uv pmrem_copy clamped_interpolation; do
   { echo 'diagnostic(off, derivative_uniformity);'
-    python3 tools/pathtracer/glsl_to_vulkan.py "src/browser/pathtracer/glsl/$name.glsl" | CARGO_TARGET_DIR=.cache/naga-tool/target cargo run -q --release --manifest-path tools/pathtracer/naga-tool/Cargo.toml -- frag | python3 tools/pathtracer/wgsl_fixup.py; } > "src/browser/pathtracer/$name.wgsl"
+    python3 tools/pathtracer/glsl_to_vulkan.py "gallery/src/browser/pathtracer/glsl/$name.glsl" | CARGO_TARGET_DIR=.cache/naga-tool/target cargo run -q --release --manifest-path tools/pathtracer/naga-tool/Cargo.toml -- frag | python3 tools/pathtracer/wgsl_fixup.py; } > "gallery/src/browser/pathtracer/$name.wgsl"
 done
 # The NoToneMapping variant of the quad: three compiles it without TONE_MAPPING.
 sed '/^#define TONE_MAPPING$/d' src/browser/pathtracer/glsl/clamped_interpolation.glsl > .cache/clamped_interpolation_linear.glsl

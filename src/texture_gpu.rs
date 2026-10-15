@@ -367,7 +367,7 @@ impl GpuTexture {
 /// A Basis payload's GPU texture, held while the payload lives.
 type SharedBasis = (Weak<Vec<u8>>, GpuTexture);
 #[derive(Default)]
-pub(crate) struct TextureCache {
+pub struct TextureCache {
     entries: HashMap<usize, (Weak<Texture>, GpuTexture)>,
     /// Basis textures by their shared payload and sampler settings: a copy
     /// that only changes the UV transform ( an animated offset or repeat )
@@ -381,6 +381,9 @@ impl TextureCache {
         self.entries
             .retain(|_, (owner, _)| owner.strong_count() > 0);
         self.basis.retain(|_, (owner, _)| owner.strong_count() > 0);
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
     pub fn len(&self) -> usize {
         self.entries.len()

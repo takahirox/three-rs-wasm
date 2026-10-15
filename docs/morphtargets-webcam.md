@@ -2,7 +2,7 @@
 
 The page tracks the viewer's face with MediaPipe's FaceLandmarker ( tasks-vision
 0.10.35 ) and drives the Face Cap head over the mirrored webcam image.
-`src/browser/morphtargets_webcam.rs` ports the scene and animate().
+`gallery/src/browser/morphtargets_webcam.rs` ports the scene and animate().
 
 ## Split between JavaScript and Rust
 

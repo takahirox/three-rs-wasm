@@ -2,8 +2,8 @@
 
 The page streams Google Photorealistic 3D Tiles over Tokyo through Cesium ion
 with 3d-tiles-renderer 0.4.27. It lights them with @takram's atmosphere and
-volumetric clouds, under GlobeControls. `src/browser/tiles3d.rs` and
-`src/browser/tiles3d/` port it.
+volumetric clouds, under GlobeControls. `gallery/src/browser/tiles3d.rs` and
+`gallery/src/browser/tiles3d/` port it.
 
 ## The reference page
 
@@ -23,7 +23,7 @@ r186's. The port reproduces the fixed page.
 ## Cesium ion key
 
 Like the original, the port embeds an ion key in its public source
-( `src/browser/tiles3d/ion_key.rs` ): a personal key whose allowed origins are
+( `gallery/src/browser/tiles3d/ion_key.rs` ): a personal key whose allowed origins are
 the local test server and the published gallery. The tests read it from that
 file and give the comparison page the same key.
 
@@ -49,7 +49,7 @@ active the same tiles ( 281 cached, 166 visible ).
 ## Rendering ( render.rs, program.rs, atmosphere.rs, clouds.rs, sun.rs )
 
 The frame runs the programs three compiles for the page. They are captured
-from its shaderSource calls into `src/browser/tiles3d/glsl/` and converted to
+from its shaderSource calls into `gallery/src/browser/tiles3d/glsl/` and converted to
 WGSL ( `tools/tiles3d/convert.sh` ) by these steps:
 
 - preprocessing;

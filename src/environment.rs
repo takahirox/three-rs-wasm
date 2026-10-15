@@ -70,8 +70,8 @@ impl EnvironmentMap {
 pub struct PrefilteredEnvironment {
     /// The cube-UV atlas that `view` shows.
     pub(crate) texture: wgpu::Texture,
-    pub(crate) view: wgpu::TextureView,
-    pub(crate) source: wgpu::TextureView,
+    pub view: wgpu::TextureView,
+    pub source: wgpu::TextureView,
     pub(crate) sampler: wgpu::Sampler,
     pub(crate) max_mip: f32,
     pub(crate) source_is_cube_uv: bool,

@@ -64,18 +64,18 @@ const BOX_VS: &str = include_str!("custom_fog/box_vs.wgsl");
 const BOX_FS: &str = include_str!("custom_fog/box_fs.wgsl");
 const SKY_VS: &str = include_str!("custom_fog/sky_vs.wgsl");
 const SKY_FS: &str = include_str!("custom_fog/sky_fs.wgsl");
-const SH_VS: &str = include_str!("../shaders/light_probe_grid/sh_vs.wgsl");
-const SH_FS: &str = include_str!("../shaders/light_probe_grid/sh_fs.wgsl");
-const REPACK_VS: &str = include_str!("../shaders/light_probe_grid/repack_vs.wgsl");
+const SH_VS: &str = crate::sources::PROBE_SH_VS;
+const SH_FS: &str = crate::sources::PROBE_SH_FS;
+const REPACK_VS: &str = crate::sources::PROBE_REPACK_VS;
 const SEED_VS: &str = include_str!("ssr_denoise/seed_vs.wgsl");
 const REPACK_FS: [&str; 7] = [
-    include_str!("../shaders/light_probe_grid/repack_0_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_1_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_2_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_3_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_4_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_5_fs.wgsl"),
-    include_str!("../shaders/light_probe_grid/repack_6_fs.wgsl"),
+    crate::sources::PROBE_REPACK_FS[0],
+    crate::sources::PROBE_REPACK_FS[1],
+    crate::sources::PROBE_REPACK_FS[2],
+    crate::sources::PROBE_REPACK_FS[3],
+    crate::sources::PROBE_REPACK_FS[4],
+    crate::sources::PROBE_REPACK_FS[5],
+    crate::sources::PROBE_REPACK_FS[6],
 ];
 const HIGH_VS: &str = include_str!("ssr/blur_vs.wgsl");
 const HIGH_FS: &str = include_str!("water/high_fs.wgsl");

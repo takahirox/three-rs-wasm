@@ -61,18 +61,18 @@ impl Default for RenderTargetOptions {
 pub struct ColorAlias(wgpu::Texture, wgpu::TextureView);
 pub struct RenderTarget {
     pub texture: wgpu::Texture,
-    pub(crate) view: wgpu::TextureView,
+    pub view: wgpu::TextureView,
     pub(crate) textures: Vec<wgpu::Texture>,
-    pub(crate) views: Vec<wgpu::TextureView>,
+    pub views: Vec<wgpu::TextureView>,
     pub(crate) multisampled: Vec<wgpu::Texture>,
-    pub(crate) multisampled_views: Vec<wgpu::TextureView>,
+    pub multisampled_views: Vec<wgpu::TextureView>,
     depth_texture: Option<wgpu::Texture>,
-    pub(crate) depth_view: Option<wgpu::TextureView>,
+    pub depth_view: Option<wgpu::TextureView>,
     pub width: u32,
     pub height: u32,
     pub viewport: [u32; 4],
     pub scissor: Option<[u32; 4]>,
-    pub(crate) options: RenderTargetOptions,
+    pub options: RenderTargetOptions,
     pub(crate) dimension: wgpu::TextureDimension,
     pub(crate) layer: u32,
     /// Presents to a canvas: display passes made for other formats may
@@ -446,7 +446,7 @@ impl RenderTarget {
     fn array_depth(&self) -> bool {
         self.options.use_array_depth_texture && self.options.samples <= 1
     }
-    pub(crate) fn depth_format(&self) -> Option<wgpu::TextureFormat> {
+    pub fn depth_format(&self) -> Option<wgpu::TextureFormat> {
         self.depth_texture.as_ref().map(wgpu::Texture::format)
     }
 }

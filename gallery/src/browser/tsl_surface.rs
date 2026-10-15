@@ -226,7 +226,7 @@ impl Demo {
         scene.get_mut(light)?.position = Vector3::new(-4.0, 2.0, 0.0);
         let source = format!(
             "{}\nfn sea_wave(p:vec3<f32>,t:f32,large:vec4<f32>,small:vec4<f32>)->f32 {{var height=sin(p.x*large.x+t*large.z)*sin(p.z*large.y+t*large.z)*large.w;for(var i=1.0;i<small.x+1.0;i+=1.0){{height-=abs(tsl_mx_noise3(vec3((p.xz+2.0)*small.y*i,t*small.z))*small.w/i);}}return height;}}",
-            include_str!("../tsl/noise.wgsl")
+            crate::sources::TSL_NOISE_WGSL
         );
         let wave = WgslFn::new(
             "sea_wave",

@@ -10,7 +10,7 @@ pub(super) struct MaskPass {
     sampler: wgpu::Sampler,
 }
 fn display(color: tsl::Node) -> Result<tsl::Node> {
-    Ok(WgslFn::new("mask_display",&format!("{}\nfn mask_display(value:vec4<f32>)->vec4<f32>{{return vec4(mask_srgb_output(mask_tone_output(value.rgb,0.4,3.0)),clamp(value.a,0.0,1.0));}}",include_str!("../../shaders/output.wgsl").replace("aces_output", "mask_aces_output").replace("tone_output", "mask_tone_output").replace("srgb_output", "mask_srgb_output")),&[Type::Vec4],Type::Vec4)?.call(&[color]))
+    Ok(WgslFn::new("mask_display",&format!("{}\nfn mask_display(value:vec4<f32>)->vec4<f32>{{return vec4(mask_srgb_output(mask_tone_output(value.rgb,0.4,3.0)),clamp(value.a,0.0,1.0));}}",crate::sources::OUTPUT_WGSL.replace("aces_output", "mask_aces_output").replace("tone_output", "mask_tone_output").replace("srgb_output", "mask_srgb_output")),&[Type::Vec4],Type::Vec4)?.call(&[color]))
 }
 impl MaskPass {
     async fn new(r: &Renderer) -> Result<Self> {

@@ -46,7 +46,7 @@ impl Demo {
             "fog_tonemap",
             &format!(
                 "{}\nfn fog_tonemap(value:vec3<f32>)->vec3<f32>{{return tone_output(value,1.0,1.0);}}",
-                include_str!("../../shaders/output.wgsl")
+                crate::sources::OUTPUT_WGSL
             ),
             &[Type::Vec3],
             Type::Vec3,
@@ -176,7 +176,7 @@ impl Demo {
             "mrt_display",
             &format!(
                 "{}\nfn mrt_display(value:vec3<f32>)->vec3<f32>{{return srgb_output(aces_output(value,1.0));}}",
-                include_str!("../../shaders/output.wgsl")
+                crate::sources::OUTPUT_WGSL
             ),
             &[Type::Vec3],
             Type::Vec3,

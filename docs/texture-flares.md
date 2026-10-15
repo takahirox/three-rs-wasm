@@ -1,7 +1,7 @@
 # Canvas raycast textures, 3D partial updates, cube mips, lens flares and the car
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/texture_flares.rs`.
+Implemented in `gallery/src/browser/texture_flares.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

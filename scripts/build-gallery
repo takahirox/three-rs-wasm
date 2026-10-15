@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Build the examples gallery's browser package ( gallery/, on the library )
+# into web/pkg. Pass --dev for a debug build.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROFILE=--release
+if [ "${1:-}" = "--dev" ]; then PROFILE=--dev; fi
+cd "$ROOT/gallery"
+wasm-pack build --target web --out-dir ../web/pkg --out-name three_rs_wasm "$PROFILE" --no-typescript

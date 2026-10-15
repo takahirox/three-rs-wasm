@@ -51,7 +51,7 @@ onAnimationFrame.**
   frame. Sorting uses the union camera, as three's renderer sorts once for an
   ArrayCamera; each view culls with its own frustum.
 
-**`src/browser/xr_app.rs`: the three scenes, ported from the originals.**
+**`gallery/src/browser/xr_app.rs`: the three scenes, ported from the originals.**
 
 - DirectRenderPipeline's in-shader output for cubes and rollercoaster. The
   backgrounds clear to the encoded color.
@@ -61,7 +61,7 @@ onAnimationFrame.**
 - An `additive` or `alpha-blend` session clears to opaque or transparent
   black, as three's Background does.
 
-**`src/browser/xr_controller_model.rs`: XRControllerModelFactory and
+**`gallery/src/browser/xr_controller_model.rs`: XRControllerModelFactory and
 motion-controllers 1.0.**
 
 - On `connected`, it fetches the WebXR input profiles from the CDN the
@@ -70,7 +70,7 @@ motion-controllers 1.0.**
 - Each frame, the gamepad's buttons and axes move the visual-response nodes,
   using three's slerp.
 
-**`src/browser/roller_coaster.rs`: `RollerCoaster.js`.**
+**`gallery/src/browser/roller_coaster.rs`: `RollerCoaster.js`.**
 
 - The track, lifters, shadow, sky and trees geometry.
 

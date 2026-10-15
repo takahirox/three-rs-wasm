@@ -3,7 +3,7 @@
 The page path traces the LDraw X-wing ( 7140 ) with three-gpu-pathtracer
 0.0.24 and three-mesh-bvh 0.9.10. The model sits on a metal floor with a
 radial fade, lit by the blurred royal_esplanade UltraHDR environment, under
-a gradient background. `src/browser/pathtracer.rs` and `src/browser/pathtracer/`
+a gradient background. `gallery/src/browser/pathtracer.rs` and `gallery/src/browser/pathtracer/`
 port it. `tests/browser/pathtracer.spec.js` compares it with the original
 page, which the `texture-volumes.html` fixture runs on the example clock.
 

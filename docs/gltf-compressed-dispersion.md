@@ -61,7 +61,7 @@ server available:
 ```sh
 python3 tools/gltf_examples/prepare.py
 cargo test --test compressed_gpu --test compression
-wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+scripts/build-gallery
 npx playwright test gltf-physical.spec.js --grep 'dispersion|compressed'
 ```
 

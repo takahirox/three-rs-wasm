@@ -1,7 +1,7 @@
 # Composer backgrounds, lava, uniform buffers, RGB halftone and decals
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/passes_decals.rs`.
+Implemented in `gallery/src/browser/passes_decals.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

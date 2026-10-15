@@ -1,8 +1,8 @@
 # Cube refraction, PLY, KMZ, Collada and EXR
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/refraction_loaders.rs`, with the file formats in
-`src/browser/refraction_loaders/formats.rs`. The zip and XML readers are shared
+Implemented in `gallery/src/browser/refraction_loaders.rs`, with the file formats in
+`gallery/src/browser/refraction_loaders/formats.rs`. The zip and XML readers are shared
 with [helpers-formats.md](helpers-formats.md).
 
 | Official example | Runtime ID | Retained workload and behavior |

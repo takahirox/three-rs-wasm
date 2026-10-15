@@ -11,7 +11,7 @@ import {readFileSync} from 'node:fs';
 const id = 'webgl_loader_3dtiles';
 const size = {width: 800, height: 600};
 // The port's personal Cesium ion key ( allowed for 127.0.0.1 ) for both pages.
-const ionKey = readFileSync('src/browser/tiles3d/ion_key.rs', 'utf8').match(/"([^"]+)"/)[1];
+const ionKey = readFileSync('gallery/src/browser/tiles3d/ion_key.rs', 'utf8').match(/"([^"]+)"/)[1];
 // WebGL2 against WebGPU: the clouds' STBN / Bayer jitter phase and the tiles' edges.
 const limits = {mean: 3.5, over32: 0.03};
 

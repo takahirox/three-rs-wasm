@@ -9,10 +9,10 @@ static NEXT: AtomicU64 = AtomicU64::new(1);
 pub(crate) const DEFAULT_ENVIRONMENT: &str = "fn environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32>{return default_environment_sample(direction,roughness);}";
 pub(crate) const DEFAULT_OUTPUT: &str =
     "fn transform_output(value:vec4<f32>)->vec4<f32>{return value;}";
-pub(crate) const DEFAULT_HOOKS: &str = "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;} fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}";
+pub const DEFAULT_HOOKS: &str = "fn deform(position:vec3<f32>,normal:vec3<f32>,uv:vec2<f32>)->vec3<f32>{return position;} fn shade(surface:VertexOut,base:vec4<f32>)->vec4<f32>{return base;}";
 pub(crate) const DEFAULT_PROJECTION: &str =
     "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
-pub(crate) const DEFAULT_SURFACE: &str =
+pub const DEFAULT_SURFACE: &str =
     "fn transform_surface(surface:VertexOut,value:LitSurface)->LitSurface{return value;}";
 /// Interpolation of the primary UV varying at triangle edges.
 #[derive(Clone, Copy, Debug)]
@@ -197,7 +197,7 @@ impl ShaderProgram {
     }
     /// A custom vertex projection with explicitly typed (e.g. cube) texture views.
     #[cfg(target_arch = "wasm32")]
-    pub(crate) async fn with_projection_and_dimensions(
+    pub async fn with_projection_and_dimensions(
         renderer: &Renderer,
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
@@ -227,7 +227,7 @@ impl ShaderProgram {
     /// A custom vertex projection with explicit texture dimensions and sample
     /// types (e.g. unfilterable depth read with textureLoad).
     #[cfg(target_arch = "wasm32")]
-    pub(crate) async fn with_projection_and_sample_types(
+    pub async fn with_projection_and_sample_types(
         renderer: &Renderer,
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],
@@ -253,7 +253,7 @@ impl ShaderProgram {
         )
         .await
     }
-    pub(crate) async fn with_projection(
+    pub async fn with_projection(
         renderer: &Renderer,
         wgsl: &str,
         buffers: &[&GpuBuffer],
@@ -275,7 +275,7 @@ impl ShaderProgram {
         )
         .await
     }
-    pub(crate) async fn with_surface(
+    pub async fn with_surface(
         renderer: &Renderer,
         wgsl: &str,
         surface: &str,
@@ -299,7 +299,7 @@ impl ShaderProgram {
         .await
     }
     #[allow(clippy::too_many_arguments)]
-    pub(crate) async fn with_surface_texture_types(
+    pub async fn with_surface_texture_types(
         renderer: &Renderer,
         wgsl: &str,
         surface: &str,
@@ -359,7 +359,7 @@ impl ShaderProgram {
     /// frames. Their pipelines compile on first draw; errors are reported as
     /// uncaptured device errors.
     #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
-    pub(crate) fn with_projection_unvalidated(
+    pub fn with_projection_unvalidated(
         renderer: &Renderer,
         wgsl: &str,
         textures: &[(&wgpu::TextureView, &wgpu::Sampler)],

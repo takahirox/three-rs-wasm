@@ -1,9 +1,9 @@
 # Transform controls, curve modifiers, the CCD IK arm and the glTF normal-map export
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/transform_controls.rs` (TransformControls) and
-`src/browser/transform_curves.rs`; the normal-map export in
-`src/browser/gltf_normals.rs`.
+Implemented in `gallery/src/browser/transform_controls.rs` (TransformControls) and
+`gallery/src/browser/transform_curves.rs`; the normal-map export in
+`gallery/src/browser/gltf_normals.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

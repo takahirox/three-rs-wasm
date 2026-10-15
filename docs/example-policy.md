@@ -429,7 +429,7 @@ with emscripten ) from the page's CDN, and physics_jolt_instancing the same
 jolt-physics build. Its module has emscripten's own memory
 and glue, so it cannot be linked into this crate's wasm. The port calls it
 through JavaScript, as AmmoPhysics.js does, and builds the scene in Rust
-( `src/browser/ammo.rs`, `src/browser/jolt.rs` ).
+( `gallery/src/browser/ammo.rs`, `gallery/src/browser/jolt.rs` ).
 
 `webgl_loader_3dtiles` is broken on r186 ( its effects get no scene depth ).
 Its comparison page applies three.js dev's fix: WebGLOutput's depth texture

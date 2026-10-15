@@ -84,7 +84,7 @@ impl CSS2DObject {
 /// A number as JavaScript prints it in a template literal: the shortest
 /// round trip, exponents below 1e-6 and from 1e21, and −0 as "0".
 #[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
-pub(crate) fn js_number(v: f64) -> String {
+pub fn js_number(v: f64) -> String {
     if v == 0. {
         return "0".into();
     }

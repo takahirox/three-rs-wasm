@@ -843,7 +843,7 @@ fn effect(uv:vec2<f32>)->vec4<f32>{{let size=vec2<f32>(textureDimensions(depth_t
             wgpu::TextureFormat::Rgba8Unorm,
             &format!(
                 "{}\nfn effect(uv:vec2<f32>)->vec4<f32>{{return tsl_fxaa(input_texture,input_sampler,uv,1.0/vec2<f32>(textureDimensions(input_texture)));}}",
-                include_str!("../tsl/fxaa.wgsl")
+                crate::sources::TSL_FXAA_WGSL
             ),
         )
         .await?;

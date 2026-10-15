@@ -42,7 +42,7 @@ pub struct Texture {
     pub blocks: Option<Arc<BlockMips>>,
     #[cfg(target_arch = "wasm32")]
     #[serde(skip)]
-    pub(crate) bitmap: Option<Arc<BrowserBitmap>>,
+    pub bitmap: Option<Arc<BrowserBitmap>>,
     pub srgb: bool,
     pub wrap_s: Wrapping,
     pub wrap_t: Wrapping,
@@ -62,7 +62,7 @@ pub struct Texture {
 }
 #[cfg(target_arch = "wasm32")]
 #[derive(Debug)]
-pub(crate) struct BrowserBitmap(pub web_sys::ImageBitmap);
+pub struct BrowserBitmap(pub web_sys::ImageBitmap);
 #[cfg(target_arch = "wasm32")]
 impl Drop for BrowserBitmap {
     fn drop(&mut self) {
@@ -73,7 +73,7 @@ impl Texture {
     /// Retain native decoded pixels for a direct WebGPU upload. Canvas readback
     /// destroys RGB beneath zero alpha, which changes filtered AVIF textures.
     #[cfg(target_arch = "wasm32")]
-    pub(crate) fn from_bitmap(bitmap: web_sys::ImageBitmap) -> Result<Self> {
+    pub fn from_bitmap(bitmap: web_sys::ImageBitmap) -> Result<Self> {
         let mut texture = Self::from_rgba(1, 1, vec![0; 4], true)?;
         texture.width = bitmap.width();
         texture.height = bitmap.height();

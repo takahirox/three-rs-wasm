@@ -27,7 +27,7 @@ jobs:
       - name: Build release demo
         run: |
           cargo install wasm-pack --locked --version 0.14.0
-          wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+          scripts/build-gallery
           ( cd tsl && wasm-pack build --target web --profile web --out-dir ../web/tsl-pkg --no-typescript )
           python3 tools/build_site.py
       - uses: actions/upload-pages-artifact@v4

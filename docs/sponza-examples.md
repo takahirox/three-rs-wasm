@@ -93,7 +93,7 @@ Sponza is lit by a shadowed DirectionalLight ( 0xfff2dc, intensity 100,
 The page leaves the pixel ratio at 1, and so does the gallery.
 VXGINode traces voxel cones for AO and indirect light, and TRAA resolves
 the cones' noise. Every stage runs the WGSL that r186 generates for the page
-( `src/browser/vxgi_sponza/` ):
+( `gallery/src/browser/vxgi_sponza/` ):
 
 - **Collection.** VXGIVolume's scene collector runs once on the CPU, as the
   addon does:

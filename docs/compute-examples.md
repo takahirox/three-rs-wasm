@@ -1,7 +1,7 @@
 # Compute, clustered and dynamic lighting, projectors, VSM, transmitted shadows and caustics
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/compute_birds.rs`, `sort_bitonic.rs`,
+Implemented in `gallery/src/browser/compute_birds.rs`, `sort_bitonic.rs`,
 `attractors.rs`, `linked_particles.rs`, `lights_clustered.rs`,
 `lights_dynamic.rs`, `shadowmap_vsm.rs`, `lights_projector.rs`,
 `shadowmap_opacity.rs` and `caustics.rs`. The WGSL modules of the last seven

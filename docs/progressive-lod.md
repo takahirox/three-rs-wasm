@@ -3,8 +3,8 @@
 The page loads three Needle Cloud models through GLTFLoader with
 @needle-tools/gltf-progressive 3.2.0: the floating world, the airship and the
 knight. They stand under linear fog and the quarry_01 environment, rotated
-−π/2 about Y. `src/browser/progressive_lod.rs` and
-`src/browser/progressive_lod/progressive.rs` port it. The models and their
+−π/2 about Y. `gallery/src/browser/progressive_lod.rs` and
+`gallery/src/browser/progressive_lod/progressive.rs` port it. The models and their
 LOD files are fetched from cloud.needle.tools at run time, as the page fetches
 them, with the package's `Accept: */*;progressive=allowed;usecase=default`
 header.

@@ -1,7 +1,7 @@
 # Orbit and map controls, camera helpers, custom attributes and draw ranges
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/controls_attributes.rs`.
+Implemented in `gallery/src/browser/controls_attributes.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

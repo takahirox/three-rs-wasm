@@ -24,7 +24,7 @@ Three.js creates a 4x `rgba16float` scene pipeline. Its
 working color space and applies tone mapping and output conversion in a
 separate pass after resolution.
 
-Our example 16 selects `Rgba8Unorm` and `encode_srgb: true` in `src/browser.rs`.
+Our example 16 selects `Rgba8Unorm` and `encode_srgb: true` in `gallery/src/browser.rs`.
 `src/shader.wgsl::fs_main` applies ACES and sRGB encoding before MSAA resolution;
 the presentation pass then copies the result. Thus this example retains the
 output path used for matching WebGL even though it runs on WebGPU.

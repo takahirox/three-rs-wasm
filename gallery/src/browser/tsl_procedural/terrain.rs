@@ -50,7 +50,7 @@ impl Terrain {
             "terrain_kernel",
             &format!(
                 "{}\n{}",
-                include_str!("../../tsl/materialx.wgsl"),
+                crate::sources::TSL_MATERIALX_WGSL,
                 r#"
 fn terrain_kernel(p:vec2<f32>,snow:bool)->f32 {
  if snow {return mxn_perlin(vec3(p*25.0,0.0),2u,false).x*0.1+0.45;}

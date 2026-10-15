@@ -1,14 +1,14 @@
 # Collada animation, 3MF, MD2 characters, the raycaster helper and Web Audio
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-The Collada scenes are in `src/browser/refraction_loaders/collada_anim.rs`,
-with the loader extensions in `src/browser/refraction_loaders/formats.rs`.
-The 3MF scenes are in `src/browser/threemf.rs`, the raycaster helper in
-`src/browser/raycaster_helper.rs`, and the audio timing scene in
-`src/browser/audio_timing.rs` with its Web Audio graph in
-`web/gallery/audio.js`. The MD2 examples are in `src/browser/md2.rs` and
-`src/browser/md2_control.rs`, and the visualizer, orientation and sandbox in
-`src/browser/audio_visual.rs`.
+The Collada scenes are in `gallery/src/browser/refraction_loaders/collada_anim.rs`,
+with the loader extensions in `gallery/src/browser/refraction_loaders/formats.rs`.
+The 3MF scenes are in `gallery/src/browser/threemf.rs`, the raycaster helper in
+`gallery/src/browser/raycaster_helper.rs`, and the audio timing scene in
+`gallery/src/browser/audio_timing.rs` with its Web Audio graph in
+`web/gallery/audio.js`. The MD2 examples are in `gallery/src/browser/md2.rs` and
+`gallery/src/browser/md2_control.rs`, and the visualizer, orientation and sandbox in
+`gallery/src/browser/audio_visual.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

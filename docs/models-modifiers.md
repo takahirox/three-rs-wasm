@@ -1,8 +1,8 @@
 # MDD, edge split, 3DS, teapot and instance scattering
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/models_modifiers.rs`, with the teapot patch data in
-`src/browser/teapot_data.rs`.
+Implemented in `gallery/src/browser/models_modifiers.rs`, with the teapot patch data in
+`gallery/src/browser/teapot_data.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

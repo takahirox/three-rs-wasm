@@ -2,9 +2,9 @@
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 
-The scenes are implemented in `src/browser/text_clipping.rs`, and the
-CurveExtras curves and TubeGeometry are in `src/browser/text_clipping/tube.rs`.
-The following are in `src/browser/text_shapes.rs` and are shared by the three
+The scenes are implemented in `gallery/src/browser/text_clipping.rs`, and the
+CurveExtras curves and TubeGeometry are in `gallery/src/browser/text_clipping/tube.rs`.
+The following are in `gallery/src/browser/text_shapes.rs` and are shared by the three
 text scenes:
 
 - FontLoader's typeface glyph paths;
@@ -61,7 +61,7 @@ inventory, so each is compared against the original WebGL renderer.
 
 ### TrueType text
 
-- **TTFLoader.** `Font::from_ttf` in `src/browser/text_shapes.rs` converts
+- **TTFLoader.** `Font::from_ttf` in `gallery/src/browser/text_shapes.rs` converts
   the font as TTFLoader does with opentype.js 1.3.4:
   - the last platform 3 (encodings 0, 1, 10) or platform 0 `cmap` subtable,
     formats 4 and 12;

@@ -1,8 +1,8 @@
 # Cube-mapped heads, STL, extruded shapes, spot lights and the hemisphere light
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/shapes_lights.rs`, with STLLoader, Earcut and
-ExtrudeGeometry in `src/browser/shapes_lights/formats.rs`. The curve's
+Implemented in `gallery/src/browser/shapes_lights.rs`, with STLLoader, Earcut and
+ExtrudeGeometry in `gallery/src/browser/shapes_lights/formats.rs`. The curve's
 arc-length sampling and Frenet frames are in `src/curve.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |

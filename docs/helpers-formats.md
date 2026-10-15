@@ -1,8 +1,8 @@
 # PDB molecules, helpers, simplifier, AMF and TIFF
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/helpers_formats.rs`, with the file formats in
-`src/browser/helpers_formats/formats.rs`.
+Implemented in `gallery/src/browser/helpers_formats.rs`, with the file formats in
+`gallery/src/browser/helpers_formats/formats.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

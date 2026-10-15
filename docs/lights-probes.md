@@ -1,7 +1,7 @@
 # Clearcoat, fly controls, point-light shadows, light probe and tone mapping
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/lights_probes.rs`.
+Implemented in `gallery/src/browser/lights_probes.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

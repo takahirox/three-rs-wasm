@@ -164,7 +164,8 @@ pub struct Renderer {
             crate::environment_gpu::GpuEnvironment,
         )>,
     >,
-    pub(crate) dfg: wgpu::TextureView,
+    /// The DFG lookup table that physical materials sample.
+    pub dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
     ltc_sampler: wgpu::Sampler,
     /// The 1×1×1 atlas bound without a grid, the grid's linear sampler, and

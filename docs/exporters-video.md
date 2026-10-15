@@ -1,8 +1,8 @@
 # EXR and KTX2 exporters, video cubes, async compilation and object-space normals
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/exporters_video.rs`, with the file writers in
-`src/browser/exporters_video/formats.rs`.
+Implemented in `gallery/src/browser/exporters_video.rs`, with the file writers in
+`gallery/src/browser/exporters_video/formats.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

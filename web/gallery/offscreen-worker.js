@@ -1,5 +1,5 @@
 // webgl_worker_offscreencanvas's worker: this package rendering scene.js's scene into the
-// transferred OffscreenCanvas ( src/browser/offscreen.rs ), as jsm/offscreen/offscreen.js does.
+// transferred OffscreenCanvas ( gallery/src/browser/offscreen.rs ), as jsm/offscreen/offscreen.js does.
 // Messages that arrive while the package loads are queued.
 const queued = [];
 let receive = message => queued.push(message);

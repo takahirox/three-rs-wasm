@@ -22,7 +22,7 @@ With the [development prerequisites](#development) installed, build an optimized
 browser package and start the local server from the repository root:
 
 ```sh
-PATH="$(dirname "$(rustup which rustc)"):$PATH" wasm-pack build --target web --out-dir web/pkg --release --no-typescript
+PATH="$(dirname "$(rustup which rustc)"):$PATH" scripts/build-gallery
 python3 tools/serve.py
 ```
 
@@ -48,7 +48,7 @@ python3 tools/compat/prepare_reference.py
 cargo test --test core
 python3 tests/compat/compare.py
 cargo test --test gpu --test pbr
-wasm-pack build --target web --out-dir web/pkg --dev --no-typescript
+scripts/build-gallery --dev
 npm ci
 npm run test:browser
 ```

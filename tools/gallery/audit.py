@@ -60,7 +60,7 @@ for entry in catalog['examples']:
     add('addon-api',symbol,number,f'No Rust port of {imported[symbol]}.',local_for(symbol))
  if name in SPECIAL:
   token,reason=SPECIAL[name];line=next(i for i,s in enumerate(lines,1) if token in s)
-  add('behavior',token,line,reason, 'src/browser.rs' if 'worker' in name else 'src/material.rs')
+  add('behavior',token,line,reason, 'gallery/src/browser.rs' if 'worker' in name else 'src/material.rs')
  used_assets=[]
  # Match quoted filenames and full relative paths, not arbitrary name fragments.
  literals=set(re.findall(r"['\"]([^'\"\n]+\.(?:glb|gltf))['\"]",source))

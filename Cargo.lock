@@ -1415,6 +1415,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "three-rs-gallery"
+version = "0.1.0"
+dependencies = [
+ "basisu",
+ "bytemuck",
+ "draco-core",
+ "glam",
+ "gltf",
+ "half",
+ "image",
+ "js-sys",
+ "mikktspace",
+ "miniz_oxide 0.8.9",
+ "optimesh",
+ "rapier3d",
+ "ruzstd",
+ "serde",
+ "serde_json",
+ "three-rs-wasm",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+ "wgpu",
+]
+
+[[package]]
 name = "three-rs-wasm"
 version = "0.1.0"
 dependencies = [

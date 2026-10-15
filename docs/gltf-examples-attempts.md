@@ -12,7 +12,7 @@ The user narrowed the scope to **five glTF-specific examples**. Each one was imp
 
 [Per-example evidence](gltf-examples-attempts.json), [native model import/query results](gltf-examples-import-attempts.json), [original/Rust render and allocation measurements](gltf-examples-render-attempts.json).
 
-The four new scene candidates are implemented in `src/browser/gltf_examples.rs`; instancing uses the existing scene. The three newly accepted physical scenes use pinned published assets. Instancing now uses the real gallery catalog; the original WebGL reference is kept distinct from the common-WebGPU diagnostic. The pinned Three.js code runs only in reference pages.
+The four new scene candidates are implemented in `gallery/src/browser/gltf_examples.rs`; instancing uses the existing scene. The three newly accepted physical scenes use pinned published assets. Instancing now uses the real gallery catalog; the original WebGL reference is kept distinct from the common-WebGPU diagnostic. The pinned Three.js code runs only in reference pages.
 
 ## Core fixes required by these attempts
 

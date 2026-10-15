@@ -53,7 +53,7 @@ blurrier/higher quality than the other.
 These probes establish equal behavior for the tested colors and coverage cases,
 not bit-exact equivalence of every possible resolve operation.
 
-The relevant pinned code is `src/browser.rs` (example-16 target and presentation),
+The relevant pinned code is `gallery/src/browser.rs` (example-16 target and presentation),
 `src/render_target.rs` (multisample allocation), `src/renderer.rs` (resolve target
 and pipeline count), `src/shader.wgsl` (ACES/sRGB output), and `src/present.wgsl`
 (texel copy). The reference uses `WebGLRenderer({antialias:true})` with default

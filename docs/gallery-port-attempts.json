@@ -19275,7 +19275,7 @@
           "symbol": "new Worker",
           "upstream_line": 115,
           "reason": "BrowserApp requires Window, Document and an HtmlCanvasElement; worker/offscreen rendering is missing.",
-          "local": "src/browser.rs"
+          "local": "gallery/src/browser.rs"
         }
       ],
       "feature_review": [],

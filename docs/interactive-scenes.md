@@ -1,7 +1,7 @@
 # Voxel painting, triangle picking, clipping, scene comparison and custom blending
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/interactive_scenes.rs`.
+Implemented in `gallery/src/browser/interactive_scenes.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

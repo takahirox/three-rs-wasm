@@ -1,8 +1,8 @@
 # Mapped spotlight, multiple clones, skinning blends and the walking soldier
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/spot_skinning.rs`, with Three.js AnimationMixer
-semantics in `src/browser/three_mixer.rs`.
+Implemented in `gallery/src/browser/spot_skinning.rs`, with Three.js AnimationMixer
+semantics in `gallery/src/browser/three_mixer.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

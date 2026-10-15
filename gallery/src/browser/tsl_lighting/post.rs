@@ -141,7 +141,7 @@ impl Demo {
                 "basic_dof_output",
                 &format!(
                     "{}\nfn basic_dof_output(c:vec3<f32>)->vec3<f32>{{return srgb_output(tone_output(c,1.0,3.0));}}",
-                    include_str!("../../shaders/output.wgsl")
+                    crate::sources::OUTPUT_WGSL
                 ),
                 &[Type::Vec3],
                 Type::Vec3,

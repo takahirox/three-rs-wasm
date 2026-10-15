@@ -1,12 +1,12 @@
 # Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping, post passes, depth buffers and memory tests
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/texture_volumes.rs`; the NRRD slices are in
-`src/browser/texture_volumes/slices.rs` and the array examples in
-`src/browser/texture_volumes/arrays.rs`. The EXR environment is in
-`src/browser/envmap_exr.rs` and the shadow-map viewer in
-`src/browser/shadowmap_viewer.rs`. The batch that follows adds
-`src/browser/stereo_loaders.rs` (display stereo), `dds.rs`, `kinect.rs`,
+Implemented in `gallery/src/browser/texture_volumes.rs`; the NRRD slices are in
+`gallery/src/browser/texture_volumes/slices.rs` and the array examples in
+`gallery/src/browser/texture_volumes/arrays.rs`. The EXR environment is in
+`gallery/src/browser/envmap_exr.rs` and the shadow-map viewer in
+`gallery/src/browser/shadowmap_viewer.rs`. The batch that follows adds
+`gallery/src/browser/stereo_loaders.rs` (display stereo), `dds.rs`, `kinect.rs`,
 `channels.rs`, `wide_gamut.rs`, `uv_tests.rs`, `clipping_stencil.rs`,
 `ascii.rs`, `glitch.rs` and `ssao.rs`; the next adds `sao.rs`, `taa.rs`,
 `outline.rs`, `ktx2.rs`, `elements_text.rs`, `reversed_depth.rs`,

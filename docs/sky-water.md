@@ -1,8 +1,8 @@
 # Sky, sun light, pointer-lock walk, video panorama and ocean
 
 Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
-Implemented in `src/browser/sky_water.rs`, with SkyMesh in
-`src/browser/sky_water/sky.rs`.
+Implemented in `gallery/src/browser/sky_water.rs`, with SkyMesh in
+`gallery/src/browser/sky_water/sky.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
 | --- | ---: | --- |

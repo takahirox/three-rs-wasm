@@ -12,8 +12,7 @@ Run `./scripts/check-gltf-pbr` for the complete prerequisite MVP and M2 gates.
 Missing assets, adapters, checks or excessive image differences are failures.
 The final success line is `GLTF PBR: PASS` only if all gates pass.
 
-For the demo, build with `wasm-pack build --target web --out-dir web/pkg
---release --no-typescript`, run `python3 tools/serve.py`, and open
+For the demo, build with `scripts/build-gallery`, run `python3 tools/serve.py`, and open
 http://127.0.0.1:8173/web/?example=4 (DamagedHelmet) or `?example=5` (BoomBox).
 Model selection, exposure, environment intensity/rotation/background/blur and
 orbit/zoom controls act on Rust-owned scene state. Resize preserves aspect.
