@@ -1,4 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+// The ballpool page's package ( tools/gallery/packages.py ).
+const pkg = JSON.parse(readFileSync('web/gallery/packages.json', 'utf8')).examples.webgpu_postprocessing_ssgi_ballpool;
 
 // webgpu_postprocessing_ssgi_ballpool steps @perplexdotgg/bounce. The Rust
 // port runs the same scripted session ( the example's walls, ball count and
@@ -17,9 +21,9 @@ for (const [aspect, frames, quiet] of [[1, 600, false], [16 / 9, 900, false], [1
 		test.setTimeout(300000);
 		await page.route('**/bounce-oracle.html', (route) => route.fulfill({ contentType: 'text/html', body: PAGE }));
 		await page.goto('/bounce-oracle.html');
-		const result = await page.evaluate(async ({ aspect, frames, quiet }) => {
+		const result = await page.evaluate(async ({ aspect, frames, quiet, pkg }) => {
 			const { World } = await import('@perplexdotgg/bounce');
-			const wasm = await import('/web/pkg/three_rs_wasm.js');
+			const wasm = await import(`/web/pkg/${pkg}/three_rs_wasm.js`);
 			await wasm.default();
 			let seed = 186;
 			const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
@@ -75,7 +79,7 @@ for (const [aspect, frames, quiet] of [[1, 600, false], [16 / 9, 900, false], [1
 				}
 			}
 			return { count, moving, sleeping, steps: world.step };
-		}, { aspect, frames, quiet });
+		}, { aspect, frames, quiet, pkg });
 		expect(result.frame, JSON.stringify(result)).toBeUndefined();
 		expect(result.count).toBe(aspect === 1 ? 257 : 458);
 		expect(result.moving).toBeGreaterThan(0);

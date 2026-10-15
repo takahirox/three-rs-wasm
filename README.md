@@ -27,6 +27,12 @@ python3 tools/serve.py
 ```
 
 Open <http://127.0.0.1:8173/web/gallery/> in a WebGPU-capable browser.
+`scripts/build-gallery core <package> …` builds only the named packages.
+
+The library is the repository's root crate. The gallery's ports are a separate
+crate, [`gallery/`](gallery/), built on it: each example page loads one of about
+forty browser packages, the library, the gallery's shell and a group of example
+modules, instead of every port ( see [gallery packages](docs/gallery-packages.md) ).
 
 The example ports are a work in progress. See the
 [coverage report](docs/examples-coverage.md) for current support and limitations.

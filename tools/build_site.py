@@ -28,12 +28,15 @@ def examples(site):
 
 
 def main():
-    bundle = [ROOT / "web/pkg" / name for name in
-              ("three_rs_wasm.js", "three_rs_wasm_bg.wasm")]
-    if not all(path.is_file() for path in bundle):
-        raise SystemExit("Build web/pkg with wasm-pack --release first")
-    # wasm-bindgen's inline_js modules, which three_rs_wasm.js imports.
-    bundle += sorted(path for path in (ROOT / "web/pkg/snippets").rglob("*") if path.is_file())
+    # One package per example module and the core package ( scripts/build-gallery ),
+    # each with wasm-bindgen's inline_js modules, which three_rs_wasm.js imports.
+    packages = sorted(set(json.loads((ROOT / "web/gallery/packages.json").read_text()).values()) | {"core"})
+    bundle = []
+    for package in packages:
+        files = [ROOT / "web/pkg" / package / name for name in ("three_rs_wasm.js", "three_rs_wasm_bg.wasm")]
+        if not all(path.is_file() for path in files):
+            raise SystemExit(f"Build web/pkg/{package} with scripts/build-gallery first")
+        bundle += files + sorted(path for path in (ROOT / "web/pkg" / package / "snippets").rglob("*") if path.is_file())
     # webgpu_tsl_editor's own Wasm: the three-tsl crate ( three r186 transpiled to Rust ).
     tsl = [ROOT / "web/tsl-pkg" / name for name in ("three_tsl.js", "three_tsl_bg.wasm")]
     if not all(path.is_file() for path in tsl):

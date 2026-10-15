@@ -1,6 +1,8 @@
 import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
 const catalog = await (await fetch('catalog.json')).json();
+// Each example's module is its own package ( tools/gallery/packages.py ).
+const packages = (await (await fetch('packages.json')).json()).examples;
 // ?id= on web/gallery/example.html, or the page's own id on examples/<id>.html
 // ( the published site's official-style URLs, tools/build_site.py ).
 const id = new URLSearchParams(location.search).get('id') ?? document.querySelector('meta[name="three-rs-example"]')?.content;
@@ -52,8 +54,9 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
   } else {
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
   const runtimeRevision = 'xr-1';
-  const {default:init, BrowserApp, tsl_transpile, XrApp} = await import(`../pkg/three_rs_wasm.js?v=${runtimeRevision}`);
-  await init({module_or_path:new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
+  const runtimePackage = `../pkg/${packages[entry.id] ?? 'core'}`;
+  const {default:init, BrowserApp, tsl_transpile, XrApp} = await import(`${runtimePackage}/three_rs_wasm.js?v=${runtimeRevision}`);
+  await init({module_or_path:new URL(`${runtimePackage}/three_rs_wasm_bg.wasm?v=${runtimeRevision}`,import.meta.url)});
   if ([498, 499, 500].includes(entry.port.example)) {
    // The WebXR examples: the page owns the XR session ( XRGPUBinding ), XrApp the scene.
    canvas.hidden = false;
@@ -77,7 +80,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
    const canvas2=document.createElement('canvas');container.append(canvas2);
    const ui=document.createElement('div');ui.id='ui';ui.innerHTML='<button id="button">START JANK</button><br/><span id="result"></span>';document.body.append(ui);
    ui.querySelector('#button').addEventListener('click',()=>app?.tsl_parameter(0,1));
-   const worker=new Worker(new URL(`offscreen-worker.js?v=${runtimeRevision}`,import.meta.url),{type:'module'});
+   const worker=new Worker(new URL(`offscreen-worker.js?v=${runtimeRevision}&package=${packages[entry.id]}`,import.meta.url),{type:'module'});
    worker.onmessage=e=>{if(e.data.error)canvas2.dataset.error=e.data.error;else canvas2.dataset.frames=e.data.frames;};
    window.offscreenWorker=worker;
    queueMicrotask(()=>{const offscreen=canvas2.transferControlToOffscreen();worker.postMessage({drawingSurface:offscreen,width:canvas2.clientWidth,height:canvas2.clientHeight,pixelRatio:devicePixelRatio,matcap:new URL('assets/offscreen/matcap-porcelain-white.jpg',location.href).href},[offscreen]);});

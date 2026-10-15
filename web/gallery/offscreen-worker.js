@@ -4,9 +4,12 @@
 const queued = [];
 let receive = message => queued.push(message);
 self.onmessage = message => receive(message);
-const runtime = new URL(location.href).searchParams.get('v') ?? '';
-const {default: init, offscreen_worker, offscreen_time, offscreen_samples} = await import(`../pkg/three_rs_wasm.js?v=${runtime}`);
-await init({module_or_path: new URL(`../pkg/three_rs_wasm_bg.wasm?v=${runtime}`, import.meta.url)});
+const params = new URL(location.href).searchParams;
+const runtime = params.get('v') ?? '';
+// The page's package ( tools/gallery/packages.py ).
+const pkg = `../pkg/${params.get('package')}`;
+const {default: init, offscreen_worker, offscreen_time, offscreen_samples} = await import(`${pkg}/three_rs_wasm.js?v=${runtime}`);
+await init({module_or_path: new URL(`${pkg}/three_rs_wasm_bg.wasm?v=${runtime}`, import.meta.url)});
 receive = message => {
  const data = message.data;
  if ('time' in data) { offscreen_time(data.time); return; }

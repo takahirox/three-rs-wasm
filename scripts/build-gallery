@@ -1,9 +1,48 @@
 #!/usr/bin/env bash
-# Build the examples gallery's browser package ( gallery/, on the library )
-# into web/pkg. Pass --dev for a debug build.
+# Build the examples gallery's browser packages into web/pkg/<package>/: the
+# core package ( the gallery's shell and shared scenes ) and groups of example
+# modules, features of gallery/ ( tools/gallery/packages.py groups them and
+# lists which package each example page loads ).
+#
+#   scripts/build-gallery [--dev] [package ...]
+#
+# Without packages it builds them all, in GALLERY_JOBS parallel lanes ( each
+# with its own target directory ).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROFILE=--release
-if [ "${1:-}" = "--dev" ]; then PROFILE=--dev; fi
-cd "$ROOT/gallery"
-wasm-pack build --target web --out-dir ../web/pkg --out-name three_rs_wasm "$PROFILE" --no-typescript
+if [ "${1:-}" = "--dev" ]; then PROFILE=--dev; shift; fi
+python3 "$ROOT/tools/gallery/packages.py" --check
+if [ "$#" -gt 0 ]; then
+  PACKAGES=("$@")
+else
+  # shellcheck disable=SC2207
+  PACKAGES=($(python3 "$ROOT/tools/gallery/packages.py" --list))
+  rm -rf "$ROOT/web/pkg"
+fi
+JOBS="${GALLERY_JOBS:-$(( $(getconf _NPROCESSORS_ONLN) / 4 > 0 ? $(getconf _NPROCESSORS_ONLN) / 4 : 1 ))}"
+
+build() {
+  local lane="$1" package="$2" features=(--no-default-features) list
+  list="$(python3 "$ROOT/tools/gallery/packages.py" --features "$package")"
+  if [ -n "$list" ]; then features+=(--features "$list"); fi
+  ( cd "$ROOT/gallery" && CARGO_TARGET_DIR="$ROOT/target/gallery-$lane" \
+    wasm-pack --quiet build --target web --out-dir "../web/pkg/$package" --out-name three_rs_wasm \
+      "$PROFILE" --no-typescript -- "${features[@]}" ) >"$ROOT/target/gallery-$lane.log" 2>&1 \
+    || { cat "$ROOT/target/gallery-$lane.log"; echo "build-gallery: $package failed" >&2; return 1; }
+  echo "built $package"
+}
+
+mkdir -p "$ROOT/target"
+pids=()
+for (( lane = 0; lane < JOBS; lane++ )); do
+  (
+    for (( i = lane; i < ${#PACKAGES[@]}; i += JOBS )); do
+      build "$lane" "${PACKAGES[$i]}"
+    done
+  ) &
+  pids+=("$!")
+done
+status=0
+for pid in "${pids[@]}"; do wait "$pid" || status=1; done
+exit "$status"

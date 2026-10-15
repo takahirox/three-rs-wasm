@@ -36,7 +36,7 @@ run "cargo test / lifecycle / types" cargo test --locked --workspace --all-featu
 run "Behavior compatibility tests" python3 tests/compat/compare.py
 run "Wasm build" cargo build --locked --target wasm32-unknown-unknown
 run "Wasm clippy" cargo clippy --locked --workspace --target wasm32-unknown-unknown -- -D warnings
-run "Browser package" scripts/build-gallery --dev
+run "Browser package" scripts/build-gallery --dev core
 run "Browser dependencies" npm ci --ignore-scripts
 run "Rust web application suite" npm run test:browser -- app.spec.js point-lights.spec.js gltf.spec.js
 run "Frozen application coverage" python3 tools/compat/check_examples.py

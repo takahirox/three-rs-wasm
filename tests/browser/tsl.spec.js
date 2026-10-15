@@ -53,13 +53,13 @@ for(const id of ids){
 test('TSL gallery loads matching versioned glue and Wasm instead of stale URLs',async({page})=>{
  const requests=[];page.on('request',request=>requests.push(new URL(request.url())));
  // Emulate an obsolete entrypoint still available at the previous cached URL.
- await page.route('**/pkg/three_rs_wasm.js',route=>route.fulfill({contentType:'text/javascript',body:'export default async function(){}; export class BrowserApp {static create(){throw Error("invalid example id");}}'}));
+ await page.route('**/pkg/*/three_rs_wasm.js',route=>route.fulfill({contentType:'text/javascript',body:'export default async function(){}; export class BrowserApp {static create(){throw Error("invalid example id");}}'}));
  await page.goto('/web/gallery/#webgpu_texturegrad');
  const frame=page.frameLocator('#viewer');
  await expect(frame.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');
  await expect.poll(async()=>Number(await frame.locator('canvas').getAttribute('data-frames'))).toBeGreaterThan(2);
- const glue=requests.find(url=>url.pathname.endsWith('/pkg/three_rs_wasm.js'));
- const wasm=requests.find(url=>url.pathname.endsWith('/pkg/three_rs_wasm_bg.wasm'));
+ const glue=requests.find(url=>url.pathname.endsWith('/three_rs_wasm.js'));
+ const wasm=requests.find(url=>url.pathname.endsWith('/three_rs_wasm_bg.wasm'));
  expect(glue.searchParams.get('v')).toBeTruthy();
  expect(wasm.searchParams.get('v')).toBe(glue.searchParams.get('v'));
  await expect(frame.locator('canvas')).not.toHaveAttribute('data-error',/.+/);

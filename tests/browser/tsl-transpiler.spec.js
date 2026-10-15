@@ -1,5 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
+// The transpiler page's package ( tools/gallery/packages.py ).
+const pkg=JSON.parse(readFileSync('web/gallery/packages.json','utf8')).examples.webgpu_tsl_transpiler;
 // webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r186 one
 // ( examples/jsm/transpiler/ ), both run in the same page. The output text and the
 // error messages must match character for character, for both encoders.
@@ -12,12 +14,12 @@ const written=JSON.parse(readFileSync('tests/browser/transpiler-cases.json','utf
 test('Transpiler output matches the original for every GLSL input',async({page},info)=>{
  test.setTimeout(600000);
  await page.goto('/reference/three-js/compute-examples.html?id=none');
- const report=await page.evaluate(async({pageGlsl,shaders,written})=>{
+ const report=await page.evaluate(async({pageGlsl,shaders,written,pkg})=>{
   const Transpiler=(await import('/.cache/three-r186/examples/jsm/transpiler/Transpiler.js')).default;
   const GLSLDecoder=(await import('/.cache/three-r186/examples/jsm/transpiler/GLSLDecoder.js')).default;
   const TSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/TSLEncoder.js')).default;
   const WGSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/WGSLEncoder.js')).default;
-  const rust=await import('/web/pkg/three_rs_wasm.js');await rust.default({module_or_path:'/web/pkg/three_rs_wasm_bg.wasm'});
+  const rust=await import(`/web/pkg/${pkg}/three_rs_wasm.js`);await rust.default({module_or_path:`/web/pkg/${pkg}/three_rs_wasm_bg.wasm`});
   // The page's GLSL, every three.js shader chunk and every examples shader.
   const base=[['page',pageGlsl]];
   const {ShaderChunk}=await import('/.cache/three-r186/src/renderers/shaders/ShaderChunk.js');
@@ -58,7 +60,7 @@ test('Transpiler output matches the original for every GLSL input',async({page},
    if(want!==got)mismatches.push({name,encoder,glsl,want,got});
   }
   return {cases:cases.length,base:base.length,errors,count:mismatches.length,mismatches:mismatches.slice(0,20)};
- },{pageGlsl,shaders,written});
+ },{pageGlsl,shaders,written,pkg});
  writeFileSync(info.outputPath('transpiler.json'),JSON.stringify(report,null,1));
  expect(report.base).toBeGreaterThan(250);
  expect(report.errors).toBeGreaterThan(1000);

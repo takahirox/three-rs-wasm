@@ -4,51 +4,97 @@ use crate::{
 };
 use std::{cell::RefCell, rc::Rc, sync::Arc};
 use wasm_bindgen::{JsCast, prelude::*};
+#[cfg(feature = "afterimage_webgl")]
 mod afterimage_webgl;
+#[cfg(feature = "ammo")]
 mod ammo;
+#[cfg(feature = "animation_pointer")]
 mod animation_pointer;
+#[cfg(feature = "arcball")]
 mod arcball;
+#[cfg(feature = "ascii")]
 mod ascii;
+#[cfg(feature = "attractors")]
 mod attractors;
+#[cfg(feature = "audio_timing")]
 mod audio_timing;
+#[cfg(feature = "audio_visual")]
 mod audio_visual;
+#[cfg(feature = "backdrop_water")]
 mod backdrop_water;
+#[cfg(feature = "ballpool")]
 mod ballpool;
+#[cfg(feature = "batch_lod_bvh")]
 mod batch_lod_bvh;
+#[cfg(feature = "birds_gltf")]
 mod birds_gltf;
+#[cfg(feature = "buffer_particles")]
 mod buffer_particles;
+#[cfg(feature = "caustics")]
 mod caustics;
+#[cfg(feature = "channels")]
 mod channels;
+#[cfg(feature = "clipping_stencil")]
 mod clipping_stencil;
+#[cfg(feature = "composer_passes")]
 mod composer_passes;
+#[cfg(feature = "compute_birds")]
 mod compute_birds;
+#[cfg(feature = "compute_cloth")]
 mod compute_cloth;
+#[cfg(feature = "compute_rasterizer")]
 mod compute_rasterizer;
+#[cfg(feature = "compute_rasterizer_ibl")]
 mod compute_rasterizer_ibl;
+#[cfg(feature = "compute_reduce")]
 mod compute_reduce;
+#[cfg(feature = "compute_water")]
 mod compute_water;
+#[cfg(feature = "controls_attributes")]
 mod controls_attributes;
+#[cfg(feature = "convex_hull")]
 mod convex_hull;
+#[cfg(feature = "csg_eval")]
 mod csg_eval;
+#[cfg(feature = "css2d_label")]
 mod css2d_label;
+#[cfg(feature = "css3d_common")]
 mod css3d_common;
+#[cfg(feature = "css3d_mixed")]
 mod css3d_mixed;
+#[cfg(feature = "css3d_molecules")]
 mod css3d_molecules;
+#[cfg(feature = "css3d_orthographic")]
 mod css3d_orthographic;
+#[cfg(feature = "css3d_periodictable")]
 mod css3d_periodictable;
+#[cfg(feature = "css3d_sandbox")]
 mod css3d_sandbox;
+#[cfg(feature = "css3d_sprites")]
 mod css3d_sprites;
+#[cfg(feature = "cubemap_dynamic")]
 mod cubemap_dynamic;
+#[cfg(feature = "cubemap_webgl")]
 mod cubemap_webgl;
+#[cfg(feature = "custom_fog")]
 mod custom_fog;
+#[cfg(feature = "dds")]
 mod dds;
+#[cfg(feature = "deferred")]
 mod deferred;
+#[cfg(feature = "dof2")]
 mod dof2;
+#[cfg(feature = "dof_webgl")]
 mod dof_webgl;
+#[cfg(feature = "draco_variants")]
 mod draco_variants;
+#[cfg(feature = "elements_text")]
 mod elements_text;
+#[cfg(feature = "environment_materials")]
 mod environment_materials;
+#[cfg(feature = "envmap_exr")]
 mod envmap_exr;
+#[cfg(feature = "envmaps_fasthdr")]
 mod envmaps_fasthdr;
 mod expanded;
 mod expanded_geometry_colors;
@@ -57,203 +103,396 @@ mod expanded_lights;
 mod expanded_lines;
 mod expanded_morph_models;
 mod expanded_triangles;
+#[cfg(feature = "exporter_gcode")]
 mod exporter_gcode;
+#[cfg(feature = "exporter_gltf")]
 mod exporter_gltf;
+#[cfg(feature = "exporters_matcap")]
 mod exporters_matcap;
+#[cfg(feature = "exporters_video")]
 mod exporters_video;
+#[cfg(feature = "fbx_loader")]
 mod fbx_loader;
+#[cfg(feature = "fbx_nurbs")]
 mod fbx_nurbs;
+#[cfg(feature = "fluid")]
 mod fluid;
+#[cfg(feature = "fog_scattering")]
 mod fog_scattering;
+#[cfg(feature = "fog_volume")]
 mod fog_volume;
+#[cfg(feature = "fxaa_webgl")]
 mod fxaa_webgl;
 mod gallery;
 mod gallery_scenes;
+#[cfg(feature = "games_fps")]
 mod games_fps;
+#[cfg(feature = "gaussian_splat")]
 mod gaussian_splat;
+#[cfg(feature = "generator_building")]
 mod generator_building;
+#[cfg(feature = "generator_city")]
 mod generator_city;
+#[cfg(feature = "geometry_csg")]
 mod geometry_csg;
+#[cfg(feature = "geometry_loft")]
 mod geometry_loft;
+#[cfg(feature = "geometry_materials")]
 mod geometry_materials;
+#[cfg(feature = "glitch")]
 mod glitch;
+#[cfg(feature = "gltf_examples")]
 mod gltf_examples;
+#[cfg(feature = "gltf_normals")]
 mod gltf_normals;
 mod gltf_viewer;
+#[cfg(feature = "godrays")]
 mod godrays;
+#[cfg(feature = "gpgpu_protoplanet")]
 mod gpgpu_protoplanet;
+#[cfg(feature = "gtao")]
 mod gtao;
+#[cfg(feature = "gtao_webgl")]
 mod gtao_webgl;
+#[cfg(feature = "hdr")]
 mod hdr;
+#[cfg(feature = "helpers_formats")]
 mod helpers_formats;
+#[cfg(feature = "html_texture")]
 mod html_texture;
+#[cfg(feature = "ies_spotlight")]
 mod ies_spotlight;
+#[cfg(feature = "ifc_loader")]
 mod ifc_loader;
+#[cfg(feature = "instancing_morph")]
 mod instancing_morph;
+#[cfg(feature = "interactive_objects")]
 mod interactive_objects;
+#[cfg(feature = "interactive_scenes")]
 mod interactive_scenes;
+#[cfg(feature = "interactive_shaders")]
 mod interactive_shaders;
+#[cfg(feature = "jolt")]
 mod jolt;
+#[cfg(feature = "kinect")]
 mod kinect;
+#[cfg(feature = "ktx")]
 mod ktx;
+#[cfg(feature = "ktx2")]
 mod ktx2;
+#[cfg(feature = "ldraw")]
 mod ldraw;
+#[cfg(feature = "ldraw_loader")]
 mod ldraw_loader;
+#[cfg(feature = "lightprobes")]
 mod lightprobes;
+#[cfg(feature = "lightprobes_sponza")]
 mod lightprobes_sponza;
+#[cfg(feature = "lights_clustered")]
 mod lights_clustered;
+#[cfg(feature = "lights_dynamic")]
 mod lights_dynamic;
+#[cfg(feature = "lights_probes")]
 mod lights_probes;
+#[cfg(feature = "lights_projector")]
 mod lights_projector;
+#[cfg(feature = "lines_raycast")]
 mod lines_raycast;
+#[cfg(feature = "linked_particles")]
 mod linked_particles;
+#[cfg(feature = "loader_3dm")]
 mod loader_3dm;
+#[cfg(feature = "loader_materialx")]
 mod loader_materialx;
+#[cfg(feature = "log_depth")]
 mod log_depth;
+#[cfg(feature = "lottie")]
 mod lottie;
+#[cfg(feature = "lut_webgl")]
 mod lut_webgl;
+#[cfg(feature = "marching_cubes")]
 mod marching_cubes;
+#[cfg(feature = "marching_tables")]
 mod marching_tables;
+#[cfg(feature = "material_textures")]
 mod material_textures;
+#[cfg(feature = "md2")]
 mod md2;
+#[cfg(feature = "md2_control")]
 mod md2_control;
+#[cfg(feature = "memory_outline")]
 mod memory_outline;
+#[cfg(feature = "mesh_batch")]
 mod mesh_batch;
+#[cfg(feature = "mirror_webgl")]
 mod mirror_webgl;
+#[cfg(feature = "models_modifiers")]
 mod models_modifiers;
+#[cfg(feature = "morphtargets_webcam")]
 mod morphtargets_webcam;
+#[cfg(feature = "msaa_renderbuffers")]
 mod msaa_renderbuffers;
+#[cfg(feature = "offscreen")]
 mod offscreen;
+#[cfg(feature = "outline")]
 mod outline;
+#[cfg(feature = "passes_decals")]
 mod passes_decals;
+#[cfg(feature = "pathtracer")]
 mod pathtracer;
+#[cfg(feature = "periodic_table")]
 mod periodic_table;
+#[cfg(feature = "physics_ammo_break")]
 mod physics_ammo_break;
+#[cfg(feature = "physics_ammo_cloth")]
 mod physics_ammo_cloth;
+#[cfg(feature = "physics_ammo_instancing")]
 mod physics_ammo_instancing;
+#[cfg(feature = "physics_ammo_rope")]
 mod physics_ammo_rope;
+#[cfg(feature = "physics_ammo_terrain")]
 mod physics_ammo_terrain;
+#[cfg(feature = "physics_ammo_volume")]
 mod physics_ammo_volume;
+#[cfg(feature = "physics_jolt_instancing")]
 mod physics_jolt_instancing;
+#[cfg(feature = "physics_rapier_basic")]
 mod physics_rapier_basic;
+#[cfg(feature = "physics_rapier_character_controller")]
 mod physics_rapier_character_controller;
+#[cfg(feature = "physics_rapier_instancing")]
 mod physics_rapier_instancing;
+#[cfg(feature = "physics_rapier_joints")]
 mod physics_rapier_joints;
+#[cfg(feature = "physics_rapier_terrain")]
 mod physics_rapier_terrain;
+#[cfg(feature = "physics_rapier_vehicle_controller")]
 mod physics_rapier_vehicle_controller;
+#[cfg(feature = "picking_buffers")]
 mod picking_buffers;
+#[cfg(feature = "pmrem_cube_uv")]
 mod pmrem_cube_uv;
+#[cfg(feature = "point_clouds")]
 mod point_clouds;
 mod point_lights;
+#[cfg(feature = "points_dynamic")]
 mod points_dynamic;
+#[cfg(feature = "portal_webgl")]
 mod portal_webgl;
+#[cfg(feature = "postprocessing_advanced")]
 mod postprocessing_advanced;
+#[cfg(feature = "probes_hdr")]
 mod probes_hdr;
+#[cfg(feature = "progressive_lod")]
 mod progressive_lod;
+#[cfg(feature = "pvr")]
 mod pvr;
+#[cfg(feature = "pvrtc")]
 mod pvrtc;
+#[cfg(feature = "random_uv")]
 mod random_uv;
+#[cfg(feature = "rapier_common")]
 mod rapier_common;
+#[cfg(feature = "raycaster_bvh")]
 mod raycaster_bvh;
+#[cfg(feature = "raycaster_helper")]
 mod raycaster_helper;
+#[cfg(feature = "refraction_loaders")]
 mod refraction_loaders;
+#[cfg(feature = "refraction_webgl")]
 mod refraction_webgl;
+#[cfg(feature = "render_bundle")]
 mod render_bundle;
+#[cfg(feature = "retargeting")]
 mod retargeting;
+#[cfg(feature = "retargeting_readyplayer")]
 mod retargeting_readyplayer;
+#[cfg(feature = "retro")]
 mod retro;
+#[cfg(feature = "reversed_depth")]
 mod reversed_depth;
 mod robot;
+#[cfg(feature = "roller_coaster")]
 mod roller_coaster;
+#[cfg(feature = "room_environment")]
 mod room_environment;
+#[cfg(feature = "sao")]
 mod sao;
+#[cfg(feature = "sculpt")]
 mod sculpt;
+#[cfg(feature = "selection_views")]
 mod selection_views;
+#[cfg(feature = "shader_geometry")]
 mod shader_geometry;
+#[cfg(feature = "shadow_array")]
 mod shadow_array;
+#[cfg(feature = "shadow_rtt")]
 mod shadow_rtt;
+#[cfg(feature = "shadowmap_csm")]
 mod shadowmap_csm;
+#[cfg(feature = "shadowmap_opacity")]
 mod shadowmap_opacity;
+#[cfg(feature = "shadowmap_pcss")]
 mod shadowmap_pcss;
+#[cfg(feature = "shadowmap_performance")]
 mod shadowmap_performance;
+#[cfg(feature = "shadowmap_progressive")]
 mod shadowmap_progressive;
+#[cfg(feature = "shadowmap_viewer")]
 mod shadowmap_viewer;
+#[cfg(feature = "shadowmap_vsm")]
 mod shadowmap_vsm;
+#[cfg(feature = "shadowmap_webgl")]
 mod shadowmap_webgl;
+#[cfg(feature = "shapes")]
 mod shapes;
+#[cfg(feature = "shapes_lights")]
 mod shapes_lights;
+#[cfg(feature = "simple_gi")]
 mod simple_gi;
+#[cfg(feature = "skinning_instances")]
 mod skinning_instances;
+#[cfg(feature = "sky_water")]
 mod sky_water;
+#[cfg(feature = "sobel_webgl")]
 mod sobel_webgl;
+#[cfg(feature = "sort_bitonic")]
 mod sort_bitonic;
+#[cfg(feature = "spline_editor")]
 mod spline_editor;
+#[cfg(feature = "spot_skinning")]
 mod spot_skinning;
+#[cfg(feature = "ssao")]
 mod ssao;
+#[cfg(feature = "ssgi")]
 mod ssgi;
+#[cfg(feature = "ssr")]
 mod ssr;
+#[cfg(feature = "ssr_denoise")]
 mod ssr_denoise;
+#[cfg(feature = "ssr_webgl")]
 mod ssr_webgl;
+#[cfg(feature = "sss")]
 mod sss;
+#[cfg(feature = "stereo_loaders")]
 mod stereo_loaders;
+#[cfg(feature = "subdivision")]
 mod subdivision;
+#[cfg(feature = "subsurface")]
 mod subsurface;
+#[cfg(feature = "svg_lines")]
 mod svg_lines;
+#[cfg(feature = "svg_loader")]
 mod svg_loader;
+#[cfg(feature = "svg_sandbox")]
 mod svg_sandbox;
+#[cfg(feature = "taa")]
 mod taa;
+#[cfg(feature = "teapot_data")]
 mod teapot_data;
+#[cfg(feature = "terrain_loaders")]
 mod terrain_loaders;
+#[cfg(feature = "test_memory")]
 mod test_memory;
+#[cfg(feature = "test_memory2")]
 mod test_memory2;
+#[cfg(feature = "text_clipping")]
 mod text_clipping;
+#[cfg(feature = "text_shapes")]
 mod text_shapes;
+#[cfg(feature = "texture_flares")]
 mod texture_flares;
+#[cfg(feature = "texture_volumes")]
 mod texture_volumes;
+#[cfg(feature = "three_mixer")]
 mod three_mixer;
+#[cfg(feature = "threemf")]
 mod threemf;
+#[cfg(feature = "tiles3d")]
 mod tiles3d;
+#[cfg(feature = "trackball_sprites")]
 mod trackball_sprites;
+#[cfg(feature = "transform_controls")]
 mod transform_controls;
+#[cfg(feature = "transform_curves")]
 mod transform_curves;
+#[cfg(feature = "transmission_alpha")]
 mod transmission_alpha;
+#[cfg(feature = "tsl_compute")]
 mod tsl_compute;
+#[cfg(feature = "tsl_environment")]
 mod tsl_environment;
+#[cfg(feature = "tsl_examples")]
 mod tsl_examples;
+#[cfg(feature = "tsl_extended")]
 mod tsl_extended;
+#[cfg(feature = "tsl_filters")]
 mod tsl_filters;
+#[cfg(feature = "tsl_graph")]
 mod tsl_graph;
+#[cfg(feature = "tsl_lighting")]
 mod tsl_lighting;
+#[cfg(feature = "tsl_materials")]
 mod tsl_materials;
+#[cfg(feature = "tsl_next")]
 mod tsl_next;
+#[cfg(feature = "tsl_particles")]
 mod tsl_particles;
+#[cfg(feature = "tsl_passes")]
 mod tsl_passes;
+#[cfg(feature = "tsl_primitives")]
 mod tsl_primitives;
+#[cfg(feature = "tsl_procedural")]
 mod tsl_procedural;
+#[cfg(feature = "tsl_surface")]
 mod tsl_surface;
+#[cfg(feature = "tsl_viewport")]
 mod tsl_viewport;
+#[cfg(feature = "usdz")]
 mod usdz;
+#[cfg(feature = "usdz_exporter")]
 mod usdz_exporter;
+#[cfg(feature = "uv_tests")]
 mod uv_tests;
+#[cfg(feature = "video_frame")]
 mod video_frame;
+#[cfg(feature = "views_loaders")]
 mod views_loaders;
+#[cfg(feature = "volume_caustics")]
 mod volume_caustics;
+#[cfg(feature = "volume_fire")]
 mod volume_fire;
+#[cfg(feature = "volume_instancing")]
 mod volume_instancing;
+#[cfg(feature = "volume_lighting")]
 mod volume_lighting;
+#[cfg(feature = "volume_rectarea")]
 mod volume_rectarea;
+#[cfg(feature = "volume_traa")]
 mod volume_traa;
+#[cfg(feature = "vrml")]
 mod vrml;
+#[cfg(feature = "vxgi")]
 mod vxgi;
+#[cfg(feature = "vxgi_sponza")]
 mod vxgi_sponza;
+#[cfg(feature = "watch")]
 mod watch;
+#[cfg(feature = "water")]
 mod water;
+#[cfg(feature = "webcam")]
 mod webcam;
+#[cfg(feature = "wgsl_bind")]
 mod wgsl_bind;
+#[cfg(feature = "wide_gamut")]
 mod wide_gamut;
+#[cfg(feature = "xr_app")]
 mod xr_app;
+#[cfg(feature = "xr_controller_model")]
 mod xr_controller_model;
+#[cfg(feature = "xr_random")]
 mod xr_random;
+#[cfg(feature = "xr_app")]
 pub use xr_app::XrApp;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -626,6 +865,7 @@ impl State {
 
 /// webgpu_tsl_transpiler: `new Transpiler( new GLSLDecoder(), encoder ).parse(
 /// glsl )` with the TSL or WGSL encoder; it throws the original's error message.
+#[cfg(feature = "tsl_transpiler")]
 #[wasm_bindgen]
 pub fn tsl_transpile(glsl: &str, encoder: &str) -> std::result::Result<String, JsValue> {
     let encoder = match encoder {
@@ -1089,6 +1329,7 @@ impl BrowserApp {
         demo.audio_frame(scene, *camera)
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
+    #[cfg(feature = "tsl_procedural")]
     pub fn audio_play(&self) -> std::result::Result<bool, JsValue> {
         let state = self.state.borrow();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1098,6 +1339,7 @@ impl BrowserApp {
             .and_then(|a| a.play(&state.renderer))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
+    #[cfg(feature = "tsl_procedural")]
     pub fn audio_result(&self) -> std::result::Result<Vec<f32>, JsValue> {
         let state = self.state.borrow();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1107,6 +1349,7 @@ impl BrowserApp {
             .and_then(|a| a.take().unwrap_or_else(|| Ok(Vec::new())))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
+    #[cfg(feature = "tsl_procedural")]
     pub fn audio_spectrum(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1660,17 +1903,20 @@ impl Drop for BrowserApp {
 /// The ballpool's rigid-body world ( a port of @perplexdotgg/bounce ) for the
 /// browser oracle, which steps it beside the original package and compares
 /// every body's state bit for bit.
+#[cfg(feature = "ballpool")]
 #[wasm_bindgen]
 pub struct BounceWorld {
     world: crate::bounce::World,
 }
 
+#[cfg(feature = "ballpool")]
 impl Default for BounceWorld {
     fn default() -> Self {
         Self::new()
     }
 }
 
+#[cfg(feature = "ballpool")]
 #[wasm_bindgen]
 impl BounceWorld {
     #[wasm_bindgen(constructor)]
