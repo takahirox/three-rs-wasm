@@ -33,7 +33,7 @@
   ],
   "hdr_gainmap": [
     "tests/browser/hdr-equivalence.spec.js",
-    "preserves official UltraHDR reconstruction"
+    "Rust UltraHDR decoding matches the official UltraHDRLoader reconstruction"
   ],
   "ibl": [
     "tests/pbr.rs",
