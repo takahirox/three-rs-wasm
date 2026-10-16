@@ -30,7 +30,7 @@ def examples(site):
 def main():
     # One package per example module and the core package ( scripts/build-gallery ),
     # each with wasm-bindgen's inline_js modules, which three_rs_wasm.js imports.
-    packages = sorted(set(json.loads((ROOT / "web/gallery/packages.json").read_text()).values()) | {"core"})
+    packages = sorted(json.loads((ROOT / "web/gallery/packages.json").read_text())["packages"])
     bundle = []
     for package in packages:
         files = [ROOT / "web/pkg" / package / name for name in ("three_rs_wasm.js", "three_rs_wasm_bg.wasm")]
