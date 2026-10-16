@@ -20,7 +20,7 @@ assets.update({name:f'examples/textures/planets/{name}' for name in ['earth_day_
 assets.update({'spiritedaway.ktx2':'examples/textures/spiritedaway.ktx2','blossom.png':'examples/textures/sprites/blossom.png'})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-next')) for path in (ROOT/'web/gallery/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['path.json','smaa-area.png','smaa-search.png']})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-environment')) for path in (ROOT/'web/gallery/assets/tsl-environment').rglob('*') if path.is_file()})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file() and not path.name.endswith('.rgba16f.png') and path.name != 'hdr.json'})
+assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-viewport')) for path in (ROOT/'web/gallery/assets/tsl-viewport').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-materials')) for path in (ROOT/'web/gallery/assets/tsl-materials').rglob('*') if path.is_file() and path.suffix not in ['.bin','.json']})
 assets.update({'tsl-procedural/checker.png':'examples/textures/checker.png','tsl-procedural/webgpu-audio-processing.mp3':'examples/sounds/webgpu-audio-processing.mp3','tsl-procedural/FloorsCheckerboard_S_Normal.jpg':'examples/textures/floors/FloorsCheckerboard_S_Normal.jpg','tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg':'examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg','tsl-procedural/decal-diffuse.png':'examples/textures/decal/decal-diffuse.png','tsl-procedural/decal-normal.jpg':'examples/textures/decal/decal-normal.jpg','tsl-procedural/pedestrian_overpass_1k.hdr':'examples/textures/equirectangular/pedestrian_overpass_1k.hdr','tsl-procedural/san_giuseppe_bridge_2k.hdr':'examples/textures/equirectangular/san_giuseppe_bridge_2k.hdr','tsl-procedural/gears.glb':'examples/models/gltf/gears.glb','tsl-procedural/Xbot.glb':'examples/models/gltf/Xbot.glb','tsl-procedural/uv_grid_directx.jpg':'examples/textures/uv_grid_directx.jpg'})
@@ -58,11 +58,6 @@ with tarfile.open(ARCHIVE) as tar:
  for name in ['webgl_loader_gltf_instancing','webgl_loader_gltf_compressed','webgl_loader_gltf_avif','webgl_depth_texture','webgl_loader_texture_ktx']:
   assert name in WEBGPU_EQUIVALENTS or next(r for r in rows if r['id']==name)['status']!='excluded', 'portable examples need a WebGPU equivalent to be excluded'
 print(f'Gallery inventory: {len(rows)} sources / {sum(r["status"]!="excluded" for r in rows)} included / {len(PORTS)} partial ports verified')
-
-for record in json.loads((ROOT/'web/gallery/assets/tsl-lighting/hdr.json').read_text()):
- root=ROOT/'web/gallery/assets/tsl-lighting'
- assert hashlib.sha256((root/record['source']).read_bytes()).hexdigest()==record['source_sha256']
- assert hashlib.sha256((root/record['file']).read_bytes()).hexdigest()==record['sha256']
 
 for record in json.loads((ROOT/'web/gallery/assets/tsl-materials/geometry.json').read_text()):
  assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-materials'/record['file']).read_bytes()).hexdigest()==record['sha256']

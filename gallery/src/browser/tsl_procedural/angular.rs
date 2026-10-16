@@ -29,23 +29,13 @@ impl Angular {
         );
         s.tone_mapping = ToneMapping::Aces;
         s.shadow_map_size = 4096;
-        let im = image::load_from_memory(
-            &fetch("/web/gallery/assets/tsl-lighting/royal_esplanade_2k.hdr.jpg.rgba16f.png")
-                .await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?
-        .to_rgba16();
-        let (width, height) = im.dimensions();
-        s.environment = Some(Arc::new(crate::environment::EnvironmentMap {
-            width,
-            height,
-            rgba: im
-                .as_raw()
-                .iter()
-                .map(|x| half::f16::from_bits(*x))
-                .collect(),
-            gpu: None,
-        }));
+        // UltraHDRLoader on the page's texture, at load.
+        s.environment = Some(Arc::new(
+            super::super::ultra_hdr::ultra_hdr(
+                &fetch("/web/gallery/assets/tsl-lighting/textures/equirectangular/royal_esplanade_2k.hdr.jpg").await?,
+            )
+            .await?,
+        ));
         s.background_environment = true;
         let sun = s.insert(NodeKind::Light(Light::Sun {
             color: Color::WHITE,

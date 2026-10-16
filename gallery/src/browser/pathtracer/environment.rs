@@ -126,9 +126,9 @@ pub(crate) async fn ultra_hdr(bytes: &[u8]) -> Result<(usize, usize, Vec<u16>)> 
     let (primary, gainmap) = primary
         .zip(gainmap)
         .ok_or_else(|| Error::Asset("UltraHDR: could not parse images".into()))?;
-    let (width, height, sdr) = super::super::probes_hdr::canvas_pixels(primary, None).await?;
+    let (width, height, sdr) = super::super::ultra_hdr::canvas_pixels(primary, None).await?;
     let (_, _, gain) =
-        super::super::probes_hdr::canvas_pixels(gainmap, Some((width, height))).await?;
+        super::super::ultra_hdr::canvas_pixels(gainmap, Some((width, height))).await?;
     // SRGB_TO_LINEAR, computed at module load.
     let table: Vec<f64> = (0..1024)
         .map(|i| pow(i as f64 * 0.003717127 + 0.0521327014, 2.4))

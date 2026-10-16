@@ -495,10 +495,9 @@ The additional ports are `webgpu_pmrem_cubemap`, `webgpu_pmrem_scene`,
 
 The camera near/far values remain those of each original example during
 Orbit updates. This matters for depth reconstruction and close-up viewing.
-The two UltraHDR assets use lossless half-float PNG containers; their pixels
-are decoded offline by the pinned official loader, never tone-mapped to LDR.
-To regenerate, run `python3 tools/tsl/prepare-lighting.py`, start
-`python3 tools/serve.py`, then run `node tools/tsl/prepare-lighting-hdr.mjs`.
+The UltraHDR environments are decoded at load by the Rust port of
+UltraHDRLoader ( gallery/src/browser/ultra_hdr.rs ), as the pages decode them.
+To refresh the copied assets, run `python3 tools/tsl/prepare-lighting.py`.
 
 Validation: `tests/tsl_lighting_gpu.rs` and
 `tests/browser/tsl-lighting.spec.js`; recorded comparisons are in

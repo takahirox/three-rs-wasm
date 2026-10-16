@@ -559,36 +559,7 @@ fn uncompress_piz(
     }
     Ok(bytes)
 }
-/// DataUtils.toHalfFloat: clamped to ±65504, then the base/shift tables, which
-/// truncate the mantissa.
-pub(in crate::browser) fn to_half_float(v: f32) -> u16 {
-    let v = v.clamp(-65504., 65504.);
-    let f = v.to_bits();
-    let e = ((f >> 23) & 0x1ff) as usize;
-    let (i, sign) = (e & 0xff, e & 0x100 != 0);
-    let exponent = i as i32 - 127;
-    let (base, shift) = if exponent < -27 {
-        (0u32, 24)
-    } else if exponent < -14 {
-        (0x0400 >> (-exponent - 14), -exponent - 1)
-    } else if exponent <= 15 {
-        (((exponent + 15) as u32) << 10, 13)
-    } else if exponent < 128 {
-        (0x7c00, 24)
-    } else {
-        (0x7c00, 13)
-    };
-    let base = if sign {
-        if exponent < -27 {
-            0x8000
-        } else {
-            base | 0x8000
-        }
-    } else {
-        base
-    };
-    (base + ((f & 0x007fffff) >> shift)) as u16
-}
+pub(in crate::browser) use super::super::ultra_hdr::to_half_float;
 /// uncompressZIP: zlib, the byte predictor, then interleaveScalar.
 fn uncompress_zip(data: &[u8]) -> Result<Vec<u8>> {
     let mut raw = miniz_oxide::inflate::decompress_to_vec_zlib(data)

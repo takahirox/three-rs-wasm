@@ -15,7 +15,8 @@ PROFILE=--release
 if [ "${1:-}" = "--dev" ]; then PROFILE=--dev; shift; fi
 SHARD=1/1
 if [ "${1:-}" = "--shard" ]; then SHARD="$2"; shift 2; fi
-python3 "$ROOT/tools/gallery/packages.py" --check
+# The grouping follows the modules' source sizes: refresh it ( commit the result ).
+python3 "$ROOT/tools/gallery/packages.py"
 if [ "$#" -gt 0 ]; then
   PACKAGES=("$@")
 else

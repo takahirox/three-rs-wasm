@@ -1,6 +1,6 @@
 use super::super::gltf_viewer::{decode_texture_image, fetch};
 use super::*;
-use crate::{environment::EnvironmentMap, mipmap::MipGenerator};
+use crate::mipmap::MipGenerator;
 pub(in crate::browser) struct Reflection {
     time: f64,
     previous: f64,
@@ -72,22 +72,13 @@ impl Reflection {
         );
         s.tone_mapping = ToneMapping::Neutral;
         s.exposure = 1.5;
-        let bytes =
-            fetch("/web/gallery/assets/tsl-lighting/spruit_sunrise_2k.hdr.jpg.rgba16f.png").await?;
-        let im = image::load_from_memory(&bytes)
-            .map_err(|e| Error::Asset(e.to_string()))?
-            .to_rgba16();
-        let (width, height) = im.dimensions();
-        s.environment = Some(Arc::new(EnvironmentMap {
-            width,
-            height,
-            rgba: im
-                .as_raw()
-                .iter()
-                .map(|v| half::f16::from_bits(*v))
-                .collect(),
-            gpu: None,
-        }));
+        // UltraHDRLoader on the page's texture, at load.
+        s.environment = Some(Arc::new(
+            super::super::ultra_hdr::ultra_hdr(
+                &fetch("/web/gallery/assets/tsl-lighting/textures/equirectangular/spruit_sunrise_2k.hdr.jpg").await?,
+            )
+            .await?,
+        ));
         s.background_environment = true;
         let mut grid = decode_texture_image(
             &fetch("/web/gallery/assets/tsl-procedural/uv_grid_directx.jpg").await?,

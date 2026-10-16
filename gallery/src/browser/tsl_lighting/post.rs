@@ -11,24 +11,10 @@ pub(super) struct Post {
     flare: Option<(RenderTarget, Effect)>,
     sampler: wgpu::Sampler,
 }
+/// UltraHDRLoader on the page's equirectangular texture, at load.
 async fn environment(name: &str) -> Result<EnvironmentMap> {
-    let bytes = fetch(&format!("{ASSETS}/{name}.rgba16f.png")).await?;
-    // PNG is a lossless container for half-float bit patterns, not color data.
-    let image = image::load_from_memory(&bytes)
-        .map_err(|e| Error::Asset(e.to_string()))?
-        .to_rgba16();
-    let (width, height) = image.dimensions();
-    let rgba = image
-        .as_raw()
-        .iter()
-        .map(|v| half::f16::from_bits(*v))
-        .collect();
-    Ok(EnvironmentMap {
-        width,
-        height,
-        rgba,
-        gpu: None,
-    })
+    let bytes = fetch(&format!("{ASSETS}/textures/equirectangular/{name}")).await?;
+    super::super::ultra_hdr::ultra_hdr(&bytes).await
 }
 impl Demo {
     pub(super) async fn post(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {

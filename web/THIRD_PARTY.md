@@ -381,11 +381,9 @@ box projection and chromatic aberration translate the corresponding MIT TSL node
 - Spruit Sunrise environment from [Poly Haven](https://polyhaven.com/a/spruit_sunrise).
 
 `prepare-lighting.py` copies source assets without modification. The
-`*.rgba16f.png` files losslessly pack the official `UltraHDRLoader` half-float
-bit patterns into 16-bit PNG channels. They are data containers, not display
-images. `prepare-lighting-hdr.mjs` regenerates them using the local pinned
-reference and records source/output hashes in `hdr.json`. Runtime PMREM and
-all effects are computed by Rust/WebGPU. Box blur and lensflare shaders
+UltraHDR environments are decoded at load by the Rust port of
+`UltraHDRLoader`, as the pages decode them. Runtime PMREM and all effects are
+computed by Rust/WebGPU. Box blur and lensflare shaders
 translate the MIT Three.js r186 TSL nodes.
 
 ### TSL viewport effects, soft particles and FSR1

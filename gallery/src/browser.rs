@@ -448,6 +448,7 @@ mod tsl_procedural;
 mod tsl_surface;
 #[cfg(feature = "tsl_viewport")]
 mod tsl_viewport;
+mod ultra_hdr;
 #[cfg(feature = "usdz")]
 mod usdz;
 #[cfg(feature = "usdz_exporter")]
