@@ -13,7 +13,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The gallery's browser packages ( scripts/build-gallery ), a quarter on each
+  # runner: each package links the library with fat LTO.
+  packages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build release packages
+        run: |
+          cargo install wasm-pack --locked --version 0.14.0
+          GALLERY_JOBS=2 scripts/build-gallery --shard ${{ matrix.shard }}/4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.shard }}
+          path: web/pkg
+
   build:
+    needs: packages
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -24,10 +50,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Build release demo
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: packages-*
+          path: web/pkg
+          merge-multiple: true
+      - name: Build the site
         run: |
           cargo install wasm-pack --locked --version 0.14.0
-          GALLERY_JOBS=4 scripts/build-gallery
           ( cd tsl && wasm-pack build --target web --profile web --out-dir ../web/tsl-pkg --no-typescript )
           python3 tools/build_site.py
       - uses: actions/upload-pages-artifact@v4
