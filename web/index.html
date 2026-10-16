@@ -52,6 +52,8 @@ label{display:block;margin:20px 0}input[type=range]{display:block;width:100%;acc
 </div>
 </main>
 <script type="module">
+// r186 assets load from the three.js repository on the published site ( gallery/upstream.js ).
+await import('./gallery/upstream.js');
 const canvas=document.querySelector('canvas');
 const status=document.querySelector('#status');
 const rebuild=document.querySelector('#rebuild');

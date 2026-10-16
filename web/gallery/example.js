@@ -1,3 +1,4 @@
+import './upstream.js';
 import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
 const catalog = await (await fetch('catalog.json')).json();

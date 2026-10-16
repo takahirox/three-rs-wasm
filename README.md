@@ -32,7 +32,9 @@ Open <http://127.0.0.1:8173/web/gallery/> in a WebGPU-capable browser.
 The library is the repository's root crate. The gallery's ports are a separate
 crate, [`gallery/`](gallery/), built on it: each example page loads one of about
 forty browser packages, the library, the gallery's shell and a group of example
-modules, instead of every port ( see [gallery packages](docs/gallery-packages.md) ).
+modules, instead of every port. The published site loads the examples' assets that
+are three.js r186's own files from the three.js repository at the pinned commit
+( see [gallery packages](docs/gallery-packages.md) ).
 
 The example ports are a work in progress. See the
 [coverage report](docs/examples-coverage.md) for current support and limitations.

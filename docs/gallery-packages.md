@@ -61,3 +61,29 @@ their size above the core correlates with their modules' source size at 0.97.
 A page downloads its package only: under 3 MB compressed, against 7.4 MB
 before. The library alone with one cube is 1.9 MB ( 0.86 MB compressed );
 the shell adds the glTF importer, the image decoders and the page bindings.
+
+## Assets from the three.js repository
+
+623 of the examples' asset files ( 300 MB ) are the pinned r186's own files
+under `examples/`. They stay in the repository, for the tests and tools that
+read them, but the published site leaves them out and loads them from the
+three.js repository at the pinned commit on jsDelivr
+( `https://cdn.jsdelivr.net/gh/mrdoob/three.js@<commit>/` ), which sends CORS
+and cross-origin resource policy headers. The site is about 460 MB instead
+of 750 MB.
+
+- `tools/gallery/upstream_assets.py` lists them in
+  `web/gallery/upstream-assets.json`: each file under `web/gallery/assets`,
+  `web/gallery/textures`, `web/models` and `web/environments` whose bytes equal
+  an r186 file's ( `.cache/three-r186` ). Its base is null: locally the pages
+  load the repository's files.
+- `tools/build_site.py` leaves the listed files out and writes the CDN base
+  into the published listing.
+- `web/gallery/upstream.js`, which the example pages, the offscreen worker and
+  `web/index.html` load first, redirects the listed URLs: `fetch()`, the `src`
+  of images, media and sources, `new Audio()` and images in HTML markup. A
+  redirected image or medium loads with CORS, so canvases and GPU uploads can
+  read it.
+
+The published-site check ( `tests/pages/` ) runs the examples against the
+CDN.

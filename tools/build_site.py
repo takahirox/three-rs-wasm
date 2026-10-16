@@ -47,10 +47,15 @@ def main():
     files = subprocess.check_output(
         ["git", "ls-files", "-z", "web", "LICENSE", "LICENSE-THREE", "LICENSE-MATERIALX", "LICENSE-RAPIER"], cwd=ROOT
     ).decode().split("\0")
-    for source in [ROOT / name for name in files if name] + bundle:
+    # The pinned three.js r186's own example assets load from its repository at that
+    # commit ( tools/gallery/upstream_assets.py, web/gallery/upstream.js ).
+    upstream = json.loads((ROOT / "web/gallery/upstream-assets.json").read_text())
+    for source in [ROOT / name for name in files if name and name not in upstream["files"]] + bundle:
         target = SITE / source.relative_to(ROOT)
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
+    upstream["base"] = f"https://cdn.jsdelivr.net/gh/mrdoob/three.js@{upstream['commit']}/"
+    (SITE / "web/gallery/upstream-assets.json").write_text(json.dumps(upstream, indent=1, ensure_ascii=False) + "\n")
     examples(SITE)
     (SITE / "index.html").write_text(
         '<!doctype html><html lang="en"><meta charset="utf-8">'

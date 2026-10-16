@@ -4,6 +4,8 @@
 const queued = [];
 let receive = message => queued.push(message);
 self.onmessage = message => receive(message);
+// The worker loads the matcap, an r186 asset, as the page does.
+await import('./upstream.js');
 const params = new URL(location.href).searchParams;
 const runtime = params.get('v') ?? '';
 // The page's package ( tools/gallery/packages.py ).
