@@ -18,7 +18,7 @@ assets.update({f'cube_m0{level}_c0{face}.jpg':f'examples/textures/cube/angus/cub
 assets.update({f'castle-{face}.jpg':f'examples/textures/cube/SwedishRoyalCastle/{face}.jpg' for face in ['px','nx','py','ny','pz','nz']})
 assets.update({name:f'examples/textures/planets/{name}' for name in ['earth_day_4096.jpg','earth_night_4096.jpg','earth_bump_roughness_clouds_4096.jpg']})
 assets.update({'spiritedaway.ktx2':'examples/textures/spiritedaway.ktx2','blossom.png':'examples/textures/sprites/blossom.png'})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-next')) for path in (ROOT/'web/gallery/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['path.json','smaa-area.png','smaa-search.png']})
+assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-next')) for path in (ROOT/'web/gallery/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['smaa-area.png','smaa-search.png']})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-environment')) for path in (ROOT/'web/gallery/assets/tsl-environment').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file()})
 assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-viewport')) for path in (ROOT/'web/gallery/assets/tsl-viewport').rglob('*') if path.is_file()})
@@ -59,32 +59,8 @@ with tarfile.open(ARCHIVE) as tar:
   assert name in WEBGPU_EQUIVALENTS or next(r for r in rows if r['id']==name)['status']!='excluded', 'portable examples need a WebGPU equivalent to be excluded'
 print(f'Gallery inventory: {len(rows)} sources / {sum(r["status"]!="excluded" for r in rows)} included / {len(PORTS)} partial ports verified')
 
-for record in json.loads((ROOT/'web/gallery/assets/tsl-materials/geometry.json').read_text()):
- assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-materials'/record['file']).read_bytes()).hexdigest()==record['sha256']
- with tarfile.open(ARCHIVE) as tar:
-  entry=next(e for e in tar if e.name.split('/',1)[-1]=='examples/'+record['source'])
-  assert hashlib.sha256(tar.extractfile(entry).read()).hexdigest()==record['source_sha256']
-
 for record in json.loads((ROOT/'web/gallery/assets/tsl-primitives/manifest.json').read_text()):
  assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-primitives'/record['file']).read_bytes()).hexdigest()==record['sha256']
-
-for record in json.loads((ROOT/"web/gallery/assets/tsl-procedural/geometry.json").read_text()):
- assert hashlib.sha256((ROOT/"web/gallery/assets/tsl-procedural"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
- with tarfile.open(ARCHIVE) as tar:
-  entry=next(e for e in tar if e.name.split("/",1)[-1]=="examples/"+record["source"])
-  assert hashlib.sha256(tar.extractfile(entry).read()).hexdigest()==record["source_sha256"]
-
-record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/reflection-tree.json').read_text())
-assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
-assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
-
-record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/snow-teapot-manifest.json').read_text())
-assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
-assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
-
-record=json.loads((ROOT/'web/gallery/assets/tsl-procedural/retro-base-manifest.json').read_text())
-assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-procedural'/record['file']).read_bytes()).hexdigest()==record['sha256']
-assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==record['source_sha256']
 
 for record in json.loads((ROOT/"web/gallery/assets/material-textures/manifest.json").read_text())["files"]:
  assert hashlib.sha256((ROOT/"web/gallery/assets/material-textures"/record["file"]).read_bytes()).hexdigest()==record["sha256"]

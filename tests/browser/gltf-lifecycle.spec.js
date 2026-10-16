@@ -16,8 +16,8 @@ test('glTF controls, resize, recoverable failures and 20 overlapping replacement
  await page.locator('#gltf-model').selectOption('5');await expect(page.locator('#status')).toContainText('表示中',{timeout:60000});await nextFrame();await expect(page.locator('#title')).toContainText('BoomBox');
  // Delay an older environment load and allow the newer model load to win.
  let release;const delayed=new Promise(resolve=>release=resolve);
- await page.route('**/royal_esplanade_2k.hdr?stale',async route=>{await delayed;await route.continue();});
- await page.evaluate(()=>{window.pendingEnvironment=window.app.load_environment('/web/environments/royal_esplanade_2k.hdr?stale');});
+ await page.route('**/royal_esplanade_2k.hdr.jpg?stale',async route=>{await delayed;await route.continue();});
+ await page.evaluate(()=>{window.pendingEnvironment=window.app.load_environment('/web/environments/royal_esplanade_2k.hdr.jpg?stale');});
  expect(await page.evaluate(()=>window.app.load_model(4))).toBe(true);release();expect(await page.evaluate(()=>window.pendingEnvironment)).toBe(false);
  const before=await page.evaluate(()=>Array.from(window.app.resource_counts()));
  for(let i=0;i<20;i++){
@@ -27,7 +27,7 @@ test('glTF controls, resize, recoverable failures and 20 overlapping replacement
  }
  const stable=await page.evaluate(()=>Array.from(window.app.resource_counts()));await nextFrame();expect(await page.evaluate(()=>Array.from(window.app.resource_counts()))).toEqual(stable);
  const failure=await page.evaluate(async()=>{try{await window.app.load_environment('/web/environments/missing.hdr');return '';}catch(error){return String(error);}});expect(failure).toContain('404');await nextFrame();
- expect(await page.evaluate(()=>window.app.load_environment('/web/environments/royal_esplanade_2k.hdr'))).toBe(true);await nextFrame();
+ expect(await page.evaluate(()=>window.app.load_environment('/web/environments/royal_esplanade_2k.hdr.jpg'))).toBe(true);await nextFrame();
  expect((await page.evaluate(()=>Array.from(window.app.resource_counts())))[2]).toBe(stable[2]+1);
  expect(await canvas.getAttribute('data-error')).toBeNull();expect(errors).toEqual([]);
 });

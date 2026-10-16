@@ -9,18 +9,16 @@
 //! LineSegments with their draw range. BVHHelper never draws under the
 //! pinned r186: its BVHRootHelper extends Object3D, whose intersectsFrustum
 //! returns undefined, so the renderer culls it while frustumCulled is set;
-//! displayHelper and helperDepth change nothing on screen. The bunny is FBXLoader's parse baked by tools/tsl/prepare-bunny.mjs.
+//! displayHelper and helperDepth change nothing on screen. The bunny is parsed at load by the FBXLoader port.
 //! The page advances its rays and the bunny's turn once per animation frame;
 //! the port steps the same per-frame updates at 60 Hz of the example clock.
 use super::controls_attributes::{Controls, camera_state};
-use super::gltf_viewer::fetch;
 use super::ssao::Random;
 use crate::attribute::BufferAttribute;
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/subsurface-scattering";
 const MAX_RAYS: usize = 3000;
 const RAY_COLOR: u32 = 0x444444;
 const FLOAT32_EPSILON: f64 = 1. / 16777216.;
@@ -422,30 +420,17 @@ impl Demo {
         }
         s.get_mut(lines)?.frustum_culled = false;
         // The bunny: translate( 0, 0.5 / 0.0075, 0 ), then computeBoundsTree().
-        struct Bake {
-            vertices: usize,
-        }
-        let json: serde_json::Value =
-            serde_json::from_slice(&fetch(&format!("{ASSETS}/bunny.json")).await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let bake = Bake {
-            vertices: json["vertices"]
-                .as_u64()
-                .ok_or(Error::Invalid("bunny bake"))? as usize,
+        let bunny = super::fbx_models::stanford_bunny().await?;
+        let attribute = |name: &str| match bunny.attributes.get(name) {
+            Some(Attribute::F32(a)) => Ok(a.array().to_vec()),
+            _ => Err(Error::Invalid("stanford-bunny attribute")),
         };
-        let bytes = fetch(&format!("{ASSETS}/bunny.bin")).await?;
-        let n = bake.vertices;
-        if bytes.len() != n * 8 * 4 {
-            return Err(Error::Invalid("bunny bake"));
-        }
-        let floats: Vec<f32> = bytes
-            .as_chunks::<4>()
-            .0
-            .iter()
-            .map(|&b| f32::from_le_bytes(b))
-            .collect();
-        let (positions, rest) = floats.split_at(n * 3);
-        let (normals, uvs) = rest.split_at(n * 3);
+        let (positions, normals, uvs) = (
+            attribute("position")?,
+            attribute("normal")?,
+            attribute("uv")?,
+        );
+        let n = positions.len() / 3;
         let shift = 0.5 / 0.0075;
         let positions: Vec<f32> = positions
             .chunks(3)

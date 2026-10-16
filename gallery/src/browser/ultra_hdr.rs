@@ -227,3 +227,17 @@ pub(in crate::browser) fn to_half_float(v: f32) -> u16 {
     };
     (base + ((f & 0x007fffff) >> shift)) as u16
 }
+
+/// An environment from a URL, as the pages load theirs: UltraHDRLoader for a
+/// JPEG ( `.hdr.jpg` ), HDRLoader for Radiance RGBE.
+pub(super) async fn environment(url: &str) -> Result<EnvironmentMap> {
+    let bytes = super::gltf_viewer::fetch(url).await?;
+    decode_environment(&bytes).await
+}
+pub(super) async fn decode_environment(bytes: &[u8]) -> Result<EnvironmentMap> {
+    if bytes.starts_with(&[0xff, 0xd8]) {
+        ultra_hdr(bytes).await
+    } else {
+        EnvironmentMap::from_hdr(bytes)
+    }
+}

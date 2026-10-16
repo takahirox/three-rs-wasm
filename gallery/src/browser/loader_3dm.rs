@@ -1,16 +1,16 @@
-//! webgl_loader_3dm: Rhino_Logo.3dm as Rhino3dmLoader builds it ( baked by
-//! tools/tsl/prepare-3dm-loader.mjs: rhino3dm's decode and the loader's object
-//! tree ) in a Z-up world: the brep render meshes in double-sided physical
-//! materials, 218 red curves, and the hidden point cloud, SubD meshes, text
-//! dots and Rhino lights, under the page's directional light. The text dots
-//! are drawn on a canvas as the loader draws them ( the font, the dot colour
-//! and the device pixel ratio ) and shown as unlit sprites without depth
-//! testing. The GUI toggles each layer's objects; OrbitControls orbit around Z.
-//! The loader leaves the lights' targets out of the scene, so the directional
-//! light shines toward the origin.
+//! webgl_loader_3dm: Rhino_Logo.3dm as Rhino3dmLoader builds it in a Z-up
+//! world: the brep render meshes in double-sided physical materials, 218 red
+//! curves, and the hidden point cloud, SubD meshes, text dots and Rhino
+//! lights, under the page's directional light. The file is decoded at load by
+//! the Rhino3dmLoader port ( rhino3dm_loader.rs ) on rhino3dm 8.32.1, loaded
+//! from jsDelivr as the page loads it, at the loader's subdivision level 3.
+//! The text dots are drawn on a canvas as the loader draws them ( the font,
+//! the dot colour and the device pixel ratio ) and shown as unlit sprites
+//! without depth testing. The GUI toggles each layer's objects; OrbitControls
+//! orbit around Z. The loader leaves the lights' targets out of the scene, so
+//! the directional light shines toward the origin.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::fetch;
-use crate::attribute::BufferAttribute;
 use crate::tsl::{Texture as Tex, sprites::SpriteNodeMaterial, uv};
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::f64::consts::PI;
@@ -19,134 +19,71 @@ use wasm_bindgen::JsCast;
 
 const ASSETS: &str = "/web/gallery/assets/3dm-loader";
 
-type Json = serde_json::Value;
-fn numbers(v: &Json) -> Vec<f64> {
-    v.as_array()
-        .map(|a| a.iter().filter_map(Json::as_f64).collect())
-        .unwrap_or_default()
+use super::rhino3dm_loader::{self as loader, LoaderMaterial, MaterialType, NodeKind as Kind};
+
+fn rgb(c: [f64; 3]) -> Color {
+    Color::linear(c[0], c[1], c[2])
 }
-fn vector(v: &Json) -> Vector3 {
-    let n = numbers(v);
-    Vector3::new(
-        n.first().copied().unwrap_or(0.),
-        n.get(1).copied().unwrap_or(0.),
-        n.get(2).copied().unwrap_or(0.),
-    )
-}
-fn color(v: &Json) -> Color {
-    let n = numbers(v);
-    Color::linear(
-        n.first().copied().unwrap_or(1.),
-        n.get(1).copied().unwrap_or(1.),
-        n.get(2).copied().unwrap_or(1.),
-    )
-}
-fn bytes<'a>(bin: &'a [u8], v: &Json, size: usize) -> Result<&'a [u8]> {
-    let offset = v["offset"].as_u64().ok_or(Error::Invalid("3dm offset"))? as usize;
-    let length = v["length"].as_u64().ok_or(Error::Invalid("3dm length"))? as usize;
-    bin.get(offset..offset + length * size)
-        .ok_or(Error::Invalid("3dm range"))
-}
-fn geometry(bin: &[u8], n: &Json) -> Result<BufferGeometry> {
-    let mut g = BufferGeometry::default();
-    if let Some(attributes) = n["attributes"].as_object() {
-        for (name, a) in attributes {
-            if a["type"].as_str() != Some("Float32Array") {
-                return Err(Error::Invalid("3dm attribute type"));
-            }
-            let data = bytes(bin, a, 4)?
-                .as_chunks::<4>()
-                .0
-                .iter()
-                .map(|&c| f32::from_le_bytes(c))
-                .collect();
-            let size = a["itemSize"].as_u64().unwrap_or(3) as usize;
-            g.set_attribute(
-                name,
-                Attribute::F32(BufferAttribute::new(
-                    data,
-                    size,
-                    a["normalized"].as_bool().unwrap_or(false),
-                )?),
-            );
-        }
-    }
-    if n["index"].is_object() {
-        let index = match n["index"]["type"].as_str() {
-            Some("Uint16Array") => bytes(bin, &n["index"], 2)?
-                .as_chunks::<2>()
-                .0
-                .iter()
-                .map(|&c| u32::from(u16::from_le_bytes(c)))
-                .collect(),
-            _ => bytes(bin, &n["index"], 4)?
-                .as_chunks::<4>()
-                .0
-                .iter()
-                .map(|&c| u32::from_le_bytes(c))
-                .collect(),
-        };
-        g.set_index(Some(index));
-    }
-    Ok(g)
-}
-fn material(m: &Json) -> Result<Material> {
-    let f = |k: &str, d: f64| m[k].as_f64().unwrap_or(d);
-    let mut properties = MaterialProperties {
-        color: color(&m["color"]),
-        opacity: f("opacity", 1.),
-        transparent: m["transparent"].as_bool().unwrap_or(false),
-        vertex_colors: m["vertexColors"].as_bool().unwrap_or(false),
-        flat_shading: m["flatShading"].as_bool().unwrap_or(false),
+fn material(m: &LoaderMaterial) -> Material {
+    let properties = MaterialProperties {
+        color: rgb(m.color),
+        opacity: m.opacity,
+        transparent: m.transparent,
+        vertex_colors: m.vertex_colors,
+        flat_shading: m.flat_shading,
+        side: if m.double_sided {
+            Side::Double
+        } else {
+            Side::Front
+        },
         ..Default::default()
     };
-    properties.side = match m["side"].as_u64() {
-        Some(1) => Side::Back,
-        Some(2) => Side::Double,
-        _ => Side::Front,
-    };
-    Ok(match m["type"].as_str() {
-        Some("MeshPhysicalMaterial") => {
+    match m.kind {
+        MaterialType::Physical => {
             let mut p = MeshPhysicalMaterial::default();
             p.base.properties = properties;
-            p.base.emissive = color(&m["emissive"]);
-            p.base.metalness = f("metalness", 0.);
-            p.base.roughness = f("roughness", 1.);
-            p.ior = f("ior", 1.5);
-            p.specular_intensity = f("specularIntensity", 1.);
-            p.specular_color = color(&m["specularColor"]);
-            p.clearcoat = f("clearcoat", 0.);
-            p.clearcoat_roughness = f("clearcoatRoughness", 0.);
-            p.sheen = f("sheen", 0.);
-            p.sheen_color = color(&m["sheenColor"]);
-            p.thickness = f("thickness", 0.);
-            p.anisotropy = f("anisotropy", 0.);
+            p.base.emissive = rgb(m.emissive);
+            p.base.metalness = m.metalness;
+            p.base.roughness = m.roughness;
+            p.ior = m.ior;
+            p.specular_intensity = m.specular_intensity;
+            p.specular_color = rgb(m.specular_color);
+            p.clearcoat = m.clearcoat;
+            p.clearcoat_roughness = m.clearcoat_roughness;
+            p.sheen = m.sheen;
+            p.sheen_color = rgb(m.sheen_color);
+            p.thickness = m.thickness;
+            p.anisotropy = m.anisotropy;
             Material::Physical(p)
         }
-        Some("MeshStandardMaterial") => Material::Standard(MeshStandardMaterial {
+        MaterialType::Standard => Material::Standard(MeshStandardMaterial {
             properties,
-            emissive: color(&m["emissive"]),
-            metalness: f("metalness", 0.),
-            roughness: f("roughness", 1.),
+            emissive: rgb(m.emissive),
+            metalness: m.metalness,
+            roughness: m.roughness,
             ..Default::default()
         }),
-        Some("LineBasicMaterial") => Material::Line(LineBasicMaterial {
+        MaterialType::LineBasic => Material::Line(LineBasicMaterial {
             properties,
             ..Default::default()
         }),
-        Some("PointsMaterial") => Material::Points(PointsMaterial {
+        MaterialType::Points => Material::Points(PointsMaterial {
             properties,
-            size: f("size", 1.),
-            size_attenuation: m["sizeAttenuation"].as_bool().unwrap_or(true),
+            size: m.size,
+            size_attenuation: m.size_attenuation,
         }),
-        _ => return Err(Error::Invalid("3dm material type")),
-    })
+    }
 }
 
 /// The loader's text dot: the text centred in white on the dot colour, on a
 /// canvas of the measured text width plus 10 by the font height plus 10 CSS
 /// pixels at the device pixel ratio; the sprite is a tenth of that in size.
-fn text_dot(dot: &Json) -> Result<(Texture, f64, f64)> {
+fn text_dot(
+    text: &str,
+    font_height: f64,
+    font_face: &str,
+    c: [f64; 4],
+) -> Result<(Texture, f64, f64)> {
     let window = web_sys::window().ok_or(Error::Invalid("window"))?;
     let canvas: web_sys::HtmlCanvasElement = window
         .document()
@@ -164,12 +101,7 @@ fn text_dot(dot: &Json) -> Result<(Texture, f64, f64)> {
                 .and_then(|c| c.dyn_into().ok())
                 .ok_or(Error::Invalid("canvas context"))
         };
-    let text = dot["text"].as_str().unwrap_or_default();
-    let font_height = dot["fontHeight"].as_f64().unwrap_or(12.);
-    let font = format!(
-        "{font_height}px {}",
-        dot["fontFace"].as_str().unwrap_or("Arial")
-    );
+    let font = format!("{font_height}px {font_face}");
     let ctx = context(&canvas)?;
     ctx.set_font(&font);
     let width = ctx
@@ -187,8 +119,7 @@ fn text_dot(dot: &Json) -> Result<(Texture, f64, f64)> {
     ctx.set_font(&font);
     ctx.set_text_baseline("middle");
     ctx.set_text_align("center");
-    let c = numbers(&dot["color"]);
-    let channel = |i: usize| c.get(i).copied().unwrap_or(0.);
+    let channel = |i: usize| c[i];
     ctx.set_fill_style_str(&format!(
         "rgba({},{},{},{})",
         channel(0),
@@ -246,55 +177,72 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(light)?.position = Vector3::new(0., 0., 2.);
-        let json: Json =
-            serde_json::from_slice(&fetch(&format!("{ASSETS}/Rhino_Logo.json")).await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let bin = fetch(&format!("{ASSETS}/Rhino_Logo.bin")).await?;
-        let materials = json["materials"]
-            .as_array()
-            .ok_or(Error::Invalid("3dm materials"))?
+        // loader.load( 'models/3dm/Rhino_Logo.3dm' ): the worker's decode
+        // and _createGeometry.
+        let rhino = loader::library().await?;
+        let decoded = loader::decode_objects(
+            &rhino,
+            &fetch(&format!("{ASSETS}/Rhino_Logo.3dm")).await?,
+            3.0,
+        )?;
+        let tree = loader::create_geometry(&decoded)?;
+        let materials: Vec<Arc<Material>> = tree
+            .materials
             .iter()
-            .map(|m| material(m).map(Arc::new))
-            .collect::<Result<Vec<_>>>()?;
-        let mut layers: Vec<(Vec<Object3D>, bool)> = json["layers"]
-            .as_array()
-            .ok_or(Error::Invalid("3dm layers"))?
-            .iter()
-            .map(|l| (vec![], l["visible"].as_bool().unwrap_or(true)))
+            .map(|m| Arc::new(material(m)))
             .collect();
-        let nodes = json["nodes"]
-            .as_array()
-            .ok_or(Error::Invalid("3dm nodes"))?;
-        let mut handles: Vec<Object3D> = Vec::with_capacity(nodes.len());
+        let mut layers: Vec<(Vec<Object3D>, bool)> = decoded
+            .layers
+            .iter()
+            .map(|l| {
+                let visible = js_sys::Reflect::get(l, &"visible".into())
+                    .map(|v| v.is_truthy())
+                    .unwrap_or(true);
+                (vec![], visible)
+            })
+            .collect();
+        let order = loader::traverse(&tree);
+        let mut handles: Vec<Option<Object3D>> = vec![None; tree.nodes.len()];
         let sampler = r.device.create_sampler(&wgpu::SamplerDescriptor {
             mag_filter: wgpu::FilterMode::Linear,
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
         let quad = Arc::new(PlaneGeometry::build(1., 1., 1, 1)?);
-        for n in nodes {
+        for &i in &order {
+            let n = &tree.nodes[i];
             let material = || {
-                n["material"]
-                    .as_u64()
-                    .and_then(|i| materials.get(i as usize).cloned())
+                n.material
+                    .and_then(|m| materials.get(m).cloned())
                     .ok_or(Error::Invalid("3dm node material"))
             };
-            let kind = match n["type"].as_str() {
-                Some("Mesh") => NodeKind::Mesh(Mesh {
-                    geometry: Arc::new(geometry(&bin, n)?),
+            let geometry = || {
+                n.geometry
+                    .clone()
+                    .ok_or(Error::Invalid("3dm node geometry"))
+            };
+            let mut sprite_scale = None;
+            let kind = match &n.kind {
+                Kind::Mesh => NodeKind::Mesh(Mesh {
+                    geometry: geometry()?,
                     materials: vec![material()?],
                 }),
-                Some("Line") => NodeKind::Line(Line {
-                    geometry: Arc::new(geometry(&bin, n)?),
+                Kind::Line => NodeKind::Line(Line {
+                    geometry: geometry()?,
                     material: material()?,
                     segments: false,
                 }),
-                Some("Points") => NodeKind::Points(Points {
-                    geometry: Arc::new(geometry(&bin, n)?),
+                Kind::Points => NodeKind::Points(Points {
+                    geometry: geometry()?,
                     material: material()?,
                 }),
-                Some("Sprite") => {
-                    let (texture, width, height) = text_dot(&n["textDot"])?;
+                Kind::Sprite {
+                    text,
+                    font_height,
+                    font_face,
+                    color,
+                } => {
+                    let (texture, width, height) = text_dot(text, *font_height, font_face, *color)?;
                     let gpu = r.upload_texture(&Arc::new(texture))?;
                     let mut m = SpriteNodeMaterial::new(Tex::External(0).sample(uv()))
                         .build(r, &[], &[(&gpu.view, &sampler)])
@@ -302,40 +250,53 @@ impl Demo {
                     // SpriteMaterial: transparent, and the loader turns depth testing off.
                     m.properties.transparent = true;
                     m.properties.depth_test = false;
-                    let h = s.insert(NodeKind::Mesh(Mesh::new(
-                        quad.clone(),
-                        Arc::new(Material::Shader(m)),
-                    )));
-                    let node = s.get_mut(h)?;
-                    node.scale = Vector3::new(width, height, 1.);
-                    node.frustum_culled = false;
-                    handles.push(h);
-                    Self::place(s, h, n, &handles, &mut layers)?;
-                    continue;
+                    sprite_scale = Some(Vector3::new(width, height, 1.));
+                    NodeKind::Mesh(Mesh::new(quad.clone(), Arc::new(Material::Shader(m))))
                 }
-                Some("PointLight") => {
-                    let l = &n["light"];
+                Kind::PointLight => {
+                    let (color, intensity) = n.light.unwrap_or(([1.; 3], 1.));
                     NodeKind::Light(Light::Point {
-                        color: color(&l["color"]),
-                        intensity: l["intensity"].as_f64().unwrap_or(1.),
-                        distance: l["distance"].as_f64().unwrap_or(0.),
-                        decay: l["decay"].as_f64().unwrap_or(2.),
+                        color: rgb(color),
+                        intensity,
+                        distance: 0.,
+                        decay: 2.,
                     })
                 }
-                Some("DirectionalLight") => {
-                    let l = &n["light"];
+                Kind::DirectionalLight { .. } => {
+                    let (color, intensity) = n.light.unwrap_or(([1.; 3], 1.));
                     NodeKind::Light(Light::Directional {
-                        color: color(&l["color"]),
-                        intensity: l["intensity"].as_f64().unwrap_or(1.),
+                        color: rgb(color),
+                        intensity,
                         target: Vector3::ZERO,
                     })
                 }
-                Some("Object3D") => NodeKind::Group,
-                _ => return Err(Error::Invalid("3dm node type")),
+                Kind::SpotLight { .. } | Kind::RectAreaLight { .. } => {
+                    return Err(Error::Invalid("3dm light type"));
+                }
+                Kind::Object3D => NodeKind::Group,
             };
             let h = s.insert(kind);
-            handles.push(h);
-            Self::place(s, h, n, &handles, &mut layers)?;
+            handles[i] = Some(h);
+            let node = s.get_mut(h)?;
+            node.position = Vector3::from_array(n.position);
+            let q = n.quaternion;
+            node.quaternion = Quaternion::from_xyzw(q[0], q[1], q[2], q[3]);
+            node.scale = sprite_scale.unwrap_or(Vector3::from_array(n.scale));
+            if sprite_scale.is_some() {
+                node.frustum_culled = false;
+            }
+            node.up = Vector3::Z;
+            node.visible = n.visible;
+            if let Some(parent) = n.parent.and_then(|p| handles[p]) {
+                s.add(parent, h)?;
+            }
+            if let Some(layer) = n
+                .layer_index
+                .filter(|l| *l >= 0. && l.fract() == 0.)
+                .and_then(|l| layers.get_mut(l as usize))
+            {
+                layer.0.push(h);
+            }
         }
         let mut controls = Controls::new(None, (0., f64::INFINITY), PI, true);
         controls.up = Vector3::Z;
@@ -345,37 +306,6 @@ impl Demo {
             layers,
             dirty: false,
         })
-    }
-    /// The node's parent, local transform, visibility and layer.
-    fn place(
-        s: &mut Scene,
-        h: Object3D,
-        n: &Json,
-        handles: &[Object3D],
-        layers: &mut [(Vec<Object3D>, bool)],
-    ) -> Result<()> {
-        let q = numbers(&n["quaternion"]);
-        let node = s.get_mut(h)?;
-        node.position = vector(&n["position"]);
-        if q.len() == 4 {
-            node.quaternion = Quaternion::from_xyzw(q[0], q[1], q[2], q[3]);
-        }
-        let scale = vector(&n["scale"]);
-        if n["type"].as_str() != Some("Sprite") {
-            node.scale = scale;
-        }
-        node.up = Vector3::Z;
-        node.visible = n["visible"].as_bool().unwrap_or(true);
-        if let Some(parent) = n["parent"].as_u64().and_then(|p| handles.get(p as usize)) {
-            s.add(*parent, h)?;
-        }
-        if let Some(layer) = n["layerIndex"]
-            .as_u64()
-            .and_then(|i| layers.get_mut(i as usize))
-        {
-            layer.0.push(h);
-        }
-        Ok(())
     }
     pub fn update(&mut self, _s: &mut Scene, _c: Object3D, _dt: f64, _animate: bool) -> Result<()> {
         Ok(())

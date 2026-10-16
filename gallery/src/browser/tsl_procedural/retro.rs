@@ -1,4 +1,3 @@
-use super::super::gltf_viewer::fetch;
 use super::*;
 use crate::{
     environment::EnvironmentMap,
@@ -273,30 +272,7 @@ impl Retro {
         band.base.roughness = 0.22;
         band.base.properties.color = Color::from_hex(0xf7f0d6);
         let band = Arc::new(Material::Physical(band));
-        #[derive(serde::Deserialize)]
-        struct AttributeData {
-            size: usize,
-            array: Vec<f32>,
-        }
-        #[derive(serde::Deserialize)]
-        struct Data {
-            index: Option<Vec<u32>>,
-            attributes: std::collections::HashMap<String, AttributeData>,
-        }
-        let data: Data = serde_json::from_slice(
-            &fetch("/web/gallery/assets/tsl-procedural/retro-base.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
-        let mut base = BufferGeometry::default();
-        base.set_index(data.index);
-        for (name, a) in data.attributes {
-            base.set_attribute(
-                &name,
-                Attribute::F32(crate::attribute::BufferAttribute::new(
-                    a.array, a.size, false,
-                )?),
-            );
-        }
+        let base = base_geometry(0.42, 0.04, 0.08)?;
         let base = Arc::new(base);
         let body = Arc::new(CylinderGeometry::build(
             0.035,
@@ -489,4 +465,56 @@ impl Retro {
         self.finish.apply(r, &self.main, None, out)?;
         Ok(true)
     }
+}
+
+/// createBaseGeometry( size, thickness, radius ): the rounded square
+/// ExtrudeGeometry, rotated flat.
+fn base_geometry(size: f64, thickness: f64, radius: f64) -> Result<BufferGeometry> {
+    use crate::shapes::{Extrude, Path, Shape};
+    use std::f64::consts::PI;
+    let half = size / 2.;
+    let mut p = Path::default();
+    p.move_to([-half + radius, -half]);
+    p.line_to([half - radius, -half]);
+    p.absarc([half - radius, -half + radius], radius, -PI / 2., 0., false);
+    p.line_to([half, half - radius]);
+    p.absarc([half - radius, half - radius], radius, 0., PI / 2., false);
+    p.line_to([-half + radius, half]);
+    p.absarc([-half + radius, half - radius], radius, PI / 2., PI, false);
+    p.line_to([-half, -half + radius]);
+    p.absarc(
+        [-half + radius, -half + radius],
+        radius,
+        PI,
+        PI * 1.5,
+        false,
+    );
+    let shape = Shape {
+        outline: p,
+        holes: vec![],
+    };
+    let (positions, uvs, groups) = crate::shapes::extrude_uv(
+        std::slice::from_ref(&shape),
+        &Extrude {
+            curve_segments: 12,
+            steps: 1,
+            depth: thickness,
+            bevel: None,
+        },
+    );
+    let mut g = BufferGeometry::default();
+    g.set_attribute(
+        "position",
+        Attribute::F32(crate::attribute::BufferAttribute::new(positions, 3, false)?),
+    );
+    g.set_attribute(
+        "uv",
+        Attribute::F32(crate::attribute::BufferAttribute::new(uvs, 2, false)?),
+    );
+    for (start, count, material) in groups {
+        g.add_group(start, count, material);
+    }
+    g.compute_vertex_normals()?;
+    g.rotate_x(-PI / 2.)?;
+    Ok(g)
 }

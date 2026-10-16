@@ -63,12 +63,31 @@ impl Demo {
             value: if id == 173 { 1. } else { 0. },
         };
         if id == 173 {
-            let g = Arc::new(
-                super::tsl_materials::geometries(
-                    &fetch(&format!("{ASSETS}/wireframe.bin")).await?,
-                )?
-                .remove(0),
+            // BufferGeometryLoader: the head without its normals and uvs, and
+            // setupAttributes()'s barycentric center ( carried in uv as x, y ).
+            let mut g = crate::buffer_geometry_loader::parse(
+                &fetch(&format!(
+                    "{ASSETS}/models/json/WaltHeadLo_buffergeometry.json"
+                ))
+                .await?,
+            )?;
+            let count = g.attributes.get("position").map_or(0, Attribute::count);
+            let centers: Vec<f32> = (0..count)
+                .flat_map(|i| match i % 3 {
+                    0 => [1., 0.],
+                    1 => [0., 1.],
+                    _ => [0., 0.],
+                })
+                .collect();
+            g.set_attribute(
+                "normal",
+                Attribute::F32(BufferAttribute::new(vec![0.; count * 3], 3, false)?),
             );
+            g.set_attribute(
+                "uv",
+                Attribute::F32(BufferAttribute::new(centers, 2, false)?),
+            );
+            let g = Arc::new(g);
             let mut m = NodeMaterial::new(vec3(float(224. / 255.), float(224. / 255.), float(1.)))
                 .build(r, &[])
                 .await?;
@@ -90,15 +109,39 @@ impl Demo {
             s.get_mut(h)?.position.x = 40.;
             d.objects.push(h);
         } else if id == 176 {
-            let g = Arc::new(
-                super::tsl_materials::geometries(&fetch(&format!("{ASSETS}/pressure.bin")).await?)?
-                    .remove(0),
-            );
-            let colors = GpuBuffer::new(
-                r,
-                &fetch(&format!("{ASSETS}/lut.bin")).await?,
-                BufferAccess::Read,
+            // BufferGeometryLoader, center(), computeVertexNormals(); the pressure
+            // rides in uv.x for the GPU color lookup.
+            let mut g = crate::buffer_geometry_loader::parse(
+                &fetch(&format!("{ASSETS}/models/json/pressure.json")).await?,
             )?;
+            g.center()?;
+            g.compute_vertex_normals()?;
+            let pressure = match g.attributes.get("pressure") {
+                Some(Attribute::F32(a)) => a.array().to_vec(),
+                _ => return Err(Error::Invalid("pressure attribute")),
+            };
+            g.delete_attribute("pressure");
+            g.set_attribute(
+                "uv",
+                Attribute::F32(BufferAttribute::new(
+                    pressure.iter().flat_map(|&p| [p, 0.]).collect(),
+                    2,
+                    false,
+                )?),
+            );
+            let g = Arc::new(g);
+            // lut.getColor( value ).convertSRGBToLinear() for each map's 33 colors.
+            let maps = ["rainbow", "cooltowarm", "blackbody", "grayscale"]
+                .map(|name| crate::lut::Lut::new(name, 32));
+            let lut: Vec<f32> = maps
+                .iter()
+                .flat_map(|l| l.lut.iter())
+                .flat_map(|c| {
+                    let [r, g, b] = c.map(|v| crate::math::srgb_to_linear(v) as f32);
+                    [r, g, b, 1.]
+                })
+                .collect();
+            let colors = GpuBuffer::new(r, bytemuck::cast_slice(&lut), BufferAccess::Read)?;
             let graph = NodeMaterial::new(base_color());
             let code = graph.wgsl_with_storage(0, &[Type::Vec4])?;
             let projection = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;let index=u32(floor(clamp(surface.uv.x/2000.0,0.0,1.0)*32.0+0.5));out.color=tsl_attribute_0[u32(u.custom[0].x)*33u+index];return out;}";
@@ -117,10 +160,11 @@ impl Demo {
                 decay: 0.,
             }));
             s.add(c, light)?;
+            // The color bars lut.updateCanvas() draws for the four maps.
             let mut texture = crate::material::Texture::from_rgba(
                 1,
                 128,
-                fetch(&format!("{ASSETS}/lut.rgba")).await?,
+                maps.iter().flat_map(crate::lut::Lut::canvas).collect(),
                 true,
             )?;
             texture.mipmap_filter = None;

@@ -1,8 +1,6 @@
 //! Direct Rust port of the static sphere grid in webgpu_pmrem_equirectangular.
-use super::gltf_viewer::{OrbitViewer, fetch};
-use crate::{
-    Result, camera::*, environment::EnvironmentMap, geometry::*, material::*, math::*, scene::*,
-};
+use super::gltf_viewer::OrbitViewer;
+use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 pub(super) async fn pmrem_grid(
@@ -11,9 +9,9 @@ pub(super) async fn pmrem_grid(
     placeholder: Object3D,
 ) -> Result<OrbitViewer> {
     scene.dispose(placeholder)?;
-    scene.environment = Some(Arc::new(EnvironmentMap::from_hdr(
-        &fetch("/web/environments/royal_esplanade_2k.hdr").await?,
-    )?));
+    scene.environment = Some(Arc::new(
+        super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg").await?,
+    ));
     scene.background_environment = true;
     scene.background_blur = 0.5;
     scene.aces_tone_mapping = true;

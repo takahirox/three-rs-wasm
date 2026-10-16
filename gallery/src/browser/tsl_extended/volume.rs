@@ -4,15 +4,7 @@ impl Demo {
         let compute = self.example == 83;
         let cloud = self.example != 81;
         let size = if compute { 200 } else { 128 };
-        let kind = if cloud { "cloud" } else { "perlin" };
-        let data = if compute {
-            vec![]
-        } else {
-            fetch(&format!("/web/gallery/assets/volume-{kind}.raw")).await?
-        };
-        if !compute && data.len() != 128 * 128 * 128 {
-            return Err(Error::Invalid("volume texture data"));
-        }
+        let data = if compute { vec![] } else { noise_volume(cloud) };
         let texture = r.device.create_texture(&wgpu::TextureDescriptor {
             label: Some("resident noise volume"),
             size: wgpu::Extent3d {
@@ -184,4 +176,31 @@ impl Demo {
         }
         Ok(())
     }
+}
+
+/// The page's 128³ ImprovedNoise Uint8Array: Perlin noise, or the cloud faded
+/// toward the edges.
+fn noise_volume(cloud: bool) -> Vec<u8> {
+    use crate::improved_noise::noise;
+    let mut data = Vec::with_capacity(128 * 128 * 128);
+    for z in 0..128 {
+        for y in 0..128 {
+            for x in 0..128 {
+                let (x, y, z) = (x as f64, y as f64, z as f64);
+                let d = 1.0
+                    - (((x - 64.0) / 128.0).powi(2)
+                        + ((y - 64.0) / 128.0).powi(2)
+                        + ((z - 64.0) / 128.0).powi(2))
+                    .sqrt();
+                let v = if cloud {
+                    (128.0 + 128.0 * noise(x * 0.05 / 1.5, y * 0.05, z * 0.05 / 1.5)) * d * d
+                } else {
+                    noise(x / 128.0 * 6.5, y / 128.0 * 6.5, z / 128.0 * 6.5) * 128.0 + 128.0
+                };
+                // Uint8Array stores the truncated value modulo 256.
+                data.push((v.trunc() as i64).rem_euclid(256) as u8);
+            }
+        }
+    }
+    data
 }

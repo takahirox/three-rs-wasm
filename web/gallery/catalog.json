@@ -622,7 +622,7 @@
         "source": "gallery/src/browser/batch_lod_bvh.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "10種のトーラスノットを50万インスタンス並べたBatchedMesh（MeshStandardMaterial、metalness 1、roughness 0.8、RoomEnvironmentのPMREM、ACES露出0.8）をRustで再現。708×708の格子にページの乱数で形状・回転・HSL色を与える。各ノットの4段のLODは@three.ez/simplify-geometryがmeshoptimizerで作る結果をtools/tsl/prepare-batch-lod.mjsでベイク（ノット自体はロード時に生成し、位置のハッシュで一致を確認）し、1つのインデックスバッファで共有する。@three.ez/batched-mesh-extensionsのonBeforeRenderと同じく毎フレームCPUでBVHによる視錐台カリング（bvh.jsの単精度の平面と箱）、画面サイズの指標によるLOD選択、手前からの順序付けを行う（useBVHオフでは境界球の線形カリング）。行列と色はGPUに常駐し、ノットとLODごとに可視インスタンスを1回のインスタンス描画で描く（WebGLはインスタンスごとのマルチドロー項目。描画順はLOD単位でまとまる）。ポインタ移動ではオリジナル同様にCPUでインスタンスの箱とノットの三角形（three-mesh-bvhの最初の交差）をレイキャストし、ホバー中のインスタンスを赤にする。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "10種のトーラスノットを50万インスタンス並べたBatchedMesh（MeshStandardMaterial、metalness 1、roughness 0.8、RoomEnvironmentのPMREM、ACES露出0.8）をRustで再現。708×708の格子にページの乱数で形状・回転・HSL色を与える。各ノットの4段のLODは@three.ez/simplify-geometryのsimplifyGeometriesByErrorLOD(geometries, 4, performanceRangeLOD)をRustへ移植し、ページと同じmeshoptimizer 1.1.1をjsDelivrから実行時に読み込んでMeshoptSimplifier.simplify(index, position, 3, 0, error, [])（誤差0.01・0.02・0.05・0.1）で読み込み時に作り、1つのインデックスバッファで共有する。@three.ez/batched-mesh-extensionsのonBeforeRenderと同じく毎フレームCPUでBVHによる視錐台カリング（bvh.jsの単精度の平面と箱）、画面サイズの指標によるLOD選択、手前からの順序付けを行う（useBVHオフでは境界球の線形カリング）。行列と色はGPUに常駐し、ノットとLODごとに可視インスタンスを1回のインスタンス描画で描く（WebGLはインスタンスごとのマルチドロー項目。描画順はLOD単位でまとまる）。ポインタ移動ではオリジナル同様にCPUでインスタンスの箱とノットの三角形（three-mesh-bvhの最初の交差）をレイキャストし、ホバー中のインスタンスを赤にする。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -1475,7 +1475,7 @@
         "source": "gallery/src/browser/geometry_materials.rs",
         "test": "tests/browser/geometry-materials.spec.js",
         "limitations": [
-          "圧力モデルとLUTは事前生成。色選択はGPUで実行。性能の完全な同等性は未保証。"
+          "圧力モデルは元のpressure.jsonを読み込み時にBufferGeometryLoaderのRust移植で読み、center()とcomputeVertexNormals()を行う。LutもRustへ移植し、4つのカラーマップの表とカラーバーを読み込み時に作る。頂点ごとの色選択はGPUで実行。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -1527,7 +1527,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/shapes.spec.js",
         "limitations": [
-          "性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。"
+          "マージした正十二面体の頂点（BufferGeometryUtils.mergeVertices）の点群とConvexGeometryを、ページと同じく読み込み時にRustで作る。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -1882,7 +1882,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/shapes.spec.js",
         "limitations": [
-          "性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。"
+          "NURBSCurve・NURBSSurface・NURBSVolumeとParametricGeometryをRustへ移植し、曲線（Math.randomはシード付き乱数）・曲面・体積の5面を読み込み時に作る。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -1940,7 +1940,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/geometry-materials.spec.js",
         "limitations": [
-          "固定Shape・Extrudeジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。性能の完全な同等性は未保証。"
+          "ShapeGeometry、ExtrudeGeometry（ベベルと2ステップ）、Path（EllipseCurve・SplineCurve、autoCloseのgetPointsと弧長によるgetSpacedPoints）をRustへ移植し、ページと同じく読み込み時に各形状を作る。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -2286,7 +2286,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/shapes.spec.js",
         "limitations": [
-          "性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。"
+          "FontLoaderのシェイプ、ShapeGeometryと輪郭線を読み込み時にRustで作る。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -2325,7 +2325,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/shapes.spec.js",
         "limitations": [
-          "性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。"
+          "FontLoaderのシェイプ（ltr・rtl・tb）、ShapeGeometryとSVGLoader.pointsToStrokeの線を読み込み時にRustで作る。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -3865,7 +3865,7 @@
         "source": "gallery/src/browser/loader_3dm.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "Rhino_Logo.3dmをRhino3dmLoaderが組み立てる通りに再現（rhino3dm 8.32.1によるデコードとローダーのオブジェクトツリーはtools/tsl/prepare-3dm-loader.mjsでベイク。rhino3dm本体（C++/wasm）は移植せず）。Z-upの世界で、BrepのレンダーメッシュをDoubleSideのPhysicalマテリアルで、218本の赤いカーブ、非表示の点群・SubD・TextDot・Rhinoのライトをページの指向性ライトの下で表示。TextDotはローダーと同じくcanvasに描き（フォント、色、デバイスピクセル比）、深度テストなしの非ライティングのスプライトとして表示。GUIでレイヤーごとの表示を切り替え、OrbitControlsはZ軸周りに回転。ローダーはライトのターゲットをシーンに追加しないため、指向性ライトは原点を向く。性能の完全な同等性は未保証。"
+          "Rhino_Logo.3dmをRhino3dmLoaderが組み立てる通りに再現。ページと同じrhino3dm 8.32.1をjsDelivrから実行時に読み込み（独自メモリを持つwasmモジュールのためJavaScript経由で呼ぶ）、ローダーのワーカー側decodeObjects（extractObjectData、curveToPoints、extractProperties、meshToThreejs）とメインスレッド側の_createGeometry・_createObject・_createMaterial・_compareMaterialsをRustへ移植した（サブディビジョンレベル3）。原版はデコードをWeb Workerで行うが、移植はページのスレッドで行い、シーンが参照しないuserData（ビュー、グループ、設定など）は組み立てない。Z-upの世界で、BrepのレンダーメッシュをDoubleSideのPhysicalマテリアルで、218本の赤いカーブ、非表示の点群・SubD・TextDot・Rhinoのライトをページの指向性ライトの下で表示。TextDotはローダーと同じくcanvasに描き（フォント、色、デバイスピクセル比）、深度テストなしの非ライティングのスプライトとして表示。GUIでレイヤーごとの表示を切り替え、OrbitControlsはZ軸周りに回転。ローダーはライトのターゲットをシーンに追加しないため、指向性ライトは原点を向く。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -4474,7 +4474,7 @@
         "source": "gallery/src/browser/fbx_loader.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "14個のFBXモデルを、固定版FBXLoaderの解析結果をtools/tsl/prepare-fbx-loader.mjsでベイクした形（ノード木、マテリアルグループ付きメッシュ、モーフターゲット、Phong/Lambertとテクスチャ、スキンメッシュのボーンとバインド行列、モデル内の環境光、キーフレームクリップ）で読み込み、ページの倍率、AnimationMixerでの先頭クリップ再生、SunLightのカスケード影、Phongの地面と半透明グリッド、線形フォグ、減衰付きOrbitControls（ズーム/パンなし）、半球光で表示。選択時に読み込む点はページと同じ。ページのGUIはモデルごとにクリップ一覧とメッシュ別のモーフスライダーを動的に作るが、ギャラリーの固定コントロールではクリップを番号で、モーフは1つのメッシュとターゲット番号で指定する。性能の完全な同等性は未保証。"
+          "14個の元のFBXモデルを、読み込み時にFBXLoaderのRust移植（fbx::parse、バイナリとASCII）で解析し（ノード木、マテリアルグループ付きメッシュ、モーフターゲット、Phong/Lambertとテクスチャ、スキンメッシュのボーンとバインド行列、モデル内の環境光、キーフレームクリップ。解析結果はブラウザで公式FBXLoaderとビット単位で一致することをtests/browser/fbx-loader.spec.jsで確認）、ページの倍率、AnimationMixerでの先頭クリップ再生、SunLightのカスケード影、Phongの地面と半透明グリッド、線形フォグ、減衰付きOrbitControls（ズーム/パンなし）、半球光で表示。選択時に読み込む点はページと同じ。ページのGUIはモデルごとにクリップ一覧とメッシュ別のモーフスライダーを動的に作るが、ギャラリーの固定コントロールではクリップを番号で、モーフは1つのメッシュとターゲット番号で指定する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -4530,7 +4530,7 @@
         "source": "gallery/src/browser/fbx_nurbs.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "FBXLoaderのASCIIパーサーでnurbs.fbxを読み、5つのNurbsCurve（開曲線・閉曲線・周期曲線、3次と4次）をNURBSCurve.getPoints( 制御点数 × 12 )で線にし、ローダーと同じ0x3300ffのLineBasicMaterial、モデルのLcl変換とレイヤーグループ、GridHelper、OrbitControlsとともにRustで再現。曲線は原作と同じく読み込み時に一度だけ評価する。FBXの対応範囲はこのファイルの内容（ASCII形式、NurbsCurveジオメトリ、平行移動と拡大縮小）に限る。性能の完全な同等性は未保証。"
+          "nurbs.fbxをFBXLoaderのRust移植で読み、5つのNurbsCurve（開曲線・閉曲線・周期曲線、3次と4次）をNURBSCurve.getPoints( 制御点数 × 12 )で線にし、ローダーと同じ0x3300ffのLineBasicMaterial、モデルの変換とローダーのグループ、GridHelper、OrbitControlsとともにRustで再現。曲線は原作と同じく読み込み時に一度だけ評価する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -5069,7 +5069,7 @@
         "source": "gallery/src/browser/ifc_loader.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "web-ifc 0.0.77がページへストリームする内容（一意なジオメトリの頂点データとインデックス、各配置のジオメトリ・色・変換行列をストリーム順に）をtools/tsl/prepare-ifc-loader.mjsでベイク（web-ifc本体（C++/wasm）は移植せず）。読み込み時にページのloadAllGeometryと同じく、配置ごとのsRGB→リニア色変換によるRGBA頂点色、位置と法線へのapplyMatrix4、mergeGeometriesによる不透明・半透明の2つの両面頂点色Phongメッシュへの結合をCPUで行う。2つの指向性ライトと環境光、OrbitControlsは操作時のみ描画。性能の完全な同等性は未保証。"
+          "ページと同じweb-ifc 0.0.77をjsDelivrから実行時に読み込み（独自メモリを持つwasmモジュールのためJavaScript経由で呼ぶ）、COORDINATE_TO_ORIGINで開いたモデルをStreamAllMeshesで受け取る。ページのloadAllGeometryはRustへ移植し、配置ごとにGetGeometry・GetVertexArray・GetIndexArrayで取得して、配置ごとのsRGB→リニア色変換によるRGBA頂点色、位置と法線へのapplyMatrix4、mergeGeometriesによる不透明・半透明の2つの両面頂点色Phongメッシュへの結合をCPUで行う。2つの指向性ライトと環境光、OrbitControlsは操作時のみ描画。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -6243,7 +6243,7 @@
         "source": "gallery/src/browser/usdz.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "saeukkangのUSDZモデルを、venice_sunsetのHDR環境だけで照らし、同じHDRを粗さ0.5でぼかした背景、ACES Filmic（露出2）、OrbitControlsで見る構成をRustで再現。モデルは固定版USDLoaderによるアーカイブの解析結果を準備スクリプト（tools/tsl/prepare-usdz.mjs）で焼いたもの（非インデックス属性のメッシュ1つと、粗さ1・IOR 1.5・アーカイブのベースカラー画像のMeshPhysicalMaterial）で、ページが実行時に行うUSDの解析は移植していない。WebGLRendererは正距円筒HDRを環境とぼかし背景の両方に使うPMREMのcubeUVテクスチャへ前処理する（PMREMGenerator.fromEquirectangular、GGX VNDF重点サンプリング）。移植ではWebGPUレンダラーが生成するr186のPMREM生成器（同じアルゴリズムと配置で、WebGPUの上下向きで格納し、参照側で考慮する）を実行する。モデルのシェーダーは、光源なしでCUBE_UV環境を持つMeshPhysicalMaterialにWebGLRendererが組み立てるGLSL（IBLの放射輝度と放射照度、r186のDFG LUTによる多重散乱）のWGSL移植で、背景は各ピクセルの視線方向のcubeUV参照。キャンバスへはシェーダーでトーンマップとsRGB変換を行い、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+          "saeukkangのUSDZモデルを、venice_sunsetのHDR環境だけで照らし、同じHDRを粗さ0.5でぼかした背景、ACES Filmic（露出2）、OrbitControlsで見る構成をRustで再現。モデルはアーカイブをUSDLoaderのRust移植（crate::usd。USDZの展開、USDA/USDCの解析、USDComposerの合成まで原版どおり）で読み込み時に解析したもの（非インデックス属性のメッシュ1つと、粗さ1・IOR 1.5・アーカイブのベースカラー画像のMeshPhysicalMaterial。シェーダーはこのマテリアル用に特殊化しており、読み込み時にパラメータを確認する）で、原版ローダーとの一致はtests/usd.rsとtests/browser/usd-loader.spec.js（ブラウザでビット単位）で検証する。WebGLRendererは正距円筒HDRを環境とぼかし背景の両方に使うPMREMのcubeUVテクスチャへ前処理する（PMREMGenerator.fromEquirectangular、GGX VNDF重点サンプリング）。移植ではWebGPUレンダラーが生成するr186のPMREM生成器（同じアルゴリズムと配置で、WebGPUの上下向きで格納し、参照側で考慮する）を実行する。モデルのシェーダーは、光源なしでCUBE_UV環境を持つMeshPhysicalMaterialにWebGLRendererが組み立てるGLSL（IBLの放射輝度と放射照度、r186のDFG LUTによる多重散乱）のWGSL移植で、背景は各ピクセルの視線方向のcubeUV参照。キャンバスへはシェーダーでトーンマップとsRGB変換を行い、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -6326,7 +6326,7 @@
         "source": "gallery/src/browser/vrml.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "16個のVRMLサンプル（既定はhouse）を環境光と平行光源の下に置き、アセットの読み込みでリセットされる減衰付きOrbitControlsで見る構成をRustで再現。シーンは固定版VRMLLoaderによる各ファイルの解析結果を準備スクリプト（tools/tsl/prepare-vrml.mjs）でローダーが残した形のまま焼いたもの（PhongとBasicのメッシュ、BackgroundノードのSkyとGroundの球、線分、点、ワールド行列・ジオメトリ・マテリアル・テクスチャ（map.gifとPixelTextureのデータ））で、ページが実行時に行うVRMLの構文解析は移植していない。16個すべてを読み込み時にGPUへ載せるため、アセットの切り替えでは何も生成しない。毎フレーム、WebGLRendererと同じくカリングと並べ替え（不透明はグループ順・描画順・マテリアルID・境界球中心のクリップ空間z・ID、半透明は奥から手前で両面は裏・表の2パス）を行う。シェーダーはWebGLRendererがMeshPhongMaterial、MeshBasicMaterial、LineBasicMaterial、PointsMaterial（減衰付きgl_PointSizeの正方形）に組み立てるGLSLのWGSL移植で、キャンバスへはWebGLと同じくシェーダーでsRGBに変換してから合成する。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+          "16個のVRMLサンプル（既定はhouse）を環境光と平行光源の下に置き、アセットの読み込みでリセットされる減衰付きOrbitControlsで見る構成をRustで再現。シーンは各.wrlをVRMLLoaderのRust移植（crate::vrml。chevrotainの字句・構文規則、USEの複製、JavaScriptの値変換、three.jsの数学まで原版どおり）で実行時に解析したもの（PhongとBasicのメッシュ、BackgroundノードのSkyとGroundの球、線分、点、ワールド行列・ジオメトリ・マテリアル・テクスチャ（map.gifとPixelTextureのデータ））で、原版ローダーとの一致はtests/vrml.rsとtests/browser/vrml-loader.spec.js（ブラウザでビット単位）で検証する。16個すべてを読み込み時にGPUへ載せるため、アセットの切り替えでは何も生成しない。毎フレーム、WebGLRendererと同じくカリングと並べ替え（不透明はグループ順・描画順・マテリアルID・境界球中心のクリップ空間z・ID、半透明は奥から手前で両面は裏・表の2パス）を行う。シェーダーはWebGLRendererがMeshPhongMaterial、MeshBasicMaterial、LineBasicMaterial、PointsMaterial（減衰付きgl_PointSizeの正方形）に組み立てるGLSLのWGSL移植で、キャンバスへはWebGLと同じくシェーダーでsRGBに変換してから合成する。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -7699,7 +7699,7 @@
         "source": "gallery/src/browser/subsurface.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "時計で回るStanford bunnyを、SubsurfaceScatteringShader（MeshPhongMaterialのプログラムに、厚みマップの赤チャンネルをthicknessColorで着色し、歪めたハーフベクトルで表面越しに照らす半透明項を各直接光へ加えたもの）で、環境光、弱い平行光源、範囲付きの2つの点光源（小さな球で表示）の下に描く構成をRustで再現。バニーは固定版FBXLoaderの解析結果（ローダーの非インデックス属性）を準備スクリプト（tools/tsl/prepare-bunny.mjs）で焼いたもの。シェーダーはWebGLRendererがShaderMaterial（lights: true、USE_MAPなし）とMeshBasicMaterialに組み立てるGLSLのWGSL移植で、キャンバスへはシェーダーでsRGBに変換し、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+          "時計で回るStanford bunnyを、SubsurfaceScatteringShader（MeshPhongMaterialのプログラムに、厚みマップの赤チャンネルをthicknessColorで着色し、歪めたハーフベクトルで表面越しに照らす半透明項を各直接光へ加えたもの）で、環境光、弱い平行光源、範囲付きの2つの点光源（小さな球で表示）の下に描く構成をRustで再現。バニーは元のstanford-bunny.fbxを読み込み時にFBXLoaderのRust移植で解析したもの（ローダーの非インデックス属性）。シェーダーはWebGLRendererがShaderMaterial（lights: true、USE_MAPなし）とMeshBasicMaterialに組み立てるGLSLのWGSL移植で、キャンバスへはシェーダーでsRGBに変換し、ページのantialiasに合わせてマルチサンプルする。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -9575,7 +9575,7 @@
         "source": "gallery/src/browser/raycaster_bvh.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderで解析したスタンフォードバニー（tools/tsl/prepare-bunny.mjsのベイク）に対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されない（displayHelper/helperDepthは画面に影響しない）ので、移植も描画しない。性能の完全な同等性は未保証。"
+          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されない（displayHelper/helperDepthは画面に影響しない）ので、移植も描画しない。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -13123,7 +13123,7 @@
         "source": "gallery/src/browser/point_clouds.rs",
         "test": "tests/browser/point-clouds.spec.js",
         "limitations": [
-          "固定BoxLineGeometryは公式から事前生成。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
+          "内側の殻の乱数点（シード付き）とマージした箱の辺の頂点を、ページと同じく読み込み時にRustで作る。点の変形・サイズ更新はGPUで実行。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -13911,7 +13911,7 @@
         "source": "gallery/src/browser/texture_volumes/arrays.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "head256x256x109（8bit）のDataArrayTexture（RedFormat、最近傍）、毎フレームの層の往復、生のShaderMaterial出力をRustで再現。zipは展開済みの生データとして配布。性能の完全な同等性は未保証。"
+          "head256x256x109（8bit）のDataArrayTexture（RedFormat、最近傍）、毎フレームの層の往復、生のShaderMaterial出力をRustで再現。元のzipを読み込み時にfflateのunzipSync相当で展開する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -14813,7 +14813,7 @@
         "source": "gallery/src/browser/retargeting_readyplayer.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "mixamo.fbxのダンスをSkeletonUtils.retargetClipでreadyplayer.meのアバターへリターゲットし、半球ライトと2つの平行光源の下、反射床の上で両方を踊らせる構成をRustで再現。FBXは固定版FBXLoaderの解析結果を準備スクリプト（tools/tsl/prepare-mixamo.mjs）でローダーが残したワールド行列ごと焼いたものを使い、リターゲット後のクリップはページと同じく読み込み時に一度CPUで焼く（three.jsの行列の扱いを再現するretargetingのシミュレーション）。アバター10個とキャラクター2個のスキンメッシュはボーン行列でGPUスキニングし、初回カリング時のスキン境界球での視錐台判定と、r186の不透明物の順序（境界球中心のクリップ空間z）で描く。リフレクターは鏡映ビューを床が参照するターゲットへ描く。各段はページからthree.js r186が生成するWGSL（retargeting_readyplayer/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "mixamo.fbxのダンスをSkeletonUtils.retargetClipでreadyplayer.meのアバターへリターゲットし、半球ライトと2つの平行光源の下、反射床の上で両方を踊らせる構成をRustで再現。FBXは元のmixamo.fbxを読み込み時にFBXLoaderのRust移植で解析し（ローダーが残すワールド行列を含む）、リターゲット後のクリップはページと同じく読み込み時に一度CPUで焼く（three.jsの行列の扱いを再現するretargetingのシミュレーション）。アバター10個とキャラクター2個のスキンメッシュはボーン行列でGPUスキニングし、初回カリング時のスキン境界球での視錐台判定と、r186の不透明物の順序（境界球中心のクリップ空間z）で描く。リフレクターは鏡映ビューを床が参照するターゲットへ描く。各段はページからthree.js r186が生成するWGSL（retargeting_readyplayer/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -16662,7 +16662,7 @@
         "source": "gallery/src/browser/compute_rasterizer_ibl.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "15,625個の回転するDamagedHelmet（125×125の平面または25³の立体）を、コンピュートシェーダーのソフトウェアラスタライザとハードウェアのフォールバックで描き、royal_esplanadeのPMREMで照らす構成をRustで再現。ページが読み込み時にMeshopt（meshoptimizer 1.1）で作るLODと64三角形メッシュレットは、公式ライブラリの出力を準備スクリプト（tools/tsl/prepare-rasterizer-ibl.mjs）で焼いたものを使い、ページと同じく読み込み時にストレージバッファへ詰める。毎フレーム、クリア、前フレームの深度ピラミッドによるオクルージョンを含むインスタンスとチャンクの錐台カリングとLOD選択、間接ディスパッチ、深度付きアトミックのラスタライズ、間接描画引数のコンピュートパスを実行し、ぼかした背景、可視バッファを標準マテリアル（またはメッシュレット・各チャンネル表示）で解決する全画面パスと深度、キューの大きい三角形の間接描画を描いたあと、HZBカーネルで次フレームの深度ピラミッドを作り、ブリットと出力パスでトーンマップする。ページの最初のフレームは、レンダラーがカメラをWebGPUのクリップ空間へ切り替える前の行列で計算する点も再現する。各段はページからthree.js r186が生成するWGSL（compute_rasterizer_ibl/、未使用のsubgroup宣言を除く）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "15,625個の回転するDamagedHelmet（125×125の平面または25³の立体）を、コンピュートシェーダーのソフトウェアラスタライザとハードウェアのフォールバックで描き、royal_esplanadeのPMREMで照らす構成をRustで再現。LODと64三角形メッシュレットは、ページと同じthree.js同梱のMeshoptSimplifier・MeshoptClusterizer（meshoptimizer 1.1）を実行時に読み込み、ページのLODループ（ノード変換を焼いたヘルメットへのsimplifyWithAttributes、buildMeshlets、computeMeshletBounds、extractMeshlet）をRustへ移植して読み込み時に作り、ページと同じくストレージバッファへ詰める。毎フレーム、クリア、前フレームの深度ピラミッドによるオクルージョンを含むインスタンスとチャンクの錐台カリングとLOD選択、間接ディスパッチ、深度付きアトミックのラスタライズ、間接描画引数のコンピュートパスを実行し、ぼかした背景、可視バッファを標準マテリアル（またはメッシュレット・各チャンネル表示）で解決する全画面パスと深度、キューの大きい三角形の間接描画を描いたあと、HZBカーネルで次フレームの深度ピラミッドを作り、ブリットと出力パスでトーンマップする。ページの最初のフレームは、レンダラーがカメラをWebGPUのクリップ空間へ切り替える前の行列で計算する点も再現する。各段はページからthree.js r186が生成するWGSL（compute_rasterizer_ibl/、未使用のsubgroup宣言を除く）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -17839,7 +17839,7 @@
         "source": "gallery/src/browser/shapes.rs",
         "test": "tests/browser/shapes.spec.js",
         "limitations": [
-          "性能の完全な同等性は未保証。固定ジオメトリは公式から事前生成。関連Addon APIの完全移植ではありません。"
+          "性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -20844,7 +20844,7 @@
         "source": "gallery/src/browser/environment_materials.rs",
         "test": "tests/browser/environment-materials.spec.js",
         "limitations": [
-          "固定OBJ形状は公式から事前生成。実行時のOBJLoader移植ではありません。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "忍者の頭部は元のninjaHead_Low.objを読み込み時にOBJLoaderのRust移植で解析し、ページと同じくcenter()する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

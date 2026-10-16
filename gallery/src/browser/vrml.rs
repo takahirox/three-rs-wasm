@@ -1,11 +1,11 @@
 //! webgl_loader_vrml: the sixteen VRML samples ( house by default ) under an
 //! ambient and a directional light, with damped OrbitControls that reset
-//! when an asset loads. The scenes are VRMLLoader's parse of each file, baked
-//! by tools/tsl/prepare-vrml.mjs as the loader leaves them: Phong and basic
-//! meshes ( the Background node's sky and ground spheres drawn first ), line
-//! segments and points, with their world matrices, geometries, materials and
-//! textures ( map.gif and the PixelTexture data ). All sixteen are uploaded
-//! at load, so switching assets creates nothing.
+//! when an asset loads. Each scene is the VRMLLoader port's parse of the
+//! sample's .wrl ( `crate::vrml` ): Phong and basic meshes ( the Background
+//! node's sky and ground spheres drawn first ), line segments and points,
+//! with their world matrices, geometries, materials and textures ( map.gif
+//! and the PixelTexture data ). All sixteen are parsed and uploaded at load,
+//! so switching assets creates nothing.
 //!
 //! Each frame culls and orders the renderables as WebGLRenderer does
 //! ( opaque by group order, render order, material id, clip-space z of the
@@ -144,48 +144,23 @@ const RECIPROCAL_PI: f32 = 0.3183098861837907;
 	return encode( diffuse.rgb, select( diffuse.a, 1.0, object.flags.w > 0.5 ) );
 }
 "#;
-#[derive(serde::Deserialize)]
-struct Blob {
-    offset: usize,
-    length: usize,
-    #[serde(rename = "type")]
-    kind: String,
-}
-#[derive(serde::Deserialize)]
-struct BakedAttribute {
-    offset: usize,
-    length: usize,
-    #[serde(rename = "itemSize")]
-    item_size: usize,
-}
-#[derive(serde::Deserialize)]
-struct BakedGeometry {
-    attributes: HashMap<String, BakedAttribute>,
-    index: Option<Blob>,
+/// A parsed geometry: its Float32 attributes, index and bounding sphere.
+struct GeometryData {
+    attributes: HashMap<String, Vec<f32>>,
+    index: Option<Vec<u32>>,
     sphere: [f64; 4],
 }
-#[derive(serde::Deserialize)]
-struct BakedData {
-    offset: usize,
-    length: usize,
-    width: u32,
-    height: u32,
-}
-#[derive(serde::Deserialize)]
-struct BakedTexture {
+struct TextureData {
     url: Option<String>,
-    data: Option<BakedData>,
+    data: Option<(Vec<u8>, u32, u32)>,
     wrap: [u32; 2],
     filter: [u32; 2],
-    #[serde(rename = "flipY")]
     flip_y: bool,
     matrix: [f64; 9],
 }
-#[derive(serde::Deserialize)]
-struct BakedMaterial {
+struct MaterialData {
     id: u32,
-    #[serde(rename = "type")]
-    kind: String,
+    kind: &'static str,
     color: [f64; 3],
     emissive: Option<[f64; 3]>,
     specular: Option<[f64; 3]>,
@@ -193,39 +168,147 @@ struct BakedMaterial {
     opacity: f64,
     transparent: bool,
     side: u32,
-    #[serde(rename = "vertexColors")]
     vertex_colors: bool,
-    #[serde(rename = "depthWrite")]
     depth_write: bool,
-    #[serde(rename = "depthTest")]
     depth_test: bool,
     size: Option<f64>,
     map: Option<usize>,
 }
-#[derive(serde::Deserialize)]
-struct BakedObject {
+/// A renderable as WebGLRenderer sees it: its id, kind, render order and
+/// the render order of its nearest group, world matrix, geometry and
+/// material.
+struct ObjectData {
     id: u32,
-    kind: String,
-    #[serde(rename = "renderOrder")]
+    kind: &'static str,
     render_order: f64,
-    #[serde(rename = "groupOrder")]
     group_order: f64,
-    #[serde(rename = "frustumCulled")]
     frustum_culled: bool,
-    #[serde(rename = "matrixWorld")]
     matrix_world: [f64; 16],
     geometry: usize,
-    material: BakedMaterial,
+    material: MaterialData,
 }
-#[derive(serde::Deserialize)]
-struct BakedAsset {
-    geometries: Vec<BakedGeometry>,
-    textures: Vec<BakedTexture>,
-    objects: Vec<BakedObject>,
+struct AssetData {
+    geometries: Vec<GeometryData>,
+    textures: Vec<TextureData>,
+    objects: Vec<ObjectData>,
 }
-#[derive(serde::Deserialize)]
-struct Bake {
-    assets: Vec<BakedAsset>,
+/// The visible meshes, line segments and points of a parse, with the
+/// geometries and textures they use in first-reference order.
+fn asset_data(scene: &crate::vrml::VrmlScene) -> Result<AssetData> {
+    use crate::vrml::{VrmlImage, VrmlMaterialKind, VrmlNodeKind};
+    let mut geometry_index: HashMap<usize, usize> = HashMap::new();
+    let mut texture_index: HashMap<usize, usize> = HashMap::new();
+    let mut asset = AssetData {
+        geometries: vec![],
+        textures: vec![],
+        objects: vec![],
+    };
+    let mut group_orders: Vec<f64> = vec![];
+    for n in &scene.nodes {
+        let inherited = n.parent.map_or(0., |p| group_orders[p]);
+        group_orders.push(if n.kind == VrmlNodeKind::Group {
+            n.render_order
+        } else {
+            inherited
+        });
+        let (kind, geometry, material) = match n.kind {
+            VrmlNodeKind::Mesh { geometry, material } => ("mesh", geometry, material),
+            VrmlNodeKind::LineSegments { geometry, material } => ("lines", geometry, material),
+            VrmlNodeKind::Points { geometry, material } => ("points", geometry, material),
+            _ => continue,
+        };
+        if !n.visible {
+            continue;
+        }
+        let g = match geometry_index.get(&geometry) {
+            Some(&g) => g,
+            None => {
+                let mut source = scene.geometries[geometry].geometry.clone();
+                let sphere = source.compute_bounding_sphere()?;
+                let attributes = source
+                    .attributes
+                    .iter()
+                    .filter_map(|(k, a)| match a {
+                        crate::geometry::Attribute::F32(a) => Some((k.clone(), a.array().to_vec())),
+                        _ => None,
+                    })
+                    .collect();
+                asset.geometries.push(GeometryData {
+                    attributes,
+                    index: source.index.clone(),
+                    sphere: [
+                        sphere.center.x,
+                        sphere.center.y,
+                        sphere.center.z,
+                        sphere.radius,
+                    ],
+                });
+                geometry_index.insert(geometry, asset.geometries.len() - 1);
+                asset.geometries.len() - 1
+            }
+        };
+        let m = &scene.materials[material];
+        let map = match m.map {
+            None => None,
+            Some(t) => Some(match texture_index.get(&t) {
+                Some(&i) => i,
+                None => {
+                    let t2 = &scene.textures[t];
+                    let (url, data) = match &t2.image {
+                        VrmlImage::Url(u) => (Some(u.clone()), None),
+                        VrmlImage::Data {
+                            width,
+                            height,
+                            data,
+                        } => (None, Some((data.clone(), *width as u32, *height as u32))),
+                    };
+                    asset.textures.push(TextureData {
+                        url,
+                        data,
+                        wrap: [t2.wrap_s, t2.wrap_t],
+                        filter: [t2.mag_filter, t2.min_filter],
+                        flip_y: t2.flip_y,
+                        matrix: t2.matrix,
+                    });
+                    texture_index.insert(t, asset.textures.len() - 1);
+                    asset.textures.len() - 1
+                }
+            }),
+        };
+        let phong = m.kind == VrmlMaterialKind::MeshPhong;
+        let points = m.kind == VrmlMaterialKind::Points;
+        asset.objects.push(ObjectData {
+            id: n.id,
+            kind,
+            render_order: n.render_order,
+            group_order: group_orders[group_orders.len() - 1],
+            frustum_culled: true,
+            matrix_world: n.matrix_world,
+            geometry: g,
+            material: MaterialData {
+                id: m.id,
+                kind: match m.kind {
+                    VrmlMaterialKind::MeshPhong => "MeshPhongMaterial",
+                    VrmlMaterialKind::MeshBasic => "MeshBasicMaterial",
+                    VrmlMaterialKind::Points => "PointsMaterial",
+                    VrmlMaterialKind::LineBasic => "LineBasicMaterial",
+                },
+                color: m.color,
+                emissive: phong.then_some(m.emissive),
+                specular: phong.then_some(m.specular),
+                shininess: phong.then_some(m.shininess),
+                opacity: m.opacity,
+                transparent: m.transparent,
+                side: m.side,
+                vertex_colors: m.vertex_colors,
+                depth_write: m.depth_write,
+                depth_test: m.depth_test,
+                size: points.then_some(m.size),
+                map,
+            },
+        });
+    }
+    Ok(asset)
 }
 /// A geometry's buffers: position, normal, uv and color ( zeros, or white
 /// for the color, when absent ), index, and its counts.
@@ -240,7 +323,7 @@ struct Geometry {
 /// culled face, blending, depth write and test.
 type Key = (u8, Option<wgpu::Face>, bool, bool, bool);
 struct Renderable {
-    object: BakedObject,
+    object: ObjectData,
     world: Matrix4,
     slot: u32,
     texture: usize,
@@ -276,7 +359,7 @@ pub(super) struct Demo {
     targets: Option<Targets>,
 }
 /// The renderer's sampler for a three.js filter and wrap pair.
-fn sampler(r: &Renderer, t: &BakedTexture) -> wgpu::Sampler {
+fn sampler(r: &Renderer, t: &TextureData) -> wgpu::Sampler {
     let wrap = |w| match w {
         1001 => wgpu::AddressMode::ClampToEdge,
         1002 => wgpu::AddressMode::MirrorRepeat,
@@ -318,13 +401,22 @@ impl Demo {
         s.get_mut(c)?.position = Vector3::new(-10., 5., 10.);
         let mut controls = Controls::new(Some(0.05), (1., 200.), std::f64::consts::PI, true);
         controls.update(s, c)?;
-        let bake: Bake = serde_json::from_slice(&fetch(&format!("{ASSETS}/scenes.json")).await?)
-            .map_err(|e| Error::Asset(e.to_string()))?;
-        let bin = fetch(&format!("{ASSETS}/scenes.bin")).await?;
-        let slice = |offset: usize, bytes: usize| -> Result<&[u8]> {
-            bin.get(offset..offset + bytes)
-                .ok_or(Error::Invalid("vrml bake range"))
+        // VRMLLoader.parse() of each sample; textures resolve against the
+        // assets' directory, as the page's loader resolves them against
+        // models/vrml/.
+        let options = crate::vrml::Options {
+            path: format!("{ASSETS}/"),
+            window_size: {
+                let (w, h, _) = viewport_css();
+                (w, h)
+            },
         };
+        let mut parsed = vec![];
+        for name in NAMES {
+            let text = fetch(&format!("{ASSETS}/{name}.wrl")).await?;
+            let scene = crate::vrml::parse(&String::from_utf8_lossy(&text), &options)?;
+            parsed.push(asset_data(&scene)?);
+        }
         let entry = |binding, visibility, ty| wgpu::BindGroupLayoutEntry {
             binding,
             visibility,
@@ -405,14 +497,14 @@ impl Demo {
         };
         let mut assets = vec![];
         let mut slots = 0u32;
-        for baked in bake.assets {
+        for baked in parsed {
             let mut geometries = vec![];
             for g in &baked.geometries {
                 let position = g
                     .attributes
                     .get("position")
                     .ok_or(Error::Invalid("vrml position"))?;
-                let vertices = position.length / position.item_size;
+                let vertices = position.len() / 3;
                 let mut buffers = vec![];
                 for (name, size, fill) in [
                     ("position", 3, 0f32),
@@ -421,11 +513,7 @@ impl Demo {
                     ("color", 3, 1.),
                 ] {
                     buffers.push(match g.attributes.get(name) {
-                        Some(a) => init(
-                            name,
-                            slice(a.offset, a.length * 4)?,
-                            wgpu::BufferUsages::VERTEX,
-                        ),
+                        Some(a) => init(name, bytemuck::cast_slice(a), wgpu::BufferUsages::VERTEX),
                         None => init(
                             name,
                             bytemuck::cast_slice(&vec![fill; vertices * size]),
@@ -437,29 +525,16 @@ impl Demo {
                     .try_into()
                     .map_err(|_| Error::Invalid("vrml buffers"))?;
                 let vertices = vertices as u32;
-                let index = match &g.index {
-                    Some(b) => {
-                        let indices: Vec<u32> = if b.kind == "Uint16Array" {
-                            slice(b.offset, b.length * 2)?
-                                .as_chunks::<2>()
-                                .0
-                                .iter()
-                                .map(|&c| u32::from(u16::from_le_bytes(c)))
-                                .collect()
-                        } else {
-                            bytemuck::pod_collect_to_vec(slice(b.offset, b.length * 4)?)
-                        };
-                        Some((
-                            init(
-                                "vrml index",
-                                bytemuck::cast_slice(&indices),
-                                wgpu::BufferUsages::INDEX,
-                            ),
-                            b.length as u32,
-                        ))
-                    }
-                    None => None,
-                };
+                let index = g.index.as_ref().map(|indices| {
+                    (
+                        init(
+                            "vrml index",
+                            bytemuck::cast_slice(indices),
+                            wgpu::BufferUsages::INDEX,
+                        ),
+                        indices.len() as u32,
+                    )
+                });
                 geometries.push(Geometry {
                     buffers,
                     index,
@@ -471,18 +546,17 @@ impl Demo {
             let mut textures = vec![texture_group(&white, &white_sampler)];
             for t in &baked.textures {
                 let view = if let Some(url) = &t.url {
-                    let image =
-                        decode_texture_image(&fetch(&format!("{ASSETS}/{url}")).await?).await?;
+                    let image = decode_texture_image(&fetch(url).await?).await?;
                     mipmapped(r, &mut mipmaps, &image, wgpu::TextureFormat::Rgba8UnormSrgb)
-                } else if let Some(d) = &t.data {
+                } else if let Some((data, width, height)) = &t.data {
                     // A PixelTexture's DataTexture: no mipmaps, nearest.
                     let texture = r.device.create_texture_with_data(
                         &r.queue,
                         &wgpu::TextureDescriptor {
                             label: Some("vrml pixel texture"),
                             size: wgpu::Extent3d {
-                                width: d.width,
-                                height: d.height,
+                                width: *width,
+                                height: *height,
                                 depth_or_array_layers: 1,
                             },
                             mip_level_count: 1,
@@ -494,7 +568,7 @@ impl Demo {
                             view_formats: &[],
                         },
                         wgpu::util::TextureDataOrder::LayerMajor,
-                        slice(d.offset, d.length)?,
+                        data,
                     );
                     texture.create_view(&Default::default())
                 } else {
@@ -874,7 +948,7 @@ impl Demo {
             for &(k, _) in list.iter() {
                 let o = &asset.renderables[k].object;
                 let m = &o.material;
-                let program = match (o.kind.as_str(), m.kind.as_str()) {
+                let program = match (o.kind, m.kind) {
                     ("lines", _) => 2,
                     ("points", _) => 3,
                     (_, "MeshPhongMaterial") => 0,

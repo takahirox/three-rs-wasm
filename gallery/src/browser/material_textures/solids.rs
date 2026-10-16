@@ -37,24 +37,6 @@ impl Demo {
             n.shadow.map_size = Some(2048);
             n.shadow.radius = 10.;
         }
-        #[derive(serde::Deserialize)]
-        struct G {
-            start: usize,
-            count: usize,
-            #[serde(rename = "materialIndex")]
-            material_index: usize,
-        }
-        #[derive(serde::Deserialize)]
-        struct Data {
-            position: Vec<f32>,
-            normal: Vec<f32>,
-            groups: Vec<G>,
-            #[serde(rename = "minY")]
-            min_y: f64,
-        }
-        let data: Vec<Data> =
-            serde_json::from_slice(&fetch(&format!("{ASSETS}/paper-models.json")).await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
         let materials: Vec<_> = [0xe4002b, 0xff7f11, 0xffd100, 0x00a651, 0x0072ce, 0x8a2be2]
             .into_iter()
             .map(|color| {
@@ -68,29 +50,19 @@ impl Demo {
                 Arc::new(Material::Standard(m))
             })
             .collect();
+        // makeHoleyGeometry() of the five solids, with their bounding boxes' bottoms.
         let mut geometries = Vec::new();
         let mut minimums = Vec::new();
-        for d in data {
-            let mut g = BufferGeometry::default();
-            g.set_attribute(
-                "position",
-                Attribute::F32(BufferAttribute::new(d.position, 3, false)?),
-            );
-            g.set_attribute(
-                "normal",
-                Attribute::F32(BufferAttribute::new(d.normal, 3, false)?),
-            );
-            g.groups = d
-                .groups
-                .into_iter()
-                .map(|x| Group {
-                    start: x.start,
-                    count: x.count,
-                    material_index: x.material_index,
-                })
-                .collect();
-            geometries.push(Arc::new(g));
-            minimums.push(d.min_y);
+        for (g, faces) in [
+            (TetrahedronGeometry::build(1.2, 0)?, 3),
+            (BoxGeometry::build(1.5, 1.5, 1.5)?, 6),
+            (OctahedronGeometry::build(1.2, 0)?, 3),
+            (DodecahedronGeometry::build(1.1, 0)?, 9),
+            (IcosahedronGeometry::build(1.1, 0)?, 3),
+        ] {
+            let mut h = holey(&g, faces, 0.6, materials.len())?;
+            minimums.push(h.compute_bounding_box()?.min.y);
+            geometries.push(Arc::new(h));
         }
         let mut m = MeshStandardMaterial {
             roughness: 0.5,
@@ -240,4 +212,75 @@ impl Demo {
         }
         Ok(())
     }
+}
+
+/// makeHoleyGeometry( geometry, verticesPerFace, holeScale ): each face's
+/// unique corners, sorted around its centroid, bridged to the corners scaled
+/// toward the centroid; one group per face, then computeVertexNormals().
+fn holey(
+    geometry: &BufferGeometry,
+    vertices_per_face: usize,
+    hole_scale: f64,
+    materials: usize,
+) -> Result<BufferGeometry> {
+    let geometry = geometry.to_non_indexed()?;
+    let position = geometry.positions()?;
+    let mut positions: Vec<f64> = vec![];
+    let mut out = BufferGeometry::default();
+    for face in 0..position.len() / vertices_per_face {
+        let mut corners: Vec<Vector3> = vec![];
+        let mut keys: Vec<[u64; 3]> = vec![];
+        for i in 0..vertices_per_face {
+            let v = position[face * vertices_per_face + i];
+            // v.toArray().join( ',' ): −0 prints as 0.
+            let key = v
+                .to_array()
+                .map(|c| if c == 0. { 0f64.to_bits() } else { c.to_bits() });
+            if !keys.contains(&key) {
+                keys.push(key);
+                corners.push(v);
+            }
+        }
+        let n = corners.len() as f64;
+        let centroid = corners.iter().fold(Vector3::ZERO, |c, &v| c + v) * (1. / n);
+        let normalize = |v: Vector3| {
+            let l = v.length();
+            v * (1. / if l == 0. { 1. } else { l })
+        };
+        let normal = normalize((corners[1] - corners[0]).cross(corners[2] - corners[0]));
+        let tangent = normalize(corners[0] - centroid);
+        let bitangent = normal.cross(tangent);
+        let angle = |v: Vector3| {
+            let d = v - centroid;
+            d.dot(bitangent).atan2(d.dot(tangent))
+        };
+        corners.sort_by(|p, q| {
+            (angle(*p) - angle(*q))
+                .partial_cmp(&0.)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        let inner: Vec<Vector3> = corners
+            .iter()
+            .map(|&v| centroid + (v - centroid) * hole_scale)
+            .collect();
+        out.add_group(positions.len() / 3, corners.len() * 6, face % materials);
+        for i in 0..corners.len() {
+            let j = (i + 1) % corners.len();
+            for v in [
+                corners[i], corners[j], inner[j], corners[i], inner[j], inner[i],
+            ] {
+                positions.extend(v.to_array());
+            }
+        }
+    }
+    out.set_attribute(
+        "position",
+        Attribute::F32(BufferAttribute::new(
+            positions.into_iter().map(|v| v as f32).collect(),
+            3,
+            false,
+        )?),
+    );
+    out.compute_vertex_normals()?;
+    Ok(out)
 }

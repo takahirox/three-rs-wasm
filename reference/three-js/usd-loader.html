@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>USDLoader r186 reference</title>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.Core.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="module">
+// The pinned USDLoader and the canonical form tests/browser/usd-loader.spec.js
+// compares; object URLs keep their blobs so the canonical form can hash the
+// images the composer decodes.
+import {USDLoader} from 'three/addons/loaders/USDLoader.js';
+import {canonical} from '/tools/core/usd-canonical.mjs';
+const blobs=new Map();const create=URL.createObjectURL.bind(URL);
+URL.createObjectURL=blob=>{const url=create(blob);blobs.set(url,blob);return url;};
+window.usdCanonical=async(bytes,path)=>{
+ blobs.clear();
+ const group=await new Promise((resolve,reject)=>new USDLoader().parse(bytes.slice().buffer,path,resolve,reject));
+ group.updateMatrixWorld(true);
+ const images=new Map();for(const [url,blob] of blobs)images.set(url,new Uint8Array(await blob.arrayBuffer()));
+ return canonical(group,images);
+};
+document.title='ready';
+</script>

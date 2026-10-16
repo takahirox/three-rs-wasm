@@ -63,25 +63,31 @@ considered and left out: they render the same scenes as `webgpu_skinning`,
 
 ## Port notes
 
-### Baked loader output
+### Loaders
 
-Where a page parses its asset with a library that is not three.js, or with a
-loader whose output the port renders unchanged, the output is baked by a
-tool that runs the pinned code and stored beside the asset's source hash:
+The FBX page parses its 14 models at load with the FBXLoader port
+( `src/fbx/` ): the binary and ASCII readers, the scene, geometry, material,
+skin and animation builders, with JavaScript's object semantics and three.js's
+math. `tests/fbx.rs` compares every model with the pinned loader natively and
+`tests/browser/fbx-loader.spec.js` bit for bit in the browser.
 
-- `tools/tsl/prepare-fbx-loader.mjs`: FBXLoader on the 14 FBX models ( node
-  tree, meshes, morphs, materials, skins and clips ).
-- `tools/tsl/prepare-3dm-loader.mjs`: rhino3dm 8.32.1 ( the version the page
-  loads ) decoding Rhino_Logo.3dm at the loader's subdivision level 3, and the
-  loader's `_createGeometry`. Text dots keep their canvas parameters; the port
-  draws them on a canvas at load as the loader does.
-- `tools/tsl/prepare-ifc-loader.mjs`: web-ifc 0.0.77 ( the version the page
-  loads ) streaming the model with COORDINATE_TO_ORIGIN: each distinct
-  geometry's vertex data and index, and every placement's geometry, colour and
-  transformation in stream order. The port runs the page's loadAllGeometry on
-  them at load ( the colour conversion, applyMatrix4 and mergeGeometries ).
+The 3DM and IFC pages load their libraries at run time, as the pages do:
+rhino3dm 8.32.1 and web-ifc 0.0.77 from jsDelivr. They are emscripten
+modules with their own memory, so the port calls them through JavaScript;
+the code around them is ported:
 
-The libraries themselves ( FBX, OpenNURBS, web-ifc ) are not ported.
+- 3DM: Rhino3dmLoader's worker decodeObjects ( extractObjectData,
+  curveToPoints, extractProperties, meshToThreejs ) and its main-thread
+  _createGeometry, _createObject, _createMaterial and _compareMaterials, at
+  the loader's subdivision level 3. The decode runs on the page's thread,
+  where the original posts it to a Web Worker. The loader's userData ( views,
+  groups, settings ) is not built, since nothing in the scene reads it. Text
+  dots are drawn on a canvas as the loader draws them.
+- IFC: the page's loadAllGeometry on web-ifc's StreamAllMeshes with
+  COORDINATE_TO_ORIGIN: GetGeometry, GetVertexArray and GetIndexArray per
+  placement, the colour conversion, applyMatrix4 and mergeGeometries.
+
+The libraries themselves ( OpenNURBS, web-ifc ) are not ported.
 
 ### Libraries ported to Rust
 

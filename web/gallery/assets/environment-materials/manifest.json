@@ -105,6 +105,11 @@
     "sha256": "5da43d969f6c178b1d2d819c5da523c66432a24f351d80afc88b1ada5f2c3f3b"
   },
   {
+    "file": "models/obj/ninja/ninjaHead_Low.obj",
+    "source": "examples/models/obj/ninja/ninjaHead_Low.obj",
+    "sha256": "07819eacecae77a8539fbaf673d9a0908ec2e6383d1b6cedd94544b2a2f2c53b"
+  },
+  {
     "file": "models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
     "source": "examples/models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
     "sha256": "937dea3ab1adea4624c9743ea0653fcb022235e6dcdebfb6e739b93f9d2a5cef"
@@ -138,11 +143,5 @@
     "file": "textures/uv_grid_opengl.jpg",
     "source": "examples/textures/uv_grid_opengl.jpg",
     "sha256": "909d9a1eb2a5d5de9d221a5e8de4e9119d409decddf522d48896bd51523d354d"
-  },
-  {
-    "file": "ninja.bin",
-    "source": "examples/models/obj/ninja/ninjaHead_Low.obj",
-    "source_sha256": "07819eacecae77a8539fbaf673d9a0908ec2e6383d1b6cedd94544b2a2f2c53b",
-    "sha256": "3ae0d4c6406ed061913c80bcf6e91fbd67f109841515e08e19ed22f3f5e6103f"
   }
 ]

@@ -2792,9 +2792,10 @@ impl Demo {
                         }
                     }
                 }
-                scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-                    &fetch("/web/environments/royal_esplanade_2k.hdr").await?,
-                )?));
+                scene.environment = Some(Arc::new(
+                    super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg")
+                        .await?,
+                ));
                 scene.background_environment = true;
                 scene.aces_tone_mapping = true;
                 scene.get_mut(camera)?.kind =

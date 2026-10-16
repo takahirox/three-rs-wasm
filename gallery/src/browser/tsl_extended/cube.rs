@@ -47,27 +47,8 @@ impl Demo {
             material: Arc::new(Material::Line(line)),
             segments: true,
         }));
-        #[derive(serde::Deserialize)]
-        struct AttributeData {
-            size: usize,
-            array: Vec<f32>,
-        }
-        #[derive(serde::Deserialize)]
-        struct GeometryData {
-            index: Vec<u32>,
-            attributes: std::collections::HashMap<String, AttributeData>,
-        }
-        let data: GeometryData =
-            serde_json::from_slice(&fetch("/web/gallery/assets/teapot-50-18.json").await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let mut geometry = BufferGeometry::default();
-        for (name, a) in data.attributes {
-            geometry.set_attribute(
-                &name,
-                Attribute::F32(BufferAttribute::new(a.array, a.size, false)?),
-            );
-        }
-        geometry.set_index(Some(data.index));
+        // TeapotGeometry( 50, 18 ).
+        let geometry = super::super::teapot_data::teapot(50., 18, true, true, true, true, true)?;
         let geometry = Arc::new(geometry);
         let cube = castle(r).await?;
         let reflected = tsl::sampling::cube(tsl::Texture::External(0), reflection()?).rgb();

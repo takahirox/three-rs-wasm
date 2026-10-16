@@ -20,24 +20,8 @@ fn attribute(g: &mut BufferGeometry, name: &str, data: Vec<f32>, size: usize) ->
 }
 impl Demo {
     pub(super) async fn materials(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        #[derive(serde::Deserialize)]
-        struct AttributeData {
-            size: usize,
-            array: Vec<f32>,
-        }
-        #[derive(serde::Deserialize)]
-        struct Data {
-            index: Vec<u32>,
-            attributes: std::collections::HashMap<String, AttributeData>,
-        }
-        let data: Data =
-            serde_json::from_slice(&fetch("/web/gallery/assets/teapot-50-18.json").await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let mut g = BufferGeometry::default();
-        for (name, a) in data.attributes {
-            attribute(&mut g, &name, a.array, a.size)?;
-        }
-        g.set_index(Some(data.index));
+        // TeapotGeometry( 50, 18 ).
+        let g = super::super::teapot_data::teapot(50., 18, true, true, true, true, true)?;
         let g = Arc::new(g);
         let uv_texture = texture(r, "uv_grid_opengl.jpg").await?;
         let alpha = texture(r, "alphaMap.jpg").await?;

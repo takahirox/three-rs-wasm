@@ -4,7 +4,12 @@ use crate::{
 };
 use std::sync::Arc;
 // Ordering is the original GeometryUtils.hilbert3D recursion, including orientation.
-fn hilbert(center: Vector3, size: f64, iterations: u32, order: [usize; 8]) -> Vec<Vector3> {
+pub(super) fn hilbert(
+    center: Vector3,
+    size: f64,
+    iterations: u32,
+    order: [usize; 8],
+) -> Vec<Vector3> {
     let half = size / 2.0;
     let corners = [
         [-1.0, 1.0, -1.0],

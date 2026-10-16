@@ -1,8 +1,6 @@
 //! glTF scenes; unaccepted candidates remain hidden until fidelity/resource checks pass.
-use super::gltf_viewer::{OrbitViewer, fetch, load_asset};
-use crate::{
-    Result, animation::AnimationMixer, camera::*, environment::EnvironmentMap, math::*, scene::*,
-};
+use super::gltf_viewer::{OrbitViewer, load_asset};
+use crate::{Result, animation::AnimationMixer, camera::*, math::*, scene::*};
 use std::sync::Arc;
 
 pub(super) struct Demo {
@@ -39,7 +37,7 @@ impl Demo {
                 ),
                 30 => (
                     "AnisotropyBarnLamp.glb",
-                    "/web/environments/royal_esplanade_2k.hdr",
+                    "/web/environments/royal_esplanade_2k.hdr.jpg",
                     40.0,
                     0.01,
                     10.0,
@@ -52,7 +50,7 @@ impl Demo {
                 ),
                 31 => (
                     "SheenChair.glb",
-                    "/web/environments/royal_esplanade_2k.hdr",
+                    "/web/environments/royal_esplanade_2k.hdr.jpg",
                     45.0,
                     0.1,
                     20.0,
@@ -65,7 +63,7 @@ impl Demo {
                 ),
                 32 => (
                     "IridescentDishWithOlives.glb",
-                    "/web/environments/royal_esplanade_2k.hdr",
+                    "/web/environments/royal_esplanade_2k.hdr.jpg",
                     45.0,
                     0.25,
                     20.0,
@@ -127,9 +125,7 @@ impl Demo {
             scene.add(camera, light)?;
             scene.background = Color::from_hex(0xeeeeee);
         } else {
-            scene.environment = Some(Arc::new(EnvironmentMap::from_hdr(
-                &fetch(environment).await?,
-            )?));
+            scene.environment = Some(Arc::new(super::ultra_hdr::environment(environment).await?));
             scene.background_environment = true;
         }
         scene.background_blur = blur;

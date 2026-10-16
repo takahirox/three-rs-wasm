@@ -26,9 +26,10 @@ impl Demo {
         )
         .await?;
         crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
-        scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-            &super::super::gltf_viewer::fetch("/web/environments/royal_esplanade_2k.hdr").await?,
-        )?));
+        scene.environment = Some(Arc::new(
+            super::super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg")
+                .await?,
+        ));
         scene.background = Color::BLACK;
         scene.background_alpha = 0.0;
         let input = RenderTarget::with_options(

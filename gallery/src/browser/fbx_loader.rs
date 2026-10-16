@@ -1,29 +1,46 @@
-//! webgl_loader_fbx: the page's 14 FBX models, each the pinned FBXLoader's
-//! parse baked by tools/tsl/prepare-fbx-loader.mjs ( node tree, meshes with
-//! their material groups, morph targets, Phong and Lambert materials with
-//! their textures, skinned meshes' bones and bind matrices, the ambient
-//! light one model carries, and the keyframe clips ). The selected model is
-//! scaled as the page scales it, its first clip plays on an AnimationMixer
-//! by the Timer, and it casts and receives the SunLight's cascaded shadows
-//! over the Phong ground and translucent grid in linear fog, with damped
-//! OrbitControls ( no zoom or pan ) and a hemisphere light. A model loads
-//! when chosen, as the page loads it. The page's GUI builds a clip list and
-//! per-mesh morph sliders for each model; the gallery's fixed controls give
-//! the clip by index and one morph influence by mesh and target index.
+//! webgl_loader_fbx: the page's 14 FBX models, each parsed at load by the
+//! FBXLoader port ( `fbx::parse` ): the node tree, meshes with their material
+//! groups, morph targets, Phong and Lambert materials with their textures,
+//! skinned meshes' bones and bind matrices, the ambient light one model
+//! carries, and the keyframe clips. The selected model is scaled as the page
+//! scales it, its first clip plays on an AnimationMixer by the Timer, and it
+//! casts and receives the SunLight's cascaded shadows over the Phong ground
+//! and translucent grid in linear fog, with damped OrbitControls ( no zoom
+//! or pan ) and a hemisphere light. A model loads when chosen, as the page
+//! loads it. The page's GUI builds a clip list and per-mesh morph sliders
+//! for each model; the gallery's fixed controls give the clip by index and
+//! one morph influence by mesh and target index.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::interactive_scenes::grid_helper;
 use crate::animation::{AnimationMixer, Clip, Interpolation, Property, Track};
-use crate::attribute::BufferAttribute;
 use crate::deformation::Skin;
+use crate::fbx::{self, FbxImage, FbxMaterial, FbxMaterialKind, FbxNodeKind, FbxScene};
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::cell::RefCell;
 use std::f64::consts::PI;
 use std::rc::Rc;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/fbx-loader";
-const COUNT: usize = 14;
+const ASSETS: &str = "/web/gallery/assets/fbx-loader/models/fbx";
+/// The page's asset list.
+const NAMES: [&str; 14] = [
+    "Samba Dancing",
+    "morph_test",
+    "monkey",
+    "monkey_embedded_texture",
+    "vCube",
+    "archer/ArcherRi01",
+    "warrior/Warrior",
+    "stanford-bunny",
+    "mixamo",
+    "RotationTest",
+    "exampleWindow",
+    "Head_69",
+    "morph-translation",
+    "ball_anims_asc_2018",
+];
+const COUNT: usize = NAMES.len();
 /// The page's scales map: Warrior, Archer and Head_69 × 100, the bunny ×
 /// 0.001, the ball × 50.
 fn scale(asset: usize) -> f64 {
@@ -35,55 +52,6 @@ fn scale(asset: usize) -> f64 {
     }
 }
 
-type Json = serde_json::Value;
-fn numbers(v: &Json) -> Vec<f64> {
-    v.as_array()
-        .map(|a| a.iter().filter_map(Json::as_f64).collect())
-        .unwrap_or_default()
-}
-fn color(v: &Json) -> Color {
-    let n = numbers(v);
-    Color::linear(
-        n.first().copied().unwrap_or(1.),
-        n.get(1).copied().unwrap_or(1.),
-        n.get(2).copied().unwrap_or(1.),
-    )
-}
-fn matrix(v: &Json) -> Matrix4 {
-    let n = numbers(v);
-    Matrix4::from_cols_array(&std::array::from_fn(|i| n.get(i).copied().unwrap_or(0.)))
-}
-fn bytes<'a>(bin: &'a [u8], v: &Json, size: usize) -> Result<&'a [u8]> {
-    let offset = v["offset"].as_u64().ok_or(Error::Invalid("fbx offset"))? as usize;
-    let length = v["length"].as_u64().ok_or(Error::Invalid("fbx length"))? as usize;
-    bin.get(offset..offset + length * size)
-        .ok_or(Error::Invalid("fbx range"))
-}
-fn f32s(bin: &[u8], v: &Json) -> Result<Vec<f32>> {
-    Ok(bytes(bin, v, 4)?
-        .as_chunks::<4>()
-        .0
-        .iter()
-        .map(|&c| f32::from_le_bytes(c))
-        .collect())
-}
-fn attribute(bin: &[u8], v: &Json) -> Result<Attribute> {
-    let size = v["itemSize"].as_u64().unwrap_or(3) as usize;
-    let normalized = v["normalized"].as_bool().unwrap_or(false);
-    Ok(match v["type"].as_str() {
-        Some("Uint16Array") => {
-            let data = bytes(bin, v, 2)?
-                .as_chunks::<2>()
-                .0
-                .iter()
-                .map(|&c| u16::from_le_bytes(c))
-                .collect();
-            Attribute::U16(BufferAttribute::new(data, size, normalized)?)
-        }
-        _ => Attribute::F32(BufferAttribute::new(f32s(bin, v)?, size, normalized)?),
-    })
-}
-
 /// A loaded model: its root, the clips, and the morph meshes.
 struct Model {
     root: Object3D,
@@ -92,191 +60,139 @@ struct Model {
 }
 struct Loaded {
     asset: usize,
-    json: Json,
-    bin: Vec<u8>,
-    images: Vec<(String, Texture)>,
+    scene: FbxScene,
+    /// The decoded image of each texture ( none when it fails to load ).
+    images: Vec<Option<Texture>>,
 }
 
+/// FBXLoader.load( 'models/fbx/' + asset + '.fbx' ), with
+/// trimAnimationClips for the ball, and its textures.
 async fn load(asset: usize) -> Result<Loaded> {
-    let json: Json = serde_json::from_slice(&fetch(&format!("{ASSETS}/{asset}.json")).await?)
-        .map_err(|e| Error::Asset(e.to_string()))?;
-    let bin = fetch(&format!("{ASSETS}/{}", json["file"].as_str().unwrap_or(""))).await?;
-    let mut images: Vec<(String, Texture)> = vec![];
-    for mesh in json["meshes"].as_array().into_iter().flatten() {
-        for m in mesh["materials"].as_array().into_iter().flatten() {
-            for key in [
-                "map",
-                "alphaMap",
-                "normalMap",
-                "bumpMap",
-                "specularMap",
-                "emissiveMap",
-            ] {
-                if let Some(name) = m[key]["image"].as_str()
-                    && !images.iter().any(|(n, _)| n == name)
-                {
-                    let t =
-                        decode_texture_image(&fetch(&format!("{ASSETS}/{name}")).await?).await?;
-                    images.push((name.to_string(), t));
-                }
-            }
-        }
+    let name = NAMES[asset];
+    let dir = name.rfind('/').map_or("", |i| &name[..=i]);
+    let bytes = fetch(&format!("{ASSETS}/{name}.fbx")).await?;
+    let scene = fbx::parse(
+        &bytes,
+        &fbx::Options {
+            trim_animation_clips: asset == 13,
+            path: format!("{ASSETS}/{dir}"),
+            ..Default::default()
+        },
+    )?;
+    let mut images = vec![];
+    for t in &scene.textures {
+        // A file the asset names but the examples do not ship ( Head_69's
+        // ALPHA.png ) fails to load in the page too.
+        images.push(match &t.image {
+            FbxImage::None => None,
+            FbxImage::Url(url) => match fetch(url).await {
+                Ok(b) => decode_texture_image(&b).await.ok(),
+                Err(_) => None,
+            },
+            FbxImage::Embedded { data, .. } => decode_texture_image(data).await.ok(),
+        });
     }
     Ok(Loaded {
         asset,
-        json,
-        bin,
+        scene,
         images,
     })
 }
 
-fn texture(images: &[(String, Texture)], v: &Json, srgb: bool) -> Option<Arc<Texture>> {
-    let name = v["image"].as_str()?;
-    let (_, image) = images.iter().find(|(n, _)| n == name)?;
-    let mut t = image.clone();
-    t.srgb = srgb && v["colorSpace"].as_str() == Some("srgb");
-    let wrap = |w: &Json| match w.as_u64() {
-        Some(1000) => Wrapping::Repeat,
-        Some(1002) => Wrapping::Mirror,
-        _ => Wrapping::Clamp,
+fn texture(l: &Loaded, index: Option<usize>, srgb: bool) -> Option<Arc<Texture>> {
+    let index = index?;
+    let mut t = l.images.get(index)?.clone()?;
+    let source = &l.scene.textures[index];
+    t.srgb = srgb && source.srgb;
+    t.wrap_s = if source.repeat_s {
+        Wrapping::Repeat
+    } else {
+        Wrapping::Clamp
     };
-    t.wrap_s = wrap(&v["wrapS"]);
-    t.wrap_t = wrap(&v["wrapT"]);
-    let n = numbers(&v["repeat"]);
-    t.repeat = Vector2::new(
-        n.first().copied().unwrap_or(1.),
-        n.get(1).copied().unwrap_or(1.),
-    );
-    let n = numbers(&v["offset"]);
-    t.offset = Vector2::new(
-        n.first().copied().unwrap_or(0.),
-        n.get(1).copied().unwrap_or(0.),
-    );
-    t.rotation = v["rotation"].as_f64().unwrap_or(0.);
-    t.flip_y = v["flipY"].as_bool().unwrap_or(true);
+    t.wrap_t = if source.repeat_t {
+        Wrapping::Repeat
+    } else {
+        Wrapping::Clamp
+    };
+    t.repeat = source.repeat;
+    t.offset = source.offset;
     t.mipmap_filter = Some(Filter::Linear);
     Some(Arc::new(t))
 }
 
-fn material(images: &[(String, Texture)], m: &Json) -> Material {
+fn material(l: &Loaded, m: &FbxMaterial) -> Material {
     let p = MaterialProperties {
-        color: color(&m["color"]),
-        opacity: m["opacity"].as_f64().unwrap_or(1.),
-        transparent: m["transparent"].as_bool().unwrap_or(false),
-        side: match m["side"].as_u64() {
-            Some(1) => Side::Back,
-            Some(2) => Side::Double,
-            _ => Side::Front,
-        },
-        flat_shading: m["flatShading"].as_bool().unwrap_or(false),
-        vertex_colors: m["vertexColors"].as_bool().unwrap_or(false),
-        map: texture(images, &m["map"], true),
+        color: m.color,
+        opacity: m.opacity,
+        transparent: m.transparent,
+        vertex_colors: m.vertex_colors,
+        map: texture(l, m.map, true),
         ..Default::default()
     };
-    let emissive = color(&m["emissive"]).0 * m["emissiveIntensity"].as_f64().unwrap_or(1.);
-    if m["type"].as_str() == Some("MeshLambertMaterial") {
+    let emissive = Color(m.emissive.0 * m.emissive_intensity);
+    if m.kind == FbxMaterialKind::Lambert {
         Material::Lambert(MeshLambertMaterial {
             properties: p,
-            emissive: Color(emissive),
+            emissive,
             ..Default::default()
         })
     } else {
         Material::Phong(MeshPhongMaterial {
             properties: p,
-            emissive: Color(emissive),
-            specular: color(&m["specular"]),
-            shininess: m["shininess"].as_f64().unwrap_or(30.),
-            normal_map: texture(images, &m["normalMap"], false),
-            specular_map: texture(images, &m["specularMap"], false),
-            emissive_map: texture(images, &m["emissiveMap"], true),
+            emissive,
+            specular: m.specular,
+            shininess: m.shininess,
+            normal_map: texture(l, m.normal_map, false),
+            specular_map: texture(l, m.specular_map, true),
+            emissive_map: texture(l, m.emissive_map, true),
             ..Default::default()
         })
     }
 }
 
 fn instantiate(s: &mut Scene, l: &Loaded) -> Result<Model> {
-    let (json, bin) = (&l.json, &l.bin);
+    let fbx = &l.scene;
+    let geometries: Vec<Arc<BufferGeometry>> = fbx
+        .geometries
+        .iter()
+        .map(|g| Arc::new(g.geometry.clone()))
+        .collect();
+    let materials: Vec<Arc<Material>> = fbx
+        .materials
+        .iter()
+        .map(|m| Arc::new(material(l, m)))
+        .collect();
     let mut handles = vec![];
-    for n in json["nodes"]
-        .as_array()
-        .ok_or(Error::Invalid("fbx nodes"))?
-    {
-        let kind = match n["light"].is_object() {
-            true => NodeKind::Light(Light::Ambient {
-                color: color(&n["light"]["color"]),
-                intensity: n["light"]["intensity"].as_f64().unwrap_or(1.),
+    for n in &fbx.nodes {
+        let kind = match &n.kind {
+            FbxNodeKind::AmbientLight { color, intensity } => NodeKind::Light(Light::Ambient {
+                color: *color,
+                intensity: *intensity,
             }),
-            false => NodeKind::Group,
+            _ => NodeKind::Group,
         };
         let h = s.insert(kind);
-        let (p, q, sc) = (
-            numbers(&n["position"]),
-            numbers(&n["quaternion"]),
-            numbers(&n["scale"]),
-        );
         let node = s.get_mut(h)?;
-        node.name = n["name"].as_str().unwrap_or("").to_string();
-        node.position = Vector3::new(p[0], p[1], p[2]);
-        node.quaternion = Quaternion::from_xyzw(q[0], q[1], q[2], q[3]);
-        node.scale = Vector3::new(sc[0], sc[1], sc[2]);
-        if let Some(parent) = n["parent"].as_u64() {
-            s.add(handles[parent as usize], h)?;
+        node.name = n.name.clone();
+        node.position = n.position;
+        node.quaternion = n.quaternion;
+        node.scale = n.scale;
+        if let Some(parent) = n.parent {
+            s.add(handles[parent], h)?;
         }
         handles.push(h);
     }
     let mut morphs = vec![];
-    for m in json["meshes"].as_array().into_iter().flatten() {
-        let h = handles[m["node"].as_u64().ok_or(Error::Invalid("fbx mesh node"))? as usize];
-        let mut g = BufferGeometry::default();
-        for (name, a) in m["attributes"].as_object().into_iter().flatten() {
-            g.set_attribute(name.as_str(), attribute(bin, a)?);
-        }
-        if m["index"].is_object() {
-            let index = match m["index"]["type"].as_str() {
-                Some("Uint16Array") => bytes(bin, &m["index"], 2)?
-                    .as_chunks::<2>()
-                    .0
-                    .iter()
-                    .map(|&c| u32::from(u16::from_le_bytes(c)))
-                    .collect(),
-                _ => bytes(bin, &m["index"], 4)?
-                    .as_chunks::<4>()
-                    .0
-                    .iter()
-                    .map(|&c| u32::from_le_bytes(c))
-                    .collect(),
-            };
-            g.set_index(Some(index));
-        }
-        for group in m["groups"].as_array().into_iter().flatten() {
-            g.add_group(
-                group["start"].as_u64().unwrap_or(0) as usize,
-                group["count"].as_u64().unwrap_or(0) as usize,
-                group["materialIndex"].as_u64().unwrap_or(0) as usize,
-            );
-        }
-        let mut targets = 0;
-        for (name, list) in m["morphAttributes"].as_object().into_iter().flatten() {
-            let attributes = list
-                .as_array()
-                .into_iter()
-                .flatten()
-                .map(|a| attribute(bin, a))
-                .collect::<Result<Vec<_>>>()?;
-            targets = targets.max(attributes.len());
-            g.morph_attributes.insert(name.clone(), attributes);
-        }
-        g.morph_targets_relative = m["morphTargetsRelative"].as_bool().unwrap_or(false);
-        let materials: Vec<Arc<Material>> = m["materials"]
-            .as_array()
-            .into_iter()
-            .flatten()
-            .map(|v| Arc::new(material(&l.images, v)))
-            .collect();
+    for (i, n) in fbx.nodes.iter().enumerate() {
+        let FbxNodeKind::Mesh(m) = &n.kind else {
+            continue;
+        };
+        let h = handles[i];
+        let targets = m.morph_targets.len();
         let node = s.get_mut(h)?;
         node.kind = NodeKind::Mesh(Mesh {
-            geometry: Arc::new(g),
-            materials,
+            geometry: geometries[m.geometry].clone(),
+            materials: m.materials.iter().map(|&k| materials[k].clone()).collect(),
         });
         node.cast_shadow = true;
         node.receive_shadow = true;
@@ -285,55 +201,46 @@ fn instantiate(s: &mut Scene, l: &Loaded) -> Result<Model> {
             morphs.push((h, targets));
         }
         // Attached SkinnedMesh: bone world × boneInverse × bindMatrix.
-        if m["skin"].is_object() {
-            let bind = matrix(&m["skin"]["bindMatrix"]);
-            let joints = m["skin"]["bones"]
-                .as_array()
-                .into_iter()
-                .flatten()
-                .map(|b| handles[b.as_u64().unwrap_or(0) as usize])
-                .collect();
-            let inverse = m["skin"]["boneInverses"]
-                .as_array()
-                .into_iter()
-                .flatten()
-                .map(|b| matrix(b) * bind)
-                .collect();
+        if let Some(skin) = &m.skin {
             node.skin = Some(Skin {
-                joints,
-                inverse_bind_matrices: inverse,
+                joints: skin.bones.iter().map(|b| handles[b.unwrap_or(0)]).collect(),
+                inverse_bind_matrices: skin
+                    .bone_inverses
+                    .iter()
+                    .map(|b| *b * skin.bind_matrix)
+                    .collect(),
             });
         }
     }
     let mut clips = vec![];
-    for c in json["clips"].as_array().into_iter().flatten() {
+    for c in &fbx.clips {
         let mut tracks = vec![];
-        for t in c["tracks"].as_array().into_iter().flatten() {
-            let property = match t["property"].as_str() {
-                Some("position") => Property::Position,
-                Some("quaternion") => Property::Rotation,
-                Some("scale") => Property::Scale,
+        for t in &c.tracks {
+            let (node, property) = t.binding();
+            let property = match property {
+                "position" => Property::Position,
+                "quaternion" => Property::Rotation,
+                "scale" => Property::Scale,
                 _ => continue,
             };
+            let Some(target) = fbx.find_node(node) else {
+                continue;
+            };
             let size = if property == Property::Rotation { 4 } else { 3 };
-            let times: Vec<f64> = f32s(bin, &t["times"])?.into_iter().map(f64::from).collect();
-            let values = f32s(bin, &t["values"])?
-                .chunks(size)
-                .map(|v| v.iter().map(|&x| f64::from(x)).collect())
-                .collect();
             tracks.push(Track {
-                target: handles[t["node"].as_u64().unwrap_or(0) as usize],
+                target: handles[target],
                 property,
-                times,
-                values,
-                interpolation: match t["interpolation"].as_u64() {
-                    Some(2300) => Interpolation::Step,
-                    _ => Interpolation::Linear,
-                },
+                times: t.times.iter().map(|&v| f64::from(v)).collect(),
+                values: t
+                    .values
+                    .chunks(size)
+                    .map(|v| v.iter().map(|&x| f64::from(x)).collect())
+                    .collect(),
+                interpolation: Interpolation::Linear,
             });
         }
         clips.push(Arc::new(Clip {
-            name: c["name"].as_str().unwrap_or("").to_string(),
+            name: c.name.clone(),
             tracks,
         }));
     }

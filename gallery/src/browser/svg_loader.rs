@@ -1861,6 +1861,20 @@ fn shape_geometry(outline: &[Curve], holes: &[Vec<Curve>]) -> Result<BufferGeome
 
 include!("svg_loader_stroke.rs");
 
+/// SVGLoader.pointsToStroke( points, SVGLoader.getStrokeStyle( width, color ) ):
+/// a miter-joined, butt-capped stroke ( the default 12 arc divisions and
+/// 0.001 minimum distance ); none for fewer than two points.
+pub(super) fn stroke(points: &[[f64; 2]], width: f64) -> Result<Option<BufferGeometry>> {
+    let style = Style {
+        stroke_width: width,
+        line_join: "miter".into(),
+        line_cap: "butt".into(),
+        miter_limit: 4.,
+        ..Default::default()
+    };
+    points_to_stroke(points, &style, 12, 0.001)
+}
+
 // ---------------------------------------------------------------- Gradients
 
 fn local_bbox(path: &ShapePath) -> Option<[f64; 4]> {

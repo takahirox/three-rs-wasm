@@ -6,9 +6,23 @@ fn random(seed: &mut u32) -> f64 {
 }
 impl Demo {
     pub(super) async fn path(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        let points: Vec<[f64; 2]> =
-            serde_json::from_slice(&fetch(&format!("{ASSETS}/path.json")).await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
+        // The page's heart Path, sampled by getPointAt( i / 1000 ).
+        let mut path = crate::shapes::Path::default();
+        path.move_to([-2.5, -2.5]);
+        path.cubic_to([-2.5, -2.5], [-2., 0.], [0., 0.]);
+        path.cubic_to([3., 0.], [3., -3.5], [3., -3.5]);
+        path.cubic_to([3., -5.5], [1., -7.7], [-2.5, -9.5]);
+        path.cubic_to([-6., -7.7], [-8., -5.5], [-8., -3.5]);
+        path.cubic_to([-8., -3.5], [-8., 0.], [-5., 0.]);
+        path.cubic_to([-3.5, 0.], [-2.5, -2.5], [-2.5, -2.5]);
+        let sampler = path.sampler();
+        let points: Vec<[f64; 2]> = (0..1000)
+            .map(|i| {
+                sampler
+                    .point_at(i as f64 / 1000.)
+                    .ok_or(Error::Invalid("path point"))
+            })
+            .collect::<Result<_>>()?;
         let (mut positions, mut colors, mut times) = (vec![], vec![], vec![]);
         let mut seed = 186;
         for (i, p) in points.iter().enumerate() {

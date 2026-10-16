@@ -77,15 +77,10 @@ impl Pair {
                 m.properties.map = Some(Arc::new(t));
                 mesh(&mut s, geometry.clone(), Material::Basic(m))
             } else {
-                let bytes = fetch(&format!("{ASSETS}/manual-mips.rgba")).await?;
-                let mut offset = 0;
                 let mut levels = Vec::new();
                 for level in 0..8 {
                     let size = 128 >> level;
-                    let len = (size * size * 4) as usize;
-                    let mut t =
-                        Texture::from_rgba(size, size, bytes[offset..offset + len].to_vec(), true)?;
-                    offset += len;
+                    let mut t = Texture::from_rgba(size, size, mipmap(level)?, true)?;
                     t.wrap_s = Wrapping::Repeat;
                     t.wrap_t = Wrapping::Repeat;
                     t.filter = if i == 0 {
@@ -233,4 +228,41 @@ impl Pair {
         }
         Ok(())
     }
+}
+
+/// mipmap( size, color ): the page's Canvas 2D level, a #444 square with two
+/// colored quadrants ( the 1 × 1 level keeps the canvas's fractional coverage ).
+fn mipmap(level: u32) -> Result<Vec<u8>> {
+    use wasm_bindgen::JsCast;
+    let fail = |_| Error::Invalid("mipmap canvas");
+    let colors = [
+        "#f00", "#0f0", "#00f", "#400", "#040", "#004", "#044", "#404",
+    ];
+    let size = 128u32 >> level;
+    let canvas: web_sys::HtmlCanvasElement = web_sys::window()
+        .and_then(|w| w.document())
+        .ok_or(Error::Invalid("document"))?
+        .create_element("canvas")
+        .map_err(fail)?
+        .dyn_into()
+        .map_err(|_| Error::Invalid("mipmap canvas"))?;
+    canvas.set_width(size);
+    canvas.set_height(size);
+    let context: web_sys::CanvasRenderingContext2d = canvas
+        .get_context("2d")
+        .map_err(fail)?
+        .ok_or(Error::Invalid("2d context"))?
+        .dyn_into()
+        .map_err(|_| Error::Invalid("2d context"))?;
+    let size = f64::from(size);
+    context.set_fill_style_str("#444");
+    context.fill_rect(0., 0., size, size);
+    context.set_fill_style_str(colors[level as usize]);
+    context.fill_rect(0., 0., size / 2., size / 2.);
+    context.fill_rect(size / 2., size / 2., size / 2., size / 2.);
+    Ok(context
+        .get_image_data(0., 0., size, size)
+        .map_err(fail)?
+        .data()
+        .0)
 }

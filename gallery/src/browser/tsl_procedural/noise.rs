@@ -148,9 +148,36 @@ impl Noise {
                 Vector3::new((i % 7) as f64 * 15.5 - 46.5, 18. - (i / 7) as f64 * 18., 0.);
             spheres.push(h);
         }
-        let labels = super::super::tsl_materials::geometries(
-            &fetch("/web/gallery/assets/tsl-procedural/noise-labels.bin").await?,
+        // Two TextGeometry lines ( helvetiker, size 1.15, depth 0.02 ) under each
+        // sphere, centered as the page centers them.
+        let font = crate::shapes::Font::parse(
+            &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
         )?;
+        let mut labels = vec![];
+        for (i, lines) in NAMES.iter().enumerate() {
+            for (line, name) in lines.iter().enumerate() {
+                let mut g = crate::shapes::text_geometry(
+                    &font,
+                    name,
+                    1.15,
+                    &crate::shapes::Extrude {
+                        curve_segments: 2,
+                        steps: 1,
+                        depth: 0.02,
+                        bevel: None,
+                    },
+                )?;
+                let b = g.compute_bounding_box()?;
+                g.translate(Vector3::new(
+                    -0.5 * (b.max.x - b.min.x) + (i % 7) as f64 * 15.5 - 46.5,
+                    -0.5 * (b.max.y - b.min.y) + 0.775 - line as f64 * 1.55 + 18.
+                        - (i / 7) as f64 * 18.
+                        - 7.5,
+                    0.,
+                ))?;
+                labels.push(g);
+            }
+        }
         for label in labels {
             mesh(
                 s,
@@ -227,3 +254,28 @@ impl Noise {
         Ok(())
     }
 }
+
+/// The page's label lines for each noise.
+const NAMES: [[&str; 2]; 21] = [
+    ["Noise", "2D"],
+    ["Noise", "3D"],
+    ["Cellnoise", "2D"],
+    ["Cellnoise", "3D"],
+    ["Worley", "2D style 0"],
+    ["Worley", "3D style 0"],
+    ["Worley", "2D style 1"],
+    ["Worley", "3D style 1"],
+    ["Fractal", "2D"],
+    ["Fractal", "3D"],
+    ["Unified Perlin", "2D"],
+    ["Unified Perlin", "3D"],
+    ["Unified Cell", "2D"],
+    ["Unified Cell", "3D"],
+    ["Unified Worley", "2D style 0"],
+    ["Unified Worley", "3D style 0"],
+    ["Unified Worley", "2D style 1"],
+    ["Unified Worley", "3D style 1"],
+    ["Unified Fractal", "2D"],
+    ["Unified Fractal", "3D"],
+    ["Hex Tiled", "checkerboard"],
+];

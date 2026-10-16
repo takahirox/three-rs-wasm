@@ -11,14 +11,37 @@ pub(super) struct Lines {
 }
 impl Demo {
     pub(super) async fn lines(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        #[derive(serde::Deserialize)]
         struct Data {
             positions: Vec<[f64; 3]>,
             colors: Vec<[f64; 3]>,
             wire: Vec<f32>,
         }
-        let data: Data = serde_json::from_slice(&fetch(&format!("{ASSETS}/lines.json")).await?)
-            .map_err(|e| Error::Asset(e.to_string()))?;
+        // CatmullRomCurve3( hilbert3D( origin, 20, 1, 0…7 ) ) at 768 points with
+        // sRGB HSL colors, and WireframeGeometry( IcosahedronGeometry( 20, 1 ) ).
+        let curve = crate::curve::CatmullRomCurve3::new(super::super::expanded_lines::hilbert(
+            Vector3::ZERO,
+            20.0,
+            1,
+            [0, 1, 2, 3, 4, 5, 6, 7],
+        ));
+        let mut data = Data {
+            positions: vec![],
+            colors: vec![],
+            wire: match WireframeGeometry::build(&IcosahedronGeometry::build(20., 1)?)?
+                .attributes
+                .get("position")
+            {
+                Some(Attribute::F32(a)) => a.array().to_vec(),
+                _ => vec![],
+            },
+        };
+        for i in 0..768 {
+            data.positions
+                .push(curve.point(i as f64 / 768.)?.to_array());
+            let hsl = Color::from_hsl(i as f64 / 768., 1.0, 0.5).0;
+            data.colors
+                .push(Color::from_srgb(hsl.x, hsl.y, hsl.z).0.to_array());
+        }
         let wire = self.example == 127;
         let mut segments = vec![];
         let mut distance = 0.;

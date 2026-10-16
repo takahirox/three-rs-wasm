@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>VRMLLoader r186 reference</title>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.Core.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="module">
+// The pinned VRMLLoader and the canonical form tests/browser/vrml-loader.spec.js
+// compares; TextureLoader records the URL it would load.
+import {TextureLoader,Texture,Object3D,MeshBasicMaterial} from 'three';
+import {VRMLLoader} from 'three/addons/loaders/VRMLLoader.js';
+import {canonical} from '/tools/core/vrml-canonical.mjs';
+TextureLoader.prototype.load=function(url){const t=new Texture();t.userData.referenceUrl=(this.path??'')+url;return t;};
+window.vrmlCanonical=(text,path)=>{const bases={object:new Object3D().id+1,material:new MeshBasicMaterial().id+1};const scene=new VRMLLoader().parse(text,path);scene.updateMatrixWorld(true);return canonical(scene,bases);};
+document.title='ready';
+</script>

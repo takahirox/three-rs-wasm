@@ -172,7 +172,12 @@ impl Demo {
         Ok(())
     }
     async fn texture_array(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        let data = fetch("/web/gallery/assets/head256x256x109.raw").await?;
+        let data =
+            crate::compression::unzip(&fetch("/web/gallery/assets/head256x256x109.zip").await?)?
+                .into_iter()
+                .find(|(name, _)| name == "head256x256x109")
+                .map(|(_, data)| data)
+                .ok_or(Error::Invalid("head256x256x109.zip"))?;
         if data.len() != 256 * 256 * 109 {
             return Err(Error::Invalid("head array texture length"));
         }

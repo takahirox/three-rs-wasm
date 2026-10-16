@@ -32,7 +32,7 @@ with tarfile.open(ROOT/f'.cache/three-{COMMIT}.tar.gz') as tar:
             folder.mkdir(parents=True,exist_ok=True)
             (folder/Path(path).name).write_bytes(data)
         if path.endswith('/head256x256x109.zip'):
-            (ROOT/'web/gallery/assets/head256x256x109.raw').write_bytes(zipfile.ZipFile(io.BytesIO(data)).read('head256x256x109'))
+            (ROOT/'web/gallery/assets/head256x256x109.zip').write_bytes(data)
         if path in ['examples/models/pcd/ascii/simple.pcd', 'examples/models/pcd/binary/Zaghetto.pcd', 'examples/models/pcd/binary/Zaghetto_8bit.pcd', 'examples/models/pcd/binary_compressed/pcl_logo.pcd', 'examples/textures/planets/earth_atmos_2048.jpg']:
             target=ROOT/'web/gallery/assets'/{v:k for k,v in {'pcd/ascii/simple.pcd': 'examples/models/pcd/ascii/simple.pcd', 'pcd/binary/Zaghetto.pcd': 'examples/models/pcd/binary/Zaghetto.pcd', 'pcd/binary/Zaghetto_8bit.pcd': 'examples/models/pcd/binary/Zaghetto_8bit.pcd', 'pcd/binary_compressed/pcl_logo.pcd': 'examples/models/pcd/binary_compressed/pcl_logo.pcd', 'earth_atmos_2048.jpg': 'examples/textures/planets/earth_atmos_2048.jpg'}.items()}[path]
             target.parent.mkdir(parents=True,exist_ok=True)
@@ -98,10 +98,6 @@ with tarfile.open(ROOT/f'.cache/three-{COMMIT}.tar.gz') as tar:
             destination=ROOT/'web/gallery/assets/earth-lights.png'
             destination.write_bytes(data)
 
-subprocess.run(["node",str(ROOT/"tools/tsl/prepare-volume.mjs")],check=True)
-
-subprocess.run(["node",str(ROOT/"tools/tsl/prepare-geometry.mjs")],check=True)
-
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-next.py')], check=True)
 
 subprocess.run(['python3', str(ROOT/'tools/tsl/prepare-environment.py')], check=True)
@@ -114,16 +110,12 @@ subprocess.run(['node', str(ROOT/'tools/tsl/prepare-materials.mjs')], check=True
 
 subprocess.run(['node', str(ROOT/'tools/tsl/prepare-primitives.mjs')], check=True)
 
-subprocess.run(["node",str(ROOT/"tools/tsl/prepare-procedural.mjs")],check=True)
 
-subprocess.run(["node",str(ROOT/"tools/tsl/prepare-wood.mjs")],check=True)
 
 # Procedural tree and Web Audio assets: copy unchanged from the pinned extraction.
 for name in ['FloorsCheckerboard_S_Normal.jpg','FloorsCheckerboard_S_Diffuse.jpg']:
     (ROOT/'web/gallery/assets/tsl-procedural'/name).write_bytes((ROOT/'.cache/three-r186/examples/textures/floors'/name).read_bytes())
 (ROOT/'web/gallery/assets/tsl-procedural/webgpu-audio-processing.mp3').write_bytes((ROOT/'.cache/three-r186/examples/sounds/webgpu-audio-processing.mp3').read_bytes())
-subprocess.run(['node',str(ROOT/'tools/tsl/prepare-tree.mjs')],check=True)
 
-subprocess.run(["node",str(ROOT/"tools/tsl/prepare-retro.mjs")],check=True)
 
 (ROOT/'web/gallery/assets/tsl-procedural/uv_grid_opengl.jpg').write_bytes((ROOT/'.cache/three-r186/examples/textures/uv_grid_opengl.jpg').read_bytes())

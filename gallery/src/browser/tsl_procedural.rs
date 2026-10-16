@@ -58,6 +58,7 @@ mod terrain;
 mod traa;
 mod tree;
 mod wood;
+mod wood_presets;
 pub(super) enum Demo {
     Taau(Box<taau::Taau>),
     MotionBlur(Box<motion_blur::MotionBlur>),

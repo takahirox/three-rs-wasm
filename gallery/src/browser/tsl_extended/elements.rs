@@ -1,5 +1,4 @@
 use super::*;
-use crate::attribute::BufferAttribute;
 use wasm_bindgen::JsCast;
 struct CanvasTarget {
     surface: wgpu::Surface<'static>,
@@ -14,30 +13,10 @@ pub(super) struct Elements {
 }
 impl Elements {
     pub(super) async fn new(r: &Renderer) -> Result<Self> {
-        #[derive(serde::Deserialize)]
-        struct GeometryData {
-            position: Vec<f32>,
-            normal: Vec<f32>,
-            uv: Vec<f32>,
-        }
-        let data: GeometryData =
-            serde_json::from_slice(&fetch("/web/gallery/assets/dodecahedron.json").await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let mut dodeca = BufferGeometry::default();
-        for (name, array, size) in [
-            ("position", data.position, 3),
-            ("normal", data.normal, 3),
-            ("uv", data.uv, 2),
-        ] {
-            dodeca.set_attribute(
-                name,
-                Attribute::F32(BufferAttribute::new(array, size, false)?),
-            );
-        }
         let geometries = [
             Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
             Arc::new(SphereGeometry::build(0.5, 12, 8)?),
-            Arc::new(dodeca),
+            Arc::new(DodecahedronGeometry::build(0.5, 0)?),
             Arc::new(CylinderGeometry::build(
                 0.5,
                 0.5,

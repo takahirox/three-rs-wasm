@@ -14,17 +14,25 @@ impl Demo {
         self.viewer = OrbitViewer::from_camera(Vector3::ZERO, position.length());
         self.viewer.fixture(position.x.atan2(position.z), 0.0, 1.8);
         self.viewer.update(s, c)?;
-        #[derive(serde::Deserialize)]
-        struct Data {
-            positions: Vec<[f32; 4]>,
-            colors: Vec<[f32; 4]>,
+        // CatmullRomCurve3( GeometryUtils.hilbert3D( new Vector3(), 20.0, 1, 0, 1, 2,
+        // 3, 4, 5, 6, 7 ) ) sampled at 256 points, with sRGB HSL colors.
+        let curve = crate::curve::CatmullRomCurve3::new(super::super::expanded_lines::hilbert(
+            Vector3::ZERO,
+            20.0,
+            1,
+            [0, 1, 2, 3, 4, 5, 6, 7],
+        ));
+        let mut positions = Vec::with_capacity(256);
+        let mut colors = Vec::with_capacity(256);
+        for i in 0..256 {
+            let p = curve.point(i as f64 / 256.0)?;
+            positions.push([p.x as f32, p.y as f32, p.z as f32, 0.0]);
+            let hsl = Color::from_hsl(i as f64 / 256.0, 1.0, 0.5).0;
+            let c = Color::from_srgb(hsl.x, hsl.y, hsl.z).0;
+            colors.push([c.x as f32, c.y as f32, c.z as f32, 1.0]);
         }
-        let data: Data =
-            serde_json::from_slice(&fetch("/web/gallery/assets/hilbert-points.json").await?)
-                .map_err(|e| Error::Asset(e.to_string()))?;
-        let positions =
-            GpuBuffer::new(r, bytemuck::cast_slice(&data.positions), BufferAccess::Read)?;
-        let colors = GpuBuffer::new(r, bytemuck::cast_slice(&data.colors), BufferAccess::Read)?;
+        let positions = GpuBuffer::new(r, bytemuck::cast_slice(&positions), BufferAccess::Read)?;
+        let colors = GpuBuffer::new(r, bytemuck::cast_slice(&colors), BufferAccess::Read)?;
         let sizes = GpuBuffer::zeroed(r, 256 * 4, BufferAccess::ReadWrite)?;
         let uniforms = GpuBuffer::zeroed(r, 16, BufferAccess::Uniform)?;
         let kernel=ComputeKernel::new(r,"@group(0) @binding(0) var<storage,read_write> sizes:array<f32>;@group(0) @binding(1) var<uniform> params:vec4<f32>;@compute @workgroup_size(64) fn main(@builtin(global_invocation_id) id:vec3<u32>){if(id.x>=256u){return;}let f=(sin((params.x+f32(id.x))*params.w)+1.0)*0.5;sizes[id.x]=f*(params.z-params.y)+params.y;}",&[&sizes,&uniforms]).await?;

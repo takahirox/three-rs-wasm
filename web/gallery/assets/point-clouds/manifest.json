@@ -1,11 +1,5 @@
 [
   {
-    "file": "frame.bin",
-    "source": "examples/webgl_custom_attributes_points3.html",
-    "source_sha256": "c77afb177de54ada7f0a58bb8c9c1198d96aaa114dbaac456e3fdc0210bebcfc",
-    "sha256": "5666fcd0fa1be351f6c353ff5186c428ac35070b085d4aac946a80070e8f56e9"
-  },
-  {
     "file": "disc.png",
     "source": "examples/textures/sprites/disc.png",
     "sha256": "1f3816715f028ac32065a10f40f5ef218b4efc67eb46f0d908a8d503f25b69cb"

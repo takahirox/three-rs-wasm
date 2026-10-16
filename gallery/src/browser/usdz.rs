@@ -1,10 +1,10 @@
 //! webgl_loader_usdz: the saeukkang USDZ model lit only by the
 //! venice_sunset HDR environment, with the same HDR as a background blurred
 //! to roughness 0.5, ACES Filmic tone mapping at exposure 2 and OrbitControls.
-//! The model is USDLoader's parse of the archive, baked by
-//! tools/tsl/prepare-usdz.mjs: one mesh with its non-indexed attributes and
+//! The model is the USDLoader port's parse of the archive at load
+//! ( `crate::usd` ): one mesh with its non-indexed attributes and
 //! MeshPhysicalMaterial ( roughness 1, IOR 1.5, the archive's base color
-//! image ).
+//! image ), which the program below is specialized for.
 //!
 //! WebGLRenderer prefilters the equirectangular HDR into a PMREM cubeUV
 //! texture ( PMREMGenerator.fromEquirectangular, GGX VNDF importance
@@ -166,12 +166,6 @@ struct Background { @builtin( position ) position: vec4<f32>, @location( 0 ) ndc
 	return output( texture_cube_uv( direction, frame.params.z ) * frame.params.w );
 }
 "#;
-#[derive(serde::Deserialize)]
-struct Bake {
-    vertices: u32,
-    #[serde(rename = "matrixWorld")]
-    matrix_world: [f64; 16],
-}
 struct Targets {
     size: (u32, u32),
     samples: u32,
@@ -215,28 +209,76 @@ impl Demo {
                     usage,
                 })
         };
-        let bake: Bake = serde_json::from_slice(&fetch(&format!("{ASSETS}/saeukkang.json")).await?)
-            .map_err(|e| Error::Asset(e.to_string()))?;
-        let bytes = fetch(&format!("{ASSETS}/saeukkang.bin")).await?;
-        let n = bake.vertices as usize;
-        if bytes.len() != n * 8 * 4 {
-            return Err(Error::Invalid("usdz bake"));
+        // USDLoader.loadAsync( 'saeukkang.usdz' ): the group's one mesh.
+        let scene = crate::usd::parse(&fetch(&format!("{ASSETS}/saeukkang.usdz")).await?, "")?;
+        let (node, geometry, material) = scene
+            .nodes
+            .iter()
+            .find_map(|n| match &n.kind {
+                crate::usd::UsdNodeKind::Mesh {
+                    geometry,
+                    materials,
+                    ..
+                } => Some((n, *geometry, materials[0])),
+                _ => None,
+            })
+            .ok_or(Error::Invalid("usdz mesh"))?;
+        let material = &scene.materials[material];
+        // The program is MeshPhysicalMaterial's for these parameters.
+        if (
+            material.roughness,
+            material.metalness,
+            material.ior,
+            material.opacity,
+        ) != (1.0, 0.0, 1.5, 1.0)
+            || material.transparent
+        {
+            return Err(Error::Invalid("usdz material"));
         }
-        let floats: Vec<f32> = bytemuck::pod_collect_to_vec(&bytes);
-        let (positions, rest) = floats.split_at(n * 3);
-        let (normals, uvs) = rest.split_at(n * 3);
+        let texture = material
+            .map
+            .map(|t| &scene.textures[t])
+            .ok_or(Error::Invalid("usdz map"))?;
+        let crate::usd::UsdImage::Asset {
+            data: image_bytes, ..
+        } = &texture.image
+        else {
+            return Err(Error::Invalid("usdz map image"));
+        };
+        let attribute = |name: &str| -> Result<&[f32]> {
+            match scene.geometries[geometry].attributes.get(name) {
+                Some(crate::geometry::Attribute::F32(a)) => Ok(a.array()),
+                _ => Err(Error::Invalid("usdz attribute")),
+            }
+        };
+        let (positions, normals, uvs) = (
+            attribute("position")?,
+            attribute("normal")?,
+            attribute("uv")?,
+        );
+        let n = positions.len() / 3;
+        if normals.len() != n * 3 || uvs.len() != n * 2 {
+            return Err(Error::Invalid("usdz attributes"));
+        }
         let mut data = Vec::with_capacity(n * 8);
         for k in 0..n {
             data.extend_from_slice(&positions[k * 3..k * 3 + 3]);
             data.extend_from_slice(&normals[k * 3..k * 3 + 3]);
             data.extend_from_slice(&uvs[k * 2..k * 2 + 2]);
         }
+        let wrap = |w: u32| match w {
+            1001 => wgpu::AddressMode::ClampToEdge,
+            1002 => wgpu::AddressMode::MirrorRepeat,
+            _ => wgpu::AddressMode::Repeat,
+        };
+        let (wrap_u, wrap_v) = (wrap(texture.wrap_s), wrap(texture.wrap_t));
+        let matrix_world = node.matrix_world;
         let mut mipmaps = Mipmaps::new(r);
-        let image = decode_texture_image(&fetch(&format!("{ASSETS}/saeukkang.png")).await?).await?;
+        let image = decode_texture_image(image_bytes).await?;
         let map = mipmapped(r, &mut mipmaps, &image, wgpu::TextureFormat::Rgba8UnormSrgb);
         let map_sampler = r.device.create_sampler(&wgpu::SamplerDescriptor {
-            address_mode_u: wgpu::AddressMode::Repeat,
-            address_mode_v: wgpu::AddressMode::Repeat,
+            address_mode_u: wrap_u,
+            address_mode_v: wrap_v,
             mag_filter: wgpu::FilterMode::Linear,
             min_filter: wgpu::FilterMode::Linear,
             mipmap_filter: wgpu::FilterMode::Linear,
@@ -390,7 +432,7 @@ impl Demo {
         });
         // The page offsets the model to ( 0, 0.25, -0.25 ).
         let model = Matrix4::from_translation(Vector3::new(0., 0.25, -0.25))
-            * Matrix4::from_cols_array(&bake.matrix_world);
+            * Matrix4::from_cols_array(&matrix_world);
         Ok(Self {
             controls,
             pending: true,
@@ -401,7 +443,7 @@ impl Demo {
                     bytemuck::cast_slice(&data),
                     wgpu::BufferUsages::VERTEX,
                 ),
-                bake.vertices,
+                n as u32,
             ),
             frame,
             group,

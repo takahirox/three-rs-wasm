@@ -144,8 +144,16 @@ impl Arrays {
         let mut post = None;
         let program = match id {
             324 => {
-                let head =
-                    head_texture(r, &fetch(&format!("{ASSETS}/head256x256x109.raw")).await?)?;
+                let head = head_texture(
+                    r,
+                    &crate::compression::unzip(
+                        &fetch(&format!("{ASSETS}/head256x256x109.zip")).await?,
+                    )?
+                    .into_iter()
+                    .find(|(name, _)| name == "head256x256x109")
+                    .map(|(_, data)| data)
+                    .ok_or(Error::Invalid("head256x256x109.zip"))?,
+                )?;
                 let view = array_view(&head);
                 layer_program(
                     r,
@@ -172,8 +180,16 @@ impl Arrays {
                 program
             }
             _ => {
-                let head =
-                    head_texture(r, &fetch(&format!("{ASSETS}/head256x256x109.raw")).await?)?;
+                let head = head_texture(
+                    r,
+                    &crate::compression::unzip(
+                        &fetch(&format!("{ASSETS}/head256x256x109.zip")).await?,
+                    )?
+                    .into_iter()
+                    .find(|(name, _)| name == "head256x256x109")
+                    .map(|(_, data)| data)
+                    .ok_or(Error::Invalid("head256x256x109.zip"))?,
+                )?;
                 let [w, h, d] = HEAD;
                 let target = RenderTarget::with_options(
                     &r.device,

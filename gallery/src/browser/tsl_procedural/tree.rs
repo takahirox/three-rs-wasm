@@ -88,9 +88,8 @@ impl Tree {
             n.shadow.extent = 5. / 1.5;
             n.shadow.bias = -0.0001;
         }
-        let data = fetch("/web/gallery/assets/tsl-procedural/reflection-tree.bin").await?;
-        let count = u32::from_le_bytes(data[..4].try_into().unwrap());
-        let buffer = GpuBuffer::new(r, &data[4..], BufferAccess::Read)?;
+        let (count, instances) = tree();
+        let buffer = GpuBuffer::new(r, bytemuck::cast_slice(&instances), BufferAccess::Read)?;
         let i = instance_index() * uint(4);
         let origin = storage_element(0, i.clone()).rgb();
         let normal = storage_element(0, i.clone() + uint(1)).rgb();
@@ -367,4 +366,90 @@ impl Tree {
         }
         Ok(())
     }
+}
+
+/// The page's tree: createTreePart()'s instances ( position, normal, color and
+/// size / time / seed, each padded to a vec4 ), with the gallery's seeded
+/// Math.random.
+fn tree() -> (u32, Vec<f32>) {
+    struct Tree {
+        seed: u32,
+        out: Vec<f32>,
+        count: u32,
+    }
+    impl Tree {
+        fn math_random(&mut self) -> f64 {
+            self.seed = self.seed.wrapping_mul(1664525).wrapping_add(1013904223);
+            f64::from(self.seed) / 4294967296.
+        }
+        /// The page's random(): ( Math.random() − 0.5 ) × 2.
+        fn random(&mut self) -> f64 {
+            (self.math_random() - 0.5) * 2.
+        }
+        fn part(&mut self, angle: f64, x: f64, y: f64, z: f64, length: f64, count: u32) {
+            const MAX_STEPS: u32 = 5;
+            if self.math_random() > (f64::from(MAX_STEPS) / f64::from(count)) * 0.25 {
+                return;
+            }
+            if count >= MAX_STEPS {
+                return;
+            }
+            let new_length = length * 0.8;
+            let nx = x + angle.cos() * length;
+            let ny = y + angle.sin() * length;
+            let count_sq = (3.2f64).min(f64::from(count * count));
+            let nz = z + (self.math_random() * count_sq - count_sq / 2.) * length;
+            let size = (30. - f64::from(count) * 8.).clamp(10., 25.) / 100.;
+            for i in 0..50 {
+                self.count += 1;
+                let percent = f64::from(i) / 50.;
+                let extra = 1. / f64::from(MAX_STEPS);
+                let new_position = [
+                    x + (nx - x) * percent,
+                    y + (ny - y) * percent,
+                    z + (nz - z) * percent,
+                ];
+                let mut position = new_position;
+                for c in &mut position {
+                    *c += self.random() * size * 3.;
+                }
+                let scale = self.math_random() + 5.;
+                let d = [
+                    position[0] - new_position[0],
+                    position[1] - new_position[1],
+                    position[2] - new_position[2],
+                ];
+                let l = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
+                let l = if l == 0. { 1. } else { l };
+                let normal = d.map(|c| c * (1. / l));
+                let h = (f64::from(count) / f64::from(MAX_STEPS)) * 0.5 + self.math_random() * 0.05;
+                let lightness = 0.6 + self.math_random() * 0.1;
+                let color = Color::from_hsl(h, 0.75, lightness).0.to_array();
+                let instance_size = size * scale;
+                let instance_time = f64::from(count) / f64::from(MAX_STEPS) + percent * extra;
+                let instance_seed = self.math_random();
+                for v in [
+                    position,
+                    normal,
+                    color,
+                    [instance_size, instance_time, instance_seed],
+                ] {
+                    self.out.extend(v.map(|c| c as f32));
+                    self.out.push(0.);
+                }
+            }
+            for _ in 0..6 {
+                let a = angle + self.random();
+                let l = new_length + self.random();
+                self.part(a, nx, ny, nz, l, count + 1);
+            }
+        }
+    }
+    let mut t = Tree {
+        seed: 186,
+        out: vec![],
+        count: 0,
+    };
+    t.part(std::f64::consts::PI * 0.5, 0., 0., 0., 16., 0);
+    (t.count, t.out)
 }

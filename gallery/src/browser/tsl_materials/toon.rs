@@ -45,7 +45,27 @@ impl Demo {
                 }
             }
         }
-        let mut labels = geometries(&fetch(&format!("{ASSETS}/labels.bin")).await?)?.into_iter();
+        // TextGeometry( name, { font: gentilis, size: 20, depth: 1, curveSegments: 1 } ).
+        let font = crate::shapes::Font::parse(
+            &fetch("/web/gallery/assets/fonts/gentilis_regular.typeface.json").await?,
+        )?;
+        let mut labels = ["-gradientMap", "+gradientMap", "-diffuse", "+diffuse"]
+            .into_iter()
+            .map(|name| {
+                crate::shapes::text_geometry(
+                    &font,
+                    name,
+                    20.0,
+                    &crate::shapes::Extrude {
+                        curve_segments: 1,
+                        steps: 1,
+                        depth: 1.0,
+                        bevel: None,
+                    },
+                )
+            })
+            .collect::<Result<Vec<_>>>()?
+            .into_iter();
         for p in [
             Vector3::new(-350.0, 0.0, 0.0),
             Vector3::new(350.0, 0.0, 0.0),

@@ -552,6 +552,24 @@ pub(super) struct ObjObject {
     pub(super) uvs: Vec<f32>,
     pub(super) groups: Vec<(String, usize, usize)>,
 }
+/// OBJLoader's BufferGeometry for one object: positions, then normals (computed
+/// when the file has none) and uvs when present.
+pub(super) fn obj_geometry(object: ObjObject) -> Result<BufferGeometry> {
+    let mut g = BufferGeometry::default();
+    g.set_attribute("position", vec3s(object.positions)?);
+    if object.normals.is_empty() {
+        g.compute_vertex_normals()?;
+    } else {
+        g.set_attribute("normal", vec3s(object.normals)?);
+    }
+    if !object.uvs.is_empty() {
+        g.set_attribute(
+            "uv",
+            Attribute::F32(BufferAttribute::new(object.uvs, 2, false)?),
+        );
+    }
+    Ok(g)
+}
 /// OBJLoader's parser state for faces, objects and `usemtl` groups (MTL materials given).
 pub(super) fn parse_obj(text: &str) -> Vec<ObjObject> {
     struct Mat {

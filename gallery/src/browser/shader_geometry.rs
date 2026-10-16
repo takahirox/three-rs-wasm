@@ -118,15 +118,7 @@ impl Demo {
             let mut data = vec![];
             let mut g = BufferGeometry::default();
             if id == 171 {
-                let v: serde_json::Value =
-                    serde_json::from_slice(&fetch(&format!("{ASSETS}/cube.json")).await?)
-                        .map_err(|e| Error::Asset(e.to_string()))?;
-                let words = v["vertices"]
-                    .as_array()
-                    .ok_or(Error::Invalid("cube vertices"))?
-                    .iter()
-                    .map(|x| x.as_f64().unwrap_or(0.) as f32)
-                    .collect::<Vec<_>>();
+                let words = CUBE_VERTICES.to_vec();
                 attribute(
                     &mut g,
                     "position",
@@ -149,14 +141,7 @@ impl Demo {
                         .collect(),
                     2,
                 )?;
-                g.set_index(Some(
-                    v["indices"]
-                        .as_array()
-                        .ok_or(Error::Invalid("cube indices"))?
-                        .iter()
-                        .map(|i| i.as_u64().unwrap_or(0) as u32)
-                        .collect(),
-                ));
+                g.set_index(Some(CUBE_INDICES.iter().map(|&i| u32::from(i)).collect()));
                 for _ in 0..count {
                     let offset = Vector3::new(
                         random(&mut seed) * 100. - 50.,
@@ -426,3 +411,21 @@ impl Demo {
         Ok(())
     }
 }
+
+/// webgl_buffergeometry_instancing_interleaved's cube: interleaved position,
+/// unused w, uv and two unused floats per vertex, as the page writes them.
+const CUBE_VERTICES: [f32; 192] = [
+    -1., 1., 1., 0., 0., 0., 0., 0., 1., 1., 1., 0., 1., 0., 0., 0., -1., -1., 1., 0., 0., 1., 0.,
+    0., 1., -1., 1., 0., 1., 1., 0., 0., 1., 1., -1., 0., 1., 0., 0., 0., -1., 1., -1., 0., 0., 0.,
+    0., 0., 1., -1., -1., 0., 1., 1., 0., 0., -1., -1., -1., 0., 0., 1., 0., 0., -1., 1., -1., 0.,
+    1., 1., 0., 0., -1., 1., 1., 0., 1., 0., 0., 0., -1., -1., -1., 0., 0., 1., 0., 0., -1., -1.,
+    1., 0., 0., 0., 0., 0., 1., 1., 1., 0., 1., 0., 0., 0., 1., 1., -1., 0., 1., 1., 0., 0., 1.,
+    -1., 1., 0., 0., 0., 0., 0., 1., -1., -1., 0., 0., 1., 0., 0., -1., 1., 1., 0., 0., 0., 0., 0.,
+    1., 1., 1., 0., 1., 0., 0., 0., -1., 1., -1., 0., 0., 1., 0., 0., 1., 1., -1., 0., 1., 1., 0.,
+    0., 1., -1., 1., 0., 1., 0., 0., 0., -1., -1., 1., 0., 0., 0., 0., 0., 1., -1., -1., 0., 1.,
+    1., 0., 0., -1., -1., -1., 0., 0., 1., 0., 0.,
+];
+const CUBE_INDICES: [u16; 36] = [
+    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 17, 18,
+    18, 17, 19, 20, 21, 22, 22, 21, 23,
+];

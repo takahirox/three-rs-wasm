@@ -4,8 +4,8 @@
 //! channel tinted by thicknessColor, lit through the surface by a distorted
 //! half vector ), under an ambient light, a faint directional light and two
 //! range-limited point lights marked by small basic spheres. The bunny is
-//! FBXLoader's parse of the page's FBX, baked by
-//! tools/tsl/prepare-bunny.mjs ( the loader's non-indexed attributes ). The
+//! the FBXLoader port's parse of the page's FBX at load ( `crate::fbx`, the
+//! loader's non-indexed attributes ). The
 //! shaders are WGSL ports of the GLSL WebGLRenderer builds for the
 //! ShaderMaterial ( lights: true, no map: the material defines no USE_MAP )
 //! and for MeshBasicMaterial; the canvas is sRGB-encoded in the shader and
@@ -179,25 +179,17 @@ impl Demo {
                     usage,
                 })
         };
-        #[derive(serde::Deserialize)]
-        struct Bake {
-            vertices: u32,
-        }
-        let bake: Bake = serde_json::from_slice(&fetch(&format!("{ASSETS}/bunny.json")).await?)
-            .map_err(|e| Error::Asset(e.to_string()))?;
-        let bytes = fetch(&format!("{ASSETS}/bunny.bin")).await?;
-        let n = bake.vertices as usize;
-        if bytes.len() != n * 8 * 4 {
-            return Err(Error::Invalid("bunny bake"));
-        }
-        let floats: Vec<f32> = bytes
-            .as_chunks::<4>()
-            .0
-            .iter()
-            .map(|&b| f32::from_le_bytes(b))
-            .collect();
-        let (positions, rest) = floats.split_at(n * 3);
-        let (normals, uvs) = rest.split_at(n * 3);
+        let bunny = super::fbx_models::stanford_bunny().await?;
+        let attribute = |name: &str| match bunny.attributes.get(name) {
+            Some(Attribute::F32(a)) => Ok(a.array().to_vec()),
+            _ => Err(Error::Invalid("stanford-bunny attribute")),
+        };
+        let (positions, normals, uvs) = (
+            attribute("position")?,
+            attribute("normal")?,
+            attribute("uv")?,
+        );
+        let n = positions.len() / 3;
         let mut data = Vec::with_capacity(n * 8);
         for k in 0..n {
             data.extend_from_slice(&positions[k * 3..k * 3 + 3]);
@@ -315,10 +307,7 @@ impl Demo {
             pending: true,
             elapsed: 0.,
             params: [0.1, 0.4, 0.8, 2., 16.],
-            bunny: (
-                init("bunny", bytemuck::cast_slice(&data), vertex),
-                bake.vertices,
-            ),
+            bunny: (init("bunny", bytemuck::cast_slice(&data), vertex), n as u32),
             sphere: (
                 init(
                     "light marker",

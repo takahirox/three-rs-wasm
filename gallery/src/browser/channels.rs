@@ -158,10 +158,19 @@ impl Demo {
         let displacement =
             r.upload_texture(&Arc::new(image("models/obj/ninja/displacement.jpg").await?))?;
         let normal = r.upload_texture(&normal_map)?;
-        let geometry = Arc::new(
-            super::tsl_materials::geometries(&fetch(&format!("{ASSETS}/ninja.bin")).await?)?
-                .remove(0),
-        );
+        let geometry = Arc::new({
+            // OBJLoader().load( ninjaHead_Low.obj ): children[ 0 ].geometry, centered.
+            let mut g = super::terrain_loaders::obj_geometry(
+                super::terrain_loaders::parse_obj(&String::from_utf8_lossy(
+                    &fetch(&format!("{ASSETS}/models/obj/ninja/ninjaHead_Low.obj")).await?,
+                ))
+                .into_iter()
+                .next()
+                .ok_or(Error::Invalid("ninjaHead_Low.obj"))?,
+            )?;
+            g.center()?;
+            g
+        });
         // MeshStandardMaterial: the displacement through the shared vertex program.
         let mut standard = MeshStandardMaterial {
             energy_conservation: true,

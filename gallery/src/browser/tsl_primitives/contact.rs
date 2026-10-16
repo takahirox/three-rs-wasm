@@ -101,15 +101,15 @@ impl Demo {
         })));
         s.get_mut(camera)?.position.y = -0.3;
         s.get_mut(camera)?.quaternion = Quaternion::from_rotation_x(std::f64::consts::FRAC_PI_2);
-        #[derive(serde::Deserialize)]
-        struct Helper {
-            position: Vec<f32>,
-            color: Vec<f32>,
-        }
-        let data: Helper = serde_json::from_slice(&fetch(&format!("{ASSETS}/helper.json")).await?)
-            .map_err(|e| Error::Asset(e.to_string()))?;
+        let (position, color) = camera_helper(
+            Matrix4::from_rotation_translation(
+                Quaternion::from_rotation_x(std::f64::consts::FRAC_PI_2),
+                Vector3::new(0., -0.3, 0.),
+            ),
+            (-1.25, 1.25, 1.25, -1.25, 0., 0.3),
+        );
         let mut g = BufferGeometry::default();
-        for (name, values) in [("position", data.position), ("color", data.color)] {
+        for (name, values) in [("position", position), ("color", color)] {
             g.set_attribute(
                 name,
                 Attribute::F32(BufferAttribute::new(values, 3, false)?),
@@ -193,4 +193,102 @@ impl Contact {
         s.get_mut(self.helper)?.visible = p[5] > 0.5;
         r.render(s, c, out)
     }
+}
+
+/// CameraHelper( camera ) for an orthographic camera with the given world
+/// matrix, its lines unprojected by update() ( WebGL clip depth, as at
+/// construction ) and the geometry moved by the camera's world matrix.
+fn camera_helper(
+    world: Matrix4,
+    (left, right, top, bottom, near, far): (f64, f64, f64, f64, f64, f64),
+) -> (Vec<f32>, Vec<f32>) {
+    let (w, h, p) = (1. / (right - left), 1. / (top - bottom), 1. / (far - near));
+    let projection = Matrix4::from_cols_array(&[
+        2. * w,
+        0.,
+        0.,
+        0.,
+        0.,
+        2. * h,
+        0.,
+        0.,
+        0.,
+        0.,
+        -2. * p,
+        0.,
+        -(right + left) * w,
+        -(top + bottom) * h,
+        -(far + near) * p,
+        1.,
+    ]);
+    let inverse = projection.inverse();
+    let point = |name: &str| -> Vector3 {
+        let c = |x: f64, y: f64, near: bool| {
+            inverse.project_point3(Vector3::new(x, y, if near { -1. } else { 1. }))
+        };
+        match name {
+            "c" => c(0., 0., true),
+            "t" => c(0., 0., false),
+            "n1" => c(-1., -1., true),
+            "n2" => c(1., -1., true),
+            "n3" => c(-1., 1., true),
+            "n4" => c(1., 1., true),
+            "f1" => c(-1., -1., false),
+            "f2" => c(1., -1., false),
+            "f3" => c(-1., 1., false),
+            "f4" => c(1., 1., false),
+            "u1" => c(0.7, 1.1, true),
+            "u2" => c(-0.7, 1.1, true),
+            "u3" => c(0., 2., true),
+            "cf1" => c(-1., 0., false),
+            "cf2" => c(1., 0., false),
+            "cf3" => c(0., -1., false),
+            "cf4" => c(0., 1., false),
+            "cn1" => c(-1., 0., true),
+            "cn2" => c(1., 0., true),
+            "cn3" => c(0., -1., true),
+            "cn4" => c(0., 1., true),
+            // "p" is never set by update().
+            _ => Vector3::ZERO,
+        }
+    };
+    let (frustum, cone, up, target, cross) = (0xffaa00, 0xff0000, 0x00aaff, 0xffffff, 0x333333);
+    let lines: [(&str, &str, u32); 25] = [
+        ("n1", "n2", frustum),
+        ("n2", "n4", frustum),
+        ("n4", "n3", frustum),
+        ("n3", "n1", frustum),
+        ("f1", "f2", frustum),
+        ("f2", "f4", frustum),
+        ("f4", "f3", frustum),
+        ("f3", "f1", frustum),
+        ("n1", "f1", frustum),
+        ("n2", "f2", frustum),
+        ("n3", "f3", frustum),
+        ("n4", "f4", frustum),
+        ("p", "n1", cone),
+        ("p", "n2", cone),
+        ("p", "n3", cone),
+        ("p", "n4", cone),
+        ("u1", "u2", up),
+        ("u2", "u3", up),
+        ("u3", "u1", up),
+        ("c", "t", target),
+        ("p", "c", cross),
+        ("cn1", "cn2", cross),
+        ("cn3", "cn4", cross),
+        ("cf1", "cf2", cross),
+        ("cf3", "cf4", cross),
+    ];
+    let (mut positions, mut colors) = (vec![], vec![]);
+    for (a, b, color) in lines {
+        for name in [a, b] {
+            // Float32 positions, then geometry.applyMatrix4( camera.matrixWorld ).
+            let local = point(name).to_array().map(|v| f64::from(v as f32));
+            let p = world.project_point3(Vector3::from_array(local));
+            positions.extend(p.to_array().map(|v| v as f32));
+            colors.extend(Color::from_hex(color).0.to_array().map(|v| v as f32));
+        }
+    }
+    (positions, colors)
 }

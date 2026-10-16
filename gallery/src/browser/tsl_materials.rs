@@ -20,48 +20,6 @@ const ASSETS: &str = "/web/gallery/assets/tsl-materials";
 fn mesh(s: &mut Scene, g: Arc<BufferGeometry>, m: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(g, Arc::new(m))))
 }
-pub(super) fn geometries(bytes: &[u8]) -> Result<Vec<BufferGeometry>> {
-    let (words, remainder) = bytes.as_chunks::<4>();
-    if !remainder.is_empty() {
-        return Err(Error::Invalid("geometry byte length"));
-    }
-    let mut words = words.iter();
-    let mut next = || {
-        words
-            .next()
-            .map(|b| u32::from_le_bytes(*b))
-            .ok_or(Error::Invalid("truncated geometry"))
-    };
-    let count = next()?;
-    let mut result = vec![];
-    for _ in 0..count {
-        let vertices = next()? as usize;
-        let indices = next()? as usize;
-        let mut g = BufferGeometry::default();
-        for (name, size) in [("position", 3), ("normal", 3), ("uv", 2)] {
-            let mut values = vec![];
-            for _ in 0..vertices * size {
-                values.push(f32::from_bits(next()?));
-            }
-            g.set_attribute(
-                name,
-                Attribute::F32(crate::attribute::BufferAttribute::new(values, size, false)?),
-            );
-        }
-        if indices > 0 {
-            let mut values = vec![];
-            for _ in 0..indices {
-                values.push(next()?);
-            }
-            g.set_index(Some(values));
-        }
-        result.push(g);
-    }
-    if words.next().is_some() {
-        return Err(Error::Invalid("trailing geometry"));
-    }
-    Ok(result)
-}
 pub(super) struct Demo {
     example: u32,
     time: f64,

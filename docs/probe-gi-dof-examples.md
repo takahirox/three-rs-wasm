@@ -41,9 +41,10 @@ encoded canvas, as in WebGL.
 
 ### Compute rasterizer IBL (414)
 
-The page builds the helmet's LODs and meshlets with meshoptimizer 1.1 at load.
-`tools/tsl/prepare-rasterizer-ibl.mjs` runs the same library code on the same
-geometry and stores the result, which the port packs into the page's storage
+The page builds the helmet's LODs and meshlets with meshoptimizer 1.1 at load,
+and so does the port: it loads three.js's bundled MeshoptSimplifier and
+MeshoptClusterizer, runs the page's LOD loop ported to Rust on the helmet with
+its node transform applied, and packs the result into the page's storage
 buffers. The HZB kernels are generated per level from the page's template, and
 each frame culls against the previous frame's pyramid. The page's first frame
 is computed with the matrices from before the renderer switches the camera to
@@ -60,9 +61,9 @@ scene target. The lightmap debug view is not reproduced.
 
 ### Ready Player Me retargeting (416)
 
-FBXLoader's parse of `mixamo.fbx` (nodes with the world matrices the loader
-leaves, the skinned meshes and clip 0) is baked by
-`tools/tsl/prepare-mixamo.mjs`. The retargeted clip is baked at load, as the
+`mixamo.fbx` is parsed at load by the FBXLoader port (`src/fbx/`): nodes
+with the world matrices the loader leaves, the skinned meshes and clip 0.
+The retargeted clip is baked at load, as the
 page does with SkeletonUtils.retargetClip. The FBX has bones with duplicate
 names, and the port binds each name to its first node in traversal order, as
 the page's lookup does. Culling uses each skinned mesh's bounding sphere from
@@ -123,8 +124,8 @@ render.
 
 ### Subsurface scattering (420)
 
-FBXLoader's parse of the bunny (its non-indexed attributes) is baked by
-`tools/tsl/prepare-bunny.mjs`. The ShaderMaterial defines no `USE_MAP`, so
+The bunny is parsed at load by the FBXLoader port (its non-indexed
+attributes). The ShaderMaterial defines no `USE_MAP`, so
 the page's white map is never sampled, and `diffuse` is a Vector3 that color
 management leaves alone.
 
@@ -146,10 +147,13 @@ management leaves alone.
 
 ### VRML (422)
 
-VRMLLoader's parse of the sixteen samples is baked by
-`tools/tsl/prepare-vrml.mjs`. The bake stores the renderables as the loader
-leaves them: world matrices, geometries, materials, and textures (map.gif and
-the PixelTexture data). The VRML parsing itself is not ported. All sixteen
+Each sample's `.wrl` is parsed at load by the VRMLLoader port
+(`src/vrml/`): the chevrotain lexer and grammar the original builds, its
+node builders with USE cloning and JavaScript value coercions, and
+three.js's math. `tests/vrml.rs` compares the parse with the pinned loader's
+natively, and `tests/browser/vrml-loader.spec.js` bit for bit in the browser:
+world matrices, geometries, materials, and textures (map.gif and the
+PixelTexture data). All sixteen
 scenes are uploaded at load, so switching assets creates nothing. Each frame
 culls and sorts as WebGLRenderer does:
 
@@ -162,9 +166,13 @@ Points are squares of the attenuated `gl_PointSize`.
 
 ### USDZ (423)
 
-USDLoader's parse (one mesh and its MeshPhysicalMaterial) and the archive's
-base color image are baked by `tools/tsl/prepare-usdz.mjs`. The USD parsing
-itself is not ported. WebGLRenderer prefilters the HDR into a PMREM cubeUV
+The archive is parsed at load by the USDLoader port (`src/usd/`): the USDZ
+unzip, the USDA and USDC parsers and USDComposer, with the parsers'
+JavaScript value shapes and three.js's math. The result is one mesh and its
+MeshPhysicalMaterial with the archive's base color image; the model's program
+is specialized for that material, and the port checks its parameters at load.
+`tests/usd.rs` and `tests/browser/usd-loader.spec.js` compare the parse with
+the pinned loader (natively, and bit for bit in the browser). WebGLRenderer prefilters the HDR into a PMREM cubeUV
 texture for both the environment and the blurred background. The port runs
 r186's PMREM generator as the WebGPU renderer generates it, which uses the same
 algorithm and layout. WebGPU stores the texture with the opposite vertical

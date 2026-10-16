@@ -1,4 +1,3 @@
-use super::super::gltf_viewer::fetch;
 use super::*;
 use crate::{
     compute::{BufferAccess, GpuBuffer},
@@ -307,30 +306,8 @@ impl Snow {
                 ));
             }
         }
-        #[derive(serde::Deserialize)]
-        struct AttributeData {
-            size: usize,
-            array: Vec<f32>,
-        }
-        #[derive(serde::Deserialize)]
-        struct GeometryData {
-            index: Vec<u32>,
-            attributes: std::collections::HashMap<String, AttributeData>,
-        }
-        let data: GeometryData = serde_json::from_slice(
-            &fetch("/web/gallery/assets/tsl-procedural/snow-teapot.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
-        let mut g = BufferGeometry::default();
-        for (name, a) in data.attributes {
-            g.set_attribute(
-                &name,
-                Attribute::F32(crate::attribute::BufferAttribute::new(
-                    a.array, a.size, false,
-                )?),
-            );
-        }
-        g.set_index(Some(data.index));
+        // TeapotGeometry( 0.5, 18 ).
+        let g = super::super::teapot_data::teapot(0.5, 18, true, true, true, true, true)?;
         let geometry = Arc::new(g);
         let mut m = MeshBasicMaterial::default();
         m.properties.color = Color::from_hex(0xfcfb9e);

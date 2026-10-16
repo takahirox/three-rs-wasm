@@ -18,6 +18,58 @@ fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
 }
+/// webgl_custom_attributes_points3's points: the shell of random points, then
+/// the merged box edges placed around it ( the Float32 positions and the
+/// shell's count ).
+fn points3(seed: &mut u32) -> Result<(Vec<f32>, u32)> {
+    let mut vertices: Vec<f64> = vec![];
+    let radius = 100.;
+    let inner = 0.6 * radius;
+    for _ in 0..100000 {
+        let v = [0; 3].map(|_| random(seed) * 2. - 1.).map(|c| c * radius);
+        if v.iter().any(|&c| c > inner || c < -inner) {
+            vertices.extend(v);
+        }
+    }
+    let vertices1 = (vertices.len() / 3) as u32;
+    let radius = 200.;
+    // BoxGeometry without normals and uvs, merged.
+    let merged = |w: f64, h: f64, d: f64, ws: u32, hs: u32, ds: u32| -> Result<Vec<Vector3>> {
+        let mut g = BoxGeometry::segmented(w, h, d, ws, hs, ds)?;
+        g.delete_attribute("normal");
+        g.delete_attribute("uv");
+        crate::geometry_utils::merge_vertices(&g, 1e-4)?.positions()
+    };
+    let box1 = merged(radius, 0.1 * radius, 0.1 * radius, 50, 5, 5)?;
+    let box2 = merged(0.1 * radius, radius * 1.2, 0.1 * radius, 5, 60, 5)?;
+    let mut add = |geo: &[Vector3], x: f64, y: f64, z: f64, ry: f64| {
+        let m = Matrix4::from_scale_rotation_translation(
+            Vector3::ONE,
+            Quaternion::from_rotation_y(ry),
+            Vector3::new(x, y, z),
+        );
+        for &p in geo {
+            vertices.extend(m.transform_point3(p).to_array());
+        }
+    };
+    let half = std::f64::consts::PI / 2.;
+    for (x, y, z, ry) in [
+        (0., 110., 110., 0.),
+        (0., 110., -110., 0.),
+        (0., -110., 110., 0.),
+        (0., -110., -110., 0.),
+        (110., 110., 0., half),
+        (110., -110., 0., half),
+        (-110., 110., 0., half),
+        (-110., -110., 0., half),
+    ] {
+        add(&box1, x, y, z, ry);
+    }
+    for (x, z) in [(110., 110.), (110., -110.), (-110., 110.), (-110., -110.)] {
+        add(&box2, x, 0., z, 0.);
+    }
+    Ok((vertices.into_iter().map(|v| v as f32).collect(), vertices1))
+}
 fn function(name: &str, code: &str, args: &[Type], output: Type, nodes: &[Node]) -> Result<Node> {
     Ok(WgslFn::new(name, code, args, output)?.call(nodes))
 }
@@ -76,18 +128,15 @@ impl Demo {
         let (count, buffer) = if id == 165 {
             (2500, None)
         } else if id == 167 {
-            let bytes = fetch(&format!("{ASSETS}/frame.bin")).await?;
-            if bytes.len() < 8 {
-                return Err(Error::Asset("point frame header".into()));
-            }
-            let count = u32::from_le_bytes(bytes[..4].try_into().unwrap());
-            inner = u32::from_le_bytes(bytes[4..8].try_into().unwrap());
-            if bytes.len() != 8 + count as usize * 12 || inner > count {
-                return Err(Error::Asset("point frame size".into()));
-            }
+            let (positions, vertices1) = points3(&mut seed)?;
+            inner = vertices1;
             (
-                count,
-                Some(GpuBuffer::new(r, &bytes[8..], BufferAccess::Read)?),
+                (positions.len() / 3) as u32,
+                Some(GpuBuffer::new(
+                    r,
+                    bytemuck::cast_slice(&positions),
+                    BufferAccess::Read,
+                )?),
             )
         } else {
             let count = if id == 166 { 100000 } else { 10000 };

@@ -2,9 +2,11 @@
 //! BatchedMesh ( MeshStandardMaterial, metalness 1, roughness 0.8, under the
 //! RoomEnvironment PMREM with ACES Filmic at exposure 0.8 ), placed on a
 //! 708 × 708 grid with the page's random rotations and HSL colors. Each knot
-//! carries the four LODs @three.ez/simplify-geometry builds with meshoptimizer
-//! ( baked by tools/tsl/prepare-batch-lod.mjs; the knots themselves are built
-//! at load ) in one shared index buffer. As @three.ez/batched-mesh-extensions'
+//! carries the four LODs @three.ez/simplify-geometry's
+//! simplifyGeometriesByErrorLOD( geometries, 4, performanceRangeLOD ) builds at
+//! load, ported here on meshoptimizer 1.1.1 from jsDelivr ( the page's
+//! version ): MeshoptSimplifier.simplify( index, position, 3, 0, error, [] )
+//! for the errors 0.01, 0.02, 0.05 and 0.1, in one shared index buffer. As @three.ez/batched-mesh-extensions'
 //! onBeforeRender does, every frame culls the instances' boxes against the
 //! frustum through a BVH ( bvh.js's single-precision planes and boxes ), picks
 //! each visible instance's LOD from its screen-size metric and orders the list
@@ -14,13 +16,14 @@
 //! instance boxes and the knots' triangles ( three-mesh-bvh's first hit ) on
 //! the CPU, as the original does, and color the hovered instance red.
 use super::controls_attributes::{Controls, camera_state, viewport_css};
-use super::gltf_viewer::fetch;
 use crate::{
     Error, Result, camera::*, geometry::*, material::*, math::*, renderer::Renderer, scene::*,
 };
 use std::{f64::consts::PI, sync::Arc};
 
 const INSTANCES: usize = 500_000;
+/// @three.ez/simplify-geometry's performanceRangeLOD.
+const PERFORMANCE_RANGE_LOD: [f64; 4] = [0.01, 0.02, 0.05, 0.1];
 const KNOTS: [(u32, u32); 10] = [
     (1, 1),
     (1, 2),
@@ -375,18 +378,10 @@ impl Demo {
         // MapControls: planar panning, the polar angle limited to the horizon.
         let mut controls = Controls::new(None, (0., f64::INFINITY), PI / 2., false);
         controls.update(s, c)?;
-        let bake = fetch("/web/gallery/assets/batch_lod/lods.bin").await?;
-        let mut at = 0;
-        let word = |at: &mut usize| -> Result<u32> {
-            let b = bake
-                .get(*at..*at + 4)
-                .ok_or(Error::Invalid("batch lod bake"))?;
-            *at += 4;
-            Ok(u32::from_le_bytes([b[0], b[1], b[2], b[3]]))
-        };
-        if word(&mut at)? as usize != KNOTS.len() || word(&mut at)? as usize != METRICS.len() {
-            return Err(Error::Invalid("batch lod bake"));
-        }
+        let meshopt = super::meshopt::Meshopt::package(
+            "https://cdn.jsdelivr.net/npm/meshoptimizer@1.1.1/+esm",
+        )
+        .await?;
         let material = Arc::new(Material::Standard(MeshStandardMaterial {
             metalness: 1.,
             roughness: 0.8,
@@ -404,35 +399,23 @@ impl Demo {
             let points: Vec<Vector3> = (0..count)
                 .map(|i| position.vector3(i))
                 .collect::<Result<_>>()?;
-            // The baked LODs index these vertices: the knot must match three's.
-            let mut hash = 0x811c9dc5u32;
-            for v in &points {
-                for c in [v.x, v.y, v.z] {
-                    for b in (c as f32).to_le_bytes() {
-                        hash = (hash ^ b as u32).wrapping_mul(16777619);
-                    }
-                }
-            }
-            if word(&mut at)? != hash || word(&mut at)? as usize != count {
-                return Err(Error::Invalid("torus knot differs from the baked LODs"));
-            }
             let mut index = geometry
                 .index
                 .clone()
                 .ok_or(Error::Invalid("torus knot index"))?;
+            // simplifyGeometryByErrorLOD(): one simplify() per error, on
+            // the knot's own index and positions.
+            let position_array: Vec<f32> = points
+                .iter()
+                .flat_map(|v| [v.x as f32, v.y as f32, v.z as f32])
+                .collect();
+            let source = index.clone();
             let mut lods = [(0, index.len()); LODS];
-            for lod in lods.iter_mut().skip(1) {
-                let n = word(&mut at)? as usize;
-                let bytes = bake
-                    .get(at..at + n * 2)
-                    .ok_or(Error::Invalid("batch lod bake"))?;
-                *lod = (index.len(), n);
-                index.extend(
-                    bytes
-                        .chunks(2)
-                        .map(|b| u16::from_le_bytes([b[0], b[1]]) as u32),
-                );
-                at += (n * 2).div_ceil(4) * 4;
+            for (lod, error) in lods.iter_mut().skip(1).zip(PERFORMANCE_RANGE_LOD) {
+                let (simplified, _) =
+                    meshopt.simplify(&source, &position_array, 3, 0.0, error, &[])?;
+                *lod = (index.len(), simplified.len());
+                index.extend(simplified);
             }
             let lod0 = &index[..lods[0].1];
             // getBoundingBoxAt / getBoundingSphereAt over LOD 0's index range.

@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Rhino3dmLoader r186 reference</title>
+<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="module">
+// The pinned Rhino3dmLoader as webgl_loader_3dm runs it ( Z up, rhino3dm
+// 8.32.1 from jsDelivr ), and the canonical form of rhino3dm_loader.rs's
+// canonical() that tests/browser/rhino3dm-loader.spec.js compares.
+import * as THREE from 'three';
+import { Rhino3dmLoader } from 'three/addons/loaders/3DMLoader.js';
+THREE.Object3D.DEFAULT_UP.set( 0, 0, 1 );
+const f64=new Float64Array(1),u32=new Uint32Array(f64.buffer);
+const n=v=>{if(typeof v!=='number')v=Number(v);if(Number.isNaN(v))return '"NaN"';f64[0]=v;return `"${u32[1].toString(16).padStart(8,'0')}${u32[0].toString(16).padStart(8,'0')}"`;};
+const ns=a=>'['+Array.from(a,n).join(',')+']';
+const s=v=>JSON.stringify(v);
+const hash=(bytes,count)=>{let h=0x811c9dc5;for(let i=0;i<bytes.length;i++){h^=bytes[i];h=Math.imul(h,0x01000193)>>>0;}return `"${count}:${h.toString(16).padStart(8,'0')}"`;};
+const th=a=>hash(new Uint8Array(a.buffer,a.byteOffset,a.byteLength),a.length);
+function canonical(object){
+ const nodes=[];const index=new Map();object.traverse(o=>{index.set(o,nodes.length);nodes.push(o);});
+ const materials=[];for(const o of nodes)if(o.material&&!o.isSprite&&!materials.includes(o.material))materials.push(o.material);
+ let out='{"nodes":[';
+ out+=nodes.map(o=>{
+  let geometry='null';
+  if(o.geometry&&!o.isSprite){const g=o.geometry;const attrs=Object.keys(g.attributes).sort().map(k=>`[${s(k)},${g.attributes[k].itemSize},${th(g.attributes[k].array)}]`).join(',');geometry=`[[${attrs}],${g.index?th(Uint32Array.from(g.index.array)):'null'}]`;}
+  const layer=o.userData.attributes?.layerIndex;
+  const parent=o.parent&&index.has(o.parent)?index.get(o.parent):'null';
+  return `[${s(o.type)},${s(o.name)},${parent},${ns(o.position.toArray())},${ns(o.quaternion.toArray())},${o.isSprite?'null':ns(o.scale.toArray())},${o.visible},${layer===undefined?'null':n(layer)},${geometry},${o.material&&!o.isSprite?materials.indexOf(o.material):'null'},${o.isLight?`[${ns(o.color.toArray())},${n(o.intensity)}]`:'null'}]`;
+ }).join(',');
+ out+='],"materials":[';
+ out+=materials.map(m=>{
+  const physical=m.isMeshPhysicalMaterial,lit=m.isMeshStandardMaterial,points=m.isPointsMaterial;
+  return `[${s(m.type)},${s(m.name)},${ns(m.color.toArray())},${ns([m.opacity])},${m.transparent},${m.side},${m.vertexColors},${m.flatShading??false},${lit?ns([...m.emissive.toArray(),m.metalness,m.roughness]):'null'},${physical?ns([m.ior,m.clearcoat,m.clearcoatRoughness,m.sheen,m.specularIntensity,m.thickness,m.anisotropy]):'null'},${physical?ns(m.specularColor.toArray()):'null'},${physical?ns(m.sheenColor.toArray()):'null'},${points?`[${n(m.size)},${m.sizeAttenuation}]`:'null'}]`;
+ }).join(',');
+ return out+']}';
+}
+window.rhino3dmCanonical=bytes=>new Promise((resolve,reject)=>{
+ const loader=new Rhino3dmLoader();
+ loader.setLibraryPath('https://cdn.jsdelivr.net/npm/rhino3dm@8.32.1/');
+ loader.parse(bytes.slice().buffer,object=>resolve(canonical(object)),reject);
+});
+document.title='ready';
+</script>

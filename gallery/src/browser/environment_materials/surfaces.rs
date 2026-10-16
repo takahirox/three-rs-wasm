@@ -18,12 +18,19 @@ impl Demo {
                 far: 10000.,
                 ..Default::default()
             }));
-            let g = Arc::new(
-                super::super::tsl_materials::geometries(
-                    &fetch(&format!("{ASSETS}/ninja.bin")).await?,
-                )?
-                .remove(0),
-            );
+            let g = Arc::new({
+                // OBJLoader().load( ninjaHead_Low.obj ): children[ 0 ].geometry, centered.
+                let mut g = super::super::terrain_loaders::obj_geometry(
+                    super::super::terrain_loaders::parse_obj(&String::from_utf8_lossy(
+                        &fetch(&format!("{ASSETS}/models/obj/ninja/ninjaHead_Low.obj")).await?,
+                    ))
+                    .into_iter()
+                    .next()
+                    .ok_or(Error::Invalid("ninjaHead_Low.obj"))?,
+                )?;
+                g.center()?;
+                g
+            });
             let mut m = MeshStandardMaterial {
                 energy_conservation: true,
                 roughness: 0.4,

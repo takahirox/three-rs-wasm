@@ -64,13 +64,11 @@ UltraHDR with the pinned UltraHDRLoader. Earlier base-color comparison pages
 have been upgraded to use these actual PBR materials; M1 frozen manifests and
 image tolerances remain unchanged.
 
-The demo uses a verified Radiance HDR conversion of that exact reconstructed
-UltraHDR. This avoids platform JPEG/interpolation differences in gain-map
-recovery. `web/environments.json` records both source and derivative hashes.
-`tools/convert-environment.mjs` reproduces the conversion with the pinned loader
-while the local server is running. The HDR equivalence test compares every
-channel of Rust-decoded HDR against the official reconstruction, allowing only
-Radiance RGBE's quantization bound (1/128 of each pixel's peak channel).
+The demo decodes the same UltraHDR JPEG at run time, as UltraHDRLoader does:
+the browser decodes the base image and gain map, and Rust recovers the HDR
+values into half floats. The HDR equivalence test compares every channel of the
+Rust reconstruction against the official loader's output in the same browser;
+they must match bit for bit.
 Values above one remain unclamped through lighting and four-sample RGBA16F
 resolve; ACES exposure and the sRGB attachment conversion occur afterward.
 

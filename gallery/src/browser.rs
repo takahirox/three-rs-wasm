@@ -113,6 +113,7 @@ mod exporters_matcap;
 mod exporters_video;
 #[cfg(feature = "fbx_loader")]
 mod fbx_loader;
+mod fbx_models;
 #[cfg(feature = "fbx_nurbs")]
 mod fbx_nurbs;
 #[cfg(feature = "fluid")]
@@ -224,6 +225,8 @@ mod md2_control;
 mod memory_outline;
 #[cfg(feature = "mesh_batch")]
 mod mesh_batch;
+#[cfg(any(feature = "compute_rasterizer_ibl", feature = "batch_lod_bvh"))]
+mod meshopt;
 #[cfg(feature = "mirror_webgl")]
 mod mirror_webgl;
 #[cfg(feature = "models_modifiers")]
@@ -311,6 +314,8 @@ mod retargeting_readyplayer;
 mod retro;
 #[cfg(feature = "reversed_depth")]
 mod reversed_depth;
+#[cfg(feature = "loader_3dm")]
+mod rhino3dm_loader;
 mod robot;
 #[cfg(feature = "roller_coaster")]
 mod roller_coaster;
@@ -877,6 +882,77 @@ pub fn tsl_transpile(glsl: &str, encoder: &str) -> std::result::Result<String, J
     crate::transpiler::transpile(glsl, encoder).map_err(|e| JsValue::from_str(&e))
 }
 
+/// The run-time UltraHDR (or Radiance HDR) reconstruction as RGBA half-float
+/// bits, compared against the original UltraHDRLoader's output.
+#[wasm_bindgen]
+pub async fn decode_environment(bytes: Vec<u8>) -> std::result::Result<Vec<u16>, JsValue> {
+    let image = ultra_hdr::decode_environment(&bytes)
+        .await
+        .map_err(|e| JsValue::from_str(&e.to_string()))?;
+    Ok(image.rgba.iter().map(|v| v.to_bits()).collect())
+}
+
+/// The FBXLoader port's parse in canonical form ( `fbx::canonical` ), compared
+/// with the original loader's in tests/browser/fbx-loader.spec.js.
+#[wasm_bindgen]
+pub fn fbx_canonical(
+    bytes: Vec<u8>,
+    path: String,
+    trim: bool,
+    width: f64,
+    height: f64,
+) -> std::result::Result<String, JsValue> {
+    let options = crate::fbx::Options {
+        trim_animation_clips: trim,
+        path,
+        window_size: (width, height),
+    };
+    crate::fbx::parse(&bytes, &options)
+        .map(|s| crate::fbx::canonical(&s))
+        .map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+/// The VRMLLoader port's parse in canonical form ( `vrml::canonical` ),
+/// compared with the original loader's in tests/browser/vrml-loader.spec.js.
+#[wasm_bindgen]
+pub fn vrml_canonical(
+    text: String,
+    path: String,
+    width: f64,
+    height: f64,
+) -> std::result::Result<String, JsValue> {
+    let options = crate::vrml::Options {
+        path,
+        window_size: (width, height),
+    };
+    crate::vrml::parse(&text, &options)
+        .map(|s| crate::vrml::canonical(&s, false))
+        .map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+/// The USDLoader port's parse in canonical form ( `usd::canonical` ),
+/// compared with the original loader's in tests/browser/usd-loader.spec.js.
+#[wasm_bindgen]
+pub fn usd_canonical(bytes: Vec<u8>, path: String) -> std::result::Result<String, JsValue> {
+    crate::usd::parse(&bytes, &path)
+        .map(|s| crate::usd::canonical(&s, false))
+        .map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
+/// The Rhino3dmLoader port's object tree for a 3DM file in canonical form,
+/// compared with the original loader's in tests/browser/rhino3dm-loader.spec.js.
+#[cfg(feature = "loader_3dm")]
+#[wasm_bindgen]
+pub async fn rhino3dm_canonical(bytes: Vec<u8>) -> std::result::Result<String, JsValue> {
+    let run = async {
+        let rhino = rhino3dm_loader::library().await?;
+        let decoded = rhino3dm_loader::decode_objects(&rhino, &bytes, 3.0)?;
+        let tree = rhino3dm_loader::create_geometry(&decoded)?;
+        Ok::<_, crate::Error>(rhino3dm_loader::canonical(&tree))
+    };
+    run.await.map_err(|e| JsValue::from_str(&e.to_string()))
+}
+
 /// The JavaScript bootstrap owns one app lifetime. Scene state, rendering,
 /// animation and input handling all stay in Rust.
 #[wasm_bindgen]
@@ -966,11 +1042,7 @@ impl BrowserApp {
             state.load_generation += 1;
             state.load_generation
         };
-        let image = async {
-            let bytes = gltf_viewer::fetch(&url).await?;
-            crate::environment::EnvironmentMap::from_hdr(&bytes)
-        }
-        .await;
+        let image = async { ultra_hdr::environment(&url).await }.await;
         let mut state = self.state.borrow_mut();
         if state.load_generation != generation {
             return Ok(false);

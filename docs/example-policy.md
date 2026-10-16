@@ -376,9 +376,9 @@ WebGLRenderer. Their backend tolerances are scoped to two causes:
 - 4× MSAA edge samples that resolve differently (the birds and USDZ).
 
 Simple GI, subsurface scattering and VRML match at the default thresholds.
-The loaders' output is baked from the pinned loaders: FBX for the bunny and the
-Mixamo character, VRML and USD. The ports render the baked scenes, and the
-loaders' parsers are not ported.
+The bunny and the Mixamo character are parsed at load by the FBXLoader port,
+the VRML samples by the VRMLLoader port and the USDZ model by the USDLoader
+port.
 
 The USDZ exporter, shadow-map performance, GTAO, subdivision, BVH
 raycasting, spline editor, glTF exporter, arcball, video frame, G-code

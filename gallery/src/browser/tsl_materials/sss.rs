@@ -58,8 +58,8 @@ impl Demo {
         m.base.energy_conservation = true;
         m.base.properties.color = Color::linear(1.0, 0.2, 0.2);
         m.base.properties.vertex_program = Some(Arc::new(program));
-        let mut data = geometries(&fetch(&format!("{ASSETS}/bunny.bin")).await?)?;
-        let h = mesh(s, Arc::new(data.remove(0)), Material::Physical(m));
+        let bunny = super::super::fbx_models::stanford_bunny().await?;
+        let h = mesh(s, Arc::new(bunny), Material::Physical(m));
         s.get_mut(h)?.position.z = 10.0;
         self.objects.push(h);
         self.animated = Some(h);

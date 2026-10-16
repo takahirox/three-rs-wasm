@@ -84,9 +84,10 @@ impl OrbitViewer {
         let meshes = imported.mesh_count();
         let environment = match environment {
             Some(image) => image,
-            None => Arc::new(crate::environment::EnvironmentMap::from_hdr(
-                &fetch("/web/environments/royal_esplanade_2k.hdr").await?,
-            )?),
+            None => Arc::new(
+                super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg")
+                    .await?,
+            ),
         };
         imported.instantiate(scene)?;
         scene.dispose(placeholder)?;

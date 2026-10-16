@@ -1,9 +1,9 @@
 //! webgpu_animation_retargeting_readyplayer: the Mixamo character's dance
 //! ( mixamo.fbx ) retargeted onto the readyplayer.me avatar with
 //! SkeletonUtils.retargetClip, both dancing over a reflector floor under the
-//! hemisphere and two directional lights. The FBX is the pinned FBXLoader's
-//! parse, baked by `tools/tsl/prepare-mixamo.mjs` with the world matrices the
-//! loader left; the retargeted clip is baked once on the CPU, as the page
+//! hemisphere and two directional lights. The FBX is parsed at load by the
+//! FBXLoader port, with the world matrices the loader leaves; the retargeted
+//! clip is baked once on the CPU, as the page
 //! does, with retargeting's simulation of three.js's matrix semantics. Every
 //! skinned mesh ( the avatar's ten, the character's two ) is skinned on the
 //! GPU from its skeleton's bone matrices; the opaque meshes draw in r186's
@@ -128,50 +128,6 @@ pub(super) struct Demo {
     clamp: wgpu::Sampler,
     targets: Option<Targets>,
 }
-/// The baked FBX: its JSON index and binary data.
-struct Baked {
-    json: serde_json::Value,
-    bin: Vec<u8>,
-}
-impl Baked {
-    fn floats(&self, v: &serde_json::Value) -> Result<Vec<f32>> {
-        let offset = v["offset"].as_u64().ok_or(Error::Invalid("baked offset"))? as usize;
-        let length = v["length"].as_u64().ok_or(Error::Invalid("baked length"))? as usize;
-        let bytes = self
-            .bin
-            .get(offset..offset + length * 4)
-            .ok_or(Error::Invalid("baked range"))?;
-        Ok(bytes
-            .as_chunks::<4>()
-            .0
-            .iter()
-            .map(|&c| f32::from_le_bytes(c))
-            .collect())
-    }
-    fn u16s(&self, v: &serde_json::Value) -> Result<Vec<u32>> {
-        let offset = v["offset"].as_u64().ok_or(Error::Invalid("baked offset"))? as usize;
-        let length = v["length"].as_u64().ok_or(Error::Invalid("baked length"))? as usize;
-        let bytes = self
-            .bin
-            .get(offset..offset + length * 2)
-            .ok_or(Error::Invalid("baked range"))?;
-        Ok(bytes
-            .as_chunks::<2>()
-            .0
-            .iter()
-            .map(|&c| u32::from(u16::from_le_bytes(c)))
-            .collect())
-    }
-}
-fn numbers(v: &serde_json::Value) -> Vec<f64> {
-    v.as_array()
-        .map(|a| a.iter().filter_map(serde_json::Value::as_f64).collect())
-        .unwrap_or_default()
-}
-fn matrix(v: &serde_json::Value) -> Matrix4 {
-    let n = numbers(v);
-    Matrix4::from_cols_array(&std::array::from_fn(|i| n.get(i).copied().unwrap_or(0.)))
-}
 /// The vertex inputs of a generated vertex module's main: ( location, name ).
 fn inputs(vs: &str) -> Vec<(u32, String)> {
     let Some(start) = vs.find("fn main(") else {
@@ -247,42 +203,32 @@ impl Demo {
         let vertex = wgpu::BufferUsages::VERTEX;
         let index_usage = wgpu::BufferUsages::INDEX;
         let uniform_usage = wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST;
-        // The source: the baked FBX scene graph, at the page's placement.
-        let baked = Baked {
-            json: serde_json::from_slice(
-                &fetch("/web/gallery/assets/retargeting-readyplayer/mixamo.json").await?,
-            )
-            .map_err(|e| Error::Asset(e.to_string()))?,
-            bin: fetch("/web/gallery/assets/retargeting-readyplayer/mixamo.bin").await?,
-        };
-        let baked_nodes = baked.json["nodes"]
-            .as_array()
-            .ok_or(Error::Invalid("baked nodes"))?;
+        // The source: FBXLoader.load( 'models/fbx/mixamo.fbx' ), at the page's placement.
+        let fbx = crate::fbx::parse(
+            &fetch(&format!("{}/mixamo.fbx", super::fbx_models::MODELS)).await?,
+            &crate::fbx::Options::default(),
+        )?;
         let mut fbx_handles = vec![];
         let mut sim_nodes = vec![];
-        for n in baked_nodes {
+        for n in &fbx.nodes {
             let h = s.insert(NodeKind::Group);
-            let p = numbers(&n["position"]);
-            let q = numbers(&n["quaternion"]);
-            let sc = numbers(&n["scale"]);
             let node = s.get_mut(h)?;
-            node.position = Vector3::new(p[0], p[1], p[2]);
-            node.quaternion = Quaternion::from_xyzw(q[0], q[1], q[2], q[3]);
-            node.scale = Vector3::new(sc[0], sc[1], sc[2]);
-            let parent = n["parent"].as_u64().map(|p| p as usize);
-            if let Some(p) = parent {
+            node.position = n.position;
+            node.quaternion = n.quaternion;
+            node.scale = n.scale;
+            if let Some(p) = n.parent {
                 s.add(fbx_handles[p], h)?;
             }
             fbx_handles.push(h);
             sim_nodes.push(SimNode {
-                name: n["name"].as_str().unwrap_or("").to_string(),
-                parent,
+                name: n.name.clone(),
+                parent: n.parent,
                 children: vec![],
-                position: Vector3::new(p[0], p[1], p[2]),
-                quaternion: Quaternion::from_xyzw(q[0], q[1], q[2], q[3]),
-                scale: Vector3::new(sc[0], sc[1], sc[2]),
+                position: n.position,
+                quaternion: n.quaternion,
+                scale: n.scale,
                 matrix: Matrix4::IDENTITY,
-                world: matrix(&n["matrixWorld"]),
+                world: n.matrix_world,
                 needs_update: false,
             });
         }
@@ -307,13 +253,16 @@ impl Demo {
         for (i, n) in source_sim.nodes.iter().enumerate() {
             by_name.entry(n.name.clone()).or_insert(i);
         }
+        let first = fbx
+            .clips
+            .first()
+            .ok_or(Error::Invalid("mixamo.fbx has no clips"))?;
         let mut tracks = vec![];
-        for t in baked.json["clip"]["tracks"]
-            .as_array()
-            .ok_or(Error::Invalid("baked tracks"))?
-        {
-            let name = t["name"].as_str().unwrap_or("");
-            let (node, property) = name.rsplit_once('.').ok_or(Error::Invalid("track name"))?;
+        for t in &first.tracks {
+            let (node, property) = t
+                .name
+                .rsplit_once('.')
+                .ok_or(Error::Invalid("track name"))?;
             let target = fbx_handles[*by_name.get(node).ok_or(Error::Invalid("track node"))?];
             let (property, size) = match property {
                 "position" => (Property::Position, 3),
@@ -321,29 +270,20 @@ impl Demo {
                 "scale" => (Property::Scale, 3),
                 _ => return Err(Error::Invalid("track property")),
             };
-            let times: Vec<f64> = baked
-                .floats(&t["times"])?
-                .iter()
-                .map(|&v| v as f64)
-                .collect();
-            let values: Vec<Vec<f64>> = baked
-                .floats(&t["values"])?
-                .chunks(size)
-                .map(|v| v.iter().map(|&x| x as f64).collect())
-                .collect();
             tracks.push(Track {
                 target,
                 property,
-                times,
-                values,
+                times: t.times.iter().map(|&v| f64::from(v)).collect(),
+                values: t
+                    .values
+                    .chunks(size)
+                    .map(|v| v.iter().map(|&x| f64::from(x)).collect())
+                    .collect(),
                 interpolation: Interpolation::Linear,
             });
         }
         let clip = Arc::new(Clip {
-            name: baked.json["clip"]["name"]
-                .as_str()
-                .unwrap_or("")
-                .to_string(),
+            name: first.name.clone(),
             tracks,
         });
         let mut source_mixer = ThreeMixer::new();
@@ -389,15 +329,15 @@ impl Demo {
             .collect();
         // SkeletonHelper( sourceModel ).bones: the bones in depth-first order.
         let mut source_bones = vec![];
-        fn walk(nodes: &[serde_json::Value], i: usize, sim: &Sim, out: &mut Vec<usize>) {
-            if nodes[i]["type"].as_str() == Some("Bone") {
+        fn walk(nodes: &[crate::fbx::FbxNode], i: usize, sim: &Sim, out: &mut Vec<usize>) {
+            if matches!(nodes[i].kind, crate::fbx::FbxNodeKind::Bone) {
                 out.push(i);
             }
             for &c in &sim.nodes[i].children {
                 walk(nodes, c, sim, out);
             }
         }
-        walk(baked_nodes, 0, &source_sim, &mut source_bones);
+        walk(&fbx.nodes, 0, &source_sim, &mut source_bones);
         let duration = clip.duration();
         let frames = clip.tracks.iter().map(|t| t.times.len()).max().unwrap_or(1);
         let fps = frames as f64 / duration;
@@ -435,14 +375,11 @@ impl Demo {
         // uncacheAction restores the source bones; the target keeps the
         // last retargeted state.
         for &(j, h) in &bone_handles {
-            let n = &baked_nodes[j];
-            let p = numbers(&n["position"]);
-            let q = numbers(&n["quaternion"]);
-            let sc = numbers(&n["scale"]);
+            let n = &fbx.nodes[j];
             let node = s.get_mut(h)?;
-            node.position = Vector3::new(p[0], p[1], p[2]);
-            node.quaternion = Quaternion::from_xyzw(q[0], q[1], q[2], q[3]);
-            node.scale = Vector3::new(sc[0], sc[1], sc[2]);
+            node.position = n.position;
+            node.quaternion = n.quaternion;
+            node.scale = n.scale;
         }
         for &b in &target_bones {
             let h = instance.nodes[b];
@@ -779,19 +716,27 @@ impl Demo {
             });
         }
         // The FBX character's two skinned meshes.
-        for m in baked.json["meshes"]
-            .as_array()
-            .ok_or(Error::Invalid("baked meshes"))?
-        {
-            let a = &m["attributes"];
-            let positions = baked.floats(&a["position"])?;
-            let joints = baked.u16s(&a["skinIndex"])?;
-            let weights = baked.floats(&a["skinWeight"])?;
-            let normals = baked.floats(&a["normal"])?;
-            let node = m["node"]
-                .as_u64()
-                .ok_or(Error::Invalid("baked mesh node"))? as usize;
-            let surface = baked_nodes[node]["name"].as_str() == Some("Beta_Surface");
+        let floats = |g: &BufferGeometry, name: &str| match g.attributes.get(name) {
+            Some(Attribute::F32(a)) => Ok(a.array().to_vec()),
+            _ => Err(Error::Invalid("mixamo attribute")),
+        };
+        for (node, n) in fbx.nodes.iter().enumerate() {
+            let crate::fbx::FbxNodeKind::Mesh(m) = &n.kind else {
+                continue;
+            };
+            let Some(skin) = &m.skin else {
+                continue;
+            };
+            let g = &fbx.geometries[m.geometry].geometry;
+            let positions = floats(g, "position")?;
+            let joints: Vec<u32> = match g.attributes.get("skinIndex") {
+                Some(Attribute::U16(a)) => a.array().iter().map(|&v| u32::from(v)).collect(),
+                _ => return Err(Error::Invalid("mixamo skinIndex")),
+            };
+            let weights = floats(g, "skinWeight")?;
+            let normals = floats(g, "normal")?;
+            let material = &fbx.materials[m.materials[0]];
+            let surface = n.name == "Beta_Surface";
             let shaders = if surface {
                 (wgsl!("surface_vs"), wgsl!("phong_fs"))
             } else {
@@ -820,25 +765,19 @@ impl Demo {
                 };
                 attributes.push((location, init("character attribute", &data, vertex), format));
             }
-            let bones: Vec<(Object3D, Matrix4)> = m["bones"]
-                .as_array()
-                .ok_or(Error::Invalid("baked bones"))?
+            let bones: Vec<(Object3D, Matrix4)> = skin
+                .bones
                 .iter()
-                .zip(
-                    m["boneInverses"]
-                        .as_array()
-                        .ok_or(Error::Invalid("baked inverses"))?,
-                )
+                .zip(&skin.bone_inverses)
                 .map(|(b, inverse)| {
                     Ok((
-                        fbx_handles[b.as_u64().ok_or(Error::Invalid("baked bone"))? as usize],
-                        matrix(inverse),
+                        fbx_handles[b.ok_or(Error::Invalid("mixamo bone"))?],
+                        *inverse,
                     ))
                 })
                 .collect::<Result<_>>()?;
-            let material = &m["material"];
-            let color = numbers(&material["color"]);
-            let specular = numbers(&material["specular"]);
+            let color = material.color.0;
+            let specular = material.specular.0;
             meshes.push(Mesh {
                 kind: Kind::Phong,
                 shaders,
@@ -853,11 +792,11 @@ impl Demo {
                 maps: vec![],
                 object: super::retro::uniform(r, "character object", shaders.1, "objectStruct")?,
                 material: (
-                    [color[0], color[1], color[2]],
+                    [color.x, color.y, color.z],
                     0.,
-                    material["shininess"].as_f64().unwrap_or(30.),
+                    material.shininess,
                     1.,
-                    [specular[0], specular[1], specular[2]],
+                    [specular.x, specular.y, specular.z],
                 ),
                 center: geometry_center(&positions, &[]),
                 positions,

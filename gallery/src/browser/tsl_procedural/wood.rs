@@ -1,7 +1,6 @@
 use super::super::gltf_viewer::fetch;
 use super::*;
 use tsl::wood::WoodNodes;
-#[derive(serde::Deserialize)]
 struct Preset {
     parameters: [f32; 16],
     dark: u32,
@@ -65,15 +64,34 @@ impl Wood {
         s.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
             &fetch("/web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr").await?,
         )?));
-        let geometries = super::super::tsl_materials::geometries(
-            &fetch("/web/gallery/assets/tsl-procedural/wood-geometry.bin").await?,
+        // RoundedBoxGeometry( 0.125, 0.9, 0.9, 10, 0.02 ) and the finish, genus and
+        // custom labels: TextGeometry ( helvetiker, size 0.1, depth 0.001 ) centered
+        // on its bounding box.
+        let font = crate::shapes::Font::parse(
+            &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
         )?;
-        let mut geometries = geometries.into_iter();
-        let block = Arc::new(
-            geometries
-                .next()
-                .ok_or(Error::Asset("wood geometry".into()))?,
-        );
+        let block = Arc::new(RoundedBoxGeometry::build(0.125, 0.9, 0.9, 10, 0.02)?);
+        let mut geometries = vec![];
+        for text in super::wood_presets::FINISHES
+            .iter()
+            .chain(super::wood_presets::WOOD_PARAMS.iter().map(|p| &p.0))
+            .chain(std::iter::once(&"custom"))
+        {
+            let mut g = crate::shapes::text_geometry(
+                &font,
+                text,
+                0.1,
+                &crate::shapes::Extrude {
+                    curve_segments: 12,
+                    steps: 1,
+                    depth: 0.001,
+                    bevel: None,
+                },
+            )?;
+            let b = g.compute_bounding_box()?;
+            g.translate(-0.5 * (b.max - b.min))?;
+            geometries.push(g);
+        }
         let base = s.insert(NodeKind::Group);
         s.get_mut(base)?.quaternion = Quaternion::from_rotation_z(-std::f64::consts::FRAC_PI_2);
         s.get_mut(base)?.position.z = 0.548;
@@ -83,7 +101,7 @@ impl Wood {
             ..Default::default()
         };
         text.properties.color = Color::BLACK;
-        for (i, g) in geometries.enumerate() {
+        for (i, g) in geometries.into_iter().enumerate() {
             let h = mesh(s, Arc::new(g), Material::Standard(text.clone()));
             s.add(base, h)?;
             s.get_mut(h)?.quaternion = Quaternion::from_rotation_y(-std::f64::consts::FRAC_PI_2);
@@ -113,10 +131,14 @@ impl Wood {
             .build(r, &[], &[])
             .await?,
         );
-        let presets: Vec<Preset> = serde_json::from_slice(
-            &fetch("/web/gallery/assets/tsl-procedural/wood-presets.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let presets: Vec<Preset> = super::wood_presets::WOOD_PARAMS
+            .iter()
+            .map(|(_, p, dark, light)| Preset {
+                parameters: p.map(|v| v as f32),
+                dark: *dark,
+                light: *light,
+            })
+            .collect();
         let mut seed = 186u32;
         let mut custom = None;
         for (x, y) in (0..10)

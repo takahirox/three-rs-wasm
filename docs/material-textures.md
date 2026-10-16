@@ -43,7 +43,7 @@ MATERIAL_TEXTURES_DPR=2 npx playwright test --config playwright.gallery.config.j
 cargo test --locked --test texture_operations
 ```
 
-Asset regeneration requires the pinned archive, Node dependencies and Chrome:
+Asset regeneration requires the pinned archive:
 `python3 tools/gallery/prepare-materials.py`. Ordinary tests use committed
 assets; `tools/tsl/prepare.py` extracts the independent official reference assets.
 

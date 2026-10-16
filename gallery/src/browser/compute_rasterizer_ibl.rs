@@ -2,9 +2,9 @@
 //! 125 plane or a 25³ volume ) drawn by the compute-shader software
 //! rasterizer with a hardware fallback, lit by royal_esplanade's PMREM under
 //! FirstPersonControls. The page's Meshopt LODs and 64-triangle meshlets are
-//! the official libraries' output for the helmet ( baked once by
-//! `tools/tsl/prepare-rasterizer-ibl.mjs` and packed at load as the page packs
-//! them ). Each frame runs the page's compute passes on the resident storage
+//! built at load as the page builds them, with three's bundled
+//! MeshoptSimplifier and MeshoptClusterizer, and packed as the page packs
+//! them. Each frame runs the page's compute passes on the resident storage
 //! buffers: Compute Clear, Compute Frustum ( frustum, depth-pyramid occlusion
 //! against the previous frame and LOD selection, per instance and per chunk ),
 //! the indirect dispatch, Compute Rasterize into the depth-packed atomic
@@ -18,7 +18,7 @@
 //! HZB kernels past level 1 are level 1's with their level indices, as the
 //! page's loop generates them.
 use super::deferred::ultra_hdr_environment;
-use super::gltf_viewer::{fetch, load_asset};
+use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4};
 use super::pmrem_cube_uv::Pmrem;
 use super::retro::{mipmapped, target};
@@ -209,33 +209,146 @@ type Lods = (
     Vec<f32>,
     Vec<f32>,
 );
-fn pack_lods(bytes: &[u8]) -> Result<Lods> {
-    let mut at = 0usize;
-    let mut take = |n: usize| -> Result<&[u8]> {
-        let s = bytes
-            .get(at..at + n)
-            .ok_or(Error::Invalid("helmet LOD data"))?;
-        at += n;
-        Ok(s)
+/// The page's load: the helmet mesh with its glTF node transform baked in
+/// ( geometry.applyMatrix4( sourceMesh.matrixWorld ) ), the Meshopt LODs and
+/// 64-triangle meshlets, packed as the page packs them.
+async fn page_lods(asset: &gltf::Gltf, buffers: &[Vec<u8>]) -> Result<Lods> {
+    let node = asset
+        .nodes()
+        .find(|n| n.mesh().is_some())
+        .ok_or(Error::Invalid("helmet node"))?;
+    let primitive = node
+        .mesh()
+        .and_then(|m| m.primitives().next())
+        .ok_or(Error::Invalid("helmet primitive"))?;
+    let reader = primitive.reader(|b| buffers.get(b.index()).map(Vec::as_slice));
+    let flat = |v: Vec<[f32; 3]>| v.into_iter().flatten().collect::<Vec<f32>>();
+    let mut geometry = BufferGeometry::default();
+    let positions = flat(
+        reader
+            .read_positions()
+            .ok_or(Error::Invalid("helmet positions"))?
+            .collect(),
+    );
+    let normals = flat(
+        reader
+            .read_normals()
+            .ok_or(Error::Invalid("helmet normals"))?
+            .collect(),
+    );
+    let uvs: Vec<f32> = reader
+        .read_tex_coords(0)
+        .ok_or(Error::Invalid("helmet uvs"))?
+        .into_f32()
+        .flatten()
+        .collect();
+    let source_indices: Vec<u32> = reader
+        .read_indices()
+        .ok_or(Error::Invalid("helmet index"))?
+        .into_u32()
+        .collect();
+    use crate::attribute::BufferAttribute;
+    geometry.set_attribute(
+        "position",
+        Attribute::F32(BufferAttribute::new(positions, 3, false)?),
+    );
+    geometry.set_attribute(
+        "normal",
+        Attribute::F32(BufferAttribute::new(normals, 3, false)?),
+    );
+    let (t, r, sc) = node.transform().decomposed();
+    let world =
+        crate::geometry_utils::compose(t.map(f64::from), r.map(f64::from), sc.map(f64::from));
+    crate::geometry_utils::apply_matrix4(&mut geometry, &world)?;
+    let f32s = |name: &str| -> Result<Vec<f32>> {
+        match geometry.attributes.get(name) {
+            Some(Attribute::F32(a)) => Ok(a.array().to_vec()),
+            _ => Err(Error::Invalid("helmet attribute")),
+        }
     };
-    let word = |s: &[u8]| u32::from_le_bytes([s[0], s[1], s[2], s[3]]);
-    let vertex_count = word(take(4)?) as usize;
-    let lod_count = word(take(4)?) as usize;
-    let floats = |s: &[u8]| -> Vec<f32> {
-        s.as_chunks::<4>()
-            .0
-            .iter()
-            .map(|&c| f32::from_le_bytes(c))
-            .collect()
-    };
-    let positions = floats(take(vertex_count * 12)?);
-    let normals = floats(take(vertex_count * 12)?);
-    let uvs = floats(take(vertex_count * 8)?);
+    let (positions, normals) = (f32s("position")?, f32s("normal")?);
+    let vertex_count = positions.len() / 3;
+    let meshopt = super::meshopt::Meshopt::three(
+        &super::asset_url(MESHOPT_SIMPLIFIER)?,
+        &super::asset_url(MESHOPT_CLUSTERIZER)?,
+    )
+    .await?;
+    // The page's lodTargets.
+    let targets: [(f64, f64, [f64; 5], &[&str]); 6] = [
+        (1.0, 0.0, [0.25, 0.25, 0.25, 0.5, 0.5], &[]),
+        (
+            0.55,
+            0.004,
+            [0.2, 0.2, 0.2, 0.35, 0.35],
+            &["RegularizeLight"],
+        ),
+        (
+            0.25,
+            0.015,
+            [0.12, 0.12, 0.12, 0.2, 0.2],
+            &["RegularizeLight"],
+        ),
+        (
+            0.1,
+            0.05,
+            [0.08, 0.08, 0.08, 0.12, 0.12],
+            &["RegularizeLight"],
+        ),
+        (
+            0.04,
+            0.14,
+            [0.04, 0.04, 0.04, 0.06, 0.06],
+            &["Regularize", "Permissive"],
+        ),
+        (
+            0.015,
+            0.3,
+            [0.02, 0.02, 0.02, 0.03, 0.03],
+            &["Regularize", "Permissive"],
+        ),
+    ];
+    let mut attributes = vec![0f32; vertex_count * 5];
+    for i in 0..vertex_count {
+        attributes[i * 5..i * 5 + 3].copy_from_slice(&normals[i * 3..i * 3 + 3]);
+        attributes[i * 5 + 3..i * 5 + 5].copy_from_slice(&uvs[i * 2..i * 2 + 2]);
+    }
+    let source_scale = meshopt.get_scale(&positions, 3)?;
+    let mut indices = source_indices.clone();
+    let mut previous_error = 0.0;
+    let mut lods = vec![];
+    for (i, (ratio, target_error, weights, flags)) in targets.iter().enumerate() {
+        let mut error = 0.0;
+        if i > 0 {
+            let target = js_sys::Math::max(
+                3.0,
+                (source_indices.len() as f64 * ratio / 3.0).floor() * 3.0,
+            );
+            let (simplified, e) = meshopt.simplify_with_attributes(
+                &indices,
+                &positions,
+                3,
+                &attributes,
+                5,
+                weights,
+                target,
+                *target_error,
+                flags,
+            )?;
+            if simplified.len() >= 3 {
+                indices = simplified;
+                error = previous_error + e * source_scale;
+            } else {
+                error = previous_error;
+            }
+        }
+        previous_error = error;
+        lods.push(meshopt.meshlets(&indices, &positions, 3, 64, 64, 0.25)?);
+    }
     let (mut vertex_array, mut normal_array, mut uv_array) = (vec![], vec![], vec![]);
     let (mut index_array, mut meshlet_ids, mut bounds, mut offsets) =
         (vec![], vec![], vec![], vec![]);
     let mut meshlet = 1u32;
-    for lod in 0..lod_count {
+    for (lod, meshlets) in lods.iter().enumerate() {
         for v in 0..vertex_count {
             vertex_array.extend([
                 positions[v * 3],
@@ -246,21 +359,29 @@ fn pack_lods(bytes: &[u8]) -> Result<Lods> {
             normal_array.extend([normals[v * 3], normals[v * 3 + 1], normals[v * 3 + 2], 0.]);
             uv_array.extend([uvs[v * 2], uvs[v * 2 + 1]]);
         }
-        let chunks = word(take(4)?) as usize;
         let base = (lod * vertex_count) as u32;
         offsets.extend([
             (index_array.len() / 3) as f32,
-            (chunks * 64) as f32,
+            (meshlets.len() * 64) as f32,
             (bounds.len() / 4) as f32,
             0.,
         ]);
-        for _ in 0..chunks {
-            for &c in take(64 * 3 * 2)?.as_chunks::<2>().0 {
-                index_array.push(base + u32::from(u16::from_le_bytes(c)));
+        for (m, b) in meshlets {
+            let triangles = m.triangles.len() / 3;
+            for t in 0..64 {
+                for k in 0..3 {
+                    // Degenerate padding uses the meshlet's first vertex.
+                    let local = if t < triangles {
+                        m.vertices[m.triangles[t * 3 + k] as usize]
+                    } else {
+                        m.vertices[0]
+                    };
+                    index_array.push(base + local);
+                }
             }
             meshlet_ids.extend([meshlet; 64]);
             meshlet += 1;
-            bounds.extend(floats(take(16)?));
+            bounds.extend(b.map(|v| v as f32));
         }
     }
     Ok((
@@ -273,6 +394,8 @@ fn pack_lods(bytes: &[u8]) -> Result<Lods> {
         offsets,
     ))
 }
+const MESHOPT_SIMPLIFIER: &str = "/web/gallery/assets/meshopt/meshopt_simplifier.module.js";
+const MESHOPT_CLUSTERIZER: &str = "/web/gallery/assets/meshopt/meshopt_clusterizer.module.js";
 /// The resident storage buffers, by the page's names.
 struct Buffers {
     lod_offsets: wgpu::Buffer,
@@ -419,10 +542,10 @@ impl Demo {
         walker.speed = 10.;
         let (instance_data, position, look) = grid(false);
         Self::place(s, c, &mut walker, position, look)?;
-        let lods = pack_lods(&fetch("/web/gallery/assets/rasterizer-ibl/helmet-lods.bin").await?)?;
-        let (vertices, normals, uvs, indices, meshlet_ids, bounds, offsets) = lods;
-        let (_, _, images) =
+        let (asset, buffers, images) =
             load_asset("/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
+        let lods = page_lods(&asset, &buffers).await?;
+        let (vertices, normals, uvs, indices, meshlet_ids, bounds, offsets) = lods;
         let image = |i: usize| images.get(i).ok_or(Error::Invalid("helmet image"));
         let mut mipmaps = Mipmaps::new(r);
         let (srgb, linear) = (

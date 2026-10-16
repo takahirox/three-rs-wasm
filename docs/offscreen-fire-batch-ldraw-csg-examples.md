@@ -68,11 +68,10 @@ display. The gallery renders this example at CSS pixels as well.
 
 ### Batched LOD BVH ( 446 )
 
-The LODs are baked by `tools/tsl/prepare-batch-lod.mjs`. It runs
-@three.ez/simplify-geometry 0.0.1's simplifyGeometriesByErrorLOD with
-meshoptimizer 1.1.1, the versions the page loads. Only the index changes:
-the port builds the knots at load and checks each knot's position hash
-against the bake.
+The LODs are built at load as the page builds them: @three.ez/simplify-geometry
+0.0.1's simplifyGeometriesByErrorLOD is ported, and it calls
+MeshoptSimplifier.simplify of meshoptimizer 1.1.1, which the port loads from
+jsDelivr as the page does. Only the index changes.
 
 The instance data follows the fixture's seeded Math.random, including the
 eight draws the colors texture's two UUIDs take at the first setColorAt.
