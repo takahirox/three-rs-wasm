@@ -40,6 +40,7 @@ export function hasOwnConstructor( v ) { return v.hasOwnProperty( 'constructor' 
 export function constructorName( v ) { return v.constructor.name; }
 export function instanceOf( v, c ) { return v instanceof c; }
 export function jsonStringify( v ) { return JSON.stringify( v ); }
+export function toNumber( v ) { return Number( v ); }
 "#)]
 extern "C" {
     #[wasm_bindgen(catch, js_name = rhino3dmInit)]
@@ -54,6 +55,8 @@ extern "C" {
     fn constructor_name(v: &JsValue) -> std::result::Result<JsValue, JsValue>;
     #[wasm_bindgen(catch, js_name = instanceOf)]
     fn instance_of(v: &JsValue, c: &JsValue) -> std::result::Result<bool, JsValue>;
+    #[wasm_bindgen(js_name = toNumber)]
+    fn to_number(v: &JsValue) -> f64;
     #[wasm_bindgen(catch, js_name = jsonStringify)]
     fn json_stringify(v: &JsValue) -> std::result::Result<JsValue, JsValue>;
 }
@@ -92,8 +95,7 @@ fn construct(c: &JsValue, args: &[JsValue]) -> Result<JsValue> {
 }
 /// The value as a number ( `Number( v )` ).
 fn number(v: &JsValue) -> f64 {
-    v.as_f64()
-        .unwrap_or_else(|| js_sys::Number::new(v).value_of())
+    v.as_f64().unwrap_or_else(|| to_number(v))
 }
 fn object() -> JsValue {
     js_sys::Object::new().into()

@@ -12,7 +12,11 @@ commit=baseline['upstream_commit']
 destination=ROOT/'.cache/three-r186'
 stamp=destination/'.revision'
 extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js')
-if stamp.exists() and stamp.read_text().strip()==commit and all((destination/p).exists() for p in extras):
+# The addons and the example assets the loader and geometry oracles
+# ( tools/core/*-oracle.mjs ) run on.
+prefixes=('examples/jsm/','examples/fonts/','examples/models/fbx/','examples/models/vrml/','examples/models/usdz/')
+markers=('examples/jsm/loaders/VRMLLoader.js','examples/models/vrml/house.wrl','examples/models/usdz/saeukkang.usdz')
+if stamp.exists() and stamp.read_text().strip()==commit and all((destination/p).exists() for p in (*extras,*markers)):
     print('Three.js reference ready:',commit)
 else:
     archive=ROOT/'.cache'/f'three-{commit}.tar.gz'
@@ -30,7 +34,7 @@ else:
             relative=PurePosixPath(*parts[1:])
             if '..' in relative.parts or relative.is_absolute():
                 raise RuntimeError('unsafe archive path')
-            if relative.parts[0]!='src' and str(relative) not in ('LICENSE','package.json',*extras):
+            if relative.parts[0]!='src' and str(relative) not in ('LICENSE','package.json',*extras) and not str(relative).startswith(prefixes):
                 continue
             target=destination/str(relative)
             target.parent.mkdir(parents=True,exist_ok=True)

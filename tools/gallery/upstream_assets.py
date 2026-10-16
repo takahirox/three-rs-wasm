@@ -7,7 +7,9 @@ published site leaves them out and loads them from the three.js repository at
 the pinned commit on jsDelivr ( tools/build_site.py, web/gallery/upstream.js ),
 which keeps the site under GitHub Pages' 1 GB. A file is listed only when its
 bytes equal an r186 file's under examples/ ( .cache/three-r186, from
-tools/compat/prepare_reference.py ).
+tools/compat/prepare_reference.py ). JavaScript modules stay on the site, since
+an import() bypasses upstream.js's fetch redirect, and so do files over
+jsDelivr's 20 MB limit for GitHub files.
 
   upstream_assets.py           write upstream-assets.json
   upstream_assets.py --check   fail when it is stale
@@ -21,6 +23,7 @@ OUT = ROOT / 'web/gallery/upstream-assets.json'
 # The examples' assets, which the pages load through upstream.js; the gallery's
 # own pages, styles and thumbnails stay on the site.
 ASSETS = ('web/gallery/assets/', 'web/gallery/textures/', 'web/models/', 'web/environments/')
+LIMIT = 20 * 1024 * 1024
 
 
 def digest(path):
@@ -40,6 +43,8 @@ def mapping():
     for name in sorted(tracked):
         path = ROOT / name
         if not name.startswith(ASSETS) or not path.is_file():
+            continue
+        if name.endswith(('.js', '.mjs')) or path.stat().st_size > LIMIT:
             continue
         candidates = by_size.get(path.stat().st_size, [])
         if not candidates:
