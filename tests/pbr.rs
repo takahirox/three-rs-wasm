@@ -4,16 +4,11 @@ use three_rs_wasm::{
 };
 #[test]
 fn hdr_is_linear_and_lights_a_metal() {
-    let environment =
-        EnvironmentMap::from_hdr(include_bytes!("../web/environments/royal_esplanade_2k.hdr"))
-            .unwrap();
-    std::fs::create_dir_all(".cache").unwrap();
-    std::fs::write(
-        ".cache/gltf-pbr-decoded-hdr.bin",
-        bytemuck::cast_slice(&environment.rgba),
-    )
+    let environment = EnvironmentMap::from_hdr(include_bytes!(
+        "../web/environments/pedestrian_overpass_1k.hdr"
+    ))
     .unwrap();
-    assert_eq!((environment.width, environment.height), (2048, 1024));
+    assert_eq!((environment.width, environment.height), (1024, 512));
     assert!(environment.rgba.iter().any(|v| v.to_f32() > 1.0));
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();

@@ -17,6 +17,16 @@ fn procedural_meshes_match_pinned_three() {
         ("capsule", CapsuleGeometry::build(2.0, 3.0, 4, 7, 2)),
         ("icosahedron", IcosahedronGeometry::build(3.0, 0)),
         ("icosphere", IcosahedronGeometry::build(3.0, 2)),
+        ("dodecahedron", DodecahedronGeometry::build(3.0, 0)),
+        ("dodecasphere", DodecahedronGeometry::build(3.0, 1)),
+        (
+            "teapot",
+            TeapotGeometry::build(0.8, 6, true, true, true, true, true),
+        ),
+        (
+            "teapotParts",
+            TeapotGeometry::build(3.0, 4, false, true, false, false, false),
+        ),
         ("octahedron", OctahedronGeometry::build(3.0, 0)),
         ("tetrahedron", TetrahedronGeometry::build(3.0, 0)),
         ("circle", CircleGeometry::build(3.0, 7, 0.2, 4.0)),

@@ -240,11 +240,12 @@ impl CylinderGeometry {
                 let a = start + u * length;
                 m.vertex(
                     Vector3::new(
-                        radius * a.sin(),
+                        radius * crate::js_math::sin(a),
                         -v * height + height / 2.0,
-                        radius * a.cos(),
+                        radius * crate::js_math::cos(a),
                     ),
-                    Vector3::new(a.sin(), slope, a.cos()).normalize_or_zero(),
+                    Vector3::new(crate::js_math::sin(a), slope, crate::js_math::cos(a))
+                        .normalize_or_zero(),
                     [u, 1.0 - v],
                 );
             }
@@ -283,9 +284,16 @@ impl CylinderGeometry {
                 for x in 0..=radial {
                     let a = start + x as f64 / radial as f64 * length;
                     m.vertex(
-                        Vector3::new(radius * a.sin(), height / 2.0 * sign, radius * a.cos()),
+                        Vector3::new(
+                            radius * crate::js_math::sin(a),
+                            height / 2.0 * sign,
+                            radius * crate::js_math::cos(a),
+                        ),
                         Vector3::new(0.0, sign, 0.0),
-                        [a.cos() * 0.5 + 0.5, a.sin() * 0.5 * sign + 0.5],
+                        [
+                            crate::js_math::cos(a) * 0.5 + 0.5,
+                            crate::js_math::sin(a) * 0.5 * sign + 0.5,
+                        ],
                     );
                 }
                 let begin = m.indices.len();
@@ -544,6 +552,48 @@ impl IcosahedronGeometry {
         )
     }
 }
+pub struct DodecahedronGeometry;
+impl DodecahedronGeometry {
+    pub fn build(radius: f64, detail: u32) -> Result<BufferGeometry> {
+        let t = (1.0 + 5.0_f64.sqrt()) / 2.0;
+        let r = 1.0 / t;
+        let vertices = [
+            [-1.0, -1.0, -1.0],
+            [-1.0, -1.0, 1.0],
+            [-1.0, 1.0, -1.0],
+            [-1.0, 1.0, 1.0],
+            [1.0, -1.0, -1.0],
+            [1.0, -1.0, 1.0],
+            [1.0, 1.0, -1.0],
+            [1.0, 1.0, 1.0],
+            [0.0, -r, -t],
+            [0.0, -r, t],
+            [0.0, r, -t],
+            [0.0, r, t],
+            [-r, -t, 0.0],
+            [-r, t, 0.0],
+            [r, -t, 0.0],
+            [r, t, 0.0],
+            [-t, 0.0, -r],
+            [t, 0.0, -r],
+            [-t, 0.0, r],
+            [t, 0.0, r],
+        ]
+        .map(Vector3::from_array);
+        PolyhedronGeometry::build(
+            &vertices,
+            &[
+                3, 11, 7, 3, 7, 15, 3, 15, 13, 7, 19, 17, 7, 17, 6, 7, 6, 15, 17, 4, 8, 17, 8, 10,
+                17, 10, 6, 8, 0, 16, 8, 16, 2, 8, 2, 10, 0, 12, 1, 0, 1, 18, 0, 18, 16, 6, 10, 2,
+                6, 2, 13, 6, 13, 15, 2, 16, 18, 2, 18, 3, 2, 3, 13, 18, 1, 9, 18, 9, 11, 18, 11, 3,
+                4, 14, 12, 4, 12, 0, 4, 0, 8, 11, 9, 5, 11, 5, 19, 11, 19, 7, 19, 5, 14, 19, 14, 4,
+                19, 4, 17, 1, 12, 14, 1, 14, 5, 1, 5, 9,
+            ],
+            radius,
+            detail,
+        )
+    }
+}
 pub struct OctahedronGeometry;
 impl OctahedronGeometry {
     pub fn build(radius: f64, detail: u32) -> Result<BufferGeometry> {
@@ -580,5 +630,207 @@ impl TetrahedronGeometry {
             radius,
             detail,
         )
+    }
+}
+
+/// RoundedBoxGeometry ( examples/jsm/geometries/RoundedBoxGeometry.js ): a
+/// segmented unit box made non-indexed, its vertices pushed out to the
+/// rounded corners with the arc-length uvs.
+pub struct RoundedBoxGeometry;
+impl RoundedBoxGeometry {
+    pub fn build(
+        width: f64,
+        height: f64,
+        depth: f64,
+        segments: u32,
+        radius: f64,
+    ) -> Result<BufferGeometry> {
+        use crate::js_math::acos;
+        let total = segments * 2 + 1;
+        let radius = (width / 2.0).min(height / 2.0).min(depth / 2.0).min(radius);
+        let g = BoxGeometry::segmented(1.0, 1.0, 1.0, total, total, total)?;
+        if total == 1 {
+            return Ok(g);
+        }
+        let mut g = g.to_non_indexed()?;
+        g.index = None;
+        // Math.sign: zero keeps its sign.
+        let sign = |v: f64| {
+            if v > 0.0 {
+                1.0
+            } else if v < 0.0 {
+                -1.0
+            } else {
+                v
+            }
+        };
+        let f32s = |g: &BufferGeometry, name: &str| match g.attributes.get(name) {
+            Some(Attribute::F32(a)) => Ok(a.array().to_vec()),
+            _ => Err(Error::Invalid("rounded box attribute")),
+        };
+        let mut positions = f32s(&g, "position")?;
+        let mut normals = f32s(&g, "normal")?;
+        let mut uvs = f32s(&g, "uv")?;
+        let bx = [
+            width * 0.5 - radius,
+            height * 0.5 - radius,
+            depth * 0.5 - radius,
+        ];
+        let face_tris = positions.len() as f64 / 6.0;
+        let half = 0.5 / f64::from(total);
+        let length = |v: [f64; 3]| (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]).sqrt();
+        let normalize = |v: [f64; 3]| {
+            let l = length(v);
+            let l = if l == 0.0 || l.is_nan() { 1.0 } else { l };
+            let s = 1.0 / l;
+            [v[0] * s, v[1] * s, v[2] * s]
+        };
+        // getUv( faceDirVector, normal, uvAxis, projectionAxis, radius, sideLength )
+        let uv = |dir: [f64; 3], n: [f64; 3], axis: usize, projection: usize, side: f64| {
+            let tot = 2.0 * std::f64::consts::PI * radius / 4.0;
+            let center = (side - 2.0 * radius).max(0.0);
+            let half_arc = std::f64::consts::PI / 4.0;
+            let mut t = n;
+            t[projection] = 0.0;
+            let t = normalize(t);
+            let arc_uv = 0.5 * tot / (tot + center);
+            let denominator = ((t[0] * t[0] + t[1] * t[1] + t[2] * t[2])
+                * (dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]))
+                .sqrt();
+            let angle = if denominator == 0.0 {
+                std::f64::consts::PI / 2.0
+            } else {
+                let theta = (t[0] * dir[0] + t[1] * dir[1] + t[2] * dir[2]) / denominator;
+                acos((-1.0f64).max(1.0f64.min(theta)))
+            };
+            let arc_angle = 1.0 - angle / half_arc;
+            if sign(t[axis]) == 1.0 {
+                arc_angle * arc_uv
+            } else {
+                let len_uv = center / (tot + center);
+                len_uv + arc_uv + arc_uv * (1.0 - arc_angle)
+            }
+        };
+        let (mut i, mut j) = (0, 0);
+        while i < positions.len() {
+            let p = [
+                f64::from(positions[i]),
+                f64::from(positions[i + 1]),
+                f64::from(positions[i + 2]),
+            ];
+            let n = normalize([
+                p[0] - sign(p[0]) * half,
+                p[1] - sign(p[1]) * half,
+                p[2] - sign(p[2]) * half,
+            ]);
+            for k in 0..3 {
+                positions[i + k] = (bx[k] * sign(p[k]) + n[k] * radius) as f32;
+                normals[i + k] = n[k] as f32;
+            }
+            let side = (i as f64 / face_tris).floor() as usize;
+            let (u, v) = match side {
+                0 => (
+                    uv([1.0, 0.0, 0.0], n, 2, 1, depth),
+                    1.0 - uv([1.0, 0.0, 0.0], n, 1, 2, height),
+                ),
+                1 => (
+                    1.0 - uv([-1.0, 0.0, 0.0], n, 2, 1, depth),
+                    1.0 - uv([-1.0, 0.0, 0.0], n, 1, 2, height),
+                ),
+                2 => (
+                    1.0 - uv([0.0, 1.0, 0.0], n, 0, 2, width),
+                    uv([0.0, 1.0, 0.0], n, 2, 0, depth),
+                ),
+                3 => (
+                    1.0 - uv([0.0, -1.0, 0.0], n, 0, 2, width),
+                    1.0 - uv([0.0, -1.0, 0.0], n, 2, 0, depth),
+                ),
+                4 => (
+                    1.0 - uv([0.0, 0.0, 1.0], n, 0, 1, width),
+                    1.0 - uv([0.0, 0.0, 1.0], n, 1, 0, height),
+                ),
+                5 => (
+                    uv([0.0, 0.0, -1.0], n, 0, 1, width),
+                    1.0 - uv([0.0, 0.0, -1.0], n, 1, 0, height),
+                ),
+                _ => (f64::from(uvs[j]), f64::from(uvs[j + 1])),
+            };
+            uvs[j] = u as f32;
+            uvs[j + 1] = v as f32;
+            i += 3;
+            j += 2;
+        }
+        g.set_attribute(
+            "position",
+            Attribute::F32(BufferAttribute::new(positions, 3, false)?),
+        );
+        g.set_attribute(
+            "normal",
+            Attribute::F32(BufferAttribute::new(normals, 3, false)?),
+        );
+        g.set_attribute("uv", Attribute::F32(BufferAttribute::new(uvs, 2, false)?));
+        Ok(g)
+    }
+}
+
+/// WireframeGeometry( geometry ): each triangle edge once ( either direction,
+/// by position ), over the groups of indexed geometry.
+pub struct WireframeGeometry;
+impl WireframeGeometry {
+    pub fn build(geometry: &BufferGeometry) -> Result<BufferGeometry> {
+        let positions = match geometry.attributes.get("position") {
+            Some(Attribute::F32(a)) => a.array().to_vec(),
+            _ => return Err(Error::Invalid("wireframe positions")),
+        };
+        let at = |i: usize| -> [f32; 3] {
+            [positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]]
+        };
+        // The edge hash prints each number; -0 prints as 0.
+        let key = |v: [f32; 3]| v.map(|c| if c == 0. { 0 } else { c.to_bits() });
+        let mut edges = std::collections::HashSet::new();
+        let mut out = vec![];
+        let mut edge = |a: usize, b: usize, out: &mut Vec<f32>| {
+            let (start, end) = (at(a), at(b));
+            let (ks, ke) = (key(start), key(end));
+            if edges.contains(&(ks, ke)) || edges.contains(&(ke, ks)) {
+                return;
+            }
+            edges.insert((ks, ke));
+            edges.insert((ke, ks));
+            out.extend(start);
+            out.extend(end);
+        };
+        if let Some(index) = &geometry.index {
+            let groups: Vec<(usize, usize)> = if geometry.groups.is_empty() {
+                vec![(0, index.len())]
+            } else {
+                geometry.groups.iter().map(|g| (g.start, g.count)).collect()
+            };
+            for (start, count) in groups {
+                let mut i = start;
+                while i < start + count {
+                    for j in 0..3 {
+                        edge(
+                            index[i + j] as usize,
+                            index[i + (j + 1) % 3] as usize,
+                            &mut out,
+                        );
+                    }
+                    i += 3;
+                }
+            }
+        } else {
+            for i in 0..positions.len() / 9 {
+                for j in 0..3 {
+                    edge(3 * i + j, 3 * i + (j + 1) % 3, &mut out);
+                }
+            }
+        }
+        let mut g = BufferGeometry::default();
+        g.set_attribute(
+            "position",
+            Attribute::F32(BufferAttribute::new(out, 3, false)?),
+        );
+        Ok(g)
     }
 }

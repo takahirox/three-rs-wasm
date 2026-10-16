@@ -1,5 +1,6 @@
 use crate::{Error, Result, attribute::*, math::*};
 mod primitives;
+mod teapot;
 pub use primitives::*;
 use serde::Serialize;
 use std::{
@@ -7,6 +8,7 @@ use std::{
     collections::{BTreeMap, HashMap},
     sync::{Arc, RwLock},
 };
+pub use teapot::TeapotGeometry;
 type CloneBuffers = HashMap<(TypeId, usize), Arc<dyn Any + Send + Sync>>;
 
 #[derive(Clone, Debug, Serialize)]
@@ -454,21 +456,53 @@ impl BufferGeometry {
         }
         Ok(geometry)
     }
+    /// computeVertexNormals(): face normals summed into the Float32 normal
+    /// attribute ( per vertex for indexed geometry ), then normalizeNormals(),
+    /// rounding as the original does.
     pub fn compute_vertex_normals(&mut self) -> Result<()> {
         let positions = self.positions()?;
-        let mut normals = vec![Vector3::ZERO; positions.len()];
-        for i in (0..self.draw_count().saturating_sub(2)).step_by(3) {
-            let a = self.vertex_index(i)?;
-            let b = self.vertex_index(i + 1)?;
-            let c = self.vertex_index(i + 2)?;
-            let n = (positions[c] - positions[b]).cross(positions[a] - positions[b]);
-            normals[a] += n;
-            normals[b] += n;
-            normals[c] += n;
+        let count = positions.len();
+        let mut normals = vec![[0f32; 3]; count];
+        let cross = |a: usize, b: usize, c: usize| -> Result<Vector3> {
+            let p = |i: usize| {
+                positions
+                    .get(i)
+                    .copied()
+                    .ok_or(Error::Invalid("normal vertex index"))
+            };
+            Ok((p(c)? - p(b)?).cross(p(a)? - p(b)?))
+        };
+        if let Some(index) = &self.index {
+            for t in index.as_chunks::<3>().0 {
+                let (a, b, c) = (t[0] as usize, t[1] as usize, t[2] as usize);
+                let n = cross(a, b, c)?;
+                for v in [a, b, c] {
+                    let o = normals[v];
+                    normals[v] = [
+                        (f64::from(o[0]) + n.x) as f32,
+                        (f64::from(o[1]) + n.y) as f32,
+                        (f64::from(o[2]) + n.z) as f32,
+                    ];
+                }
+            }
+        } else {
+            for i in (0..count.saturating_sub(2)).step_by(3) {
+                let n = cross(i, i + 1, i + 2)?;
+                let n = [n.x as f32, n.y as f32, n.z as f32];
+                normals[i] = n;
+                normals[i + 1] = n;
+                normals[i + 2] = n;
+            }
         }
+        // normalizeNormals(): divideScalar( length || 1 ).
         let values = normals
             .into_iter()
-            .flat_map(|n| n.normalize_or_zero().to_array().map(|v| v as f32))
+            .flat_map(|n| {
+                let v = Vector3::new(f64::from(n[0]), f64::from(n[1]), f64::from(n[2]));
+                let l = v.length();
+                let l = if l == 0.0 || l.is_nan() { 1.0 } else { l };
+                (v * (1.0 / l)).to_array().map(|x| x as f32)
+            })
             .collect();
         self.set_attribute(
             "normal",
@@ -738,11 +772,13 @@ impl SphereGeometry {
             for x in 0..=width_segments {
                 let u = x as f64 / width_segments as f64;
                 let phi = phi_start + u * phi_length;
-                let theta = theta_start + v * theta_length;
+                // r186: the ring radius from the height, sqrt( r² − y² ).
+                let y = radius * crate::js_math::cos(theta_start + v * theta_length);
+                let ring = (radius * radius - y * y).sqrt();
                 let position = Vector3::new(
-                    -radius * phi.cos() * theta.sin(),
-                    radius * theta.cos(),
-                    radius * phi.sin() * theta.sin(),
+                    -ring * crate::js_math::cos(phi),
+                    y,
+                    ring * crate::js_math::sin(phi),
                 );
                 p.extend(position.to_array().map(|v| v as f32));
                 n.extend(position.normalize_or_zero().to_array().map(|v| v as f32));

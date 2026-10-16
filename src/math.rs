@@ -147,18 +147,20 @@ pub fn quaternion_from_rotation(x: Vector3, y: Vector3, z: Vector3) -> Quaternio
     };
     Quaternion::from_xyzw(qx, qy, qz, qw)
 }
+/// ColorManagement's SRGBToLinear, with its constants.
 pub fn srgb_to_linear(v: f64) -> f64 {
     if v < 0.04045 {
-        v / 12.92
+        v * 0.0773993808
     } else {
-        ((v + 0.055) / 1.055).powf(2.4)
+        crate::js_math::pow(v * 0.9478672986 + 0.0521327014, 2.4)
     }
 }
+/// ColorManagement's LinearToSRGB, with its constants.
 pub fn linear_to_srgb(v: f64) -> f64 {
     if v < 0.0031308 {
-        12.92 * v
+        v * 12.92
     } else {
-        1.055 * v.powf(1.0 / 2.4) - 0.055
+        1.055 * crate::js_math::pow(v, 0.41666) - 0.055
     }
 }
 

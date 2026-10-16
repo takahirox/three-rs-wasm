@@ -20,7 +20,8 @@ ruzstd = { version = "0.7.3", default-features = false, features = ["std"] }
 basisu = "0.1.0"
 glam = { version = "0.30.9", features = ["serde", "bytemuck"] }
 serde = { version = "1", features = ["derive", "rc"] }
-serde_json = "1"
+# JSON.parse rounding ( exact doubles ), as the loaders' originals parse.
+serde_json = { version = "1", features = ["float_roundtrip"] }
 thiserror = "2"
 bytemuck = { version = "1", features = ["derive"] }
 libm = "0.2"
