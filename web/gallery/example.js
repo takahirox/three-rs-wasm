@@ -50,7 +50,7 @@ if (!entry || entry.status === 'excluded' || !entry.port) {
   if (!navigator.gpu && entry.port.example !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
   if (entry.port.example === 497) {
    // webgpu_tsl_editor runs on the three-tsl crate's own Wasm ( web/tsl-pkg ), not this app.
-   const {startTslEditor} = await import('./tsl-editor.js?v=tsl-1');
+   const {startTslEditor} = await import('./tsl-editor.js?v=tsl-2');
    await startTslEditor(loading);
   } else {
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.

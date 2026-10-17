@@ -592,3 +592,22 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("Three.TSL.js", super::three_tsl::init)?;
     Ok(())
 }
+
+/// Evaluate the ported addons ( after `init_all` ), in the ES evaluation
+/// order of the pages' imports: MaterialXLoader, then MaterialXInterfaceValidation.
+pub fn init_addons() -> crate::rt::R<()> {
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXLog.js", super::addons::loaders::materialx::material_x_log::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXUtils.js", super::addons::loaders::materialx::material_x_utils::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/compile/MaterialXCompileRegistry.js", super::addons::loaders::materialx::compile::material_x_compile_registry::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/parse/MaterialXParser.js", super::addons::loaders::materialx::parse::material_x_parser::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXSurfaceMappings.js", super::addons::loaders::materialx::material_x_surface_mappings::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeLibrary.js", super::addons::loaders::materialx::material_x_node_library::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXHextile.js", super::addons::loaders::materialx::material_x_hextile::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXDocument.js", super::addons::loaders::materialx::material_x_document::init)?;
+    crate::reg::run_module("../examples/jsm/libs/fflate.module.js", super::addons::libs::fflate_module::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXArchive.js", super::addons::loaders::materialx::material_x_archive::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/MaterialXLoader.js", super::addons::loaders::material_x_loader::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeInterfaceRegistry.js", super::addons::loaders::materialx::material_x_node_interface_registry::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXInterfaceValidation.js", super::addons::loaders::materialx::material_x_interface_validation::init)?;
+    Ok(())
+}

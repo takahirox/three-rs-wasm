@@ -20480,7 +20480,7 @@
         "source": "gallery/src/browser/loader_materialx.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ShaderBall.glbの36個のモデルを6×6に並べ、MaterialXLoaderが読むMaterialXの標準サーフェスのサンプル12種とページのローカルテスト文書24種（OpenPBR、glTF PBRの分散ガラスを含む）のマテリアルを適用し、san_giuseppe_bridgeのPMREM（lodMax 9）で照らして半透明グリッドの地面の上に描く構成をRustで再現。ShaderBallのメッシュはページのcomputePrefabTangentsと同じく非インデックス化してMikkTSpaceの接線を付け（元の接線とビット単位で一致）、属性ごとのバッファで渡す。文書の画像はImageBitmapLoader同様に色変換・反転なしでデコードしてGPUでミップマップを作る。不透明物を手前から、透過物があれば解決済みフレームをミップ付きでコピーして透過物の裏面、透明リストを奥から描き、LinearToneMapping（露出0.5）の出力パスを通す。各マテリアルはページからthree.js r186が生成するWGSL（loader_materialx/）を実行する。MaterialX文書の解析とノードグラフのコンパイルは行わず、r186がページ向けに生成したシェーダーを使う。ページでは文書ごとに別テクスチャとなるgrid.pngは1枚を共有する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ShaderBall.glbの36個のモデルを6×6に並べ、MaterialXLoaderが読むMaterialXの標準サーフェスのサンプル12種とページのローカルテスト文書24種（OpenPBR、glTF PBRの分散ガラスを含む）のマテリアルを適用し、san_giuseppe_bridgeのPMREM（lodMax 9）で照らして半透明グリッドの地面の上に描く構成をRustで再現。ShaderBallのメッシュはページのcomputePrefabTangentsと同じく非インデックス化してMikkTSpaceの接線を付け（元の接線とビット単位で一致）、属性ごとのバッファで渡す。文書の画像はImageBitmapLoader同様に色変換・反転なしでデコードしてGPUでミップマップを作る。不透明物を手前から、透過物があれば解決済みフレームをミップ付きでコピーして透過物の裏面、透明リストを奥から描き、LinearToneMapping（露出0.5）の出力パスを通す。MaterialX文書は読み込み時に取得し、Rustへ移植したr186のMaterialXLoader（three-tslクレートのWasm、web/tsl-pkg）でページと同じシーンに解析・構築する。そのノードビルダーが生成するWGSLとテクスチャのバインディングで描画する。生成WGSLはオリジナルページでr186が生成するものと全36種と地面で文字単位で一致（tsl/tests/materialx.rs）。ローダーはthree-tslのWasmで動くため、ページ本体とは別にそのWasmを読み込む。ページでは文書ごとに別テクスチャとなるgrid.pngは1枚を共有する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

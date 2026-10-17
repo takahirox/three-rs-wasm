@@ -148,7 +148,7 @@ pub enum Kind {
     /// `new Proxy( target, handler )`.
     Proxy(Val, Val),
     /// A regular expression: source, flags, the compiled pattern and lastIndex.
-    RegExp(Rc<str>, Rc<str>, regex::Regex, Cell<usize>),
+    RegExp(Rc<str>, Rc<str>, Rc<regex::Regex>, Cell<usize>),
     /// A promise: settled ( fulfilled or rejected, with its value ) or pending
     /// with its reactions.
     Promise(RefCell<PromiseState>),
@@ -399,6 +399,39 @@ pub enum Slot {
     Accessor(Option<Val>, Option<Val>),
 }
 
+/// FxHash ( rustc's ): the property and Map indexes hash short keys in a
+/// single process, where SipHash's flood resistance buys nothing. The
+/// enumeration order is kept apart from the index.
+#[derive(Default, Clone, Copy)]
+pub struct FxHasher(u64);
+impl std::hash::Hasher for FxHasher {
+    fn write(&mut self, bytes: &[u8]) {
+        const K: u64 = 0x51_7c_c1_b7_27_22_0a_95;
+        let mut h = self.0;
+        let mut chunks = bytes.chunks_exact(8);
+        for c in &mut chunks {
+            h = (h.rotate_left(5) ^ u64::from_le_bytes(c.try_into().unwrap())).wrapping_mul(K);
+        }
+        for &b in chunks.remainder() {
+            h = (h.rotate_left(5) ^ b as u64).wrapping_mul(K);
+        }
+        self.0 = h;
+    }
+    fn write_u8(&mut self, i: u8) {
+        self.write_u64(i as u64);
+    }
+    fn write_usize(&mut self, i: usize) {
+        self.write_u64(i as u64);
+    }
+    fn write_u64(&mut self, i: u64) {
+        self.0 = (self.0.rotate_left(5) ^ i).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+    }
+    fn finish(&self) -> u64 {
+        self.0
+    }
+}
+pub type FxBuild = std::hash::BuildHasherDefault<FxHasher>;
+
 #[derive(Clone)]
 pub struct Prop {
     pub slot: Slot,
@@ -409,7 +442,7 @@ pub struct Prop {
 #[derive(Default, Clone)]
 pub struct PropMap {
     keys: Vec<Rc<str>>,
-    map: HashMap<Rc<str>, Prop>,
+    map: HashMap<Rc<str>, Prop, FxBuild>,
 }
 
 /// An array index key ( a canonical integer below 2^32 - 1 ).
@@ -481,7 +514,7 @@ impl PropMap {
 #[derive(Default)]
 pub struct OrderedMap {
     pub entries: Vec<Option<(Val, Val)>>,
-    index: HashMap<MapKey, usize>,
+    index: HashMap<MapKey, usize, FxBuild>,
     live: usize,
 }
 

@@ -343,6 +343,14 @@ fn install_object() {
             }
             Ok(array(out))
         }),
+        nf!("fromEntries", 1, |a| {
+            let out = object(&[]);
+            for entry in iterate(&arg(a, 0))? {
+                let key = crate::rt::ops::key(&get_index(&entry, 0)?)?;
+                set(&out, &key, get_index(&entry, 1)?)?;
+            }
+            Ok(out)
+        }),
         nf!("assign", 2, |a| {
             let target = arg(a, 0);
             to_object_check(&target)?;
@@ -566,10 +574,25 @@ pub fn js_regex_syntax(source: &str, flags: &str) -> String {
     pattern
 }
 
+thread_local! {
+    /// Compiled patterns by source and flags: a literal evaluates to a new
+    /// RegExp each time, its pattern compiled once ( as engines cache it ).
+    static COMPILED: RefCell<HashMap<(Rc<str>, Rc<str>), Result<Rc<regex::Regex>, String>>> = RefCell::new(HashMap::new());
+}
+
+/// Shared, not cloned: a cloned Regex starts with an empty search cache.
+fn compile(source: &str, flags: &str) -> Result<Rc<regex::Regex>, String> {
+    COMPILED.with(|c| {
+        c.borrow_mut()
+            .entry((Rc::from(source), Rc::from(flags)))
+            .or_insert_with(|| regex::Regex::new(&js_regex_syntax(source, flags)).map(Rc::new).map_err(|e| e.to_string()))
+            .clone()
+    })
+}
+
 /// A RegExp from a JavaScript literal's source and flags.
 pub fn regexp(source: &str, flags: &str) -> Val {
-    let pattern = js_regex_syntax(source, flags);
-    let re = regex::Regex::new(&pattern).unwrap_or_else(|e| panic!("regular expression /{source}/{flags}: {e}"));
+    let re = compile(source, flags).unwrap_or_else(|e| panic!("regular expression /{source}/{flags}: {e}"));
     Val::Obj(Obj::with(
         Some(proto("RegExp")),
         Kind::RegExp(Rc::from(source), Rc::from(flags), re, Cell::new(0)),
@@ -577,7 +600,7 @@ pub fn regexp(source: &str, flags: &str) -> Val {
 }
 
 /// The regex of a RegExp value.
-pub fn regex_of(v: &Val) -> Option<(regex::Regex, bool, &Cell<usize>)> {
+pub fn regex_of(v: &Val) -> Option<(Rc<regex::Regex>, bool, &Cell<usize>)> {
     match v {
         Val::Obj(o) => match &o.0.kind {
             Kind::RegExp(_, flags, re, last) => Some((re.clone(), flags.contains('g'), last)),
@@ -659,8 +682,7 @@ pub fn regexp_replace(text: &str, re_val: &Val, replacement: &Val) -> R<String> 
 
 /// A RegExp from a dynamic pattern ( `new RegExp( source, flags )` ), or SyntaxError.
 pub fn regexp_checked(source: &str, flags: &str) -> R<Val> {
-    let pattern = js_regex_syntax(source, flags);
-    match regex::Regex::new(&pattern) {
+    match compile(source, flags) {
         Ok(_) => Ok(regexp(source, flags)),
         Err(_) => Err(Exc(make_error("SyntaxError", &format!("Invalid regular expression: /{source}/{flags}")))),
     }

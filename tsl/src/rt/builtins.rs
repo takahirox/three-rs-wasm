@@ -462,7 +462,13 @@ fn install_typed() {
         Kind::Func(Func {
             name: RefCell::new(Rc::from("Array")),
             length: Cell::new(1),
-            call: None,
+            // Array( … ) without new constructs as new Array( … ) does.
+            call: Some(Rc::new(|_this, a| {
+                Ok(match a {
+                    [Val::Num(n)] => array(vec![Val::Undef; *n as usize]),
+                    items => array(items.to_vec()),
+                })
+            })),
             init: None,
             construct: Some(Rc::new(|_this, a| {
                 Ok(match a {
@@ -905,14 +911,14 @@ pub(crate) fn expand_replacement(rep: &str, matched: &str, groups: &[Option<&str
 }
 
 /// A regular expression literal ( `regex` syntax, which covers the sources' patterns ).
-pub fn re(pattern: &str) -> regex::Regex {
+pub fn re(pattern: &str) -> Rc<regex::Regex> {
     thread_local! {
-        static CACHE: RefCell<HashMap<String, regex::Regex>> = RefCell::new(HashMap::new());
+        static CACHE: RefCell<HashMap<String, Rc<regex::Regex>>> = RefCell::new(HashMap::new());
     }
     CACHE.with(|c| {
         c.borrow_mut()
             .entry(pattern.to_string())
-            .or_insert_with(|| regex::Regex::new(pattern).expect("regular expression"))
+            .or_insert_with(|| Rc::new(regex::Regex::new(pattern).expect("regular expression")))
             .clone()
     })
 }

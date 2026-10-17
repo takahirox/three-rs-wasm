@@ -9,10 +9,31 @@
 //! class is ported method for method, so a program builds the same graph and
 //! the same shader text as the original.
 pub mod rt;
+pub mod dom;
+pub mod materialx_page;
 #[macro_use]
 pub mod js;
 pub mod reg;
 pub mod three;
+
+/// Evaluate three's modules ( once ).
+pub fn init_three() -> rt::R<()> {
+    thread_local! {
+        static DONE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+    }
+    if DONE.with(|d| d.replace(true)) {
+        return Ok(());
+    }
+    three::order::init_all()
+}
+
+/// Evaluate the ported addons ( after `three::order::init_all` ) with the
+/// DOMParser and TextDecoder they read.
+pub fn init_addons() -> rt::R<()> {
+    dom::install();
+    dom::install_text_decoder();
+    three::order::init_addons()
+}
 
 /// The entry points the editor and the corpus check use.
 #[cfg(target_arch = "wasm32")]
@@ -22,13 +43,59 @@ pub mod api {
     /// Evaluate every module ( once ).
     #[wasm_bindgen]
     pub fn tsl_init() -> Result<(), JsValue> {
-        thread_local! {
-            static DONE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
-        }
-        if DONE.with(|d| d.replace(true)) {
-            return Ok(());
-        }
-        crate::three::order::init_all().map_err(|e| crate::rt::interop::exc_to_js(&e))
+        crate::init_three().map_err(|e| crate::rt::interop::exc_to_js(&e))
+    }
+
+    /// webgpu_loader_materialx's shaders ( `materialx_page` ) for the
+    /// documents `texts`, each loaded from `paths[ i ]`, on a `width` ×
+    /// `height` canvas: `{ grid, materials }`, each shader set
+    /// `{ vertexShader, fragmentShader, transparent, textures }` or
+    /// `{ error }`, each texture binding `{ binding, source, uri, wrapS,
+    /// wrapT }` ( source 'image', 'dfg', 'pmrem' or 'transmission' ).
+    #[wasm_bindgen]
+    pub fn materialx_shaders(texts: Vec<String>, paths: Vec<String>, width: f64, height: f64) -> Result<JsValue, JsValue> {
+        use crate::materialx_page::{Document, Shaders, Source, page_shaders};
+        use crate::rt::{Val, array, object, s};
+        let documents: Vec<Document> =
+            texts.into_iter().zip(paths).map(|(text, path)| Document { text, path }).collect();
+        let page = page_shaders(&documents, width, height).map_err(|e| crate::rt::interop::exc_to_js(&e))?;
+        let shaders = |sh: &Shaders| {
+            let textures = sh
+                .textures
+                .iter()
+                .map(|b| {
+                    let (source, uri) = match &b.source {
+                        Source::Image(uri) => ("image", s(uri)),
+                        Source::Dfg => ("dfg", Val::Null),
+                        Source::Pmrem => ("pmrem", Val::Null),
+                        Source::Transmission => ("transmission", Val::Null),
+                    };
+                    object(&[
+                        ("binding", Val::Num(b.binding as f64)),
+                        ("source", s(source)),
+                        ("uri", uri),
+                        ("wrapS", Val::Num(b.wrap.0 as f64)),
+                        ("wrapT", Val::Num(b.wrap.1 as f64)),
+                    ])
+                })
+                .collect();
+            object(&[
+                ("vertexShader", s(&sh.vertex)),
+                ("fragmentShader", s(&sh.fragment)),
+                ("transparent", Val::Bool(sh.transparent)),
+                ("textures", array(textures)),
+            ])
+        };
+        let materials = page
+            .materials
+            .iter()
+            .map(|m| match m {
+                Ok(sh) => shaders(sh),
+                Err(e) => object(&[("error", s(e))]),
+            })
+            .collect();
+        let result = object(&[("grid", shaders(&page.grid)), ("materials", array(materials))]);
+        Ok(crate::rt::interop::to_js(&result))
     }
 
     /// `import * as THREE from 'three/webgpu'`.

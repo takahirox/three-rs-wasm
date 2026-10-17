@@ -5,7 +5,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
 | `webgpu_compute_reduce` | 450 | `compute_reduce.rs`, `compute_reduce/` | The six reductions of 262,144 ones, run, validated and reset each second in both halves, the four display modes and the buffer log buttons |
-| `webgpu_loader_materialx` | 451 | `loader_materialx.rs`, `loader_materialx/` | 36 ShaderBall models with the page's twelve MaterialX samples and 24 local test documents, the PMREM environment, the transmission pass and the mesh visibility GUI |
+| `webgpu_loader_materialx` | 451 | `loader_materialx.rs`, `tsl/src/materialx_page.rs` | 36 ShaderBall models with the page's twelve MaterialX samples and 24 local test documents, the PMREM environment, the transmission pass and the mesh visibility GUI |
 
 Both are compared against the WebGPU renderer
 (`tests/browser/compute-examples.spec.js`).
@@ -37,10 +37,31 @@ backend does not map it, so `vendor/wgpu` adds the mapping
 
 ## MaterialX loader ( 451 )
 
-Every material runs the WGSL r186 compiles for the page's MaterialXLoader
-material. The port does not parse the MaterialX documents or compile their
-node graphs. The object uniforms are recognized from how each captured
-shader uses its fields:
+The page's MaterialXLoader is ported: r186's
+`examples/jsm/loaders/MaterialXLoader.js`, `loaders/materialx/` and
+`libs/fflate.module.js` are transpiled to Rust in the three-tsl crate
+( `tsl/src/three/addons/` ), on its JavaScript object model, with a Rust
+DOMParser ( `tsl/src/dom.rs` ). At load, the page fetches the 36 documents
+and hands them to three-tsl's Wasm ( `web/tsl-pkg`, the `materialx_shaders`
+export ). There `tsl/src/materialx_page.rs` builds the page's scene
+( renderer, tone mapping, environment, the TSL grid ground ), parses each
+document with the page's options ( top-left uv space, the strict interface
+validator ) and puts its material on a mesh with the ShaderBall's
+attributes. The renderer's node builder generates the WGSL, as
+`renderer.debug.getShaderAsync` returns it, and the object group's texture
+bindings: each image's URI and wrap modes, the DFG LUT, the PMREM and the
+transmission texture. The page's own renderer draws with them. Images are
+not loaded there ( the shaders do not depend on them ): a loading manager
+handler stands in for the texture loader. The page decodes the images
+itself.
+
+`tsl/tests/materialx.rs` checks the ported loader natively. The ground's
+and all 36 materials' WGSL must equal, character for character, what
+three.js r186 generates for the original page ( `tsl/tests/materialx/` ).
+Each material's bindings and render kind must equal the original's.
+
+The object uniforms are recognized from how each generated shader uses its
+fields:
 
 - the model and normal matrices, and the PMREM rotation;
 - the physical material's defaults ( opacity, ior, metalness, specular
@@ -83,7 +104,9 @@ drags and zoom.
 - **Compute reduce**: the GPU timestamp text in `#info` and the subgroup
   explanation panel's DOM animation are not ported.
 - **MaterialX loader**: the page loads grid.png once per document, as nine
-  textures. The port shares one texture.
+  textures. The port shares one texture. The loader runs in three-tsl's
+  Wasm module, which the page downloads in addition to its own; the
+  PMREM, mipmap and output passes run the WGSL r186 generates for them.
 - The Inspector's panels are not ported.
 
 ## Sponza

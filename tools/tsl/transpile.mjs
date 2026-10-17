@@ -14,7 +14,9 @@ const SRC = ROOT + '.cache/three-r186/src/';
 const OUT = ROOT + 'tsl/src/three/';
 const OVERRIDES = ROOT + 'tools/tsl/overrides/';
 // Bare specifiers the sources import.
-const BARE = { 'three/webgpu': 'Three.WebGPU.js', 'three': 'Three.WebGPU.js' };
+const BARE = { 'three/webgpu': 'Three.WebGPU.js', 'three': 'Three.WebGPU.js', 'three/tsl': 'Three.TSL.js' };
+// The addons ( examples/jsm ), as paths relative to src/.
+const ADDONS = 'three/addons/';
 
 // The source of a module: an override replaces it, and the original stays
 // importable as `<name>.original.js`.
@@ -34,6 +36,8 @@ export function snake( name ) {
 
 // A file whose snake name is also a sibling directory's ( nodes/TSL.js beside nodes/tsl/ ) gets `_mod`.
 export function rustPath( js ) {
+	// An addon ( ../examples/jsm/… ) goes under addons/.
+	if ( js.startsWith( '../examples/jsm/' ) ) return [ 'addons', ...js.slice( 16, - 3 ).split( '/' ).map( snake ) ];
 	const parts = js.slice( 0, - 3 ).split( '/' );
 	const out = parts.map( snake );
 	if ( js.endsWith( '.original.js' ) ) return out;
@@ -428,6 +432,7 @@ class Gen {
 
 	resolveModule( spec ) {
 		if ( BARE[ spec ] ) return BARE[ spec ];
+		if ( spec.startsWith( ADDONS ) ) return '../examples/jsm/' + spec.slice( ADDONS.length );
 		return path.normalize( path.join( path.dirname( this.jsPath ), spec ) );
 	}
 

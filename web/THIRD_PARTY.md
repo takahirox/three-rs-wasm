@@ -1008,7 +1008,11 @@ example assets and derived bakes, distributed alongside `LICENSE-THREE`:
   Attribution License 2.0 ( `CAlicense.txt`, copied beside them ).
 
 The compute reduce and MaterialX loader batch ports MIT-licensed three.js r186
-page code and runs the WGSL r186 generates for those pages. The MaterialX
+page code. The compute reduce page runs the WGSL r186 generates for it; the
+MaterialX loader page parses its documents with r186's MaterialXLoader
+( `examples/jsm/loaders/MaterialXLoader.js`, `loaders/materialx/` and
+`libs/fflate.module.js`, fflate 0.8.2 by Arjun Barrett, MIT )
+transpiled to Rust in the three-tsl crate. The MaterialX
 loader's ShaderBall tangents are generated with the `mikktspace` 0.3.0 crate
 (MIT/Apache-2.0, the gltf-rs port of Morten S. Mikkelsen's MikkTSpace) and its
 `nalgebra` 0.26 dependency (BSD-3-Clause, dimforge). The batch adds these
@@ -1020,9 +1024,9 @@ assets:
   ( Academy Software Foundation ) at commit
   `30e80703d9e508b77711ce314ca1620a8425c383`, Apache-2.0; the license is
   copied beside them ( `LICENSE.txt` ) and in `../LICENSE-MATERIALX`.
-- `gallery/assets/materialx/three/grid.png`: the r186
-  `examples/materialx/resources/Images/grid.png` the page's local test
-  documents reference; SHA-256
+- `gallery/assets/materialx/three/`: the page's 24 local test documents,
+  r186 `examples/materialx/*.mtlx`, unchanged, and the
+  `resources/Images/grid.png` they reference; SHA-256 of grid.png
   `e9d6a722f957302a8661a66d292144abf06cdb9689945421bc4e0ee63270f084`.
 - `gallery/assets/gltf/ShaderBall.glb`: r186 `models/gltf/ShaderBall.glb`,
   unchanged ( also used by the TSL graph example ); SHA-256
