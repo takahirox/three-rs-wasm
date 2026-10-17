@@ -8,6 +8,6 @@ if command -v rustup >/dev/null 2>&1; then
   export PATH="$(dirname "$TSL_RUSTC"):$PATH"
 fi
 cargo test --locked --manifest-path tsl/Cargo.toml
-( cd tsl && wasm-pack build --target nodejs --release --out-dir ../.cache/tsl-node --no-typescript )
+( cd tsl && wasm-pack build --target nodejs --release --no-opt --out-dir ../.cache/tsl-node --no-typescript )
 node tools/tsl/check.mjs
 echo 'TSL node system corpus: PASS'
