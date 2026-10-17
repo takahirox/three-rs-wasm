@@ -10,10 +10,20 @@ constructors and its embedded shader sources ( `three_rs_wasm::sources` ).
 ## Packages
 
 Each example module of `gallery/src/browser/` is a Cargo feature of the
-gallery, enabling the modules it uses. The gallery's shell ( `browser.rs`,
-`gallery_scenes.rs`, the dispatch in `expanded.rs` and the shared scenes:
-`gallery`, `gltf_viewer`, `point_lights`, `robot`, `expanded_*` ) is always
-built.
+gallery, enabling the modules it uses. `example_<module>` also compiles the
+module's examples into the dispatch in `expanded.rs` and its browser oracle
+exports ( `fbx_canonical`, `BounceWorld`, … ). A package enables its
+examples' `example_` features only: a module whose helpers another one
+borrows is compiled without its own examples, so the linker drops their
+code and shaders. The gallery's shell ( `browser.rs`, `gallery_scenes.rs`,
+the dispatch and the shared scenes: `gallery`, `gltf_viewer`, `point_lights`,
+`robot`, `expanded_*` ) is always built.
+
+The library's KTX2 / Basis Universal transcoder is its `basisu` feature
+( on by default ). The gallery depends on the library without it and the
+gallery's `basisu` feature turns it on, listed by the modules whose examples
+load KTX2 textures or glTF with `KHR_texture_basisu`. Without it a Basis
+texture fails with an error that names the feature.
 
 A page loads one package from `web/pkg/<package>/`:
 
@@ -26,7 +36,8 @@ A page loads one package from `web/pkg/<package>/`:
   the feature on its `create` arm in `expanded.rs`; the transpiler and the
   WebXR examples, which the shell starts, use the `tsl_transpiler` and
   `xr_app` features.
-- `packages` lists each package's features.
+- `packages` lists each package's modules ( `packages.py --features` prints
+  their `example_` features ).
 
 The page ( `web/gallery/example.js`, and the offscreen example's worker )
 reads the mapping. `scripts/build-gallery` builds every package, in
@@ -48,19 +59,24 @@ into forty groups instead:
 A module's source size measures it: across the 218 single-module packages,
 their size above the core correlates with their modules' source size at 0.97.
 
-## Sizes ( 2026-10-16 )
+## Sizes ( 2026-10-17 )
 
 | Build | Wasm | gzip |
 | --- | ---: | ---: |
 | Before: every port in one package | 26.0 MB | 7.4 MB |
-| `core` | 3.7 MB | 1.54 MB |
-| Packages, median | | 2.18 MB |
-| Packages, largest | | 2.79 MB |
-| All 41 packages | 235 MB | |
+| `core` | 2.7 MB | 1.05 MB |
+| Packages, median | 3.2 MB | 1.18 MB |
+| Packages, largest ( `tsl_extended` ) | 6.9 MB | 2.78 MB |
+| All 40 packages | 144 MB | |
 
-A page downloads its package only: under 3 MB compressed, against 7.4 MB
-before. The library alone with one cube is 1.9 MB ( 0.86 MB compressed );
-the shell adds the glTF importer, the image decoders and the page bindings.
+Before the `example_` features and the optional transcoder ( 2026-10-16 ):
+`core` 4.6 MB ( 1.87 MB compressed ), the packages 246 MB together; a
+package with one example carried every example of the modules it borrowed
+from ( `loader_materialx`: 24 modules, 9.5 MB, now 2.8 MB ).
+
+A page downloads its package only. The library alone with one cube is
+1.9 MB ( 0.86 MB compressed ); the shell adds the glTF importer, the image
+decoders and the page bindings.
 
 ## Assets from the three.js repository
 

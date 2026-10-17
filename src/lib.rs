@@ -5,6 +5,10 @@
 //! behavioral reference. The compatibility manifest describes the MVP target;
 //! see implementation evidence before treating any capability as complete.
 
+/// Why a KTX2 / Basis Universal texture fails without the `basisu` feature.
+#[cfg(not(feature = "basisu"))]
+pub(crate) const BASIS_DISABLED: &str =
+    "KTX2 / Basis Universal textures need three-rs-wasm's basisu feature";
 pub mod animation;
 mod area_light;
 pub mod attribute;

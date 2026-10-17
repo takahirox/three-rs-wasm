@@ -498,7 +498,7 @@ mod xr_app;
 mod xr_controller_model;
 #[cfg(feature = "xr_random")]
 mod xr_random;
-#[cfg(feature = "xr_app")]
+#[cfg(feature = "example_xr_app")]
 pub use xr_app::XrApp;
 
 // Demo assets live under web/ both locally and below a static hosting prefix.
@@ -871,7 +871,7 @@ impl State {
 
 /// webgpu_tsl_transpiler: `new Transpiler( new GLSLDecoder(), encoder ).parse(
 /// glsl )` with the TSL or WGSL encoder; it throws the original's error message.
-#[cfg(feature = "tsl_transpiler")]
+#[cfg(feature = "example_tsl_transpiler")]
 #[wasm_bindgen]
 pub fn tsl_transpile(glsl: &str, encoder: &str) -> std::result::Result<String, JsValue> {
     let encoder = match encoder {
@@ -894,6 +894,7 @@ pub async fn decode_environment(bytes: Vec<u8>) -> std::result::Result<Vec<u16>,
 
 /// The FBXLoader port's parse in canonical form ( `fbx::canonical` ), compared
 /// with the original loader's in tests/browser/fbx-loader.spec.js.
+#[cfg(feature = "example_fbx_loader")]
 #[wasm_bindgen]
 pub fn fbx_canonical(
     bytes: Vec<u8>,
@@ -914,6 +915,7 @@ pub fn fbx_canonical(
 
 /// The VRMLLoader port's parse in canonical form ( `vrml::canonical` ),
 /// compared with the original loader's in tests/browser/vrml-loader.spec.js.
+#[cfg(feature = "example_vrml")]
 #[wasm_bindgen]
 pub fn vrml_canonical(
     text: String,
@@ -932,6 +934,7 @@ pub fn vrml_canonical(
 
 /// The USDLoader port's parse in canonical form ( `usd::canonical` ),
 /// compared with the original loader's in tests/browser/usd-loader.spec.js.
+#[cfg(feature = "example_usdz")]
 #[wasm_bindgen]
 pub fn usd_canonical(bytes: Vec<u8>, path: String) -> std::result::Result<String, JsValue> {
     crate::usd::parse(&bytes, &path)
@@ -941,7 +944,7 @@ pub fn usd_canonical(bytes: Vec<u8>, path: String) -> std::result::Result<String
 
 /// The Rhino3dmLoader port's object tree for a 3DM file in canonical form,
 /// compared with the original loader's in tests/browser/rhino3dm-loader.spec.js.
-#[cfg(feature = "loader_3dm")]
+#[cfg(feature = "example_loader_3dm")]
 #[wasm_bindgen]
 pub async fn rhino3dm_canonical(bytes: Vec<u8>) -> std::result::Result<String, JsValue> {
     let run = async {
@@ -1402,7 +1405,7 @@ impl BrowserApp {
         demo.audio_frame(scene, *camera)
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
-    #[cfg(feature = "tsl_procedural")]
+    #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_play(&self) -> std::result::Result<bool, JsValue> {
         let state = self.state.borrow();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1412,7 +1415,7 @@ impl BrowserApp {
             .and_then(|a| a.play(&state.renderer))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
-    #[cfg(feature = "tsl_procedural")]
+    #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_result(&self) -> std::result::Result<Vec<f32>, JsValue> {
         let state = self.state.borrow();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1422,7 +1425,7 @@ impl BrowserApp {
             .and_then(|a| a.take().unwrap_or_else(|| Ok(Vec::new())))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
-    #[cfg(feature = "tsl_procedural")]
+    #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_spectrum(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
         let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
@@ -1976,20 +1979,20 @@ impl Drop for BrowserApp {
 /// The ballpool's rigid-body world ( a port of @perplexdotgg/bounce ) for the
 /// browser oracle, which steps it beside the original package and compares
 /// every body's state bit for bit.
-#[cfg(feature = "ballpool")]
+#[cfg(feature = "example_ballpool")]
 #[wasm_bindgen]
 pub struct BounceWorld {
     world: crate::bounce::World,
 }
 
-#[cfg(feature = "ballpool")]
+#[cfg(feature = "example_ballpool")]
 impl Default for BounceWorld {
     fn default() -> Self {
         Self::new()
     }
 }
 
-#[cfg(feature = "ballpool")]
+#[cfg(feature = "example_ballpool")]
 #[wasm_bindgen]
 impl BounceWorld {
     #[wasm_bindgen(constructor)]

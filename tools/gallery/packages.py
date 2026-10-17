@@ -46,7 +46,7 @@ def arms():
     body = source[start:source.index('\n    pub fn update(', start)]
     feature = None
     for line in body.split('\n'):
-        if m := re.fullmatch(r' {12}#\[cfg\(feature = "(\w+)"\)\]', line):
+        if m := re.fullmatch(r' {12}#\[cfg\(feature = "example_(\w+)"\)\]', line):
             feature = m[1]
             continue
         if re.match(r' {12}\S', line) and '=>' in line:
@@ -61,9 +61,11 @@ def features():
     """gallery/Cargo.toml's module features and the modules each enables."""
     text = (ROOT / 'gallery/Cargo.toml').read_text()
     table = text[text.index('[features]'):text.index('[dependencies]')]
-    return {m[1]: re.findall(r'"(\w+)"', m[2])
-            for m in re.finditer(r'^(\w+) = \[(.*?)\]$', table, re.M)
-            if m[1] not in ('default', 'all')}
+    modules = {m[1]: re.findall(r'"(\w+)"', m[2])
+               for m in re.finditer(r'^(\w+) = \[(.*?)\]$', table, re.M)
+               if m[1] not in ('default', 'all') and not m[1].startswith('example_')}
+    # Library features ( basisu ) are not modules.
+    return {k: [d for d in v if d in modules] for k, v in modules.items() if (BROWSER / f'{k}.rs').exists()}
 
 
 def closure(feature, table, seen=None):
@@ -134,7 +136,8 @@ def main():
     if '--list' in sys.argv:
         print('\n'.join(data['packages']))
     elif '--features' in sys.argv:
-        print(','.join(data['packages'][sys.argv[sys.argv.index('--features') + 1]]))
+        # The package's examples' dispatch features ( which enable their modules ).
+        print(','.join(f'example_{u}' for u in data['packages'][sys.argv[sys.argv.index('--features') + 1]]))
     elif '--check' in sys.argv:
         if not OUT.exists() or OUT.read_text() != text:
             sys.exit(f'{OUT.relative_to(ROOT)} is stale; run tools/gallery/packages.py')

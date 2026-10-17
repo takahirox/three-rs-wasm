@@ -4,442 +4,442 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, scene::*};
 use std::sync::Arc;
 
 enum Content {
-    #[cfg(feature = "lights_probes")]
+    #[cfg(feature = "example_lights_probes")]
     LightsProbes(Box<super::lights_probes::Demo>),
-    #[cfg(feature = "exporters_video")]
+    #[cfg(feature = "example_exporters_video")]
     ExportersVideo(Box<super::exporters_video::Demo>),
-    #[cfg(feature = "shadow_rtt")]
+    #[cfg(feature = "example_shadow_rtt")]
     ShadowRtt(Box<super::shadow_rtt::Demo>),
-    #[cfg(feature = "spot_skinning")]
+    #[cfg(feature = "example_spot_skinning")]
     SpotSkinning(Box<super::spot_skinning::Demo>),
-    #[cfg(feature = "transform_curves")]
+    #[cfg(feature = "example_transform_curves")]
     TransformCurves(Box<super::transform_curves::Demo>),
-    #[cfg(feature = "gltf_normals")]
+    #[cfg(feature = "example_gltf_normals")]
     GltfNormals(Box<super::gltf_normals::Demo>),
-    #[cfg(feature = "raycaster_helper")]
+    #[cfg(feature = "example_raycaster_helper")]
     RaycasterHelper(Box<super::raycaster_helper::Demo>),
-    #[cfg(feature = "audio_timing")]
+    #[cfg(feature = "example_audio_timing")]
     AudioTiming(Box<super::audio_timing::Demo>),
-    #[cfg(feature = "md2")]
+    #[cfg(feature = "example_md2")]
     Md2(Box<super::md2::Demo>),
-    #[cfg(feature = "md2_control")]
+    #[cfg(feature = "example_md2_control")]
     Md2Control(Box<super::md2_control::Demo>),
-    #[cfg(feature = "envmap_exr")]
+    #[cfg(feature = "example_envmap_exr")]
     EnvmapExr(Box<super::envmap_exr::Demo>),
-    #[cfg(feature = "dds")]
+    #[cfg(feature = "example_dds")]
     Dds(Box<super::dds::Demo>),
-    #[cfg(feature = "kinect")]
+    #[cfg(feature = "example_kinect")]
     Kinect(Box<super::kinect::Demo>),
-    #[cfg(feature = "channels")]
+    #[cfg(feature = "example_channels")]
     Channels(Box<super::channels::Demo>),
-    #[cfg(feature = "wide_gamut")]
+    #[cfg(feature = "example_wide_gamut")]
     WideGamut(Box<super::wide_gamut::Demo>),
-    #[cfg(feature = "uv_tests")]
+    #[cfg(feature = "example_uv_tests")]
     UvTests(Box<super::uv_tests::Demo>),
-    #[cfg(feature = "clipping_stencil")]
+    #[cfg(feature = "example_clipping_stencil")]
     ClippingStencil(Box<super::clipping_stencil::Demo>),
-    #[cfg(feature = "ascii")]
+    #[cfg(feature = "example_ascii")]
     Ascii(Box<super::ascii::Demo>),
-    #[cfg(feature = "vxgi_sponza")]
+    #[cfg(feature = "example_vxgi_sponza")]
     VxgiSponza(Box<super::vxgi_sponza::Demo>),
-    #[cfg(feature = "lightprobes_sponza")]
+    #[cfg(feature = "example_lightprobes_sponza")]
     LightprobesSponza(Box<super::lightprobes_sponza::Demo>),
-    #[cfg(feature = "svg_sandbox")]
+    #[cfg(feature = "example_svg_sandbox")]
     SvgSandbox(Box<super::svg_sandbox::Demo>),
-    #[cfg(feature = "svg_lines")]
+    #[cfg(feature = "example_svg_lines")]
     SvgLines(Box<super::svg_lines::Demo>),
-    #[cfg(feature = "css3d_mixed")]
+    #[cfg(feature = "example_css3d_mixed")]
     Css3dMixed(Box<super::css3d_mixed::Demo>),
-    #[cfg(feature = "css3d_molecules")]
+    #[cfg(feature = "example_css3d_molecules")]
     Css3dMolecules(Box<super::css3d_molecules::Demo>),
-    #[cfg(feature = "css3d_periodictable")]
+    #[cfg(feature = "example_css3d_periodictable")]
     Css3dPeriodictable(Box<super::css3d_periodictable::Demo>),
-    #[cfg(feature = "css3d_sprites")]
+    #[cfg(feature = "example_css3d_sprites")]
     Css3dSprites(Box<super::css3d_sprites::Demo>),
-    #[cfg(feature = "css3d_orthographic")]
+    #[cfg(feature = "example_css3d_orthographic")]
     Css3dOrthographic(Box<super::css3d_orthographic::Demo>),
-    #[cfg(feature = "css3d_sandbox")]
+    #[cfg(feature = "example_css3d_sandbox")]
     Css3dSandbox(Box<super::css3d_sandbox::Demo>),
-    #[cfg(feature = "css2d_label")]
+    #[cfg(feature = "example_css2d_label")]
     Css2dLabel(Box<super::css2d_label::Demo>),
-    #[cfg(feature = "animation_pointer")]
+    #[cfg(feature = "example_animation_pointer")]
     AnimationPointer(Box<super::animation_pointer::Demo>),
-    #[cfg(feature = "envmaps_fasthdr")]
+    #[cfg(feature = "example_envmaps_fasthdr")]
     EnvmapsFasthdr(Box<super::envmaps_fasthdr::Demo>),
-    #[cfg(feature = "physics_rapier_vehicle_controller")]
+    #[cfg(feature = "example_physics_rapier_vehicle_controller")]
     PhysicsRapierVehicleController(Box<super::physics_rapier_vehicle_controller::Demo>),
-    #[cfg(feature = "physics_rapier_character_controller")]
+    #[cfg(feature = "example_physics_rapier_character_controller")]
     PhysicsRapierCharacterController(Box<super::physics_rapier_character_controller::Demo>),
-    #[cfg(feature = "physics_rapier_terrain")]
+    #[cfg(feature = "example_physics_rapier_terrain")]
     PhysicsRapierTerrain(Box<super::physics_rapier_terrain::Demo>),
-    #[cfg(feature = "physics_rapier_joints")]
+    #[cfg(feature = "example_physics_rapier_joints")]
     PhysicsRapierJoints(Box<super::physics_rapier_joints::Demo>),
-    #[cfg(feature = "physics_rapier_instancing")]
+    #[cfg(feature = "example_physics_rapier_instancing")]
     PhysicsRapierInstancing(Box<super::physics_rapier_instancing::Demo>),
-    #[cfg(feature = "physics_rapier_basic")]
+    #[cfg(feature = "example_physics_rapier_basic")]
     PhysicsRapierBasic(Box<super::physics_rapier_basic::Demo>),
-    #[cfg(feature = "cubemap_webgl")]
+    #[cfg(feature = "example_cubemap_webgl")]
     CubemapWebgl(Box<super::cubemap_webgl::Demo>),
-    #[cfg(feature = "ssr_webgl")]
+    #[cfg(feature = "example_ssr_webgl")]
     SsrWebgl(Box<super::ssr_webgl::Demo>),
-    #[cfg(feature = "lut_webgl")]
+    #[cfg(feature = "example_lut_webgl")]
     LutWebgl(Box<super::lut_webgl::Demo>),
-    #[cfg(feature = "shadowmap_webgl")]
+    #[cfg(feature = "example_shadowmap_webgl")]
     ShadowmapWebgl(Box<super::shadowmap_webgl::Demo>),
-    #[cfg(feature = "dof_webgl")]
+    #[cfg(feature = "example_dof_webgl")]
     DofWebgl(Box<super::dof_webgl::Demo>),
-    #[cfg(feature = "sobel_webgl")]
+    #[cfg(feature = "example_sobel_webgl")]
     SobelWebgl(Box<super::sobel_webgl::Demo>),
-    #[cfg(feature = "portal_webgl")]
+    #[cfg(feature = "example_portal_webgl")]
     PortalWebgl(Box<super::portal_webgl::Demo>),
-    #[cfg(feature = "refraction_webgl")]
+    #[cfg(feature = "example_refraction_webgl")]
     RefractionWebgl(Box<super::refraction_webgl::Demo>),
-    #[cfg(feature = "mirror_webgl")]
+    #[cfg(feature = "example_mirror_webgl")]
     MirrorWebgl(Box<super::mirror_webgl::Demo>),
-    #[cfg(feature = "afterimage_webgl")]
+    #[cfg(feature = "example_afterimage_webgl")]
     AfterimageWebgl(Box<super::afterimage_webgl::Demo>),
-    #[cfg(feature = "msaa_renderbuffers")]
+    #[cfg(feature = "example_msaa_renderbuffers")]
     MsaaRenderbuffers(Box<super::msaa_renderbuffers::Demo>),
-    #[cfg(feature = "fxaa_webgl")]
+    #[cfg(feature = "example_fxaa_webgl")]
     FxaaWebgl(Box<super::fxaa_webgl::Demo>),
-    #[cfg(feature = "loader_materialx")]
+    #[cfg(feature = "example_loader_materialx")]
     LoaderMaterialx(Box<super::loader_materialx::Demo>),
-    #[cfg(feature = "compute_reduce")]
+    #[cfg(feature = "example_compute_reduce")]
     ComputeReduce(Box<super::compute_reduce::Demo>),
-    #[cfg(feature = "generator_city")]
+    #[cfg(feature = "example_generator_city")]
     GeneratorCity(Box<super::generator_city::Demo>),
-    #[cfg(feature = "geometry_csg")]
+    #[cfg(feature = "example_geometry_csg")]
     GeometryCsg(Box<super::geometry_csg::Demo>),
-    #[cfg(feature = "ldraw")]
+    #[cfg(feature = "example_ldraw")]
     Ldraw(Box<super::ldraw::Demo>),
-    #[cfg(feature = "batch_lod_bvh")]
+    #[cfg(feature = "example_batch_lod_bvh")]
     BatchLodBvh(Box<super::batch_lod_bvh::Demo>),
-    #[cfg(feature = "volume_fire")]
+    #[cfg(feature = "example_volume_fire")]
     VolumeFire(Box<super::volume_fire::Demo>),
-    #[cfg(feature = "offscreen")]
+    #[cfg(feature = "example_offscreen")]
     Offscreen(Box<super::offscreen::Demo>),
-    #[cfg(feature = "lottie")]
+    #[cfg(feature = "example_lottie")]
     Lottie(Box<super::lottie::Demo>),
-    #[cfg(feature = "watch")]
+    #[cfg(feature = "example_watch")]
     Watch(Box<super::watch::Demo>),
-    #[cfg(feature = "ifc_loader")]
+    #[cfg(feature = "example_ifc_loader")]
     IfcLoader(Box<super::ifc_loader::Demo>),
-    #[cfg(feature = "loader_3dm")]
+    #[cfg(feature = "example_loader_3dm")]
     Loader3dm(Box<super::loader_3dm::Demo>),
-    #[cfg(feature = "webcam")]
+    #[cfg(feature = "example_webcam")]
     Webcam(Box<super::webcam::Demo>),
-    #[cfg(feature = "transmission_alpha")]
+    #[cfg(feature = "example_transmission_alpha")]
     TransmissionAlpha(Box<super::transmission_alpha::Demo>),
-    #[cfg(feature = "random_uv")]
+    #[cfg(feature = "example_random_uv")]
     RandomUv(Box<super::random_uv::Demo>),
-    #[cfg(feature = "games_fps")]
+    #[cfg(feature = "example_games_fps")]
     GamesFps(Box<super::games_fps::Demo>),
-    #[cfg(feature = "fbx_loader")]
+    #[cfg(feature = "example_fbx_loader")]
     FbxLoader(Box<super::fbx_loader::Demo>),
-    #[cfg(feature = "svg_loader")]
+    #[cfg(feature = "example_svg_loader")]
     SvgLoader(Box<super::svg_loader::Demo>),
-    #[cfg(feature = "exporter_gcode")]
+    #[cfg(feature = "example_exporter_gcode")]
     ExporterGcode(Box<super::exporter_gcode::Demo>),
-    #[cfg(feature = "video_frame")]
+    #[cfg(feature = "example_video_frame")]
     VideoFrame(Box<super::video_frame::Demo>),
-    #[cfg(feature = "arcball")]
+    #[cfg(feature = "example_arcball")]
     Arcball(Box<super::arcball::Demo>),
-    #[cfg(feature = "exporter_gltf")]
+    #[cfg(feature = "example_exporter_gltf")]
     ExporterGltf(Box<super::exporter_gltf::Demo>),
-    #[cfg(feature = "spline_editor")]
+    #[cfg(feature = "example_spline_editor")]
     SplineEditor(Box<super::spline_editor::Demo>),
-    #[cfg(feature = "raycaster_bvh")]
+    #[cfg(feature = "example_raycaster_bvh")]
     RaycasterBvh(Box<super::raycaster_bvh::Demo>),
-    #[cfg(feature = "subdivision")]
+    #[cfg(feature = "example_subdivision")]
     Subdivision(Box<super::subdivision::Demo>),
-    #[cfg(feature = "gtao_webgl")]
+    #[cfg(feature = "example_gtao_webgl")]
     GtaoWebgl(Box<super::gtao_webgl::Demo>),
-    #[cfg(feature = "shadowmap_performance")]
+    #[cfg(feature = "example_shadowmap_performance")]
     ShadowmapPerformance(Box<super::shadowmap_performance::Demo>),
-    #[cfg(feature = "usdz_exporter")]
+    #[cfg(feature = "example_usdz_exporter")]
     UsdzExporter(Box<super::usdz_exporter::Demo>),
-    #[cfg(feature = "usdz")]
+    #[cfg(feature = "example_usdz")]
     Usdz(Box<super::usdz::Demo>),
-    #[cfg(feature = "vrml")]
+    #[cfg(feature = "example_vrml")]
     Vrml(Box<super::vrml::Demo>),
-    #[cfg(feature = "birds_gltf")]
+    #[cfg(feature = "example_birds_gltf")]
     BirdsGltf(Box<super::birds_gltf::Demo>),
-    #[cfg(feature = "subsurface")]
+    #[cfg(feature = "example_subsurface")]
     Subsurface(Box<super::subsurface::Demo>),
-    #[cfg(feature = "dof2")]
+    #[cfg(feature = "example_dof2")]
     Dof2(Box<super::dof2::Demo>),
-    #[cfg(feature = "simple_gi")]
+    #[cfg(feature = "example_simple_gi")]
     SimpleGi(Box<super::simple_gi::Demo>),
-    #[cfg(feature = "ssr_denoise")]
+    #[cfg(feature = "example_ssr_denoise")]
     SsrDenoise(Box<super::ssr_denoise::Demo>),
-    #[cfg(feature = "retargeting_readyplayer")]
+    #[cfg(feature = "example_retargeting_readyplayer")]
     RetargetingReadyplayer(Box<super::retargeting_readyplayer::Demo>),
-    #[cfg(feature = "shadowmap_progressive")]
+    #[cfg(feature = "example_shadowmap_progressive")]
     ShadowmapProgressive(Box<super::shadowmap_progressive::Demo>),
-    #[cfg(feature = "compute_rasterizer_ibl")]
+    #[cfg(feature = "example_compute_rasterizer_ibl")]
     ComputeRasterizerIbl(Box<super::compute_rasterizer_ibl::Demo>),
-    #[cfg(feature = "sculpt")]
+    #[cfg(feature = "example_sculpt")]
     Sculpt(Box<super::sculpt::Demo>),
-    #[cfg(feature = "geometry_loft")]
+    #[cfg(feature = "example_geometry_loft")]
     GeometryLoft(Box<super::geometry_loft::Demo>),
-    #[cfg(feature = "generator_building")]
+    #[cfg(feature = "example_generator_building")]
     GeneratorBuilding(Box<super::generator_building::Demo>),
-    #[cfg(feature = "compute_rasterizer")]
+    #[cfg(feature = "example_compute_rasterizer")]
     ComputeRasterizer(Box<super::compute_rasterizer::Demo>),
-    #[cfg(feature = "shadow_array")]
+    #[cfg(feature = "example_shadow_array")]
     ShadowArray(Box<super::shadow_array::Demo>),
-    #[cfg(feature = "gtao")]
+    #[cfg(feature = "example_gtao")]
     Gtao(Box<super::gtao::Demo>),
-    #[cfg(feature = "vxgi")]
+    #[cfg(feature = "example_vxgi")]
     Vxgi(Box<super::vxgi::Demo>),
-    #[cfg(feature = "custom_fog")]
+    #[cfg(feature = "example_custom_fog")]
     CustomFog(Box<super::custom_fog::Demo>),
-    #[cfg(feature = "water")]
+    #[cfg(feature = "example_water")]
     Water(Box<super::water::Demo>),
-    #[cfg(feature = "gaussian_splat")]
+    #[cfg(feature = "example_gaussian_splat")]
     GaussianSplat(Box<super::gaussian_splat::Demo>),
-    #[cfg(feature = "retargeting")]
+    #[cfg(feature = "example_retargeting")]
     Retargeting(Box<super::retargeting::Demo>),
-    #[cfg(feature = "skinning_instances")]
+    #[cfg(feature = "example_skinning_instances")]
     SkinningInstances(Box<super::skinning_instances::Demo>),
-    #[cfg(feature = "fog_volume")]
+    #[cfg(feature = "example_fog_volume")]
     FogVolume(Box<super::fog_volume::Demo>),
-    #[cfg(feature = "backdrop_water")]
+    #[cfg(feature = "example_backdrop_water")]
     BackdropWater(Box<super::backdrop_water::Demo>),
-    #[cfg(feature = "fog_scattering")]
+    #[cfg(feature = "example_fog_scattering")]
     FogScattering(Box<super::fog_scattering::Demo>),
-    #[cfg(feature = "ssr")]
+    #[cfg(feature = "example_ssr")]
     Ssr(Box<super::ssr::Demo>),
-    #[cfg(feature = "sss")]
+    #[cfg(feature = "example_sss")]
     Sss(Box<super::sss::Demo>),
-    #[cfg(feature = "ssgi")]
+    #[cfg(feature = "example_ssgi")]
     Ssgi(Box<super::ssgi::Demo>),
-    #[cfg(feature = "ballpool")]
+    #[cfg(feature = "example_ballpool")]
     Ballpool(Box<super::ballpool::Demo>),
-    #[cfg(feature = "pathtracer")]
+    #[cfg(feature = "example_pathtracer")]
     Pathtracer(Box<super::pathtracer::Demo>),
-    #[cfg(feature = "progressive_lod")]
+    #[cfg(feature = "example_progressive_lod")]
     ProgressiveLod(Box<super::progressive_lod::Demo>),
-    #[cfg(feature = "morphtargets_webcam")]
+    #[cfg(feature = "example_morphtargets_webcam")]
     MorphtargetsWebcam(Box<super::morphtargets_webcam::Demo>),
-    #[cfg(feature = "tiles3d")]
+    #[cfg(feature = "example_tiles3d")]
     Tiles3d(Box<super::tiles3d::Demo>),
-    #[cfg(feature = "physics_ammo_instancing")]
+    #[cfg(feature = "example_physics_ammo_instancing")]
     PhysicsAmmoInstancing(Box<super::physics_ammo_instancing::Demo>),
-    #[cfg(feature = "physics_jolt_instancing")]
+    #[cfg(feature = "example_physics_jolt_instancing")]
     PhysicsJoltInstancing(Box<super::physics_jolt_instancing::Demo>),
-    #[cfg(feature = "physics_ammo_rope")]
+    #[cfg(feature = "example_physics_ammo_rope")]
     PhysicsAmmoRope(Box<super::physics_ammo_rope::Demo>),
-    #[cfg(feature = "physics_ammo_cloth")]
+    #[cfg(feature = "example_physics_ammo_cloth")]
     PhysicsAmmoCloth(Box<super::physics_ammo_cloth::Demo>),
-    #[cfg(feature = "physics_ammo_volume")]
+    #[cfg(feature = "example_physics_ammo_volume")]
     PhysicsAmmoVolume(Box<super::physics_ammo_volume::Demo>),
-    #[cfg(feature = "physics_ammo_terrain")]
+    #[cfg(feature = "example_physics_ammo_terrain")]
     PhysicsAmmoTerrain(Box<super::physics_ammo_terrain::Demo>),
-    #[cfg(feature = "physics_ammo_break")]
+    #[cfg(feature = "example_physics_ammo_break")]
     PhysicsAmmoBreak(Box<super::physics_ammo_break::Demo>),
-    #[cfg(feature = "html_texture")]
+    #[cfg(feature = "example_html_texture")]
     HtmlTexture(Box<super::html_texture::Demo>),
-    #[cfg(feature = "compute_water")]
+    #[cfg(feature = "example_compute_water")]
     ComputeWater(Box<super::compute_water::Demo>),
-    #[cfg(feature = "tsl_graph")]
+    #[cfg(feature = "example_tsl_graph")]
     TslGraph(Box<super::tsl_graph::Demo>),
-    #[cfg(feature = "lightprobes")]
+    #[cfg(feature = "example_lightprobes")]
     LightprobesComplex(Box<super::lightprobes::Demo>),
-    #[cfg(feature = "lightprobes")]
+    #[cfg(feature = "example_lightprobes")]
     Lightprobes(Box<super::lightprobes::Demo>),
-    #[cfg(feature = "fluid")]
+    #[cfg(feature = "example_fluid")]
     Fluid(Box<super::fluid::Demo>),
-    #[cfg(feature = "hdr")]
+    #[cfg(feature = "example_hdr")]
     Hdr(Box<super::hdr::Demo>),
-    #[cfg(feature = "volume_caustics")]
+    #[cfg(feature = "example_volume_caustics")]
     VolumeCaustics(Box<super::volume_caustics::Demo>),
-    #[cfg(feature = "compute_cloth")]
+    #[cfg(feature = "example_compute_cloth")]
     ComputeCloth(Box<super::compute_cloth::Demo>),
-    #[cfg(feature = "deferred")]
+    #[cfg(feature = "example_deferred")]
     Deferred(Box<super::deferred::Demo>),
-    #[cfg(feature = "cubemap_dynamic")]
+    #[cfg(feature = "example_cubemap_dynamic")]
     CubemapDynamic(Box<super::cubemap_dynamic::Demo>),
-    #[cfg(feature = "retro")]
+    #[cfg(feature = "example_retro")]
     Retro(Box<super::retro::Demo>),
-    #[cfg(feature = "gpgpu_protoplanet")]
+    #[cfg(feature = "example_gpgpu_protoplanet")]
     GpgpuProtoplanet(Box<super::gpgpu_protoplanet::Demo>),
-    #[cfg(feature = "shadowmap_pcss")]
+    #[cfg(feature = "example_shadowmap_pcss")]
     ShadowmapPcss(Box<super::shadowmap_pcss::Demo>),
-    #[cfg(feature = "volume_traa")]
+    #[cfg(feature = "example_volume_traa")]
     VolumeTraa(Box<super::volume_traa::Demo>),
-    #[cfg(feature = "volume_rectarea")]
+    #[cfg(feature = "example_volume_rectarea")]
     VolumeRectarea(Box<super::volume_rectarea::Demo>),
-    #[cfg(feature = "memory_outline")]
+    #[cfg(feature = "example_memory_outline")]
     MemoryOutline(Box<super::memory_outline::Demo>),
-    #[cfg(feature = "godrays")]
+    #[cfg(feature = "example_godrays")]
     Godrays(Box<super::godrays::Demo>),
-    #[cfg(feature = "volume_lighting")]
+    #[cfg(feature = "example_volume_lighting")]
     VolumeLighting(Box<super::volume_lighting::Demo>),
-    #[cfg(feature = "instancing_morph")]
+    #[cfg(feature = "example_instancing_morph")]
     InstancingMorph(Box<super::instancing_morph::Demo>),
-    #[cfg(feature = "shadowmap_csm")]
+    #[cfg(feature = "example_shadowmap_csm")]
     ShadowmapCsm(Box<super::shadowmap_csm::Demo>),
-    #[cfg(feature = "caustics")]
+    #[cfg(feature = "example_caustics")]
     Caustics(Box<super::caustics::Demo>),
-    #[cfg(feature = "shadowmap_opacity")]
+    #[cfg(feature = "example_shadowmap_opacity")]
     ShadowmapOpacity(Box<super::shadowmap_opacity::Demo>),
-    #[cfg(feature = "lights_projector")]
+    #[cfg(feature = "example_lights_projector")]
     LightsProjector(Box<super::lights_projector::Demo>),
-    #[cfg(feature = "shadowmap_vsm")]
+    #[cfg(feature = "example_shadowmap_vsm")]
     ShadowmapVsm(Box<super::shadowmap_vsm::Demo>),
-    #[cfg(feature = "lights_dynamic")]
+    #[cfg(feature = "example_lights_dynamic")]
     LightsDynamic(Box<super::lights_dynamic::Demo>),
-    #[cfg(feature = "lights_clustered")]
+    #[cfg(feature = "example_lights_clustered")]
     LightsClustered(Box<super::lights_clustered::Demo>),
-    #[cfg(feature = "linked_particles")]
+    #[cfg(feature = "example_linked_particles")]
     LinkedParticles(Box<super::linked_particles::Demo>),
-    #[cfg(feature = "attractors")]
+    #[cfg(feature = "example_attractors")]
     Attractors(Box<super::attractors::Demo>),
-    #[cfg(feature = "sort_bitonic")]
+    #[cfg(feature = "example_sort_bitonic")]
     SortBitonic(Box<super::sort_bitonic::Demo>),
-    #[cfg(feature = "compute_birds")]
+    #[cfg(feature = "example_compute_birds")]
     ComputeBirds(Box<super::compute_birds::Demo>),
-    #[cfg(feature = "fbx_nurbs")]
+    #[cfg(feature = "example_fbx_nurbs")]
     FbxNurbs(Box<super::fbx_nurbs::Demo>),
-    #[cfg(feature = "points_dynamic")]
+    #[cfg(feature = "example_points_dynamic")]
     PointsDynamic(Box<super::points_dynamic::Demo>),
-    #[cfg(feature = "postprocessing_advanced")]
+    #[cfg(feature = "example_postprocessing_advanced")]
     PostprocessingAdvanced(Box<super::postprocessing_advanced::Demo>),
-    #[cfg(feature = "ies_spotlight")]
+    #[cfg(feature = "example_ies_spotlight")]
     IesSpotlight(Box<super::ies_spotlight::Demo>),
-    #[cfg(feature = "test_memory2")]
+    #[cfg(feature = "example_test_memory2")]
     TestMemory2(Box<super::test_memory2::Demo>),
-    #[cfg(feature = "marching_cubes")]
+    #[cfg(feature = "example_marching_cubes")]
     MarchingCubes(Box<super::marching_cubes::Demo>),
-    #[cfg(feature = "render_bundle")]
+    #[cfg(feature = "example_render_bundle")]
     RenderBundle(Box<super::render_bundle::Demo>),
-    #[cfg(feature = "mesh_batch")]
+    #[cfg(feature = "example_mesh_batch")]
     MeshBatch(Box<super::mesh_batch::Demo>),
-    #[cfg(feature = "volume_instancing")]
+    #[cfg(feature = "example_volume_instancing")]
     VolumeInstancing(Box<super::volume_instancing::Demo>),
-    #[cfg(feature = "test_memory")]
+    #[cfg(feature = "example_test_memory")]
     TestMemory(Box<super::test_memory::Demo>),
-    #[cfg(feature = "ktx")]
+    #[cfg(feature = "example_ktx")]
     Ktx(Box<super::ktx::Demo>),
-    #[cfg(feature = "pvr")]
+    #[cfg(feature = "example_pvr")]
     Pvr(Box<super::pvr::Demo>),
-    #[cfg(feature = "lines_raycast")]
+    #[cfg(feature = "example_lines_raycast")]
     LinesRaycast(Box<super::lines_raycast::Demo>),
-    #[cfg(feature = "log_depth")]
+    #[cfg(feature = "example_log_depth")]
     LogDepth(Box<super::log_depth::Demo>),
-    #[cfg(feature = "reversed_depth")]
+    #[cfg(feature = "example_reversed_depth")]
     ReversedDepth(Box<super::reversed_depth::Demo>),
-    #[cfg(feature = "elements_text")]
+    #[cfg(feature = "example_elements_text")]
     ElementsText(Box<super::elements_text::Demo>),
-    #[cfg(feature = "ktx2")]
+    #[cfg(feature = "example_ktx2")]
     Ktx2(Box<super::ktx2::Demo>),
-    #[cfg(feature = "outline")]
+    #[cfg(feature = "example_outline")]
     Outline(Box<super::outline::Demo>),
-    #[cfg(feature = "taa")]
+    #[cfg(feature = "example_taa")]
     Taa(Box<super::taa::Demo>),
-    #[cfg(feature = "sao")]
+    #[cfg(feature = "example_sao")]
     Sao(Box<super::sao::Demo>),
-    #[cfg(feature = "glitch")]
+    #[cfg(feature = "example_glitch")]
     Glitch(Box<super::glitch::Demo>),
-    #[cfg(feature = "ssao")]
+    #[cfg(feature = "example_ssao")]
     Ssao(Box<super::ssao::Demo>),
-    #[cfg(feature = "shadowmap_viewer")]
+    #[cfg(feature = "example_shadowmap_viewer")]
     ShadowmapViewer(Box<super::shadowmap_viewer::Demo>),
-    #[cfg(feature = "audio_visual")]
+    #[cfg(feature = "example_audio_visual")]
     AudioVisual(Box<super::audio_visual::Demo>),
-    #[cfg(feature = "texture_volumes")]
+    #[cfg(feature = "example_texture_volumes")]
     TextureVolumes(Box<super::texture_volumes::Demo>),
-    #[cfg(feature = "refraction_loaders")]
+    #[cfg(feature = "example_refraction_loaders")]
     ColladaAnim(Box<super::refraction_loaders::collada_anim::Demo>),
-    #[cfg(feature = "threemf")]
+    #[cfg(feature = "example_threemf")]
     ThreeMf(Box<super::threemf::Demo>),
-    #[cfg(feature = "texture_flares")]
+    #[cfg(feature = "example_texture_flares")]
     TextureFlares(Box<super::texture_flares::Demo>),
-    #[cfg(feature = "draco_variants")]
+    #[cfg(feature = "example_draco_variants")]
     DracoVariants(Box<super::draco_variants::Demo>),
-    #[cfg(feature = "passes_decals")]
+    #[cfg(feature = "example_passes_decals")]
     PassesDecals(Box<super::passes_decals::Demo>),
-    #[cfg(feature = "probes_hdr")]
+    #[cfg(feature = "example_probes_hdr")]
     ProbesHdr(Box<super::probes_hdr::Demo>),
-    #[cfg(feature = "sky_water")]
+    #[cfg(feature = "example_sky_water")]
     SkyWater(Box<super::sky_water::Demo>),
-    #[cfg(feature = "exporters_matcap")]
+    #[cfg(feature = "example_exporters_matcap")]
     ExportersMatcap(Box<super::exporters_matcap::Demo>),
-    #[cfg(feature = "selection_views")]
+    #[cfg(feature = "example_selection_views")]
     SelectionViews(Box<super::selection_views::Demo>),
-    #[cfg(feature = "text_clipping")]
+    #[cfg(feature = "example_text_clipping")]
     TextClipping(Box<super::text_clipping::Demo>),
-    #[cfg(feature = "shapes_lights")]
+    #[cfg(feature = "example_shapes_lights")]
     ShapesLights(Box<super::shapes_lights::Demo>),
-    #[cfg(feature = "refraction_loaders")]
+    #[cfg(feature = "example_refraction_loaders")]
     RefractionLoaders(Box<super::refraction_loaders::Demo>),
-    #[cfg(feature = "helpers_formats")]
+    #[cfg(feature = "example_helpers_formats")]
     HelpersFormats(Box<super::helpers_formats::Demo>),
-    #[cfg(feature = "picking_buffers")]
+    #[cfg(feature = "example_picking_buffers")]
     PickingBuffers(Box<super::picking_buffers::Demo>),
-    #[cfg(feature = "models_modifiers")]
+    #[cfg(feature = "example_models_modifiers")]
     ModelsModifiers(Box<super::models_modifiers::Demo>),
-    #[cfg(feature = "terrain_loaders")]
+    #[cfg(feature = "example_terrain_loaders")]
     TerrainLoaders(Box<super::terrain_loaders::Demo>),
-    #[cfg(feature = "trackball_sprites")]
+    #[cfg(feature = "example_trackball_sprites")]
     TrackballSprites(Box<super::trackball_sprites::Demo>),
-    #[cfg(feature = "controls_attributes")]
+    #[cfg(feature = "example_controls_attributes")]
     ControlsAttributes(Box<super::controls_attributes::Demo>),
-    #[cfg(feature = "stereo_loaders")]
+    #[cfg(feature = "example_stereo_loaders")]
     StereoLoaders(Box<super::stereo_loaders::Demo>),
-    #[cfg(feature = "views_loaders")]
+    #[cfg(feature = "example_views_loaders")]
     ViewsLoaders(Box<super::views_loaders::Demo>),
-    #[cfg(feature = "interactive_scenes")]
+    #[cfg(feature = "example_interactive_scenes")]
     InteractiveScenes(Box<super::interactive_scenes::Demo>),
-    #[cfg(feature = "interactive_objects")]
+    #[cfg(feature = "example_interactive_objects")]
     InteractiveObjects(Box<super::interactive_objects::Demo>),
-    #[cfg(feature = "interactive_shaders")]
+    #[cfg(feature = "example_interactive_shaders")]
     InteractiveShaders(Box<super::interactive_shaders::Demo>),
-    #[cfg(feature = "environment_materials")]
+    #[cfg(feature = "example_environment_materials")]
     EnvironmentMaterials(Box<super::environment_materials::Demo>),
-    #[cfg(feature = "geometry_materials")]
+    #[cfg(feature = "example_geometry_materials")]
     GeometryMaterials(Box<super::geometry_materials::Demo>),
-    #[cfg(feature = "shader_geometry")]
+    #[cfg(feature = "example_shader_geometry")]
     ShaderGeometry(Box<super::shader_geometry::Demo>),
-    #[cfg(feature = "point_clouds")]
+    #[cfg(feature = "example_point_clouds")]
     PointClouds(Box<super::point_clouds::Demo>),
-    #[cfg(feature = "buffer_particles")]
+    #[cfg(feature = "example_buffer_particles")]
     BufferParticles(Box<super::buffer_particles::Demo>),
-    #[cfg(feature = "shapes")]
+    #[cfg(feature = "example_shapes")]
     Shapes(Box<super::shapes::Demo>),
-    #[cfg(feature = "material_textures")]
+    #[cfg(feature = "example_material_textures")]
     MaterialTextures(Box<super::material_textures::Demo>),
-    #[cfg(feature = "tsl_procedural")]
+    #[cfg(feature = "example_tsl_procedural")]
     TslProcedural(Box<super::tsl_procedural::Demo>),
-    #[cfg(feature = "tsl_primitives")]
+    #[cfg(feature = "example_tsl_primitives")]
     TslPrimitives(Box<super::tsl_primitives::Demo>),
-    #[cfg(feature = "tsl_materials")]
+    #[cfg(feature = "example_tsl_materials")]
     TslMaterials(Box<super::tsl_materials::Demo>),
-    #[cfg(feature = "tsl_viewport")]
+    #[cfg(feature = "example_tsl_viewport")]
     TslViewport(Box<super::tsl_viewport::Demo>),
-    #[cfg(feature = "tsl_lighting")]
+    #[cfg(feature = "example_tsl_lighting")]
     TslLighting(Box<super::tsl_lighting::Demo>),
-    #[cfg(feature = "tsl_environment")]
+    #[cfg(feature = "example_tsl_environment")]
     TslEnvironment(Box<super::tsl_environment::Demo>),
-    #[cfg(feature = "tsl_next")]
+    #[cfg(feature = "example_tsl_next")]
     TslNext(Box<super::tsl_next::Demo>),
-    #[cfg(feature = "tsl_extended")]
+    #[cfg(feature = "example_tsl_extended")]
     TslExtended(Box<super::tsl_extended::Demo>),
-    #[cfg(feature = "tsl_surface")]
+    #[cfg(feature = "example_tsl_surface")]
     TslSurface(Box<super::tsl_surface::Demo>),
-    #[cfg(feature = "tsl_compute")]
+    #[cfg(feature = "example_tsl_compute")]
     TslCompute(Box<super::tsl_compute::Demo>),
-    #[cfg(feature = "tsl_particles")]
+    #[cfg(feature = "example_tsl_particles")]
     TslParticles(Box<super::tsl_particles::Demo>),
-    #[cfg(feature = "tsl_filters")]
+    #[cfg(feature = "example_tsl_filters")]
     TslFilter(Box<super::tsl_filters::Demo>),
     Avif,
-    #[cfg(feature = "tsl_passes")]
+    #[cfg(feature = "example_tsl_passes")]
     TslPass(Box<super::tsl_passes::Demo>),
-    #[cfg(feature = "tsl_examples")]
+    #[cfg(feature = "example_tsl_examples")]
     Tsl(Box<super::tsl_examples::Demo>),
-    #[cfg(feature = "gltf_examples")]
+    #[cfg(feature = "example_gltf_examples")]
     Gltf(Box<super::gltf_examples::Demo>),
     Instancing,
     Triangles {
@@ -469,7 +469,7 @@ pub(super) struct Demo {
     elapsed: f64,
 }
 impl Demo {
-    #[cfg(feature = "tsl_procedural")]
+    #[cfg(feature = "example_tsl_procedural")]
     pub fn audio(&self) -> crate::Result<&super::tsl_procedural::audio::Audio> {
         if let Content::TslProcedural(p) = &self.content {
             p.audio()
@@ -489,7 +489,7 @@ impl Demo {
             _ => 1.0,
         };
         match example {
-            #[cfg(feature = "threemf")]
+            #[cfg(feature = "example_threemf")]
             318 | 319 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -499,7 +499,7 @@ impl Demo {
                     super::threemf::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "refraction_loaders")]
+            #[cfg(feature = "example_refraction_loaders")]
             316 | 317 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -512,7 +512,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "texture_volumes")]
+            #[cfg(feature = "example_texture_volumes")]
             314 | 315 | 321 | 324..=326 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -522,7 +522,7 @@ impl Demo {
                     super::texture_volumes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "gltf_normals")]
+            #[cfg(feature = "example_gltf_normals")]
             313 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -532,7 +532,7 @@ impl Demo {
                     super::gltf_normals::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "raycaster_helper")]
+            #[cfg(feature = "example_raycaster_helper")]
             322 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -542,7 +542,7 @@ impl Demo {
                     super::raycaster_helper::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "audio_timing")]
+            #[cfg(feature = "example_audio_timing")]
             323 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -552,7 +552,7 @@ impl Demo {
                     super::audio_timing::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "audio_visual")]
+            #[cfg(feature = "example_audio_visual")]
             328..=330 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -562,7 +562,7 @@ impl Demo {
                     super::audio_visual::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "md2")]
+            #[cfg(feature = "example_md2")]
             327 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -572,7 +572,7 @@ impl Demo {
                     super::md2::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "md2_control")]
+            #[cfg(feature = "example_md2_control")]
             331 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -582,7 +582,7 @@ impl Demo {
                     super::md2_control::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "envmap_exr")]
+            #[cfg(feature = "example_envmap_exr")]
             332 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -592,7 +592,7 @@ impl Demo {
                     super::envmap_exr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "dds")]
+            #[cfg(feature = "example_dds")]
             335 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -602,7 +602,7 @@ impl Demo {
                     super::dds::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "kinect")]
+            #[cfg(feature = "example_kinect")]
             336 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -612,7 +612,7 @@ impl Demo {
                     super::kinect::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "channels")]
+            #[cfg(feature = "example_channels")]
             337 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 500.,
@@ -622,7 +622,7 @@ impl Demo {
                     super::channels::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "wide_gamut")]
+            #[cfg(feature = "example_wide_gamut")]
             338 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -632,7 +632,7 @@ impl Demo {
                     super::wide_gamut::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "uv_tests")]
+            #[cfg(feature = "example_uv_tests")]
             339 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -642,7 +642,7 @@ impl Demo {
                     super::uv_tests::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "clipping_stencil")]
+            #[cfg(feature = "example_clipping_stencil")]
             340 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -652,7 +652,7 @@ impl Demo {
                     super::clipping_stencil::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ascii")]
+            #[cfg(feature = "example_ascii")]
             341 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -662,7 +662,7 @@ impl Demo {
                     super::ascii::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "glitch")]
+            #[cfg(feature = "example_glitch")]
             342 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -672,7 +672,7 @@ impl Demo {
                     super::glitch::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ssao")]
+            #[cfg(feature = "example_ssao")]
             343 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 100.,
@@ -682,7 +682,7 @@ impl Demo {
                     super::ssao::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sao")]
+            #[cfg(feature = "example_sao")]
             344 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 3.,
@@ -692,7 +692,7 @@ impl Demo {
                     super::sao::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "taa")]
+            #[cfg(feature = "example_taa")]
             345 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -702,7 +702,7 @@ impl Demo {
                     super::taa::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "outline")]
+            #[cfg(feature = "example_outline")]
             346 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -712,7 +712,7 @@ impl Demo {
                     super::outline::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ktx2")]
+            #[cfg(feature = "example_ktx2")]
             347 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -722,7 +722,7 @@ impl Demo {
                     super::ktx2::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "elements_text")]
+            #[cfg(feature = "example_elements_text")]
             348 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -732,7 +732,7 @@ impl Demo {
                     super::elements_text::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "reversed_depth")]
+            #[cfg(feature = "example_reversed_depth")]
             349 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 5.,
@@ -742,7 +742,7 @@ impl Demo {
                     super::reversed_depth::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "log_depth")]
+            #[cfg(feature = "example_log_depth")]
             350 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1e-6,
@@ -752,7 +752,7 @@ impl Demo {
                     super::log_depth::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lines_raycast")]
+            #[cfg(feature = "example_lines_raycast")]
             351 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -762,7 +762,7 @@ impl Demo {
                     super::lines_raycast::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "pvr")]
+            #[cfg(feature = "example_pvr")]
             352 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -772,7 +772,7 @@ impl Demo {
                     super::pvr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ktx")]
+            #[cfg(feature = "example_ktx")]
             353 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -782,7 +782,7 @@ impl Demo {
                     super::ktx::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "test_memory")]
+            #[cfg(feature = "example_test_memory")]
             354 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -792,7 +792,7 @@ impl Demo {
                     super::test_memory::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_instancing")]
+            #[cfg(feature = "example_volume_instancing")]
             355 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -803,7 +803,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "mesh_batch")]
+            #[cfg(feature = "example_mesh_batch")]
             356 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -813,7 +813,7 @@ impl Demo {
                     super::mesh_batch::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "render_bundle")]
+            #[cfg(feature = "example_render_bundle")]
             357 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -823,7 +823,7 @@ impl Demo {
                     super::render_bundle::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "marching_cubes")]
+            #[cfg(feature = "example_marching_cubes")]
             358 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -833,7 +833,7 @@ impl Demo {
                     super::marching_cubes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "test_memory2")]
+            #[cfg(feature = "example_test_memory2")]
             359 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -843,7 +843,7 @@ impl Demo {
                     super::test_memory2::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ies_spotlight")]
+            #[cfg(feature = "example_ies_spotlight")]
             360 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -853,7 +853,7 @@ impl Demo {
                     super::ies_spotlight::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "postprocessing_advanced")]
+            #[cfg(feature = "example_postprocessing_advanced")]
             361 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -864,7 +864,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "points_dynamic")]
+            #[cfg(feature = "example_points_dynamic")]
             362 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -874,7 +874,7 @@ impl Demo {
                     super::points_dynamic::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fbx_nurbs")]
+            #[cfg(feature = "example_fbx_nurbs")]
             363 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -884,7 +884,7 @@ impl Demo {
                     super::fbx_nurbs::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_birds")]
+            #[cfg(feature = "example_compute_birds")]
             364 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -894,7 +894,7 @@ impl Demo {
                     super::compute_birds::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sort_bitonic")]
+            #[cfg(feature = "example_sort_bitonic")]
             365 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.,
@@ -904,7 +904,7 @@ impl Demo {
                     super::sort_bitonic::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "attractors")]
+            #[cfg(feature = "example_attractors")]
             366 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -914,7 +914,7 @@ impl Demo {
                     super::attractors::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "linked_particles")]
+            #[cfg(feature = "example_linked_particles")]
             367 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -924,7 +924,7 @@ impl Demo {
                     super::linked_particles::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lights_clustered")]
+            #[cfg(feature = "example_lights_clustered")]
             368 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -934,7 +934,7 @@ impl Demo {
                     super::lights_clustered::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lights_dynamic")]
+            #[cfg(feature = "example_lights_dynamic")]
             369 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -944,7 +944,7 @@ impl Demo {
                     super::lights_dynamic::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_vsm")]
+            #[cfg(feature = "example_shadowmap_vsm")]
             370 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -954,7 +954,7 @@ impl Demo {
                     super::shadowmap_vsm::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lights_projector")]
+            #[cfg(feature = "example_lights_projector")]
             371 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -964,7 +964,7 @@ impl Demo {
                     super::lights_projector::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_opacity")]
+            #[cfg(feature = "example_shadowmap_opacity")]
             372 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -975,7 +975,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "caustics")]
+            #[cfg(feature = "example_caustics")]
             373 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.025,
@@ -985,7 +985,7 @@ impl Demo {
                     super::caustics::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_csm")]
+            #[cfg(feature = "example_shadowmap_csm")]
             374 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -995,7 +995,7 @@ impl Demo {
                     super::shadowmap_csm::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "instancing_morph")]
+            #[cfg(feature = "example_instancing_morph")]
             375 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 100.,
@@ -1005,7 +1005,7 @@ impl Demo {
                     super::instancing_morph::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_lighting")]
+            #[cfg(feature = "example_volume_lighting")]
             376 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1015,7 +1015,7 @@ impl Demo {
                     super::volume_lighting::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "godrays")]
+            #[cfg(feature = "example_godrays")]
             377 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1025,7 +1025,7 @@ impl Demo {
                     super::godrays::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "memory_outline")]
+            #[cfg(feature = "example_memory_outline")]
             378 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1035,7 +1035,7 @@ impl Demo {
                     super::memory_outline::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_rectarea")]
+            #[cfg(feature = "example_volume_rectarea")]
             379 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1045,7 +1045,7 @@ impl Demo {
                     super::volume_rectarea::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_traa")]
+            #[cfg(feature = "example_volume_traa")]
             380 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1055,7 +1055,7 @@ impl Demo {
                     super::volume_traa::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_pcss")]
+            #[cfg(feature = "example_shadowmap_pcss")]
             381 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1065,7 +1065,7 @@ impl Demo {
                     super::shadowmap_pcss::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "gpgpu_protoplanet")]
+            #[cfg(feature = "example_gpgpu_protoplanet")]
             384 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 5.,
@@ -1076,7 +1076,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "retro")]
+            #[cfg(feature = "example_retro")]
             385 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1086,7 +1086,7 @@ impl Demo {
                     super::retro::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "cubemap_dynamic")]
+            #[cfg(feature = "example_cubemap_dynamic")]
             386 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1096,7 +1096,7 @@ impl Demo {
                     super::cubemap_dynamic::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "deferred")]
+            #[cfg(feature = "example_deferred")]
             387 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1106,7 +1106,7 @@ impl Demo {
                     super::deferred::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_cloth")]
+            #[cfg(feature = "example_compute_cloth")]
             388 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -1116,7 +1116,7 @@ impl Demo {
                     super::compute_cloth::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_caustics")]
+            #[cfg(feature = "example_volume_caustics")]
             389 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.025,
@@ -1126,7 +1126,7 @@ impl Demo {
                     super::volume_caustics::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "hdr")]
+            #[cfg(feature = "example_hdr")]
             390 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1136,7 +1136,7 @@ impl Demo {
                     super::hdr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fluid")]
+            #[cfg(feature = "example_fluid")]
             391 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -1146,7 +1146,7 @@ impl Demo {
                     super::fluid::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lightprobes")]
+            #[cfg(feature = "example_lightprobes")]
             392 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1156,7 +1156,7 @@ impl Demo {
                     super::lightprobes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lightprobes")]
+            #[cfg(feature = "example_lightprobes")]
             393 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1166,7 +1166,7 @@ impl Demo {
                     super::lightprobes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_graph")]
+            #[cfg(feature = "example_tsl_graph")]
             394 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1176,7 +1176,7 @@ impl Demo {
                     super::tsl_graph::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_water")]
+            #[cfg(feature = "example_compute_water")]
             395 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1186,7 +1186,7 @@ impl Demo {
                     super::compute_water::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ssgi")]
+            #[cfg(feature = "example_ssgi")]
             396 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1196,7 +1196,7 @@ impl Demo {
                     super::ssgi::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "pathtracer")]
+            #[cfg(feature = "example_pathtracer")]
             485 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1206,7 +1206,7 @@ impl Demo {
                     super::pathtracer::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "progressive_lod")]
+            #[cfg(feature = "example_progressive_lod")]
             486 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1216,7 +1216,7 @@ impl Demo {
                     super::progressive_lod::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "html_texture")]
+            #[cfg(feature = "example_html_texture")]
             496 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1226,7 +1226,7 @@ impl Demo {
                     super::html_texture::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_break")]
+            #[cfg(feature = "example_physics_ammo_break")]
             495 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -1237,7 +1237,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_terrain")]
+            #[cfg(feature = "example_physics_ammo_terrain")]
             494 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -1248,7 +1248,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_volume")]
+            #[cfg(feature = "example_physics_ammo_volume")]
             493 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -1259,7 +1259,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_cloth")]
+            #[cfg(feature = "example_physics_ammo_cloth")]
             492 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -1270,7 +1270,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_rope")]
+            #[cfg(feature = "example_physics_ammo_rope")]
             491 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -1281,7 +1281,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_jolt_instancing")]
+            #[cfg(feature = "example_physics_jolt_instancing")]
             490 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1292,7 +1292,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_ammo_instancing")]
+            #[cfg(feature = "example_physics_ammo_instancing")]
             489 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1303,7 +1303,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "tiles3d")]
+            #[cfg(feature = "example_tiles3d")]
             488 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 10.,
@@ -1313,7 +1313,7 @@ impl Demo {
                     super::tiles3d::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "morphtargets_webcam")]
+            #[cfg(feature = "example_morphtargets_webcam")]
             487 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1324,7 +1324,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "ballpool")]
+            #[cfg(feature = "example_ballpool")]
             484 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1334,7 +1334,7 @@ impl Demo {
                     super::ballpool::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sss")]
+            #[cfg(feature = "example_sss")]
             397 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1344,7 +1344,7 @@ impl Demo {
                     super::sss::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ssr")]
+            #[cfg(feature = "example_ssr")]
             398 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1354,7 +1354,7 @@ impl Demo {
                     super::ssr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fog_scattering")]
+            #[cfg(feature = "example_fog_scattering")]
             399 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1364,7 +1364,7 @@ impl Demo {
                     super::fog_scattering::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "backdrop_water")]
+            #[cfg(feature = "example_backdrop_water")]
             400 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1374,7 +1374,7 @@ impl Demo {
                     super::backdrop_water::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fog_volume")]
+            #[cfg(feature = "example_fog_volume")]
             401 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1384,7 +1384,7 @@ impl Demo {
                     super::fog_volume::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "skinning_instances")]
+            #[cfg(feature = "example_skinning_instances")]
             402 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -1395,7 +1395,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "retargeting")]
+            #[cfg(feature = "example_retargeting")]
             403 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1405,7 +1405,7 @@ impl Demo {
                     super::retargeting::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "gaussian_splat")]
+            #[cfg(feature = "example_gaussian_splat")]
             404 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -1415,7 +1415,7 @@ impl Demo {
                     super::gaussian_splat::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "water")]
+            #[cfg(feature = "example_water")]
             405 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1425,7 +1425,7 @@ impl Demo {
                     super::water::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "custom_fog")]
+            #[cfg(feature = "example_custom_fog")]
             406 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1435,7 +1435,7 @@ impl Demo {
                     super::custom_fog::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "vxgi")]
+            #[cfg(feature = "example_vxgi")]
             407 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1445,7 +1445,7 @@ impl Demo {
                     super::vxgi::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "gtao")]
+            #[cfg(feature = "example_gtao")]
             408 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1455,7 +1455,7 @@ impl Demo {
                     super::gtao::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadow_array")]
+            #[cfg(feature = "example_shadow_array")]
             409 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1465,7 +1465,7 @@ impl Demo {
                     super::shadow_array::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_rasterizer")]
+            #[cfg(feature = "example_compute_rasterizer")]
             410 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1476,7 +1476,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "generator_building")]
+            #[cfg(feature = "example_generator_building")]
             411 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1487,7 +1487,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "geometry_loft")]
+            #[cfg(feature = "example_geometry_loft")]
             412 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1497,7 +1497,7 @@ impl Demo {
                     super::geometry_loft::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sculpt")]
+            #[cfg(feature = "example_sculpt")]
             413 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1507,7 +1507,7 @@ impl Demo {
                     super::sculpt::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_rasterizer_ibl")]
+            #[cfg(feature = "example_compute_rasterizer_ibl")]
             414 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1518,7 +1518,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_progressive")]
+            #[cfg(feature = "example_shadowmap_progressive")]
             415 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1529,7 +1529,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "retargeting_readyplayer")]
+            #[cfg(feature = "example_retargeting_readyplayer")]
             416 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1540,7 +1540,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "ssr_denoise")]
+            #[cfg(feature = "example_ssr_denoise")]
             417 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1550,7 +1550,7 @@ impl Demo {
                     super::ssr_denoise::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "simple_gi")]
+            #[cfg(feature = "example_simple_gi")]
             418 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1560,7 +1560,7 @@ impl Demo {
                     super::simple_gi::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "dof2")]
+            #[cfg(feature = "example_dof2")]
             419 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1570,7 +1570,7 @@ impl Demo {
                     super::dof2::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "subsurface")]
+            #[cfg(feature = "example_subsurface")]
             420 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1580,7 +1580,7 @@ impl Demo {
                     super::subsurface::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "birds_gltf")]
+            #[cfg(feature = "example_birds_gltf")]
             421 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1590,7 +1590,7 @@ impl Demo {
                     super::birds_gltf::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "vrml")]
+            #[cfg(feature = "example_vrml")]
             422 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1600,7 +1600,7 @@ impl Demo {
                     super::vrml::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "usdz")]
+            #[cfg(feature = "example_usdz")]
             423 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1610,7 +1610,7 @@ impl Demo {
                     super::usdz::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "usdz_exporter")]
+            #[cfg(feature = "example_usdz_exporter")]
             424 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1620,7 +1620,7 @@ impl Demo {
                     super::usdz_exporter::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_performance")]
+            #[cfg(feature = "example_shadowmap_performance")]
             425 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 5.,
@@ -1631,7 +1631,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "gtao_webgl")]
+            #[cfg(feature = "example_gtao_webgl")]
             426 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1641,7 +1641,7 @@ impl Demo {
                     super::gtao_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "subdivision")]
+            #[cfg(feature = "example_subdivision")]
             427 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1651,7 +1651,7 @@ impl Demo {
                     super::subdivision::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "raycaster_bvh")]
+            #[cfg(feature = "example_raycaster_bvh")]
             428 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1661,7 +1661,7 @@ impl Demo {
                     super::raycaster_bvh::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "spline_editor")]
+            #[cfg(feature = "example_spline_editor")]
             429 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1671,7 +1671,7 @@ impl Demo {
                     super::spline_editor::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "exporter_gltf")]
+            #[cfg(feature = "example_exporter_gltf")]
             430 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1681,7 +1681,7 @@ impl Demo {
                     super::exporter_gltf::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "arcball")]
+            #[cfg(feature = "example_arcball")]
             431 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -1691,7 +1691,7 @@ impl Demo {
                     super::arcball::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "video_frame")]
+            #[cfg(feature = "example_video_frame")]
             432 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1701,7 +1701,7 @@ impl Demo {
                     super::video_frame::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "exporter_gcode")]
+            #[cfg(feature = "example_exporter_gcode")]
             433 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1711,7 +1711,7 @@ impl Demo {
                     super::exporter_gcode::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "svg_loader")]
+            #[cfg(feature = "example_svg_loader")]
             434 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1721,7 +1721,7 @@ impl Demo {
                     super::svg_loader::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fbx_loader")]
+            #[cfg(feature = "example_fbx_loader")]
             435 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1731,7 +1731,7 @@ impl Demo {
                     super::fbx_loader::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "games_fps")]
+            #[cfg(feature = "example_games_fps")]
             436 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1741,7 +1741,7 @@ impl Demo {
                     super::games_fps::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "random_uv")]
+            #[cfg(feature = "example_random_uv")]
             437 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1751,7 +1751,7 @@ impl Demo {
                     super::random_uv::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "transmission_alpha")]
+            #[cfg(feature = "example_transmission_alpha")]
             438 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1762,7 +1762,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "webcam")]
+            #[cfg(feature = "example_webcam")]
             439 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1772,7 +1772,7 @@ impl Demo {
                     super::webcam::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "loader_3dm")]
+            #[cfg(feature = "example_loader_3dm")]
             440 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1782,7 +1782,7 @@ impl Demo {
                     super::loader_3dm::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ifc_loader")]
+            #[cfg(feature = "example_ifc_loader")]
             441 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1792,7 +1792,7 @@ impl Demo {
                     super::ifc_loader::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "watch")]
+            #[cfg(feature = "example_watch")]
             442 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1802,7 +1802,7 @@ impl Demo {
                     super::watch::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lottie")]
+            #[cfg(feature = "example_lottie")]
             443 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1812,7 +1812,7 @@ impl Demo {
                     super::lottie::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "offscreen")]
+            #[cfg(feature = "example_offscreen")]
             444 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1822,7 +1822,7 @@ impl Demo {
                     super::offscreen::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "volume_fire")]
+            #[cfg(feature = "example_volume_fire")]
             445 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1832,7 +1832,7 @@ impl Demo {
                     super::volume_fire::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "batch_lod_bvh")]
+            #[cfg(feature = "example_batch_lod_bvh")]
             446 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1842,7 +1842,7 @@ impl Demo {
                     super::batch_lod_bvh::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ldraw")]
+            #[cfg(feature = "example_ldraw")]
             447 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1852,7 +1852,7 @@ impl Demo {
                     super::ldraw::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "geometry_csg")]
+            #[cfg(feature = "example_geometry_csg")]
             448 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1862,7 +1862,7 @@ impl Demo {
                     super::geometry_csg::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "generator_city")]
+            #[cfg(feature = "example_generator_city")]
             449 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1872,7 +1872,7 @@ impl Demo {
                     super::generator_city::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "compute_reduce")]
+            #[cfg(feature = "example_compute_reduce")]
             450 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.,
@@ -1882,7 +1882,7 @@ impl Demo {
                     super::compute_reduce::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "loader_materialx")]
+            #[cfg(feature = "example_loader_materialx")]
             451 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1892,7 +1892,7 @@ impl Demo {
                     super::loader_materialx::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "fxaa_webgl")]
+            #[cfg(feature = "example_fxaa_webgl")]
             452 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1902,7 +1902,7 @@ impl Demo {
                     super::fxaa_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "msaa_renderbuffers")]
+            #[cfg(feature = "example_msaa_renderbuffers")]
             453 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 10.,
@@ -1913,7 +1913,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "afterimage_webgl")]
+            #[cfg(feature = "example_afterimage_webgl")]
             454 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1923,7 +1923,7 @@ impl Demo {
                     super::afterimage_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "mirror_webgl")]
+            #[cfg(feature = "example_mirror_webgl")]
             455 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1933,7 +1933,7 @@ impl Demo {
                     super::mirror_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "refraction_webgl")]
+            #[cfg(feature = "example_refraction_webgl")]
             456 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1943,7 +1943,7 @@ impl Demo {
                     super::refraction_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "portal_webgl")]
+            #[cfg(feature = "example_portal_webgl")]
             457 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1953,7 +1953,7 @@ impl Demo {
                     super::portal_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sobel_webgl")]
+            #[cfg(feature = "example_sobel_webgl")]
             458 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -1963,7 +1963,7 @@ impl Demo {
                     super::sobel_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "dof_webgl")]
+            #[cfg(feature = "example_dof_webgl")]
             459 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -1973,7 +1973,7 @@ impl Demo {
                     super::dof_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_webgl")]
+            #[cfg(feature = "example_shadowmap_webgl")]
             460 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 10.,
@@ -1983,7 +1983,7 @@ impl Demo {
                     super::shadowmap_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lut_webgl")]
+            #[cfg(feature = "example_lut_webgl")]
             461 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.25,
@@ -1993,7 +1993,7 @@ impl Demo {
                     super::lut_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "ssr_webgl")]
+            #[cfg(feature = "example_ssr_webgl")]
             462 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2003,7 +2003,7 @@ impl Demo {
                     super::ssr_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "cubemap_webgl")]
+            #[cfg(feature = "example_cubemap_webgl")]
             463 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2013,7 +2013,7 @@ impl Demo {
                     super::cubemap_webgl::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_basic")]
+            #[cfg(feature = "example_physics_rapier_basic")]
             464 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2024,7 +2024,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_instancing")]
+            #[cfg(feature = "example_physics_rapier_instancing")]
             465 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2037,7 +2037,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_joints")]
+            #[cfg(feature = "example_physics_rapier_joints")]
             466 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2048,7 +2048,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_terrain")]
+            #[cfg(feature = "example_physics_rapier_terrain")]
             467 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -2059,7 +2059,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_character_controller")]
+            #[cfg(feature = "example_physics_rapier_character_controller")]
             468 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2072,7 +2072,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "physics_rapier_vehicle_controller")]
+            #[cfg(feature = "example_physics_rapier_vehicle_controller")]
             469 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2085,7 +2085,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "envmaps_fasthdr")]
+            #[cfg(feature = "example_envmaps_fasthdr")]
             470 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2095,7 +2095,7 @@ impl Demo {
                     super::envmaps_fasthdr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "animation_pointer")]
+            #[cfg(feature = "example_animation_pointer")]
             471 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.2,
@@ -2106,7 +2106,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "css2d_label")]
+            #[cfg(feature = "example_css2d_label")]
             472 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2116,7 +2116,7 @@ impl Demo {
                     super::css2d_label::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "css3d_sandbox")]
+            #[cfg(feature = "example_css3d_sandbox")]
             473 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2126,7 +2126,7 @@ impl Demo {
                     super::css3d_sandbox::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "css3d_orthographic")]
+            #[cfg(feature = "example_css3d_orthographic")]
             474 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2137,7 +2137,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "css3d_sprites")]
+            #[cfg(feature = "example_css3d_sprites")]
             475 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2147,7 +2147,7 @@ impl Demo {
                     super::css3d_sprites::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "css3d_periodictable")]
+            #[cfg(feature = "example_css3d_periodictable")]
             476 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2158,7 +2158,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "css3d_molecules")]
+            #[cfg(feature = "example_css3d_molecules")]
             477 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2168,7 +2168,7 @@ impl Demo {
                     super::css3d_molecules::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "css3d_mixed")]
+            #[cfg(feature = "example_css3d_mixed")]
             478 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2178,7 +2178,7 @@ impl Demo {
                     super::css3d_mixed::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "svg_lines")]
+            #[cfg(feature = "example_svg_lines")]
             479 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2188,7 +2188,7 @@ impl Demo {
                     super::svg_lines::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "svg_sandbox")]
+            #[cfg(feature = "example_svg_sandbox")]
             480 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2198,7 +2198,7 @@ impl Demo {
                     super::svg_sandbox::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lightprobes_sponza")]
+            #[cfg(feature = "example_lightprobes_sponza")]
             481 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2213,7 +2213,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "vxgi_sponza")]
+            #[cfg(feature = "example_vxgi_sponza")]
             482 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2226,7 +2226,7 @@ impl Demo {
                     .await?,
                 )),
             }),
-            #[cfg(feature = "shadowmap_viewer")]
+            #[cfg(feature = "example_shadowmap_viewer")]
             333 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2236,7 +2236,7 @@ impl Demo {
                     super::shadowmap_viewer::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "transform_curves")]
+            #[cfg(feature = "example_transform_curves")]
             308..=310 | 312 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2246,7 +2246,7 @@ impl Demo {
                     super::transform_curves::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "spot_skinning")]
+            #[cfg(feature = "example_spot_skinning")]
             303..=307 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2256,7 +2256,7 @@ impl Demo {
                     super::spot_skinning::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "texture_flares")]
+            #[cfg(feature = "example_texture_flares")]
             298..=302 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2266,7 +2266,7 @@ impl Demo {
                     super::texture_flares::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "draco_variants")]
+            #[cfg(feature = "example_draco_variants")]
             293..=297 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2276,7 +2276,7 @@ impl Demo {
                     super::draco_variants::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "passes_decals")]
+            #[cfg(feature = "example_passes_decals")]
             288..=292 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2286,7 +2286,7 @@ impl Demo {
                     super::passes_decals::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "probes_hdr")]
+            #[cfg(feature = "example_probes_hdr")]
             283..=287 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2296,7 +2296,7 @@ impl Demo {
                     super::probes_hdr::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shadow_rtt")]
+            #[cfg(feature = "example_shadow_rtt")]
             278..=282 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2306,7 +2306,7 @@ impl Demo {
                     super::shadow_rtt::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "exporters_video")]
+            #[cfg(feature = "example_exporters_video")]
             273..=277 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2316,7 +2316,7 @@ impl Demo {
                     super::exporters_video::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "lights_probes")]
+            #[cfg(feature = "example_lights_probes")]
             268..=272 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2326,7 +2326,7 @@ impl Demo {
                     super::lights_probes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "sky_water")]
+            #[cfg(feature = "example_sky_water")]
             263..=267 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2336,7 +2336,7 @@ impl Demo {
                     super::sky_water::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "exporters_matcap")]
+            #[cfg(feature = "example_exporters_matcap")]
             258..=262 | 383 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2346,7 +2346,7 @@ impl Demo {
                     super::exporters_matcap::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "selection_views")]
+            #[cfg(feature = "example_selection_views")]
             253..=257 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2356,7 +2356,7 @@ impl Demo {
                     scene, camera, example,
                 )?)),
             }),
-            #[cfg(feature = "text_clipping")]
+            #[cfg(feature = "example_text_clipping")]
             248..=252 | 320 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2366,7 +2366,7 @@ impl Demo {
                     super::text_clipping::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shapes_lights")]
+            #[cfg(feature = "example_shapes_lights")]
             243..=247 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.1,
@@ -2376,7 +2376,7 @@ impl Demo {
                     super::shapes_lights::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "refraction_loaders")]
+            #[cfg(feature = "example_refraction_loaders")]
             238..=242 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -2387,7 +2387,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "helpers_formats")]
+            #[cfg(feature = "example_helpers_formats")]
             233..=237 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 0.01,
@@ -2397,7 +2397,7 @@ impl Demo {
                     super::helpers_formats::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "picking_buffers")]
+            #[cfg(feature = "example_picking_buffers")]
             228..=232 | 382 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2407,7 +2407,7 @@ impl Demo {
                     super::picking_buffers::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "models_modifiers")]
+            #[cfg(feature = "example_models_modifiers")]
             223..=227 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2417,7 +2417,7 @@ impl Demo {
                     super::models_modifiers::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "terrain_loaders")]
+            #[cfg(feature = "example_terrain_loaders")]
             218..=222 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2427,7 +2427,7 @@ impl Demo {
                     super::terrain_loaders::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "trackball_sprites")]
+            #[cfg(feature = "example_trackball_sprites")]
             213..=217 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2438,7 +2438,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "controls_attributes")]
+            #[cfg(feature = "example_controls_attributes")]
             208..=212 | 311 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2449,7 +2449,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "stereo_loaders")]
+            #[cfg(feature = "example_stereo_loaders")]
             203..=207 | 334 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2459,7 +2459,7 @@ impl Demo {
                     super::stereo_loaders::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "views_loaders")]
+            #[cfg(feature = "example_views_loaders")]
             198..=202 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2469,7 +2469,7 @@ impl Demo {
                     super::views_loaders::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "interactive_scenes")]
+            #[cfg(feature = "example_interactive_scenes")]
             193..=197 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2480,7 +2480,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "interactive_objects")]
+            #[cfg(feature = "example_interactive_objects")]
             188..=192 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2491,7 +2491,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "interactive_shaders")]
+            #[cfg(feature = "example_interactive_shaders")]
             183..=187 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2502,7 +2502,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "environment_materials")]
+            #[cfg(feature = "example_environment_materials")]
             178..=182 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2513,7 +2513,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "geometry_materials")]
+            #[cfg(feature = "example_geometry_materials")]
             173 | 176 | 177 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2524,7 +2524,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "shader_geometry")]
+            #[cfg(feature = "example_shader_geometry")]
             168..=172 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2534,7 +2534,7 @@ impl Demo {
                     super::shader_geometry::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "point_clouds")]
+            #[cfg(feature = "example_point_clouds")]
             163..=167 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2544,7 +2544,7 @@ impl Demo {
                     super::point_clouds::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "buffer_particles")]
+            #[cfg(feature = "example_buffer_particles")]
             158..=162 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2554,7 +2554,7 @@ impl Demo {
                     super::buffer_particles::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "shapes")]
+            #[cfg(feature = "example_shapes")]
             153..=157 | 175 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2564,7 +2564,7 @@ impl Demo {
                     super::shapes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "material_textures")]
+            #[cfg(feature = "example_material_textures")]
             148..=152 | 174 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.),
                 near: 1.,
@@ -2575,7 +2575,7 @@ impl Demo {
                         .await?,
                 )),
             }),
-            #[cfg(feature = "tsl_procedural")]
+            #[cfg(feature = "example_tsl_procedural")]
             128..=147 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 1.0,
@@ -2585,7 +2585,7 @@ impl Demo {
                     super::tsl_procedural::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_primitives")]
+            #[cfg(feature = "example_tsl_primitives")]
             123..=127 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 1.0,
@@ -2595,7 +2595,7 @@ impl Demo {
                     super::tsl_primitives::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_materials")]
+            #[cfg(feature = "example_tsl_materials")]
             118..=122 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 1.0,
@@ -2605,7 +2605,7 @@ impl Demo {
                     super::tsl_materials::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_viewport")]
+            #[cfg(feature = "example_tsl_viewport")]
             113..=117 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -2615,7 +2615,7 @@ impl Demo {
                     super::tsl_viewport::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_lighting")]
+            #[cfg(feature = "example_tsl_lighting")]
             108..=112 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -2625,7 +2625,7 @@ impl Demo {
                     super::tsl_lighting::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_environment")]
+            #[cfg(feature = "example_tsl_environment")]
             103..=107 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -2635,7 +2635,7 @@ impl Demo {
                     super::tsl_environment::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_next")]
+            #[cfg(feature = "example_tsl_next")]
             98..=102 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -2645,7 +2645,7 @@ impl Demo {
                     super::tsl_next::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_extended")]
+            #[cfg(feature = "example_tsl_extended")]
             78..=97 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 1.0,
@@ -2655,7 +2655,7 @@ impl Demo {
                     super::tsl_extended::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_surface")]
+            #[cfg(feature = "example_tsl_surface")]
             58..=77 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 1.0,
@@ -2665,7 +2665,7 @@ impl Demo {
                     super::tsl_surface::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_compute")]
+            #[cfg(feature = "example_tsl_compute")]
             53..=57 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -2675,7 +2675,7 @@ impl Demo {
                     super::tsl_compute::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_particles")]
+            #[cfg(feature = "example_tsl_particles")]
             48..=52 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -2685,7 +2685,7 @@ impl Demo {
                     super::tsl_particles::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_filters")]
+            #[cfg(feature = "example_tsl_filters")]
             43..=47 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -2695,7 +2695,7 @@ impl Demo {
                     super::tsl_filters::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_passes")]
+            #[cfg(feature = "example_tsl_passes")]
             38..=42 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -2705,7 +2705,7 @@ impl Demo {
                     super::tsl_passes::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "tsl_examples")]
+            #[cfg(feature = "example_tsl_examples")]
             35..=37 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.0,
@@ -2715,7 +2715,7 @@ impl Demo {
                     super::tsl_examples::Demo::create(scene, camera, example, renderer).await?,
                 )),
             }),
-            #[cfg(feature = "gltf_examples")]
+            #[cfg(feature = "example_gltf_examples")]
             29..=34 => Ok(Self {
                 viewer: OrbitViewer::from_camera(Vector3::ZERO, 1.0),
                 near: 0.1,
@@ -3102,875 +3102,875 @@ impl Demo {
         delta: f64,
         animate: bool,
     ) -> Result<()> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "exporters_matcap")]
+        #[cfg(feature = "example_exporters_matcap")]
         if let Content::ExportersMatcap(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if let Content::InteractiveShaders(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "geometry_materials")]
+        #[cfg(feature = "example_geometry_materials")]
         if let Content::GeometryMaterials(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shader_geometry")]
+        #[cfg(feature = "example_shader_geometry")]
         if let Content::ShaderGeometry(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "point_clouds")]
+        #[cfg(feature = "example_point_clouds")]
         if let Content::PointClouds(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "buffer_particles")]
+        #[cfg(feature = "example_buffer_particles")]
         if let Content::BufferParticles(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "shapes")]
+        #[cfg(feature = "example_shapes")]
         if let Content::Shapes(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_filters")]
+        #[cfg(feature = "example_tsl_filters")]
         if let Content::TslFilter(demo) = &mut self.content {
             return demo.update(scene, delta, animate);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
-        #[cfg(feature = "tsl_examples")]
+        #[cfg(feature = "example_tsl_examples")]
         if let Content::Tsl(demo) = &mut self.content {
             return demo.update(scene, delta, animate);
         }
-        #[cfg(feature = "gltf_examples")]
+        #[cfg(feature = "example_gltf_examples")]
         if let Content::Gltf(demo) = &mut self.content {
             return demo.update(scene, camera, delta, animate);
         }
@@ -4092,19 +4092,19 @@ impl Demo {
         }
     }
     pub fn select(&mut self, scene: &mut Scene, cam: Object3D, x: f64, y: f64) -> Result<()> {
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             return demo.select(scene, cam, x, y);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.select(scene, cam, x, y);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             demo.select(scene, cam, x, y)?;
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             demo.select(scene, cam, x, y)?;
         }
@@ -4118,92 +4118,92 @@ impl Demo {
         x: f64,
         y: f64,
     ) -> Result<bool> {
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             return demo.gpu_pointer(x, y);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             return demo.gpu_pointer(scene, cam, x, y);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.pointer_move(scene, cam, x, y)?;
             return Ok(false);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             demo.gpu_pointer(x, y);
             return Ok(false);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.gpu_pointer(scene, cam, x, y);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             demo.gpu_pointer(scene, cam, x, y)?;
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if let Content::InteractiveShaders(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             demo.gpu_pointer(r, scene, cam, x, y)?;
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             demo.gpu_pointer(scene, cam, x, y)?;
         }
         Ok(false)
     }
     pub fn pointer(&mut self, x: f64, y: f64) {
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "point_clouds")]
+        #[cfg(feature = "example_point_clouds")]
         if let Content::PointClouds(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             demo.pointer(x, y);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             demo.pointer(x, y);
         }
@@ -4214,35 +4214,35 @@ impl Demo {
         }
     }
     pub fn dragging(&mut self, value: bool) {
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             demo.dragging(value);
         }
-        #[cfg(feature = "gltf_examples")]
+        #[cfg(feature = "example_gltf_examples")]
         if let Content::Gltf(demo) = &mut self.content {
             demo.dragging(value);
         }
@@ -4254,1042 +4254,1042 @@ impl Demo {
         camera: Object3D,
         target: &crate::renderer::RenderTarget,
     ) -> Result<bool> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_filters")]
+        #[cfg(feature = "example_tsl_filters")]
         if let Content::TslFilter(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             return demo.render(renderer, scene, camera, target);
         }
         Ok(false)
     }
     pub fn output_target(&self) -> Option<&crate::renderer::RenderTarget> {
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &self.content
             && let Some(target) = demo.output()
         {
             return Some(target);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &self.content {
             return demo.output();
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &self.content {
             return demo.output();
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &self.content {
             return demo.output_target();
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &self.content {
             return demo.output();
         }
@@ -5299,189 +5299,189 @@ impl Demo {
     /// RenderTarget::alias_color ).
     pub fn output_target_mut(&mut self) -> Option<&mut crate::renderer::RenderTarget> {
         match &mut self.content {
-            #[cfg(feature = "retro")]
+            #[cfg(feature = "example_retro")]
             Content::Retro(demo) => demo.output_mut(),
-            #[cfg(feature = "fluid")]
+            #[cfg(feature = "example_fluid")]
             Content::Fluid(demo) => demo.output_mut(),
-            #[cfg(feature = "lightprobes")]
+            #[cfg(feature = "example_lightprobes")]
             Content::Lightprobes(demo) => demo.output_mut(),
-            #[cfg(feature = "tsl_graph")]
+            #[cfg(feature = "example_tsl_graph")]
             Content::TslGraph(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_water")]
+            #[cfg(feature = "example_compute_water")]
             Content::ComputeWater(demo) => demo.output_mut(),
-            #[cfg(feature = "ssgi")]
+            #[cfg(feature = "example_ssgi")]
             Content::Ssgi(demo) => demo.output_mut(),
-            #[cfg(feature = "ballpool")]
+            #[cfg(feature = "example_ballpool")]
             Content::Ballpool(demo) => demo.output_mut(),
-            #[cfg(feature = "pathtracer")]
+            #[cfg(feature = "example_pathtracer")]
             Content::Pathtracer(demo) => demo.output_mut(),
-            #[cfg(feature = "tiles3d")]
+            #[cfg(feature = "example_tiles3d")]
             Content::Tiles3d(demo) => demo.output_mut(),
-            #[cfg(feature = "sss")]
+            #[cfg(feature = "example_sss")]
             Content::Sss(demo) => demo.output_mut(),
-            #[cfg(feature = "ssr")]
+            #[cfg(feature = "example_ssr")]
             Content::Ssr(demo) => demo.output_mut(),
-            #[cfg(feature = "retargeting")]
+            #[cfg(feature = "example_retargeting")]
             Content::Retargeting(demo) => demo.output_mut(),
-            #[cfg(feature = "gaussian_splat")]
+            #[cfg(feature = "example_gaussian_splat")]
             Content::GaussianSplat(demo) => demo.output_mut(),
-            #[cfg(feature = "water")]
+            #[cfg(feature = "example_water")]
             Content::Water(demo) => demo.output_mut(),
-            #[cfg(feature = "custom_fog")]
+            #[cfg(feature = "example_custom_fog")]
             Content::CustomFog(demo) => demo.output_mut(),
-            #[cfg(feature = "vxgi")]
+            #[cfg(feature = "example_vxgi")]
             Content::Vxgi(demo) => demo.output_mut(),
-            #[cfg(feature = "vxgi_sponza")]
+            #[cfg(feature = "example_vxgi_sponza")]
             Content::VxgiSponza(demo) => demo.output_mut(),
-            #[cfg(feature = "gtao")]
+            #[cfg(feature = "example_gtao")]
             Content::Gtao(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_rasterizer")]
+            #[cfg(feature = "example_compute_rasterizer")]
             Content::ComputeRasterizer(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_rasterizer_ibl")]
+            #[cfg(feature = "example_compute_rasterizer_ibl")]
             Content::ComputeRasterizerIbl(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_progressive")]
+            #[cfg(feature = "example_shadowmap_progressive")]
             Content::ShadowmapProgressive(demo) => demo.output_mut(),
-            #[cfg(feature = "retargeting_readyplayer")]
+            #[cfg(feature = "example_retargeting_readyplayer")]
             Content::RetargetingReadyplayer(demo) => demo.output_mut(),
-            #[cfg(feature = "ssr_denoise")]
+            #[cfg(feature = "example_ssr_denoise")]
             Content::SsrDenoise(demo) => demo.output_mut(),
-            #[cfg(feature = "simple_gi")]
+            #[cfg(feature = "example_simple_gi")]
             Content::SimpleGi(demo) => demo.output_mut(),
-            #[cfg(feature = "dof2")]
+            #[cfg(feature = "example_dof2")]
             Content::Dof2(demo) => demo.output_mut(),
-            #[cfg(feature = "subsurface")]
+            #[cfg(feature = "example_subsurface")]
             Content::Subsurface(demo) => demo.output_mut(),
-            #[cfg(feature = "birds_gltf")]
+            #[cfg(feature = "example_birds_gltf")]
             Content::BirdsGltf(demo) => demo.output_mut(),
-            #[cfg(feature = "vrml")]
+            #[cfg(feature = "example_vrml")]
             Content::Vrml(demo) => demo.output_mut(),
-            #[cfg(feature = "usdz")]
+            #[cfg(feature = "example_usdz")]
             Content::Usdz(demo) => demo.output_mut(),
-            #[cfg(feature = "gtao_webgl")]
+            #[cfg(feature = "example_gtao_webgl")]
             Content::GtaoWebgl(demo) => demo.output_mut(),
-            #[cfg(feature = "generator_building")]
+            #[cfg(feature = "example_generator_building")]
             Content::GeneratorBuilding(demo) => demo.output_mut(),
-            #[cfg(feature = "geometry_loft")]
+            #[cfg(feature = "example_geometry_loft")]
             Content::GeometryLoft(demo) => demo.output_mut(),
-            #[cfg(feature = "sculpt")]
+            #[cfg(feature = "example_sculpt")]
             Content::Sculpt(demo) => demo.output_mut(),
-            #[cfg(feature = "shadow_array")]
+            #[cfg(feature = "example_shadow_array")]
             Content::ShadowArray(demo) => demo.output_mut(),
-            #[cfg(feature = "skinning_instances")]
+            #[cfg(feature = "example_skinning_instances")]
             Content::SkinningInstances(demo) => demo.output_mut(),
-            #[cfg(feature = "fog_volume")]
+            #[cfg(feature = "example_fog_volume")]
             Content::FogVolume(demo) => demo.output_mut(),
-            #[cfg(feature = "backdrop_water")]
+            #[cfg(feature = "example_backdrop_water")]
             Content::BackdropWater(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_fire")]
+            #[cfg(feature = "example_volume_fire")]
             Content::VolumeFire(demo) => demo.output_mut(),
-            #[cfg(feature = "generator_city")]
+            #[cfg(feature = "example_generator_city")]
             Content::GeneratorCity(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_reduce")]
+            #[cfg(feature = "example_compute_reduce")]
             Content::ComputeReduce(demo) => demo.output_mut(),
-            #[cfg(feature = "loader_materialx")]
+            #[cfg(feature = "example_loader_materialx")]
             Content::LoaderMaterialx(demo) => demo.output_mut(),
-            #[cfg(feature = "fxaa_webgl")]
+            #[cfg(feature = "example_fxaa_webgl")]
             Content::FxaaWebgl(demo) => demo.output_mut(),
-            #[cfg(feature = "msaa_renderbuffers")]
+            #[cfg(feature = "example_msaa_renderbuffers")]
             Content::MsaaRenderbuffers(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_webgl")]
+            #[cfg(feature = "example_shadowmap_webgl")]
             Content::ShadowmapWebgl(demo) => demo.output_mut(),
-            #[cfg(feature = "fog_scattering")]
+            #[cfg(feature = "example_fog_scattering")]
             Content::FogScattering(demo) => demo.output_mut(),
-            #[cfg(feature = "lightprobes")]
+            #[cfg(feature = "example_lightprobes")]
             Content::LightprobesComplex(demo) => demo.output_mut(),
-            #[cfg(feature = "hdr")]
+            #[cfg(feature = "example_hdr")]
             Content::Hdr(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_caustics")]
+            #[cfg(feature = "example_volume_caustics")]
             Content::VolumeCaustics(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_cloth")]
+            #[cfg(feature = "example_compute_cloth")]
             Content::ComputeCloth(demo) => demo.output_mut(),
-            #[cfg(feature = "deferred")]
+            #[cfg(feature = "example_deferred")]
             Content::Deferred(demo) => demo.output_mut(),
-            #[cfg(feature = "cubemap_dynamic")]
+            #[cfg(feature = "example_cubemap_dynamic")]
             Content::CubemapDynamic(demo) => demo.output_mut(),
-            #[cfg(feature = "gpgpu_protoplanet")]
+            #[cfg(feature = "example_gpgpu_protoplanet")]
             Content::GpgpuProtoplanet(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_traa")]
+            #[cfg(feature = "example_volume_traa")]
             Content::VolumeTraa(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_rectarea")]
+            #[cfg(feature = "example_volume_rectarea")]
             Content::VolumeRectarea(demo) => demo.output_mut(),
-            #[cfg(feature = "memory_outline")]
+            #[cfg(feature = "example_memory_outline")]
             Content::MemoryOutline(demo) => demo.output_mut(),
-            #[cfg(feature = "godrays")]
+            #[cfg(feature = "example_godrays")]
             Content::Godrays(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_lighting")]
+            #[cfg(feature = "example_volume_lighting")]
             Content::VolumeLighting(demo) => demo.output_mut(),
-            #[cfg(feature = "instancing_morph")]
+            #[cfg(feature = "example_instancing_morph")]
             Content::InstancingMorph(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_csm")]
+            #[cfg(feature = "example_shadowmap_csm")]
             Content::ShadowmapCsm(demo) => demo.output_mut(),
-            #[cfg(feature = "caustics")]
+            #[cfg(feature = "example_caustics")]
             Content::Caustics(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_opacity")]
+            #[cfg(feature = "example_shadowmap_opacity")]
             Content::ShadowmapOpacity(demo) => demo.output_mut(),
-            #[cfg(feature = "lights_projector")]
+            #[cfg(feature = "example_lights_projector")]
             Content::LightsProjector(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_vsm")]
+            #[cfg(feature = "example_shadowmap_vsm")]
             Content::ShadowmapVsm(demo) => demo.output_mut(),
-            #[cfg(feature = "lights_dynamic")]
+            #[cfg(feature = "example_lights_dynamic")]
             Content::LightsDynamic(demo) => demo.output_mut(),
-            #[cfg(feature = "shadowmap_viewer")]
+            #[cfg(feature = "example_shadowmap_viewer")]
             Content::ShadowmapViewer(demo) => demo.output_mut(),
-            #[cfg(feature = "ktx2")]
+            #[cfg(feature = "example_ktx2")]
             Content::Ktx2(demo) => demo.output_mut(),
-            #[cfg(feature = "elements_text")]
+            #[cfg(feature = "example_elements_text")]
             Content::ElementsText(demo) => demo.output_mut(),
-            #[cfg(feature = "test_memory2")]
+            #[cfg(feature = "example_test_memory2")]
             Content::TestMemory2(demo) => demo.output_mut(),
-            #[cfg(feature = "lights_clustered")]
+            #[cfg(feature = "example_lights_clustered")]
             Content::LightsClustered(demo) => demo.output_mut(),
-            #[cfg(feature = "linked_particles")]
+            #[cfg(feature = "example_linked_particles")]
             Content::LinkedParticles(demo) => demo.output_mut(),
-            #[cfg(feature = "attractors")]
+            #[cfg(feature = "example_attractors")]
             Content::Attractors(demo) => demo.output_mut(),
-            #[cfg(feature = "sort_bitonic")]
+            #[cfg(feature = "example_sort_bitonic")]
             Content::SortBitonic(demo) => demo.output_mut(),
-            #[cfg(feature = "compute_birds")]
+            #[cfg(feature = "example_compute_birds")]
             Content::ComputeBirds(demo) => demo.output_mut(),
-            #[cfg(feature = "points_dynamic")]
+            #[cfg(feature = "example_points_dynamic")]
             Content::PointsDynamic(demo) => demo.output_mut(),
-            #[cfg(feature = "postprocessing_advanced")]
+            #[cfg(feature = "example_postprocessing_advanced")]
             Content::PostprocessingAdvanced(demo) => demo.output_mut(),
-            #[cfg(feature = "render_bundle")]
+            #[cfg(feature = "example_render_bundle")]
             Content::RenderBundle(demo) => demo.output_mut(),
-            #[cfg(feature = "mesh_batch")]
+            #[cfg(feature = "example_mesh_batch")]
             Content::MeshBatch(demo) => demo.output_mut(),
-            #[cfg(feature = "volume_instancing")]
+            #[cfg(feature = "example_volume_instancing")]
             Content::VolumeInstancing(demo) => demo.output_mut(),
-            #[cfg(feature = "log_depth")]
+            #[cfg(feature = "example_log_depth")]
             Content::LogDepth(demo) => demo.output_mut(),
-            #[cfg(feature = "reversed_depth")]
+            #[cfg(feature = "example_reversed_depth")]
             Content::ReversedDepth(demo) => demo.output_mut(),
-            #[cfg(feature = "shadow_rtt")]
+            #[cfg(feature = "example_shadow_rtt")]
             Content::ShadowRtt(demo) => demo.output_mut(),
-            #[cfg(feature = "selection_views")]
+            #[cfg(feature = "example_selection_views")]
             Content::SelectionViews(demo) => demo.output_mut(),
-            #[cfg(feature = "picking_buffers")]
+            #[cfg(feature = "example_picking_buffers")]
             Content::PickingBuffers(demo) => demo.output_mut(),
-            #[cfg(feature = "trackball_sprites")]
+            #[cfg(feature = "example_trackball_sprites")]
             Content::TrackballSprites(demo) => demo.output_mut(),
-            #[cfg(feature = "controls_attributes")]
+            #[cfg(feature = "example_controls_attributes")]
             Content::ControlsAttributes(demo) => demo.output_mut(),
-            #[cfg(feature = "stereo_loaders")]
+            #[cfg(feature = "example_stereo_loaders")]
             Content::StereoLoaders(demo) => demo.output_mut(),
-            #[cfg(feature = "views_loaders")]
+            #[cfg(feature = "example_views_loaders")]
             Content::ViewsLoaders(demo) => demo.output_mut(),
-            #[cfg(feature = "interactive_scenes")]
+            #[cfg(feature = "example_interactive_scenes")]
             Content::InteractiveScenes(demo) => demo.output_mut(),
-            #[cfg(feature = "material_textures")]
+            #[cfg(feature = "example_material_textures")]
             Content::MaterialTextures(demo) => demo.output_mut(),
-            #[cfg(feature = "tsl_primitives")]
+            #[cfg(feature = "example_tsl_primitives")]
             Content::TslPrimitives(demo) => demo.output_mut(),
-            #[cfg(feature = "tsl_extended")]
+            #[cfg(feature = "example_tsl_extended")]
             Content::TslExtended(demo) => demo.output_target_mut(),
-            #[cfg(feature = "tsl_particles")]
+            #[cfg(feature = "example_tsl_particles")]
             Content::TslParticles(demo) => demo.output_mut(),
             _ => None,
         }
@@ -5493,1670 +5493,1670 @@ impl Demo {
         camera: Object3D,
         aspect: f64,
     ) -> Result<()> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.prepare(scene, camera, renderer)?;
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "exporters_matcap")]
+        #[cfg(feature = "example_exporters_matcap")]
         if let Content::ExportersMatcap(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera)?;
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.prepare(scene, camera)?;
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera, aspect)?;
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if let Content::InteractiveShaders(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera, aspect)?;
         }
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             demo.prepare(scene, camera, aspect)?;
         }
-        #[cfg(feature = "buffer_particles")]
+        #[cfg(feature = "example_buffer_particles")]
         if let Content::BufferParticles(demo) = &mut self.content {
             demo.prepare(renderer)?;
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             demo.prepare(scene, camera, aspect)?;
         }
-        #[cfg(feature = "tsl_examples")]
+        #[cfg(feature = "example_tsl_examples")]
         if let Content::Tsl(demo) = &mut self.content {
             demo.prepare(renderer, scene, camera, aspect)?;
         }
         Ok(())
     }
     pub fn tsl_parameter(&mut self, index: usize, value: f32) -> Result<()> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "exporters_matcap")]
+        #[cfg(feature = "example_exporters_matcap")]
         if let Content::ExportersMatcap(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if let Content::InteractiveShaders(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "geometry_materials")]
+        #[cfg(feature = "example_geometry_materials")]
         if let Content::GeometryMaterials(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shader_geometry")]
+        #[cfg(feature = "example_shader_geometry")]
         if let Content::ShaderGeometry(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "point_clouds")]
+        #[cfg(feature = "example_point_clouds")]
         if let Content::PointClouds(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "buffer_particles")]
+        #[cfg(feature = "example_buffer_particles")]
         if let Content::BufferParticles(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "shapes")]
+        #[cfg(feature = "example_shapes")]
         if let Content::Shapes(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_filters")]
+        #[cfg(feature = "example_tsl_filters")]
         if let Content::TslFilter(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
-        #[cfg(feature = "tsl_examples")]
+        #[cfg(feature = "example_tsl_examples")]
         if let Content::Tsl(demo) = &mut self.content {
             return demo.parameter(index, value);
         }
@@ -7169,9 +7169,9 @@ impl Demo {
         camera: crate::scene::Object3D,
     ) -> crate::Result<Vec<f32>> {
         match &mut self.content {
-            #[cfg(feature = "audio_timing")]
+            #[cfg(feature = "example_audio_timing")]
             Content::AudioTiming(demo) => demo.audio_frame(scene, camera),
-            #[cfg(feature = "audio_visual")]
+            #[cfg(feature = "example_audio_visual")]
             Content::AudioVisual(demo) => demo.audio_frame(scene, camera),
             _ => Err(crate::Error::Invalid("not a positional audio example")),
         }
@@ -7179,7 +7179,7 @@ impl Demo {
     /// webaudio_visualizer's analyser bins.
     pub fn audio_data(&mut self, bytes: &[u8]) -> crate::Result<()> {
         match &mut self.content {
-            #[cfg(feature = "audio_visual")]
+            #[cfg(feature = "example_audio_visual")]
             Content::AudioVisual(demo) => demo.audio_data(bytes),
             _ => Err(crate::Error::Invalid("not an analyser example")),
         }
@@ -7190,2610 +7190,2610 @@ impl Demo {
         renderer: &crate::renderer::Renderer,
     ) -> Option<(String, Vec<u8>)> {
         match &mut self.content {
-            #[cfg(feature = "exporters_matcap")]
+            #[cfg(feature = "example_exporters_matcap")]
             Content::ExportersMatcap(demo) => demo.take_export(),
-            #[cfg(feature = "gltf_normals")]
+            #[cfg(feature = "example_gltf_normals")]
             Content::GltfNormals(demo) => demo.take_export(),
-            #[cfg(feature = "raycaster_helper")]
+            #[cfg(feature = "example_raycaster_helper")]
             Content::RaycasterHelper(demo) => demo.take_export(),
-            #[cfg(feature = "exporters_video")]
+            #[cfg(feature = "example_exporters_video")]
             Content::ExportersVideo(demo) => demo.take_export(renderer),
-            #[cfg(feature = "pathtracer")]
+            #[cfg(feature = "example_pathtracer")]
             Content::Pathtracer(demo) => demo.take_export(),
             _ => None,
         }
     }
     pub fn status(&self) -> String {
-        #[cfg(feature = "buffer_particles")]
+        #[cfg(feature = "example_buffer_particles")]
         if let Content::BufferParticles(demo) = &self.content {
             return demo.status();
         }
         String::new()
     }
     pub fn key(&mut self, code: u32, down: bool) {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             demo.key(code, down);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.key(code, down);
         }
     }
     pub fn slider(&mut self, x: f64) {
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.slider(x);
         }
     }
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.draw(kind, x, y);
             return Ok(());
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             return demo.pointer(kind, x, y);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             return demo.draw(kind, x, y);
         }
         Err(crate::Error::Invalid("not a drawing example"))
     }
     pub fn seek(&mut self, seconds: f64) {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "exporters_matcap")]
+        #[cfg(feature = "example_exporters_matcap")]
         if let Content::ExportersMatcap(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "selection_views")]
+        #[cfg(feature = "example_selection_views")]
         if let Content::SelectionViews(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if let Content::InteractiveShaders(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "geometry_materials")]
+        #[cfg(feature = "example_geometry_materials")]
         if let Content::GeometryMaterials(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shader_geometry")]
+        #[cfg(feature = "example_shader_geometry")]
         if let Content::ShaderGeometry(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "point_clouds")]
+        #[cfg(feature = "example_point_clouds")]
         if let Content::PointClouds(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "buffer_particles")]
+        #[cfg(feature = "example_buffer_particles")]
         if let Content::BufferParticles(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "shapes")]
+        #[cfg(feature = "example_shapes")]
         if let Content::Shapes(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_filters")]
+        #[cfg(feature = "example_tsl_filters")]
         if let Content::TslFilter(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "tsl_examples")]
+        #[cfg(feature = "example_tsl_examples")]
         if let Content::Tsl(demo) = &mut self.content {
             demo.seek(seconds);
         }
-        #[cfg(feature = "gltf_examples")]
+        #[cfg(feature = "example_gltf_examples")]
         if let Content::Gltf(demo) = &mut self.content {
             demo.seek(seconds);
         }
@@ -9813,860 +9813,860 @@ impl Demo {
         pan: bool,
         height: f64,
     ) -> Result<()> {
-        #[cfg(feature = "lights_probes")]
+        #[cfg(feature = "example_lights_probes")]
         if let Content::LightsProbes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "exporters_video")]
+        #[cfg(feature = "example_exporters_video")]
         if let Content::ExportersVideo(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadow_rtt")]
+        #[cfg(feature = "example_shadow_rtt")]
         if let Content::ShadowRtt(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "texture_flares")]
+        #[cfg(feature = "example_texture_flares")]
         if let Content::TextureFlares(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "transform_curves")]
+        #[cfg(feature = "example_transform_curves")]
         if let Content::TransformCurves(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "texture_volumes")]
+        #[cfg(feature = "example_texture_volumes")]
         if let Content::TextureVolumes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::ColladaAnim(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "threemf")]
+        #[cfg(feature = "example_threemf")]
         if let Content::ThreeMf(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gltf_normals")]
+        #[cfg(feature = "example_gltf_normals")]
         if let Content::GltfNormals(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "raycaster_helper")]
+        #[cfg(feature = "example_raycaster_helper")]
         if let Content::RaycasterHelper(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "audio_timing")]
+        #[cfg(feature = "example_audio_timing")]
         if let Content::AudioTiming(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "audio_visual")]
+        #[cfg(feature = "example_audio_visual")]
         if let Content::AudioVisual(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "md2")]
+        #[cfg(feature = "example_md2")]
         if let Content::Md2(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "md2_control")]
+        #[cfg(feature = "example_md2_control")]
         if let Content::Md2Control(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "envmap_exr")]
+        #[cfg(feature = "example_envmap_exr")]
         if let Content::EnvmapExr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "dds")]
+        #[cfg(feature = "example_dds")]
         if let Content::Dds(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "kinect")]
+        #[cfg(feature = "example_kinect")]
         if let Content::Kinect(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "channels")]
+        #[cfg(feature = "example_channels")]
         if let Content::Channels(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "wide_gamut")]
+        #[cfg(feature = "example_wide_gamut")]
         if let Content::WideGamut(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "uv_tests")]
+        #[cfg(feature = "example_uv_tests")]
         if let Content::UvTests(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "clipping_stencil")]
+        #[cfg(feature = "example_clipping_stencil")]
         if let Content::ClippingStencil(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "vxgi_sponza")]
+        #[cfg(feature = "example_vxgi_sponza")]
         if let Content::VxgiSponza(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lightprobes_sponza")]
+        #[cfg(feature = "example_lightprobes_sponza")]
         if let Content::LightprobesSponza(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "svg_sandbox")]
+        #[cfg(feature = "example_svg_sandbox")]
         if let Content::SvgSandbox(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "svg_lines")]
+        #[cfg(feature = "example_svg_lines")]
         if let Content::SvgLines(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_mixed")]
+        #[cfg(feature = "example_css3d_mixed")]
         if let Content::Css3dMixed(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_molecules")]
+        #[cfg(feature = "example_css3d_molecules")]
         if let Content::Css3dMolecules(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_periodictable")]
+        #[cfg(feature = "example_css3d_periodictable")]
         if let Content::Css3dPeriodictable(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_sprites")]
+        #[cfg(feature = "example_css3d_sprites")]
         if let Content::Css3dSprites(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_orthographic")]
+        #[cfg(feature = "example_css3d_orthographic")]
         if let Content::Css3dOrthographic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css3d_sandbox")]
+        #[cfg(feature = "example_css3d_sandbox")]
         if let Content::Css3dSandbox(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "css2d_label")]
+        #[cfg(feature = "example_css2d_label")]
         if let Content::Css2dLabel(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "animation_pointer")]
+        #[cfg(feature = "example_animation_pointer")]
         if let Content::AnimationPointer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "envmaps_fasthdr")]
+        #[cfg(feature = "example_envmaps_fasthdr")]
         if let Content::EnvmapsFasthdr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_vehicle_controller")]
+        #[cfg(feature = "example_physics_rapier_vehicle_controller")]
         if let Content::PhysicsRapierVehicleController(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_character_controller")]
+        #[cfg(feature = "example_physics_rapier_character_controller")]
         if let Content::PhysicsRapierCharacterController(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_terrain")]
+        #[cfg(feature = "example_physics_rapier_terrain")]
         if let Content::PhysicsRapierTerrain(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_joints")]
+        #[cfg(feature = "example_physics_rapier_joints")]
         if let Content::PhysicsRapierJoints(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_instancing")]
+        #[cfg(feature = "example_physics_rapier_instancing")]
         if let Content::PhysicsRapierInstancing(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_instancing")]
+        #[cfg(feature = "example_physics_ammo_instancing")]
         if let Content::PhysicsAmmoInstancing(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_jolt_instancing")]
+        #[cfg(feature = "example_physics_jolt_instancing")]
         if let Content::PhysicsJoltInstancing(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_rope")]
+        #[cfg(feature = "example_physics_ammo_rope")]
         if let Content::PhysicsAmmoRope(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_cloth")]
+        #[cfg(feature = "example_physics_ammo_cloth")]
         if let Content::PhysicsAmmoCloth(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_volume")]
+        #[cfg(feature = "example_physics_ammo_volume")]
         if let Content::PhysicsAmmoVolume(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_terrain")]
+        #[cfg(feature = "example_physics_ammo_terrain")]
         if let Content::PhysicsAmmoTerrain(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_ammo_break")]
+        #[cfg(feature = "example_physics_ammo_break")]
         if let Content::PhysicsAmmoBreak(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "html_texture")]
+        #[cfg(feature = "example_html_texture")]
         if let Content::HtmlTexture(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "physics_rapier_basic")]
+        #[cfg(feature = "example_physics_rapier_basic")]
         if let Content::PhysicsRapierBasic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "cubemap_webgl")]
+        #[cfg(feature = "example_cubemap_webgl")]
         if let Content::CubemapWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ssr_webgl")]
+        #[cfg(feature = "example_ssr_webgl")]
         if let Content::SsrWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lut_webgl")]
+        #[cfg(feature = "example_lut_webgl")]
         if let Content::LutWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_webgl")]
+        #[cfg(feature = "example_shadowmap_webgl")]
         if let Content::ShadowmapWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "dof_webgl")]
+        #[cfg(feature = "example_dof_webgl")]
         if let Content::DofWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sobel_webgl")]
+        #[cfg(feature = "example_sobel_webgl")]
         if let Content::SobelWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "portal_webgl")]
+        #[cfg(feature = "example_portal_webgl")]
         if let Content::PortalWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "refraction_webgl")]
+        #[cfg(feature = "example_refraction_webgl")]
         if let Content::RefractionWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "mirror_webgl")]
+        #[cfg(feature = "example_mirror_webgl")]
         if let Content::MirrorWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "afterimage_webgl")]
+        #[cfg(feature = "example_afterimage_webgl")]
         if let Content::AfterimageWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "msaa_renderbuffers")]
+        #[cfg(feature = "example_msaa_renderbuffers")]
         if let Content::MsaaRenderbuffers(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fxaa_webgl")]
+        #[cfg(feature = "example_fxaa_webgl")]
         if let Content::FxaaWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "loader_materialx")]
+        #[cfg(feature = "example_loader_materialx")]
         if let Content::LoaderMaterialx(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_reduce")]
+        #[cfg(feature = "example_compute_reduce")]
         if let Content::ComputeReduce(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "generator_city")]
+        #[cfg(feature = "example_generator_city")]
         if let Content::GeneratorCity(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "geometry_csg")]
+        #[cfg(feature = "example_geometry_csg")]
         if let Content::GeometryCsg(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ldraw")]
+        #[cfg(feature = "example_ldraw")]
         if let Content::Ldraw(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "batch_lod_bvh")]
+        #[cfg(feature = "example_batch_lod_bvh")]
         if let Content::BatchLodBvh(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_fire")]
+        #[cfg(feature = "example_volume_fire")]
         if let Content::VolumeFire(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "offscreen")]
+        #[cfg(feature = "example_offscreen")]
         if let Content::Offscreen(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lottie")]
+        #[cfg(feature = "example_lottie")]
         if let Content::Lottie(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "watch")]
+        #[cfg(feature = "example_watch")]
         if let Content::Watch(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ifc_loader")]
+        #[cfg(feature = "example_ifc_loader")]
         if let Content::IfcLoader(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "loader_3dm")]
+        #[cfg(feature = "example_loader_3dm")]
         if let Content::Loader3dm(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "webcam")]
+        #[cfg(feature = "example_webcam")]
         if let Content::Webcam(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "transmission_alpha")]
+        #[cfg(feature = "example_transmission_alpha")]
         if let Content::TransmissionAlpha(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "random_uv")]
+        #[cfg(feature = "example_random_uv")]
         if let Content::RandomUv(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "games_fps")]
+        #[cfg(feature = "example_games_fps")]
         if let Content::GamesFps(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fbx_loader")]
+        #[cfg(feature = "example_fbx_loader")]
         if let Content::FbxLoader(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "svg_loader")]
+        #[cfg(feature = "example_svg_loader")]
         if let Content::SvgLoader(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "exporter_gcode")]
+        #[cfg(feature = "example_exporter_gcode")]
         if let Content::ExporterGcode(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "video_frame")]
+        #[cfg(feature = "example_video_frame")]
         if let Content::VideoFrame(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "arcball")]
+        #[cfg(feature = "example_arcball")]
         if let Content::Arcball(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "exporter_gltf")]
+        #[cfg(feature = "example_exporter_gltf")]
         if let Content::ExporterGltf(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "spline_editor")]
+        #[cfg(feature = "example_spline_editor")]
         if let Content::SplineEditor(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "raycaster_bvh")]
+        #[cfg(feature = "example_raycaster_bvh")]
         if let Content::RaycasterBvh(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "subdivision")]
+        #[cfg(feature = "example_subdivision")]
         if let Content::Subdivision(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gtao_webgl")]
+        #[cfg(feature = "example_gtao_webgl")]
         if let Content::GtaoWebgl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_performance")]
+        #[cfg(feature = "example_shadowmap_performance")]
         if let Content::ShadowmapPerformance(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "usdz_exporter")]
+        #[cfg(feature = "example_usdz_exporter")]
         if let Content::UsdzExporter(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "usdz")]
+        #[cfg(feature = "example_usdz")]
         if let Content::Usdz(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "vrml")]
+        #[cfg(feature = "example_vrml")]
         if let Content::Vrml(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "birds_gltf")]
+        #[cfg(feature = "example_birds_gltf")]
         if let Content::BirdsGltf(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "subsurface")]
+        #[cfg(feature = "example_subsurface")]
         if let Content::Subsurface(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "dof2")]
+        #[cfg(feature = "example_dof2")]
         if let Content::Dof2(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "simple_gi")]
+        #[cfg(feature = "example_simple_gi")]
         if let Content::SimpleGi(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ssr_denoise")]
+        #[cfg(feature = "example_ssr_denoise")]
         if let Content::SsrDenoise(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "retargeting_readyplayer")]
+        #[cfg(feature = "example_retargeting_readyplayer")]
         if let Content::RetargetingReadyplayer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_progressive")]
+        #[cfg(feature = "example_shadowmap_progressive")]
         if let Content::ShadowmapProgressive(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_rasterizer_ibl")]
+        #[cfg(feature = "example_compute_rasterizer_ibl")]
         if let Content::ComputeRasterizerIbl(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sculpt")]
+        #[cfg(feature = "example_sculpt")]
         if let Content::Sculpt(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "geometry_loft")]
+        #[cfg(feature = "example_geometry_loft")]
         if let Content::GeometryLoft(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "generator_building")]
+        #[cfg(feature = "example_generator_building")]
         if let Content::GeneratorBuilding(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_rasterizer")]
+        #[cfg(feature = "example_compute_rasterizer")]
         if let Content::ComputeRasterizer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadow_array")]
+        #[cfg(feature = "example_shadow_array")]
         if let Content::ShadowArray(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gtao")]
+        #[cfg(feature = "example_gtao")]
         if let Content::Gtao(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "vxgi")]
+        #[cfg(feature = "example_vxgi")]
         if let Content::Vxgi(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "custom_fog")]
+        #[cfg(feature = "example_custom_fog")]
         if let Content::CustomFog(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "water")]
+        #[cfg(feature = "example_water")]
         if let Content::Water(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gaussian_splat")]
+        #[cfg(feature = "example_gaussian_splat")]
         if let Content::GaussianSplat(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "retargeting")]
+        #[cfg(feature = "example_retargeting")]
         if let Content::Retargeting(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "skinning_instances")]
+        #[cfg(feature = "example_skinning_instances")]
         if let Content::SkinningInstances(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fog_volume")]
+        #[cfg(feature = "example_fog_volume")]
         if let Content::FogVolume(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "backdrop_water")]
+        #[cfg(feature = "example_backdrop_water")]
         if let Content::BackdropWater(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fog_scattering")]
+        #[cfg(feature = "example_fog_scattering")]
         if let Content::FogScattering(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ssr")]
+        #[cfg(feature = "example_ssr")]
         if let Content::Ssr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sss")]
+        #[cfg(feature = "example_sss")]
         if let Content::Sss(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ssgi")]
+        #[cfg(feature = "example_ssgi")]
         if let Content::Ssgi(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ballpool")]
+        #[cfg(feature = "example_ballpool")]
         if let Content::Ballpool(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "pathtracer")]
+        #[cfg(feature = "example_pathtracer")]
         if let Content::Pathtracer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "progressive_lod")]
+        #[cfg(feature = "example_progressive_lod")]
         if let Content::ProgressiveLod(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "morphtargets_webcam")]
+        #[cfg(feature = "example_morphtargets_webcam")]
         if let Content::MorphtargetsWebcam(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tiles3d")]
+        #[cfg(feature = "example_tiles3d")]
         if let Content::Tiles3d(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_water")]
+        #[cfg(feature = "example_compute_water")]
         if let Content::ComputeWater(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_graph")]
+        #[cfg(feature = "example_tsl_graph")]
         if let Content::TslGraph(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::LightprobesComplex(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lightprobes")]
+        #[cfg(feature = "example_lightprobes")]
         if let Content::Lightprobes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fluid")]
+        #[cfg(feature = "example_fluid")]
         if let Content::Fluid(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "hdr")]
+        #[cfg(feature = "example_hdr")]
         if let Content::Hdr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_caustics")]
+        #[cfg(feature = "example_volume_caustics")]
         if let Content::VolumeCaustics(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_cloth")]
+        #[cfg(feature = "example_compute_cloth")]
         if let Content::ComputeCloth(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "deferred")]
+        #[cfg(feature = "example_deferred")]
         if let Content::Deferred(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "cubemap_dynamic")]
+        #[cfg(feature = "example_cubemap_dynamic")]
         if let Content::CubemapDynamic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "retro")]
+        #[cfg(feature = "example_retro")]
         if let Content::Retro(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gpgpu_protoplanet")]
+        #[cfg(feature = "example_gpgpu_protoplanet")]
         if let Content::GpgpuProtoplanet(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_pcss")]
+        #[cfg(feature = "example_shadowmap_pcss")]
         if let Content::ShadowmapPcss(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_traa")]
+        #[cfg(feature = "example_volume_traa")]
         if let Content::VolumeTraa(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_rectarea")]
+        #[cfg(feature = "example_volume_rectarea")]
         if let Content::VolumeRectarea(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "memory_outline")]
+        #[cfg(feature = "example_memory_outline")]
         if let Content::MemoryOutline(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "godrays")]
+        #[cfg(feature = "example_godrays")]
         if let Content::Godrays(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_lighting")]
+        #[cfg(feature = "example_volume_lighting")]
         if let Content::VolumeLighting(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "instancing_morph")]
+        #[cfg(feature = "example_instancing_morph")]
         if let Content::InstancingMorph(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_csm")]
+        #[cfg(feature = "example_shadowmap_csm")]
         if let Content::ShadowmapCsm(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "caustics")]
+        #[cfg(feature = "example_caustics")]
         if let Content::Caustics(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_opacity")]
+        #[cfg(feature = "example_shadowmap_opacity")]
         if let Content::ShadowmapOpacity(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lights_projector")]
+        #[cfg(feature = "example_lights_projector")]
         if let Content::LightsProjector(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_vsm")]
+        #[cfg(feature = "example_shadowmap_vsm")]
         if let Content::ShadowmapVsm(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lights_dynamic")]
+        #[cfg(feature = "example_lights_dynamic")]
         if let Content::LightsDynamic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lights_clustered")]
+        #[cfg(feature = "example_lights_clustered")]
         if let Content::LightsClustered(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "linked_particles")]
+        #[cfg(feature = "example_linked_particles")]
         if let Content::LinkedParticles(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "attractors")]
+        #[cfg(feature = "example_attractors")]
         if let Content::Attractors(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sort_bitonic")]
+        #[cfg(feature = "example_sort_bitonic")]
         if let Content::SortBitonic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "compute_birds")]
+        #[cfg(feature = "example_compute_birds")]
         if let Content::ComputeBirds(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "fbx_nurbs")]
+        #[cfg(feature = "example_fbx_nurbs")]
         if let Content::FbxNurbs(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "points_dynamic")]
+        #[cfg(feature = "example_points_dynamic")]
         if let Content::PointsDynamic(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "postprocessing_advanced")]
+        #[cfg(feature = "example_postprocessing_advanced")]
         if let Content::PostprocessingAdvanced(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ies_spotlight")]
+        #[cfg(feature = "example_ies_spotlight")]
         if let Content::IesSpotlight(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "test_memory2")]
+        #[cfg(feature = "example_test_memory2")]
         if let Content::TestMemory2(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "marching_cubes")]
+        #[cfg(feature = "example_marching_cubes")]
         if let Content::MarchingCubes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "render_bundle")]
+        #[cfg(feature = "example_render_bundle")]
         if let Content::RenderBundle(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "mesh_batch")]
+        #[cfg(feature = "example_mesh_batch")]
         if let Content::MeshBatch(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "volume_instancing")]
+        #[cfg(feature = "example_volume_instancing")]
         if let Content::VolumeInstancing(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "test_memory")]
+        #[cfg(feature = "example_test_memory")]
         if let Content::TestMemory(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ktx")]
+        #[cfg(feature = "example_ktx")]
         if let Content::Ktx(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "pvr")]
+        #[cfg(feature = "example_pvr")]
         if let Content::Pvr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "lines_raycast")]
+        #[cfg(feature = "example_lines_raycast")]
         if let Content::LinesRaycast(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "log_depth")]
+        #[cfg(feature = "example_log_depth")]
         if let Content::LogDepth(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "reversed_depth")]
+        #[cfg(feature = "example_reversed_depth")]
         if let Content::ReversedDepth(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "elements_text")]
+        #[cfg(feature = "example_elements_text")]
         if let Content::ElementsText(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ktx2")]
+        #[cfg(feature = "example_ktx2")]
         if let Content::Ktx2(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "outline")]
+        #[cfg(feature = "example_outline")]
         if let Content::Outline(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "taa")]
+        #[cfg(feature = "example_taa")]
         if let Content::Taa(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sao")]
+        #[cfg(feature = "example_sao")]
         if let Content::Sao(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "ssao")]
+        #[cfg(feature = "example_ssao")]
         if let Content::Ssao(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "glitch")]
+        #[cfg(feature = "example_glitch")]
         if let Content::Glitch(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shadowmap_viewer")]
+        #[cfg(feature = "example_shadowmap_viewer")]
         if let Content::ShadowmapViewer(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "spot_skinning")]
+        #[cfg(feature = "example_spot_skinning")]
         if let Content::SpotSkinning(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "draco_variants")]
+        #[cfg(feature = "example_draco_variants")]
         if let Content::DracoVariants(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "passes_decals")]
+        #[cfg(feature = "example_passes_decals")]
         if let Content::PassesDecals(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "probes_hdr")]
+        #[cfg(feature = "example_probes_hdr")]
         if let Content::ProbesHdr(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "sky_water")]
+        #[cfg(feature = "example_sky_water")]
         if let Content::SkyWater(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "exporters_matcap")]
+        #[cfg(feature = "example_exporters_matcap")]
         if let Content::ExportersMatcap(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "text_clipping")]
+        #[cfg(feature = "example_text_clipping")]
         if let Content::TextClipping(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shapes_lights")]
+        #[cfg(feature = "example_shapes_lights")]
         if let Content::ShapesLights(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "refraction_loaders")]
+        #[cfg(feature = "example_refraction_loaders")]
         if let Content::RefractionLoaders(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "helpers_formats")]
+        #[cfg(feature = "example_helpers_formats")]
         if let Content::HelpersFormats(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "picking_buffers")]
+        #[cfg(feature = "example_picking_buffers")]
         if let Content::PickingBuffers(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "models_modifiers")]
+        #[cfg(feature = "example_models_modifiers")]
         if let Content::ModelsModifiers(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "terrain_loaders")]
+        #[cfg(feature = "example_terrain_loaders")]
         if let Content::TerrainLoaders(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "trackball_sprites")]
+        #[cfg(feature = "example_trackball_sprites")]
         if let Content::TrackballSprites(demo) = &mut self.content {
             demo.wheel(wheel);
             return Ok(());
         }
-        #[cfg(feature = "controls_attributes")]
+        #[cfg(feature = "example_controls_attributes")]
         if let Content::ControlsAttributes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "stereo_loaders")]
+        #[cfg(feature = "example_stereo_loaders")]
         if let Content::StereoLoaders(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "views_loaders")]
+        #[cfg(feature = "example_views_loaders")]
         if let Content::ViewsLoaders(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "interactive_scenes")]
+        #[cfg(feature = "example_interactive_scenes")]
         if let Content::InteractiveScenes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "interactive_objects")]
+        #[cfg(feature = "example_interactive_objects")]
         if let Content::InteractiveObjects(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "interactive_shaders")]
+        #[cfg(feature = "example_interactive_shaders")]
         if matches!(self.content, Content::InteractiveShaders(_)) {
             return Ok(());
         }
-        #[cfg(feature = "environment_materials")]
+        #[cfg(feature = "example_environment_materials")]
         if let Content::EnvironmentMaterials(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "geometry_materials")]
+        #[cfg(feature = "example_geometry_materials")]
         if let Content::GeometryMaterials(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shader_geometry")]
+        #[cfg(feature = "example_shader_geometry")]
         if let Content::ShaderGeometry(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "shapes")]
+        #[cfg(feature = "example_shapes")]
         if let Content::Shapes(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "material_textures")]
+        #[cfg(feature = "example_material_textures")]
         if let Content::MaterialTextures(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_procedural")]
+        #[cfg(feature = "example_tsl_procedural")]
         if let Content::TslProcedural(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_primitives")]
+        #[cfg(feature = "example_tsl_primitives")]
         if let Content::TslPrimitives(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_materials")]
+        #[cfg(feature = "example_tsl_materials")]
         if let Content::TslMaterials(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_viewport")]
+        #[cfg(feature = "example_tsl_viewport")]
         if let Content::TslViewport(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_lighting")]
+        #[cfg(feature = "example_tsl_lighting")]
         if let Content::TslLighting(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_environment")]
+        #[cfg(feature = "example_tsl_environment")]
         if let Content::TslEnvironment(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_next")]
+        #[cfg(feature = "example_tsl_next")]
         if let Content::TslNext(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_surface")]
+        #[cfg(feature = "example_tsl_surface")]
         if let Content::TslSurface(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_compute")]
+        #[cfg(feature = "example_tsl_compute")]
         if let Content::TslCompute(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_particles")]
+        #[cfg(feature = "example_tsl_particles")]
         if let Content::TslParticles(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "gltf_examples")]
+        #[cfg(feature = "example_gltf_examples")]
         if let Content::Gltf(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_passes")]
+        #[cfg(feature = "example_tsl_passes")]
         if let Content::TslPass(demo) = &mut self.content {
             return demo.input(scene, camera, dx, dy, wheel, pan, height);
         }
-        #[cfg(feature = "tsl_examples")]
+        #[cfg(feature = "example_tsl_examples")]
         if matches!(self.content, Content::Tsl(_)) {
             return Ok(());
         }
@@ -10702,7 +10702,7 @@ impl Demo {
 
 impl Demo {
     pub fn viewport(&mut self, index: usize, rectangle: [f64; 4]) -> Result<()> {
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(d) = &mut self.content {
             return d.viewport(index, rectangle);
         }
@@ -10714,7 +10714,7 @@ impl Demo {
     /// After the frame is submitted, in the same task: effects that read the
     /// canvas back (AsciiEffect).
     pub fn presented(&mut self, canvas: &web_sys::HtmlCanvasElement) -> Result<()> {
-        #[cfg(feature = "ascii")]
+        #[cfg(feature = "example_ascii")]
         if let Content::Ascii(d) = &mut self.content {
             d.presented(canvas)?;
         }
@@ -10725,7 +10725,7 @@ impl Demo {
         r: &crate::renderer::Renderer,
         canvases: js_sys::Array,
     ) -> Result<()> {
-        #[cfg(feature = "tsl_extended")]
+        #[cfg(feature = "example_tsl_extended")]
         if let Content::TslExtended(d) = &mut self.content {
             return d.attach_canvases(r, canvases);
         }

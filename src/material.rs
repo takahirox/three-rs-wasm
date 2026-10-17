@@ -124,26 +124,34 @@ impl Texture {
         })
     }
     pub fn from_basis_compressed(bytes: Vec<u8>, srgb: bool) -> Result<Self> {
-        let transcoder =
-            basisu::Transcoder::new(&bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
-        let (width, height) = transcoder.base_dimensions();
-        if width == 0
-            || height == 0
-            || transcoder.face_count() != 1
-            || transcoder.layer_count() > 1
-            || transcoder.is_video()
-            || transcoder.level_count() == 0
-            || transcoder.level_count() > width.max(height).ilog2() + 1
+        #[cfg(not(feature = "basisu"))]
         {
-            return Err(Error::Invalid("compressed 2D texture dimensions/levels"));
+            let _ = (bytes, srgb);
+            Err(crate::Error::Asset(crate::BASIS_DISABLED.into()))
         }
-        let mut texture = Self::from_rgba(1, 1, vec![0; 4], srgb)?;
-        texture.width = width;
-        texture.height = height;
-        texture.rgba.clear();
-        texture.basis = Some(Arc::new(bytes));
-        texture.mipmap_filter = Some(Filter::Linear);
-        Ok(texture)
+        #[cfg(feature = "basisu")]
+        {
+            let transcoder = basisu::Transcoder::new(&bytes)
+                .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+            let (width, height) = transcoder.base_dimensions();
+            if width == 0
+                || height == 0
+                || transcoder.face_count() != 1
+                || transcoder.layer_count() > 1
+                || transcoder.is_video()
+                || transcoder.level_count() == 0
+                || transcoder.level_count() > width.max(height).ilog2() + 1
+            {
+                return Err(Error::Invalid("compressed 2D texture dimensions/levels"));
+            }
+            let mut texture = Self::from_rgba(1, 1, vec![0; 4], srgb)?;
+            texture.width = width;
+            texture.height = height;
+            texture.rgba.clear();
+            texture.basis = Some(Arc::new(bytes));
+            texture.mipmap_filter = Some(Filter::Linear);
+            Ok(texture)
+        }
     }
     pub fn from_image(bytes: &[u8]) -> Result<Self> {
         if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {

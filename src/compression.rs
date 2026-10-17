@@ -529,19 +529,27 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
 
 /// Transcode a 2D KTX2/Basis image to the renderer's RGBA representation.
 pub fn decode_basis(bytes: &[u8], srgb: bool) -> Result<Texture> {
-    let transcoder =
-        basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
-    if transcoder.face_count() != 1 || transcoder.layer_count() > 1 || transcoder.is_video() {
-        return Err(Error::Invalid("layered/cube/video Basis image"));
+    #[cfg(not(feature = "basisu"))]
+    {
+        let _ = (bytes, srgb);
+        Err(crate::Error::Asset(crate::BASIS_DISABLED.into()))
     }
-    let (width, height) = transcoder.base_dimensions();
-    if width == 0 || height == 0 || u64::from(width) * u64::from(height) > 64 * 1024 * 1024 {
-        return Err(Error::Invalid("Basis image dimensions"));
+    #[cfg(feature = "basisu")]
+    {
+        let transcoder =
+            basisu::Transcoder::new(bytes).map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        if transcoder.face_count() != 1 || transcoder.layer_count() > 1 || transcoder.is_video() {
+            return Err(Error::Invalid("layered/cube/video Basis image"));
+        }
+        let (width, height) = transcoder.base_dimensions();
+        if width == 0 || height == 0 || u64::from(width) * u64::from(height) > 64 * 1024 * 1024 {
+            return Err(Error::Invalid("Basis image dimensions"));
+        }
+        let rgba = transcoder
+            .transcode(0, basisu::TargetFormat::Rgba32, basisu::DecodeFlags::NONE)
+            .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        Texture::from_rgba(width, height, rgba, srgb)
     }
-    let rgba = transcoder
-        .transcode(0, basisu::TargetFormat::Rgba32, basisu::DecodeFlags::NONE)
-        .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
-    Texture::from_rgba(width, height, rgba, srgb)
 }
 
 fn zip_error(what: &str) -> Error {
