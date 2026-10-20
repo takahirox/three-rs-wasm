@@ -2,6 +2,9 @@ use serde_json::json;
 use three_rs_wasm::compression::*;
 #[test]
 fn original_ktx2_etc1s_and_uastc_decode_to_visible_rgba() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     for bytes in [
         include_bytes!("fixtures/ktx2/2d_etc1s.ktx2").as_slice(),
         include_bytes!("fixtures/ktx2/2d_uastc.ktx2").as_slice(),
@@ -25,6 +28,9 @@ fn original_ktx2_etc1s_and_uastc_decode_to_visible_rgba() {
 }
 #[test]
 fn meshopt_encoded_positions_are_expanded_and_importable() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let points = [-1.0f32, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0];
     let bytes = bytemuck::cast_slice(&points);
     let mut encoded = vec![0; optimesh::vertexcodec::encode_vertex_buffer_bound(3, 12)];

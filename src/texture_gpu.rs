@@ -821,9 +821,14 @@ fn compressed_texture_layers(
         });
         for layer in 0..layers {
             for level in 0..levels {
-                let data = t
-                    .transcode_image(level, layer, 0, target, basisu::DecodeFlags::NONE)
-                    .map_err(|e| Error::Asset(format!("Basis mip {level}: {e:?}")))?;
+                let data = crate::basis::transcode_image(
+                    &t,
+                    level,
+                    layer,
+                    0,
+                    target,
+                    basisu::DecodeFlags::NONE,
+                )?;
                 let width = (image.width >> level).max(1).div_ceil(4) * 4;
                 let height = (image.height >> level).max(1).div_ceil(4) * 4;
                 let row = width / 4 * target.bytes_per_block_or_pixel() as u32;

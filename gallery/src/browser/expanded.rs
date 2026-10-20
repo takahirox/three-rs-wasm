@@ -2726,6 +2726,8 @@ impl Demo {
                 )),
             }),
             28 => {
+                // The page's DRACOLoader.
+                super::draco_loader::install();
                 let (asset, buffers, images) =
                     load_asset("/web/models/AVIFTest/forest_house.glb").await?;
                 crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(scene)?;

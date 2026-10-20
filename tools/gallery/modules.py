@@ -18,8 +18,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'web/gallery/modules.json'
 BROWSER = ROOT / 'gallery/src/browser'
-# Examples the gallery's shell starts itself, with the module their page uses.
-SHELL = {483: 'tsl_transpiler', 498: 'xr_app', 499: 'xr_app', 500: 'xr_app'}
+# Examples the gallery's shell starts itself, with the module their page uses:
+# the transpiler, the WebXR examples, and webgl_loader_gltf_avif's DRACOLoader
+# ( gallery/src/browser/draco_loader.rs ).
+SHELL = {28: 'draco_loader', 483: 'tsl_transpiler', 498: 'xr_app', 499: 'xr_app', 500: 'xr_app'}
 
 
 def numbers(pattern):

@@ -227,6 +227,8 @@ fn water_model() -> Matrix4 {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, _id: u32, r: &Renderer) -> Result<Self> {
+        // The page's DRACOLoader.
+        crate::compression::install_draco();
         let aspect = match s.camera(c)?.0 {
             Camera::Perspective(p) => p.aspect,
             _ => 1.,

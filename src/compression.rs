@@ -39,16 +39,44 @@ fn append_view(document: &mut Value, buffers: &mut Vec<Vec<u8>>, data: Vec<u8>) 
 }
 /// `buffers` contains resolved external buffers (or the GLB BIN chunk) in source
 /// index order. Missing URI-less meshopt fallback buffers may be empty.
+type DracoDecode = fn(&[u8]) -> std::result::Result<draco_core::Mesh, String>;
+
+static DRACO: std::sync::OnceLock<DracoDecode> = std::sync::OnceLock::new();
+
+/// Make Draco geometry loadable, as three.js's loaders take a DRACOLoader
+/// ( `GLTFLoader.setDRACOLoader`, a page's own `DRACOLoader` ). The decoder is
+/// reached only through it, so a split build links it into the parts of the
+/// pages that install it ( tools/gallery/split/ ), as three.js fetches the
+/// Draco decoder only for those pages.
+pub fn install_draco() {
+    // black_box: LTO would see the one value this static ever holds and call
+    // the decoder directly from the loaders, linking it everywhere.
+    DRACO.get_or_init(|| {
+        std::hint::black_box::<DracoDecode>(|bytes| {
+            let mut mesh = draco_core::Mesh::new();
+            draco_core::MeshDecoder::new()
+                .decode(&mut draco_core::DecoderBuffer::new(bytes), &mut mesh)
+                .map_err(|e| format!("{e:?}"))?;
+            Ok(mesh)
+        })
+    });
+}
+
+/// A Draco mesh through the installed decoder.
+fn draco(bytes: &[u8]) -> Result<draco_core::Mesh> {
+    let decode = DRACO.get().ok_or_else(|| {
+        Error::Asset("THREE.GLTFLoader: No DRACOLoader instance provided.".into())
+    })?;
+    decode(bytes).map_err(|e| Error::Asset(format!("Draco: {e}")))
+}
+
 /// DRACOLoader for a standalone `.drc` mesh: position, normal, color and uv as
 /// float attributes, with the face indices.
 pub fn decode_draco(bytes: &[u8]) -> Result<crate::geometry::BufferGeometry> {
     use crate::attribute::BufferAttribute;
     use crate::geometry::{Attribute, BufferGeometry};
     use draco_core::geometry_attribute::GeometryAttributeType as T;
-    let mut mesh = draco_core::Mesh::new();
-    draco_core::MeshDecoder::new()
-        .decode(&mut draco_core::DecoderBuffer::new(bytes), &mut mesh)
-        .map_err(|e| Error::Asset(format!("Draco: {e:?}")))?;
+    let mesh = draco(bytes)?;
     if mesh.num_points() > 16_000_000 {
         return Err(Error::Invalid("Draco vertex count"));
     }
@@ -238,10 +266,7 @@ pub fn prepare_gltf(bytes: &[u8], buffers: &[Vec<u8>]) -> Result<PreparedGltf> {
                 view["byteOffset"].as_u64().unwrap_or(0) as usize,
                 number(view, "byteLength")?,
             )?;
-            let mut mesh = draco_core::Mesh::new();
-            draco_core::MeshDecoder::new()
-                .decode(&mut draco_core::DecoderBuffer::new(data), &mut mesh)
-                .map_err(|e| Error::Asset(format!("Draco: {e:?}")))?;
+            let mesh = draco(data)?;
             if mesh.num_points() > 16_000_000 {
                 return Err(Error::Invalid("Draco vertex count"));
             }
@@ -545,9 +570,12 @@ pub fn decode_basis(bytes: &[u8], srgb: bool) -> Result<Texture> {
         if width == 0 || height == 0 || u64::from(width) * u64::from(height) > 64 * 1024 * 1024 {
             return Err(Error::Invalid("Basis image dimensions"));
         }
-        let rgba = transcoder
-            .transcode(0, basisu::TargetFormat::Rgba32, basisu::DecodeFlags::NONE)
-            .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        let rgba = crate::basis::transcode(
+            &transcoder,
+            0,
+            basisu::TargetFormat::Rgba32,
+            basisu::DecodeFlags::NONE,
+        )?;
         Texture::from_rgba(width, height, rgba, srgb)
     }
 }

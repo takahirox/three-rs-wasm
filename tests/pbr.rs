@@ -4,6 +4,9 @@ use three_rs_wasm::{
 };
 #[test]
 fn hdr_is_linear_and_lights_a_metal() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let environment = EnvironmentMap::from_hdr(include_bytes!(
         "../web/environments/pedestrian_overpass_1k.hdr"
     ))
@@ -49,6 +52,9 @@ fn hdr_is_linear_and_lights_a_metal() {
 
 #[test]
 fn texture_cache_releases_replacements_and_does_not_upload_unchanged_images() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
     let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
@@ -82,6 +88,9 @@ fn texture_cache_releases_replacements_and_does_not_upload_unchanged_images() {
 
 #[test]
 fn importer_loads_original_pbr_maps_and_rejects_missing_buffers() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let bytes = include_bytes!("../web/models/BoomBox.glb");
     let asset = gltf::Gltf::from_slice(bytes).unwrap();
     assert!(three_rs_wasm::gltf::import(&asset, &[], &[]).is_err());
@@ -115,6 +124,9 @@ fn importer_loads_original_pbr_maps_and_rejects_missing_buffers() {
 
 #[test]
 fn pbr_features_have_independent_visible_effects() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     use three_rs_wasm::math::*;
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
@@ -238,6 +250,9 @@ fn pbr_features_have_independent_visible_effects() {
 
 #[test]
 fn environment_replacements_release_owners_without_refiltering_unchanged_frames() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
     let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
@@ -269,6 +284,9 @@ fn environment_replacements_release_owners_without_refiltering_unchanged_frames(
 
 #[test]
 fn supplied_tangent_handedness_controls_normal_map_orientation() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     use three_rs_wasm::{attribute::BufferAttribute, math::*};
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
@@ -316,6 +334,9 @@ fn supplied_tangent_handedness_controls_normal_map_orientation() {
 
 #[test]
 fn alpha_mask_and_double_sided_materials_preserve_coverage() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     use three_rs_wasm::math::*;
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
@@ -362,6 +383,9 @@ fn alpha_mask_and_double_sided_materials_preserve_coverage() {
 
 #[test]
 fn importer_rejects_required_extensions_with_actionable_names() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let asset = gltf::Gltf::from_slice_without_validation(
         br#"{"asset":{"version":"2.0"},"extensionsRequired":["KHR_draco_mesh_compression"]}"#,
     )
@@ -376,6 +400,9 @@ fn importer_rejects_required_extensions_with_actionable_names() {
 
 #[test]
 fn ldr_environment_linearizes_rgb_but_preserves_alpha() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let mut texture = Texture::from_rgba(64, 1, [128, 64, 255, 128].repeat(64), true).unwrap();
     let environment = EnvironmentMap::from_texture(&texture).unwrap();
     assert!(
@@ -392,6 +419,9 @@ fn ldr_environment_linearizes_rgb_but_preserves_alpha() {
 
 #[test]
 fn ao_occludes_indirect_light_without_occluding_emission_or_direct_light() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     use three_rs_wasm::math::*;
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let target = RenderTarget::new(&renderer.device, 16, 16).unwrap();

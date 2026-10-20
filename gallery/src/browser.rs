@@ -86,6 +86,7 @@ mod deferred;
 mod dof2;
 #[cfg(feature = "dof_webgl")]
 mod dof_webgl;
+mod draco_loader;
 #[cfg(feature = "draco_variants")]
 mod draco_variants;
 #[cfg(feature = "elements_text")]

@@ -73,15 +73,25 @@ with `tools/gallery/split/wasm.py`, and `wasm-opt -O` optimizes each module.
 
 | Build | Wasm | gzip |
 | --- | ---: | ---: |
-| Primary module | 4.60 MB | 1.80 MB |
-| 287 parts ( 218 modules, 69 chunks ) | 22.3 MB | 6.7 MB |
-| A page: primary and parts, median over the examples | 4.72 MB | 1.85 MB |
-| A page, largest | 6.59 MB | 2.26 MB |
+| Primary module | 3.28 MB | 1.22 MB |
+| 292 parts ( 219 modules, 73 chunks ) | 23.7 MB | 7.3 MB |
+| A page: primary and parts, median over the examples | 3.43 MB | 1.28 MB |
+| A page, largest | 5.48 MB | 1.84 MB |
 
-A page loads up to 21 parts. Before the split, a page's package was 2.19 MB
+A page loads up to 23 parts. Before the split, a page's package was 2.19 MB
 compressed at the median over the examples ( 2.78 MB at most ), and the
 forty packages 144 MB together; the gallery's Wasm is now 27 MB, built in one
 link instead of forty.
+
+The Draco decoder and the Basis Universal transcoders are installed by the
+pages that use them, as three.js pages hand GLTFLoader a DRACOLoader or a
+KTX2Loader ( `compression::install_draco`, `basis::install`: the loaders call
+them through a function pointer, so only the installing modules reach them;
+without one, loading a compressed asset fails with GLTFLoader's message ).
+They are 1.3 MB of the primary module otherwise. webgl_loader_gltf_avif, an
+example the shell dispatches, installs Draco through
+`gallery/src/browser/draco_loader.rs`, a module of its own, so its page loads
+the decoder as a part.
 
 ## Before: forty packages
 

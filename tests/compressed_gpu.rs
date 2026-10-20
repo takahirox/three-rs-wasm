@@ -5,6 +5,9 @@ use three_rs_wasm::{
 
 #[test]
 fn compressed_mips_render_and_remain_resident() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     for bytes in [
         include_bytes!("fixtures/ktx2/2d_etc1s.ktx2").as_slice(),
@@ -43,6 +46,9 @@ fn compressed_mips_render_and_remain_resident() {
 
 #[test]
 fn reinhard_maps_hdr_after_resolve_without_changing_legacy_aces_selection() {
+    // The loaders' KTX2Loader and DRACOLoader.
+    three_rs_wasm::basis::install();
+    three_rs_wasm::compression::install_draco();
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let mut scene = Scene::new();
     scene.background = Color::linear(4.0, 1.0, 0.25);

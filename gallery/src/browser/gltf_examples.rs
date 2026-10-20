@@ -20,6 +20,10 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(scene: &mut Scene, camera: Object3D, example: u32) -> Result<Self> {
+        // The page's KTX2Loader.
+        crate::basis::install();
+        // The page's DRACOLoader.
+        crate::compression::install_draco();
         let (model, environment, fov, near, far, position, center, blur, exposure, min, max) =
             match example {
                 29 => (

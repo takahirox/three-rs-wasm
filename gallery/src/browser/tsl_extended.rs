@@ -61,6 +61,8 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, example: u32, r: &Renderer) -> Result<Self> {
+        // The page's KTX2Loader.
+        crate::basis::install();
         let (fov, near, far, z) = match example {
             78 => (70.0, 0.1, 50.0, 3.0),
             79 => (60.0, 0.1, 100.0, 10.0),

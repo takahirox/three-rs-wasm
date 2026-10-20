@@ -704,9 +704,7 @@ pub(crate) fn cube_uv_ktx2(
         } else {
             (TargetFormat::RgbaHalf, wgpu::TextureFormat::Rgba16Float)
         };
-        let data = t
-            .transcode_image(0, 0, 0, target, basisu::DecodeFlags::NONE)
-            .map_err(|e| Error::Asset(format!("Basis: {e:?}")))?;
+        let data = crate::basis::transcode_image(&t, 0, 0, 0, target, basisu::DecodeFlags::NONE)?;
         let size = wgpu::Extent3d {
             width,
             height,

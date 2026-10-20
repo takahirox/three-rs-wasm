@@ -90,6 +90,8 @@ impl Demo {
         }
     }
     pub async fn create(s: &mut Scene, c: Object3D, id: u32, r: &Renderer) -> Result<Self> {
+        // The page's DRACOLoader.
+        crate::compression::install_draco();
         match id {
             146 => Ok(Self::Taau(Box::new(taau::Taau::create(s, c, r).await?))),
             147 => Ok(Self::MotionBlur(Box::new(

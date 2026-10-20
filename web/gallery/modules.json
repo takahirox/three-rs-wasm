@@ -140,7 +140,7 @@
   "webgl_loader_fbx_nurbs": "fbx_nurbs",
   "webgl_loader_gcode": "terrain_loaders",
   "webgl_loader_gltf_animation_pointer": "animation_pointer",
-  "webgl_loader_gltf_avif": "core",
+  "webgl_loader_gltf_avif": "draco_loader",
   "webgl_loader_gltf_instancing": "core",
   "webgl_loader_gltf_progressive_lod": "progressive_lod",
   "webgl_loader_gltf_variants": "draco_variants",

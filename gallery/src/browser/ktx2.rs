@@ -221,6 +221,8 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(_s: &mut Scene, _c: Object3D, _id: u32, r: &Renderer) -> Result<Self> {
+        // The page's KTX2Loader.
+        crate::basis::install();
         let fail = |_| Error::Invalid("ktx2 page");
         let document = web_sys::window()
             .and_then(|w| w.document())

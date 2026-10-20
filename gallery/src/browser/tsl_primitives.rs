@@ -50,6 +50,8 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, example: u32, r: &Renderer) -> Result<Self> {
+        // The page's KTX2Loader.
+        crate::basis::install();
         let position = match example {
             123 => Vector3::new(1000., 200., 0.),
             124 => Vector3::new(0., 0., 4.),

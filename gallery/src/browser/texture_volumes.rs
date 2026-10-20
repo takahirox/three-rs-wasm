@@ -251,6 +251,8 @@ fn volume_render(p0:vec4<f32>,p1:vec4<f32>,p2:vec4<f32>)->vec4<f32>{
 }"#;
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, id: u32, r: &Renderer) -> Result<Self> {
+        // The page's KTX2Loader.
+        crate::basis::install();
         let mut d = Self {
             id,
             time: 0.,

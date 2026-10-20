@@ -36,6 +36,8 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, example: u32, r: &Renderer) -> Result<Self> {
+        // The page's DRACOLoader.
+        crate::compression::install_draco();
         let (position, target, fov, near, far) = match example {
             108 => (Vector3::new(0.0, 0.0, 8.0), Vector3::ZERO, 45.0, 0.25, 20.0),
             109 => (

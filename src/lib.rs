@@ -12,6 +12,8 @@ pub(crate) const BASIS_DISABLED: &str =
 pub mod animation;
 mod area_light;
 pub mod attribute;
+#[cfg(feature = "basisu")]
+pub mod basis;
 pub mod batching;
 pub mod bounce;
 pub mod buffer_geometry_loader;

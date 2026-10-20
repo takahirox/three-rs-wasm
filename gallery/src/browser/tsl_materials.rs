@@ -37,6 +37,8 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, example: u32, r: &Renderer) -> Result<Self> {
+        // The page's DRACOLoader.
+        crate::compression::install_draco();
         let position = match example {
             121 => Vector3::new(8.0, 4.0, 10.0),
             122 => Vector3::new(-20.0, 7.0, 20.0),
