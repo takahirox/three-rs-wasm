@@ -121,8 +121,9 @@ function updateStatus(){
 new MutationObserver(updateStatus).observe(canvas,{attributes:true,attributeFilter:['data-error','data-selected','data-rebuilds']});
 try{
   if(!navigator.gpu)throw new Error('このブラウザーではWebGPUを利用できません。');
-  const {default:init,BrowserApp}=await import('./pkg/core/three_rs_wasm.js');
-  await init();
+  // The gallery's Wasm: the MVP scenes are the shell's own ( no parts ).
+  const {loadRuntime}=await import('./gallery/runtime.js');
+  const {BrowserApp}=await loadRuntime('core');
   if(params.has('fixture')) {canvas.width=256;canvas.height=256;canvas.style.width='256px';canvas.style.height='256px';canvas.parentElement.style.borderRadius='0';}
   window.app=await BrowserApp.create(canvas,example,!staticMode);
   rebuild.disabled=false;

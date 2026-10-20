@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
-// The loader port is in webgl_loader_fbx's package.
-const PACKAGE=JSON.parse(readFileSync(new URL('../../web/gallery/packages.json',import.meta.url),'utf8')).examples.webgl_loader_fbx;
+// The loader port is in webgl_loader_fbx's module ( tools/gallery/modules.py ).
+const PACKAGE=JSON.parse(readFileSync(new URL('../../web/gallery/modules.json',import.meta.url),'utf8')).examples.webgl_loader_fbx;
 // The Rust FBXLoader against the pinned r186 FBXLoader in the same engine:
 // every FBX model the examples load, in the canonical form of fbx::canonical
 // ( numbers as their bits, buffers by hash ).
@@ -10,7 +10,7 @@ test('FBXLoader port matches the original bit for bit',async({page})=>{
  test.setTimeout(300000);
  await page.goto('/reference/three-js/fbx-loader.html');await expect(page).toHaveTitle('ready');
  const results=await page.evaluate(async ([assets,pkg])=>{
-  const rust=await import(`/web/pkg/${pkg}/three_rs_wasm.js`);await rust.default({module_or_path:`/web/pkg/${pkg}/three_rs_wasm_bg.wasm`});
+  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime(pkg);
   const f64=new Float64Array(1),u32=new Uint32Array(f64.buffer);
   const n=v=>{if(typeof v!=='number')v=Number(v);if(Number.isNaN(v))return '"NaN"';f64[0]=v;return `"${u32[1].toString(16).padStart(8,'0')}${u32[0].toString(16).padStart(8,'0')}"`;};
   const ns=a=>'['+Array.from(a,n).join(',')+']';

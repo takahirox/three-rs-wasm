@@ -1,6 +1,6 @@
-// webgl_worker_offscreencanvas's worker: this package rendering scene.js's scene into the
+// webgl_worker_offscreencanvas's worker: the gallery's Wasm rendering scene.js's scene into the
 // transferred OffscreenCanvas ( gallery/src/browser/offscreen.rs ), as jsm/offscreen/offscreen.js does.
-// Messages that arrive while the package loads are queued.
+// Messages that arrive while the Wasm loads are queued.
 const queued = [];
 let receive = message => queued.push(message);
 self.onmessage = message => receive(message);
@@ -8,10 +8,9 @@ self.onmessage = message => receive(message);
 await import('./upstream.js');
 const params = new URL(location.href).searchParams;
 const runtime = params.get('v') ?? '';
-// The page's package ( tools/gallery/packages.py ).
-const pkg = `../pkg/${params.get('package')}`;
-const {default: init, offscreen_worker, offscreen_time, offscreen_samples} = await import(`${pkg}/three_rs_wasm.js?v=${runtime}`);
-await init({module_or_path: new URL(`${pkg}/three_rs_wasm_bg.wasm?v=${runtime}`, import.meta.url)});
+// The page's module ( tools/gallery/modules.py ) and its parts.
+const {loadRuntime} = await import(`./runtime.js?v=${runtime}`);
+const {offscreen_worker, offscreen_time, offscreen_samples} = await loadRuntime(params.get('module'), runtime);
 receive = message => {
  const data = message.data;
  if ('time' in data) { offscreen_time(data.time); return; }

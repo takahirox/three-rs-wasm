@@ -12,9 +12,9 @@ crate-type = ["rlib", "cdylib"]
 
 [features]
 # Each example module is a feature, with the modules it uses; `example_<module>`
-# also dispatches the module's examples. A page's package enables its examples'
-# `example_` features ( scripts/build-gallery ), so a module another one only
-# borrows code from is compiled without its examples.
+# also dispatches the module's examples, so a module another one only borrows
+# code from compiles without its examples. The published gallery builds every
+# feature once and splits it per module ( scripts/build-gallery ).
 default = ["all"]
 # KTX2 / Basis Universal transcoding, for the modules whose examples load
 # KTX2 textures or glTF with KHR_texture_basisu.

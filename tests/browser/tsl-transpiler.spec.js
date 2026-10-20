@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
-// The transpiler page's package ( tools/gallery/packages.py ).
-const pkg=JSON.parse(readFileSync('web/gallery/packages.json','utf8')).examples.webgpu_tsl_transpiler;
+// The transpiler page's module ( tools/gallery/modules.py ).
+const pkg=JSON.parse(readFileSync('web/gallery/modules.json','utf8')).examples.webgpu_tsl_transpiler;
 // webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r186 one
 // ( examples/jsm/transpiler/ ), both run in the same page. The output text and the
 // error messages must match character for character, for both encoders.
@@ -19,7 +19,7 @@ test('Transpiler output matches the original for every GLSL input',async({page},
   const GLSLDecoder=(await import('/.cache/three-r186/examples/jsm/transpiler/GLSLDecoder.js')).default;
   const TSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/TSLEncoder.js')).default;
   const WGSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/WGSLEncoder.js')).default;
-  const rust=await import(`/web/pkg/${pkg}/three_rs_wasm.js`);await rust.default({module_or_path:`/web/pkg/${pkg}/three_rs_wasm_bg.wasm`});
+  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime(pkg);
   // The page's GLSL, every three.js shader chunk and every examples shader.
   const base=[['page',pageGlsl]];
   const {ShaderChunk}=await import('/.cache/three-r186/src/renderers/shaders/ShaderChunk.js');

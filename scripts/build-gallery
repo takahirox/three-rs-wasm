@@ -1,54 +1,35 @@
 #!/usr/bin/env bash
-# Build the examples gallery's browser packages into web/pkg/<package>/: the
-# core package ( the gallery's shell and shared scenes ) and groups of example
-# modules, features of gallery/ ( tools/gallery/packages.py groups them and
-# lists which package each example page loads ).
+# Build the examples gallery into web/pkg/gallery/: every example linked once
+# ( gallery/ with its default features ), then split into the primary module and
+# a part per module and per chunk of code modules share
+# ( tools/gallery/split/build.py ). A page loads the primary module and its
+# module's parts ( web/gallery/runtime.js, web/gallery/modules.json ).
 #
-#   scripts/build-gallery [--dev] [--shard I/N] [package ...]
+#   scripts/build-gallery [--dev]
 #
-# Without packages it builds them all, or with --shard every Nth from the
-# Ith ( CI builds the shards on separate runners ), in GALLERY_JOBS parallel
-# lanes, each with its own target directory.
+# --dev builds the shell alone ( the examples it dispatches itself ),
+# unoptimized and unsplit, as the MVP checks use it.
+# Splitting needs Binaryen's wasm-split and wasm-opt ( version 127 or later ).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROFILE=--release
-if [ "${1:-}" = "--dev" ]; then PROFILE=--dev; shift; fi
-SHARD=1/1
-if [ "${1:-}" = "--shard" ]; then SHARD="$2"; shift 2; fi
-# The grouping follows the modules' source sizes: refresh it ( commit the result ).
-python3 "$ROOT/tools/gallery/packages.py"
-if [ "$#" -gt 0 ]; then
-  PACKAGES=("$@")
-else
-  # shellcheck disable=SC2207
-  ALL=($(python3 "$ROOT/tools/gallery/packages.py" --list))
-  PACKAGES=()
-  for (( i = ${SHARD%/*} - 1; i < ${#ALL[@]}; i += ${SHARD#*/} )); do PACKAGES+=("${ALL[$i]}"); done
-  rm -rf "$ROOT/web/pkg"
+OUT="$ROOT/web/pkg/gallery"
+python3 "$ROOT/tools/gallery/modules.py"
+rm -rf "$ROOT/web/pkg"
+if [ "${1:-}" = "--dev" ]; then
+  ( cd "$ROOT/gallery" && CARGO_TARGET_DIR="$ROOT/target/gallery-dev" \
+    wasm-pack --quiet build --target web --out-dir "$OUT" --out-name three_rs_wasm --dev --no-typescript \
+      -- --no-default-features )
+  echo '{}' > "$OUT/parts.json"
+  exit
 fi
-JOBS="${GALLERY_JOBS:-$(( $(getconf _NPROCESSORS_ONLN) / 4 > 0 ? $(getconf _NPROCESSORS_ONLN) / 4 : 1 ))}"
-
-build() {
-  local lane="$1" package="$2" features=(--no-default-features) list
-  list="$(python3 "$ROOT/tools/gallery/packages.py" --features "$package")"
-  if [ -n "$list" ]; then features+=(--features "$list"); fi
-  ( cd "$ROOT/gallery" && CARGO_TARGET_DIR="$ROOT/target/gallery-$lane" \
-    wasm-pack --quiet build --target web --out-dir "../web/pkg/$package" --out-name three_rs_wasm \
-      "$PROFILE" --no-typescript -- "${features[@]}" ) >"$ROOT/target/gallery-$lane.log" 2>&1 \
-    || { cat "$ROOT/target/gallery-$lane.log"; echo "build-gallery: $package failed" >&2; return 1; }
-  echo "built $package"
-}
-
-mkdir -p "$ROOT/target"
-pids=()
-for (( lane = 0; lane < JOBS; lane++ )); do
-  (
-    for (( i = lane; i < ${#PACKAGES[@]}; i += JOBS )); do
-      build "$lane" "${PACKAGES[$i]}"
-    done
-  ) &
-  pids+=("$!")
-done
-status=0
-for pid in "${pids[@]}"; do wait "$pid" || status=1; done
-exit "$status"
+# The split reads every reference from the linker's relocations
+# ( --emit-relocs ) and every function's owner from its symbol, so LLVM must
+# not merge identical functions across modules ( -Zmerge-functions=disabled,
+# allowed on the stable compiler through RUSTC_BOOTSTRAP ). wasm-pack also
+# installs the wasm-bindgen CLI the split runs.
+( cd "$ROOT/gallery" && RUSTC_BOOTSTRAP=1 RUSTFLAGS="-Zmerge-functions=disabled -Clink-arg=--emit-relocs" \
+  CARGO_TARGET_DIR="$ROOT/target/gallery" \
+  wasm-pack --quiet build --target web --out-dir "$ROOT/target/gallery/pkg" --out-name three_rs_wasm \
+    --release --no-opt --no-typescript )
+python3 "$ROOT/tools/gallery/split/build.py" \
+  "$ROOT/target/gallery/wasm32-unknown-unknown/release/three_rs_gallery.wasm" "$OUT"

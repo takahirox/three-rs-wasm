@@ -1,8 +1,8 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {fixtures} from '../../tools/core/usd-fixtures.mjs';
-// The loader port is in webgl_loader_usdz's package.
-const PACKAGE=JSON.parse(readFileSync(new URL('../../web/gallery/packages.json',import.meta.url),'utf8')).examples.webgl_loader_usdz;
+// The loader port is in webgl_loader_usdz's module ( tools/gallery/modules.py ).
+const PACKAGE=JSON.parse(readFileSync(new URL('../../web/gallery/modules.json',import.meta.url),'utf8')).examples.webgl_loader_usdz;
 // The Rust USDLoader against the pinned r186 USDLoader in the same engine:
 // webgl_loader_usdz's saeukkang.usdz and the fixtures of
 // tools/core/usd-fixtures.mjs, in the canonical form of usd::canonical
@@ -12,7 +12,7 @@ test('USDLoader port matches the original bit for bit',async({page})=>{
  await page.goto('/reference/three-js/usd-loader.html');await expect(page).toHaveTitle('ready');
  const inputs=fixtures().map(f=>({name:f.name,path:f.path,bytes:Array.from(f.bytes)}));
  const results=await page.evaluate(async ([inputs,pkg])=>{
-  const rust=await import(`/web/pkg/${pkg}/three_rs_wasm.js`);await rust.default({module_or_path:`/web/pkg/${pkg}/three_rs_wasm_bg.wasm`});
+  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime(pkg);
   inputs.push({name:'saeukkang.usdz',path:'',bytes:new Uint8Array(await (await fetch('/.cache/three-r186/examples/models/usdz/saeukkang.usdz')).arrayBuffer())});
   const results=[];
   for(const input of inputs){

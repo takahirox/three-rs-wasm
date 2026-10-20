@@ -7,76 +7,89 @@ port reads like code inside it. The library exposes what the ports use: the
 render targets' views and options, `texture_gpu`, the shader program
 constructors and its embedded shader sources ( `three_rs_wasm::sources` ).
 
-## Packages
+## One link, split
 
 Each example module of `gallery/src/browser/` is a Cargo feature of the
-gallery, enabling the modules it uses. `example_<module>` also compiles the
+gallery, enabling the modules it uses; `example_<module>` also compiles the
 module's examples into the dispatch in `expanded.rs` and its browser oracle
-exports ( `fbx_canonical`, `BounceWorld`, … ). A package enables its
-examples' `example_` features only: a module whose helpers another one
-borrows is compiled without its own examples, so the linker drops their
-code and shaders. The gallery's shell ( `browser.rs`, `gallery_scenes.rs`,
-the dispatch and the shared scenes: `gallery`, `gltf_viewer`, `point_lights`,
-`robot`, `expanded_*` ) is always built.
+exports. The gallery's shell ( `browser.rs`, `gallery_scenes.rs`, the dispatch
+and the shared scenes: `gallery`, `gltf_viewer`, `point_lights`, `robot`,
+`expanded_*` ) is always built.
 
-The library's KTX2 / Basis Universal transcoder is its `basisu` feature
-( on by default ). The gallery depends on the library without it and the
-gallery's `basisu` feature turns it on, listed by the modules whose examples
-load KTX2 textures or glTF with `KHR_texture_basisu`. Without it a Basis
-texture fails with an error that names the feature.
+`scripts/build-gallery` links the whole gallery once, every feature on, and
+splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
 
-A page loads one package from `web/pkg/<package>/`:
+- `three_rs_wasm_bg.wasm`, the primary module, with wasm-bindgen's glue:
+  the library, the shell and the code no single module owns;
+- `parts/<module>.wasm`, one part per module: the functions and the read-only
+  data only that module reaches;
+- `parts/chunk<n>.wasm`: code and data that several modules share and the
+  shell does not, one chunk per set of modules ( sets under 5 KB stay in the
+  primary module );
+- `parts.json`, the parts each module loads.
 
-- `core`, the shell alone, for the examples it dispatches itself;
-- one of forty packages, each a group of example modules.
+A page loads the primary module, then its module's parts
+( `web/gallery/runtime.js` ); `web/gallery/modules.json` maps each example to
+its module ( `tools/gallery/modules.py`, from the `create` arms of
+`expanded.rs` ). The parts import the primary module's memory, stack pointer,
+function tables and functions, and a part's instantiation writes its
+functions into the table the primary module calls them through and its data
+into the shared memory, at the addresses the linker gave it. The page then
+runs in one Wasm instance's memory: a call into a part is a call through a
+table, as a call through a function pointer is; nothing crosses into
+JavaScript.
 
-`tools/gallery/packages.py` writes `web/gallery/packages.json`:
+### How the split is chosen
 
-- `examples` maps each ported example to its package. An example's module is
-  the feature on its `create` arm in `expanded.rs`; the transpiler and the
-  WebXR examples, which the shell starts, use the `tsl_transpiler` and
-  `xr_app` features.
-- `packages` lists each package's modules ( `packages.py --features` prints
-  their `example_` features ).
+The gallery links with `--emit-relocs`, so the linker's relocations give
+every reference: calls, function pointers ( in code and in vtables ) and
+addresses of data in code and in data. `assign.py` builds the graph:
 
-The page ( `web/gallery/example.js`, and the offscreen example's worker )
-reads the mapping. `scripts/build-gallery` builds every package, in
-`GALLERY_JOBS` parallel lanes with their own target directories, or the
-packages it is given.
+- a module's roots are the functions its symbols place in it
+  ( `three_rs_gallery::browser::<module>::…` ), generic code instantiated for
+  its types alone ( demangled with `c++filt` ), and the exports its pages call
+  ( `fbx_canonical`, `BounceWorld`, `XrApp`, the offscreen worker's );
+- the shell is everything the other exports reach without entering a module's
+  roots ( the dispatch calls into a module only for that module's examples );
+- a module owns what only its roots reach outside the shell; what several
+  reach is shared.
 
-## Why groups
+Data whose bytes overlap a symbol with another owner ( merged constants )
+stays in the primary module. The build then checks the result: from the
+exports and a module's roots, without entering another module's roots,
+everything reached must be in the primary module or in a part that module
+loads.
 
-One package per module would be about 220 packages of about 4 MB each: the
-library and the shell repeat in each, about 930 MB together, past the
-published site's 1 GB with its other 500 MB of assets. The modules are packed
-into forty groups instead:
+A function's owner comes from its symbol, so the build turns off LLVM's
+merging of identical functions ( `-Zmerge-functions=disabled`, through
+`RUSTC_BOOTSTRAP` on the stable compiler ): a merged function would carry one
+module's name and serve another's calls.
 
-- largest first;
-- each into the group whose modules it adds least to ( modules that share
-  helper modules land together );
-- under the smallest capacity that makes at most forty groups.
+The functions move with Binaryen's `wasm-split --multi-split` ( version 127,
+without placeholders: the parts load before the example starts ), the data
+with `tools/gallery/split/wasm.py`, and `wasm-opt -O` optimizes each module.
 
-A module's source size measures it: across the 218 single-module packages,
-their size above the core correlates with their modules' source size at 0.97.
-
-## Sizes ( 2026-10-17 )
+## Sizes ( 2026-10-20 )
 
 | Build | Wasm | gzip |
 | --- | ---: | ---: |
-| Before: every port in one package | 26.0 MB | 7.4 MB |
-| `core` | 2.7 MB | 1.05 MB |
-| Packages, median | 3.2 MB | 1.18 MB |
-| Packages, largest ( `tsl_extended` ) | 6.9 MB | 2.78 MB |
-| All 40 packages | 144 MB | |
+| Primary module | 4.60 MB | 1.80 MB |
+| 287 parts ( 218 modules, 69 chunks ) | 22.3 MB | 6.7 MB |
+| A page: primary and parts, median over the examples | 4.72 MB | 1.85 MB |
+| A page, largest | 6.59 MB | 2.26 MB |
 
-Before the `example_` features and the optional transcoder ( 2026-10-16 ):
-`core` 4.6 MB ( 1.87 MB compressed ), the packages 246 MB together; a
-package with one example carried every example of the modules it borrowed
-from ( `loader_materialx`: 24 modules, 9.5 MB, now 2.8 MB ).
+A page loads up to 21 parts. Before the split, a page's package was 2.19 MB
+compressed at the median over the examples ( 2.78 MB at most ), and the
+forty packages 144 MB together; the gallery's Wasm is now 27 MB, built in one
+link instead of forty.
 
-A page downloads its package only. The library alone with one cube is
-1.9 MB ( 0.86 MB compressed ); the shell adds the glTF importer, the image
-decoders and the page bindings.
+## Before: forty packages
+
+Until 2026-10-20 the gallery was forty packages, each the library, the shell
+and a group of modules linked on its own ( `tools/gallery/packages.py` ):
+246 MB together, then 144 MB once a module whose helpers another borrowed no
+longer brought its examples along. Every package repeated the library and the
+shell; the split keeps one copy.
 
 ## Assets from the three.js repository
 
