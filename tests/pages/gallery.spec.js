@@ -11,6 +11,8 @@ test('site entry opens the gallery under the project prefix', async ({page}) => 
 // threejs.org's URLs: examples/#<id> opens the example in the viewer, which loads
 // examples/<id>.html; that page also runs on its own. web/gallery/ stays served.
 test('official-style example URLs', async ({page}) => {
+  // Four page loads, each allowed 90 seconds on a software GPU.
+  test.setTimeout(360000);
   await page.goto('/three-rs-wasm/examples/#webgpu_materials');
   const viewer = page.frameLocator('#viewer');
   await expect(page.locator('#viewer')).toHaveAttribute('src', /examples\/webgpu_materials\.html$/);
