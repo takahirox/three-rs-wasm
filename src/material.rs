@@ -153,13 +153,27 @@ impl Texture {
             Ok(texture)
         }
     }
+    /// Decode an encoded image ( KTX2 / Basis, PNG, GIF, and in the browser the
+    /// other formats once `install_image_codecs` has run ).
     pub fn from_image(bytes: &[u8]) -> Result<Self> {
         if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
             return crate::compression::decode_basis(bytes, true);
         }
-        let image = image::load_from_memory(bytes)
-            .map_err(|e| Error::Asset(e.to_string()))?
-            .to_rgba8();
+        use image::{DynamicImage, codecs};
+        use std::io::Cursor;
+        let fail = |e: image::ImageError| Error::Asset(e.to_string());
+        let image = if bytes.starts_with(b"\x89PNG\r\n\x1a\n") {
+            codecs::png::PngDecoder::new(Cursor::new(bytes))
+                .and_then(DynamicImage::from_decoder)
+                .map_err(fail)?
+        } else if bytes.starts_with(b"GIF8") {
+            codecs::gif::GifDecoder::new(Cursor::new(bytes))
+                .and_then(DynamicImage::from_decoder)
+                .map_err(fail)?
+        } else {
+            other_image(bytes)?
+        };
+        let image = image.to_rgba8();
         Self::from_rgba(image.width(), image.height(), image.into_raw(), true)
     }
     pub fn uv_matrix(&self) -> Matrix3 {
@@ -211,6 +225,34 @@ impl Texture {
         Self::from_image(&js_sys::Uint8Array::new(&buffer).to_vec())
     }
 }
+/// The image formats beyond PNG and GIF ( JPEG, WebP, … ). In the browser the
+/// pages decode those with the browser's codecs, as TextureLoader and
+/// GLTFLoader do; a page that decodes them in Rust installs the codecs, so a
+/// split build links them only into its parts ( tools/gallery/split/ ).
+#[cfg(target_arch = "wasm32")]
+type ImageDecode = fn(&[u8]) -> image::ImageResult<image::DynamicImage>;
+
+#[cfg(target_arch = "wasm32")]
+static IMAGE_CODECS: std::sync::OnceLock<ImageDecode> = std::sync::OnceLock::new();
+
+/// Make `Texture::from_image` decode every format the `image` crate reads.
+pub fn install_image_codecs() {
+    #[cfg(target_arch = "wasm32")]
+    // black_box: LTO would see the one value this static ever holds and call
+    // the codecs directly, linking them everywhere.
+    IMAGE_CODECS.get_or_init(|| std::hint::black_box::<ImageDecode>(image::load_from_memory));
+}
+
+fn other_image(bytes: &[u8]) -> Result<image::DynamicImage> {
+    #[cfg(target_arch = "wasm32")]
+    let decode = IMAGE_CODECS.get().ok_or_else(|| {
+        Error::Asset("Texture::from_image: install_image_codecs decodes this format".into())
+    })?;
+    #[cfg(not(target_arch = "wasm32"))]
+    let decode = image::load_from_memory;
+    decode(bytes).map_err(|e| Error::Asset(e.to_string()))
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct MaterialProperties {
     /// Material.envMap: an environment of its own instead of the scene's

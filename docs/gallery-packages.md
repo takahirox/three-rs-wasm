@@ -73,12 +73,12 @@ with `tools/gallery/split/wasm.py`, and `wasm-opt -O` optimizes each module.
 
 | Build | Wasm | gzip |
 | --- | ---: | ---: |
-| Primary module | 3.28 MB | 1.22 MB |
-| 292 parts ( 219 modules, 73 chunks ) | 23.7 MB | 7.3 MB |
-| A page: primary and parts, median over the examples | 3.43 MB | 1.28 MB |
-| A page, largest | 5.48 MB | 1.84 MB |
+| Primary module | 2.96 MB | 1.10 MB |
+| 293 parts ( 219 modules, 74 chunks ) | 24.0 MB | 7.4 MB |
+| A page: primary and parts, median over the examples | 3.10 MB | 1.16 MB |
+| A page, largest | 5.15 MB | 1.75 MB |
 
-A page loads up to 23 parts. Before the split, a page's package was 2.19 MB
+A page loads up to 24 parts. Before the split, a page's package was 2.19 MB
 compressed at the median over the examples ( 2.78 MB at most ), and the
 forty packages 144 MB together; the gallery's Wasm is now 27 MB, built in one
 link instead of forty.
@@ -92,6 +92,14 @@ They are 1.3 MB of the primary module otherwise. webgl_loader_gltf_avif, an
 example the shell dispatches, installs Draco through
 `gallery/src/browser/draco_loader.rs`, a module of its own, so its page loads
 the decoder as a part.
+
+Images follow the same rule. In the browser the shell decodes JPEG, WebP and
+AVIF with the browser's codecs, as TextureLoader and GLTFLoader do, and PNG
+and GIF in Rust with their decoders alone ( `Texture::from_image`, which
+keeps RGB under transparent pixels ); Radiance HDR uses the HDR decoder
+alone. The `image` crate's other codecs are reached only by the modules that
+call it themselves or install them ( `material::install_image_codecs` ), so
+they left the primary module too ( 0.3 MB ).
 
 ## Before: forty packages
 

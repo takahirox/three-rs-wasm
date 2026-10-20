@@ -40,10 +40,13 @@ impl EnvironmentMap {
         })
     }
     pub fn from_hdr(bytes: &[u8]) -> Result<Self> {
-        if image::guess_format(bytes).ok() != Some(image::ImageFormat::Hdr) {
+        // Radiance HDR's signature, as image::guess_format reads it.
+        if !bytes.starts_with(b"#?RADIANCE") {
             return Err(Error::Invalid("expected Radiance HDR environment"));
         }
-        let image = image::load_from_memory(bytes)
+        // The HDR decoder alone ( load_from_memory would link every format ).
+        let image = image::codecs::hdr::HdrDecoder::new(std::io::Cursor::new(bytes))
+            .and_then(image::DynamicImage::from_decoder)
             .map_err(|e| Error::Asset(e.to_string()))?
             .to_rgba32f();
         if image.width() < 64 || image.width() > 8192 || image.height() > 8192 {

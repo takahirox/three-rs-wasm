@@ -289,18 +289,11 @@ async fn decode_browser_image(
     if bytes.starts_with(b"\xabKTX 20\xbb\r\n\x1a\n") || bytes.starts_with(b"sB") {
         return Texture::from_basis_compressed(bytes.to_vec(), true);
     }
-    // Lossy WebP (VP8, or VP8X extended) decodes differently between codecs:
-    // use the browser's, as TextureLoader and GLTFLoader do.
-    let lossy_webp = bytes.starts_with(b"RIFF")
-        && bytes.get(8..12) == Some(b"WEBP")
-        && bytes.get(12..16) != Some(b"VP8L");
-    if !(bytes.starts_with(&[0xff, 0xd8])
-        || lossy_webp
-        || (bytes.get(4..8) == Some(b"ftyp")
-            && bytes
-                .get(8..32)
-                .is_some_and(|v| v.windows(4).any(|v| v == b"avif" || v == b"avis"))))
-    {
+    // PNG and GIF stay on the Rust path, which keeps RGB under transparent
+    // pixels without a canvas premultiply round trip; every other format
+    // ( JPEG, WebP, AVIF ) uses the browser's codec, as TextureLoader and
+    // GLTFLoader do.
+    if bytes.starts_with(b"\x89PNG\r\n\x1a\n") || bytes.starts_with(b"GIF8") {
         return Texture::from_image(bytes);
     }
     let fail = |e| Error::Asset(format!("platform image decode: {e:?}"));
