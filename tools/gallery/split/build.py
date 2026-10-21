@@ -6,14 +6,17 @@
 RAW is the gallery linked with `--emit-relocs` ( scripts/build-gallery ). OUT
 gets wasm-bindgen's glue and the primary module ( three_rs_wasm.js,
 three_rs_wasm_bg.wasm ), a part per module and per shared chunk
-( parts/<name>.wasm ) and parts.json, the parts each module's page loads
-( tools/gallery/split/assign.py chooses them ).
+( parts/<name>.wasm ), the glue of the parts that need their own
+( parts/<name>.js, tools/gallery/split/glue.mjs ) and parts.json: the parts
+each module's page loads ( tools/gallery/split/assign.py chooses them ) and
+those with glue.
 
 The functions move with Binaryen's wasm-split --multi-split; the read-only data
 only a part references moves into it as active segments at the same addresses,
 so the primary module's memory holds it once the part is instantiated."""
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -86,6 +89,45 @@ def trampoline_slot(body):
     return (table, slot) if body[i:] == b'\x0b' else None
 
 
+def rehome(primary, parts, targets):
+    """What only a part uses, the part holds itself: the JavaScript functions
+    it calls it imports from wasm-bindgen's glue instead of through the
+    primary module, and the exports whose functions it holds ( its programs,
+    its classes' methods ) it exports itself, instead of the primary
+    module's trampolines to them. targets: trampoline -> ( part, function ).
+    The glue follows ( tools/gallery/split/glue.mjs )."""
+    ps = wasm.sections(primary)
+    nimp = wasm.imported_functions(primary, ps)
+    js = [(mod, field) for mod, field, kind, _ in wasm.imports(primary, ps) if kind == 0]
+    exports = wasm.exports(primary, ps)
+    by_name = {nm: idx for nm, kind, idx in exports if kind == 0}
+    moved = {}
+    keep = []
+    for nm, kind, idx in exports:
+        if kind == 0 and not nm.startswith('%') and idx in targets:
+            part, f = targets[idx]
+            moved.setdefault(part, []).append((nm, 0, f))
+        else:
+            keep.append((nm, kind, idx))
+    for part, b in parts.items():
+        s = wasm.sections(b)
+        imps = []
+        for mod, field, kind, payload in wasm.imports(b, s):
+            idx = by_name.get(field) if mod == 'primary' and kind == 0 else None
+            if idx is not None and idx < nimp:
+                mod, field = js[idx]
+            imps.append((mod, field, kind, payload))
+        new = {2: wasm.encode_imports(imps)}
+        if part in moved:
+            new[7] = wasm.encode_exports(wasm.exports(b, s) + moved[part])
+        parts[part] = wasm.replace_sections(b, new)
+    # The primary module's exports of the imports the parts now import themselves.
+    keep = [(nm, kind, idx) for nm, kind, idx in keep
+            if not (nm.startswith('%') and kind == 0 and idx < nimp)]
+    primary = wasm.replace_sections(primary, {7: wasm.encode_exports(keep)})
+    return primary, parts
+
+
 def untrampoline(primary, parts):
     """The primary module's function table holds a trampoline for each part
     function a function pointer names ( a vtable's methods, a closure's
@@ -142,6 +184,7 @@ def untrampoline(primary, parts):
                                  items=run))
                 run = []
     primary = wasm.replace_sections(primary, {9: wasm.encode_elem(segs)})
+    primary, parts = rehome(primary, parts, {f: owner[slot] for f, slot in slots.items() if slot in owner})
     for part, entries in writes.items():
         b = parts[part]
         s = wasm.sections(b)
@@ -171,7 +214,7 @@ def main(raw, out):
 
 
 def split(raw, out, work):
-    parts, loads = assign.assign(raw, modules.modules())
+    parts, loads, imports = assign.assign(raw, modules.modules())
     b = Path(raw).read_bytes()
     stripped = work / 'gallery.wasm'
     # Functions travel by index: wasm-bindgen demangles names into strings that may collide.
@@ -182,9 +225,19 @@ def split(raw, out, work):
     bb = bg.read_bytes()
     secs = wasm.sections(bb)
     present = set(wasm.function_names(bb, secs).values())
+    # wasm-bindgen's adapters ( `F<i> externref shim` ) go with the function
+    # they adapt: an export's into its part, so a part's programs are its own
+    # exports, and an import's into the part that alone calls it.
+    adapters = {}
+    for nm in present:
+        m = re.fullmatch(r'F(\d+) ((?:externref|multivalue) shim(?: multivalue shim)?)', nm)
+        if m:
+            adapters.setdefault(int(m[1]), []).append(nm)
     manifest = []
     for name, (functions, _) in sorted(parts.items()):
         keep = [f'F{i}' for i in functions if f'F{i}' in present]
+        keep += [a for i in functions for a in adapters.get(i, [])]
+        keep += [a for i, p in imports.items() if p == name for a in adapters.get(i, [])]
         if keep:
             manifest.append('\n'.join([name] + keep))
     (work / 'manifest.txt').write_text('\n\n'.join(manifest) + '\n')
@@ -237,6 +290,8 @@ def split(raw, out, work):
     listing = {m: [p for p in ps_ if p in loaded] for m, ps_ in sorted(loads.items())}
     listing['core'] = []
     (out / 'parts.json').write_text(json.dumps(listing, indent=1) + '\n')
+    # The glue, split as the modules are.
+    subprocess.run(['node', str(Path(__file__).resolve().parent / 'glue.mjs'), str(out)], check=True)
 
 
 if __name__ == '__main__':

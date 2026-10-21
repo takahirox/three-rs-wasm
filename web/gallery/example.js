@@ -1,7 +1,7 @@
 // The script of every ported example's page ( examples/<id>.html ):
 // tools/gallery/pages.mjs writes each page with this script specialized for
-// its example. PAGE_ID is the example's id, PAGE_MODULE the module whose parts
-// carry its program ( modules.json ), PAGE_PROGRAM the program, its Rust
+// its example. PAGE_ID is the example's id, PAGE_PARTS the parts that carry
+// its program ( its module's, parts.json ), PAGE_PROGRAM the program, its Rust
 // function, and PAGE_EXAMPLE the gallery's number for it, whose conditions the
 // generator evaluates: a page keeps only its own example's code.
 import './upstream.js';
@@ -9,7 +9,7 @@ import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
 import {explain, text} from './diagnostic.js';
 // The gallery's Wasm: the primary module and the example module's parts.
-import {loadRuntime} from './runtime.js?v=split-1';
+import {loadParts} from './runtime.js?v=parts-1';
 const canvas = document.querySelector('canvas');
 const loading = document.querySelector('#loading');
 let app;
@@ -26,8 +26,8 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
    await startTslEditor(loading);
   } else {
   // Keep the glue and Wasm on the same cache revision when the runtime API changes.
-  const runtimeRevision = 'page-1';
-  const runtime = await loadRuntime(PAGE_MODULE, runtimeRevision);
+  const runtimeRevision = 'parts-1';
+  const runtime = await loadParts(PAGE_PARTS, runtimeRevision);
     if ([498, 499, 500].includes(PAGE_EXAMPLE)) {
    // The WebXR examples: the page owns the XR session ( XRGPUBinding ), the program the scene.
    canvas.hidden = false;
@@ -51,7 +51,7 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
    const canvas2=document.createElement('canvas');container.append(canvas2);
    const ui=document.createElement('div');ui.id='ui';ui.innerHTML='<button id="button">START JANK</button><br/><span id="result"></span>';document.body.append(ui);
    ui.querySelector('#button').addEventListener('click',()=>app?.tsl_parameter(0,1));
-   const worker=new Worker(new URL(`offscreen-worker.js?v=${runtimeRevision}&module=${PAGE_MODULE}`,document.baseURI),{type:'module'});
+   const worker=new Worker(new URL(`offscreen-worker.js?v=${runtimeRevision}&parts=${encodeURIComponent(JSON.stringify(PAGE_PARTS))}`,document.baseURI),{type:'module'});
    worker.onmessage=e=>{if(e.data.error)canvas2.dataset.error=e.data.error;else canvas2.dataset.frames=e.data.frames;};
    window.offscreenWorker=worker;
    queueMicrotask(()=>{const offscreen=canvas2.transferControlToOffscreen();worker.postMessage({drawingSurface:offscreen,width:canvas2.clientWidth,height:canvas2.clientHeight,pixelRatio:devicePixelRatio,matcap:new URL('assets/offscreen/matcap-porcelain-white.jpg',document.baseURI).href},[offscreen]);});

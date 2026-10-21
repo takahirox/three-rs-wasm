@@ -30,8 +30,14 @@ jobs:
         run: |
           curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_127/binaryen-version_127-x86_64-linux.tar.gz | tar -xz -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/binaryen-version_127/bin" >> "$GITHUB_PATH"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
       - name: Build the site
         run: |
+          # The split's glue and the example pages run on Node.js ( acorn ).
+          npm ci --ignore-scripts
           cargo install wasm-pack --locked --version 0.14.0
           scripts/build-gallery
           ( cd tsl && wasm-pack build --target web --profile web --out-dir ../web/tsl-pkg --no-typescript )
@@ -72,8 +78,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
           npm ci --ignore-scripts
-          # Every example's page is current ( tools/gallery/pages.mjs ).
-          node tools/gallery/pages.mjs --check
           npx playwright install --with-deps chromium
           npx playwright test --config playwright.pages.config.js --shard=${{ matrix.shard }}/4
 

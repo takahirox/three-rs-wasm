@@ -31,6 +31,11 @@ def main():
     if not all(path.is_file() for path in required):
         raise SystemExit("Build web/pkg/gallery with scripts/build-gallery first")
     bundle = sorted(path for path in gallery.rglob("*") if path.is_file())
+    # Every example's page, which the build writes with its parts.
+    pages = sorted((ROOT / "web/gallery/examples").glob("*.html"))
+    if not pages:
+        raise SystemExit("Build web/gallery/examples with scripts/build-gallery first")
+    bundle += pages
     # webgpu_tsl_editor's own Wasm: the three-tsl crate ( three r186 transpiled to Rust ).
     tsl = [ROOT / "web/tsl-pkg" / name for name in ("three_tsl.js", "three_tsl_bg.wasm")]
     if not all(path.is_file() for path in tsl):

@@ -19,19 +19,28 @@ built.
 `scripts/build-gallery` links the whole gallery once, every feature on, and
 splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
 
-- `three_rs_wasm_bg.wasm`, the primary module, with wasm-bindgen's glue:
-  the library, the shell and the code no single module owns;
+- `three_rs_wasm_bg.wasm`, the primary module, with its part of
+  wasm-bindgen's glue ( `three_rs_wasm.js` ): the library, the shell and the
+  code no single module owns;
 - `parts/<module>.wasm`, one part per module: the functions and the read-only
-  data only that module reaches;
+  data only that module reaches, its programs among them;
 - `parts/chunk<n>.wasm`: code and data that several modules share and the
   shell does not, one chunk per set of modules ( sets under 5 KB stay in the
   primary module );
-- `parts.json`, the parts each module loads.
+- `parts/<name>.js`, a part's glue: the wrappers of the exports it holds ( its
+  programs, its classes' methods ) and the JavaScript functions only it calls
+  ( `tools/gallery/split/glue.mjs` );
+- `parts.json`, the parts each module loads and those with glue.
 
-A page loads the primary module, then its module's parts
-( `web/gallery/runtime.js` ); `web/gallery/modules.json` maps each example to
-its module ( `tools/gallery/modules.py`: the module whose file defines the
-example's program ). The parts import the primary module's memory, stack pointer,
+A page loads the primary module, then its parts ( `web/gallery/runtime.js` );
+`web/gallery/modules.json` maps each example to its module
+( `tools/gallery/modules.py`: the module whose file defines the example's
+program ), and the build writes the module's parts into the example's page.
+wasm-bindgen's adapters go with what they adapt: an export's ( a program's
+`externref shim` ) into the part that holds the program, which exports it
+itself, and a JavaScript function's into the part that alone calls it, which
+imports that function from its glue rather than through the primary module.
+The primary module's glue keeps what the library and the shell call. The parts import the primary module's memory, stack pointer,
 function tables and functions, and a part's instantiation writes its
 functions into the table the primary module calls them through and its data
 into the shared memory, at the addresses the linker gave it. The page then
@@ -80,28 +89,40 @@ output encoding and target format, on-demand rendering ); its scene object
 implements `browser::example::Example`, whose hooks the frame loop and the
 page's input call. Nothing dispatches on an example number.
 
-A page loads the primary module and its module's parts, then calls its
-program. `tools/gallery/pages.mjs` writes the pages ( `--check` fails on a
-stale one ): the markup is `tools/gallery/page.html`, and a ported example's
-script is `web/gallery/example.js` with the example's id, module and program
-written in and the code for the other examples dropped ( the generator
-evaluates the conditions on `PAGE_EXAMPLE`, the catalog's number for the
-example ). Examples not ported get a page with their diagnostic
-( `web/gallery/diagnostic.js` ). `web/gallery/example.html?id=<id>`, the
-gallery's earlier URL, forwards to the example's page.
+A page loads the primary module and its glue, then its parts and their glue,
+and calls its program. `scripts/build-gallery` writes the pages with
+`tools/gallery/pages.mjs`, as the parts are its output: the markup is
+`tools/gallery/page.html`, and a ported example's script is
+`web/gallery/example.js` with the example's id, parts and program written in,
+the code for the other examples dropped ( the generator evaluates the
+conditions on `PAGE_EXAMPLE`, the catalog's number for the example ) and the
+imports the rest does not use removed. Examples not ported get a page with
+their diagnostic ( `web/gallery/diagnostic.js` ).
+`web/gallery/example.html?id=<id>`, the gallery's earlier URL, forwards to
+the example's page.
 
 The WebXR examples' programs return the app `web/gallery/xr.js` drives with
 the session's frames; the transpiler's page calls its module's
 `tsl_transpile`, and the TSL editor's runs on the three-tsl crate's Wasm.
 
-## Sizes ( 2026-10-20 )
+## Sizes ( 2026-10-21 )
 
-| Build | Wasm | gzip |
+| Build | Size | gzip |
 | --- | ---: | ---: |
-| Primary module | 2.96 MB | 1.10 MB |
-| 293 parts ( 219 modules, 74 chunks ) | 24.0 MB | 7.4 MB |
-| A page: primary and parts, median over the examples | 3.10 MB | 1.16 MB |
-| A page, largest | 5.15 MB | 1.75 MB |
+| Primary module | 2.82 MB | 1.06 MB |
+| Its glue ( `three_rs_wasm.js` ) | 235 KB | 26 KB |
+| 293 parts ( 219 modules, 74 chunks ) | 26.1 MB | 8.0 MB |
+| 220 parts' glue | 172 KB | 71 KB |
+| A page's Wasm: primary and parts, median over the examples | 2.99 MB | 1.12 MB |
+| A page's Wasm, largest | 5.03 MB | 1.71 MB |
+| A page's glue, median | 236 KB | 26 KB |
+
+With one glue for every example ( 2026-10-20 ), the glue was 342 KB ( 37 KB
+compressed ) on every page and the primary module 2.96 MB: it held the
+wrappers of every example's program and the JavaScript functions the parts
+call. Giving every example its own program added about 2 MB to the parts
+together ( 24.0 MB before ), a few kilobytes per program; a page's Wasm went
+from 3.10 MB at the median to 2.99 MB.
 
 A page loads up to 24 parts. Before the split, a page's package was 2.19 MB
 compressed at the median over the examples ( 2.78 MB at most ), and the

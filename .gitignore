@@ -7,3 +7,4 @@ __pycache__/
 /cesium.token
 tsl/target/
 /web/tsl-pkg/
+/web/gallery/examples/

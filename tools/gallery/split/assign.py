@@ -11,7 +11,13 @@ import bisect
 import collections
 import re
 import subprocess
+import sys
+from pathlib import Path
+
 import wasm
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from modules import programs  # noqa: E402
 
 MEMORY = {3, 4, 5, 11, 14, 15, 16, 17, 23}
 FUNCTION = {0, 1, 2, 12, 18, 19, 24, 26}
@@ -34,8 +40,16 @@ EXPORTS = {
     'offscreen_': 'offscreen',
 }
 
+# Each example's program ( its export ) -> its module ( tools/gallery/modules.py ).
+PROGRAMS = programs()
+
 
 def export_module(name):
+    # An example's program belongs to the module that defines it ( the linked
+    # module's export names carry wasm-bindgen's crate hash ).
+    program = re.sub(r'_[0-9a-f]{16}$', '', name)
+    if program in PROGRAMS:
+        return PROGRAMS[program]
     for prefix, module in EXPORTS.items():
         if name.startswith(prefix):
             return module
@@ -225,6 +239,9 @@ def assign(path, modules, min_chunk=5000):
     chunks = {k: f'chunk{i}' for i, k in enumerate(sorted(
         (k for k, v in shared.items() if v >= min_chunk), key=lambda k: (-shared[k], sorted(k))))}
     parts = collections.defaultdict(lambda: ([], []))
+    # The JavaScript functions only a part calls: wasm-bindgen's adapters of them
+    # go into it ( build.py ).
+    imports = {}
     data_part = {}
     for x, ms in reached.items():
         part = next(iter(ms)) if len(ms) == 1 else chunks.get(frozenset(ms))
@@ -233,6 +250,8 @@ def assign(path, modules, min_chunk=5000):
         if x[0] == 'f':
             if x[1] >= nimp:
                 parts[part][0].append(x[1])
+            else:
+                imports[x[1]] = part
         elif syms[x[1]][4][0] == 0 and data[x[1]][1]:  # read-only data only
             data_part[x[1]] = part
     # Merged constants let symbols share bytes: a symbol whose bytes overlap
@@ -253,7 +272,7 @@ def assign(path, modules, min_chunk=5000):
             parts[part][1].append(data[k])
     loads = {m: sorted([m] + [c for k, c in chunks.items() if m in k]) for m in modules}
     check(edges, exports, unit_roots, owner, parts, loads, data, names)
-    return dict(parts), loads
+    return dict(parts), loads, imports
 
 
 def check(edges, exports, unit_roots, owner, parts, loads, data, names):

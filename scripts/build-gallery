@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Build the examples gallery into web/pkg/gallery/: every example linked once
 # ( gallery/ with its default features ), then split into the primary module and
-# a part per module and per chunk of code modules share
-# ( tools/gallery/split/build.py ). A page loads the primary module and its
-# module's parts ( web/gallery/runtime.js, web/gallery/modules.json ).
+# a part per module and per chunk of code modules share, each with its glue
+# when it needs its own ( tools/gallery/split/build.py ), and every example's
+# page ( web/gallery/examples/, tools/gallery/pages.mjs ), which loads the
+# primary module and its parts ( web/gallery/runtime.js ). The split and the
+# pages run on Node.js with the repository's packages ( npm ci ).
 #
 #   scripts/build-gallery [--dev]
 #
-# --dev builds the shell alone ( the examples it dispatches itself ),
+# --dev builds the shell alone ( the examples whose programs it defines ),
 # unoptimized and unsplit, as the MVP checks use it.
 # Splitting needs Binaryen's wasm-split and wasm-opt ( version 127 or later ).
 set -euo pipefail
@@ -20,6 +22,7 @@ if [ "${1:-}" = "--dev" ]; then
     wasm-pack --quiet build --target web --out-dir "$OUT" --out-name three_rs_wasm --dev --no-typescript \
       -- --no-default-features )
   echo '{}' > "$OUT/parts.json"
+  node "$ROOT/tools/gallery/pages.mjs"
   exit
 fi
 # The split reads every reference from the linker's relocations
@@ -33,3 +36,5 @@ fi
     --release --no-opt --no-typescript )
 python3 "$ROOT/tools/gallery/split/build.py" \
   "$ROOT/target/gallery/wasm32-unknown-unknown/release/three_rs_gallery.wasm" "$OUT"
+# Every example's page, with the parts it loads ( tools/gallery/pages.mjs ).
+node "$ROOT/tools/gallery/pages.mjs"

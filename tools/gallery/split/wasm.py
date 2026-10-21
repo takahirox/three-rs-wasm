@@ -461,3 +461,10 @@ def exports(b, secs):
         idx, i = leb(b, i + 1)
         out.append((nm, kind, idx))
     return out
+
+
+def encode_exports(entries):
+    out = bytearray(enc(len(entries)))
+    for nm, kind, idx in entries:
+        out += enc(len(nm.encode())) + nm.encode() + bytes([kind]) + enc(idx)
+    return bytes(out)

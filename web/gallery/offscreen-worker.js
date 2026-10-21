@@ -8,9 +8,9 @@ self.onmessage = message => receive(message);
 await import('./upstream.js');
 const params = new URL(location.href).searchParams;
 const runtime = params.get('v') ?? '';
-// The page's module ( tools/gallery/modules.py ) and its parts.
-const {loadRuntime} = await import(`./runtime.js?v=${runtime}`);
-const {offscreen_worker, offscreen_time, offscreen_samples} = await loadRuntime(params.get('module'), runtime);
+// The page's parts ( tools/gallery/pages.mjs ).
+const {loadParts} = await import(`./runtime.js?v=${runtime}`);
+const {offscreen_worker, offscreen_time, offscreen_samples} = await loadParts(JSON.parse(params.get('parts')), runtime);
 receive = message => {
  const data = message.data;
  if ('time' in data) { offscreen_time(data.time); return; }

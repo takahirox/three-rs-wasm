@@ -1,16 +1,17 @@
 // Every example's own page, web/gallery/examples/<id>.html, as three.js has a
 // page per example. A ported example's page loads the gallery's Wasm ( the
-// library and the parts that carry the example's program ) and runs its
-// program; the other examples' pages show their diagnostic
-// ( web/gallery/diagnostic.js ).
+// library, then the parts that carry the example's program, each with its
+// glue ) and runs its program; the other examples' pages show their diagnostic
+// ( web/gallery/diagnostic.js ). scripts/build-gallery writes them, as the
+// parts are its output ( web/pkg/gallery/parts.json ).
 //
 // A ported example's script is web/gallery/example.js specialized for it:
-// PAGE_ID, PAGE_MODULE ( modules.json ) and PAGE_PROGRAM written in, the
-// conditions on PAGE_EXAMPLE, the gallery's number for the example, evaluated
-// and the code for other examples dropped. The markup is tools/gallery/page.html.
+// PAGE_ID, PAGE_PARTS ( its module's parts ) and PAGE_PROGRAM written in, the
+// conditions on PAGE_EXAMPLE, the gallery's number for the example, evaluated,
+// the code for other examples dropped and the imports it no longer uses
+// removed. The markup is tools/gallery/page.html.
 //
-//   node tools/gallery/pages.mjs          write the pages
-//   node tools/gallery/pages.mjs --check  fail when a page is stale
+//   node tools/gallery/pages.mjs
 import * as acorn from 'acorn';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -95,7 +96,7 @@ function specialize(src, node, page) {
 			case 'Identifier':
 				if (node.name === 'PAGE_EXAMPLE') edits.push([node.start, node.end, String(n)]);
 				else if (node.name === 'PAGE_ID') edits.push([node.start, node.end, `'${page.id}'`]);
-				else if (node.name === 'PAGE_MODULE') edits.push([node.start, node.end, `'${page.module}'`]);
+				else if (node.name === 'PAGE_PARTS') edits.push([node.start, node.end, JSON.stringify(page.parts)]);
 				else if (node.name === 'PAGE_PROGRAM') edits.push([node.start, node.end, page.program]);
 				return;
 			case 'IfStatement': {
@@ -157,6 +158,35 @@ function specialize(src, node, page) {
 	return out + src.slice(at, node.end);
 }
 
+// The script without the imports it does not use; an import of a module for
+// its effects stays.
+function withoutUnusedImports(script) {
+	const ast = acorn.parse(script, {ecmaVersion: 'latest', sourceType: 'module'});
+	const used = new Set();
+	const visit = (n, parent) => {
+		if (!n || typeof n.type !== 'string' || n.type === 'ImportDeclaration') return;
+		if (n.type === 'Identifier' && !(parent?.type === 'MemberExpression' && parent.property === n && !parent.computed)
+			&& !(parent?.type === 'Property' && parent.key === n && !parent.computed && !parent.shorthand)) used.add(n.name);
+		for (const k of Object.keys(n)) {
+			const v = n[k];
+			if (Array.isArray(v)) v.forEach(c => visit(c, n));
+			else if (v && typeof v.type === 'string') visit(v, n);
+		}
+	};
+	visit(ast, null);
+	const edits = [];
+	for (const node of ast.body) {
+		if (node.type !== 'ImportDeclaration' || !node.specifiers.length) continue;
+		const kept = node.specifiers.filter(s => used.has(s.local.name));
+		if (kept.length === node.specifiers.length) continue;
+		const names = kept.map(s => s.imported && s.imported.name !== s.local.name ? `${s.imported.name} as ${s.local.name}` : s.local.name);
+		edits.push([node.start, node.end, kept.length ? `import {${names.join(', ')}} from ${node.source.raw};` : '']);
+	}
+	let out = '', at = 0;
+	for (const [a, b, t] of edits) { out += script.slice(at, a) + t; at = b; }
+	return out + script.slice(at);
+}
+
 function importmap(id) {
 	// The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
 	// Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
@@ -172,6 +202,11 @@ function importmap(id) {
 export function pages() {
 	const catalog = JSON.parse(fs.readFileSync(path.join(GALLERY, 'catalog.json'), 'utf8'));
 	const modules = JSON.parse(fs.readFileSync(path.join(GALLERY, 'modules.json'), 'utf8')).examples;
+	// The parts each module loads and those with glue ( tools/gallery/split/ );
+	// an unsplit build has none.
+	const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/pkg/gallery/parts.json'), 'utf8'));
+	const glue = new Set(listing.glue ?? []);
+	const partsOf = module => ((listing.modules ?? listing)[module] ?? []).map(name => [name, glue.has(name)]);
 	const template = fs.readFileSync(path.join(ROOT, 'tools/gallery/page.html'), 'utf8');
 	const src = fs.readFileSync(path.join(GALLERY, 'example.js'), 'utf8');
 	const ast = acorn.parse(src, {ecmaVersion: 'latest', sourceType: 'module'});
@@ -179,7 +214,7 @@ export function pages() {
 	for (const entry of catalog.examples) {
 		const ported = entry.port && entry.status !== 'excluded';
 		const script = ported
-			? specialize(src, ast, {id: entry.id, example: entry.port.example, module: modules[entry.id] ?? 'core', program: entry.id.replaceAll('-', '_')})
+			? withoutUnusedImports(specialize(src, ast, {id: entry.id, example: entry.port.example, parts: partsOf(modules[entry.id] ?? 'core'), program: entry.id.replaceAll('-', '_')}))
 				// Without the template's own comment and its emptied lines.
 				.replace(/^(\/\/.*\n)+/, '').split('\n').filter(line => line.trim()).join('\n')
 			: `import {explain} from './diagnostic.js';\nexplain('${entry.id}');`;
@@ -193,17 +228,7 @@ export function pages() {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
 	const out = pages();
-	const existing = fs.existsSync(OUT) ? fs.readdirSync(OUT).filter(f => f.endsWith('.html')) : [];
-	if (process.argv.includes('--check')) {
-		const stale = [...out].filter(([f, html]) => !fs.existsSync(path.join(OUT, f)) || fs.readFileSync(path.join(OUT, f), 'utf8') !== html).map(([f]) => f);
-		stale.push(...existing.filter(f => !out.has(f)));
-		if (stale.length) {
-			console.error(`web/gallery/examples is stale ( ${stale.slice(0, 5).join(', ')}${stale.length > 5 ? ', …' : ''} ); run node tools/gallery/pages.mjs`);
-			process.exit(1);
-		}
-	} else {
-		fs.mkdirSync(OUT, {recursive: true});
-		for (const f of existing) if (!out.has(f)) fs.unlinkSync(path.join(OUT, f));
-		for (const [f, html] of out) fs.writeFileSync(path.join(OUT, f), html);
-	}
+	fs.rmSync(OUT, {recursive: true, force: true});
+	fs.mkdirSync(OUT, {recursive: true});
+	for (const [f, html] of out) fs.writeFileSync(path.join(OUT, f), html);
 }
