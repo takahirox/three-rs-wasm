@@ -1,0 +1,51 @@
+{
+ "webgpu_clipping": {
+  "Knot Clipping Group/Enabled": "local enabled",
+  "Knot Clipping Group/Shadows": "clip shadows",
+  "Knot Clipping Group/Intersection": "intersection",
+  "Knot Clipping Group/Plane": "plane",
+  "Global Clipping Group/Enabled": "global enabled",
+  "Global Clipping Group/Plane": "global plane"
+ },
+ "webgpu_tsl_halftone": {
+  "ambient intensity": "ambient",
+  "directional intensity": "directional",
+  "🎨 default material/color": "default color"
+ },
+ "webgpu_shadowmap_csm": {
+  "updateHelper": "update"
+ },
+ "webgpu_postprocessing_afterimage": {
+  "value": "damp"
+ },
+ "webgpu_loader_gltf": {
+  "backgroundBlurriness": "Background blur"
+ },
+ "webgpu_compute_points": {
+  "x": "limit x",
+  "y": "limit y"
+ },
+ "webgpu_compute_reduce": {
+  "Left Display State": "Left Display Mode",
+  "Right Display State": "Right Display Mode"
+ },
+ "webgpu_custom_fog": {
+  "newSeed": "regenerate"
+ },
+ "webgpu_lights_dynamic": {
+  "removeAll": "remove all lights"
+ },
+ "webgpu_test_memory": {
+  "recreateLight": "Recreate Directional Light",
+  "start": "Start Creating Meshes",
+  "stop": "Stop Creating Meshes"
+ },
+ "webgpu_tsl_angular_slicing": {
+  "color": "sliceColor"
+ },
+ "webgpu_tsl_raging_sea": {
+  "largeFrequencyX": "frequency x",
+  "largeFrequencyY": "frequency y",
+  "normalComputeShift": "normal shift"
+ }
+}

@@ -1,17 +1,21 @@
 // The original examples' UI on the gallery's ports: their stats.js, lil-gui
 // panels and WebGPU Inspector, built with the same libraries ( three r186's
 // examples/jsm, from the CDN the TSL editor already uses ) from the structure
-// each pinned page builds ( specs.json, tools/gallery/ui/extract.mjs ).
+// each pinned page builds ( specs.json, tools/gallery/ui/extract.mjs ). An
+// example's page carries its own part of the records ( #gallery-ui:
+// tools/gallery/pages.mjs ).
 // Controllers write to proxy objects whose properties forward to the port's
 // parameters ( `app.tsl_parameter` ), matched to the gallery's control list
 // by name.
 export const LIBS = 'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/';
 
-let specsPromise = null;
-export function loadSpecs() {
+// The page's records: { spec ( specs.json ), page ( pages.json ), aliases
+// ( aliases.json: the gallery's names for controllers whose original names
+// differ, "folder/name" or "name" ), extras ( a module of extras/ ) }.
+function pageRecords() {
 
-	specsPromise ??= fetch( new URL( 'specs.json', import.meta.url ) ).then( r => r.ok ? r.json() : {} ).catch( () => ( {} ) );
-	return specsPromise;
+	const element = document.getElementById( 'gallery-ui' );
+	return element ? JSON.parse( element.textContent ) : {};
 
 }
 
@@ -63,23 +67,6 @@ function candidates( node, folder ) {
 	return names.filter( n => n !== undefined && n !== null );
 
 }
-
-// The gallery's names for controllers whose original names differ, by
-// example: "folder/name" or "name".
-const ALIASES = {
-	webgpu_clipping: { 'Knot Clipping Group/Enabled': 'local enabled', 'Knot Clipping Group/Shadows': 'clip shadows', 'Knot Clipping Group/Intersection': 'intersection', 'Knot Clipping Group/Plane': 'plane', 'Global Clipping Group/Enabled': 'global enabled', 'Global Clipping Group/Plane': 'global plane' },
-	webgpu_tsl_halftone: { 'ambient intensity': 'ambient', 'directional intensity': 'directional', '🎨 default material/color': 'default color' },
-	webgpu_shadowmap_csm: { updateHelper: 'update' },
-	webgpu_postprocessing_afterimage: { value: 'damp' },
-	webgpu_loader_gltf: { backgroundBlurriness: 'Background blur' },
-	webgpu_compute_points: { x: 'limit x', y: 'limit y' },
-	webgpu_compute_reduce: { 'Left Display State': 'Left Display Mode', 'Right Display State': 'Right Display Mode' },
-	webgpu_custom_fog: { newSeed: 'regenerate' },
-	webgpu_lights_dynamic: { removeAll: 'remove all lights' },
-	webgpu_test_memory: { recreateLight: 'Recreate Directional Light', start: 'Start Creating Meshes', stop: 'Stop Creating Meshes' },
-	webgpu_tsl_angular_slicing: { color: 'sliceColor' },
-	webgpu_tsl_raging_sea: { largeFrequencyX: 'frequency x', largeFrequencyY: 'frequency y', normalComputeShift: 'normal shift' }
-};
 
 // The gallery's controls of an example: [ name, min, max, value, step ]
 // ( see example.js ), and the inputs of its own panel. A binding converts a
@@ -256,7 +243,7 @@ function dress( element, node ) {
 
 }
 
-// Elements the page added to a folder ( live readouts: see extras.js ).
+// Elements the page added to a folder ( live readouts: see extras/ ).
 function addExtras( gui, extras = [] ) {
 
 	for ( const { index, html } of extras ) {
@@ -487,10 +474,8 @@ export async function installInspector( spec, binder, canvas ) {
 // The original page's chrome: its stylesheet in place of the gallery's, the
 // <style> blocks of its head and its #info ( pages.json, tools/gallery/ui/page.py ).
 // Elements the port already made ( same id ) are not added twice.
-export async function installPage( id ) {
+export async function installPage( page ) {
 
-	const pages = await fetch( new URL( 'pages.json', import.meta.url ) ).then( r => r.ok ? r.json() : {} ).catch( () => ( {} ) );
-	const page = pages[ id ];
 	if ( ! page ) return null;
 	// The originals are English pages: their generic fonts resolve as theirs do.
 	document.documentElement.lang = 'en';
@@ -535,17 +520,16 @@ export async function installPage( id ) {
 
 // The example's recorded UI on the gallery page. The gallery's own control
 // panel keeps only the controls no original controller stands for.
-export async function installUi( id, app, settings ) {
+export async function installUi( app, settings ) {
 
-	await installPage( id );
-	const spec = ( await loadSpecs() )[ id ];
+	const { spec, page, aliases, extras } = pageRecords();
+	await installPage( page );
 	if ( ! spec || spec.error ) return null;
 	const controls = window.galleryControls ?? [];
-	const binder = bindings( controls, app, settings, ALIASES[ id ] );
+	const binder = bindings( controls, app, settings, aliases );
 	const stats = await installStats( spec.stats );
 	const guis = await installGuis( spec.guis, binder );
-	const { extras } = await import( './extras.js' );
-	extras[ id ]?.( guis );
+	if ( extras ) ( await import( `./extras/${ extras }.js` ) ).default( guis );
 	const canvas = document.querySelector( 'canvas' );
 	const inspectors = [];
 	for ( const i of spec.inspectors ) inspectors.push( await installInspector( i, binder, canvas ) );

@@ -187,6 +187,27 @@ function withoutUnusedImports(script) {
 	return out + script.slice(at);
 }
 
+// The records of the original's UI an example's page carries ( web/gallery/ui/ui.js ):
+// its spec ( specs.json ), its page's chrome ( pages.json ), the gallery's
+// names for its controllers ( aliases.json ) and its live readout ( extras/ ).
+function uiRecords() {
+	const ui = path.join(GALLERY, 'ui');
+	const read = file => JSON.parse(fs.readFileSync(path.join(ui, file), 'utf8'));
+	const specs = read('specs.json'), chrome = read('pages.json'), aliases = read('aliases.json');
+	const extras = new Map();
+	for (const file of fs.readdirSync(path.join(ui, 'extras')).filter(f => f.endsWith('.js'))) {
+		const ast = acorn.parse(fs.readFileSync(path.join(ui, 'extras', file), 'utf8'), {ecmaVersion: 'latest', sourceType: 'module'});
+		const list = ast.body.find(n => n.type === 'ExportNamedDeclaration' && n.declaration?.declarations?.[0]?.id.name === 'examples');
+		for (const e of list.declaration.declarations[0].init.elements) extras.set(e.value, file.slice(0, -3));
+	}
+	return id => {
+		const records = {spec: specs[id], page: chrome[id], aliases: aliases[id], extras: extras.get(id)};
+		if (!Object.values(records).some(v => v !== undefined)) return '';
+		// A script element's text: no '<' ( '</script', '<!--' ) changes how it parses.
+		return `<script type="application/json" id="gallery-ui">${JSON.stringify(records).replaceAll('<', '\\u003c')}</script>\n`;
+	};
+}
+
 function importmap(id) {
 	// The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
 	// Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
@@ -210,6 +231,7 @@ export function pages() {
 	const template = fs.readFileSync(path.join(ROOT, 'tools/gallery/page.html'), 'utf8');
 	const src = fs.readFileSync(path.join(GALLERY, 'example.js'), 'utf8');
 	const ast = acorn.parse(src, {ecmaVersion: 'latest', sourceType: 'module'});
+	const ui = uiRecords();
 	const out = new Map();
 	for (const entry of catalog.examples) {
 		const ported = entry.port && entry.status !== 'excluded';
@@ -220,7 +242,7 @@ export function pages() {
 			: `import {explain} from './diagnostic.js';\nexplain('${entry.id}');`;
 		if (script.includes('</script')) throw new Error(`${entry.id}: the script closes its element`);
 		const title = `three-rs-wasm - ${entry.id.replaceAll('_', ' - ')}`;
-		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%SCRIPT%', () => script);
+		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%UI%', () => ported ? ui(entry.id) : '').replace('%SCRIPT%', () => script);
 		out.set(`${entry.id}.html`, html);
 	}
 	return out;

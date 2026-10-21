@@ -457,7 +457,7 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
    // ( tests/browser/gallery-ui.spec.js ).
    if (window.galleryUi) {
     const {installUi} = await import(`./ui/ui.js?v=${runtimeRevision}`);
-    await installUi(PAGE_ID, app, settings).catch(e => {console.warn('gallery UI', e);document.body.dataset.uiError = String(e);document.body.dataset.ui = 'ready';});
+    await installUi(app, settings).catch(e => {console.warn('gallery UI', e);document.body.dataset.uiError = String(e);document.body.dataset.ui = 'ready';});
    }
    new MutationObserver(() => { if (canvas.dataset.error && !closing) {closing = true; release(); settings.hidden = true; explain(PAGE_ID, canvas.dataset.error, 'error');} }).observe(canvas, {attributes:true, attributeFilter:['data-error']});
   }

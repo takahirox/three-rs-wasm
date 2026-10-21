@@ -35,6 +35,12 @@ the tool when the pinned examples change.
 
 `scripts/check-gallery` checks pages.json against the pinned sources.
 
+An example's page carries its own part of these records, and nothing of the
+other examples': `tools/gallery/pages.mjs` writes its spec, its page chrome,
+the gallery's names for its controllers whose original names differ
+(`web/gallery/ui/aliases.json`) and its readout module (`extras/`) into the
+page as JSON (`#gallery-ui`).
+
 ## The gallery side (`web/gallery/ui/`)
 
 Each library is the r186 package's, loaded from jsDelivr. They are identical
@@ -53,8 +59,9 @@ to the pinned copies.
   (`app.tsl_parameter`).
 - The gallery's own panel keeps only the controls no original controller
   stands for.
-- `extras.js` keeps the readouts some originals add to folders up to date,
-  with the original's formulas:
+- `extras/` keeps the readouts some originals add to folders up to date,
+  with the original's formulas, a module per readout loaded by the pages
+  that show it:
   - draw calls and memory (the instancing pages);
   - path-tracer samples;
   - the active base action.
