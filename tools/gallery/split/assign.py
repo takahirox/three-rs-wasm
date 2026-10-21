@@ -240,12 +240,17 @@ def assign(path, modules, min_chunk=5000):
         (k for k, v in shared.items() if v >= min_chunk), key=lambda k: (-shared[k], sorted(k))))}
     parts = collections.defaultdict(lambda: ([], []))
     # The JavaScript functions only a part calls: wasm-bindgen's adapters of them
-    # go into it ( build.py ).
+    # go into it ( build.py ); those several modules' parts call, the modules.
     imports = {}
     data_part = {}
     for x, ms in reached.items():
         part = next(iter(ms)) if len(ms) == 1 else chunks.get(frozenset(ms))
         if part is None:
+            # A JavaScript function several modules call, with no chunk of
+            # their own: its adapter stays in the primary module, and the
+            # modules' parts hand over the function ( build.py ).
+            if x[0] == 'f' and x[1] < nimp:
+                imports[x[1]] = sorted(ms)
             continue
         if x[0] == 'f':
             if x[1] >= nimp:

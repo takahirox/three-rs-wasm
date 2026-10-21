@@ -240,6 +240,12 @@ def split(raw, out, work):
         keep += [a for i, p in imports.items() if p == name for a in adapters.get(i, [])]
         if keep:
             manifest.append('\n'.join([name] + keep))
+    # JavaScript functions several modules' parts call through the primary
+    # module: each of those parts' glue hands the function to the primary
+    # module's glue ( glue.mjs ), so the snippets they come from load with them.
+    fields = [f for _, f, kind, _ in wasm.imports(b, wasm.sections(b)) if kind == 0]
+    (work / 'shared-imports.json').write_text(json.dumps(
+        {fields[i]: [m for m in p if m in parts] for i, p in imports.items() if isinstance(p, list)}))
     (work / 'manifest.txt').write_text('\n\n'.join(manifest) + '\n')
     subprocess.run(['wasm-split', '--multi-split', str(bg), '--manifest', str(work / 'manifest.txt'),
                     '--out-prefix', str(work) + '/', '-o', str(work / 'primary.wasm'),
@@ -291,7 +297,8 @@ def split(raw, out, work):
     listing['core'] = []
     (out / 'parts.json').write_text(json.dumps(listing, indent=1) + '\n')
     # The glue, split as the modules are.
-    subprocess.run(['node', str(Path(__file__).resolve().parent / 'glue.mjs'), str(out)], check=True)
+    subprocess.run(['node', str(Path(__file__).resolve().parent / 'glue.mjs'), str(out),
+                    str(work / 'shared-imports.json')], check=True)
 
 
 if __name__ == '__main__':

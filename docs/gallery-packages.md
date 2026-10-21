@@ -40,7 +40,13 @@ wasm-bindgen's adapters go with what they adapt: an export's ( a program's
 `externref shim` ) into the part that holds the program, which exports it
 itself, and a JavaScript function's into the part that alone calls it, which
 imports that function from its glue rather than through the primary module.
-The primary module's glue keeps what the library and the shell call. The parts import the primary module's memory, stack pointer,
+The primary module's glue keeps what the library and the shell call, and
+none of the snippets ( the Rust modules' `inline_js`: Ammo, Jolt, IFC,
+MaterialX, Rhino, meshoptimizer, HTML textures ): a part's glue imports the
+snippets its functions come from. A snippet function several modules call
+without a chunk of their own ( Ammo's loader and soft-body world ) keeps its
+adapter in the primary module, whose glue forwards it to what those modules'
+glue hands over as their parts load. The parts import the primary module's memory, stack pointer,
 function tables and functions, and a part's instantiation writes its
 functions into the table the primary module calls them through and its data
 into the shared memory, at the addresses the linker gave it. The page then

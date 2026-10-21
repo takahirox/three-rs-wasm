@@ -168,12 +168,52 @@ function rewrite(node, part, local) {
 	return s + src.slice(at, node.end);
 }
 
+// The module without the imports nothing in it uses: the snippets ( the
+// inline_js of the Rust modules ) that only parts call load with those parts.
+function withoutUnusedImports(code) {
+	const tree = acorn.parse(code, {ecmaVersion: 'latest', sourceType: 'module'});
+	const used = new Set();
+	const visit = (n, parent, key) => {
+		if (!n || typeof n.type !== 'string' || n.type === 'ImportDeclaration') return;
+		if (n.type === 'Identifier' && !(parent?.type === 'MemberExpression' && key === 'property' && !parent.computed)
+			&& !(parent?.type === 'Property' && key === 'key' && !parent.computed && !parent.shorthand)) used.add(n.name);
+		for (const k of Object.keys(n)) {
+			const v = n[k];
+			if (Array.isArray(v)) v.forEach(c => visit(c, n, k));
+			else if (v && typeof v.type === 'string') visit(v, n, k);
+		}
+	};
+	visit(tree, null, null);
+	const cut = [];
+	for (const node of tree.body) {
+		if (node.type !== 'ImportDeclaration' || !node.specifiers.length) continue;
+		const kept = node.specifiers.filter(s => used.has(s.local.name));
+		if (kept.length === node.specifiers.length) continue;
+		const text = kept.length === 0 ? ''
+			: kept[0].type === 'ImportNamespaceSpecifier' ? `import * as ${kept[0].local.name} from ${node.source.raw};`
+			: `import { ${kept.map(s => s.imported.name === s.local.name ? s.local.name : `${s.imported.name} as ${s.local.name}`).join(', ')} } from ${node.source.raw};`;
+		cut.push([node.start, node.end, text]);
+	}
+	let result = '', from = 0;
+	for (const [a, b, t] of cut) { result += code.slice(from, a) + t; from = b; }
+	return result + code.slice(from);
+}
+
+// JavaScript functions from snippets that the primary module imports for
+// several modules' parts ( build.py: shared-imports.json ): the primary
+// module's glue forwards them to __wbg_handed, which those parts' glue fills,
+// so the snippet loads with the parts.
+const shared = process.argv[3] ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : {};
+const usesSnippet = f => [...references(shim.get(f).value).names].some(n => snippetOf.has(n));
+const handed = new Map(Object.entries(shared).filter(([f, ps]) => primaryImports.has(f) && shim.has(f) && usesSnippet(f) && ps.length));
+
 const glued = [];
 const coreUsed = new Set();
 for (const name of Object.keys(parts)) {
 	const own = decls.filter(d => d.part === name);
 	const {fields, modules} = partImports[name];
-	if (!own.length && !fields.length && !modules.length) continue;
+	const hands = [...handed].filter(([, ps]) => ps.includes(name)).map(([f]) => f);
+	if (!own.length && !fields.length && !modules.length && !hands.length) continue;
 	const local = new Set(own.flatMap(d => d.names));
 	const snippets = new Set();
 	const note = node => {
@@ -186,6 +226,7 @@ for (const name of Object.keys(parts)) {
 	};
 	own.forEach(d => note(d.decl));
 	fields.forEach(f => note(shim.get(f).value));
+	hands.forEach(f => note(shim.get(f).value));
 	const lines = [];
 	const imported = new Map();
 	for (const n of snippets) {
@@ -213,6 +254,7 @@ for (const name of Object.keys(parts)) {
 	if (fields.length) objects.push(`'${BG}': {\n__proto__: null,\n${fields.map(f => `${JSON.stringify(f)}: ${rewrite(shim.get(f).value, name, local)},`).join('\n')}\n}`);
 	for (const m of modules) objects.push(`${JSON.stringify(m)}: ${namespaceOf.get(m)}`);
 	const exported = own.filter(d => d.exported).flatMap(d => d.names);
+	if (hands.length) lines.push(`Object.assign(core.__wbg_handed, {\n${hands.map(f => `${JSON.stringify(f)}: ${rewrite(shim.get(f).value, name, local)},`).join('\n')}\n});`);
 	lines.push(`return {\nimports: {\n${objects.join(',\n')}\n},\nconnect(instance) { part = instance.exports; Object.assign(core.__wbg_parts, part); },\nexports: { ${exported.join(', ')} },\n};`);
 	lines.push('}');
 	fs.writeFileSync(path.join(out, 'parts', `${name}.js`), lines.join('\n') + '\n');
@@ -227,9 +269,20 @@ const throughParts = node => {
 		if (r.call && owner.has(r.call)) edits.push([r.node.start, r.node.end, `__wbg_parts.${r.call}`]);
 };
 for (const d of decls) if (d.part !== null) edits.push([d.node.start, d.node.end, '']); else throughParts(d.decl);
-for (const [f, p] of shim) if (primaryImports.has(f)) throughParts(p.value);
+for (const [f, p] of shim) if (primaryImports.has(f) && !handed.has(f)) throughParts(p.value);
+for (const f of handed.keys()) {
+	const p = shim.get(f);
+	edits.push([p.value.start, p.value.end, `function() { return __wbg_handed[${JSON.stringify(f)}].apply(this, arguments); }`]);
+}
 for (const [f, p] of shim) if (!primaryImports.has(f)) {
 	// The property and its trailing comma.
+	let end = p.end;
+	while (/[\s,]/.test(src[end]) && src[end] !== '\n') end++;
+	edits.push([p.start, end, '']);
+}
+// The snippet modules only parts import from: their glue hands them over.
+const primaryModules = new Set(primary.imports.map(i => i.module));
+for (const p of returned) if (!primaryModules.has(p.key.value ?? p.key.name)) {
 	let end = p.end;
 	while (/[\s,]/.test(src[end]) && src[end] !== '\n') end++;
 	edits.push([p.start, end, '']);
@@ -238,9 +291,10 @@ edits.sort((a, b) => a[0] - b[0]);
 let core = '', at = 0;
 for (const [a, b, t] of edits) { core += src.slice(at, a) + t; at = b; }
 core += src.slice(at);
+core = withoutUnusedImports(core);
 const already = new Set(decls.filter(d => d.exported).flatMap(d => d.names));
 const extra = [...coreUsed].filter(n => !already.has(n)).sort();
-core += `\n// The parts' exports the primary module's glue calls, as their glue connects them.\nconst __wbg_parts = {};\n// What the parts' glue uses ( parts/<name>.js ).\nexport { ${[...extra, '__wbg_get_imports', '__wbg_parts'].join(', ')} };\n`;
+core += `\n// The parts' exports the primary module's glue calls, as their glue connects them.\nconst __wbg_parts = {};\n// The snippets' functions the parts' glue hands over.\nconst __wbg_handed = {};\n// What the parts' glue uses ( parts/<name>.js ).\nexport { ${[...extra, '__wbg_get_imports', '__wbg_parts', '__wbg_handed'].join(', ')} };\n`;
 fs.writeFileSync(GLUE, core);
 
 const listingFile = path.join(out, 'parts.json');
