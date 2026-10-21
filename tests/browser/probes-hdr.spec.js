@@ -39,7 +39,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
-  await page.goto(runtime!=='rust'?`/reference/three-js/probes-hdr.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
+  await page.goto(runtime!=='rust'?`/reference/three-js/probes-hdr.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'});
@@ -81,7 +81,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  test(`Probes and HDR GPU residency: ${kind}`,async({page},info)=>{
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -124,7 +124,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
-   await page.goto(runtime==='reference'?`/reference/three-js/probes-hdr.html?id=${official(kind)}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/probes-hdr.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
    pair[runtime]=await page.evaluate(()=>work);
@@ -145,7 +145,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
 });
 
 for(const kind of [])test(`Probes and HDR on-demand scene stays idle: ${kind}`,async({page})=>{
- await page.goto(`/web/gallery/example.html?id=${kind}`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+ await page.goto(`/web/gallery/examples/${kind}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
  await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(300);expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
  await page.setViewportSize({width:640,height:400});await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
 });

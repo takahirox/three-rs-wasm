@@ -83,7 +83,7 @@ for ( const id of ids ) test( `original UI: ${ id }`, async ( { page }, info ) =
 	const errors = [];
 	page.on( 'pageerror', e => errors.push( String( e ) ) );
 	await page.setViewportSize( { width: 1280, height: 720 } );
-	await page.goto( `/web/gallery/example.html?id=${ id }&ui=1` );
+	await page.goto( `/web/gallery/examples/${ id }.html?ui=1` );
 	await page.waitForFunction( () => document.body.dataset.ui === 'ready' || document.body.dataset.status === 'error', null, { timeout: 90000, polling: 200 } );
 	expect( await page.evaluate( () => document.body.dataset.status ) ).not.toBe( 'error' );
 	expect( await page.evaluate( () => document.body.dataset.uiError ?? null ), 'UI installation' ).toBe( null );

@@ -49,7 +49,7 @@ for(const size of [{width:640,height:360},{width:360,height:640}])test(`gallery 
   await window.renderFixture(0,0);
  },size);
  const reference=PNG.sync.read(await canvas.screenshot());
- await page.goto('/web/gallery/example.html?id=webgpu_loader_gltf');
+ await page.goto('/web/gallery/examples/webgpu_loader_gltf.html');
  await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(0);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
  await setView(page,canvas,manifest.views[0]);

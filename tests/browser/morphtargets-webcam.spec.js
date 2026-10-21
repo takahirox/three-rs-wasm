@@ -52,7 +52,7 @@ const open = async (page, runtime) => {
   await page.addInitScript(fakeCamera);
   await page.setViewportSize({width: 800, height: 600});
   if (runtime === 'rust') {
-    await page.goto(`/web/gallery/example.html?id=${id}&still=1`);
+    await page.goto(`/web/gallery/examples/${id}.html?still=1`);
     await page.waitForFunction(() => window.app && document.querySelector('#video')?.readyState >= 1 && window.galleryVideoAspect, null, {timeout: 120000});
     await page.evaluate(() => app.set_samples(1));
   } else {
@@ -129,7 +129,7 @@ test('webcam page runs the real MediaPipe FaceLandmarker', async ({page}) => {
   page.on('pageerror', e => errors.push(String(e)));
   await page.addInitScript(fakeCamera);
   await page.setViewportSize({width: 800, height: 600});
-  await page.goto(`/web/gallery/example.html?id=${id}`);
+  await page.goto(`/web/gallery/examples/${id}.html`);
   await page.waitForFunction(() => window.galleryVideoAspect && window.galleryFaceDetect?.toString().includes('detectForVideo'), null, {timeout: 240000});
   const frames = Number(await page.locator('canvas').getAttribute('data-frames'));
   await page.waitForFunction(f => Number(document.querySelector('canvas').dataset.frames) > f + 30, frames, {timeout: 120000});

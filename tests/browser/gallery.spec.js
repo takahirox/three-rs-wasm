@@ -19,9 +19,9 @@ test('equivalent WebGL scenes are excluded and point to the preferred WebGPU sce
  expect(listed).toContain('webgpu_lights_rectarealight');
  expect(listed).toContain('webgl_loader_gltf_instancing');
  expect(listed).toContain('webgl_loader_gltf_avif');
- await page.goto('/web/gallery/example.html?id=webgl_loader_gltf');
+ await page.goto('/web/gallery/examples/webgl_loader_gltf.html');
  await expect(page.locator('#diagnostic')).toBeVisible();
- await page.locator('a[href="example.html?id=webgpu_loader_gltf"]').click();
+ await page.locator('a[href="examples/webgpu_loader_gltf.html"]').click();
  await expect(page.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu',{timeout:90000});
 });
 for(const mode of [{name:'desktop-light',width:1280,height:900,colorScheme:'light'},{name:'mobile-dark',width:390,height:844,colorScheme:'dark'}]){
@@ -48,8 +48,8 @@ test('unported examples show source evidence rather than a fake reproduction',as
  const requests=[];page.on('request',r=>requests.push(r.url()));
  await page.goto('/web/gallery/');
  await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port).length);
- await expect(page.locator('.card').filter({hasText:'postprocessing / ssgi / ballpool'})).toHaveCount(0);
- await page.goto('/web/gallery/example.html?id=webgpu_postprocessing_ssgi_ballpool');
+ await expect(page.locator('.card').filter({hasText:'postprocessing / unreal / bloom'})).toHaveCount(0);
+ await page.goto('/web/gallery/examples/webgl_postprocessing_unreal_bloom.html');
  await expect(page.locator('#diagnostic')).toBeVisible();
  await expect(page.locator('#diagnostic')).toContainText('Postprocessing passes');
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module')||url.includes('three_rs_wasm'))).toBe(false);
@@ -86,7 +86,7 @@ for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime
 test('PMREM sphere grid matches original physical materials and background node',async({page},info)=>{
  await page.setViewportSize({width:256,height:256});
  await page.goto('/reference/three-js/pmrem-grid.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:90000});const reference=await page.locator('canvas').screenshot();
- await page.goto('/web/gallery/example.html?id=webgpu_pmrem_equirectangular');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
+ await page.goto('/web/gallery/examples/webgpu_pmrem_equirectangular.html');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});const actual=await page.locator('canvas').screenshot();
  const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let different=0;for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),actual);writeFileSync(info.outputPath('reference.png'),reference);writeFileSync(info.outputPath('comparison.json'),JSON.stringify({different,fraction:different/(256*256)}));expect(different/(256*256)).toBeLessThanOrEqual(.005);
@@ -96,7 +96,7 @@ test('PMREM sphere grid matches original physical materials and background node'
 // their clock in the seek, so the free-running gallery must advance it too.
 for(const id of ['webgl_gpgpu_birds_gltf','webgl_postprocessing_dof2','webgl_materials_subsurface_scattering'])test(`free-running gallery animates: ${id}`,async({page})=>{
  await page.setViewportSize({width:512,height:512});
- await page.goto(`/web/gallery/example.html?id=${id}`);
+ await page.goto(`/web/gallery/examples/${id}.html`);
  await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:60000});
  await page.waitForTimeout(1000);const a=await page.screenshot();await page.waitForTimeout(1500);const b=await page.screenshot();
  expect(a.equals(b)).toBe(false);

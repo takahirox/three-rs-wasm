@@ -255,7 +255,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  for(const path of spec.frameSources??[])await page.route(u=>new URL(u).pathname===path,r=>r.fulfill({contentType:'text/html',body:'<body style="margin:0;background:linear-gradient(#3a6,#36a)"></body>'}));
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
-  await page.goto(runtime!=='rust'?`/reference/three-js/texture-volumes.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
+  await page.goto(runtime!=='rust'?`/reference/three-js/texture-volumes.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   // HTMLTexture: the polyfill's first paint record of the element ( the texture's first upload ).
   if(spec.htmlPaint)await page.waitForFunction(async()=>{const m=await import('https://cdn.jsdelivr.net/npm/three-html-render@0.1.2/dist/polyfill.mjs');const e=document.getElementById('draw_element');return !!(e&&m.getHtmlRenderer().getCanvas(e));},null,{timeout:60000});
@@ -300,7 +300,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
   test.setTimeout(120000);
   if(spec.fakeCamera)await page.addInitScript(fakeCamera);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -356,7 +356,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
-   await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${official(kind)}`:`/web/gallery/example.html?id=${official(kind)}&still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    // Per-frame solvers (the IK chain) converge before the measured frame.
    if(spec.frames)await frames(page,runtime,1,spec.frames);
@@ -396,7 +396,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
 });
 
 for(const kind of ['webgl_texture2darray_layerupdate','webgl_texture3d'])test(`Texture arrays and volumes on-demand scene stays idle: ${kind}`,async({page})=>{
- await page.goto(`/web/gallery/example.html?id=${kind}`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+ await page.goto(`/web/gallery/examples/${kind}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
  await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(300);expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
  await page.setViewportSize({width:640,height:400});await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
 });
@@ -406,7 +406,7 @@ for(const kind of ['webgl_texture2darray_layerupdate','webgl_texture3d'])test(`T
 test('UV mapping tests: UVsDebug canvases match the original',async({page})=>{
  test.setTimeout(120000);const read=()=>page.evaluate(()=>[...document.querySelectorAll('h3')].map(h=>{const c=h.parentNode.querySelector('canvas');const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let hash=0;for(let i=0;i<d.length;i++)hash=(Math.imul(hash,31)+d[i])>>>0;return {title:h.textContent,size:[c.width,c.height],hash,pixels:Array.from(d.filter((_,i)=>i%4===0))};}));
  await page.goto('/reference/three-js/uv-tests.html');await page.waitForFunction(()=>document.querySelectorAll('canvas').length===9);const reference=await read();
- await page.goto('/web/gallery/example.html?id=misc_uv_tests&still=1');await page.waitForFunction(()=>document.querySelectorAll('#uv-tests canvas').length===9,null,{timeout:90000});const rust=await read();
+ await page.goto('/web/gallery/examples/misc_uv_tests.html?still=1');await page.waitForFunction(()=>document.querySelectorAll('#uv-tests canvas').length===9,null,{timeout:90000});const rust=await read();
  expect(rust.map(r=>r.title)).toEqual(reference.map(r=>r.title));
  for(let i=0;i<reference.length;i++){let bad=0;for(let p=0;p<reference[i].pixels.length;p++)if(Math.abs(reference[i].pixels[p]-rust[i].pixels[p])>6)bad++;expect({title:reference[i].title,size:rust[i].size,bad}).toEqual({title:reference[i].title,size:reference[i].size,bad:0});}
 });
@@ -420,7 +420,7 @@ test('ASCII effect: the character table matches the original',async({page},info)
  const results={};
  for(const runtime of ['reference','rust']){
   await page.mouse.move(511,0);
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_effects_ascii':'/web/gallery/example.html?id=webgl_effects_ascii&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_effects_ascii':'/web/gallery/examples/webgl_effects_ascii.html?still=1');
   await page.waitForFunction(runtime==='reference'?()=>window.renderFixture&&window.reference:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   const frame=t=>page.evaluate(async({runtime,t})=>{if(runtime==='reference')await renderFixture(t);else{const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,t});
   const shots=[];
@@ -447,7 +447,7 @@ test('Glitch pass: frames match the original frame by frame',async({page},info)=
  const picks=[1,2,3,5,8,13,21,34,55,70],wild=[71,72,73],after=[74,80];
  const shots={};let frames=0;
  for(const runtime of ['rust','reference']){
-  if(runtime==='rust'){await page.goto('/web/gallery/example.html?id=webgl_postprocessing_glitch&still=1');await page.click('#startButton');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
+  if(runtime==='rust'){await page.goto('/web/gallery/examples/webgl_postprocessing_glitch.html?still=1');await page.click('#startButton');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
   else{await page.goto('/reference/three-js/texture-volumes.html?id=webgl_postprocessing_glitch&samples=1');await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true',null,{timeout:90000});for(let i=1;i<frames;i++)await page.evaluate(()=>renderFixture(0));}
   await page.addStyleTag({content:'#notice,#settings,#info,#overlay{display:none!important}'});
   // The checkbox changes in the same task as the frame it applies to.
@@ -481,7 +481,7 @@ test('TAA pass: frames match the original frame by frame',async({page},info)=>{
  const changes={141:[1,'Level 2: 4 Samples',2],306:[0,'Disabled',0]};
  const shots={};let frames=0;
  for(const runtime of ['rust','reference']){
-  if(runtime==='rust'){await page.goto('/web/gallery/example.html?id=webgl_postprocessing_taa&still=1');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);await page.evaluate(()=>app.set_samples(1));await page.waitForTimeout(200);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
+  if(runtime==='rust'){await page.goto('/web/gallery/examples/webgl_postprocessing_taa.html?still=1');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});await page.waitForTimeout(500);await page.evaluate(()=>app.set_samples(1));await page.waitForTimeout(200);frames=Number(await page.locator('canvas').getAttribute('data-frames'));}
   else{await page.goto('/reference/three-js/texture-volumes.html?id=webgl_postprocessing_taa&samples=1');await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true',null,{timeout:90000});for(let i=1;i<frames;i++)await page.evaluate(()=>renderFixture(0));}
   await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
   const frame=change=>page.evaluate(async({runtime,change})=>{if(change){const [i,reference,rust]=change;if(runtime==='reference')fixtureParameter(i,reference);else app.tsl_parameter(i,rust);}if(runtime==='reference')await renderFixture(0);else{const c=document.querySelector('canvas'),p=c.dataset.frames;app.gallery_time(0);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,change:change??null});
@@ -506,7 +506,7 @@ test('KTX2 loader: the page and its texture views match the original',async({pag
  test.setTimeout(180000);await page.setViewportSize({width:640,height:900});
  const shots={},labels={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/ktx2.html':'/web/gallery/example.html?id=webgpu_loader_texture_ktx2');
+  await page.goto(runtime==='reference'?'/reference/three-js/ktx2.html':'/web/gallery/examples/webgpu_loader_texture_ktx2.html');
   await page.waitForFunction(()=>document.querySelectorAll('.list-item').length===16&&[...document.querySelectorAll('.list-item')].every(e=>e.innerText.includes('colorSpace')),null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
   labels[runtime]=await page.evaluate(()=>[...document.querySelectorAll('.list-item')].map(e=>e.innerText));
@@ -534,7 +534,7 @@ test('Multiple elements with text: the page and its views match the original',as
  const shots={};
  for(const runtime of ['reference','rust']){
   await page.mouse.move(899,0);
-  await page.goto(runtime==='reference'?'/reference/three-js/elements-text.html':'/web/gallery/example.html?id=webgl_multiple_elements_text&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/elements-text.html':'/web/gallery/examples/webgl_multiple_elements_text.html?still=1');
   await page.waitForFunction(runtime==='reference'?()=>document.querySelectorAll('.view').length===6&&document.querySelector('#c')?.width>0:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
   if(runtime==='reference')await page.waitForTimeout(1000);
@@ -567,7 +567,7 @@ test('Reversed depth buffer: the three views match the original',async({page},in
  test.setTimeout(240000);await page.setViewportSize({width:900,height:600});
  const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/reversed-depth.html':'/web/gallery/example.html?id=webgpu_reversed_depth_buffer&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/reversed-depth.html':'/web/gallery/examples/webgpu_reversed_depth_buffer.html?still=1');
   await page.waitForFunction(runtime==='reference'?()=>document.querySelectorAll('canvas').length===3&&document.querySelector('canvas')?.width>0:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
   if(runtime==='reference')await page.waitForTimeout(1000);
@@ -593,7 +593,7 @@ test('Logarithmic depth buffer: both views match the original frame by frame',as
  const shots={};
  for(const runtime of ['reference','rust']){
   await page.mouse.move(450,300);
-  await page.goto(runtime==='reference'?'/reference/three-js/log-depth.html':'/web/gallery/example.html?id=webgpu_camera_logarithmicdepthbuffer&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/log-depth.html':'/web/gallery/examples/webgpu_camera_logarithmicdepthbuffer.html?still=1');
   await page.waitForFunction(runtime==='reference'?()=>typeof window.fixtureAnimate==='function':()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
   const frames=n=>page.evaluate(async({runtime,n})=>{if(runtime==='reference'){window.fixtureFrames(n);for(let i=0;i<3;i++)await new Promise(r=>requestAnimationFrame(r));}else{const c=document.querySelector('canvas');for(let i=0;i<2;i++){const p=c.dataset.frames;if(i)app.gallery_time(0);else app.gallery_draw(1,n,0);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,n});
@@ -625,7 +625,7 @@ test('Fat line raycasting: lines and hit spheres match the original',async({page
  const states=[[0,450,300,[]],[1.5,470,260,[]],[3,430,350,[]],[3,450,300,[['line type',0,0]]],[3,455,305,[['world units',1,false],['threshold',5,3]]],[3,440,290,[['visualize threshold',2,true],['translation',6,3]]]];
  for(const runtime of ['reference','rust']){
   await page.mouse.move(0,0);
-  await page.goto(runtime==='reference'?'/reference/three-js/lines-raycast.html':'/web/gallery/example.html?id=webgpu_lines_fat_raycasting&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/lines-raycast.html':'/web/gallery/examples/webgpu_lines_fat_raycasting.html?still=1');
   await page.waitForFunction(runtime==='reference'?()=>window.fixtureControls?.['line type']:()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{visibility:hidden!important}'});
   if(runtime==='reference')await page.waitForTimeout(1000);
@@ -657,7 +657,7 @@ test('Test memory: every frame matches and disposed resources are released',asyn
  test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
  const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory&samples=1':'/web/gallery/example.html?id=webgl_test_memory&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory&samples=1':'/web/gallery/examples/webgl_test_memory.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
   const list=[];list.push(PNG.sync.read(await page.locator('canvas').screenshot()));
@@ -684,7 +684,7 @@ test('Test memory 2: every frame matches and its 100 programs are disposed',asyn
  await page.addInitScript(()=>{window.creates={};for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...a){creates[key]=(creates[key]||0)+1;return original.apply(this,a);};}});
  const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory2&samples=1':'/web/gallery/example.html?id=webgl_test_memory2&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_test_memory2&samples=1':'/web/gallery/examples/webgl_test_memory2.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
   const list=[];list.push(PNG.sync.read(await page.locator('canvas').screenshot()));
@@ -713,7 +713,7 @@ test('Points dynamic: the random walk matches as the bodies fall and rise',async
  await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...a){creates++;return original.apply(this,a);};}});
  const at=[150,300,450,600];const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_points_dynamic&samples=1':'/web/gallery/example.html?id=webgl_points_dynamic&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_points_dynamic&samples=1':'/web/gallery/examples/webgl_points_dynamic.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
   const list=[];const counts=[];
@@ -735,7 +735,7 @@ test('Protoplanet: the n-body simulation matches over 120 frames',async({page},i
  test.setTimeout(300000);await page.setViewportSize({width:512,height:512});
  const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_gpgpu_protoplanet':'/web/gallery/example.html?id=webgl_gpgpu_protoplanet&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=webgl_gpgpu_protoplanet':'/web/gallery/examples/webgl_gpgpu_protoplanet.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
   // A strong field makes the debris collide early.
@@ -756,7 +756,7 @@ test('CSS2D labels: the elements carry the original inline styles',async({page})
  test.setTimeout(120000);await page.setViewportSize({width:512,height:512});
  const states={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=css2d_label':'/web/gallery/example.html?id=css2d_label&still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/texture-volumes.html?id=css2d_label':'/web/gallery/examples/css2d_label.html?still=1');
   await page.waitForFunction(v=>{const c=document.querySelector(v);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:60000});
   await page.waitForFunction(()=>document.querySelectorAll('.label').length===4&&document.querySelector('.label').style.transform,null,{timeout:60000});
   // The page updates its labels in its own requestAnimationFrame loop: read after two frames.
@@ -778,7 +778,7 @@ for(const [id,spec] of Object.entries(svgPages))test(`SVG paths: ${id} writes th
  test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
  const states={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:60000});
   const read=()=>page.evaluate(async()=>{for(let i=0;i<2;i++)await new Promise(r=>requestAnimationFrame(r));const svg=document.querySelector('svg');return [svg.style.backgroundColor,svg.getAttribute('viewBox'),...[...svg.children].map(e=>[e.tagName,e.getAttribute('d'),e.getAttribute('style'),e.getAttribute('transform'),e.getAttribute('shape-rendering')].join('|'))];});
   const list=[];
@@ -803,7 +803,7 @@ for(const [id,spec] of Object.entries(css3dPages))test(`CSS3D elements: ${id} ca
  test.setTimeout(180000);await page.setViewportSize({width:512,height:512});
  const states={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+  await page.goto(runtime==='reference'?`/reference/three-js/texture-volumes.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:60000});
   const read=()=>page.evaluate(async()=>{for(let i=0;i<2;i++)await new Promise(r=>requestAnimationFrame(r));return [...document.querySelectorAll('div,img,iframe')].filter(e=>e.style.transform||e.style.transformStyle).map(e=>[e.style.transform,e.style.display,e.style.width,e.style.height]);});
   const list=[];

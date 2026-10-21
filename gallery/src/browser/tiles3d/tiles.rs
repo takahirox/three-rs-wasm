@@ -497,7 +497,8 @@ impl Tiles {
         let base = resolve(
             base,
             &web_sys::window()
-                .and_then(|w| w.location().href().ok())
+                .and_then(|w| w.document())
+                .and_then(|d| d.base_uri().ok().flatten())
                 .unwrap_or_default(),
         );
         let root = self.add_tile(json["root"].clone());

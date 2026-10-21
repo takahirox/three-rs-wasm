@@ -212,11 +212,11 @@
 
 		}
 
-		// web/gallery/example.html?id=…, or examples/<id>.html on the published
+		// The example's page: web/gallery/examples/<id>.html, or examples/<id>.html on the published
 		// site's official-style layout ( tools/build_site.py ).
 		function exampleHref( file ) {
 
-			return document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'example.html?id=' + encodeURIComponent( file );
+			return document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'examples/' + encodeURIComponent( file ) + '.html';
 
 		}
 

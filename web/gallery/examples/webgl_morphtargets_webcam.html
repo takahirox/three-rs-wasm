@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja"><head><base href="../"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>three-rs-wasm - webgl - morphtargets - webcam</title><link rel="stylesheet" href="../files/main.css">
+<style>
+@font-face{font-family:'Roboto Mono';src:local('Roboto Mono'),local('RobotoMono-Regular'),url('../files/RobotoMono-Regular.woff2') format('woff2');font-style:normal;font-weight:400}
+html,body{width:100%;height:100%;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}#settings{position:fixed;right:0;top:0;width:245px;background:#222e;color:#ddd;font:12px/1.7 sans-serif;padding:8px}#settings label{display:flex;justify-content:space-between;gap:8px;margin:5px 0}#settings input[type=range]{width:135px}#diagnostic{max-width:820px;margin:auto;padding:36px 24px;height:100%;overflow:auto}#diagnostic h1{font-size:22px;line-height:1.5}#diagnostic a{color:var(--color-blue)}#diagnostic img{width:200px;max-width:100%;border-radius:4px}#diagnostic li{margin:10px 0}#diagnostic pre{white-space:pre-wrap;font-size:12px}#loading{position:absolute;inset:0;display:grid;place-items:center} [hidden]{display:none!important}
+</style></head><body>
+<div id="loading" role="status">Loading Rust / WebGPU…</div><canvas hidden aria-label="Rust / WebGPU example"></canvas><div id="settings" hidden></div><main id="diagnostic" hidden></main>
+<script>window.galleryUi=!navigator.webdriver||new URLSearchParams(location.search).has("ui");</script><script src="ui/gpu-memory.js"></script>
+<script type="importmap">{"imports":{"three/tsl":"./ui/three/shim.js","three":"./ui/three/shim.js","three/webgpu":"./ui/three/shim.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
+<script type="module">
+import './upstream.js';
+import {installElements} from './elements.js';
+import {installOrbit} from './orbit.js';
+import {explain, text} from './diagnostic.js';
+// The gallery's Wasm: the primary module and the example module's parts.
+import {loadRuntime} from './runtime.js?v=split-1';
+const canvas = document.querySelector('canvas');
+const loading = document.querySelector('#loading');
+let app;
+let closing = false;
+let pending = 0;
+const release = () => { if (closing && pending === 0) {app?.free(); app = null;} };
+window.addEventListener('pagehide', () => { closing = true; release(); });
+ try {
+  // The transpiler page renders nothing: it needs no WebGPU.
+  if (!navigator.gpu) throw new Error('WebGPU対応ブラウザが必要です。');
+  {
+  // Keep the glue and Wasm on the same cache revision when the runtime API changes.
+  const runtimeRevision = 'page-1';
+  const runtime = await loadRuntime('morphtargets_webcam', runtimeRevision);
+    {
+  const resize = () => { if((window.galleryVideoAspect)){/* The page's largest video-aspect rectangle, centred over the grey body. */let width=innerWidth,height=innerHeight;if(width/height>window.galleryVideoAspect)width=height*window.galleryVideoAspect;else height=width/window.galleryVideoAspect;canvas.style.width=width+'px';canvas.style.height=height+'px';canvas.width=Math.max(1,Math.round(width*devicePixelRatio));canvas.height=Math.max(1,Math.round(height*devicePixelRatio));app?.request_render();return;}   canvas.width = Math.max(1, Math.round(innerWidth * (((devicePixelRatio))))); canvas.height = Math.max(1, Math.round(innerHeight * (((devicePixelRatio))))); app?.request_render(); };
+  window.galleryResize=resize;
+  resize(); canvas.hidden = false; 
+  {
+   // webgl_morphtargets_webcam: the page's grey body, centred canvas and video element. MediaPipe's
+   // FaceLandmarker runs here as the page runs it; the Rust frame calls galleryFaceDetect.
+   const style=document.createElement('style');style.textContent='body{background-color:#666666}canvas{position:absolute;inset:0;margin:auto}';document.head.append(style);
+   canvas.style.background='transparent';document.body.style.background='#666666';document.documentElement.style.background='#666666';
+   const video=document.createElement('video');video.id='video';video.style.display='none';document.body.append(video);
+   window.galleryFaceDetect=()=>null;
+   (async()=>{
+    const {FaceLandmarker,FilesetResolver}=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35');
+    const filesetResolver=await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm');
+    const faceLandmarker=await FaceLandmarker.createFromOptions(filesetResolver,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',delegate:'GPU'},outputFaceBlendshapes:true,outputFacialTransformationMatrixes:true,runningMode:'VIDEO',numFaces:1});
+    window.galleryFaceDetect=()=>{
+     if(video.readyState<HTMLMediaElement.HAVE_METADATA)return null;
+     const results=faceLandmarker.detectForVideo(video,Date.now());
+     const categories=results.faceBlendshapes.length>0?results.faceBlendshapes[0].categories:null;
+     return {matrix:results.facialTransformationMatrixes.length>0?Array.from(results.facialTransformationMatrixes[0].data):null,names:categories&&categories.map(c=>c.categoryName),scores:categories&&categories.map(c=>c.score)};
+    };
+    if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}).then(stream=>{video.srcObject=stream;video.play();}).catch(error=>console.warn('Unable to access the camera/webcam.',error));
+   })().catch(error=>console.error(error));
+   video.addEventListener('loadedmetadata',()=>{window.galleryVideoAspect=video.videoWidth/video.videoHeight;window.galleryResize?.();});
+   // gui.close(), and the influences' listen(): the sliders follow the tracked values.
+   let open=false;
+   const follow=()=>{const settings=document.querySelector('#settings');if(settings){let toggle=document.querySelector('#morph-toggle');if(!toggle&&settings.children.length){toggle=document.createElement('button');toggle.id='morph-toggle';settings.prepend(toggle);toggle.addEventListener('click',()=>{open=!open;});}if(toggle){toggle.textContent=open?'Close Controls':'Open Controls';for(const label of settings.querySelectorAll('label'))label.style.display=open?'':'none';}const values=(document.body.dataset.morph||'').split(',');values.forEach((v,i)=>{const input=document.querySelector('#particle-'+i);if(input&&document.activeElement!==input&&v!=='')input.value=v;});}requestAnimationFrame(follow);};
+   requestAnimationFrame(follow);
+  }
+  // The example's own program ( its Rust function, named after it ).
+  app = await runtime.webgl_morphtargets_webcam(canvas, !new URLSearchParams(location.search).has('still'));
+  if (closing) { app.free(); app = null; } else {
+   window.app = app;
+   loading.hidden = true;
+   document.body.dataset.status = 'running';
+   document.body.dataset.backend = 'rust-wasm-webgpu';
+   addEventListener('resize', resize);
+   // A CSS renderer's element over the canvas receives the pointer, as the page's controls do.
+   const pointerTarget=document.querySelector('[data-pointer-target]')??canvas;
+   // webgpu_postprocessing_ssgi_ballpool: the canvas's pointer events, in the window's
+   // normalized coordinates, with each press's pointer id and whether it is a touch.
+   const settings = document.querySelector('#settings');
+   {
+    const controls=[["browInnerUp",0,1,0,0.01],["browDown_L",0,1,0,0.01],["browDown_R",0,1,0,0.01],["browOuterUp_L",0,1,0,0.01],["browOuterUp_R",0,1,0,0.01],["eyeLookUp_L",0,1,0,0.01],["eyeLookUp_R",0,1,0,0.01],["eyeLookDown_L",0,1,0,0.01],["eyeLookDown_R",0,1,0,0.01],["eyeLookIn_L",0,1,0,0.01],["eyeLookIn_R",0,1,0,0.01],["eyeLookOut_L",0,1,0,0.01],["eyeLookOut_R",0,1,0,0.01],["eyeBlink_L",0,1,0,0.01],["eyeBlink_R",0,1,0,0.01],["eyeSquint_L",0,1,0,0.01],["eyeSquint_R",0,1,0,0.01],["eyeWide_L",0,1,0,0.01],["eyeWide_R",0,1,0,0.01],["cheekPuff",0,1,0,0.01],["cheekSquint_L",0,1,0,0.01],["cheekSquint_R",0,1,0,0.01],["noseSneer_L",0,1,0,0.01],["noseSneer_R",0,1,0,0.01],["jawOpen",0,1,0,0.01],["jawForward",0,1,0,0.01],["jawLeft",0,1,0,0.01],["jawRight",0,1,0,0.01],["mouthFunnel",0,1,0,0.01],["mouthPucker",0,1,0,0.01],["mouthLeft",0,1,0,0.01],["mouthRight",0,1,0,0.01],["mouthRollUpper",0,1,0,0.01],["mouthRollLower",0,1,0,0.01],["mouthShrugUpper",0,1,0,0.01],["mouthShrugLower",0,1,0,0.01],["mouthClose",0,1,0,0.01],["mouthSmile_L",0,1,0,0.01],["mouthSmile_R",0,1,0,0.01],["mouthFrown_L",0,1,0,0.01],["mouthFrown_R",0,1,0,0.01],["mouthDimple_L",0,1,0,0.01],["mouthDimple_R",0,1,0,0.01],["mouthUpperUp_L",0,1,0,0.01],["mouthUpperUp_R",0,1,0,0.01],["mouthLowerDown_L",0,1,0,0.01],["mouthLowerDown_R",0,1,0,0.01],["mouthPress_L",0,1,0,0.01],["mouthPress_R",0,1,0,0.01],["mouthStretch_L",0,1,0,0.01],["mouthStretch_R",0,1,0,0.01],["tongueOut",0,1,0,0.01]];
+    settings.hidden=!controls.length;window.galleryControls=controls;
+    controls.forEach(([name,min,max,value,step],i)=>{if(min===null){const button=text('button',name,settings);button.id='particle-'+i;button.addEventListener('click',()=>{app.tsl_parameter(i,1);
+     // GPU readbacks (the PMREM exports) finish a few frames later.
+     const save=tries=>{const file=app.gallery_take_export?.();if(file){const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([file[1]]));link.download=file[0];link.click();}else if(tries>0)requestAnimationFrame(()=>save(tries-1));};save(120);});return;}const label=text('label',name+' ',settings),input=document.createElement(Array.isArray(min)?'select':'input');input.id='particle-'+i;
+     if(Array.isArray(min)){min.forEach((name,index)=>input.add(new Option(name,index)));input.value=max;}else{
+     input.type=typeof min==='boolean'?'checkbox':typeof min==='string'?'color':'range';if(input.type==='checkbox')input.checked=min;else if(input.type==='color')input.value=min;else Object.assign(input,{min,max,step,value});
+     }label.append(input);input.addEventListener('input',()=>app.tsl_parameter(i,input.type==='checkbox'?Number(input.checked):input.type==='color'?parseInt(input.value.slice(1),16):Number(input.value)));
+    });
+   }
+   // ArcballControls' wheel: deltaY, and deltaX for the shift field of view.
+   // The original's stats.js, lil-gui panels and Inspector ( web/gallery/ui/ ). Automated
+   // rendering comparisons capture the canvas without them; ?ui=1 shows them there too
+   // ( tests/browser/gallery-ui.spec.js ).
+   if (window.galleryUi) {
+    const {installUi} = await import(`./ui/ui.js?v=${runtimeRevision}`);
+    await installUi('webgl_morphtargets_webcam', app, settings).catch(e => {console.warn('gallery UI', e);document.body.dataset.uiError = String(e);document.body.dataset.ui = 'ready';});
+   }
+   new MutationObserver(() => { if (canvas.dataset.error && !closing) {closing = true; release(); settings.hidden = true; explain('webgl_morphtargets_webcam', canvas.dataset.error, 'error');} }).observe(canvas, {attributes:true, attributeFilter:['data-error']});
+  }
+  }
+   }
+} catch (error) { app?.free(); app = null; explain('webgl_morphtargets_webcam', String(error), 'error'); }
+</script></body></html>

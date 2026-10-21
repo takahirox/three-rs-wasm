@@ -12,8 +12,8 @@ use wasm_bindgen_futures::JsFuture;
 // The page's imports, ready as the page awaits them.
 export async function meshoptThree( simplifierUrl, clusterizerUrl ) {
 	const [ { MeshoptSimplifier }, { MeshoptClusterizer } ] = await Promise.all( [
-		import( new URL( simplifierUrl, location.href ).href ),
-		import( new URL( clusterizerUrl, location.href ).href ),
+		import( new URL( simplifierUrl, document.baseURI ).href ),
+		import( new URL( clusterizerUrl, document.baseURI ).href ),
 	] );
 	await Promise.all( [ MeshoptClusterizer.ready, MeshoptSimplifier.ready ] );
 	return { MeshoptSimplifier, MeshoptClusterizer };

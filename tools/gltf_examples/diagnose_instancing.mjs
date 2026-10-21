@@ -224,7 +224,7 @@ try {
       }
       await page.goto(base + (runtime === 'gl'
         ? `/reference/three-js/expanded.html?id=${id}&samples=${scenario.samples}&backend=${referenceBackend}`
-        : `/web/gallery/example.html?id=${id}`));
+        : `/web/gallery/examples/${id}.html`));
       await page.waitForFunction(() => document.querySelector('canvas')?.dataset.ready === 'true' || Number(document.querySelector('canvas')?.dataset.frames) > 0, null, { timeout: 90000 });
       if (runtime === 'gl') {
         if (referenceBackend === 'webgpu') {

@@ -429,3 +429,174 @@ const CUBE_INDICES: [u16; 36] = [
     0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 17, 18,
     18, 17, 19, 20, 21, 22, 22, 21, 23,
 ];
+
+#[allow(unused_variables)]
+impl super::example::Example for Demo {
+    fn on_update(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<crate::Result<()>> {
+        Some(self.update(scene, camera, delta, animate))
+    }
+    fn on_tsl_parameter(&mut self, index: usize, value: f32) -> Option<crate::Result<()>> {
+        Some(self.parameter(index, value))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.seek(seconds);
+    }
+    fn on_input(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        pan: bool,
+        height: f64,
+    ) -> Option<crate::Result<()>> {
+        Some(self.input(scene, camera, dx, dy, wheel, pan, height))
+    }
+}
+
+/// The program of three.js examples/webgl_buffergeometry_attributes_none.html: its renderer, its
+/// scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_attributes_none(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                1.,
+                5000.,
+                Box::new(Demo::create(scene, camera, 168, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_buffergeometry_attributes_integer.html: its renderer, its
+/// scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_attributes_integer(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                1.,
+                5000.,
+                Box::new(Demo::create(scene, camera, 169, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_buffergeometry_instancing.html: its renderer, its scene
+/// and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_instancing(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                1.,
+                5000.,
+                Box::new(Demo::create(scene, camera, 170, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_buffergeometry_instancing_interleaved.html: its renderer,
+/// its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_instancing_interleaved(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                1.,
+                5000.,
+                Box::new(Demo::create(scene, camera, 171, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_materials_modified.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_materials_modified(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                1.,
+                5000.,
+                Box::new(Demo::create(scene, camera, 172, renderer).await?),
+            ))
+        },
+    )
+    .await
+}

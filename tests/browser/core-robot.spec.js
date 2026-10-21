@@ -9,7 +9,7 @@ test('RobotExpressive parses, animates and switches clips entirely in Rust/Wasm'
   }
  });
  page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>{if(r.resourceType()==='script')scripts.push(r.url());});
- await page.goto('/web/gallery/example.html?id=webgl_animation_skinning_morph');
+ await page.goto('/web/gallery/examples/webgl_animation_skinning_morph.html');
  await expect(page.locator('body')).toHaveAttribute('data-status','running',{timeout:90000});
  await expect(page.locator('#animation option')).toHaveCount(14);
  await expect(page.locator('canvas')).not.toHaveAttribute('data-error',/.+/);

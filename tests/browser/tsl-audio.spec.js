@@ -13,7 +13,7 @@ test('TSL compute audio uses matching GPU pitch/delay and analyser rendering',as
  });
  const data={};
  for(const runtime of ['reference','rust']){
-  await page.setViewportSize({width:512,height:512});await page.goto(runtime==='reference'?'/reference/three-js/tsl-audio.html':'/web/gallery/example.html?id=webgpu_compute_audio&still=1');
+  await page.setViewportSize({width:512,height:512});await page.goto(runtime==='reference'?'/reference/three-js/tsl-audio.html':'/web/gallery/examples/webgpu_compute_audio.html?still=1');
   await page.getByRole('button',{name:'Play',exact:true}).click();
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return audioWaves.length>0&&(c?.dataset.ready==='true'||Number(c?.dataset.frames)>0);},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
@@ -49,7 +49,7 @@ test('TSL audio GPU work and readback remain resident across plays and resize',a
  });
  const reports=[];
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/tsl-audio.html':'/web/gallery/example.html?id=webgpu_compute_audio&still=1');await page.getByRole('button',{name:'Play',exact:true}).click();
+  await page.goto(runtime==='reference'?'/reference/three-js/tsl-audio.html':'/web/gallery/examples/webgpu_compute_audio.html?still=1');await page.getByRole('button',{name:'Play',exact:true}).click();
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return plays>0&&(c?.dataset.ready==='true'||Number(c?.dataset.frames)>0);});
   const play=async(reset=false)=>{const prev=await page.evaluate(()=>plays);await page.evaluate(async({runtime,reset})=>{if(reset)work={creates:0,dispatches:[],copies:[],attributeBytes:0};if(runtime==='reference')await fixturePlay();else app.audio_play();},{runtime,reset});await page.waitForFunction(n=>plays>n,prev);if(runtime==='reference')await page.evaluate(()=>renderFixture());else await page.waitForTimeout(50);};
   for(const resize of [false,true]){

@@ -684,3 +684,219 @@ impl Demo {
         self.time = t;
     }
 }
+
+#[allow(unused_variables)]
+impl super::example::Example for Demo {
+    fn on_update(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<crate::Result<()>> {
+        Some(self.update(scene, camera, delta, animate))
+    }
+    fn on_prepare(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        aspect: f64,
+    ) -> crate::Result<()> {
+        self.prepare(scene, camera)?;
+        Ok(())
+    }
+    fn on_tsl_parameter(&mut self, index: usize, value: f32) -> Option<crate::Result<()>> {
+        Some(self.parameter(index, value))
+    }
+    fn on_take_export(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+    ) -> Option<Option<(String, Vec<u8>)>> {
+        Some(self.take_export())
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.seek(seconds);
+    }
+    fn on_input(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        pan: bool,
+        height: f64,
+    ) -> Option<crate::Result<()>> {
+        Some(self.input(scene, camera, dx, dy, wheel, pan, height))
+    }
+}
+
+/// The program of three.js examples/misc_exporter_stl.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn misc_exporter_stl(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 258, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/misc_exporter_ply.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn misc_exporter_ply(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 259, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/misc_exporter_obj.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn misc_exporter_obj(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 260, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_materials_matcap.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_materials_matcap(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 261, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_lights_physical.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_lights_physical(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 262, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/misc_exporter_draco.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn misc_exporter_draco(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
+                0.1,
+                5000.,
+                Box::new(Demo::create(scene, camera, 383, renderer).await?),
+            ))
+        },
+    )
+    .await
+}

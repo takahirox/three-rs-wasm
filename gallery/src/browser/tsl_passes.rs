@@ -528,3 +528,191 @@ impl Demo {
         Ok(true)
     }
 }
+
+#[allow(unused_variables)]
+impl super::example::Example for Demo {
+    fn on_update(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<crate::Result<()>> {
+        Some(self.update(scene, camera, delta, animate))
+    }
+    fn on_pointer(&mut self, x: f64, y: f64) {
+        self.pointer(x, y);
+    }
+    fn on_render(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        target: &crate::renderer::RenderTarget,
+    ) -> Option<crate::Result<bool>> {
+        Some(self.render(renderer, scene, camera, target))
+    }
+    fn on_tsl_parameter(&mut self, index: usize, value: f32) -> Option<crate::Result<()>> {
+        Some(self.parameter(index, value))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.seek(seconds);
+    }
+    fn on_input(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        pan: bool,
+        height: f64,
+    ) -> Option<crate::Result<()>> {
+        Some(self.input(scene, camera, dx, dy, wheel, pan, height))
+    }
+}
+
+/// The program of three.js examples/webgpu_compute_texture.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_compute_texture(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            on_demand: true,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 38, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_rtt.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_rtt(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            rtt: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 39, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_postprocessing.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_postprocessing(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 40, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_postprocessing_difference.html: its renderer, its scene
+/// and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_postprocessing_difference(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 41, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_postprocessing_masking.html: its renderer, its scene and
+/// its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_postprocessing_masking(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            encode_srgb: true,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 42, renderer).await?),
+            ))
+        },
+    )
+    .await
+}

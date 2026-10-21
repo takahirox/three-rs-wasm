@@ -826,3 +826,213 @@ impl Demo {
         Ok(true)
     }
 }
+
+#[allow(unused_variables)]
+impl super::example::Example for Demo {
+    fn on_update(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<crate::Result<()>> {
+        Some(self.update(scene, camera, delta, animate))
+    }
+    fn on_gpu_pointer(
+        &mut self,
+        r: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        cam: crate::scene::Object3D,
+        x: f64,
+        y: f64,
+    ) -> Option<crate::Result<bool>> {
+        if let Err(e) = self.gpu_pointer(r, scene, cam, x, y) {
+            return Some(Err(e));
+        }
+        None
+    }
+    fn on_pointer(&mut self, x: f64, y: f64) {
+        self.pointer(x, y);
+    }
+    fn on_dragging(&mut self, value: bool) {
+        self.dragging(value);
+    }
+    fn on_render(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        target: &crate::renderer::RenderTarget,
+    ) -> Option<crate::Result<bool>> {
+        Some(self.render(renderer, scene, camera, target))
+    }
+    fn on_prepare(
+        &mut self,
+        renderer: &crate::renderer::Renderer,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        aspect: f64,
+    ) -> crate::Result<()> {
+        self.prepare(scene, camera, aspect)?;
+        Ok(())
+    }
+    fn on_tsl_parameter(&mut self, index: usize, value: f32) -> Option<crate::Result<()>> {
+        Some(self.parameter(index, value))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.seek(seconds);
+    }
+    fn on_input(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        pan: bool,
+        height: f64,
+    ) -> Option<crate::Result<()>> {
+        Some(self.input(scene, camera, dx, dy, wheel, pan, height))
+    }
+}
+
+/// The program of three.js examples/webgpu_particles.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_particles(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 53, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_instance_mesh.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_instance_mesh(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            premultiplied_canvas: true,
+            raw_output: true,
+            premultiplied_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 54, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_compute_points.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_compute_points(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            premultiplied_canvas: true,
+            raw_output: true,
+            premultiplied_output: true,
+            rtt: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 55, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_compute_particles.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_compute_particles(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            rtt: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 56, renderer).await?),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_compute_texture_pingpong.html: its renderer, its scene
+/// and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_compute_texture_pingpong(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            premultiplied_canvas: true,
+            raw_output: true,
+            premultiplied_output: true,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, renderer, _aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.0),
+                0.0,
+                2.0,
+                Box::new(Demo::create(scene, camera, 57, renderer).await?),
+            ))
+        },
+    )
+    .await
+}

@@ -318,3 +318,146 @@ def with_index_names(b):
             continue
         out += bytes([sid]) + enc(end - start) + b[start:end]
     return bytes(out)
+
+
+# --- Element segments ---------------------------------------------------------
+
+def read_expr(b, i):
+    """A constant expression's bytes ( up to and including its end )."""
+    start = i
+    while True:
+        op = b[i]
+        i += 1
+        if op == 0x0b:
+            return b[start:i], i
+        if op == 0x41:
+            _, i = sleb(b, i)
+        elif op == 0x42:
+            _, i = sleb(b, i)
+        elif op == 0x23 or op == 0xd2:
+            _, i = leb(b, i)
+        elif op == 0xd0:
+            i += 1
+        else:
+            raise ValueError(f'constant expression opcode {op:#x}')
+
+
+def elem_segments(b, secs):
+    """[{flags, table, offset ( expr bytes or None ), kind, items}] where an item
+    is ( 'func', index ) or ( 'expr', bytes )."""
+    s = section(b, secs, 9)
+    if not s:
+        return []
+    n, i = leb(b, s[2])
+    out = []
+    for _ in range(n):
+        flags, i = leb(b, i)
+        table, offset, kind = 0, None, 0
+        if flags in (2, 6):
+            table, i = leb(b, i)
+        if flags in (0, 2, 4, 6):
+            offset, i = read_expr(b, i)
+        if flags in (1, 2, 3):
+            kind = b[i]
+            i += 1
+        elif flags in (5, 6, 7):
+            kind = b[i]
+            i += 1
+        count, i = leb(b, i)
+        items = []
+        for _ in range(count):
+            if flags < 4:
+                f, i = leb(b, i)
+                items.append(('func', f))
+            else:
+                e, i = read_expr(b, i)
+                items.append(('expr', e))
+        out.append(dict(flags=flags, table=table, offset=offset, kind=kind, items=items))
+    return out
+
+
+def encode_elem(segs):
+    out = bytearray(enc(len(segs)))
+    for s in segs:
+        f = s['flags']
+        out += enc(f)
+        if f in (2, 6):
+            out += enc(s['table'])
+        if f in (0, 2, 4, 6):
+            out += s['offset']
+        if f in (1, 2, 3, 5, 6, 7):
+            out.append(s['kind'])
+        out += enc(len(s['items']))
+        for kind, v in s['items']:
+            out += enc(v) if kind == 'func' else v
+    return bytes(out)
+
+
+def func_item(index):
+    return ('expr', bytes([0xd2]) + enc(index) + b'\x0b')
+
+
+NULL_FUNC = ('expr', b'\xd0\x70\x0b')
+
+
+def offset_value(expr):
+    assert expr[0] == 0x41, 'non-constant element offset'
+    return sleb(expr, 1)[0]
+
+
+def imports(b, secs):
+    """[( module, field, kind, payload bytes )]."""
+    s = section(b, secs, 2)
+    if not s:
+        return []
+    i = s[2]
+    n, i = leb(b, i)
+    out = []
+    for _ in range(n):
+        mod, i = name(b, i)
+        field, i = name(b, i)
+        kind = b[i]
+        j = i + 1
+        if kind == 0:
+            _, j = leb(b, j)
+        elif kind == 1:
+            j += 1
+            flags, j = leb(b, j)
+            _, j = leb(b, j)
+            if flags & 1:
+                _, j = leb(b, j)
+        elif kind == 2:
+            flags, j = leb(b, j)
+            _, j = leb(b, j)
+            if flags & 1:
+                _, j = leb(b, j)
+        elif kind == 3:
+            j += 2
+        elif kind == 4:
+            j += 1
+            _, j = leb(b, j)
+        out.append((mod, field, kind, b[i + 1:j]))
+        i = j
+    return out
+
+
+def encode_imports(entries):
+    out = bytearray(enc(len(entries)))
+    for mod, field, kind, payload in entries:
+        out += enc(len(mod.encode())) + mod.encode() + enc(len(field.encode())) + field.encode() + bytes([kind]) + payload
+    return bytes(out)
+
+
+def exports(b, secs):
+    s = section(b, secs, 7)
+    out = []
+    if not s:
+        return out
+    i = s[2]
+    n, i = leb(b, i)
+    for _ in range(n):
+        nm, i = name(b, i)
+        kind = b[i]
+        idx, i = leb(b, i + 1)
+        out.append((nm, kind, idx))
+    return out

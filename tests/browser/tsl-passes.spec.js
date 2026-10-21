@@ -10,7 +10,7 @@ for(const id of ids){
   test.setTimeout(120000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));const images={};
   for(const runtime of ['reference','rust']){
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl-passes.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl-passes.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:60000});
    await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
    const states=[];
@@ -35,7 +35,7 @@ for(const id of ids){
  });
  test(`TSL pass GPU residency: ${id}`,async({page})=>{
   await page.addInitScript(()=>{window.creates=0;window.computeDispatches=0;for(const n of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[n];GPUDevice.prototype[n]=function(...args){creates++;return original.apply(this,args);};}const dispatch=GPUComputePassEncoder.prototype.dispatchWorkgroups;GPUComputePassEncoder.prototype.dispatchWorkgroups=function(...args){computeDispatches++;return dispatch.apply(this,args);};});
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   for(const resized of [false,true]){
    if(resized)await page.setViewportSize({width:640,height:400});await page.waitForTimeout(300);
    const snapshot=()=>page.evaluate(()=>({creates,computeDispatches,transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));
@@ -49,7 +49,7 @@ for(const id of ids){
 }
 
 test('Difference speed and Orbit controls update the displayed scene',async({page})=>{
- await page.goto('/web/gallery/example.html?id=webgpu_postprocessing_difference');
+ await page.goto('/web/gallery/examples/webgpu_postprocessing_difference.html');
  await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>10);
  await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
  const capture=()=>page.locator('canvas').screenshot();

@@ -33,7 +33,7 @@ for(const id of examples)test(`original scene comparison: ${id}`,async({page},in
   const objects=[];window.reference.scene.traverse(o=>{if(o.isLine||o.isPoints)objects.push({position:o.geometry.morphAttributes.position?Array.from(o.geometry.attributes.position.array,(v,i)=>v+(o.geometry.morphAttributes.position[0].array[i]-v)*o.morphTargetInfluences[0]):Array.from(o.geometry.attributes.position.array),color:o.geometry.attributes.color?Array.from(o.geometry.attributes.color.array):null,index:o.geometry.index?Array.from(o.geometry.index.array):null,matrix:o.matrixWorld.elements,segments:!!o.isLineSegments});});return {vertices,indices,lines,points,objects};
  });
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.goto(`/web/gallery/example.html?id=${id}&still`);
+ await page.goto(`/web/gallery/examples/${id}.html?still`);
  await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await expect(page.locator('canvas')).not.toHaveAttribute('data-error',/.+/);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
@@ -77,7 +77,7 @@ test('direct equirectangular background matches original TSL texture node',async
  await page.setViewportSize({width:512,height:512});
  await page.goto('/reference/three-js/equirectangular.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:90000});
  const reference=await page.locator('canvas').screenshot();
- await page.goto('/web/gallery/example.html?id=webgpu_equirectangular&still');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
+ await page.goto('/web/gallery/examples/webgpu_equirectangular.html?still');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});const actual=await page.locator('canvas').screenshot();
  const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let differing=0;
  for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>6))differing++;

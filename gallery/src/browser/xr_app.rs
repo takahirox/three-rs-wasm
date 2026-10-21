@@ -27,11 +27,6 @@ use std::rc::Rc;
 use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 
-/// The gallery's ids of the three examples.
-pub const CUBES: u32 = 498;
-pub const ROLLERCOASTER: u32 = 499;
-pub const SHADOWS: u32 = 500;
-
 fn now() -> f64 {
     web_sys::window()
         .and_then(|w| w.performance())
@@ -987,7 +982,7 @@ fn pose_from(chunk: &[f32]) -> XrInputPose {
     }
 }
 
-/// The XR examples' app, created by `web/gallery/xr.js`.
+/// The XR examples' app, created by their programs.
 #[wasm_bindgen]
 pub struct XrApp {
     state: Rc<RefCell<State>>,
@@ -997,84 +992,119 @@ fn js_error(e: Error) -> JsValue {
     JsValue::from_str(&e.to_string())
 }
 
-#[wasm_bindgen]
 impl XrApp {
-    #[wasm_bindgen(js_name = create)]
-    pub async fn new(
+    /// The renderer, the canvas's surface and the example's scene.
+    async fn new(
         canvas: web_sys::HtmlCanvasElement,
-        example: u32,
-    ) -> std::result::Result<XrApp, JsValue> {
-        async fn create(canvas: web_sys::HtmlCanvasElement, example: u32) -> Result<XrApp> {
-            // renderer.xr.enabled: WebGPUBackend requests an XR-compatible adapter.
-            wgpu::set_xr_compatible(true);
-            let renderer = Renderer::new().await;
-            wgpu::set_xr_compatible(false);
-            let renderer = renderer?;
-            renderer.viewport_transmission.set(true);
-            let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
-                backends: wgpu::Backends::BROWSER_WEBGPU,
-                ..Default::default()
-            });
-            let surface = instance
-                .create_surface(wgpu::SurfaceTarget::Canvas(canvas.clone()))
-                .map_err(|e| Error::Gpu(e.to_string()))?;
-            let mut configuration = surface
-                .get_default_config(
-                    &renderer.adapter,
-                    canvas.width().max(1),
-                    canvas.height().max(1),
-                )
-                .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
-            surface.configure(&renderer.device, &configuration);
-            let mut scene = Scene::new();
-            let camera = scene.insert(perspective(50., 1., 0.1, 10.));
-            let mut xr = XrManager::new();
-            let example = match example {
-                CUBES => Example::Cubes(Box::new(Cubes::new(&mut scene, camera, &mut xr)?)),
-                ROLLERCOASTER => Example::RollerCoaster(Box::new(RollerCoaster::new(
-                    &mut scene, camera, &mut xr,
-                )?)),
-                SHADOWS => Example::Shadows(Box::new(Shadows::new(&mut scene, camera)?)),
-                _ => return Err(Error::Invalid("XR example")),
-            };
-            let mut models = Vec::new();
-            if let Example::Cubes(_) = example {
-                let grip = xr.controller_grip(&mut scene, 0);
-                let model = ControllerModel::new(&mut scene);
-                scene.add(grip, model.root)?;
-                models.push(model);
-            }
-            let direct = !matches!(example, Example::Shadows(_));
-            let target = RenderTarget::with_options(
-                &renderer.device,
+        example: impl FnOnce(&mut Scene, Object3D, &mut XrManager) -> Result<Example>,
+    ) -> Result<XrApp> {
+        // renderer.xr.enabled: WebGPUBackend requests an XR-compatible adapter.
+        wgpu::set_xr_compatible(true);
+        let renderer = Renderer::new().await;
+        wgpu::set_xr_compatible(false);
+        let renderer = renderer?;
+        renderer.viewport_transmission.set(true);
+        let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::BROWSER_WEBGPU,
+            ..Default::default()
+        });
+        let surface = instance
+            .create_surface(wgpu::SurfaceTarget::Canvas(canvas.clone()))
+            .map_err(|e| Error::Gpu(e.to_string()))?;
+        let mut configuration = surface
+            .get_default_config(
+                &renderer.adapter,
                 canvas.width().max(1),
                 canvas.height().max(1),
-                output_options(direct, true),
-            )?;
-            Ok(XrApp {
-                state: Rc::new(RefCell::new(State {
-                    renderer,
-                    surface,
-                    configuration,
-                    canvas,
-                    target,
-                    scene,
-                    camera,
-                    xr,
-                    example,
-                    view_target: None,
-                    layer_format: wgpu::TextureFormat::Bgra8Unorm,
-                    saved_background: None,
-                    models,
-                    factory: Default::default(),
-                    frames: 0,
-                    xr_frames: 0,
-                })),
-            })
+            )
+            .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
+        configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
+        surface.configure(&renderer.device, &configuration);
+        let mut scene = Scene::new();
+        let camera = scene.insert(perspective(50., 1., 0.1, 10.));
+        let mut xr = XrManager::new();
+        let example = example(&mut scene, camera, &mut xr)?;
+        let mut models = Vec::new();
+        if let Example::Cubes(_) = example {
+            let grip = xr.controller_grip(&mut scene, 0);
+            let model = ControllerModel::new(&mut scene);
+            scene.add(grip, model.root)?;
+            models.push(model);
         }
-        create(canvas, example).await.map_err(js_error)
+        let direct = !matches!(example, Example::Shadows(_));
+        let target = RenderTarget::with_options(
+            &renderer.device,
+            canvas.width().max(1),
+            canvas.height().max(1),
+            output_options(direct, true),
+        )?;
+        Ok(XrApp {
+            state: Rc::new(RefCell::new(State {
+                renderer,
+                surface,
+                configuration,
+                canvas,
+                target,
+                scene,
+                camera,
+                xr,
+                example,
+                view_target: None,
+                layer_format: wgpu::TextureFormat::Bgra8Unorm,
+                saved_background: None,
+                models,
+                factory: Default::default(),
+                frames: 0,
+                xr_frames: 0,
+            })),
+        })
     }
+}
+
+/// The program of three.js examples/webgpu_xr_cubes.html: its renderer and
+/// its scene; web/gallery/xr.js runs the session and the frame loop.
+#[wasm_bindgen]
+pub async fn webgpu_xr_cubes(
+    canvas: web_sys::HtmlCanvasElement,
+) -> std::result::Result<XrApp, JsValue> {
+    XrApp::new(canvas, |scene, camera, xr| {
+        Ok(Example::Cubes(Box::new(Cubes::new(scene, camera, xr)?)))
+    })
+    .await
+    .map_err(js_error)
+}
+
+/// The program of three.js examples/webgpu_xr_rollercoaster.html: its
+/// renderer and its scene; web/gallery/xr.js runs the session and the frame
+/// loop.
+#[wasm_bindgen]
+pub async fn webgpu_xr_rollercoaster(
+    canvas: web_sys::HtmlCanvasElement,
+) -> std::result::Result<XrApp, JsValue> {
+    XrApp::new(canvas, |scene, camera, xr| {
+        Ok(Example::RollerCoaster(Box::new(RollerCoaster::new(
+            scene, camera, xr,
+        )?)))
+    })
+    .await
+    .map_err(js_error)
+}
+
+/// The program of three.js examples/webgpu_xr_shadows.html: its renderer and
+/// its scene; web/gallery/xr.js runs the session and the frame loop.
+#[wasm_bindgen]
+pub async fn webgpu_xr_shadows(
+    canvas: web_sys::HtmlCanvasElement,
+) -> std::result::Result<XrApp, JsValue> {
+    XrApp::new(canvas, |scene, camera, _xr| {
+        Ok(Example::Shadows(Box::new(Shadows::new(scene, camera)?)))
+    })
+    .await
+    .map_err(js_error)
+}
+
+#[wasm_bindgen]
+impl XrApp {
     /// One animation frame on the canvas ( the renderer's own loop before
     /// and after a session ).
     pub fn frame(&self) -> std::result::Result<(), JsValue> {

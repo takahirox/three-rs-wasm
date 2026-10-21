@@ -586,12 +586,12 @@ def main():
   index = read('examples/index.html').decode()
   index = index.replace('<title>three.js examples</title>', '<title>three-rs-wasm examples</title>')
   index = index.replace("file + '.html'", "exampleHref( file )")
-  # web/gallery/example.html?id=…, or examples/<id>.html on the published site.
-  index = index.replace('\t\tfunction createLink( file, tags ) {', """\t\t// web/gallery/example.html?id=…, or examples/<id>.html on the published
+  # web/gallery/examples/<id>.html, or examples/<id>.html on the published site.
+  index = index.replace('\t\tfunction createLink( file, tags ) {', """\t\t// The example's page: web/gallery/examples/<id>.html, or examples/<id>.html on the published
 \t\t// site's official-style layout ( tools/build_site.py ).
 \t\tfunction exampleHref( file ) {
 
-\t\t\treturn document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'example.html?id=' + encodeURIComponent( file );
+\t\t\treturn document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'examples/' + encodeURIComponent( file ) + '.html';
 
 \t\t}
 

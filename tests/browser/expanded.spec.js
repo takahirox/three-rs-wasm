@@ -26,7 +26,7 @@ for(const entry of cases)test(`additional scene and GPU resources: ${entry.id}`,
  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));const row=catalog.examples.find(e=>e.id===entry.id);
  if(entry.example===16){row.port={example:entry.example,limitations:[]};row.status='partial';await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));}
  else expect(row.port?.example).toBe(entry.example);
- await page.goto(`/web/gallery/example.html?id=${entry.id}&still=1`);
+ await page.goto(`/web/gallery/examples/${entry.id}.html?still=1`);
  await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
  await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(3);
  const results=[];
@@ -60,7 +60,7 @@ test('morph sliders, orbit, pan and disabled zoom match the original',async({pag
  writeFileSync(info.outputPath('reference-camera.json'),JSON.stringify(await page.evaluate(()=>({position:window.reference.camera.position.toArray(),quaternion:window.reference.camera.quaternion.toArray(),size:[document.querySelector('canvas').clientWidth,document.querySelector('canvas').clientHeight]}))));
  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id==='webgpu_morphtargets'),{status:'partial',port:{example:18,limitations:[]}});
  await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
- await page.goto('/web/gallery/example.html?id=webgpu_morphtargets');await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
+ await page.goto('/web/gallery/examples/webgpu_morphtargets.html');await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
  const before=await page.evaluate(()=>JSON.parse(app.transfer_counts()));
  for(const [id,value] of [['spherify',.25],['twist',.75]])await page.locator('#'+id).evaluate((input,value)=>{input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));},value);
  await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await gesture();
@@ -80,7 +80,7 @@ for(const [id,example] of [['webgl_geometry_colors',21],['webgl_lines_colors',23
  await expect.poll(()=>page.evaluate(([x,y])=>Math.hypot(reference.camera.position.x-x,reference.camera.position.y-y),target)).toBeLessThan(.01);
  await page.evaluate(async()=>{reference.renderer.setAnimationLoop(null);await renderFixture(3);});const expected=PNG.sync.read(await canvas.screenshot());
  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===id),{status:'partial',port:{example,limitations:[]}});await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
- await page.goto(`/web/gallery/example.html?id=${id}`);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
+ await page.goto(`/web/gallery/examples/${id}.html`);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
  await page.mouse.move(319,190);await page.mouse.move(320,190);
  await expect.poll(()=>page.evaluate(([x,y])=>{const camera=JSON.parse(app.scene_json()).children.find(n=>'Camera' in n.kind);return Math.hypot(camera.position[0]-x,camera.position[1]-y);},target)).toBeLessThan(.01);
  await page.evaluate(()=>app.gallery_time(3));await page.waitForTimeout(100);const actual=PNG.sync.read(await canvas.screenshot());let different=0;
@@ -92,7 +92,7 @@ test('indexed mesh wireframe toggle matches the original',async({page},info)=>{
  await page.setViewportSize({width:512,height:512});await page.goto('/reference/three-js/expanded.html?id=webgl_buffergeometry_indexed');const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-ready','true');
  await page.evaluate(async()=>{reference.scene.traverse(o=>{if(o.isMesh)o.material.wireframe=true;});await renderFixture(3);});const expected=PNG.sync.read(await canvas.screenshot());
  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id==='webgl_buffergeometry_indexed'),{status:'partial',port:{example:22,limitations:[]}});await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
- await page.goto('/web/gallery/example.html?id=webgl_buffergeometry_indexed&still=1');await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);await page.locator('#wireframe').check();await page.evaluate(()=>app.gallery_time(3));await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await page.waitForTimeout(100);
+ await page.goto('/web/gallery/examples/webgl_buffergeometry_indexed.html?still=1');await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);await page.locator('#wireframe').check();await page.evaluate(()=>app.gallery_time(3));await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await page.waitForTimeout(100);
  const actual=PNG.sync.read(await canvas.screenshot());let different=0;for(let i=0;i<actual.data.length;i+=4)if([0,1,2].some(c=>Math.abs(actual.data[i+c]-expected.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('reference.png'),PNG.sync.write(expected));expect(different/(actual.width*actual.height)).toBeLessThanOrEqual(.005);
 });
@@ -105,7 +105,7 @@ for(const [id,example] of [['webgl_morphtargets_sphere',25]])test(`${id} orbit, 
   await page.mouse.move(250,250);await page.mouse.down({button:'right'});await page.mouse.move(235,260,{steps:3});await page.mouse.up({button:'right'});await page.waitForTimeout(100);
  };
  await page.goto(`/reference/three-js/expanded.html?id=${id}`);const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-ready','true');await gesture();writeFileSync(info.outputPath('reference-camera.json'),JSON.stringify(await page.evaluate(()=>({position:reference.camera.position.toArray(),quaternion:reference.camera.quaternion.toArray()}))));const reference=PNG.sync.read(await canvas.screenshot());
- await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await gesture();writeFileSync(info.outputPath('actual-camera.json'),JSON.stringify(await page.evaluate(()=>JSON.parse(app.scene_json()).children.find(n=>'Camera' in n.kind))));const actual=PNG.sync.read(await canvas.screenshot());let different=0;
+ await page.goto(`/web/gallery/examples/${id}.html?still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await gesture();writeFileSync(info.outputPath('actual-camera.json'),JSON.stringify(await page.evaluate(()=>JSON.parse(app.scene_json()).children.find(n=>'Camera' in n.kind))));const actual=PNG.sync.read(await canvas.screenshot());let different=0;
  for(let i=0;i<actual.data.length;i+=4)if([0,1,2].some(c=>Math.abs(actual.data[i+c]-reference.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('reference.png'),PNG.sync.write(reference));expect(different/(actual.width*actual.height)).toBeLessThanOrEqual(.005);
 });
@@ -116,7 +116,7 @@ for(const id of ['webgl_buffergeometry','webgl_buffergeometry_rawshader'])test(`
  const canvas=page.locator('canvas');await expect(canvas).toHaveAttribute('data-ready','true');
  await page.evaluate(async()=>{reference.renderer.setSize(800,450);reference.camera.aspect=800/450;reference.camera.updateProjectionMatrix();await renderFixture(1.2);});
  const reference=PNG.sync.read(await canvas.screenshot());
- await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
+ await page.goto(`/web/gallery/examples/${id}.html?still=1`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(3);
  await page.addStyleTag({content:'#notice,#settings{display:none!important}'});await page.evaluate(()=>app.gallery_time(1.2));
  const frame=Number(await canvas.getAttribute('data-frames'));await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(frame+2);
  const actual=PNG.sync.read(await canvas.screenshot());let different=0;
@@ -125,7 +125,7 @@ for(const id of ['webgl_buffergeometry','webgl_buffergeometry_rawshader'])test(`
  writeFileSync(info.outputPath('wide-actual.png'),PNG.sync.write(actual));writeFileSync(info.outputPath('wide-reference.png'),PNG.sync.write(reference));
  expect(different/(800*450)).toBeLessThanOrEqual(.005);
  // Run real animation rather than measuring only a frozen fixture.
- await page.goto(`/web/gallery/example.html?id=${id}`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(10);
+ await page.goto(`/web/gallery/examples/${id}.html`);await expect.poll(()=>canvas.getAttribute('data-frames').then(Number)).toBeGreaterThan(10);
  const counts=()=>page.evaluate(()=>({transfer:JSON.parse(app.transfer_counts()),resources:Array.from(app.resource_counts())}));
  const before=await counts();expect(before.transfer[0]).toBe(1); // Shared back/front geometry is uploaded once.
  const first=await canvas.screenshot(),start=Number(await canvas.getAttribute('data-frames'));

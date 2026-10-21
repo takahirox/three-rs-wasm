@@ -22,5 +22,6 @@ cargo clippy --locked --workspace --target wasm32-unknown-unknown -- -D warnings
 scripts/build-gallery
 ( cd tsl && wasm-pack build --target web --profile web --out-dir ../web/tsl-pkg --no-typescript )
 npm ci --ignore-scripts
+node tools/gallery/pages.mjs --check
 npx playwright test --config playwright.gallery.config.js
 echo 'Gallery UI, implemented ports and inventory: PASS (not full example coverage)'

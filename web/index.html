@@ -123,9 +123,11 @@ try{
   if(!navigator.gpu)throw new Error('このブラウザーではWebGPUを利用できません。');
   // The gallery's Wasm: the MVP scenes are the shell's own ( no parts ).
   const {loadRuntime}=await import('./gallery/runtime.js');
-  const {BrowserApp}=await loadRuntime('core');
+  const runtime=await loadRuntime('core');
+  // Each demo's own program ( gallery/src/browser.rs ).
+  const program=['mvp_rotate_select','mvp_lights_textures','webgl_geometry_cube','webgpu_lights_pointlights','webgpu_loader_gltf','mvp_boombox'][example];
   if(params.has('fixture')) {canvas.width=256;canvas.height=256;canvas.style.width='256px';canvas.style.height='256px';canvas.parentElement.style.borderRadius='0';}
-  window.app=await BrowserApp.create(canvas,example,!staticMode);
+  window.app=await runtime[program](canvas,!staticMode);
   rebuild.disabled=false;
   status.textContent=example>=3?'表示中 · ドラッグで視点を変更':'表示中 · キャンバスをクリックして操作';
   if(example>=4){

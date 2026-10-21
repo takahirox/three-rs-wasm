@@ -30,7 +30,7 @@ const diff = (a, b) => {
 
 const openRust = async page => {
   await page.setViewportSize(size);
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);
   await page.waitForFunction(() => window.app);
   // The original renders without antialiasing here ( samples=1 ).
   await page.evaluate(() => app.set_samples(1));

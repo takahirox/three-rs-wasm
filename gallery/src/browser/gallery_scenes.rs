@@ -39,11 +39,6 @@ pub(super) enum GalleryScene {
         elapsed: f64,
         marker: usize,
     },
-    Panorama {
-        lon: f64,
-        lat: f64,
-        dragging: bool,
-    },
 }
 // A repeatable random sequence makes the original random examples comparable.
 struct Random(u32);
@@ -101,281 +96,233 @@ impl Snowflake {
     }
 }
 impl GalleryScene {
-    pub async fn create(
-        scene: &mut Scene,
-        camera: Object3D,
-        placeholder: Object3D,
-        example: u32,
-        renderer: &crate::renderer::Renderer,
-    ) -> Result<Self> {
-        scene.dispose(placeholder)?;
-        scene.background = Color::BLACK;
-        let aspect = match &scene.get(camera)?.kind {
-            NodeKind::Camera(Camera::Perspective(p)) => p.aspect,
-            _ => 1.0,
-        };
-        if example >= 16 {
-            Ok(Self::Expanded(
-                super::expanded::Demo::create(scene, camera, example, renderer).await?,
-            ))
-        } else if example == 15 {
-            Ok(Self::Robot(
-                super::robot::Robot::create(scene, camera, aspect).await?,
-            ))
-        } else if example == 14 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 40.0,
-                    aspect,
-                    near: 1.0,
-                    far: 30.0,
+    async fn scene_15(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        Ok(Self::Robot(
+            super::robot::Robot::create(scene, camera, aspect).await?,
+        ))
+    }
+    async fn scene_14(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 40.0,
+            aspect,
+            near: 1.0,
+            far: 30.0,
+            ..Default::default()
+        }));
+        scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
+            &fetch("/web/gallery/assets/spot1Lux.hdr").await?,
+        )?));
+        scene.background_environment = true;
+        scene.aces_tone_mapping = true;
+        let geometry = Arc::new(SphereGeometry::build(0.4, 32, 32)?);
+        for x in 0..=10 {
+            for y in 0..=2 {
+                let mut material = MeshStandardMaterial {
+                    roughness: x as f64 / 10.0,
+                    metalness: if y < 1 { 1.0 } else { 0.0 },
                     ..Default::default()
-                }));
-            scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-                &fetch("/web/gallery/assets/spot1Lux.hdr").await?,
-            )?));
-            scene.background_environment = true;
-            scene.aces_tone_mapping = true;
-            let geometry = Arc::new(SphereGeometry::build(0.4, 32, 32)?);
-            for x in 0..=10 {
-                for y in 0..=2 {
-                    let mut material = MeshStandardMaterial {
-                        roughness: x as f64 / 10.0,
-                        metalness: if y < 1 { 1.0 } else { 0.0 },
-                        ..Default::default()
-                    };
-                    material.properties.color = if y < 2 { Color::WHITE } else { Color::BLACK };
-                    let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
-                        geometry.clone(),
-                        Arc::new(Material::Standard(material)),
-                    )));
-                    scene.get_mut(mesh)?.position =
-                        Vector3::new(x as f64 - 5.0, 1.0 - y as f64, 0.0);
-                }
+                };
+                material.properties.color = if y < 2 { Color::WHITE } else { Color::BLACK };
+                let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+                    geometry.clone(),
+                    Arc::new(Material::Standard(material)),
+                )));
+                scene.get_mut(mesh)?.position = Vector3::new(x as f64 - 5.0, 1.0 - y as f64, 0.0);
             }
-            let theta = (597.0 + 0.5) * std::f64::consts::PI / 512.0;
-            let phi = -(213.0 + 0.5) * std::f64::consts::PI / 512.0;
-            let angle = std::f64::consts::FRAC_PI_2 - theta;
-            let light = scene.insert(NodeKind::Light(Light::Directional {
-                color: Color::WHITE,
-                intensity: 0.0,
-                target: Vector3::ZERO,
-            }));
-            scene.get_mut(light)?.position =
-                Vector3::new(phi.sin() * angle.sin(), phi.cos(), phi.sin() * angle.cos()) * 100.0;
-            Ok(Self::Calibration {
-                viewer: OrbitViewer::from_camera(Vector3::ZERO, 16.0),
-                light,
-            })
-        } else if example == 13 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 45.0,
-                    aspect,
-                    near: 0.25,
-                    far: 20.0,
-                    ..Default::default()
-                }));
-            let texture = decode_image(&fetch("/web/gallery/assets/panorama.jpg").await?).await?;
-            scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_texture(
-                &texture,
-            )?));
-            scene.background_environment = true;
-            scene.background_equirectangular = true;
-            let mut viewer = OrbitViewer::from_camera(Vector3::ZERO, 1.0);
-            viewer.fixture(std::f64::consts::FRAC_PI_2, 0.0, 1.8);
-            Ok(Self::Equirectangular {
-                viewer,
-                dragging: false,
-            })
-        } else if example == 11 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 40.0,
-                    aspect,
-                    near: 1.0,
-                    far: 1000.0,
-                    ..Default::default()
-                }));
-            let position = Vector3::new(10.0, 15.0, 25.0);
-            let mut viewer = OrbitViewer::from_camera(Vector3::ZERO, position.length());
-            viewer.fixture(
-                position.x.atan2(position.z),
-                (position.y / position.length()).asin(),
-                1.8,
-            );
-            let mut texture =
-                decode_image(&fetch("/web/gallery/assets/uv-grid.jpg").await?).await?;
-            texture.anisotropy = 16;
-            texture.wrap_s = Wrapping::Repeat;
-            texture.wrap_t = Wrapping::Repeat;
-            texture.mipmap_filter = Some(Filter::Linear);
-            texture.repeat = Vector2::splat(0.25);
-            texture.center = Vector2::splat(0.5);
-            texture.rotation = std::f64::consts::FRAC_PI_4;
-            let mut material = MeshBasicMaterial::default();
-            material.properties.map = Some(Arc::new(texture));
-            let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
-                Arc::new(BoxGeometry::build(10.0, 10.0, 10.0)?),
-                Arc::new(Material::Basic(material)),
-            )));
-            Ok(Self::TextureRotation { mesh, viewer })
-        } else if example == 12 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 27.0,
-                    aspect,
-                    near: 1.0,
-                    far: 4000.0,
-                    ..Default::default()
-                }));
-            scene.get_mut(camera)?.position = Vector3::new(0.0, 0.0, 2750.0);
-            let mut random = Random(1);
-            let mut base = Vec::with_capacity(10000);
-            let mut colors = Vec::with_capacity(30000);
-            for _ in 0..10000 {
-                let p = Vector3::new(random.next(), random.next(), random.next()) * 800.0
-                    - Vector3::splat(400.0);
-                base.push(p);
-                colors.extend([
-                    (p.x / 800.0 + 0.5) as f32,
-                    (p.y / 800.0 + 0.5) as f32,
-                    (p.z / 800.0 + 0.5) as f32,
-                ]);
-            }
-            let target: Vec<Vector3> = (0..10000)
-                .map(|_| {
-                    Vector3::new(random.next(), random.next(), random.next()) * 800.0
-                        - Vector3::splat(400.0)
-                })
-                .collect();
-            // Morph attributes in the original are float32, including their base.
-            for p in &mut base {
-                *p = p.as_vec3().as_dvec3();
-            }
-            let target: Vec<Vector3> = target
-                .into_iter()
-                .map(|p: Vector3| p.as_vec3().as_dvec3())
-                .collect();
-            let mut geometry = BufferGeometry::default();
-            geometry.set_from_points(&base)?;
-            geometry.set_attribute(
-                "color",
-                Attribute::F32(BufferAttribute::new(colors, 3, false)?),
-            );
-            geometry.morph_attributes.insert(
-                "position".into(),
-                vec![Attribute::F32(BufferAttribute::new(
-                    target.iter().flat_map(|p| p.as_vec3().to_array()).collect(),
-                    3,
-                    false,
-                )?)],
-            );
-            let mut material = LineBasicMaterial::default();
-            material.properties.vertex_colors = true;
-            let object = scene.insert(NodeKind::Line(Line {
-                geometry: Arc::new(geometry),
-                material: Arc::new(Material::Line(material)),
-                segments: false,
-            }));
-            Ok(Self::MorphLine { object, time: 0.0 })
-        } else if example == 7 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 27.0,
-                    aspect,
-                    near: 1.0,
-                    far: 10000.0,
-                    ..Default::default()
-                }));
-            scene.get_mut(camera)?.position = Vector3::new(0.0, 0.0, 9000.0);
-            let mut snow = Snowflake {
-                positions: vec![],
-                colors: vec![],
-                indices: vec![],
-                random: Random(1),
-            };
-            let points = |values: &[(f64, f64)]| {
-                values
-                    .iter()
-                    .map(|&(x, y)| Vector3::new(x, y, 0.0))
-                    .collect()
-            };
-            snow.curve(points(&[(0.0, 0.0), (500.0, 0.0)]), false);
-            snow.curve(
-                points(&[(0.0, 600.0), (250.0, 1000.0), (500.0, 600.0)]),
-                true,
-            );
-            snow.curve(
-                points(&[
-                    (0.0, 1200.0),
-                    (500.0, 1200.0),
-                    (500.0, 1700.0),
-                    (0.0, 1700.0),
-                ]),
-                true,
-            );
-            snow.curve(
-                points(&[
-                    (250.0, 2200.0),
-                    (500.0, 2200.0),
-                    (250.0, 2200.0),
-                    (250.0, 2450.0),
-                    (250.0, 2200.0),
-                    (0.0, 2200.0),
-                    (250.0, 2200.0),
-                    (250.0, 1950.0),
-                    (250.0, 2200.0),
-                ]),
-                false,
-            );
-            let mut geometry = BufferGeometry::default();
-            geometry.set_from_points(&snow.positions)?;
-            geometry.set_attribute(
-                "color",
-                Attribute::F32(BufferAttribute::new(snow.colors, 3, false)?),
-            );
-            geometry.set_index(Some(snow.indices));
-            let mut material = LineBasicMaterial::default();
-            material.properties.vertex_colors = true;
-            let line = scene.insert(NodeKind::Line(Line {
-                geometry: Arc::new(geometry),
-                material: Arc::new(Material::Line(material)),
-                segments: true,
-            }));
-            scene.get_mut(line)?.position = Vector3::new(-1200.0, -1200.0, 0.0);
-            let root = scene.insert(NodeKind::Group);
-            scene.add(root, line)?;
-            Ok(Self::Snowflake { root, time: 0.0 })
-        } else if example == 8 {
-            scene.get_mut(camera)?.kind =
-                NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                    fov: 75.0,
-                    aspect,
-                    near: 1.0,
-                    far: 1100.0,
-                    ..Default::default()
-                }));
-            scene.get_mut(camera)?.position = Vector3::ZERO;
-            let mut geometry = SphereGeometry::build(500.0, 60, 40)?;
-            geometry.scale(Vector3::new(-1.0, 1.0, 1.0))?;
-            let mut texture =
-                decode_image(&fetch("/web/gallery/assets/panorama.jpg").await?).await?;
-            texture.mipmap_filter = Some(Filter::Linear);
-            let mut material = MeshBasicMaterial::default();
-            material.properties.map = Some(Arc::new(texture));
-            scene.insert(NodeKind::Mesh(Mesh::new(
-                Arc::new(geometry),
-                Arc::new(Material::Basic(material)),
-            )));
-            Ok(Self::Panorama {
-                lon: 0.0,
-                lat: 0.0,
-                dragging: false,
-            })
-        } else {
-            Self::picking(scene, camera, aspect, example == 10)
         }
+        let theta = (597.0 + 0.5) * std::f64::consts::PI / 512.0;
+        let phi = -(213.0 + 0.5) * std::f64::consts::PI / 512.0;
+        let angle = std::f64::consts::FRAC_PI_2 - theta;
+        let light = scene.insert(NodeKind::Light(Light::Directional {
+            color: Color::WHITE,
+            intensity: 0.0,
+            target: Vector3::ZERO,
+        }));
+        scene.get_mut(light)?.position =
+            Vector3::new(phi.sin() * angle.sin(), phi.cos(), phi.sin() * angle.cos()) * 100.0;
+        Ok(Self::Calibration {
+            viewer: OrbitViewer::from_camera(Vector3::ZERO, 16.0),
+            light,
+        })
+    }
+    async fn scene_13(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 45.0,
+            aspect,
+            near: 0.25,
+            far: 20.0,
+            ..Default::default()
+        }));
+        let texture = decode_image(&fetch("/web/gallery/assets/panorama.jpg").await?).await?;
+        scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_texture(
+            &texture,
+        )?));
+        scene.background_environment = true;
+        scene.background_equirectangular = true;
+        let mut viewer = OrbitViewer::from_camera(Vector3::ZERO, 1.0);
+        viewer.fixture(std::f64::consts::FRAC_PI_2, 0.0, 1.8);
+        Ok(Self::Equirectangular {
+            viewer,
+            dragging: false,
+        })
+    }
+    async fn scene_11(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 40.0,
+            aspect,
+            near: 1.0,
+            far: 1000.0,
+            ..Default::default()
+        }));
+        let position = Vector3::new(10.0, 15.0, 25.0);
+        let mut viewer = OrbitViewer::from_camera(Vector3::ZERO, position.length());
+        viewer.fixture(
+            position.x.atan2(position.z),
+            (position.y / position.length()).asin(),
+            1.8,
+        );
+        let mut texture = decode_image(&fetch("/web/gallery/assets/uv-grid.jpg").await?).await?;
+        texture.anisotropy = 16;
+        texture.wrap_s = Wrapping::Repeat;
+        texture.wrap_t = Wrapping::Repeat;
+        texture.mipmap_filter = Some(Filter::Linear);
+        texture.repeat = Vector2::splat(0.25);
+        texture.center = Vector2::splat(0.5);
+        texture.rotation = std::f64::consts::FRAC_PI_4;
+        let mut material = MeshBasicMaterial::default();
+        material.properties.map = Some(Arc::new(texture));
+        let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+            Arc::new(BoxGeometry::build(10.0, 10.0, 10.0)?),
+            Arc::new(Material::Basic(material)),
+        )));
+        Ok(Self::TextureRotation { mesh, viewer })
+    }
+    async fn scene_12(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 27.0,
+            aspect,
+            near: 1.0,
+            far: 4000.0,
+            ..Default::default()
+        }));
+        scene.get_mut(camera)?.position = Vector3::new(0.0, 0.0, 2750.0);
+        let mut random = Random(1);
+        let mut base = Vec::with_capacity(10000);
+        let mut colors = Vec::with_capacity(30000);
+        for _ in 0..10000 {
+            let p = Vector3::new(random.next(), random.next(), random.next()) * 800.0
+                - Vector3::splat(400.0);
+            base.push(p);
+            colors.extend([
+                (p.x / 800.0 + 0.5) as f32,
+                (p.y / 800.0 + 0.5) as f32,
+                (p.z / 800.0 + 0.5) as f32,
+            ]);
+        }
+        let target: Vec<Vector3> = (0..10000)
+            .map(|_| {
+                Vector3::new(random.next(), random.next(), random.next()) * 800.0
+                    - Vector3::splat(400.0)
+            })
+            .collect();
+        // Morph attributes in the original are float32, including their base.
+        for p in &mut base {
+            *p = p.as_vec3().as_dvec3();
+        }
+        let target: Vec<Vector3> = target
+            .into_iter()
+            .map(|p: Vector3| p.as_vec3().as_dvec3())
+            .collect();
+        let mut geometry = BufferGeometry::default();
+        geometry.set_from_points(&base)?;
+        geometry.set_attribute(
+            "color",
+            Attribute::F32(BufferAttribute::new(colors, 3, false)?),
+        );
+        geometry.morph_attributes.insert(
+            "position".into(),
+            vec![Attribute::F32(BufferAttribute::new(
+                target.iter().flat_map(|p| p.as_vec3().to_array()).collect(),
+                3,
+                false,
+            )?)],
+        );
+        let mut material = LineBasicMaterial::default();
+        material.properties.vertex_colors = true;
+        let object = scene.insert(NodeKind::Line(Line {
+            geometry: Arc::new(geometry),
+            material: Arc::new(Material::Line(material)),
+            segments: false,
+        }));
+        Ok(Self::MorphLine { object, time: 0.0 })
+    }
+    async fn scene_7(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<Self> {
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 27.0,
+            aspect,
+            near: 1.0,
+            far: 10000.0,
+            ..Default::default()
+        }));
+        scene.get_mut(camera)?.position = Vector3::new(0.0, 0.0, 9000.0);
+        let mut snow = Snowflake {
+            positions: vec![],
+            colors: vec![],
+            indices: vec![],
+            random: Random(1),
+        };
+        let points = |values: &[(f64, f64)]| {
+            values
+                .iter()
+                .map(|&(x, y)| Vector3::new(x, y, 0.0))
+                .collect()
+        };
+        snow.curve(points(&[(0.0, 0.0), (500.0, 0.0)]), false);
+        snow.curve(
+            points(&[(0.0, 600.0), (250.0, 1000.0), (500.0, 600.0)]),
+            true,
+        );
+        snow.curve(
+            points(&[
+                (0.0, 1200.0),
+                (500.0, 1200.0),
+                (500.0, 1700.0),
+                (0.0, 1700.0),
+            ]),
+            true,
+        );
+        snow.curve(
+            points(&[
+                (250.0, 2200.0),
+                (500.0, 2200.0),
+                (250.0, 2200.0),
+                (250.0, 2450.0),
+                (250.0, 2200.0),
+                (0.0, 2200.0),
+                (250.0, 2200.0),
+                (250.0, 1950.0),
+                (250.0, 2200.0),
+            ]),
+            false,
+        );
+        let mut geometry = BufferGeometry::default();
+        geometry.set_from_points(&snow.positions)?;
+        geometry.set_attribute(
+            "color",
+            Attribute::F32(BufferAttribute::new(snow.colors, 3, false)?),
+        );
+        geometry.set_index(Some(snow.indices));
+        let mut material = LineBasicMaterial::default();
+        material.properties.vertex_colors = true;
+        let line = scene.insert(NodeKind::Line(Line {
+            geometry: Arc::new(geometry),
+            material: Arc::new(Material::Line(material)),
+            segments: true,
+        }));
+        scene.get_mut(line)?.position = Vector3::new(-1200.0, -1200.0, 0.0);
+        let root = scene.insert(NodeKind::Group);
+        scene.add(root, line)?;
+        Ok(Self::Snowflake { root, time: 0.0 })
     }
     pub fn update(
         &mut self,
@@ -484,19 +431,6 @@ impl GalleryScene {
                         m.position = hit.point;
                     }
                 }
-            }
-            Self::Panorama { lon, lat, dragging } => {
-                if animate && !*dragging {
-                    *lon += 0.1;
-                }
-                *lat = lat.clamp(-85.0, 85.0);
-                let phi = (90.0 - *lat).to_radians();
-                let theta = lon.to_radians();
-                scene.look_at(
-                    camera,
-                    Vector3::new(phi.sin() * theta.cos(), phi.cos(), phi.sin() * theta.sin())
-                        * 500.0,
-                )?;
             }
         }
         Ok(())
@@ -676,8 +610,8 @@ impl GalleryScene {
     }
     pub fn input(
         &mut self,
-        scene: &mut Scene,
-        camera: Object3D,
+        _scene: &mut Scene,
+        _camera: Object3D,
         dx: f64,
         dy: f64,
         wheel: f64,
@@ -697,19 +631,201 @@ impl GalleryScene {
         if let Self::TextureRotation { viewer, .. } | Self::Calibration { viewer, .. } = self {
             viewer.orbit(dx, dy, wheel);
         }
-        if let Self::Panorama {
-            lon,
-            lat,
-            dragging: active,
-        } = self
-        {
-            *active = dragging;
-            *lon -= dx * 0.1;
-            *lat += dy * 0.1;
-            if let NodeKind::Camera(Camera::Perspective(p)) = &mut scene.get_mut(camera)?.kind {
-                p.fov = (p.fov + wheel * 0.05).clamp(10.0, 75.0);
-            }
-        }
         Ok(())
     }
+}
+
+/// The program of three.js examples/webgl_buffergeometry_lines_indexed.html: its renderer, its
+/// scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_lines_indexed(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_7(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_interactive_lines.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_interactive_lines(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(GalleryScene::picking(
+                scene, camera, aspect, false,
+            )?))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_interactive_raycasting_points.html: its renderer, its
+/// scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_interactive_raycasting_points(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(GalleryScene::picking(
+                scene, camera, aspect, true,
+            )?))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_materials_texture_rotation.html: its renderer, its scene
+/// and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_materials_texture_rotation(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_11(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_buffergeometry_lines.html: its renderer, its scene and
+/// its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_lines(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_12(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_equirectangular.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_equirectangular(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_13(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgpu_pmrem_test.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_pmrem_test(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_14(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_animation_skinning_morph.html: its renderer, its scene
+/// and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_animation_skinning_morph(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::PageContent::Gallery(
+                GalleryScene::scene_15(scene, camera, aspect).await?,
+            ))
+        },
+    )
+    .await
 }

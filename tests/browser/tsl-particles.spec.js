@@ -9,7 +9,7 @@ for(const kind of Object.keys(controls)){
   for(const runtime of ['reference','rust']){
    await page.mouse.move(-10,-10);
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl-particles.html?id=${id}`:`/web/gallery/example.html?id=${id}&still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl-particles.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:60000});
    await page.addStyleTag({content:'html,body{background:#000}#notice,#settings{display:none!important}'});
    const frames=[];const capture=async(t,parameter=null,save=true)=>{
@@ -53,7 +53,7 @@ for(const kind of Object.keys(controls)){
  });
  test(`TSL particle GPU residency: ${kind}`,async({page},info)=>{
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   const reports=[];
   for(const resize of [false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -77,7 +77,7 @@ test('TSL particles retain GPU animation and upstream draw counts',async({page},
  });
  const reports=[];
  for(const [kind,count,draws,passes] of [['fog_height',100,1,2],['sprites',1,200,2],['instance_sprites',10000,1,2],['tsl_galaxy',20000,1,2],['postprocessing_afterimage',50000,1,3]]){
-  await page.goto(`/web/gallery/example.html?id=webgpu_${kind}&still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/gallery/examples/webgpu_${kind}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   const old=await page.locator('canvas').getAttribute('data-frames');await page.evaluate(()=>{work={passes:0,instances:[],attributeWrites:0};app.gallery_time(.7);});await page.waitForFunction(n=>document.querySelector('canvas').dataset.frames!==n,old);
   const work=await page.evaluate(()=>window.work);reports.push({kind,...work});expect(work.passes,kind).toBe(passes);expect(work.instances,kind).toEqual(Array(draws).fill(count));expect(work.attributeWrites,kind).toBe(0);
  }

@@ -8,7 +8,7 @@ for(const kind of Object.keys(controls)){
   test.setTimeout(180000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));const images={};
   for(const runtime of ['reference','rust']){
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl-filters.html?kind=${kind}`:`/web/gallery/example.html?id=${id}&still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl-filters.html?kind=${kind}`:`/web/gallery/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:60000});
    await page.addStyleTag({content:'html,body{background:#000}#notice,#settings{display:none!important}'});
    const frames=[];const capture=async t=>{await page.evaluate(({runtime,t})=>runtime==='reference'?renderFixture(t):app.gallery_time(t),{runtime,t});await page.waitForTimeout(70);frames.push(PNG.sync.read(await page.locator('canvas').screenshot()));};
@@ -32,7 +32,7 @@ for(const kind of Object.keys(controls)){
  });
  test(`TSL filter GPU residency: ${kind}`,async({page},info)=>{
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/example.html?id=${id}&still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   if(kind==='transition')await page.evaluate(()=>{app.tsl_parameter(1,0);app.tsl_parameter(2,.5);});
   const reports=[];
   for(const resize of [false,true]){
@@ -53,7 +53,7 @@ test('TSL filters preserve instancing, SSAA sample counts and inline output',asy
   for(const key of ['draw','drawIndexed']){const draw=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...args){if(args[0]>3)frameWork.instances.push(args[1]??1);return draw.apply(this,args);};}
  });
  for(const [kind,count,passes] of [['direct',1,2],['radial_blur',100,3],['fxaa',100,4],['ssaa',120,18],['transition',500,4]]){
-  await page.goto(`/web/gallery/example.html?id=webgpu_postprocessing_${kind}&still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/gallery/examples/webgpu_postprocessing_${kind}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   if(kind==='transition')await page.evaluate(()=>{app.tsl_parameter(1,0);app.tsl_parameter(2,.5);});
   await page.waitForTimeout(50);
   const render=async()=>{const old=await page.locator('canvas').getAttribute('data-frames');await page.evaluate(()=>{frameWork={passes:0,instances:[]};app.gallery_time(.4);});await page.waitForFunction(n=>document.querySelector('canvas').dataset.frames!==n,old);return page.evaluate(()=>frameWork);};

@@ -9,7 +9,7 @@ test('ballpool instanced-attribute path matches the original',async({page})=>{
  test.setTimeout(300000);const shots={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:2100,height:500});
-  await page.goto(runtime==='rust'?'/web/gallery/example.html?id=webgpu_postprocessing_ssgi_ballpool&still=1':'/reference/three-js/compute-examples.html?id=webgpu_postprocessing_ssgi_ballpool&samples=1');
+  await page.goto(runtime==='rust'?'/web/gallery/examples/webgpu_postprocessing_ssgi_ballpool.html?still=1':'/reference/three-js/compute-examples.html?id=webgpu_postprocessing_ssgi_ballpool&samples=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
   for(let k=1;k<=40;k++)await page.evaluate(async({runtime,t})=>{const c=document.querySelector('canvas'),p=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===p)await new Promise(r=>requestAnimationFrame(r));}},{runtime,t:k/60});

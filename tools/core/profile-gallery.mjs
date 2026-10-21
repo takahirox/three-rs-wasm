@@ -3,7 +3,7 @@ import {chromium} from '@playwright/test';
 import {readFile,writeFile} from 'node:fs/promises';
 import {timestamps} from './gpu-timestamps.js';
 const catalog=JSON.parse(await readFile(new URL('../../web/gallery/catalog.json',import.meta.url)));
-const entries=catalog.examples.filter(e=>e.port).map(e=>({id:e.id,url:`/web/gallery/example.html?id=${e.id}`}));
+const entries=catalog.examples.filter(e=>e.port).map(e=>({id:e.id,url:`/web/gallery/examples/${e.id}.html`}));
 entries.push({id:'BoomBox',url:'/web/?example=5'},{id:'mvp_perspective',url:'/web/?example=0'},{id:'mvp_orthographic',url:'/web/?example=1'});
 const selected=process.env.ONLY?entries.filter(e=>process.env.ONLY.split(',').includes(e.id)):entries;
 const browser=await chromium.launch({headless:true,executablePath:process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined,args:['--enable-unsafe-webgpu']});

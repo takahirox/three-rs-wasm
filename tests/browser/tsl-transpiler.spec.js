@@ -69,7 +69,7 @@ test('Transpiler output matches the original for every GLSL input',async({page},
 
 test('Gallery page transpiles with the page editors and encoder selection',async({page})=>{
  test.setTimeout(180000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.goto('/web/gallery/example.html?id=webgpu_tsl_transpiler');
+ await page.goto('/web/gallery/examples/webgpu_tsl_transpiler.html');
  const builds=()=>page.evaluate(()=>Number(document.body.dataset.builds||0));
  await expect.poll(builds,{timeout:90000}).toBe(1);
  // The original runs in the fixture page, whose import map resolves three/webgpu.

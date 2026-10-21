@@ -11,10 +11,10 @@ constructors and its embedded shader sources ( `three_rs_wasm::sources` ).
 
 Each example module of `gallery/src/browser/` is a Cargo feature of the
 gallery, enabling the modules it uses; `example_<module>` also compiles the
-module's examples into the dispatch in `expanded.rs` and its browser oracle
-exports. The gallery's shell ( `browser.rs`, `gallery_scenes.rs`, the dispatch
-and the shared scenes: `gallery`, `gltf_viewer`, `point_lights`, `robot`,
-`expanded_*` ) is always built.
+module's example programs and its browser oracle exports. The gallery's shell
+( `browser.rs`, `expanded.rs`, `gallery_scenes.rs` and the shared scenes:
+`gallery`, `gltf_viewer`, `point_lights`, `robot`, `expanded_*` ) is always
+built.
 
 `scripts/build-gallery` links the whole gallery once, every feature on, and
 splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
@@ -30,8 +30,8 @@ splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
 
 A page loads the primary module, then its module's parts
 ( `web/gallery/runtime.js` ); `web/gallery/modules.json` maps each example to
-its module ( `tools/gallery/modules.py`, from the `create` arms of
-`expanded.rs` ). The parts import the primary module's memory, stack pointer,
+its module ( `tools/gallery/modules.py`: the module whose file defines the
+example's program ). The parts import the primary module's memory, stack pointer,
 function tables and functions, and a part's instantiation writes its
 functions into the table the primary module calls them through and its data
 into the shared memory, at the addresses the linker gave it. The page then
@@ -68,6 +68,31 @@ module's name and serve another's calls.
 The functions move with Binaryen's `wasm-split --multi-split` ( version 127,
 without placeholders: the parts load before the example starts ), the data
 with `tools/gallery/split/wasm.py`, and `wasm-opt -O` optimizes each module.
+
+## A page and a program per example
+
+As in three.js, every example has its own page, `web/gallery/examples/<id>.html`,
+and its own program, a Rust function exported under the example's id
+( `webgl_loader_texture_ktx`, `-` read as `_` ) in the module that ports it.
+The program creates the example's renderer, its scene and its frame loop
+( `browser::program` with the example's `PageOptions`: canvas alpha, samples,
+output encoding and target format, on-demand rendering ); its scene object
+implements `browser::example::Example`, whose hooks the frame loop and the
+page's input call. Nothing dispatches on an example number.
+
+A page loads the primary module and its module's parts, then calls its
+program. `tools/gallery/pages.mjs` writes the pages ( `--check` fails on a
+stale one ): the markup is `tools/gallery/page.html`, and a ported example's
+script is `web/gallery/example.js` with the example's id, module and program
+written in and the code for the other examples dropped ( the generator
+evaluates the conditions on `PAGE_EXAMPLE`, the catalog's number for the
+example ). Examples not ported get a page with their diagnostic
+( `web/gallery/diagnostic.js` ). `web/gallery/example.html?id=<id>`, the
+gallery's earlier URL, forwards to the example's page.
+
+The WebXR examples' programs return the app `web/gallery/xr.js` drives with
+the session's frames; the transpiler's page calls its module's
+`tsl_transpile`, and the TSL editor's runs on the three-tsl crate's Wasm.
 
 ## Sizes ( 2026-10-20 )
 

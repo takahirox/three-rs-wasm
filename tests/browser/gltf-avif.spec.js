@@ -10,7 +10,7 @@ for(const samples of [1,4])test(`AVIF Forest House matches orbit, pan, zoom and 
   const states = [];
   async function capture(reference) {
     await page.setViewportSize({width:512,height:512});
-    await page.goto(reference ? `/reference/three-js/expanded.html?id=${id}&samples=${samples}` : `/web/gallery/example.html?id=${id}`);
+    await page.goto(reference ? `/reference/three-js/expanded.html?id=${id}&samples=${samples}` : `/web/gallery/examples/${id}.html`);
     const canvas = page.locator('canvas');
     if (reference) await expect(canvas).toHaveAttribute('data-ready','true',{timeout:90000});
     else {
@@ -75,7 +75,7 @@ test('AVIF scene idles without GPU work and retains geometry through camera chan
       const original=proto[name];proto[name]=function(...args){window.gpuActivity[key]++;return original.apply(this,args);};
     }
   });
-  await page.goto(`/web/gallery/example.html?id=${id}`);
+  await page.goto(`/web/gallery/examples/${id}.html`);
   const canvas=page.locator('canvas');
   await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(0);
   await page.waitForTimeout(100);

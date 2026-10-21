@@ -49,7 +49,7 @@ try {for(const runtime of ['three','rust']){
   const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===id),{status:'partial',port:{example:ports[id],limitations:[]}});
   await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
  }
- await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/${[29,30,31,32].includes(ports[id])?'gltf-examples':'expanded'}.html?id=${id}&animate=1`:`/web/gallery/example.html?id=${id}`));
+ await page.goto('http://127.0.0.1:8173'+(runtime==='three'?`/reference/three-js/${[29,30,31,32].includes(ports[id])?'gltf-examples':'expanded'}.html?id=${id}&animate=1`:`/web/gallery/examples/${id}.html`));
  await page.waitForFunction(runtime==='three'?()=>document.querySelector('canvas')?.dataset.ready==='true':()=>document.querySelector('canvas')?.dataset.frames>0,null,{timeout:90000});
  if(['webgl_morphtargets','webgpu_morphtargets'].includes(id))await page.evaluate(async runtime=>{if(runtime==='rust')app.gallery_morph(.25,.75);else await window.renderFixture(0,[.25,.75]);},runtime);
  if(backend==='WebGL2'&&process.env.GPU)await page.evaluate(()=>{

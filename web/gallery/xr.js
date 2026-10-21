@@ -4,9 +4,9 @@
 // session with the 'webgpu' feature; the session's XRGPUBinding projection
 // layer is created on the app's GPUDevice, and every session frame hands the
 // views, the layer's texture and the input sources' poses to the Rust app
-// ( XrApp ), which renders into the layer. Before and after the session the
-// app renders on the canvas with the browser's animation frames.
-const CUBES = 498;
+// ( the example's program ), which renders into the layer. Before and after
+// the session the app renders on the canvas with the browser's animation
+// frames.
 
 const MULTIVIEW_WARNING = 'THREE.THREE.XRManager: WebGPU XR does not support multiview yet. Disabling multiview for this XR session.';
 
@@ -184,9 +184,11 @@ function poseArray( out, pose ) {
 
 }
 
-export async function startXr( XrApp, canvas, example, loading ) {
+// program: the example's program; button: its page's XRButton ( 'XR' ) or
+// VRButton ( 'VR' ); multiview: its renderer's multiview parameter.
+export async function startXr( program, canvas, loading, { button, multiview } ) {
 
-	const app = await XrApp.create( canvas, example );
+	const app = await program( canvas );
 	window.app = app;
 	loading.hidden = true;
 
@@ -271,7 +273,7 @@ export async function startXr( XrApp, canvas, example, loading ) {
 			session.updateRenderState( { layers: [ this.layer ] } );
 			this.referenceSpace = await session.requestReferenceSpace( app.reference_space_type() );
 			app.xr_start( this.layer.textureWidth, this.layer.textureHeight, this.binding.getPreferredColorFormat(), session.environmentBlendMode ?? 'opaque' );
-			if ( example === CUBES ) console.warn( MULTIVIEW_WARNING );
+			if ( multiview ) console.warn( MULTIVIEW_WARNING );
 			this.depthRange = null;
 			session.requestAnimationFrame( ( time, frame ) => this.onAnimationFrame( time, frame ) );
 			this.isPresenting = true;
@@ -400,7 +402,7 @@ export async function startXr( XrApp, canvas, example, loading ) {
 		}
 	};
 
-	const vr = example !== CUBES;
+	const vr = button === 'VR';
 	document.body.appendChild( createButton( xr, vr, { optionalFeatures: [ 'webgpu' ] } ) );
 	return app;
 

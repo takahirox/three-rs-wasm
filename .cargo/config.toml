@@ -1,5 +1,6 @@
-# The gallery's example factory ( browser::expanded::Demo::create ) is one async
-# function over every example; its frame alone takes about 400 KB of the
-# default 1 MB wasm stack, and creating some examples then overflowed it.
+# A 4 MB wasm stack. It was raised when one async factory created every
+# gallery example ( its frame alone took about 400 KB of the default 1 MB, and
+# creating some examples overflowed it ); each example now has its own
+# program, and the stack stays until a measurement shows the default suffices.
 [target.wasm32-unknown-unknown]
 rustflags = ["-C", "link-arg=-zstack-size=4194304"]

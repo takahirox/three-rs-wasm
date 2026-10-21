@@ -487,10 +487,10 @@ export async function installInspector( spec, binder, canvas ) {
 // The original page's chrome: its stylesheet in place of the gallery's, the
 // <style> blocks of its head and its #info ( pages.json, tools/gallery/ui/page.py ).
 // Elements the port already made ( same id ) are not added twice.
-export async function installPage( entry ) {
+export async function installPage( id ) {
 
 	const pages = await fetch( new URL( 'pages.json', import.meta.url ) ).then( r => r.ok ? r.json() : {} ).catch( () => ( {} ) );
-	const page = pages[ entry.id ];
+	const page = pages[ id ];
 	if ( ! page ) return null;
 	// The originals are English pages: their generic fonts resolve as theirs do.
 	document.documentElement.lang = 'en';
@@ -535,17 +535,17 @@ export async function installPage( entry ) {
 
 // The example's recorded UI on the gallery page. The gallery's own control
 // panel keeps only the controls no original controller stands for.
-export async function installUi( entry, app, settings ) {
+export async function installUi( id, app, settings ) {
 
-	await installPage( entry );
-	const spec = ( await loadSpecs() )[ entry.id ];
+	await installPage( id );
+	const spec = ( await loadSpecs() )[ id ];
 	if ( ! spec || spec.error ) return null;
 	const controls = window.galleryControls ?? [];
-	const binder = bindings( controls, app, settings, ALIASES[ entry.id ] );
+	const binder = bindings( controls, app, settings, ALIASES[ id ] );
 	const stats = await installStats( spec.stats );
 	const guis = await installGuis( spec.guis, binder );
 	const { extras } = await import( './extras.js' );
-	extras[ entry.id ]?.( guis );
+	extras[ id ]?.( guis );
 	const canvas = document.querySelector( 'canvas' );
 	const inspectors = [];
 	for ( const i of spec.inspectors ) inspectors.push( await installInspector( i, binder, canvas ) );

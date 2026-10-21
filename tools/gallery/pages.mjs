@@ -1,0 +1,209 @@
+// Every example's own page, web/gallery/examples/<id>.html, as three.js has a
+// page per example. A ported example's page loads the gallery's Wasm ( the
+// library and the parts that carry the example's program ) and runs its
+// program; the other examples' pages show their diagnostic
+// ( web/gallery/diagnostic.js ).
+//
+// A ported example's script is web/gallery/example.js specialized for it:
+// PAGE_ID, PAGE_MODULE ( modules.json ) and PAGE_PROGRAM written in, the
+// conditions on PAGE_EXAMPLE, the gallery's number for the example, evaluated
+// and the code for other examples dropped. The markup is tools/gallery/page.html.
+//
+//   node tools/gallery/pages.mjs          write the pages
+//   node tools/gallery/pages.mjs --check  fail when a page is stale
+import * as acorn from 'acorn';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const GALLERY = path.join(ROOT, 'web/gallery');
+const OUT = path.join(GALLERY, 'examples');
+const UNKNOWN = Symbol('unknown');
+
+// The value of an expression whose only variable is PAGE_EXAMPLE, or UNKNOWN.
+function evaluate(node, n) {
+	switch (node.type) {
+		case 'Literal': return node.value;
+		case 'Identifier': return node.name === 'PAGE_EXAMPLE' ? n : UNKNOWN;
+		case 'MemberExpression':
+			if (node.computed && node.object.type === 'ObjectExpression') {
+				const key = evaluate(node.property, n);
+				if (key === UNKNOWN) return UNKNOWN;
+				const prop = node.object.properties.find(p => p.type === 'Property' && String(p.key.value ?? p.key.name) === String(key));
+				return prop ? {source: prop.value} : undefined;
+			}
+			return UNKNOWN;
+		case 'ArrayExpression': {
+			const values = node.elements.map(e => e ? evaluate(e, n) : UNKNOWN);
+			return values.includes(UNKNOWN) ? UNKNOWN : values;
+		}
+		case 'UnaryExpression': {
+			if (node.operator !== '!') return UNKNOWN;
+			const v = evaluate(node.argument, n);
+			return v === UNKNOWN ? UNKNOWN : !v;
+		}
+		case 'BinaryExpression': {
+			const a = evaluate(node.left, n), b = evaluate(node.right, n);
+			if (a === UNKNOWN || b === UNKNOWN) return UNKNOWN;
+			switch (node.operator) {
+				case '===': return a === b;
+				case '!==': return a !== b;
+				case '<': return a < b;
+				case '<=': return a <= b;
+				case '>': return a > b;
+				case '>=': return a >= b;
+				default: return UNKNOWN;
+			}
+		}
+		case 'LogicalExpression': {
+			const a = evaluate(node.left, n);
+			if (a === UNKNOWN) return UNKNOWN;
+			if (node.operator === '&&') return a ? evaluate(node.right, n) : a;
+			if (node.operator === '||') return a ? a : evaluate(node.right, n);
+			return UNKNOWN;
+		}
+		case 'CallExpression': {
+			// [ … ].includes( PAGE_EXAMPLE )
+			const c = node.callee;
+			if (c.type === 'MemberExpression' && !c.computed && c.property.name === 'includes' && node.arguments.length === 1) {
+				const list = evaluate(c.object, n), v = evaluate(node.arguments[0], n);
+				if (list === UNKNOWN || v === UNKNOWN || !Array.isArray(list)) return UNKNOWN;
+				return list.includes(v);
+			}
+			return UNKNOWN;
+		}
+		default: return UNKNOWN;
+	}
+}
+
+const lexical = stmt => stmt.type === 'ClassDeclaration' || stmt.type === 'FunctionDeclaration' || (stmt.type === 'VariableDeclaration' && stmt.kind !== 'var');
+
+// The source of `node` for the page: its constants written in, the conditions
+// on PAGE_EXAMPLE folded.
+function specialize(src, node, page) {
+	const n = page.example;
+	const edits = [];
+	const sub = node => specialize(src, node, page);
+	// A kept branch: a block without declarations of its own loses its braces.
+	const branch = stmt => stmt.type === 'BlockStatement' && !stmt.body.some(lexical)
+		? stmt.body.map(sub).join('\n')
+		: sub(stmt);
+	const visit = node => {
+		if (!node || typeof node.type !== 'string') return;
+		switch (node.type) {
+			case 'Identifier':
+				if (node.name === 'PAGE_EXAMPLE') edits.push([node.start, node.end, String(n)]);
+				else if (node.name === 'PAGE_ID') edits.push([node.start, node.end, `'${page.id}'`]);
+				else if (node.name === 'PAGE_MODULE') edits.push([node.start, node.end, `'${page.module}'`]);
+				else if (node.name === 'PAGE_PROGRAM') edits.push([node.start, node.end, page.program]);
+				return;
+			case 'IfStatement': {
+				const v = evaluate(node.test, n);
+				if (v === UNKNOWN) break;
+				const keep = v ? node.consequent : node.alternate;
+				edits.push([node.start, node.end, keep ? branch(keep) : '']);
+				return;
+			}
+			case 'ConditionalExpression': {
+				const v = evaluate(node.test, n);
+				if (v === UNKNOWN) break;
+				edits.push([node.start, node.end, '(' + sub(v ? node.consequent : node.alternate) + ')']);
+				return;
+			}
+			case 'LogicalExpression': {
+				const a = evaluate(node.left, n);
+				if (a !== UNKNOWN) {
+					const left = node.operator === '&&' ? !a : !!a;
+					edits.push([node.start, node.end, left ? JSON.stringify(a) : '(' + sub(node.right) + ')']);
+					return;
+				}
+				// x && true, x || false: x
+				const b = evaluate(node.right, n);
+				if (b === (node.operator === '&&')) {
+					edits.push([node.start, node.end, sub(node.left)]);
+					return;
+				}
+				break;
+			}
+			case 'MemberExpression': {
+				if (!node.computed || node.object.type !== 'ObjectExpression') break;
+				const v = evaluate(node, n);
+				if (v === UNKNOWN) break;
+				edits.push([node.start, node.end, v === undefined ? 'undefined' : sub(v.source)]);
+				return;
+			}
+			case 'CallExpression': case 'BinaryExpression': case 'UnaryExpression': {
+				const v = evaluate(node, n);
+				if (typeof v !== 'boolean') break;
+				edits.push([node.start, node.end, String(v)]);
+				return;
+			}
+		}
+		for (const key of Object.keys(node)) {
+			const v = node[key];
+			if (Array.isArray(v)) v.forEach(visit);
+			else if (v && typeof v.type === 'string') visit(v);
+		}
+	};
+	visit(node);
+	edits.sort((a, b) => a[0] - b[0]);
+	let out = '';
+	let at = node.start;
+	for (const [s, e, text] of edits) {
+		out += src.slice(at, s) + text;
+		at = e;
+	}
+	return out + src.slice(at, node.end);
+}
+
+function importmap(id) {
+	// The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
+	// Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
+	const shim = './ui/three/shim.js';
+	return JSON.stringify({imports: {
+		'three/tsl': id === 'webgpu_tsl_editor' ? './tsl-module.js' : shim,
+		'three': shim,
+		'three/webgpu': shim,
+		'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/',
+	}});
+}
+
+export function pages() {
+	const catalog = JSON.parse(fs.readFileSync(path.join(GALLERY, 'catalog.json'), 'utf8'));
+	const modules = JSON.parse(fs.readFileSync(path.join(GALLERY, 'modules.json'), 'utf8')).examples;
+	const template = fs.readFileSync(path.join(ROOT, 'tools/gallery/page.html'), 'utf8');
+	const src = fs.readFileSync(path.join(GALLERY, 'example.js'), 'utf8');
+	const ast = acorn.parse(src, {ecmaVersion: 'latest', sourceType: 'module'});
+	const out = new Map();
+	for (const entry of catalog.examples) {
+		const ported = entry.port && entry.status !== 'excluded';
+		const script = ported
+			? specialize(src, ast, {id: entry.id, example: entry.port.example, module: modules[entry.id] ?? 'core', program: entry.id.replaceAll('-', '_')})
+				// Without the template's own comment and its emptied lines.
+				.replace(/^(\/\/.*\n)+/, '').split('\n').filter(line => line.trim()).join('\n')
+			: `import {explain} from './diagnostic.js';\nexplain('${entry.id}');`;
+		if (script.includes('</script')) throw new Error(`${entry.id}: the script closes its element`);
+		const title = `three-rs-wasm - ${entry.id.replaceAll('_', ' - ')}`;
+		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%SCRIPT%', () => script);
+		out.set(`${entry.id}.html`, html);
+	}
+	return out;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+	const out = pages();
+	const existing = fs.existsSync(OUT) ? fs.readdirSync(OUT).filter(f => f.endsWith('.html')) : [];
+	if (process.argv.includes('--check')) {
+		const stale = [...out].filter(([f, html]) => !fs.existsSync(path.join(OUT, f)) || fs.readFileSync(path.join(OUT, f), 'utf8') !== html).map(([f]) => f);
+		stale.push(...existing.filter(f => !out.has(f)));
+		if (stale.length) {
+			console.error(`web/gallery/examples is stale ( ${stale.slice(0, 5).join(', ')}${stale.length > 5 ? ', …' : ''} ); run node tools/gallery/pages.mjs`);
+			process.exit(1);
+		}
+	} else {
+		fs.mkdirSync(OUT, {recursive: true});
+		for (const f of existing) if (!out.has(f)) fs.unlinkSync(path.join(OUT, f));
+		for (const [f, html] of out) fs.writeFileSync(path.join(OUT, f), html);
+	}
+}

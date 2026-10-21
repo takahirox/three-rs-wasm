@@ -64,6 +64,99 @@ def carve(segments, moved):
     return out
 
 
+
+def trampoline_slot(body):
+    """A wasm-split trampoline's table and slot: its body is local.gets, an
+    i32.const slot and a call_indirect through the parts' table."""
+    i = 0
+    _, i = wasm.leb(body, i)  # body size
+    groups, i = wasm.leb(body, i)
+    for _ in range(groups):
+        _, i = wasm.leb(body, i)
+        i += 1
+    while body[i] == 0x20:
+        _, i = wasm.leb(body, i + 1)
+    if body[i] != 0x41:
+        return None
+    slot, i = wasm.sleb(body, i + 1)
+    if body[i] != 0x11:
+        return None
+    _, i = wasm.leb(body, i + 1)
+    table, i = wasm.leb(body, i)
+    return (table, slot) if body[i:] == b'\x0b' else None
+
+
+def untrampoline(primary, parts):
+    """The primary module's function table holds a trampoline for each part
+    function a function pointer names ( a vtable's methods, a closure's
+    shim ). Leave those slots empty and let the part write its function into
+    them as it is instantiated, as it writes its own table: no trampolines."""
+    ps = wasm.sections(primary)
+    nimp = wasm.imported_functions(primary, ps)
+    names = wasm.function_names(primary, ps)
+    code = wasm.section(primary, ps, 10)[2]
+    bodies = wasm.bodies(primary, ps)
+    slots = {}
+    for idx, nm in names.items():
+        if idx >= nimp and nm.startswith('trampoline_'):
+            s, e = bodies[idx - nimp]
+            found = trampoline_slot(primary[code + s:code + e])
+            if found:
+                slots[idx] = found
+    exported_tables = {nm: idx for nm, kind, idx in wasm.exports(primary, ps) if kind == 1}
+    # ( primary table, slot ) -> ( part, function ) from the parts' own segments.
+    owner = {}
+    for part, b in parts.items():
+        s = wasm.sections(b)
+        tables = [exported_tables[field] for mod, field, kind, _ in wasm.imports(b, s) if kind == 1]
+        for seg in wasm.elem_segments(b, s):
+            if seg['offset'] is None:
+                continue
+            base = wasm.offset_value(seg['offset'])
+            for k, (kind, f) in enumerate(seg['items']):
+                if kind == 'func':
+                    owner[(tables[seg['table']], base + k)] = (part, f)
+    table0 = {v: k for k, v in exported_tables.items()}.get(0)
+    if table0 is None:
+        raise SystemExit('split: the primary module does not export its function table')
+    writes = {}
+    segs = []
+    for seg in wasm.elem_segments(primary, ps):
+        if seg['flags'] != 0:
+            segs.append(seg)
+            continue
+        # Runs of the slots that stay, each its own segment: a table's other
+        # slots start empty.
+        base = wasm.offset_value(seg['offset'])
+        run = []
+        for k, (kind, f) in enumerate(seg['items'] + [('end', None)]):
+            target = owner.get(slots.get(f)) if kind == 'func' else None
+            if target:
+                writes.setdefault(target[0], []).append((base + k, target[1]))
+            if kind == 'func' and not target:
+                if not run:
+                    start = base + k
+                run.append(('func', f))
+            elif run:
+                segs.append(dict(flags=0, table=0, offset=b'\x41' + wasm.enc_s(start) + b'\x0b', kind=0,
+                                 items=run))
+                run = []
+    primary = wasm.replace_sections(primary, {9: wasm.encode_elem(segs)})
+    for part, entries in writes.items():
+        b = parts[part]
+        s = wasm.sections(b)
+        imps = wasm.imports(b, s)
+        if wasm.section(b, s, 4):
+            raise SystemExit(f'split: {part} defines a table')
+        table = sum(1 for i in imps if i[2] == 1)
+        imps.append(('primary', table0, 1, b'\x70\x00\x00'))
+        segs = wasm.elem_segments(b, s)
+        for slot, f in sorted(entries):
+            segs.append(dict(flags=2, table=table, offset=b'\x41' + wasm.enc_s(slot) + b'\x0b', kind=0,
+                             items=[('func', f)]))
+        parts[part] = wasm.replace_sections(b, {2: wasm.encode_imports(imps), 9: wasm.encode_elem(segs)})
+    return primary, parts, sum(len(v) for v in writes.values())
+
 def main(raw, out):
     out = Path(out)
     if out.exists():
@@ -98,6 +191,14 @@ def split(raw, out, work):
     subprocess.run(['wasm-split', '--multi-split', str(bg), '--manifest', str(work / 'manifest.txt'),
                     '--out-prefix', str(work) + '/', '-o', str(work / 'primary.wasm'),
                     '--no-placeholders', '--export-prefix', '%', '-g', *FEATURES], check=True)
+    # Function pointers to part functions: written by the parts, not trampolines.
+    names = [n for n in parts if (work / f'{n}.wasm').exists()]
+    primary, written, moved = untrampoline((work / 'primary.wasm').read_bytes(),
+                                           {n: (work / f'{n}.wasm').read_bytes() for n in names})
+    (work / 'primary.wasm').write_bytes(primary)
+    for n, b in written.items():
+        (work / f'{n}.wasm').write_bytes(b)
+    print(f'split: {moved} function table slots written by the parts')
     # The data: out of the primary module's segments, into the parts'.
     original = [(addr, bb[secs_data_start + off:secs_data_start + off + size])
                 for off, addr, size in wasm.data_segments(bb, secs)

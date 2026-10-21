@@ -97,10 +97,10 @@ mod environment_materials;
 mod envmap_exr;
 #[cfg(feature = "envmaps_fasthdr")]
 mod envmaps_fasthdr;
+mod example;
 mod expanded;
 mod expanded_geometry_colors;
 mod expanded_indexed;
-mod expanded_lights;
 mod expanded_lines;
 mod expanded_morph_models;
 mod expanded_triangles;
@@ -544,7 +544,7 @@ struct State {
     request: Option<i32>,
     paused: bool,
     rebuilds: u32,
-    example: u32,
+    options: PageOptions,
     rotation: Vector3,
     point_lights: Option<point_lights::PointLights>,
     gltf: Option<gltf_viewer::OrbitViewer>,
@@ -568,74 +568,66 @@ pub(crate) fn canvas_format() -> wgpu::TextureFormat {
         wgpu::TextureFormat::Rgba8Unorm
     }
 }
-/// Examples whose linear, premultiplied output is encoded on output for a
-/// premultiplied canvas.
-const PREMULTIPLIED: &[u32] = &[50, 54, 55, 57, 58, 118, 120, 126, 127, 351];
-/// Examples whose target holds display values: raw shader output or
-/// output encoded in the shader. The CRT example requests linear output;
-/// webgl_watch ( 442 ) and webgl_loader_ldraw ( 447 ) render linear
-/// half-float, as their outputBufferType asks, and are tone-mapped and
-/// encoded on output.
-const RAW_OUTPUT: &[u32] = &[
-    16, 27, 28, 35, 40, 41, 42, 43, 44, 45, 46, 47, 50, 54, 55, 57, 58, 65, 70, 71, 72, 73, 77, 87,
-    90, 91, 99, 100, 101, 107, 111, 112, 117, 118, 120, 126, 127, 141, 145, 146, 147, 154, 155,
-    156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 172, 173, 174, 175,
-    176, 177, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197,
-    198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216,
-    217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235,
-    236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
-    255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282, 284, 285, 288, 289, 290,
-    291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307, 308, 310, 312, 313, 314,
-    315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333,
-    335, 336, 337, 338, 341, 342, 343, 344, 345, 346, 348, 351, 352, 353, 354, 355, 358, 359, 361,
-    362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380,
-    381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399,
-    400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418,
-    419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437,
-    438, 439, 440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458,
-    459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477,
-    478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
-];
-/// Examples whose output is tone-mapped and encoded in the shader, as
-/// WebGLRenderer does and as a postprocessing chain's last pass does
-/// ( RenderPipeline's renderOutput ).
-const ENCODE_SRGB: &[u32] = &[
-    16, 28, 40, 41, 42, 43, 44, 47, 71, 72, 73, 87, 90, 91, 100, 112, 117, 141, 145, 146, 147, 154,
-    155, 156, 157, 175, 176, 181, 185, 186, 188, 190, 191, 193, 194, 195, 196, 197, 198, 199, 201,
-    202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 214, 215, 217, 218, 219, 220, 221, 222, 224,
-    225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 243, 244, 245,
-    246, 247, 248, 249, 250, 253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280,
-    281, 282, 284, 285, 288, 289, 290, 291, 292, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306,
-    307, 308, 310, 312, 313, 316, 317, 318, 319, 320, 321, 322, 323, 327, 329, 330, 331, 332, 333,
-    335, 337, 338, 341, 342, 343, 344, 345, 346, 348, 352, 353, 354, 355, 358, 359, 361, 362, 363,
-    364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 383,
-    384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402,
-    403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421,
-    422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440,
-    441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461,
-    462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480,
-    481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
-];
-/// Examples rendering into an 8-bit target rather than half-float.
-const UNORM_TARGET: &[u32] = &[
-    16, 27, 28, 90, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,
-    170, 172, 173, 174, 175, 176, 177, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
-    193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
-    212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
-    231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
-    250, 251, 252, 253, 254, 255, 256, 258, 259, 260, 265, 273, 274, 277, 278, 279, 280, 281, 282,
-    284, 285, 288, 289, 290, 291, 292, 293, 294, 295, 296, 298, 299, 300, 302, 304, 305, 306, 307,
-    308, 310, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328,
-    329, 330, 331, 332, 333, 335, 336, 337, 338, 341, 342, 343, 344, 345, 348, 352, 353, 354, 355,
-    358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377,
-    378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396,
-    397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415,
-    416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434,
-    435, 436, 437, 438, 439, 440, 441, 443, 444, 445, 446, 448, 449, 450, 451, 452, 453, 454, 455,
-    456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474,
-    475, 476, 477, 478, 479, 480, 481, 482, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494,
-    495, 496,
-];
+/// The target the scene renders into.
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum TargetFormat {
+    /// The canvas's format: display values.
+    Canvas,
+    /// The canvas format's sRGB view: linear 8-bit values the view encodes.
+    CanvasSrgb,
+    /// Linear half-float, tone-mapped and encoded by the output pass.
+    Half,
+}
+/// How an example's page renders, as its code sets the renderer up
+/// ( `WebGPURenderer( { antialias, alpha, stencil } )`, its output buffer
+/// type and output pass, `setAnimationLoop` ).
+#[derive(Clone, Copy, Debug)]
+struct PageOptions {
+    /// The canvas composites premultiplied alpha ( alpha: true ).
+    premultiplied_canvas: bool,
+    /// The main target's MSAA samples ( antialias ), 0 for none.
+    samples: u32,
+    /// Tone mapping and sRGB encoding happen in the shader.
+    encode_srgb: bool,
+    format: TargetFormat,
+    stencil: bool,
+    /// The target holds display values: raw shader output or output encoded
+    /// in the shader.
+    raw_output: bool,
+    /// Linear, premultiplied output, encoded on output.
+    premultiplied_output: bool,
+    /// The scene renders only on load, input and resize.
+    on_demand: bool,
+    /// Pausing stops the animation loop.
+    stop_when_paused: bool,
+    /// The example presents into canvases of its own ( UVsDebug ).
+    offscreen_output: bool,
+    /// Pointer input picks in the example's render-target view.
+    rtt: bool,
+    /// The page's sheen slider drives the scene's materials.
+    sheen_controls: bool,
+    /// The cube turns on both axes ( webgl_geometry_cube ).
+    cube_rotation: bool,
+}
+impl PageOptions {
+    /// A gallery example's defaults: MSAA, a half-float target tone-mapped and
+    /// encoded by the output pass, an animation loop that pausing stops.
+    const GALLERY: Self = Self {
+        premultiplied_canvas: false,
+        samples: 4,
+        encode_srgb: false,
+        format: TargetFormat::Half,
+        stencil: false,
+        raw_output: false,
+        premultiplied_output: false,
+        on_demand: false,
+        stop_when_paused: true,
+        offscreen_output: false,
+        rtt: false,
+        sheen_controls: false,
+        cube_rotation: false,
+    };
+}
 impl State {
     fn request_render(&mut self) {
         if self.request.is_none()
@@ -686,7 +678,7 @@ impl State {
                 .canvas
                 .set_attribute("data-demo-time", &demo.time.to_string());
         } else if !self.paused {
-            self.scene.get_mut(self.mesh)?.quaternion = if self.example == 2 {
+            self.scene.get_mut(self.mesh)?.quaternion = if self.options.cube_rotation {
                 self.rotation.x += 0.005;
                 self.rotation.y += 0.01;
                 Euler {
@@ -706,12 +698,12 @@ impl State {
                 width as f64 / height as f64,
             )?;
         }
-        let format = if RAW_OUTPUT.contains(&self.example) {
+        let format = if self.options.raw_output {
             self.configuration.format
         } else {
             self.configuration.format.add_srgb_suffix()
         };
-        let premultiplied = PREMULTIPLIED.contains(&self.example);
+        let premultiplied = self.options.premultiplied_output;
         // A target holds display values when the output pass would only copy
         // it: no tone mapping or encoding left, in the canvas view's format.
         let displays = |target: &RenderTarget, scene_tone: ToneMapping| {
@@ -723,9 +715,10 @@ impl State {
         // Like three, render straight into the canvas when no output pass is
         // needed: the main target, or the example's own output target ( which
         // the last frame presented ), renders into the canvas's texture.
-        let main =
-            self.example != 93 && !self.presented_output && displays(&self.target, scene_tone);
-        let output = self.example != 93
+        let main = !self.options.offscreen_output
+            && !self.presented_output
+            && displays(&self.target, scene_tone);
+        let output = !self.options.offscreen_output
             && self.presented_output
             && match &mut self.gallery_scene {
                 Some(gallery_scenes::GalleryScene::Expanded(demo)) => demo
@@ -793,7 +786,7 @@ impl State {
             target.restore_color(alias);
         }
         rendered?;
-        if self.example == 93 {
+        if self.options.offscreen_output {
             self.frame += 1;
             let _ = self
                 .canvas
@@ -1036,7 +1029,6 @@ impl BrowserApp {
         state.scene = scene;
         state.camera = camera;
         state.gltf = Some(viewer);
-        state.example = example;
         state.renderer.collect_resources();
         Ok(true)
     }
@@ -1244,7 +1236,7 @@ impl BrowserApp {
         let mut state = self.state.borrow_mut();
         let width = state.canvas.client_width() as f64;
         let height = state.canvas.client_height() as f64;
-        let is_rtt = [39, 55, 56].contains(&state.example);
+        let is_rtt = state.options.rtt;
         let mut redraw = false;
         let State {
             renderer,
@@ -1452,7 +1444,7 @@ impl BrowserApp {
             return Err(JsValue::from_str("invalid sheen"));
         }
         let mut state = self.state.borrow_mut();
-        if state.example != 31 {
+        if !state.options.sheen_controls {
             return Err(JsValue::from_str("Sheen example required"));
         }
         let roots = state.scene.roots().to_vec();
@@ -1621,344 +1613,523 @@ impl BrowserApp {
         })();
         result.map_err(|e| JsValue::from_str(&e.to_string()))
     }
-    #[wasm_bindgen(js_name = create)]
-    pub async fn new(
+}
+/// What an example's frame loop drives.
+enum PageContent {
+    /// The placeholder cube or the MVP scenes, built in the page's scene.
+    Plain,
+    PointLights(point_lights::PointLights),
+    Gltf(gltf_viewer::OrbitViewer),
+    Gallery(gallery_scenes::GalleryScene),
+}
+/// The renderer, canvas surface, main target and initial scene an example's
+/// program builds on, before its frame loop starts ( `Page::start` ), as a
+/// three.js page creates its renderer and scene and then sets its animation
+/// loop.
+struct Page {
+    renderer: Renderer,
+    surface: wgpu::Surface<'static>,
+    configuration: wgpu::SurfaceConfiguration,
+    target: RenderTarget,
+    scene: Scene,
+    camera: Object3D,
+    mesh: Object3D,
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+    options: PageOptions,
+}
+impl Page {
+    async fn new(
         canvas: web_sys::HtmlCanvasElement,
-        example: u32,
         animate: bool,
-    ) -> std::result::Result<BrowserApp, JsValue> {
-        async fn create(
-            canvas: web_sys::HtmlCanvasElement,
-            example: u32,
-            animate: bool,
-        ) -> Result<BrowserApp> {
-            let renderer = Renderer::new().await?;
-            let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
-                backends: wgpu::Backends::BROWSER_WEBGPU,
-                ..Default::default()
-            });
-            let surface = instance
-                .create_surface(wgpu::SurfaceTarget::Canvas(canvas.clone()))
-                .map_err(|e| Error::Gpu(e.to_string()))?;
-            let mut configuration = surface
-                .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
-                .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
-            if [46, 50, 54, 55, 57, 351, 431, 438, 477, 478, 485].contains(&example) {
-                configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
-            }
-            configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
-            // The canvas texture serves as the main target's color when no
-            // output pass is needed, so it takes the target's usages.
-            configuration.usage = wgpu::TextureUsages::RENDER_ATTACHMENT
-                | wgpu::TextureUsages::TEXTURE_BINDING
-                | wgpu::TextureUsages::COPY_SRC
-                | wgpu::TextureUsages::COPY_DST;
-            surface.configure(&renderer.device, &configuration);
-            let mut target = RenderTarget::with_options(
-                &renderer.device,
-                canvas.width(),
-                canvas.height(),
-                if example >= 4 {
-                    RenderTargetOptions {
-                        samples: if [
-                            7, 8, 11, 12, 24, 25, 27, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50,
-                            52, 62, 63, 67, 70, 71, 72, 73, 74, 76, 77, 78, 80, 84, 85, 86, 87, 88,
-                            91, 92, 93, 95, 97, 99, 100, 101, 106, 107, 111, 112, 113, 114, 115,
-                            117, 120, 121, 135, 138, 141, 142, 144, 145, 146, 147, 158, 159, 160,
-                            161, 163, 164, 166, 167, 170, 171, 178, 179, 180, 182, 183, 184, 187,
-                            190, 197, 200, 203, 204, 205, 211, 213, 216, 218, 230, 234, 241, 242,
-                            248, 257, 262, 263, 267, 269, 277, 278, 280, 281, 282, 284, 288, 289,
-                            291, 298, 299, 301, 315, 324, 325, 326, 332, 334, 336, 337, 341, 342,
-                            343, 344, 345, 346, 349, 354, 355, 358, 359, 361, 362, 363, 365, 368,
-                            376, 377, 378, 379, 380, 384, 385, 386, 387, 388, 389, 390, 391, 392,
-                            393, 394, 395, 396, 397, 398, 400, 484, 488,
-                        ]
-                        .contains(&example)
-                        {
-                            1
-                        } else {
-                            4
-                        },
-                        encode_srgb: ENCODE_SRGB.contains(&example),
-                        // Display values take the canvas's format, which they render
-                        // into; linear 8-bit output its sRGB view, which encodes it.
-                        format: if RAW_OUTPUT.contains(&example)
-                            && !PREMULTIPLIED.contains(&example)
-                        {
-                            configuration.format
-                        } else if UNORM_TARGET.contains(&example) {
-                            configuration.format.add_srgb_suffix()
-                        } else {
-                            wgpu::TextureFormat::Rgba16Float
-                        },
-                        // WebGLRenderer( { stencil: true } ) for ShadowMesh.
-                        stencil_buffer: [278, 340].contains(&example),
-                        ..Default::default()
-                    }
-                } else {
-                    RenderTargetOptions {
-                        format: configuration.format.add_srgb_suffix(),
-                        ..Default::default()
-                    }
-                },
-            )?;
-            target.set_canvas(true);
-            let mut scene = Scene::new();
-            scene.background = Color::from_hex(0x102030);
-            let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                aspect: canvas.width() as f64 / canvas.height() as f64,
-                ..Default::default()
-            })));
-            scene.get_mut(camera)?.position.z = 5.0;
-            let mut material = Material::default();
-            material.properties_mut().color = Color::from_hex(0xee6633);
-            let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
-                Arc::new(BoxGeometry::build(1.5, 1.5, 1.5)?),
-                Arc::new(material),
-            )));
-            let mut point_lights = None;
-            let mut gltf = None;
-            let mut gallery_scene = None;
-            if (7..=482).contains(&example)
-                || [
-                    484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496,
-                ]
-                .contains(&example)
-            {
-                gallery_scene = Some(
-                    gallery_scenes::GalleryScene::create(
-                        &mut scene, camera, mesh, example, &renderer,
-                    )
-                    .await?,
-                );
-            } else if example == 6 {
-                gltf = Some(gallery::pmrem_grid(&mut scene, camera, mesh).await?);
-                let _ = canvas.set_attribute("data-meshes", "30");
-            } else if example == 4 || example == 5 {
-                let viewer =
-                    gltf_viewer::OrbitViewer::create(&mut scene, camera, mesh, example, None)
-                        .await?;
-                let _ = canvas.set_attribute("data-triangles", &viewer.triangles.to_string());
-                let _ = canvas.set_attribute("data-meshes", &viewer.meshes.to_string());
-                gltf = Some(viewer);
-            } else if example == 3 {
-                let mut demo = point_lights::PointLights::create(
-                    &mut scene,
-                    camera,
-                    mesh,
-                    canvas.width() as f64 / canvas.height() as f64,
-                    &renderer,
-                )
-                .await?;
-                if !animate {
-                    demo.time = 6.0;
-                }
-                point_lights = Some(demo);
-            } else if example == 1 {
-                scene.get_mut(camera)?.kind =
-                    NodeKind::Camera(Camera::Orthographic(OrthographicCamera {
-                        left: -3.0,
-                        right: 3.0,
-                        top: 3.0,
-                        bottom: -3.0,
-                        ..Default::default()
-                    }));
-                scene.get_mut(mesh)?.position.x = -1.1;
-                let group = scene.insert(NodeKind::Group);
-                scene.get_mut(group)?.position = Vector3::new(0.8, 0.6, 0.0);
-                let texture = Arc::new(Texture::load(&asset_url("/web/checker.png")?).await?);
-                let mut standard = MeshStandardMaterial::default();
-                standard.properties.map = Some(texture);
-                standard.roughness = 0.7;
-                let sphere = scene.insert(NodeKind::Mesh(Mesh::new(
-                    Arc::new(SphereGeometry::build(0.75, 24, 16)?),
-                    Arc::new(Material::Standard(standard)),
-                )));
-                scene.add(group, sphere)?;
-                scene.insert(NodeKind::Light(Light::Ambient {
-                    color: Color::WHITE,
-                    intensity: 0.3,
-                }));
-                let directional = scene.insert(NodeKind::Light(Light::Directional {
-                    color: Color::WHITE,
-                    intensity: 2.0,
-                    target: Vector3::ZERO,
-                }));
-                scene.get_mut(directional)?.position = Vector3::new(2.0, 3.0, 4.0);
-                let point = scene.insert(NodeKind::Light(Light::Point {
-                    color: Color::from_hex(0xff8040),
-                    intensity: 10.0,
-                    distance: 0.0,
-                    decay: 2.0,
-                }));
-                scene.get_mut(point)?.position = Vector3::new(-2.0, 1.0, 2.0);
-                let mut line_geometry = BufferGeometry::default();
-                line_geometry.set_from_points(&[
-                    Vector3::new(-2.0, -1.5, 0.0),
-                    Vector3::new(0.0, -0.9, 0.0),
-                    Vector3::new(2.0, -1.5, 0.0),
-                ])?;
-                let mut line_material = LineBasicMaterial::default();
-                line_material.properties.color = Color::from_hex(0x44ff88);
-                scene.insert(NodeKind::Line(Line {
-                    geometry: Arc::new(line_geometry.clone()),
-                    material: Arc::new(Material::Line(line_material)),
-                    segments: false,
-                }));
-                let mut points_material = PointsMaterial::default();
-                points_material.properties.color = Color::from_hex(0xffffff);
-                points_material.size_attenuation = false;
-                let points = scene.insert(NodeKind::Points(Points {
-                    geometry: Arc::new(line_geometry),
-                    material: Arc::new(Material::Points(points_material)),
-                }));
-                scene.get_mut(points)?.position.y = -0.4;
-            } else if example == 2 {
-                // Three.js r186 examples/webgl_geometry_cube.html, ported to WebGPU.
-                scene.background = Color::BLACK;
-                scene.get_mut(camera)?.kind =
-                    NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-                        fov: 70.0,
-                        aspect: canvas.width() as f64 / canvas.height() as f64,
-                        near: 0.1,
-                        far: 100.0,
-                        ..Default::default()
-                    }));
-                scene.get_mut(camera)?.position.z = 2.0;
-                let mut material = Material::default();
-                material.properties_mut().map = Some(Arc::new(
-                    Texture::load(&asset_url("/web/crate.gif")?).await?,
-                ));
-                scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
-                    Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
-                    Arc::new(material),
-                ));
-                if !animate {
-                    scene.get_mut(mesh)?.quaternion = Euler {
-                        angles: Vector3::new(0.4, 0.7, 0.0),
-                        order: EulerOrder::XYZ,
-                    }
-                    .quaternion();
-                }
-            } else if example != 0 {
-                return Err(Error::Invalid("example id"));
-            }
-            let mut timer = crate::time::Timer::default();
-            timer.connect(
-                web_sys::window()
-                    .and_then(|w| w.document())
-                    .ok_or(Error::Asset("document unavailable".into()))?,
-            )?;
-            let state = Rc::new(RefCell::new(State {
-                timer,
-                renderer,
-                surface,
-                configuration,
-                target,
-                scene,
-                camera,
-                mesh,
-                canvas: canvas.clone(),
-                frame: 0,
-                animation: None,
-                request: None,
-                paused: !animate,
-                rebuilds: 0,
-                example,
-                rotation: Vector3::ZERO,
-                point_lights,
-                gltf,
-                load_generation: 0,
-                gallery_scene,
-                presented_output: true,
-            }));
-            let weak = Rc::downgrade(&state);
-            let animation = Closure::wrap(Box::new(move |time: f64| {
-                if let Some(state) = weak.upgrade() {
-                    let mut state = state.borrow_mut();
-                    state.request = None;
-                    // The page's stats.js and Inspector hooks around the frame
-                    // ( web/gallery/ui/ ), where the original calls them.
-                    page_hook("galleryFrameBegin");
-                    if let Err(error) = state.render(time) {
-                        let _ = state.canvas.set_attribute("data-error", &error.to_string());
-                        return;
-                    }
-                    page_hook("galleryFrameEnd");
-                    // These official static scenes render only on load, input and resize.
-                    if !([
-                        16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236,
-                        237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319,
-                    ]
-                    .contains(&state.example)
-                        || state.paused && state.example >= 39)
-                    {
-                        state.request_render();
-                    }
-                }
-            }) as Box<dyn FnMut(f64)>);
-            state.borrow_mut().animation = Some(animation);
-            let weak = Rc::downgrade(&state);
-            let pointer = Closure::wrap(Box::new(move |event: web_sys::PointerEvent| {
-                if let Some(state) = weak.upgrade() {
-                    let mut state = state.borrow_mut();
-                    if state.point_lights.is_some()
-                        || state.gltf.is_some()
-                        || state.gallery_scene.is_some()
-                    {
-                        return;
-                    }
-                    let ndc = Vector2::new(
-                        event.offset_x() as f64 / state.canvas.client_width() as f64 * 2.0 - 1.0,
-                        1.0 - event.offset_y() as f64 / state.canvas.client_height() as f64 * 2.0,
-                    );
-                    let mut raycaster = Raycaster::default();
-                    let result = (|| -> Result<bool> {
-                        state.scene.update()?;
-                        let (camera, world) = state.scene.camera(state.camera)?;
-                        raycaster.set_from_camera(ndc, camera, world)?;
-                        Ok(!raycaster
-                            .intersect_object(&state.scene, state.mesh, false)?
-                            .is_empty())
-                    })();
-                    match result {
-                        Ok(selected) => {
-                            state.paused = selected;
-                            let _ = state.canvas.set_attribute(
-                                "data-selected",
-                                if selected { "true" } else { "false" },
-                            );
-                        }
-                        Err(error) => {
-                            let _ = state.canvas.set_attribute("data-error", &error.to_string());
-                        }
-                    }
-                }
-            }) as Box<dyn FnMut(web_sys::PointerEvent)>);
-            canvas
-                .add_event_listener_with_callback("pointerdown", pointer.as_ref().unchecked_ref())
-                .map_err(|e| Error::Asset(format!("{e:?}")))?;
-            {
-                let mut s = state.borrow_mut();
-                s.request = Some(
-                    web_sys::window()
-                        .ok_or(Error::Asset("window unavailable".into()))?
-                        .request_animation_frame(
-                            s.animation
-                                .as_ref()
-                                .expect("animation installed")
-                                .as_ref()
-                                .unchecked_ref(),
-                        )
-                        .map_err(|e| Error::Asset(format!("{e:?}")))?,
-                );
-            }
-            Ok(BrowserApp { state, pointer })
+        options: PageOptions,
+    ) -> Result<Self> {
+        let renderer = Renderer::new().await?;
+        let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::BROWSER_WEBGPU,
+            ..Default::default()
+        });
+        let surface = instance
+            .create_surface(wgpu::SurfaceTarget::Canvas(canvas.clone()))
+            .map_err(|e| Error::Gpu(e.to_string()))?;
+        let mut configuration = surface
+            .get_default_config(&renderer.adapter, canvas.width(), canvas.height())
+            .ok_or(Error::Gpu("surface configuration unavailable".into()))?;
+        if options.premultiplied_canvas {
+            configuration.alpha_mode = wgpu::CompositeAlphaMode::PreMultiplied;
         }
-        create(canvas, example, animate)
-            .await
-            .map_err(|e| JsValue::from_str(&e.to_string()))
+        configuration.view_formats = vec![configuration.format.add_srgb_suffix()];
+        // The canvas texture serves as the main target's color when no
+        // output pass is needed, so it takes the target's usages.
+        configuration.usage = wgpu::TextureUsages::RENDER_ATTACHMENT
+            | wgpu::TextureUsages::TEXTURE_BINDING
+            | wgpu::TextureUsages::COPY_SRC
+            | wgpu::TextureUsages::COPY_DST;
+        surface.configure(&renderer.device, &configuration);
+        let mut target = RenderTarget::with_options(
+            &renderer.device,
+            canvas.width(),
+            canvas.height(),
+            RenderTargetOptions {
+                samples: options.samples,
+                encode_srgb: options.encode_srgb,
+                format: match options.format {
+                    TargetFormat::Canvas => configuration.format,
+                    TargetFormat::CanvasSrgb => configuration.format.add_srgb_suffix(),
+                    TargetFormat::Half => wgpu::TextureFormat::Rgba16Float,
+                },
+                // WebGLRenderer( { stencil: true } ) for ShadowMesh.
+                stencil_buffer: options.stencil,
+                ..Default::default()
+            },
+        )?;
+        target.set_canvas(true);
+        let mut scene = Scene::new();
+        scene.background = Color::from_hex(0x102030);
+        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            aspect: canvas.width() as f64 / canvas.height() as f64,
+            ..Default::default()
+        })));
+        scene.get_mut(camera)?.position.z = 5.0;
+        let mut material = Material::default();
+        material.properties_mut().color = Color::from_hex(0xee6633);
+        let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+            Arc::new(BoxGeometry::build(1.5, 1.5, 1.5)?),
+            Arc::new(material),
+        )));
+        Ok(Self {
+            renderer,
+            surface,
+            configuration,
+            target,
+            scene,
+            camera,
+            mesh,
+            canvas,
+            animate,
+            options,
+        })
     }
+    /// A gallery scene's start ( three.js examples build theirs from an empty
+    /// scene ): the placeholder cube removed, a black background; the scene,
+    /// camera, renderer and camera aspect.
+    fn gallery_scene(&mut self) -> Result<(&mut Scene, Object3D, &Renderer, f64)> {
+        self.scene.dispose(self.mesh)?;
+        self.scene.background = Color::BLACK;
+        let aspect = match &self.scene.get(self.camera)?.kind {
+            NodeKind::Camera(Camera::Perspective(p)) => p.aspect,
+            _ => 1.0,
+        };
+        Ok((&mut self.scene, self.camera, &self.renderer, aspect))
+    }
+    /// webgpu_pmrem_equirectangular's PMREM grid.
+    async fn mvp_6(&mut self) -> Result<PageContent> {
+        let grid = gallery::pmrem_grid(&mut self.scene, self.camera, self.mesh).await?;
+        let _ = self.canvas.set_attribute("data-meshes", "30");
+        Ok(PageContent::Gltf(grid))
+    }
+    /// The glTF viewer with model `model` ( 4 the helmet, 5 the BoomBox ).
+    async fn mvp_gltf(&mut self, model: u32) -> Result<PageContent> {
+        let viewer =
+            gltf_viewer::OrbitViewer::create(&mut self.scene, self.camera, self.mesh, model, None)
+                .await?;
+        let _ = self
+            .canvas
+            .set_attribute("data-triangles", &viewer.triangles.to_string());
+        let _ = self
+            .canvas
+            .set_attribute("data-meshes", &viewer.meshes.to_string());
+        Ok(PageContent::Gltf(viewer))
+    }
+    /// webgpu_lights_pointlights's model and lights.
+    async fn mvp_3(&mut self) -> Result<PageContent> {
+        let aspect = self.canvas.width() as f64 / self.canvas.height() as f64;
+        let mut demo = point_lights::PointLights::create(
+            &mut self.scene,
+            self.camera,
+            self.mesh,
+            aspect,
+            &self.renderer,
+        )
+        .await?;
+        if !self.animate {
+            demo.time = 6.0;
+        }
+        Ok(PageContent::PointLights(demo))
+    }
+    /// The MVP page's lights, texture, line and points scene.
+    async fn mvp_1(&mut self) -> Result<PageContent> {
+        let (scene, camera, mesh) = (&mut self.scene, self.camera, self.mesh);
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Orthographic(OrthographicCamera {
+            left: -3.0,
+            right: 3.0,
+            top: 3.0,
+            bottom: -3.0,
+            ..Default::default()
+        }));
+        scene.get_mut(mesh)?.position.x = -1.1;
+        let group = scene.insert(NodeKind::Group);
+        scene.get_mut(group)?.position = Vector3::new(0.8, 0.6, 0.0);
+        let texture = Arc::new(Texture::load(&asset_url("/web/checker.png")?).await?);
+        let mut standard = MeshStandardMaterial::default();
+        standard.properties.map = Some(texture);
+        standard.roughness = 0.7;
+        let sphere = scene.insert(NodeKind::Mesh(Mesh::new(
+            Arc::new(SphereGeometry::build(0.75, 24, 16)?),
+            Arc::new(Material::Standard(standard)),
+        )));
+        scene.add(group, sphere)?;
+        scene.insert(NodeKind::Light(Light::Ambient {
+            color: Color::WHITE,
+            intensity: 0.3,
+        }));
+        let directional = scene.insert(NodeKind::Light(Light::Directional {
+            color: Color::WHITE,
+            intensity: 2.0,
+            target: Vector3::ZERO,
+        }));
+        scene.get_mut(directional)?.position = Vector3::new(2.0, 3.0, 4.0);
+        let point = scene.insert(NodeKind::Light(Light::Point {
+            color: Color::from_hex(0xff8040),
+            intensity: 10.0,
+            distance: 0.0,
+            decay: 2.0,
+        }));
+        scene.get_mut(point)?.position = Vector3::new(-2.0, 1.0, 2.0);
+        let mut line_geometry = BufferGeometry::default();
+        line_geometry.set_from_points(&[
+            Vector3::new(-2.0, -1.5, 0.0),
+            Vector3::new(0.0, -0.9, 0.0),
+            Vector3::new(2.0, -1.5, 0.0),
+        ])?;
+        let mut line_material = LineBasicMaterial::default();
+        line_material.properties.color = Color::from_hex(0x44ff88);
+        scene.insert(NodeKind::Line(Line {
+            geometry: Arc::new(line_geometry.clone()),
+            material: Arc::new(Material::Line(line_material)),
+            segments: false,
+        }));
+        let mut points_material = PointsMaterial::default();
+        points_material.properties.color = Color::from_hex(0xffffff);
+        points_material.size_attenuation = false;
+        let points = scene.insert(NodeKind::Points(Points {
+            geometry: Arc::new(line_geometry),
+            material: Arc::new(Material::Points(points_material)),
+        }));
+        scene.get_mut(points)?.position.y = -0.4;
+        Ok(PageContent::Plain)
+    }
+    /// Three.js r186 examples/webgl_geometry_cube.html, ported to WebGPU.
+    async fn mvp_2(&mut self) -> Result<PageContent> {
+        let (scene, camera, mesh) = (&mut self.scene, self.camera, self.mesh);
+        let aspect = self.canvas.width() as f64 / self.canvas.height() as f64;
+        scene.background = Color::BLACK;
+        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            fov: 70.0,
+            aspect,
+            near: 0.1,
+            far: 100.0,
+            ..Default::default()
+        }));
+        scene.get_mut(camera)?.position.z = 2.0;
+        let mut material = Material::default();
+        material.properties_mut().map = Some(Arc::new(
+            Texture::load(&asset_url("/web/crate.gif")?).await?,
+        ));
+        scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
+            Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
+            Arc::new(material),
+        ));
+        if !self.animate {
+            scene.get_mut(mesh)?.quaternion = Euler {
+                angles: Vector3::new(0.4, 0.7, 0.0),
+                order: EulerOrder::XYZ,
+            }
+            .quaternion();
+        }
+        Ok(PageContent::Plain)
+    }
+    /// Start the frame loop on `content`.
+    #[inline(never)]
+    fn start(self, content: PageContent) -> Result<BrowserApp> {
+        let Page {
+            renderer,
+            surface,
+            configuration,
+            target,
+            scene,
+            camera,
+            mesh,
+            canvas,
+            animate,
+            options,
+        } = self;
+        let (mut point_lights, mut gltf, mut gallery_scene) = (None, None, None);
+        match content {
+            PageContent::Plain => {}
+            PageContent::PointLights(demo) => point_lights = Some(demo),
+            PageContent::Gltf(viewer) => gltf = Some(viewer),
+            PageContent::Gallery(scene) => gallery_scene = Some(scene),
+        }
+        let mut timer = crate::time::Timer::default();
+        timer.connect(
+            web_sys::window()
+                .and_then(|w| w.document())
+                .ok_or(Error::Asset("document unavailable".into()))?,
+        )?;
+        let state = Rc::new(RefCell::new(State {
+            timer,
+            renderer,
+            surface,
+            configuration,
+            target,
+            scene,
+            camera,
+            mesh,
+            canvas: canvas.clone(),
+            frame: 0,
+            animation: None,
+            request: None,
+            paused: !animate,
+            rebuilds: 0,
+            options,
+            rotation: Vector3::ZERO,
+            point_lights,
+            gltf,
+            load_generation: 0,
+            gallery_scene,
+            presented_output: true,
+        }));
+        let weak = Rc::downgrade(&state);
+        let animation = Closure::wrap(Box::new(move |time: f64| {
+            if let Some(state) = weak.upgrade() {
+                let mut state = state.borrow_mut();
+                state.request = None;
+                // The page's stats.js and Inspector hooks around the frame
+                // ( web/gallery/ui/ ), where the original calls them.
+                page_hook("galleryFrameBegin");
+                if let Err(error) = state.render(time) {
+                    let _ = state.canvas.set_attribute("data-error", &error.to_string());
+                    return;
+                }
+                page_hook("galleryFrameEnd");
+                // These official static scenes render only on load, input and resize.
+                if !(state.options.on_demand || state.paused && state.options.stop_when_paused) {
+                    state.request_render();
+                }
+            }
+        }) as Box<dyn FnMut(f64)>);
+        state.borrow_mut().animation = Some(animation);
+        let weak = Rc::downgrade(&state);
+        let pointer = Closure::wrap(Box::new(move |event: web_sys::PointerEvent| {
+            if let Some(state) = weak.upgrade() {
+                let mut state = state.borrow_mut();
+                if state.point_lights.is_some()
+                    || state.gltf.is_some()
+                    || state.gallery_scene.is_some()
+                {
+                    return;
+                }
+                let ndc = Vector2::new(
+                    event.offset_x() as f64 / state.canvas.client_width() as f64 * 2.0 - 1.0,
+                    1.0 - event.offset_y() as f64 / state.canvas.client_height() as f64 * 2.0,
+                );
+                let mut raycaster = Raycaster::default();
+                let result = (|| -> Result<bool> {
+                    state.scene.update()?;
+                    let (camera, world) = state.scene.camera(state.camera)?;
+                    raycaster.set_from_camera(ndc, camera, world)?;
+                    Ok(!raycaster
+                        .intersect_object(&state.scene, state.mesh, false)?
+                        .is_empty())
+                })();
+                match result {
+                    Ok(selected) => {
+                        state.paused = selected;
+                        let _ = state.canvas.set_attribute(
+                            "data-selected",
+                            if selected { "true" } else { "false" },
+                        );
+                    }
+                    Err(error) => {
+                        let _ = state.canvas.set_attribute("data-error", &error.to_string());
+                    }
+                }
+            }
+        }) as Box<dyn FnMut(web_sys::PointerEvent)>);
+        canvas
+            .add_event_listener_with_callback("pointerdown", pointer.as_ref().unchecked_ref())
+            .map_err(|e| Error::Asset(format!("{e:?}")))?;
+        {
+            let mut s = state.borrow_mut();
+            s.request = Some(
+                web_sys::window()
+                    .ok_or(Error::Asset("window unavailable".into()))?
+                    .request_animation_frame(
+                        s.animation
+                            .as_ref()
+                            .expect("animation installed")
+                            .as_ref()
+                            .unchecked_ref(),
+                    )
+                    .map_err(|e| Error::Asset(format!("{e:?}")))?,
+            );
+        }
+        Ok(BrowserApp { state, pointer })
+    }
+}
+/// An example's program: its page set up with `options`, its scene built by
+/// `build`, then its frame loop started, as a three.js example creates its
+/// renderer and scene and sets its animation loop.
+async fn program(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+    options: PageOptions,
+    build: impl AsyncFnOnce(&mut Page) -> Result<PageContent>,
+) -> std::result::Result<BrowserApp, JsValue> {
+    async move {
+        // Boxed and started out of line: every program shares one copy of the
+        // page's setup rather than inlining it.
+        let setup: std::pin::Pin<Box<dyn std::future::Future<Output = Result<Page>>>> =
+            Box::pin(Page::new(canvas, animate, options));
+        let mut page = setup.await?;
+        let content = build(&mut page).await?;
+        page.start(content)
+    }
+    .await
+    .map_err(|e| JsValue::from_str(&e.to_string()))
+}
+/// The MVP page's first scene: the cube that turns and is picked.
+#[wasm_bindgen]
+pub async fn mvp_rotate_select(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            samples: 0,
+            format: TargetFormat::CanvasSrgb,
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |_page| Ok(PageContent::Plain),
+    )
+    .await
+}
+/// The MVP page's lights, texture, line and points scene.
+#[wasm_bindgen]
+pub async fn mvp_lights_textures(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            samples: 0,
+            format: TargetFormat::CanvasSrgb,
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_1().await,
+    )
+    .await
+}
+/// The program of three.js examples/webgl_geometry_cube.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen]
+pub async fn webgl_geometry_cube(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            samples: 0,
+            format: TargetFormat::CanvasSrgb,
+            stop_when_paused: false,
+            cube_rotation: true,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_2().await,
+    )
+    .await
+}
+/// The program of three.js examples/webgpu_lights_pointlights.html: its renderer, its scene and its
+/// frame loop.
+#[wasm_bindgen]
+pub async fn webgpu_lights_pointlights(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            samples: 0,
+            format: TargetFormat::CanvasSrgb,
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_3().await,
+    )
+    .await
+}
+/// The program of three.js examples/webgpu_loader_gltf.html: its renderer, its scene and its frame
+/// loop.
+#[wasm_bindgen]
+pub async fn webgpu_loader_gltf(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_gltf(4).await,
+    )
+    .await
+}
+/// The MVP page's BoomBox glTF.
+#[wasm_bindgen]
+pub async fn mvp_boombox(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_gltf(5).await,
+    )
+    .await
+}
+/// The program of three.js examples/webgpu_pmrem_equirectangular.html: its renderer, its scene and
+/// its frame loop.
+#[wasm_bindgen]
+pub async fn webgpu_pmrem_equirectangular(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<BrowserApp, JsValue> {
+    program(
+        canvas,
+        animate,
+        PageOptions {
+            stop_when_paused: false,
+            ..PageOptions::GALLERY
+        },
+        async |page| page.mvp_6().await,
+    )
+    .await
 }
 impl Drop for BrowserApp {
     fn drop(&mut self) {

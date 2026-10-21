@@ -1,5 +1,4 @@
 """Package tracked demo assets and the release Wasm bundle for GitHub Pages."""
-import html
 import json
 from pathlib import Path
 import shutil
@@ -11,8 +10,8 @@ SITE = ROOT / ".cache/pages/three-rs-wasm"
 
 def examples(site):
     """threejs.org's URLs: examples/#<id> for the gallery and examples/<id>.html
-    for each example. The pages are web/gallery's, with a <base> there, so their
-    relative URLs and the Wasm's asset paths stay those of web/gallery/."""
+    for each example. The pages are web/gallery's, with their <base> there, so
+    their relative URLs and the Wasm's asset paths stay those of web/gallery/."""
     gallery = site / "web/gallery"
     out = site / "examples"
     out.mkdir()
@@ -20,11 +19,8 @@ def examples(site):
     index = (gallery / "index.html").read_text()
     index = index.replace("<head>", f'<head>\n\t\t{base}<meta name="three-rs-layout" content="examples">', 1)
     (out / "index.html").write_text(index)
-    page = (gallery / "example.html").read_text()
-    catalog = json.loads((gallery / "catalog.json").read_text())
-    for entry in catalog["examples"]:
-        meta = f'{base}<meta name="three-rs-example" content="{html.escape(entry["id"])}">'
-        (out / f'{entry["id"]}.html').write_text(page.replace("<head>", "<head>" + meta, 1))
+    for page in sorted((gallery / "examples").glob("*.html")):
+        (out / page.name).write_text(page.read_text().replace('<base href="../">', base, 1))
 
 
 def main():

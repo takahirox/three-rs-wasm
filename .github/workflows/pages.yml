@@ -72,6 +72,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
           npm ci --ignore-scripts
+          # Every example's page is current ( tools/gallery/pages.mjs ).
+          node tools/gallery/pages.mjs --check
           npx playwright install --with-deps chromium
           npx playwright test --config playwright.pages.config.js --shard=${{ matrix.shard }}/4
 

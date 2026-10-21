@@ -13,7 +13,7 @@ try {
   for(const [proto,names] of [[GPUDevice.prototype,['createBuffer','createBindGroup','createRenderPipeline','createTexture']],[GPUQueue.prototype,['writeBuffer','submit']]]) for(const name of names){const original=proto[name];proto[name]=function(...args){window.measure.calls[name]=(window.measure.calls[name]||0)+1;return original.apply(this,args);};}
  });
  page.on('pageerror',e=>console.error(String(e)));
- await page.goto(process.env.URL||'http://127.0.0.1:8173/web/gallery/example.html?id=webgl_animation_skinning_morph');
+ await page.goto(process.env.URL||'http://127.0.0.1:8173/web/gallery/examples/webgl_animation_skinning_morph.html');
  await page.waitForFunction(()=>document.body.dataset.status==='running');
  await page.waitForTimeout(5000);
  const client=await page.context().newCDPSession(page);
