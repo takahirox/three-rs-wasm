@@ -189,3 +189,157 @@ pub(super) fn colors(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result
     }
     Ok(lines)
 }
+
+/// webgl_lines_dashed's lines, turned by the elapsed time.
+struct Dashed {
+    objects: Vec<Object3D>,
+    elapsed: f64,
+}
+
+impl super::example::Example for Dashed {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        _camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.elapsed += delta;
+        }
+        let t = self.elapsed * 0.25;
+        Some(self.objects.iter().try_for_each(|&object| {
+            scene.get_mut(object)?.quaternion =
+                Quaternion::from_euler(glam::EulerRot::XYZ, t, t, 0.0);
+            Ok(())
+        }))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// webgl_lines_colors's curves, turned by the elapsed time, under a camera
+/// that follows the pointer.
+struct ColorLines {
+    objects: Vec<Object3D>,
+    pointer: Vector2,
+    elapsed: f64,
+}
+
+impl super::example::Example for ColorLines {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        Some((|| {
+            if animate {
+                self.elapsed += delta;
+                let p = &mut scene.get_mut(camera)?.position;
+                p.x += (self.pointer.x - p.x) * 0.05;
+                p.y += (-self.pointer.y + 200.0 - p.y) * 0.05;
+            }
+            scene.look_at(camera, Vector3::ZERO)?;
+            for (i, &object) in self.objects.iter().enumerate() {
+                scene.get_mut(object)?.quaternion = Quaternion::from_rotation_y(
+                    self.elapsed * 0.5 * if i % 2 == 1 { 1.0 } else { -1.0 },
+                );
+            }
+            Ok(())
+        })())
+    }
+    fn on_pointer(&mut self, x: f64, y: f64) {
+        self.pointer = Vector2::new(x, y);
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// The program of three.js examples/webgl_lines_dashed.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_lines_dashed(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 150.0),
+                1.0,
+                200.0,
+                Box::new(Dashed {
+                    objects: dashed(scene, camera, aspect)?,
+                    elapsed: 0.0,
+                }),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_lines_colors.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_lines_colors(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 1000.0),
+                1.0,
+                10000.0,
+                Box::new(ColorLines {
+                    objects: colors(scene, camera, aspect)?,
+                    pointer: Vector2::ZERO,
+                    elapsed: 0.0,
+                }),
+            ))
+        },
+    )
+    .await
+}

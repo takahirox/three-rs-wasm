@@ -171,3 +171,95 @@ pub(super) fn update(
     }
     Ok(())
 }
+
+/// The scene's meshes, turned by the elapsed time.
+struct Triangles {
+    objects: Vec<Object3D>,
+    raw: bool,
+    elapsed: f64,
+}
+
+impl super::example::Example for Triangles {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        _camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.elapsed += delta;
+        }
+        Some(update(scene, &self.objects, self.elapsed, self.raw))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+async fn build(page: &mut super::Page, raw: bool) -> Result<super::expanded::Demo> {
+    let (scene, camera, renderer, aspect) = page.gallery_scene()?;
+    let objects = create(scene, camera, aspect, raw, renderer).await?;
+    Ok(super::expanded::module(
+        super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 2.0),
+        1.0,
+        3500.0,
+        Box::new(Triangles {
+            objects,
+            raw,
+            elapsed: 0.0,
+        }),
+    ))
+}
+
+/// The program of three.js examples/webgl_buffergeometry.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| build(page, false).await,
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_buffergeometry_rawshader.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_rawshader(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            format: super::TargetFormat::Canvas,
+            raw_output: true,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| build(page, true).await,
+    )
+    .await
+}

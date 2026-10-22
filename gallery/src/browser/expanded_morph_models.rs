@@ -130,3 +130,133 @@ impl Sphere {
         Ok(())
     }
 }
+
+/// webgl_morphtargets_horse's horse, by the elapsed time.
+struct HorseExample {
+    horse: Horse,
+    elapsed: f64,
+}
+
+impl super::example::Example for HorseExample {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.elapsed += delta;
+        }
+        Some(self.horse.update(scene, camera, self.elapsed, animate))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+        self.horse.theta = seconds * 6.0;
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// webgl_morphtargets_sphere's sphere, by the elapsed time, under the
+/// gallery's viewer.
+struct SphereExample {
+    sphere: Sphere,
+    elapsed: f64,
+}
+
+impl super::example::Example for SphereExample {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        _camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.elapsed += delta;
+        }
+        // The gallery's viewer then places the camera.
+        self.sphere.update(scene, self.elapsed).err().map(Err)
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+    }
+    fn on_orbit_limits(&self) -> Option<(bool, f64, f64)> {
+        Some((true, 1.0, 20.0))
+    }
+}
+
+/// The program of three.js examples/webgl_morphtargets_horse.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_morphtargets_horse(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 600.0),
+                1.0,
+                10000.0,
+                Box::new(HorseExample {
+                    horse: Horse::create(scene, camera, aspect).await?,
+                    elapsed: 0.0,
+                }),
+            ))
+        },
+    )
+    .await
+}
+
+/// The program of three.js examples/webgl_morphtargets_sphere.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_morphtargets_sphere(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 1,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            let mut viewer =
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 50.0_f64.sqrt());
+            viewer.fixture(0.0, std::f64::consts::FRAC_PI_4, 1.8);
+            Ok(super::expanded::module(
+                viewer,
+                0.2,
+                100.0,
+                Box::new(SphereExample {
+                    sphere: Sphere::create(scene, camera, aspect).await?,
+                    elapsed: 0.0,
+                }),
+            ))
+        },
+    )
+    .await
+}

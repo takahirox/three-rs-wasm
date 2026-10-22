@@ -100,7 +100,7 @@ function references(node) {
 
 const shim = new Map(shims.map(p => [p.key.name ?? p.key.value, p]));
 for (const d of decls) { d.refs = references(d.decl); d.part = null; }
-// What the primary module's glue keeps: what its shims use ( BrowserApp, which
+// What the primary module's glue keeps: what the shims use ( BrowserApp, which
 // a shim wraps ), what uses several parts' exports, and what all that uses.
 // It calls a part's exports through __wbg_parts, which the part's glue fills.
 const pinned = new Set();
@@ -111,7 +111,10 @@ const pin = n => {
 	d.part = null;
 	d.refs.names.forEach(pin);
 };
-for (const [f, p] of shim) if (primaryImports.has(f)) references(p.value).names.forEach(pin);
+// Every shim's: a class a shim wraps ( BrowserApp.__wrap ) serves every part
+// that imports the shim.
+const importedByParts = new Set(Object.values(parts).flatMap(({imports}) => imports.filter(i => i.module === BG).map(i => i.name)));
+for (const [f, p] of shim) if (primaryImports.has(f) || importedByParts.has(f)) references(p.value).names.forEach(pin);
 // Each other declaration's part: the part whose exports it calls, or whose
 // declaration it uses ( Symbol.dispose on its class ).
 for (let again = true; again;) {

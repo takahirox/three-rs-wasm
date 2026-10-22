@@ -1,6 +1,6 @@
-//! An example module's hooks, which the gallery's frame and input handling
-//! call through `expanded::Demo` ( its Content::Module ). Each hook returns
-//! `None` ( or does nothing ) for an example that does not handle it.
+//! An example's hooks, which the gallery's frame loop and its page's input
+//! call through `expanded::Demo`. Each hook returns `None` ( or does nothing )
+//! for an example that does not handle it.
 #[allow(unused_variables, clippy::too_many_arguments)]
 pub(super) trait Example {
     fn on_update(
@@ -110,8 +110,101 @@ pub(super) trait Example {
     fn on_presented(&mut self, canvas: &web_sys::HtmlCanvasElement) -> crate::Result<()> {
         Ok(())
     }
+    /// The MVP page's orbit input ( `BrowserApp::orbit` ).
+    fn on_orbit(&mut self, dx: f64, dy: f64, zoom: f64) {}
+    /// The gallery page's pointer drag and wheel ( `BrowserApp::gallery_input` )
+    /// for an example that orbits its own viewer, before the gallery viewer.
+    fn on_scene_input(
+        &mut self,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        dragging: bool,
+    ) -> Option<crate::Result<()>> {
+        None
+    }
+    /// The gallery viewer's zoom for this example: whether the wheel zooms,
+    /// and the distance range.
+    fn on_orbit_limits(&self) -> Option<(bool, f64, f64)> {
+        None
+    }
+    fn on_wireframe(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        enabled: bool,
+    ) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_morph(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        weights: [f64; 2],
+    ) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_pmrem(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        enabled: bool,
+    ) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_texture_transform(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        values: &[f64],
+    ) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_animation_names(&self) -> Option<String> {
+        None
+    }
+    fn on_select_animation(&mut self, index: usize) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_animation_time(&mut self, index: usize, time: f64) -> Option<crate::Result<()>> {
+        None
+    }
+    fn on_point_lights_controls(&mut self, amount: f64, speed: f64) {}
+    fn on_gltf_view(&mut self, yaw: f64, pitch: f64, distance: f64) {}
+    /// A glTF viewer's model switch: a new scene, its camera and the viewer,
+    /// built apart from the page's state.
+    fn on_load_model(
+        &self,
+        model: u32,
+        environment: Option<std::sync::Arc<crate::environment::EnvironmentMap>>,
+    ) -> Option<LoadModel> {
+        None
+    }
+    /// A press on the canvas at `ndc`: whether it picked the example's object
+    /// ( the MVP page's cube ).
+    fn on_pick(
+        &mut self,
+        scene: &mut crate::scene::Scene,
+        camera: crate::scene::Object3D,
+        ndc: crate::math::Vector2,
+    ) -> Option<crate::Result<bool>> {
+        None
+    }
+    /// Replace the example's object ( the MVP page's rebuild ): the rebuild count.
+    fn on_rebuild(&mut self, scene: &mut crate::scene::Scene) -> Option<crate::Result<u32>> {
+        None
+    }
     #[cfg(feature = "tsl_procedural")]
     fn on_audio(&self) -> Option<crate::Result<&super::tsl_procedural::audio::Audio>> {
         None
     }
 }
+
+/// What `Example::on_load_model` builds: the scene, its camera and the example.
+pub(super) type LoadModel = std::pin::Pin<
+    Box<
+        dyn std::future::Future<
+                Output = crate::Result<(
+                    crate::scene::Scene,
+                    crate::scene::Object3D,
+                    Box<dyn Example>,
+                )>,
+            >,
+    >,
+>;

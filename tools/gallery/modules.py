@@ -3,11 +3,8 @@
 
 Every example has its own program, a Rust function named after it
 ( `webgl_loader_texture_ktx`, `-` read as `_` ); its module is the module
-whose file defines that program. Programs in the shell's files
-( browser.rs, expanded.rs, gallery_scenes.rs ) run `core`, except where SHELL
-names the module the page loads beside the shell: webgl_loader_gltf_avif's
-DRACOLoader ( gallery/src/browser/draco_loader.rs ). The transpiler's page
-calls its module's tsl_transpile instead of a program. The page loads the gallery's
+whose file defines that program. The transpiler's page calls its module's
+tsl_transpile instead of a program ( SHELL ). The page loads the gallery's
 primary Wasm module and its module's parts ( scripts/build-gallery,
 tools/gallery/split/ ).
 
@@ -22,9 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'web/gallery/modules.json'
 BROWSER = ROOT / 'gallery/src/browser'
-SHELL_FILES = {'browser', 'expanded', 'gallery_scenes'}
+SHELL_FILES = {'browser', 'expanded'}
 SHELL = {
-    'webgl_loader_gltf_avif': 'draco_loader',
     'webgpu_tsl_transpiler': 'tsl_transpiler',
 }
 PROGRAM = re.compile(r'#\[(?:wasm_bindgen::prelude::)?wasm_bindgen\]\npub async fn (\w+)\(\n?\s*canvas: web_sys::HtmlCanvasElement')
@@ -53,8 +49,9 @@ def mapping():
 
 
 def modules():
-    """The modules that run examples."""
-    return set(mapping()['examples'].values()) - {'core'}
+    """The modules that hold programs: the examples' and the MVP page's
+    ( web/index.html )."""
+    return (set(mapping()['examples'].values()) | set(programs().values())) - {'core'}
 
 
 def main():

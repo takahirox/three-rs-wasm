@@ -30,6 +30,8 @@ mod batch_lod_bvh;
 mod birds_gltf;
 #[cfg(feature = "buffer_particles")]
 mod buffer_particles;
+#[cfg(feature = "buffergeometry_lines")]
+mod buffergeometry_lines;
 #[cfg(feature = "caustics")]
 mod caustics;
 #[cfg(feature = "channels")]
@@ -86,7 +88,6 @@ mod deferred;
 mod dof2;
 #[cfg(feature = "dof_webgl")]
 mod dof_webgl;
-mod draco_loader;
 #[cfg(feature = "draco_variants")]
 mod draco_variants;
 #[cfg(feature = "elements_text")]
@@ -97,12 +98,19 @@ mod environment_materials;
 mod envmap_exr;
 #[cfg(feature = "envmaps_fasthdr")]
 mod envmaps_fasthdr;
+#[cfg(feature = "equirectangular")]
+mod equirectangular;
 mod example;
 mod expanded;
+#[cfg(feature = "expanded_geometry_colors")]
 mod expanded_geometry_colors;
+#[cfg(feature = "expanded_indexed")]
 mod expanded_indexed;
+#[cfg(feature = "expanded_lines")]
 mod expanded_lines;
+#[cfg(feature = "expanded_morph_models")]
 mod expanded_morph_models;
+#[cfg(feature = "expanded_triangles")]
 mod expanded_triangles;
 #[cfg(feature = "exporter_gcode")]
 mod exporter_gcode;
@@ -125,8 +133,8 @@ mod fog_scattering;
 mod fog_volume;
 #[cfg(feature = "fxaa_webgl")]
 mod fxaa_webgl;
-mod gallery;
-mod gallery_scenes;
+#[cfg(feature = "gallery_random")]
+mod gallery_random;
 #[cfg(feature = "games_fps")]
 mod games_fps;
 #[cfg(feature = "gaussian_splat")]
@@ -135,16 +143,24 @@ mod gaussian_splat;
 mod generator_building;
 #[cfg(feature = "generator_city")]
 mod generator_city;
+#[cfg(feature = "geometries")]
+mod geometries;
 #[cfg(feature = "geometry_csg")]
 mod geometry_csg;
+#[cfg(feature = "geometry_cube")]
+mod geometry_cube;
 #[cfg(feature = "geometry_loft")]
 mod geometry_loft;
 #[cfg(feature = "geometry_materials")]
 mod geometry_materials;
 #[cfg(feature = "glitch")]
 mod glitch;
+#[cfg(feature = "gltf_avif")]
+mod gltf_avif;
 #[cfg(feature = "gltf_examples")]
 mod gltf_examples;
+#[cfg(feature = "gltf_instancing")]
+mod gltf_instancing;
 #[cfg(feature = "gltf_normals")]
 mod gltf_normals;
 mod gltf_viewer;
@@ -198,12 +214,16 @@ mod lights_dynamic;
 mod lights_probes;
 #[cfg(feature = "lights_projector")]
 mod lights_projector;
+#[cfg(feature = "lines_indexed")]
+mod lines_indexed;
 #[cfg(feature = "lines_raycast")]
 mod lines_raycast;
 #[cfg(feature = "linked_particles")]
 mod linked_particles;
 #[cfg(feature = "loader_3dm")]
 mod loader_3dm;
+#[cfg(feature = "loader_gltf")]
+mod loader_gltf;
 #[cfg(feature = "loader_materialx")]
 mod loader_materialx;
 #[cfg(feature = "log_depth")]
@@ -232,10 +252,14 @@ mod meshopt;
 mod mirror_webgl;
 #[cfg(feature = "models_modifiers")]
 mod models_modifiers;
+#[cfg(feature = "morphtargets")]
+mod morphtargets;
 #[cfg(feature = "morphtargets_webcam")]
 mod morphtargets_webcam;
 #[cfg(feature = "msaa_renderbuffers")]
 mod msaa_renderbuffers;
+#[cfg(feature = "mvp")]
+mod mvp;
 #[cfg(feature = "offscreen")]
 mod offscreen;
 #[cfg(feature = "outline")]
@@ -272,12 +296,19 @@ mod physics_rapier_joints;
 mod physics_rapier_terrain;
 #[cfg(feature = "physics_rapier_vehicle_controller")]
 mod physics_rapier_vehicle_controller;
+#[cfg(feature = "picking")]
+mod picking;
 #[cfg(feature = "picking_buffers")]
 mod picking_buffers;
 #[cfg(feature = "pmrem_cube_uv")]
 mod pmrem_cube_uv;
+#[cfg(feature = "pmrem_equirectangular")]
+mod pmrem_equirectangular;
+#[cfg(feature = "pmrem_test")]
+mod pmrem_test;
 #[cfg(feature = "point_clouds")]
 mod point_clouds;
+#[cfg(feature = "point_lights")]
 mod point_lights;
 #[cfg(feature = "points_dynamic")]
 mod points_dynamic;
@@ -317,6 +348,7 @@ mod retro;
 mod reversed_depth;
 #[cfg(feature = "loader_3dm")]
 mod rhino3dm_loader;
+#[cfg(feature = "robot")]
 mod robot;
 #[cfg(feature = "roller_coaster")]
 mod roller_coaster;
@@ -408,6 +440,8 @@ mod text_clipping;
 mod text_shapes;
 #[cfg(feature = "texture_flares")]
 mod texture_flares;
+#[cfg(feature = "texture_rotation")]
+mod texture_rotation;
 #[cfg(feature = "texture_volumes")]
 mod texture_volumes;
 #[cfg(feature = "three_mixer")]
@@ -537,19 +571,15 @@ struct State {
     target: RenderTarget,
     scene: Scene,
     camera: Object3D,
-    mesh: Object3D,
     canvas: web_sys::HtmlCanvasElement,
     frame: u32,
     animation: Option<AnimationCallback>,
     request: Option<i32>,
     paused: bool,
-    rebuilds: u32,
     options: PageOptions,
-    rotation: Vector3,
-    point_lights: Option<point_lights::PointLights>,
-    gltf: Option<gltf_viewer::OrbitViewer>,
     load_generation: u64,
-    gallery_scene: Option<gallery_scenes::GalleryScene>,
+    /// The example the frame loop drives.
+    demo: expanded::Demo,
     /// The last frame presented a gallery scene's own output target, which
     /// may read the main target.
     presented_output: bool,
@@ -606,8 +636,6 @@ struct PageOptions {
     rtt: bool,
     /// The page's sheen slider drives the scene's materials.
     sheen_controls: bool,
-    /// The cube turns on both axes ( webgl_geometry_cube ).
-    cube_rotation: bool,
 }
 impl PageOptions {
     /// A gallery example's defaults: MSAA, a half-float target tone-mapped and
@@ -625,7 +653,6 @@ impl PageOptions {
         offscreen_output: false,
         rtt: false,
         sheen_controls: false,
-        cube_rotation: false,
     };
 }
 impl State {
@@ -639,7 +666,7 @@ impl State {
             });
         }
     }
-    fn render(&mut self, time: f64) -> Result<()> {
+    fn render(&mut self) -> Result<()> {
         self.timer.update();
         let _ = self
             .canvas
@@ -660,44 +687,18 @@ impl State {
             self.surface
                 .configure(&self.renderer.device, &self.configuration);
         }
-        if let Some(demo) = &mut self.gallery_scene {
-            demo.update(
-                &mut self.scene,
-                self.camera,
-                self.timer.get_delta().min(0.1),
-                !self.paused,
-            )?;
-        } else if let Some(viewer) = &self.gltf {
-            viewer.update(&mut self.scene, self.camera)?;
-        } else if let Some(demo) = &mut self.point_lights {
-            if !self.paused {
-                demo.time += self.timer.get_delta().min(0.1) * demo.speed;
-            }
-            demo.update(&mut self.scene, self.camera, self.mesh)?;
-            let _ = self
-                .canvas
-                .set_attribute("data-demo-time", &demo.time.to_string());
-        } else if !self.paused {
-            self.scene.get_mut(self.mesh)?.quaternion = if self.options.cube_rotation {
-                self.rotation.x += 0.005;
-                self.rotation.y += 0.01;
-                Euler {
-                    angles: self.rotation,
-                    order: EulerOrder::XYZ,
-                }
-                .quaternion()
-            } else {
-                Quaternion::from_rotation_y(time * 0.0003)
-            };
-        }
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
-            demo.prepare(
-                &self.renderer,
-                &mut self.scene,
-                self.camera,
-                width as f64 / height as f64,
-            )?;
-        }
+        self.demo.update(
+            &mut self.scene,
+            self.camera,
+            self.timer.get_delta().min(0.1),
+            !self.paused,
+        )?;
+        self.demo.prepare(
+            &self.renderer,
+            &mut self.scene,
+            self.camera,
+            width as f64 / height as f64,
+        )?;
         let format = if self.options.raw_output {
             self.configuration.format
         } else {
@@ -720,12 +721,10 @@ impl State {
             && displays(&self.target, scene_tone);
         let output = !self.options.offscreen_output
             && self.presented_output
-            && match &mut self.gallery_scene {
-                Some(gallery_scenes::GalleryScene::Expanded(demo)) => demo
-                    .output_target_mut()
-                    .is_some_and(|t| displays(t, scene_tone)),
-                _ => false,
-            };
+            && self
+                .demo
+                .output_target_mut()
+                .is_some_and(|t| displays(t, scene_tone));
         let frame = if main || output {
             Some(
                 self.surface
@@ -741,8 +740,9 @@ impl State {
             .as_ref()
             .filter(|_| main)
             .and_then(|frame| self.target.alias_color(&frame.texture).ok());
-        let output_alias = match (&frame, &mut self.gallery_scene) {
-            (Some(frame), Some(gallery_scenes::GalleryScene::Expanded(demo))) if output => demo
+        let output_alias = match &frame {
+            Some(frame) if output => self
+                .demo
                 .output_target_mut()
                 .and_then(|t| t.alias_color(&frame.texture).ok()),
             _ => None,
@@ -750,26 +750,21 @@ impl State {
         self.renderer
             .set_output_transform(self.scene.exposure, scene_tone);
         let rendered = (|| -> Result<()> {
-            let handled = if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
-                &mut self.gallery_scene
-            {
-                demo.render(&self.renderer, &mut self.scene, self.camera, &self.target)?
-            } else {
-                false
-            };
+            let handled =
+                self.demo
+                    .render(&self.renderer, &mut self.scene, self.camera, &self.target)?;
             if !handled {
                 self.renderer
                     .render(&mut self.scene, self.camera, &self.target)?;
             }
             Ok(())
         })();
-        let presentation_texture = match &self.gallery_scene {
-            Some(gallery_scenes::GalleryScene::Expanded(demo)) => demo.output_target(),
-            _ => None,
-        }
-        .unwrap_or(&self.target)
-        .texture
-        .clone();
+        let presentation_texture = self
+            .demo
+            .output_target()
+            .unwrap_or(&self.target)
+            .texture
+            .clone();
         // Rendered into the canvas: the presented target still renders into its
         // texture ( an example may have replaced its output target ).
         let direct = frame
@@ -778,9 +773,8 @@ impl State {
         if let Some(alias) = main_alias {
             self.target.restore_color(alias);
         }
-        if let (Some(alias), Some(frame), Some(gallery_scenes::GalleryScene::Expanded(demo))) =
-            (output_alias, &frame, &mut self.gallery_scene)
-            && let Some(target) = demo.output_target_mut()
+        if let (Some(alias), Some(frame)) = (output_alias, &frame)
+            && let Some(target) = self.demo.output_target_mut()
             && target.texture == frame.texture
         {
             target.restore_color(alias);
@@ -804,12 +798,7 @@ impl State {
             format: Some(format),
             ..Default::default()
         });
-        let presentation = match &self.gallery_scene {
-            Some(gallery_scenes::GalleryScene::Expanded(demo)) => {
-                demo.output_target().unwrap_or(&self.target)
-            }
-            _ => &self.target,
-        };
+        let presentation = self.demo.output_target().unwrap_or(&self.target);
         let presents_main = std::ptr::eq(presentation, &self.target);
         if direct {
             // Rendered into the canvas.
@@ -852,9 +841,7 @@ impl State {
             let _ = self.canvas.set_attribute("data-present", &path);
         }
         frame.present();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut self.gallery_scene {
-            demo.presented(&self.canvas)?;
-        }
+        self.demo.presented(&self.canvas)?;
         self.frame += 1;
         let _ = self
             .canvas
@@ -983,37 +970,27 @@ impl BrowserApp {
     pub fn point_lights_controls(&self, paused: bool, amount: f64, speed: f64) {
         let mut state = self.state.borrow_mut();
         state.paused = paused;
-        if let Some(demo) = &mut state.point_lights {
-            if amount.is_finite() {
-                demo.amount = amount.clamp(0.0, 3.0);
-            }
-            if speed.is_finite() {
-                demo.speed = speed.clamp(0.0, 2.0);
-            }
-        }
+        state.demo.content.on_point_lights_controls(amount, speed);
     }
     pub async fn load_model(&self, example: u32) -> std::result::Result<bool, JsValue> {
-        if ![4, 5].contains(&example) {
-            return Err(JsValue::from_str("unknown glTF example"));
-        }
-        let (generation, environment) = {
+        let (generation, load) = {
             let mut state = self.state.borrow_mut();
             state.load_generation += 1;
-            (state.load_generation, state.scene.environment.clone())
+            let environment = state.scene.environment.clone();
+            (
+                state.load_generation,
+                state.demo.content.on_load_model(example, environment),
+            )
         };
-        let mut scene = Scene::new();
-        let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
-            PerspectiveCamera::default(),
-        )));
-        let placeholder = scene.insert(NodeKind::Group);
-        let viewer =
-            gltf_viewer::OrbitViewer::create(&mut scene, camera, placeholder, example, environment)
-                .await;
+        let Some(load) = load else {
+            return Err(JsValue::from_str("glTF viewer required"));
+        };
+        let loaded = load.await;
         let mut state = self.state.borrow_mut();
         if state.load_generation != generation {
             return Ok(false);
         }
-        let viewer = viewer.map_err(|e| JsValue::from_str(&e.to_string()))?;
+        let (mut scene, camera, content) = loaded.map_err(|e| JsValue::from_str(&e.to_string()))?;
         if let NodeKind::Camera(Camera::Perspective(c)) = &mut scene
             .get_mut(camera)
             .map_err(|e| JsValue::from_str(&e.to_string()))?
@@ -1028,7 +1005,7 @@ impl BrowserApp {
         scene.environment_rotation = state.scene.environment_rotation;
         state.scene = scene;
         state.camera = camera;
-        state.gltf = Some(viewer);
+        state.demo.content = content;
         state.renderer.collect_resources();
         Ok(true)
     }
@@ -1073,9 +1050,7 @@ impl BrowserApp {
     pub fn gallery_take_export(&self) -> JsValue {
         let mut state = self.state.borrow_mut();
         let state = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene
-            && let Some((name, bytes)) = demo.take_export(&state.renderer)
-        {
+        if let Some((name, bytes)) = state.demo.take_export(&state.renderer) {
             let out = js_sys::Array::new();
             out.push(&JsValue::from_str(&name));
             out.push(&js_sys::Uint8Array::from(bytes.as_slice()));
@@ -1084,32 +1059,16 @@ impl BrowserApp {
         JsValue::NULL
     }
     pub fn gallery_status(&self) -> String {
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
-            &self.state.borrow().gallery_scene
-        {
-            demo.status()
-        } else {
-            String::new()
-        }
+        self.state.borrow().demo.status()
     }
     pub fn gallery_dragging(&self, value: bool) {
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
-            &mut self.state.borrow_mut().gallery_scene
-        {
-            demo.dragging(value);
-        }
+        self.state.borrow_mut().demo.dragging(value);
     }
     pub fn gallery_canvases(&self, canvases: js_sys::Array) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let State {
-            renderer,
-            gallery_scene,
-            ..
-        } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            demo.attach_canvases(renderer, canvases)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
+        let State { renderer, demo, .. } = &mut *state;
+        demo.attach_canvases(renderer, canvases)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
         state.request_render();
         Ok(())
     }
@@ -1122,11 +1081,11 @@ impl BrowserApp {
         height: f64,
     ) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.viewport(index, [x, y, width, height])
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-            state.request_render();
-        }
+        state
+            .demo
+            .viewport(index, [x, y, width, height])
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        state.request_render();
         Ok(())
     }
     pub fn gallery_input(
@@ -1145,19 +1104,13 @@ impl BrowserApp {
         let State {
             scene,
             camera,
-            gallery_scene,
+            demo,
             ..
         } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            return demo
-                .input(scene, *camera, dx, dy, wheel, false, height)
-                .map_err(|e| JsValue::from_str(&e.to_string()));
-        }
-        if let Some(demo) = gallery_scene {
-            demo.input(scene, *camera, dx, dy, wheel, dragging)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        demo.content
+            .on_scene_input(dx, dy, wheel, dragging)
+            .unwrap_or_else(|| demo.input(scene, *camera, dx, dy, wheel, false, height))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     pub fn gallery_pan(&self, dx: f64, dy: f64) -> std::result::Result<(), JsValue> {
         if !dx.is_finite() || !dy.is_finite() {
@@ -1169,15 +1122,11 @@ impl BrowserApp {
         let State {
             scene,
             camera,
-            gallery_scene,
+            demo,
             ..
         } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            demo.input(scene, *camera, dx, dy, 0.0, true, height)
-                .map_err(|e| JsValue::from_str(&e.to_string()))
-        } else {
-            Ok(())
-        }
+        demo.input(scene, *camera, dx, dy, 0.0, true, height)
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     pub fn gallery_select(&self, x: f64, y: f64) -> std::result::Result<(), JsValue> {
         if !x.is_finite() || !y.is_finite() {
@@ -1188,14 +1137,11 @@ impl BrowserApp {
         let State {
             scene,
             camera,
-            gallery_scene,
+            demo,
             ..
         } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            demo.select(scene, *camera, x, y)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        demo.select(scene, *camera, x, y)
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     /// Drawing-canvas pointer input: 0 down, 1 move, 2 up or leave (offset coordinates).
     pub fn gallery_draw(&self, kind: u32, x: f64, y: f64) -> std::result::Result<(), JsValue> {
@@ -1204,19 +1150,14 @@ impl BrowserApp {
         }
         let mut state = self.state.borrow_mut();
         state.request_render();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.draw(kind, x, y)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        state
+            .demo
+            .draw(kind, x, y)
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     /// Keyboard state for examples that track modifier keys (keyCode, pressed).
     pub fn gallery_key(&self, code: u32, down: bool) {
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) =
-            &mut self.state.borrow_mut().gallery_scene
-        {
-            demo.key(code, down);
-        }
+        self.state.borrow_mut().demo.key(code, down);
     }
     /// Comparison slider position in CSS pixels.
     pub fn gallery_slider(&self, x: f64) {
@@ -1224,9 +1165,7 @@ impl BrowserApp {
             return;
         }
         let mut state = self.state.borrow_mut();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.slider(x);
-        }
+        state.demo.slider(x);
         state.request_render();
     }
     pub fn gallery_pointer(&self, x: f64, y: f64) {
@@ -1242,25 +1181,21 @@ impl BrowserApp {
             renderer,
             scene,
             camera,
-            gallery_scene,
+            demo,
             canvas,
             ..
         } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            match demo.gpu_pointer(renderer, scene, *camera, x, y) {
-                Ok(true) => redraw = true,
-                Ok(false) => {}
-                Err(e) => {
-                    let _ = canvas.set_attribute("data-error", &e.to_string());
-                }
+        match demo.gpu_pointer(renderer, scene, *camera, x, y) {
+            Ok(true) => redraw = true,
+            Ok(false) => {}
+            Err(e) => {
+                let _ = canvas.set_attribute("data-error", &e.to_string());
             }
-            if is_rtt {
-                demo.pointer(x, y);
-            } else {
-                demo.pointer(x * width / 2.0, -y * height / 2.0);
-            }
-        } else if let Some(demo) = gallery_scene {
+        }
+        if is_rtt {
             demo.pointer(x, y);
+        } else {
+            demo.pointer(x * width / 2.0, -y * height / 2.0);
         }
         // On-demand scenes redraw when the pointer moves something.
         if redraw {
@@ -1269,30 +1204,21 @@ impl BrowserApp {
     }
     /// Animation clips available in the active gallery scene.
     pub fn animation_names(&self) -> String {
-        if let Some(gallery_scenes::GalleryScene::Robot(robot)) = &self.state.borrow().gallery_scene
-        {
-            serde_json::to_string(
-                &robot
-                    .mixer
-                    .actions
-                    .iter()
-                    .map(|a| &a.clip.name)
-                    .collect::<Vec<_>>(),
-            )
-            .unwrap_or_else(|_| "[]".into())
-        } else {
-            "[]".into()
-        }
+        self.state
+            .borrow()
+            .demo
+            .content
+            .on_animation_names()
+            .unwrap_or_else(|| "[]".into())
     }
     pub fn select_animation(&self, index: usize) -> std::result::Result<(), JsValue> {
-        if let Some(gallery_scenes::GalleryScene::Robot(robot)) =
-            &mut self.state.borrow_mut().gallery_scene
-        {
-            robot
-                .select(index)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        self.state
+            .borrow_mut()
+            .demo
+            .content
+            .on_select_animation(index)
+            .unwrap_or(Ok(()))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     /// Freeze a selected clip for deterministic browser/reference comparisons.
     pub fn animation_time(&self, index: usize, time: f64) -> std::result::Result<(), JsValue> {
@@ -1301,20 +1227,12 @@ impl BrowserApp {
         }
         let mut state = self.state.borrow_mut();
         state.paused = true;
-        if let Some(gallery_scenes::GalleryScene::Robot(robot)) = &mut state.gallery_scene {
-            if index >= robot.mixer.actions.len() {
-                return Err(JsValue::from_str("invalid animation index"));
-            }
-            for (i, action) in robot.mixer.actions.iter_mut().enumerate() {
-                action
-                    .fade_to(if i == index { 1.0 } else { 0.0 }, 0.0)
-                    .map_err(|e| JsValue::from_str(&e.to_string()))?;
-                action.time = time;
-                action.looping = crate::animation::LoopMode::Once;
-            }
-            robot.selected = index;
-        }
-        Ok(())
+        state
+            .demo
+            .content
+            .on_animation_time(index, time)
+            .unwrap_or(Ok(()))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     /// Serialize the live scene for debugging and upstream behavioral comparisons.
     pub fn transfer_counts(&self) -> String {
@@ -1323,17 +1241,9 @@ impl BrowserApp {
     }
     pub fn gallery_wireframe(&self, enabled: bool) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let State {
-            scene,
-            gallery_scene,
-            ..
-        } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            demo.wireframe(scene, enabled)
-                .map_err(|e| JsValue::from_str(&e.to_string()))
-        } else {
-            Err(JsValue::from_str("indexed example required"))
-        }
+        let State { scene, demo, .. } = &mut *state;
+        demo.wireframe(scene, enabled)
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     pub fn gallery_morph(&self, spherify: f64, twist: f64) -> std::result::Result<(), JsValue> {
         if ![spherify, twist]
@@ -1343,17 +1253,9 @@ impl BrowserApp {
             return Err(JsValue::from_str("invalid morph weights"));
         }
         let mut state = self.state.borrow_mut();
-        let State {
-            scene,
-            gallery_scene,
-            ..
-        } = &mut *state;
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene {
-            demo.morph(scene, [spherify, twist])
-                .map_err(|e| JsValue::from_str(&e.to_string()))
-        } else {
-            Err(JsValue::from_str("morph example required"))
-        }
+        let State { scene, demo, .. } = &mut *state;
+        demo.morph(scene, [spherify, twist])
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     /// Freeze a procedural gallery scene at a reproducible elapsed time.
     pub fn gallery_time(&self, seconds: f64) -> std::result::Result<(), JsValue> {
@@ -1362,23 +1264,16 @@ impl BrowserApp {
         }
         let mut state = self.state.borrow_mut();
         state.request_render();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.seek(seconds);
-            state.paused = true;
-            Ok(())
-        } else {
-            Err(JsValue::from_str(
-                "scene does not support procedural seeking",
-            ))
-        }
+        state.demo.seek(seconds);
+        state.paused = true;
+        Ok(())
     }
     /// webaudio_visualizer: the analyser's frequency bins for this frame.
     pub fn audio_data(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene else {
-            return Err(JsValue::from_str("not an audio example"));
-        };
-        demo.audio_data(&bytes)
+        state
+            .demo
+            .audio_data(&bytes)
             .map_err(|e| JsValue::from_str(&e.to_string()))?;
         state.request_render();
         Ok(())
@@ -1389,42 +1284,36 @@ impl BrowserApp {
         let State {
             scene,
             camera,
-            gallery_scene,
+            demo,
             ..
         } = &mut *state;
-        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = gallery_scene else {
-            return Err(JsValue::from_str("not an audio example"));
-        };
         demo.audio_frame(scene, *camera)
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_play(&self) -> std::result::Result<bool, JsValue> {
         let state = self.state.borrow();
-        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
-            return Err(JsValue::from_str("not an audio example"));
-        };
-        demo.audio()
+        state
+            .demo
+            .audio()
             .and_then(|a| a.play(&state.renderer))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_result(&self) -> std::result::Result<Vec<f32>, JsValue> {
         let state = self.state.borrow();
-        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
-            return Err(JsValue::from_str("not an audio example"));
-        };
-        demo.audio()
+        state
+            .demo
+            .audio()
             .and_then(|a| a.take().unwrap_or_else(|| Ok(Vec::new())))
             .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     #[cfg(feature = "example_tsl_procedural")]
     pub fn audio_spectrum(&self, bytes: Vec<u8>) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &state.gallery_scene else {
-            return Err(JsValue::from_str("not an audio example"));
-        };
-        demo.audio()
+        state
+            .demo
+            .audio()
             .and_then(|a| a.spectrum(&state.renderer, &bytes))
             .map_err(|e| JsValue::from_str(&e.to_string()))?;
         state.request_render();
@@ -1432,10 +1321,10 @@ impl BrowserApp {
     }
     pub fn tsl_parameter(&self, index: usize, value: f32) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        if let Some(gallery_scenes::GalleryScene::Expanded(demo)) = &mut state.gallery_scene {
-            demo.tsl_parameter(index, value)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
+        state
+            .demo
+            .tsl_parameter(index, value)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
         state.request_render();
         Ok(())
     }
@@ -1481,16 +1370,11 @@ impl BrowserApp {
     }
     pub fn texture_transform(&self, values: Vec<f64>) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let State {
-            scene,
-            gallery_scene,
-            ..
-        } = &mut *state;
-        if let Some(demo) = gallery_scene {
-            demo.texture_transform(scene, &values)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        let State { scene, demo, .. } = &mut *state;
+        demo.content
+            .on_texture_transform(scene, &values)
+            .unwrap_or(Ok(()))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     pub fn background_intensity(&self, value: f64) {
         if value.is_finite() {
@@ -1499,16 +1383,11 @@ impl BrowserApp {
     }
     pub fn gallery_pmrem(&self, enabled: bool) -> std::result::Result<(), JsValue> {
         let mut state = self.state.borrow_mut();
-        let State {
-            scene,
-            gallery_scene,
-            ..
-        } = &mut *state;
-        if let Some(demo) = gallery_scene {
-            demo.pmrem(scene, enabled)
-                .map_err(|e| JsValue::from_str(&e.to_string()))?;
-        }
-        Ok(())
+        let State { scene, demo, .. } = &mut *state;
+        demo.content
+            .on_pmrem(scene, enabled)
+            .unwrap_or(Ok(()))
+            .map_err(|e| JsValue::from_str(&e.to_string()))
     }
     pub fn resource_counts(&self) -> Vec<f64> {
         let (resident, uploads, filters) = self.state.borrow().renderer.resource_counts();
@@ -1531,69 +1410,27 @@ impl BrowserApp {
             return;
         }
         let mut state = self.state.borrow_mut();
-        if let Some(viewer) = &mut state.gltf {
-            viewer.fixture(yaw, pitch, distance);
-        }
+        state.demo.content.on_gltf_view(yaw, pitch, distance);
         state.scene.exposure = exposure.max(0.0);
         state.scene.environment_rotation = rotation;
         state.scene.background_blur = blur.clamp(0.0, 1.0);
         state.request_render();
     }
     pub fn orbit(&self, dx: f64, dy: f64, zoom: f64) {
-        if dx.is_finite()
-            && dy.is_finite()
-            && zoom.is_finite()
-            && let Some(viewer) = &mut self.state.borrow_mut().gltf
-        {
-            viewer.orbit(dx, dy, zoom);
-        }
-        if dx.is_finite()
-            && dy.is_finite()
-            && zoom.is_finite()
-            && let Some(demo) = &mut self.state.borrow_mut().point_lights
-        {
-            demo.orbit(dx, dy, zoom);
+        if dx.is_finite() && dy.is_finite() && zoom.is_finite() {
+            self.state.borrow_mut().demo.content.on_orbit(dx, dy, zoom);
         }
     }
-    /// Rebuild a small scene fragment, exercising owned geometry replacement,
-    /// groups/draw ranges, attribute edits and stale-handle protection.
+    /// Rebuild the example's object ( the MVP page's cube ), then the main
+    /// target, paused.
     pub fn rebuild(&self) -> std::result::Result<(), JsValue> {
         let result = (|| -> Result<()> {
             let mut state = self.state.borrow_mut();
-            let original = state.mesh;
-            let mut geometry = PlaneGeometry::build(2.0, 2.0, 1, 1)?;
-            geometry.clear_groups();
-            geometry.add_group(0, 3, 0);
-            geometry.add_group(3, 3, 1);
-            state.rebuilds += 1;
-            geometry.set_draw_range(
-                0,
-                Some(if state.rebuilds.is_multiple_of(2) {
-                    6
-                } else {
-                    3
-                }),
-            );
-            if let Some(position) = geometry.attributes.get_mut("position") {
-                position.set_component(0, 0, -0.8)?;
-            }
-            let mut first = Material::default();
-            first.properties_mut().color = Color::from_hex(0xff3366);
-            let mut second = Material::default();
-            second.properties_mut().color = Color::from_hex(0x33ccff);
-            let replacement = state.scene.insert(NodeKind::Mesh(Mesh {
-                geometry: Arc::new(geometry),
-                materials: vec![Arc::new(first), Arc::new(second)],
-            }));
-            let group = state.scene.insert(NodeKind::Group);
-            state.scene.add(group, replacement)?;
-            state.scene.remove_from_parent(replacement)?;
-            state.scene.dispose(group)?;
-            state.scene.dispose(original)?;
-            if state.scene.get(original).is_ok() {
-                return Err(Error::Invalid("stale handle retained"));
-            }
-            state.mesh = replacement;
+            let State { scene, demo, .. } = &mut *state;
+            let rebuilds = demo
+                .content
+                .on_rebuild(scene)
+                .ok_or(Error::Invalid("rebuild example required"))??;
             state.paused = true;
             state.target = RenderTarget::with_options(
                 &state.renderer.device,
@@ -1608,19 +1445,19 @@ impl BrowserApp {
                 .map_err(|e| Error::Asset(format!("{e:?}")))?;
             let _ = state
                 .canvas
-                .set_attribute("data-rebuilds", &state.rebuilds.to_string());
+                .set_attribute("data-rebuilds", &rebuilds.to_string());
             Ok(())
         })();
         result.map_err(|e| JsValue::from_str(&e.to_string()))
     }
 }
-/// What an example's frame loop drives.
-enum PageContent {
-    /// The placeholder cube or the MVP scenes, built in the page's scene.
-    Plain,
-    PointLights(point_lights::PointLights),
-    Gltf(gltf_viewer::OrbitViewer),
-    Gallery(gallery_scenes::GalleryScene),
+/// Whether the ray through `ndc` hits `mesh` ( the MVP page's picking ).
+fn pick(scene: &mut Scene, camera: Object3D, mesh: Object3D, ndc: Vector2) -> Result<bool> {
+    let mut raycaster = Raycaster::default();
+    scene.update()?;
+    let (camera, world) = scene.camera(camera)?;
+    raycaster.set_from_camera(ndc, camera, world)?;
+    Ok(!raycaster.intersect_object(scene, mesh, false)?.is_empty())
 }
 /// The renderer, canvas surface, main target and initial scene an example's
 /// program builds on, before its frame loop starts ( `Page::start` ), as a
@@ -1722,136 +1559,9 @@ impl Page {
         };
         Ok((&mut self.scene, self.camera, &self.renderer, aspect))
     }
-    /// webgpu_pmrem_equirectangular's PMREM grid.
-    async fn mvp_6(&mut self) -> Result<PageContent> {
-        let grid = gallery::pmrem_grid(&mut self.scene, self.camera, self.mesh).await?;
-        let _ = self.canvas.set_attribute("data-meshes", "30");
-        Ok(PageContent::Gltf(grid))
-    }
-    /// The glTF viewer with model `model` ( 4 the helmet, 5 the BoomBox ).
-    async fn mvp_gltf(&mut self, model: u32) -> Result<PageContent> {
-        let viewer =
-            gltf_viewer::OrbitViewer::create(&mut self.scene, self.camera, self.mesh, model, None)
-                .await?;
-        let _ = self
-            .canvas
-            .set_attribute("data-triangles", &viewer.triangles.to_string());
-        let _ = self
-            .canvas
-            .set_attribute("data-meshes", &viewer.meshes.to_string());
-        Ok(PageContent::Gltf(viewer))
-    }
-    /// webgpu_lights_pointlights's model and lights.
-    async fn mvp_3(&mut self) -> Result<PageContent> {
-        let aspect = self.canvas.width() as f64 / self.canvas.height() as f64;
-        let mut demo = point_lights::PointLights::create(
-            &mut self.scene,
-            self.camera,
-            self.mesh,
-            aspect,
-            &self.renderer,
-        )
-        .await?;
-        if !self.animate {
-            demo.time = 6.0;
-        }
-        Ok(PageContent::PointLights(demo))
-    }
-    /// The MVP page's lights, texture, line and points scene.
-    async fn mvp_1(&mut self) -> Result<PageContent> {
-        let (scene, camera, mesh) = (&mut self.scene, self.camera, self.mesh);
-        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Orthographic(OrthographicCamera {
-            left: -3.0,
-            right: 3.0,
-            top: 3.0,
-            bottom: -3.0,
-            ..Default::default()
-        }));
-        scene.get_mut(mesh)?.position.x = -1.1;
-        let group = scene.insert(NodeKind::Group);
-        scene.get_mut(group)?.position = Vector3::new(0.8, 0.6, 0.0);
-        let texture = Arc::new(Texture::load(&asset_url("/web/checker.png")?).await?);
-        let mut standard = MeshStandardMaterial::default();
-        standard.properties.map = Some(texture);
-        standard.roughness = 0.7;
-        let sphere = scene.insert(NodeKind::Mesh(Mesh::new(
-            Arc::new(SphereGeometry::build(0.75, 24, 16)?),
-            Arc::new(Material::Standard(standard)),
-        )));
-        scene.add(group, sphere)?;
-        scene.insert(NodeKind::Light(Light::Ambient {
-            color: Color::WHITE,
-            intensity: 0.3,
-        }));
-        let directional = scene.insert(NodeKind::Light(Light::Directional {
-            color: Color::WHITE,
-            intensity: 2.0,
-            target: Vector3::ZERO,
-        }));
-        scene.get_mut(directional)?.position = Vector3::new(2.0, 3.0, 4.0);
-        let point = scene.insert(NodeKind::Light(Light::Point {
-            color: Color::from_hex(0xff8040),
-            intensity: 10.0,
-            distance: 0.0,
-            decay: 2.0,
-        }));
-        scene.get_mut(point)?.position = Vector3::new(-2.0, 1.0, 2.0);
-        let mut line_geometry = BufferGeometry::default();
-        line_geometry.set_from_points(&[
-            Vector3::new(-2.0, -1.5, 0.0),
-            Vector3::new(0.0, -0.9, 0.0),
-            Vector3::new(2.0, -1.5, 0.0),
-        ])?;
-        let mut line_material = LineBasicMaterial::default();
-        line_material.properties.color = Color::from_hex(0x44ff88);
-        scene.insert(NodeKind::Line(Line {
-            geometry: Arc::new(line_geometry.clone()),
-            material: Arc::new(Material::Line(line_material)),
-            segments: false,
-        }));
-        let mut points_material = PointsMaterial::default();
-        points_material.properties.color = Color::from_hex(0xffffff);
-        points_material.size_attenuation = false;
-        let points = scene.insert(NodeKind::Points(Points {
-            geometry: Arc::new(line_geometry),
-            material: Arc::new(Material::Points(points_material)),
-        }));
-        scene.get_mut(points)?.position.y = -0.4;
-        Ok(PageContent::Plain)
-    }
-    /// Three.js r186 examples/webgl_geometry_cube.html, ported to WebGPU.
-    async fn mvp_2(&mut self) -> Result<PageContent> {
-        let (scene, camera, mesh) = (&mut self.scene, self.camera, self.mesh);
-        let aspect = self.canvas.width() as f64 / self.canvas.height() as f64;
-        scene.background = Color::BLACK;
-        scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
-            fov: 70.0,
-            aspect,
-            near: 0.1,
-            far: 100.0,
-            ..Default::default()
-        }));
-        scene.get_mut(camera)?.position.z = 2.0;
-        let mut material = Material::default();
-        material.properties_mut().map = Some(Arc::new(
-            Texture::load(&asset_url("/web/crate.gif")?).await?,
-        ));
-        scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
-            Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
-            Arc::new(material),
-        ));
-        if !self.animate {
-            scene.get_mut(mesh)?.quaternion = Euler {
-                angles: Vector3::new(0.4, 0.7, 0.0),
-                order: EulerOrder::XYZ,
-            }
-            .quaternion();
-        }
-        Ok(PageContent::Plain)
-    }
-    /// Start the frame loop on `content`.
+    /// Start the frame loop on `demo`.
     #[inline(never)]
-    fn start(self, content: PageContent) -> Result<BrowserApp> {
+    fn start(self, demo: expanded::Demo) -> Result<BrowserApp> {
         let Page {
             renderer,
             surface,
@@ -1859,18 +1569,11 @@ impl Page {
             target,
             scene,
             camera,
-            mesh,
             canvas,
             animate,
             options,
+            ..
         } = self;
-        let (mut point_lights, mut gltf, mut gallery_scene) = (None, None, None);
-        match content {
-            PageContent::Plain => {}
-            PageContent::PointLights(demo) => point_lights = Some(demo),
-            PageContent::Gltf(viewer) => gltf = Some(viewer),
-            PageContent::Gallery(scene) => gallery_scene = Some(scene),
-        }
         let mut timer = crate::time::Timer::default();
         timer.connect(
             web_sys::window()
@@ -1885,30 +1588,25 @@ impl Page {
             target,
             scene,
             camera,
-            mesh,
             canvas: canvas.clone(),
             frame: 0,
             animation: None,
             request: None,
             paused: !animate,
-            rebuilds: 0,
             options,
-            rotation: Vector3::ZERO,
-            point_lights,
-            gltf,
             load_generation: 0,
-            gallery_scene,
+            demo,
             presented_output: true,
         }));
         let weak = Rc::downgrade(&state);
-        let animation = Closure::wrap(Box::new(move |time: f64| {
+        let animation = Closure::wrap(Box::new(move |_time: f64| {
             if let Some(state) = weak.upgrade() {
                 let mut state = state.borrow_mut();
                 state.request = None;
                 // The page's stats.js and Inspector hooks around the frame
                 // ( web/gallery/ui/ ), where the original calls them.
                 page_hook("galleryFrameBegin");
-                if let Err(error) = state.render(time) {
+                if let Err(error) = state.render() {
                     let _ = state.canvas.set_attribute("data-error", &error.to_string());
                     return;
                 }
@@ -1924,34 +1622,26 @@ impl Page {
         let pointer = Closure::wrap(Box::new(move |event: web_sys::PointerEvent| {
             if let Some(state) = weak.upgrade() {
                 let mut state = state.borrow_mut();
-                if state.point_lights.is_some()
-                    || state.gltf.is_some()
-                    || state.gallery_scene.is_some()
-                {
-                    return;
-                }
                 let ndc = Vector2::new(
                     event.offset_x() as f64 / state.canvas.client_width() as f64 * 2.0 - 1.0,
                     1.0 - event.offset_y() as f64 / state.canvas.client_height() as f64 * 2.0,
                 );
-                let mut raycaster = Raycaster::default();
-                let result = (|| -> Result<bool> {
-                    state.scene.update()?;
-                    let (camera, world) = state.scene.camera(state.camera)?;
-                    raycaster.set_from_camera(ndc, camera, world)?;
-                    Ok(!raycaster
-                        .intersect_object(&state.scene, state.mesh, false)?
-                        .is_empty())
-                })();
-                match result {
-                    Ok(selected) => {
+                let State {
+                    scene,
+                    camera,
+                    demo,
+                    ..
+                } = &mut *state;
+                match demo.content.on_pick(scene, *camera, ndc) {
+                    None => {}
+                    Some(Ok(selected)) => {
                         state.paused = selected;
                         let _ = state.canvas.set_attribute(
                             "data-selected",
                             if selected { "true" } else { "false" },
                         );
                     }
-                    Err(error) => {
+                    Some(Err(error)) => {
                         let _ = state.canvas.set_attribute("data-error", &error.to_string());
                     }
                 }
@@ -1985,7 +1675,7 @@ async fn program(
     canvas: web_sys::HtmlCanvasElement,
     animate: bool,
     options: PageOptions,
-    build: impl AsyncFnOnce(&mut Page) -> Result<PageContent>,
+    build: impl AsyncFnOnce(&mut Page) -> Result<expanded::Demo>,
 ) -> std::result::Result<BrowserApp, JsValue> {
     async move {
         // Boxed and started out of line: every program shares one copy of the
@@ -1993,143 +1683,11 @@ async fn program(
         let setup: std::pin::Pin<Box<dyn std::future::Future<Output = Result<Page>>>> =
             Box::pin(Page::new(canvas, animate, options));
         let mut page = setup.await?;
-        let content = build(&mut page).await?;
-        page.start(content)
+        let demo = build(&mut page).await?;
+        page.start(demo)
     }
     .await
     .map_err(|e| JsValue::from_str(&e.to_string()))
-}
-/// The MVP page's first scene: the cube that turns and is picked.
-#[wasm_bindgen]
-pub async fn mvp_rotate_select(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            samples: 0,
-            format: TargetFormat::CanvasSrgb,
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |_page| Ok(PageContent::Plain),
-    )
-    .await
-}
-/// The MVP page's lights, texture, line and points scene.
-#[wasm_bindgen]
-pub async fn mvp_lights_textures(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            samples: 0,
-            format: TargetFormat::CanvasSrgb,
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_1().await,
-    )
-    .await
-}
-/// The program of three.js examples/webgl_geometry_cube.html: its renderer, its scene and its frame
-/// loop.
-#[wasm_bindgen]
-pub async fn webgl_geometry_cube(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            samples: 0,
-            format: TargetFormat::CanvasSrgb,
-            stop_when_paused: false,
-            cube_rotation: true,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_2().await,
-    )
-    .await
-}
-/// The program of three.js examples/webgpu_lights_pointlights.html: its renderer, its scene and its
-/// frame loop.
-#[wasm_bindgen]
-pub async fn webgpu_lights_pointlights(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            samples: 0,
-            format: TargetFormat::CanvasSrgb,
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_3().await,
-    )
-    .await
-}
-/// The program of three.js examples/webgpu_loader_gltf.html: its renderer, its scene and its frame
-/// loop.
-#[wasm_bindgen]
-pub async fn webgpu_loader_gltf(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_gltf(4).await,
-    )
-    .await
-}
-/// The MVP page's BoomBox glTF.
-#[wasm_bindgen]
-pub async fn mvp_boombox(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_gltf(5).await,
-    )
-    .await
-}
-/// The program of three.js examples/webgpu_pmrem_equirectangular.html: its renderer, its scene and
-/// its frame loop.
-#[wasm_bindgen]
-pub async fn webgpu_pmrem_equirectangular(
-    canvas: web_sys::HtmlCanvasElement,
-    animate: bool,
-) -> std::result::Result<BrowserApp, JsValue> {
-    program(
-        canvas,
-        animate,
-        PageOptions {
-            stop_when_paused: false,
-            ..PageOptions::GALLERY
-        },
-        async |page| page.mvp_6().await,
-    )
-    .await
 }
 impl Drop for BrowserApp {
     fn drop(&mut self) {

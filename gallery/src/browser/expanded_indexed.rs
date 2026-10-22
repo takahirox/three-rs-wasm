@@ -60,3 +60,85 @@ pub(super) fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result
         Arc::new(Material::Phong(material)),
     ))))
 }
+
+/// webgl_buffergeometry_indexed's mesh, turned by the elapsed time.
+struct Indexed {
+    mesh: Object3D,
+    elapsed: f64,
+}
+
+impl super::example::Example for Indexed {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        _camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.elapsed += delta;
+        }
+        Some(scene.get_mut(self.mesh).map(|n| {
+            n.quaternion = Quaternion::from_euler(
+                glam::EulerRot::XYZ,
+                self.elapsed * 0.25,
+                self.elapsed * 0.5,
+                0.0,
+            )
+        }))
+    }
+    fn on_wireframe(&mut self, scene: &mut Scene, enabled: bool) -> Option<Result<()>> {
+        Some(scene.get_mut(self.mesh).map(|n| {
+            if let NodeKind::Mesh(mesh) = &mut n.kind {
+                Arc::make_mut(&mut mesh.materials[0])
+                    .properties_mut()
+                    .wireframe = enabled;
+            }
+        }))
+    }
+    fn on_seek(&mut self, seconds: f64) {
+        self.elapsed = seconds;
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// The program of three.js examples/webgl_buffergeometry_indexed.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_buffergeometry_indexed(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 64.0),
+                1.0,
+                3500.0,
+                Box::new(Indexed {
+                    mesh: create(scene, camera, aspect)?,
+                    elapsed: 0.0,
+                }),
+            ))
+        },
+    )
+    .await
+}

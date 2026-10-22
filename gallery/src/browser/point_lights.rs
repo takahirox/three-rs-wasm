@@ -221,3 +221,89 @@ impl PointLights {
         Ok(())
     }
 }
+
+/// The page's model and lights, and the mesh their displacement deforms.
+struct PointLightsExample {
+    demo: PointLights,
+    mesh: Object3D,
+}
+
+impl super::example::Example for PointLightsExample {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        if animate {
+            self.demo.time += delta * self.demo.speed;
+        }
+        Some(self.demo.update(scene, camera, self.mesh))
+    }
+    fn on_presented(&mut self, canvas: &web_sys::HtmlCanvasElement) -> Result<()> {
+        let _ = canvas.set_attribute("data-demo-time", &self.demo.time.to_string());
+        Ok(())
+    }
+    fn on_point_lights_controls(&mut self, amount: f64, speed: f64) {
+        if amount.is_finite() {
+            self.demo.amount = amount.clamp(0.0, 3.0);
+        }
+        if speed.is_finite() {
+            self.demo.speed = speed.clamp(0.0, 2.0);
+        }
+    }
+    fn on_orbit(&mut self, dx: f64, dy: f64, zoom: f64) {
+        self.demo.orbit(dx, dy, zoom);
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// The program of three.js examples/webgpu_lights_pointlights.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgpu_lights_pointlights(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            samples: 0,
+            format: super::TargetFormat::CanvasSrgb,
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let aspect = page.canvas.width() as f64 / page.canvas.height() as f64;
+            let mut demo = PointLights::create(
+                &mut page.scene,
+                page.camera,
+                page.mesh,
+                aspect,
+                &page.renderer,
+            )
+            .await?;
+            if !page.animate {
+                demo.time = 6.0;
+            }
+            Ok(super::expanded::own(Box::new(PointLightsExample {
+                demo,
+                mesh: page.mesh,
+            })))
+        },
+    )
+    .await
+}

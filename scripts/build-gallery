@@ -9,18 +9,21 @@
 #
 #   scripts/build-gallery [--dev]
 #
-# --dev builds the shell alone ( the examples whose programs it defines ),
-# unoptimized and unsplit, as the MVP checks use it.
+# --dev builds the shell and the MVP page's modules, unoptimized and unsplit,
+# as the MVP checks use it.
 # Splitting needs Binaryen's wasm-split and wasm-opt ( version 127 or later ).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="$ROOT/web/pkg/gallery"
 python3 "$ROOT/tools/gallery/modules.py"
 rm -rf "$ROOT/web/pkg"
+# The MVP page's scenes and the gallery examples the MVP checks open
+# ( web/index.html, tests/browser/ ).
+MVP=example_mvp,example_geometry_cube,example_point_lights,example_loader_gltf,example_pmrem_equirectangular
 if [ "${1:-}" = "--dev" ]; then
   ( cd "$ROOT/gallery" && CARGO_TARGET_DIR="$ROOT/target/gallery-dev" \
     wasm-pack --quiet build --target web --out-dir "$OUT" --out-name three_rs_wasm --dev --no-typescript \
-      -- --no-default-features )
+      -- --no-default-features --features "$MVP" )
   echo '{}' > "$OUT/parts.json"
   node "$ROOT/tools/gallery/pages.mjs"
   exit

@@ -80,3 +80,72 @@ pub(super) fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result
     }
     Ok(())
 }
+
+/// webgl_geometry_colors's camera, which follows the pointer.
+struct VertexColors {
+    pointer: Vector2,
+}
+
+impl super::example::Example for VertexColors {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        camera: Object3D,
+        _delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        Some((|| {
+            if animate {
+                let p = &mut scene.get_mut(camera)?.position;
+                p.x += (self.pointer.x - p.x) * 0.05;
+                p.y += (-self.pointer.y - p.y) * 0.05;
+            }
+            scene.look_at(camera, Vector3::ZERO)
+        })())
+    }
+    fn on_pointer(&mut self, x: f64, y: f64) {
+        self.pointer = Vector2::new(x, y);
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// The program of three.js examples/webgl_geometry_colors.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_geometry_colors(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            create(scene, camera, aspect)?;
+            Ok(super::expanded::module(
+                super::gltf_viewer::OrbitViewer::from_camera(Vector3::ZERO, 1800.0),
+                1.0,
+                10000.0,
+                Box::new(VertexColors {
+                    pointer: Vector2::ZERO,
+                }),
+            ))
+        },
+    )
+    .await
+}

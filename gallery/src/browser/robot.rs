@@ -131,3 +131,92 @@ impl Robot {
         Ok(())
     }
 }
+
+impl super::example::Example for Robot {
+    fn on_update(
+        &mut self,
+        scene: &mut Scene,
+        camera: Object3D,
+        delta: f64,
+        animate: bool,
+    ) -> Option<Result<()>> {
+        Some(self.update(scene, camera, delta, animate))
+    }
+    fn on_animation_names(&self) -> Option<String> {
+        Some(
+            serde_json::to_string(
+                &self
+                    .mixer
+                    .actions
+                    .iter()
+                    .map(|a| &a.clip.name)
+                    .collect::<Vec<_>>(),
+            )
+            .unwrap_or_else(|_| "[]".into()),
+        )
+    }
+    fn on_select_animation(&mut self, index: usize) -> Option<Result<()>> {
+        Some(self.select(index))
+    }
+    fn on_animation_time(&mut self, index: usize, time: f64) -> Option<Result<()>> {
+        Some((|| {
+            if index >= self.mixer.actions.len() {
+                return Err(crate::Error::Invalid("invalid animation index"));
+            }
+            for (i, action) in self.mixer.actions.iter_mut().enumerate() {
+                action.fade_to(if i == index { 1.0 } else { 0.0 }, 0.0)?;
+                action.time = time;
+                action.looping = LoopMode::Once;
+            }
+            self.selected = index;
+            Ok(())
+        })())
+    }
+    fn on_scene_input(
+        &mut self,
+        dx: f64,
+        dy: f64,
+        wheel: f64,
+        dragging: bool,
+    ) -> Option<Result<()>> {
+        let _ = dragging;
+        self.viewer.orbit(dx, dy, wheel);
+        Some(Ok(()))
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn on_input(
+        &mut self,
+        _scene: &mut Scene,
+        _camera: Object3D,
+        _dx: f64,
+        _dy: f64,
+        _wheel: f64,
+        _pan: bool,
+        _height: f64,
+    ) -> Option<Result<()>> {
+        Some(Ok(()))
+    }
+}
+
+/// The program of three.js examples/webgl_animation_skinning_morph.html: its renderer, its scene and its frame loop.
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub async fn webgl_animation_skinning_morph(
+    canvas: web_sys::HtmlCanvasElement,
+    animate: bool,
+) -> std::result::Result<super::BrowserApp, wasm_bindgen::JsValue> {
+    super::program(
+        canvas,
+        animate,
+        super::PageOptions {
+            stop_when_paused: false,
+            ..super::PageOptions::GALLERY
+        },
+        async |page| {
+            let (scene, camera, _renderer, aspect) = page.gallery_scene()?;
+            Ok(super::expanded::own(Box::new(
+                Robot::create(scene, camera, aspect).await?,
+            )))
+        },
+    )
+    .await
+}

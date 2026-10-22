@@ -121,11 +121,11 @@ function updateStatus(){
 new MutationObserver(updateStatus).observe(canvas,{attributes:true,attributeFilter:['data-error','data-selected','data-rebuilds']});
 try{
   if(!navigator.gpu)throw new Error('このブラウザーではWebGPUを利用できません。');
-  // The gallery's Wasm: the MVP scenes are the shell's own ( no parts ).
+  // Each demo's own program and the module that holds it ( gallery/src/browser/ ):
+  // the gallery's Wasm loads with that module's parts.
+  const [program,module]=[['mvp_rotate_select','mvp'],['mvp_lights_textures','mvp'],['webgl_geometry_cube','geometry_cube'],['webgpu_lights_pointlights','point_lights'],['webgpu_loader_gltf','loader_gltf'],['mvp_boombox','loader_gltf']][example];
   const {loadRuntime}=await import('./gallery/runtime.js');
-  const runtime=await loadRuntime('core');
-  // Each demo's own program ( gallery/src/browser.rs ).
-  const program=['mvp_rotate_select','mvp_lights_textures','webgl_geometry_cube','webgpu_lights_pointlights','webgpu_loader_gltf','mvp_boombox'][example];
+  const runtime=await loadRuntime(module);
   if(params.has('fixture')) {canvas.width=256;canvas.height=256;canvas.style.width='256px';canvas.style.height='256px';canvas.parentElement.style.borderRadius='0';}
   window.app=await runtime[program](canvas,!staticMode);
   rebuild.disabled=false;
