@@ -1,0 +1,1607 @@
+{
+ "css2d_label": [
+  "web/gallery/assets/earth_atmos_2048.jpg",
+  "web/gallery/assets/earth_specular_2048.jpg",
+  "web/gallery/assets/lights-probes/earth_normal_2048.jpg",
+  "web/gallery/assets/lights-probes/moon_1024.jpg"
+ ],
+ "css3d_mixed": [
+  "web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb"
+ ],
+ "css3d_molecules": [
+  "web/gallery/assets/pdb/caffeine.pdb",
+  "web/gallery/assets/point-clouds/ball.png"
+ ],
+ "css3d_sprites": [
+  "web/gallery/assets/css3d/sprite.png"
+ ],
+ "games_fps": [
+  "web/gallery/assets/gltf/collision-world.glb"
+ ],
+ "misc_controls_arcball": [
+  "web/gallery/assets/obj/cerberus/Cerberus.obj",
+  "web/gallery/assets/obj/cerberus/Cerberus_A.jpg",
+  "web/gallery/assets/obj/cerberus/Cerberus_N.jpg",
+  "web/gallery/assets/obj/cerberus/Cerberus_RM.jpg",
+  "web/gallery/assets/usdz/venice_sunset_1k.hdr"
+ ],
+ "misc_controls_fly": [
+  "web/gallery/assets/earth_atmos_2048.jpg",
+  "web/gallery/assets/earth_specular_2048.jpg",
+  "web/gallery/assets/lights-probes/earth_clouds_1024.png",
+  "web/gallery/assets/lights-probes/earth_normal_2048.jpg",
+  "web/gallery/assets/lights-probes/moon_1024.jpg"
+ ],
+ "misc_controls_transform": [
+  "web/gallery/assets/passes-decals/crate.gif"
+ ],
+ "misc_exporter_exr": [
+  "web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr"
+ ],
+ "misc_exporter_gltf": [
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg",
+  "web/gallery/assets/gltf/ShaderBall.glb",
+  "web/gallery/assets/gltf/coffeemat.glb",
+  "web/gallery/assets/hardwood2_diffuse.jpg"
+ ],
+ "misc_exporter_gltf_normals": [
+  "web/gallery/assets/gltf-normals/NormalMapDirectX.png",
+  "web/gallery/assets/gltf-normals/NormalMapOpenGL.png"
+ ],
+ "misc_exporter_ktx2": [
+  "web/environments/venice_sunset_1k.hdr"
+ ],
+ "misc_exporter_usdz": [
+  "web/gallery/assets/gltf/CarbonFrameBike.glb"
+ ],
+ "physics_ammo_break": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_ammo_cloth": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_ammo_rope": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_ammo_terrain": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_ammo_volume": [
+  "web/gallery/assets/physics/grid.png",
+  "web/gallery/assets/spot-skinning/colors.png"
+ ],
+ "physics_rapier_basic": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_rapier_character_controller": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_rapier_terrain": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "physics_rapier_vehicle_controller": [
+  "web/gallery/assets/physics/grid.png"
+ ],
+ "svg_sandbox": [
+  "web/gallery/assets/svg-renderer/QRCode_buffergeometry.json",
+  "web/gallery/assets/svg/hexagon.svg"
+ ],
+ "webaudio_orientation": [
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/ny.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/px.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/py.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/pz.jpg",
+  "web/gallery/assets/webaudio/BoomBox.glb"
+ ],
+ "webgl_animation_keyframes": [
+  "web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb"
+ ],
+ "webgl_animation_multiple": [
+  "web/gallery/assets/spot-skinning/Soldier.glb"
+ ],
+ "webgl_animation_skinning_additive_blending": [
+  "web/gallery/assets/tsl-procedural/Xbot.glb"
+ ],
+ "webgl_animation_skinning_blending": [
+  "web/gallery/assets/spot-skinning/Soldier.glb"
+ ],
+ "webgl_animation_skinning_ik": [
+  "web/gallery/assets/transform-curves/kira.glb"
+ ],
+ "webgl_animation_skinning_morph": [
+  "web/models/RobotExpressive/RobotExpressive.glb"
+ ],
+ "webgl_animation_walk": [
+  "web/gallery/assets/spot-skinning/Soldier.glb",
+  "web/gallery/assets/spot-skinning/lobe.hdr",
+  "web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg",
+  "web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Normal.jpg"
+ ],
+ "webgl_buffergeometry_attributes_integer": [
+  "web/gallery/assets/shader-geometry/checker.jpg",
+  "web/gallery/assets/shader-geometry/crate.gif",
+  "web/gallery/assets/shader-geometry/grass.jpg"
+ ],
+ "webgl_buffergeometry_custom_attributes_particles": [
+  "web/gallery/assets/spark1.png"
+ ],
+ "webgl_buffergeometry_instancing_billboards": [
+  "web/gallery/assets/circle.png"
+ ],
+ "webgl_buffergeometry_instancing_interleaved": [
+  "web/gallery/assets/shader-geometry/crate.gif"
+ ],
+ "webgl_custom_attributes": [
+  "web/gallery/assets/water.jpg"
+ ],
+ "webgl_custom_attributes_lines": [
+  "web/gallery/assets/fonts/helvetiker_bold.typeface.json"
+ ],
+ "webgl_custom_attributes_points": [
+  "web/gallery/assets/spark1.png"
+ ],
+ "webgl_custom_attributes_points2": [
+  "web/gallery/assets/point-clouds/disc.png"
+ ],
+ "webgl_custom_attributes_points3": [
+  "web/gallery/assets/point-clouds/ball.png"
+ ],
+ "webgl_decals": [
+  "web/gallery/assets/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "web/gallery/assets/passes-decals/decal-diffuse.png",
+  "web/gallery/assets/passes-decals/decal-normal.jpg",
+  "web/gallery/assets/shadow-rtt/Map-COL.jpg",
+  "web/gallery/assets/shadow-rtt/Map-SPEC.jpg",
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_effects_anaglyph": [
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nx.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/ny.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nz.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/px.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/py.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/pz.png"
+ ],
+ "webgl_effects_parallaxbarrier": [
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nx.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/ny.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nz.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/px.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/py.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/pz.png"
+ ],
+ "webgl_effects_stereo": [
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nx.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/ny.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nz.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/px.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/py.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/pz.jpg"
+ ],
+ "webgl_geometries": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgl_geometry_colors_lookuptable": [
+  "web/gallery/assets/geometry-materials/models/json/pressure.json"
+ ],
+ "webgl_geometry_convex": [
+  "web/gallery/assets/shapes/disc.png"
+ ],
+ "webgl_geometry_minecraft": [
+  "web/gallery/assets/minecraft/atlas.png"
+ ],
+ "webgl_geometry_nurbs": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgl_geometry_shapes": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgl_geometry_teapot": [
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nx.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/ny.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nz.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/px.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/py.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/pz.png",
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg"
+ ],
+ "webgl_geometry_text": [
+  "web/gallery/assets/fonts/droid/droid_sans_bold.typeface.json",
+  "web/gallery/assets/fonts/droid/droid_sans_regular.typeface.json",
+  "web/gallery/assets/fonts/droid/droid_serif_bold.typeface.json",
+  "web/gallery/assets/fonts/droid/droid_serif_regular.typeface.json",
+  "web/gallery/assets/fonts/gentilis_bold.typeface.json",
+  "web/gallery/assets/fonts/gentilis_regular.typeface.json",
+  "web/gallery/assets/fonts/helvetiker_bold.typeface.json",
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json",
+  "web/gallery/assets/fonts/optimer_bold.typeface.json",
+  "web/gallery/assets/fonts/optimer_regular.typeface.json"
+ ],
+ "webgl_geometry_text_shapes": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json"
+ ],
+ "webgl_geometry_text_stroke": [
+  "web/gallery/assets/shapes/MPLUSRounded1c-Regular.typeface.json"
+ ],
+ "webgl_gpgpu_birds_gltf": [
+  "web/gallery/assets/gltf/Parrot.glb"
+ ],
+ "webgl_helpers": [
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_instancing_dynamic": [
+  "web/gallery/assets/shadow-rtt/edge3.jpg"
+ ],
+ "webgl_instancing_performance": [
+  "web/gallery/assets/suzanne_buffergeometry.json"
+ ],
+ "webgl_instancing_scatter": [
+  "web/gallery/assets/gltf/Flower/Flower.glb"
+ ],
+ "webgl_interactive_points": [
+  "web/gallery/assets/point-clouds/disc.png"
+ ],
+ "webgl_interactive_voxelpainter": [
+  "web/gallery/assets/square-outline-textured.png"
+ ],
+ "webgl_lights_hemisphere": [
+  "web/gallery/assets/gltf/Flamingo.glb"
+ ],
+ "webgl_loader_3dm": [
+  "web/gallery/assets/3dm-loader/Rhino_Logo.3dm"
+ ],
+ "webgl_loader_3ds": [
+  "web/gallery/assets/3ds/portalgun/portalgun.3ds",
+  "web/gallery/assets/3ds/portalgun/textures/color.jpg",
+  "web/gallery/assets/3ds/portalgun/textures/normal.jpg"
+ ],
+ "webgl_loader_3dtiles": [
+  "web/gallery/assets/tiles3d/cesiumion.png",
+  "web/gallery/assets/tiles3d/google_on_non_white_hdpi.png"
+ ],
+ "webgl_loader_3mf": [
+  "web/gallery/assets/threemf/cube_gears.3mf",
+  "web/gallery/assets/threemf/facecolors.3mf",
+  "web/gallery/assets/threemf/multipletextures.3mf",
+  "web/gallery/assets/threemf/pyramid.3mf",
+  "web/gallery/assets/threemf/spinal implant.3mf",
+  "web/gallery/assets/threemf/variable voronoi.3mf",
+  "web/gallery/assets/threemf/vertexcolors.3mf"
+ ],
+ "webgl_loader_3mf_materials": [
+  "web/gallery/assets/threemf/truck.3mf"
+ ],
+ "webgl_loader_amf": [
+  "web/gallery/assets/amf/rook.amf"
+ ],
+ "webgl_loader_bvh": [
+  "web/gallery/assets/bvh/pirouette.bvh"
+ ],
+ "webgl_loader_collada": [
+  "web/gallery/assets/collada/elf/Body_tex_003.jpg",
+  "web/gallery/assets/collada/elf/Face_tex_002_toObj.jpg",
+  "web/gallery/assets/collada/elf/Hair_tex_001.jpg",
+  "web/gallery/assets/collada/elf/ce.jpg",
+  "web/gallery/assets/collada/elf/elf.dae"
+ ],
+ "webgl_loader_collada_kinematics": [
+  "web/gallery/assets/collada-anim/abb_irb52_7_120.dae"
+ ],
+ "webgl_loader_collada_skinning": [
+  "web/gallery/assets/collada-anim/stormtrooper/Stormtrooper_D.jpg",
+  "web/gallery/assets/collada-anim/stormtrooper/stormtrooper.dae"
+ ],
+ "webgl_loader_draco": [
+  "web/gallery/assets/draco-variants/bunny.drc"
+ ],
+ "webgl_loader_fbx": [
+  "web/gallery/assets/fbx-loader/models/fbx/Samba Dancing.fbx"
+ ],
+ "webgl_loader_fbx_nurbs": [
+  "web/gallery/assets/fbx/nurbs.fbx"
+ ],
+ "webgl_loader_gcode": [
+  "web/gallery/assets/gcode/benchy.gcode",
+  "web/gallery/assets/gcode/test_m82.gcode",
+  "web/gallery/assets/gcode/test_m83.gcode"
+ ],
+ "webgl_loader_gltf_avif": [
+  "web/models/AVIFTest/forest_house.glb"
+ ],
+ "webgl_loader_gltf_instancing": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf",
+  "web/models/DamagedHelmet/glTF-instancing/GpuInstancingRotation.bin",
+  "web/models/DamagedHelmet/glTF-instancing/GpuInstancingScale.bin",
+  "web/models/DamagedHelmet/glTF-instancing/GpuInstancingTranslation.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgl_loader_gltf_progressive_lod": [
+  "web/gallery/assets/draco-variants/quarry_01_1k.hdr"
+ ],
+ "webgl_loader_gltf_variants": [
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/MaterialsVariantsShoe.bin",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/diffuseBeach.jpg",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/diffuseMidnight.jpg",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/diffuseStreet.jpg",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/normal.jpg",
+  "web/gallery/assets/draco-variants/MaterialsVariantsShoe/occlusionRougnessMetalness.jpg",
+  "web/gallery/assets/draco-variants/quarry_01_1k.hdr"
+ ],
+ "webgl_loader_imagebitmap": [
+  "web/gallery/assets/earth_atmos_2048.jpg"
+ ],
+ "webgl_loader_kmz": [
+  "web/gallery/assets/kmz/Box.kmz"
+ ],
+ "webgl_loader_ldraw": [
+  "web/gallery/assets/ldraw/car.ldr_Packed.mpd"
+ ],
+ "webgl_loader_md2": [
+  "web/gallery/assets/md2/grasslight-big.jpg",
+  "web/gallery/assets/md2/ratamahatta/ratamahatta.md2",
+  "web/gallery/assets/md2/ratamahatta/skins/ctf_b.png",
+  "web/gallery/assets/md2/ratamahatta/skins/ctf_r.png",
+  "web/gallery/assets/md2/ratamahatta/skins/dead.png",
+  "web/gallery/assets/md2/ratamahatta/skins/gearwhore.png",
+  "web/gallery/assets/md2/ratamahatta/skins/ratamahatta.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_bfg.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_blaster.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_chaingun.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_glauncher.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_hyperblaster.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_machinegun.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_railgun.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_rlauncher.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_shotgun.png",
+  "web/gallery/assets/md2/ratamahatta/skins/w_sshotgun.png",
+  "web/gallery/assets/md2/ratamahatta/skins/weapon.png",
+  "web/gallery/assets/md2/ratamahatta/w_bfg.md2",
+  "web/gallery/assets/md2/ratamahatta/w_blaster.md2",
+  "web/gallery/assets/md2/ratamahatta/w_chaingun.md2",
+  "web/gallery/assets/md2/ratamahatta/w_glauncher.md2",
+  "web/gallery/assets/md2/ratamahatta/w_hyperblaster.md2",
+  "web/gallery/assets/md2/ratamahatta/w_machinegun.md2",
+  "web/gallery/assets/md2/ratamahatta/w_railgun.md2",
+  "web/gallery/assets/md2/ratamahatta/w_rlauncher.md2",
+  "web/gallery/assets/md2/ratamahatta/w_shotgun.md2",
+  "web/gallery/assets/md2/ratamahatta/w_sshotgun.md2",
+  "web/gallery/assets/md2/ratamahatta/weapon.md2"
+ ],
+ "webgl_loader_md2_control": [
+  "web/gallery/assets/md2/grasslight-big.jpg",
+  "web/gallery/assets/md2/ogro/ogro.md2",
+  "web/gallery/assets/md2/ogro/skins/arboshak.png",
+  "web/gallery/assets/md2/ogro/skins/ctf_b.png",
+  "web/gallery/assets/md2/ogro/skins/ctf_r.png",
+  "web/gallery/assets/md2/ogro/skins/darkam.png",
+  "web/gallery/assets/md2/ogro/skins/freedom.png",
+  "web/gallery/assets/md2/ogro/skins/gib.png",
+  "web/gallery/assets/md2/ogro/skins/gordogh.png",
+  "web/gallery/assets/md2/ogro/skins/grok.jpg",
+  "web/gallery/assets/md2/ogro/skins/igdosh.png",
+  "web/gallery/assets/md2/ogro/skins/khorne.png",
+  "web/gallery/assets/md2/ogro/skins/nabogro.png",
+  "web/gallery/assets/md2/ogro/skins/ogrobase.png",
+  "web/gallery/assets/md2/ogro/skins/sharokh.png",
+  "web/gallery/assets/md2/ogro/skins/weapon.jpg",
+  "web/gallery/assets/md2/ogro/weapon.md2"
+ ],
+ "webgl_loader_mdd": [
+  "web/gallery/assets/mdd/cube.mdd"
+ ],
+ "webgl_loader_nrrd": [
+  "web/gallery/assets/nrrd/I.nrrd"
+ ],
+ "webgl_loader_obj": [
+  "web/gallery/assets/obj/male02/01_-_Default1noCulling.JPG",
+  "web/gallery/assets/obj/male02/male-02-1noCulling.JPG",
+  "web/gallery/assets/obj/male02/male02.mtl",
+  "web/gallery/assets/obj/male02/male02.obj",
+  "web/gallery/assets/obj/male02/orig_02_-_Defaul1noCulling.JPG"
+ ],
+ "webgl_loader_pcd": [
+  "web/gallery/assets/pcd/ascii/simple.pcd",
+  "web/gallery/assets/pcd/binary/Zaghetto.pcd",
+  "web/gallery/assets/pcd/binary/Zaghetto_8bit.pcd",
+  "web/gallery/assets/pcd/binary_compressed/pcl_logo.pcd"
+ ],
+ "webgl_loader_pdb": [
+  "web/gallery/assets/pdb/Al2O3.pdb",
+  "web/gallery/assets/pdb/aspirin.pdb",
+  "web/gallery/assets/pdb/buckyball.pdb",
+  "web/gallery/assets/pdb/caf2.pdb",
+  "web/gallery/assets/pdb/caffeine.pdb",
+  "web/gallery/assets/pdb/cholesterol.pdb",
+  "web/gallery/assets/pdb/cocaine.pdb",
+  "web/gallery/assets/pdb/cu.pdb",
+  "web/gallery/assets/pdb/cubane.pdb",
+  "web/gallery/assets/pdb/ethanol.pdb",
+  "web/gallery/assets/pdb/glucose.pdb",
+  "web/gallery/assets/pdb/graphite.pdb",
+  "web/gallery/assets/pdb/lsd.pdb",
+  "web/gallery/assets/pdb/lycopene.pdb",
+  "web/gallery/assets/pdb/nacl.pdb",
+  "web/gallery/assets/pdb/nicotine.pdb",
+  "web/gallery/assets/pdb/ybco.pdb"
+ ],
+ "webgl_loader_ply": [
+  "web/gallery/assets/ply/ascii/dolphins.ply",
+  "web/gallery/assets/ply/binary/Lucy100k.ply"
+ ],
+ "webgl_loader_stl": [
+  "web/gallery/assets/stl/ascii/slotted_disk.stl",
+  "web/gallery/assets/stl/binary/colored.stl",
+  "web/gallery/assets/stl/binary/pr2_head_pan.stl",
+  "web/gallery/assets/stl/binary/pr2_head_tilt.stl"
+ ],
+ "webgl_loader_svg": [
+  "web/gallery/assets/svg/blueprint.svg",
+  "web/gallery/assets/svg/emoji.svg",
+  "web/gallery/assets/svg/emptyPath.svg",
+  "web/gallery/assets/svg/energy.svg",
+  "web/gallery/assets/svg/hexagon.svg",
+  "web/gallery/assets/svg/lineJoinsAndCaps.svg",
+  "web/gallery/assets/svg/multiple-css-classes.svg",
+  "web/gallery/assets/svg/singlePointTest.svg",
+  "web/gallery/assets/svg/singlePointTest2.svg",
+  "web/gallery/assets/svg/singlePointTest3.svg",
+  "web/gallery/assets/svg/style-css-inside-defs.svg",
+  "web/gallery/assets/svg/styled-paths.svg",
+  "web/gallery/assets/svg/tests/1.svg",
+  "web/gallery/assets/svg/tests/2.svg",
+  "web/gallery/assets/svg/tests/3.svg",
+  "web/gallery/assets/svg/tests/4.svg",
+  "web/gallery/assets/svg/tests/5.svg",
+  "web/gallery/assets/svg/tests/6.svg",
+  "web/gallery/assets/svg/tests/7.svg",
+  "web/gallery/assets/svg/tests/8.svg",
+  "web/gallery/assets/svg/tests/9.svg",
+  "web/gallery/assets/svg/tests/ellipseTransform.svg",
+  "web/gallery/assets/svg/tests/letter.svg",
+  "web/gallery/assets/svg/tests/ordering.svg",
+  "web/gallery/assets/svg/tests/roundJoinPrecisionIssue.svg",
+  "web/gallery/assets/svg/tests/styles.svg",
+  "web/gallery/assets/svg/tests/testDefs/Svg-defs.svg",
+  "web/gallery/assets/svg/tests/testDefs/Svg-defs2.svg",
+  "web/gallery/assets/svg/tests/testDefs/Wave-defs.svg",
+  "web/gallery/assets/svg/tests/testDefs/defs4.svg",
+  "web/gallery/assets/svg/tests/testDefs/defs5.svg",
+  "web/gallery/assets/svg/tests/units.svg",
+  "web/gallery/assets/svg/tests/wideStroke.svg",
+  "web/gallery/assets/svg/tiger.svg",
+  "web/gallery/assets/svg/zero-radius.svg"
+ ],
+ "webgl_loader_texture_dds": [
+  "web/gallery/assets/dds/Mountains.dds",
+  "web/gallery/assets/dds/Mountains_argb_mip.dds",
+  "web/gallery/assets/dds/Mountains_argb_nomip.dds",
+  "web/gallery/assets/dds/disturb_argb_mip.dds",
+  "web/gallery/assets/dds/disturb_argb_nomip.dds",
+  "web/gallery/assets/dds/disturb_dx10_bc6h_signed_mip.dds",
+  "web/gallery/assets/dds/disturb_dx10_bc6h_signed_nomip.dds",
+  "web/gallery/assets/dds/disturb_dx10_bc6h_unsigned_mip.dds",
+  "web/gallery/assets/dds/disturb_dx10_bc6h_unsigned_nomip.dds",
+  "web/gallery/assets/dds/disturb_dxt1_mip.dds",
+  "web/gallery/assets/dds/disturb_dxt1_nomip.dds",
+  "web/gallery/assets/dds/explosion_dxt5_mip.dds",
+  "web/gallery/assets/dds/hepatica_dxt3_mip.dds",
+  "web/gallery/assets/dds/wave_normals_24bit_uncompressed.dds"
+ ],
+ "webgl_loader_texture_exr": [
+  "web/gallery/assets/memorial.exr"
+ ],
+ "webgl_loader_texture_hdr": [
+  "web/gallery/assets/memorial.hdr"
+ ],
+ "webgl_loader_texture_ktx": [
+  "web/gallery/assets/ktx/disturb_ASTC4x4.ktx",
+  "web/gallery/assets/ktx/disturb_BC1.ktx",
+  "web/gallery/assets/ktx/disturb_ETC1.ktx",
+  "web/gallery/assets/ktx/disturb_PVR2bpp.ktx",
+  "web/gallery/assets/ktx/lensflare_ASTC8x8.ktx",
+  "web/gallery/assets/ktx/lensflare_BC3.ktx",
+  "web/gallery/assets/ktx/lensflare_PVR4bpp.ktx",
+  "web/gallery/assets/ktx/normal.bc5.ktx",
+  "web/gallery/assets/ktx/normal.eac_rg.ktx"
+ ],
+ "webgl_loader_texture_lottie": [
+  "web/gallery/assets/lottie/24017-lottie-logo-animation.json"
+ ],
+ "webgl_loader_texture_pvrtc": [
+  "web/gallery/assets/pvrtc/disturb_2bpp_rgb.pvr",
+  "web/gallery/assets/pvrtc/disturb_4bpp_rgb.pvr",
+  "web/gallery/assets/pvrtc/disturb_4bpp_rgb_mips.pvr",
+  "web/gallery/assets/pvrtc/disturb_4bpp_rgb_v3.pvr",
+  "web/gallery/assets/pvrtc/flare_2bpp_rgba.pvr",
+  "web/gallery/assets/pvrtc/flare_4bpp_rgba.pvr",
+  "web/gallery/assets/pvrtc/park3_cube_mip_2bpp_rgb_v3.pvr",
+  "web/gallery/assets/pvrtc/park3_cube_nomip_4bpp_rgb.pvr"
+ ],
+ "webgl_loader_texture_tga": [
+  "web/gallery/assets/crate_color8.tga",
+  "web/gallery/assets/crate_grey8.tga"
+ ],
+ "webgl_loader_texture_tiff": [
+  "web/gallery/assets/tiff/crate_jpeg.tif",
+  "web/gallery/assets/tiff/crate_lzw.tif",
+  "web/gallery/assets/tiff/crate_uncompressed.tif"
+ ],
+ "webgl_loader_texture_ultrahdr": [
+  "web/gallery/assets/probes-hdr/spruit_sunrise_2k.hdr.jpg"
+ ],
+ "webgl_loader_ttf": [
+  "web/gallery/assets/fonts/ttf/kenpixel.ttf"
+ ],
+ "webgl_loader_usdz": [
+  "web/gallery/assets/usdz/saeukkang.usdz",
+  "web/gallery/assets/usdz/venice_sunset_1k.hdr"
+ ],
+ "webgl_loader_vox": [
+  "web/gallery/assets/vox/monu10.vox"
+ ],
+ "webgl_loader_vrml": [
+  "web/gallery/assets/vrml/camera.wrl",
+  "web/gallery/assets/vrml/creaseAngle.wrl",
+  "web/gallery/assets/vrml/crystal.wrl",
+  "web/gallery/assets/vrml/elevationGrid1.wrl",
+  "web/gallery/assets/vrml/elevationGrid2.wrl",
+  "web/gallery/assets/vrml/extrusion1.wrl",
+  "web/gallery/assets/vrml/extrusion2.wrl",
+  "web/gallery/assets/vrml/extrusion3.wrl",
+  "web/gallery/assets/vrml/house.wrl",
+  "web/gallery/assets/vrml/lines.wrl",
+  "web/gallery/assets/vrml/linesTransparent.wrl",
+  "web/gallery/assets/vrml/map.gif",
+  "web/gallery/assets/vrml/meshWithLines.wrl",
+  "web/gallery/assets/vrml/meshWithTexture.wrl",
+  "web/gallery/assets/vrml/multilineString.wrl",
+  "web/gallery/assets/vrml/pixelTexture.wrl",
+  "web/gallery/assets/vrml/points.wrl"
+ ],
+ "webgl_loader_xyz": [
+  "web/gallery/assets/helix_201.xyz"
+ ],
+ "webgl_marchingcubes": [
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/ny.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/px.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/py.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/pz.jpg",
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg"
+ ],
+ "webgl_materials_blending": [
+  "web/gallery/assets/environment-materials/textures/lensflare/lensflare0.png",
+  "web/gallery/assets/environment-materials/textures/lensflare/lensflare0_alpha.png",
+  "web/gallery/assets/environment-materials/textures/sprite0.jpg",
+  "web/gallery/assets/environment-materials/textures/sprite0.png",
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg"
+ ],
+ "webgl_materials_blending_custom": [
+  "web/gallery/assets/environment-materials/textures/lensflare/lensflare0_alpha.png"
+ ],
+ "webgl_materials_bumpmap": [
+  "web/gallery/assets/environment-materials/models/gltf/LeePerrySmith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg",
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_materials_car": [
+  "web/environments/venice_sunset_1k.hdr",
+  "web/gallery/assets/tsl-materials/models/gltf/ferrari.glb",
+  "web/gallery/assets/tsl-materials/models/gltf/ferrari_ao.png"
+ ],
+ "webgl_materials_channels": [
+  "web/gallery/assets/environment-materials/models/obj/ninja/ao.jpg",
+  "web/gallery/assets/environment-materials/models/obj/ninja/displacement.jpg",
+  "web/gallery/assets/environment-materials/models/obj/ninja/ninjaHead_Low.obj",
+  "web/gallery/assets/environment-materials/models/obj/ninja/normal.png"
+ ],
+ "webgl_materials_cubemap": [
+  "web/gallery/assets/castle-nx.jpg",
+  "web/gallery/assets/castle-ny.jpg",
+  "web/gallery/assets/castle-nz.jpg",
+  "web/gallery/assets/castle-px.jpg",
+  "web/gallery/assets/castle-py.jpg",
+  "web/gallery/assets/castle-pz.jpg",
+  "web/models/WaltHead.obj"
+ ],
+ "webgl_materials_cubemap_dynamic": [
+  "web/gallery/assets/draco-variants/quarry_01_1k.hdr"
+ ],
+ "webgl_materials_cubemap_refraction": [
+  "web/gallery/assets/cube/Park3Med/nx.jpg",
+  "web/gallery/assets/cube/Park3Med/ny.jpg",
+  "web/gallery/assets/cube/Park3Med/nz.jpg",
+  "web/gallery/assets/cube/Park3Med/px.jpg",
+  "web/gallery/assets/cube/Park3Med/py.jpg",
+  "web/gallery/assets/cube/Park3Med/pz.jpg",
+  "web/gallery/assets/ply/binary/Lucy100k.ply"
+ ],
+ "webgl_materials_cubemap_render_to_mipmaps": [
+  "web/gallery/assets/cube/Park3Med/nx.jpg",
+  "web/gallery/assets/cube/Park3Med/ny.jpg",
+  "web/gallery/assets/cube/Park3Med/nz.jpg",
+  "web/gallery/assets/cube/Park3Med/px.jpg",
+  "web/gallery/assets/cube/Park3Med/py.jpg",
+  "web/gallery/assets/cube/Park3Med/pz.jpg"
+ ],
+ "webgl_materials_envmaps_exr": [
+  "web/gallery/assets/envmap-exr/equirectangular.png",
+  "web/gallery/assets/envmap-exr/piz_compressed.exr"
+ ],
+ "webgl_materials_envmaps_hdr": [
+  "web/gallery/assets/lights-probes/pisa/nx.png",
+  "web/gallery/assets/lights-probes/pisa/ny.png",
+  "web/gallery/assets/lights-probes/pisa/nz.png",
+  "web/gallery/assets/lights-probes/pisa/px.png",
+  "web/gallery/assets/lights-probes/pisa/py.png",
+  "web/gallery/assets/lights-probes/pisa/pz.png",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
+ ],
+ "webgl_materials_modified": [
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_materials_normalmap": [
+  "web/gallery/assets/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "web/gallery/assets/shadow-rtt/Map-COL.jpg",
+  "web/gallery/assets/shadow-rtt/Map-SPEC.jpg",
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_materials_normalmap_object_space": [
+  "web/gallery/assets/exporters-video/Nefertiti.glb"
+ ],
+ "webgl_materials_physical_transmission_alpha": [
+  "web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg",
+  "web/gallery/assets/tsl-next/models/gltf/DragonAttenuation.glb"
+ ],
+ "webgl_materials_subsurface_scattering": [
+  "web/gallery/assets/fbx-loader/models/fbx/stanford-bunny.fbx",
+  "web/gallery/assets/subsurface-scattering/bunny_thickness.jpg"
+ ],
+ "webgl_materials_texture_filters": [
+  "web/gallery/assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg"
+ ],
+ "webgl_materials_texture_rotation": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgl_materials_wireframe": [
+  "web/gallery/assets/geometry-materials/models/json/WaltHeadLo_buffergeometry.json"
+ ],
+ "webgl_modifier_curve_instanced": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json"
+ ],
+ "webgl_modifier_edgesplit": [
+  "web/gallery/assets/obj/cerberus/Cerberus.obj",
+  "web/gallery/assets/obj/cerberus/Cerberus_A.jpg"
+ ],
+ "webgl_modifier_simplifier": [
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_modifier_subdivision": [
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg"
+ ],
+ "webgl_modifier_tessellation": [
+  "web/gallery/assets/fonts/helvetiker_bold.typeface.json"
+ ],
+ "webgl_morphtargets_horse": [
+  "web/models/Horse/Horse.glb"
+ ],
+ "webgl_morphtargets_sphere": [
+  "web/gallery/assets/disc.png",
+  "web/models/AnimatedMorphSphere/AnimatedMorphSphere.bin",
+  "web/models/AnimatedMorphSphere/AnimatedMorphSphere.gltf"
+ ],
+ "webgl_morphtargets_webcam": [
+  "web/gallery/assets/draco-variants/facecap.glb"
+ ],
+ "webgl_panorama_cube": [
+  "web/gallery/assets/sun_temple_stripe.jpg"
+ ],
+ "webgl_points_billboards": [
+  "web/gallery/assets/point-clouds/disc.png"
+ ],
+ "webgl_points_dynamic": [
+  "web/gallery/assets/obj/female02/female02.obj",
+  "web/gallery/assets/obj/male02/male02.obj"
+ ],
+ "webgl_points_sprites": [
+  "web/gallery/assets/point-clouds/snowflake1.png",
+  "web/gallery/assets/point-clouds/snowflake2.png",
+  "web/gallery/assets/point-clouds/snowflake3.png",
+  "web/gallery/assets/point-clouds/snowflake4.png",
+  "web/gallery/assets/point-clouds/snowflake5.png"
+ ],
+ "webgl_postprocessing_3dlut": [
+  "web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg",
+  "web/gallery/assets/tsl-next/luts/B&WLUT.png",
+  "web/gallery/assets/tsl-next/luts/Bourbon 64.CUBE",
+  "web/gallery/assets/tsl-next/luts/Chemical 168.CUBE",
+  "web/gallery/assets/tsl-next/luts/Clayton 33.CUBE",
+  "web/gallery/assets/tsl-next/luts/Cubicle 99.CUBE",
+  "web/gallery/assets/tsl-next/luts/NeutralLUT.png",
+  "web/gallery/assets/tsl-next/luts/NightLUT.png",
+  "web/gallery/assets/tsl-next/luts/Presetpro-Cinematic.3dl",
+  "web/gallery/assets/tsl-next/luts/Remy 24.CUBE",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgl_postprocessing_advanced": [
+  "web/gallery/assets/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/pz.jpg",
+  "web/gallery/assets/shadow-rtt/Map-COL.jpg",
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgl_postprocessing_backgrounds": [
+  "web/gallery/assets/hardwood2_diffuse.jpg",
+  "web/gallery/assets/lights-probes/pisa/nx.png",
+  "web/gallery/assets/lights-probes/pisa/ny.png",
+  "web/gallery/assets/lights-probes/pisa/nz.png",
+  "web/gallery/assets/lights-probes/pisa/px.png",
+  "web/gallery/assets/lights-probes/pisa/py.png",
+  "web/gallery/assets/lights-probes/pisa/pz.png"
+ ],
+ "webgl_postprocessing_dof": [
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/ny.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/px.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/py.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/pz.jpg"
+ ],
+ "webgl_postprocessing_dof2": [
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negy.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posy.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posz.jpg",
+  "web/gallery/assets/suzanne_buffergeometry.json"
+ ],
+ "webgl_postprocessing_gtao": [
+  "web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb"
+ ],
+ "webgl_postprocessing_ssr": [
+  "web/gallery/assets/draco-variants/bunny.drc"
+ ],
+ "webgl_postprocessing_taa": [
+  "web/gallery/assets/tsl-next/textures/brick_diffuse.jpg"
+ ],
+ "webgl_random_uv": [
+  "web/gallery/assets/random-uv/ShaderBall2.glb",
+  "web/gallery/assets/random-uv/jade.jpg",
+  "web/gallery/assets/random-uv/noise.png",
+  "web/gallery/assets/random-uv/shaderball_ds.jpg",
+  "web/gallery/assets/spot-skinning/lobe.hdr"
+ ],
+ "webgl_raycaster_bvh": [
+  "web/gallery/assets/fbx-loader/models/fbx/stanford-bunny.fbx"
+ ],
+ "webgl_raycaster_texture": [
+  "web/gallery/assets/tsl-procedural/uv_grid_opengl.jpg"
+ ],
+ "webgl_refraction": [
+  "web/gallery/assets/refraction/waterdudv.jpg"
+ ],
+ "webgl_renderer_pathtracer": [
+  "web/gallery/assets/ldraw/7140-1-X-wingFighter.mpd_Packed.mpd",
+  "web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgl_rendertarget_texture2darray": [
+  "web/gallery/assets/head256x256x109.zip"
+ ],
+ "webgl_shader_lava": [
+  "web/gallery/assets/passes-decals/cloud.png",
+  "web/gallery/assets/passes-decals/lavatile.jpg"
+ ],
+ "webgl_shadowmap": [
+  "web/gallery/assets/fonts/helvetiker_bold.typeface.json",
+  "web/gallery/assets/gltf/Flamingo.glb",
+  "web/gallery/assets/gltf/Horse.glb",
+  "web/gallery/assets/gltf/Parrot.glb",
+  "web/gallery/assets/gltf/Stork.glb"
+ ],
+ "webgl_shadowmap_performance": [
+  "web/gallery/assets/fonts/helvetiker_bold.typeface.json",
+  "web/gallery/assets/gltf/Horse.glb"
+ ],
+ "webgl_sprites": [
+  "web/gallery/assets/environment-materials/textures/sprite0.png",
+  "web/gallery/assets/sprite1.png",
+  "web/gallery/assets/sprite2.png"
+ ],
+ "webgl_test_wide_gamut": [
+  "web/gallery/assets/wide-gamut/logo_p3.png",
+  "web/gallery/assets/wide-gamut/logo_srgb.png"
+ ],
+ "webgl_texture2darray": [
+  "web/gallery/assets/head256x256x109.zip"
+ ],
+ "webgl_texture2darray_compressed": [
+  "web/gallery/assets/spiritedaway.ktx2"
+ ],
+ "webgl_texture2darray_layerupdate": [
+  "web/gallery/assets/spiritedaway.ktx2"
+ ],
+ "webgl_texture3d": [
+  "web/gallery/assets/texture-volumes/cm_gray.png",
+  "web/gallery/assets/texture-volumes/cm_viridis.png",
+  "web/gallery/assets/texture-volumes/stent.nrrd"
+ ],
+ "webgl_tsl_instancing": [
+  "web/gallery/assets/suzanne_buffergeometry.json"
+ ],
+ "webgl_ubo": [
+  "web/gallery/assets/passes-decals/crate.gif"
+ ],
+ "webgl_video_kinect": [
+  "web/gallery/assets/kinect/kinect.webm"
+ ],
+ "webgl_volume_instancing": [
+  "web/gallery/assets/vox/menger.vox"
+ ],
+ "webgl_watch": [
+  "web/gallery/assets/spot-skinning/lobe.hdr",
+  "web/gallery/assets/watch/rolex.glb"
+ ],
+ "webgl_worker_offscreencanvas": [
+  "web/gallery/assets/offscreen/matcap-porcelain-white.jpg"
+ ],
+ "webgpu_animation_retargeting": [
+  "web/gallery/assets/spot-skinning/Soldier.glb",
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_animation_retargeting_readyplayer": [
+  "web/gallery/assets/fbx-loader/models/fbx/mixamo.fbx",
+  "web/gallery/assets/gltf/readyplayer.me.glb"
+ ],
+ "webgpu_backdrop": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_backdrop_area": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_backdrop_water": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb",
+  "web/gallery/assets/water.jpg"
+ ],
+ "webgpu_camera_logarithmicdepthbuffer": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json"
+ ],
+ "webgpu_caustics": [
+  "web/gallery/assets/gltf/duck.glb",
+  "web/gallery/assets/hardwood2_diffuse.jpg",
+  "web/gallery/assets/opengameart/Caustic_Free.jpg",
+  "web/gallery/assets/spot-skinning/colors.png"
+ ],
+ "webgpu_clearcoat": [
+  "web/gallery/assets/lights-probes/Carbon.png",
+  "web/gallery/assets/lights-probes/Carbon_Normal.png",
+  "web/gallery/assets/lights-probes/Scratched_gold_01_1K_Normal.png",
+  "web/gallery/assets/lights-probes/Water_1_M_Normal.jpg",
+  "web/gallery/assets/lights-probes/golfball.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
+ ],
+ "webgpu_compute_cloth": [
+  "web/environments/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_compute_geometry": [
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgpu_compute_particles_fluid": [
+  "web/environments/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_compute_particles_rain": [
+  "web/gallery/assets/suzanne_buffergeometry.json"
+ ],
+ "webgpu_compute_rasterizer": [
+  "web/gallery/assets/tsl-procedural/uv_grid_directx.jpg"
+ ],
+ "webgpu_compute_rasterizer_ibl": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_compute_water": [
+  "web/environments/blouberg_sunrise_2_1k.hdr",
+  "web/gallery/assets/gltf/duck.glb"
+ ],
+ "webgpu_cubemap_adjustments": [
+  "web/gallery/assets/tsl-environment/textures/equirectangular/pedestrian_overpass_1k.hdr",
+  "web/gallery/assets/tsl-next/textures/equirectangular/752-hdri-skies-com_1k.hdr",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_cubemap_dynamic": [
+  "web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
+ ],
+ "webgpu_cubemap_mix": [
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_nx.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_ny.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_nz.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_px.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_py.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/MilkyWay/dark-s_pz.jpg",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_custom_fog_background": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_deferred": [
+  "web/environments/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_display_stereo": [
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nx.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/ny.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nz.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/px.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/py.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/pz.jpg"
+ ],
+ "webgpu_equirectangular": [
+  "web/gallery/assets/panorama.jpg"
+ ],
+ "webgpu_gaussian_splat": [
+  "web/gallery/assets/spz/lion.v3.spz"
+ ],
+ "webgpu_instance_mesh": [
+  "web/gallery/assets/suzanne_buffergeometry.json"
+ ],
+ "webgpu_instance_sprites": [
+  "web/gallery/assets/snowflake1.png"
+ ],
+ "webgpu_instance_uniform": [
+  "web/gallery/assets/castle-nx.jpg",
+  "web/gallery/assets/castle-ny.jpg",
+  "web/gallery/assets/castle-nz.jpg",
+  "web/gallery/assets/castle-px.jpg",
+  "web/gallery/assets/castle-py.jpg",
+  "web/gallery/assets/castle-pz.jpg"
+ ],
+ "webgpu_instancing_morph": [
+  "web/models/Horse/Horse.glb"
+ ],
+ "webgpu_layers": [
+  "web/gallery/assets/blossom.png"
+ ],
+ "webgpu_lensflares": [
+  "web/gallery/assets/environment-materials/textures/lensflare/lensflare0.png",
+  "web/gallery/assets/texture-flares/lensflare3.png"
+ ],
+ "webgpu_lightprobe": [
+  "web/gallery/assets/lights-probes/pisa/nx.png",
+  "web/gallery/assets/lights-probes/pisa/ny.png",
+  "web/gallery/assets/lights-probes/pisa/nz.png",
+  "web/gallery/assets/lights-probes/pisa/px.png",
+  "web/gallery/assets/lights-probes/pisa/py.png",
+  "web/gallery/assets/lights-probes/pisa/pz.png"
+ ],
+ "webgpu_lightprobe_cubecamera": [
+  "web/gallery/assets/lights-probes/pisa/nx.png",
+  "web/gallery/assets/lights-probes/pisa/ny.png",
+  "web/gallery/assets/lights-probes/pisa/nz.png",
+  "web/gallery/assets/lights-probes/pisa/px.png",
+  "web/gallery/assets/lights-probes/pisa/py.png",
+  "web/gallery/assets/lights-probes/pisa/pz.png"
+ ],
+ "webgpu_lights_ies_spotlight": [
+  "web/gallery/assets/ies/007cfb11e343e2f42e3b476be4ab684e.ies",
+  "web/gallery/assets/ies/02a7562c650498ebb301153dbbf59207.ies",
+  "web/gallery/assets/ies/06b4cfdc8805709e767b5e2e904be8ad.ies",
+  "web/gallery/assets/ies/1a936937a49c63374e6d4fbed9252b29.ies"
+ ],
+ "webgpu_lights_phong": [
+  "web/gallery/assets/Water_1_M_Normal.jpg",
+  "web/gallery/assets/roughness_map.jpg"
+ ],
+ "webgpu_lights_physical": [
+  "web/gallery/assets/earth_atmos_2048.jpg",
+  "web/gallery/assets/earth_specular_2048.jpg",
+  "web/gallery/assets/hardwood2_bump.jpg",
+  "web/gallery/assets/hardwood2_diffuse.jpg",
+  "web/gallery/assets/hardwood2_roughness.jpg",
+  "web/gallery/assets/tsl-environment/textures/brick_bump.jpg",
+  "web/gallery/assets/tsl-next/textures/brick_diffuse.jpg"
+ ],
+ "webgpu_lights_pointlights": [
+  "web/models/WaltHead.obj"
+ ],
+ "webgpu_lights_projector": [
+  "web/gallery/assets/exporters-video/sintel.mp4",
+  "web/gallery/assets/ply/binary/Lucy100k.ply",
+  "web/gallery/assets/spot-skinning/colors.png"
+ ],
+ "webgpu_lights_selective": [
+  "web/gallery/assets/Water_1_M_Normal.jpg",
+  "web/gallery/assets/roughness_map.jpg"
+ ],
+ "webgpu_lights_spotlight": [
+  "web/gallery/assets/ply/binary/Lucy100k.ply",
+  "web/gallery/assets/spot-skinning/colors.png",
+  "web/gallery/assets/spot-skinning/disturb.jpg",
+  "web/gallery/assets/spot-skinning/uv_grid_opengl.jpg"
+ ],
+ "webgpu_loader_gltf": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_loader_gltf_anisotropy": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/AnisotropyBarnLamp.glb"
+ ],
+ "webgpu_loader_gltf_compressed": [
+  "web/models/coffeemat.glb"
+ ],
+ "webgpu_loader_gltf_dispersion": [
+  "web/environments/pedestrian_overpass_1k.hdr",
+  "web/models/DispersionTest.glb"
+ ],
+ "webgpu_loader_gltf_iridescence": [
+  "web/environments/venice_sunset_1k.hdr",
+  "web/models/IridescenceLamp.glb"
+ ],
+ "webgpu_loader_gltf_sheen": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/SheenChair.glb"
+ ],
+ "webgpu_loader_gltf_transmission": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/IridescentDishWithOlives.glb"
+ ],
+ "webgpu_loader_materialx": [
+  "web/gallery/assets/gltf/ShaderBall.glb",
+  "web/gallery/assets/materialx/three/gltf_pbr_glass_dispersion.mtlx",
+  "web/gallery/assets/materialx/three/open_pbr_surface_honey.mtlx",
+  "web/gallery/assets/materialx/three/open_pbr_surface_pearl.mtlx",
+  "web/gallery/assets/materialx/three/open_pbr_surface_velvet.mtlx",
+  "web/gallery/assets/materialx/three/resources/Images/grid.png",
+  "web/gallery/assets/materialx/three/standard_surface_color3_vec3_cm_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_combined_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_conditional_if_float.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_heightnormal.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_heighttonormal_normal_input.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_image_transform.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_ior_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_opacity_only_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_opacity_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_rotate2d_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_rotate3d_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_roughness_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_sheen_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_specular_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_texture_opacity_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_thin_film_ior_clamp_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_thin_film_rainbow_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_transmission_only_test.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_transmission_rough.mtlx",
+  "web/gallery/assets/materialx/three/standard_surface_transmission_test.mtlx",
+  "web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr"
+ ],
+ "webgpu_loader_texture_ktx2": [
+  "web/gallery/assets/ktx2/2d_astc4x4.ktx2",
+  "web/gallery/assets/ktx2/2d_bc1.ktx2",
+  "web/gallery/assets/ktx2/2d_bc3.ktx2",
+  "web/gallery/assets/ktx2/2d_bc4.ktx2",
+  "web/gallery/assets/ktx2/2d_bc5.ktx2",
+  "web/gallery/assets/ktx2/2d_bc7.ktx2",
+  "web/gallery/assets/ktx2/2d_etc1.ktx2",
+  "web/gallery/assets/ktx2/2d_etc1s.ktx2",
+  "web/gallery/assets/ktx2/2d_etc2.ktx2",
+  "web/gallery/assets/ktx2/2d_r11g11b10_linear.ktx2",
+  "web/gallery/assets/ktx2/2d_rgb9e5_linear.ktx2",
+  "web/gallery/assets/ktx2/2d_rgba16_linear.ktx2",
+  "web/gallery/assets/ktx2/2d_rgba32_linear.ktx2",
+  "web/gallery/assets/ktx2/2d_rgba8.ktx2",
+  "web/gallery/assets/ktx2/2d_rgba8_linear.ktx2",
+  "web/gallery/assets/ktx2/2d_uastc.ktx2"
+ ],
+ "webgpu_materials": [
+  "web/gallery/assets/tsl-primitives/alphaMap.jpg",
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgpu_materials_basic": [
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nx.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/ny.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/nz.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/px.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/py.png",
+  "web/gallery/assets/environment-materials/textures/cube/pisa/pz.png"
+ ],
+ "webgpu_materials_cubemap_mipmaps": [
+  "web/gallery/assets/cube_m00_c00.jpg",
+  "web/gallery/assets/cube_m00_c01.jpg",
+  "web/gallery/assets/cube_m00_c02.jpg",
+  "web/gallery/assets/cube_m00_c03.jpg",
+  "web/gallery/assets/cube_m00_c04.jpg",
+  "web/gallery/assets/cube_m00_c05.jpg",
+  "web/gallery/assets/cube_m01_c00.jpg",
+  "web/gallery/assets/cube_m01_c01.jpg",
+  "web/gallery/assets/cube_m01_c02.jpg",
+  "web/gallery/assets/cube_m01_c03.jpg",
+  "web/gallery/assets/cube_m01_c04.jpg",
+  "web/gallery/assets/cube_m01_c05.jpg",
+  "web/gallery/assets/cube_m02_c00.jpg",
+  "web/gallery/assets/cube_m02_c01.jpg",
+  "web/gallery/assets/cube_m02_c02.jpg",
+  "web/gallery/assets/cube_m02_c03.jpg",
+  "web/gallery/assets/cube_m02_c04.jpg",
+  "web/gallery/assets/cube_m02_c05.jpg",
+  "web/gallery/assets/cube_m03_c00.jpg",
+  "web/gallery/assets/cube_m03_c01.jpg",
+  "web/gallery/assets/cube_m03_c02.jpg",
+  "web/gallery/assets/cube_m03_c03.jpg",
+  "web/gallery/assets/cube_m03_c04.jpg",
+  "web/gallery/assets/cube_m03_c05.jpg",
+  "web/gallery/assets/cube_m04_c00.jpg",
+  "web/gallery/assets/cube_m04_c01.jpg",
+  "web/gallery/assets/cube_m04_c02.jpg",
+  "web/gallery/assets/cube_m04_c03.jpg",
+  "web/gallery/assets/cube_m04_c04.jpg",
+  "web/gallery/assets/cube_m04_c05.jpg",
+  "web/gallery/assets/cube_m05_c00.jpg",
+  "web/gallery/assets/cube_m05_c01.jpg",
+  "web/gallery/assets/cube_m05_c02.jpg",
+  "web/gallery/assets/cube_m05_c03.jpg",
+  "web/gallery/assets/cube_m05_c04.jpg",
+  "web/gallery/assets/cube_m05_c05.jpg",
+  "web/gallery/assets/cube_m06_c00.jpg",
+  "web/gallery/assets/cube_m06_c01.jpg",
+  "web/gallery/assets/cube_m06_c02.jpg",
+  "web/gallery/assets/cube_m06_c03.jpg",
+  "web/gallery/assets/cube_m06_c04.jpg",
+  "web/gallery/assets/cube_m06_c05.jpg",
+  "web/gallery/assets/cube_m07_c00.jpg",
+  "web/gallery/assets/cube_m07_c01.jpg",
+  "web/gallery/assets/cube_m07_c02.jpg",
+  "web/gallery/assets/cube_m07_c03.jpg",
+  "web/gallery/assets/cube_m07_c04.jpg",
+  "web/gallery/assets/cube_m07_c05.jpg",
+  "web/gallery/assets/cube_m08_c00.jpg",
+  "web/gallery/assets/cube_m08_c01.jpg",
+  "web/gallery/assets/cube_m08_c02.jpg",
+  "web/gallery/assets/cube_m08_c03.jpg",
+  "web/gallery/assets/cube_m08_c04.jpg",
+  "web/gallery/assets/cube_m08_c05.jpg"
+ ],
+ "webgpu_materials_displacementmap": [
+  "web/gallery/assets/environment-materials/models/obj/ninja/ao.jpg",
+  "web/gallery/assets/environment-materials/models/obj/ninja/displacement.jpg",
+  "web/gallery/assets/environment-materials/models/obj/ninja/ninjaHead_Low.obj",
+  "web/gallery/assets/environment-materials/models/obj/ninja/normal.png",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/ny.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/nz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/px.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/py.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/SwedishRoyalCastle/pz.jpg"
+ ],
+ "webgpu_materials_envmaps": [
+  "web/gallery/assets/environment-materials/textures/2294472375_24a3b8ef46_o.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negy.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/negz.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posx.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posy.jpg",
+  "web/gallery/assets/environment-materials/textures/cube/Bridge2/posz.jpg"
+ ],
+ "webgpu_materials_envmaps_bpcem": [
+  "web/gallery/assets/tsl-environment/textures/brick_bump.jpg",
+  "web/gallery/assets/tsl-environment/textures/lava/lavatile.jpg",
+  "web/gallery/assets/tsl-next/textures/brick_diffuse.jpg"
+ ],
+ "webgpu_materials_envmaps_groundprojected": [
+  "web/gallery/assets/tsl-materials/models/gltf/ferrari.glb",
+  "web/gallery/assets/tsl-materials/models/gltf/ferrari_ao.png",
+  "web/gallery/assets/tsl-materials/textures/equirectangular/blouberg_sunrise_2_1k.hdr"
+ ],
+ "webgpu_materials_lightmap": [
+  "web/gallery/assets/tsl-lighting/models/json/lightmap/lightmap-ao-shadow.png",
+  "web/gallery/assets/tsl-lighting/models/json/lightmap/lightmap.json",
+  "web/gallery/assets/tsl-lighting/models/json/lightmap/rocks.jpg",
+  "web/gallery/assets/tsl-lighting/models/json/lightmap/stone.jpg"
+ ],
+ "webgpu_materials_matcap": [
+  "web/gallery/assets/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg",
+  "web/gallery/assets/matcaps/040full.exr",
+  "web/models/LeePerrySmith.glb"
+ ],
+ "webgpu_materials_sss": [
+  "web/gallery/assets/fbx-loader/models/fbx/stanford-bunny.fbx",
+  "web/gallery/assets/tsl-materials/models/fbx/bunny_thickness.jpg"
+ ],
+ "webgpu_materials_texture_html": [
+  "web/gallery/assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg"
+ ],
+ "webgpu_materials_texture_manualmipmap": [
+  "web/gallery/assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg"
+ ],
+ "webgpu_materials_toon": [
+  "web/gallery/assets/fonts/gentilis_regular.typeface.json"
+ ],
+ "webgpu_materials_transmission": [
+  "web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_materials_video": [
+  "web/gallery/assets/exporters-video/sintel.mp4"
+ ],
+ "webgpu_materialx_noise": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
+ ],
+ "webgpu_mirror": [
+  "web/gallery/assets/tsl-procedural/decal-diffuse.png",
+  "web/gallery/assets/tsl-procedural/decal-normal.jpg",
+  "web/gallery/assets/tsl-viewport/textures/floors/FloorsCheckerboard_S_Normal.jpg"
+ ],
+ "webgpu_modifier_curve": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json"
+ ],
+ "webgpu_morphtargets_face": [
+  "web/gallery/assets/draco-variants/facecap.glb"
+ ],
+ "webgpu_mrt": [
+  "web/environments/royal_esplanade_2k.hdr.jpg",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_mrt_mask": [
+  "web/models/Michelle.glb"
+ ],
+ "webgpu_multiple_rendertargets": [
+  "web/gallery/assets/hardwood2_diffuse.jpg"
+ ],
+ "webgpu_multiple_rendertargets_readback": [
+  "web/gallery/assets/hardwood2_diffuse.jpg"
+ ],
+ "webgpu_ocean": [
+  "web/gallery/assets/waternormals.jpg"
+ ],
+ "webgpu_parallax_uv": [
+  "web/gallery/assets/tsl-next/textures/ambientcg/Ice002_1K-JPG_Color.jpg",
+  "web/gallery/assets/tsl-next/textures/ambientcg/Ice002_1K-JPG_Displacement.jpg",
+  "web/gallery/assets/tsl-next/textures/ambientcg/Ice002_1K-JPG_NormalGL.jpg",
+  "web/gallery/assets/tsl-next/textures/ambientcg/Ice002_1K-JPG_Roughness.jpg",
+  "web/gallery/assets/tsl-next/textures/ambientcg/Ice003_1K-JPG_Color.jpg",
+  "web/gallery/assets/tsl-next/textures/equirectangular/752-hdri-skies-com_1k.hdr"
+ ],
+ "webgpu_particles": [
+  "web/gallery/assets/smoke1.png"
+ ],
+ "webgpu_particles_soft": [
+  "web/gallery/assets/tsl-viewport/models/ply/binary/Lucy100k.ply",
+  "web/gallery/assets/tsl-viewport/textures/opengameart/smoke1.png"
+ ],
+ "webgpu_performance": [
+  "web/gallery/assets/probes-hdr/dungeon_warkarma.glb",
+  "web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_pmrem_cubemap": [
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nx.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/ny.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/nz.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/px.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
+  "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
+ ],
+ "webgpu_pmrem_equirectangular": [
+  "web/environments/royal_esplanade_2k.hdr.jpg"
+ ],
+ "webgpu_pmrem_scene": [
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nx.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/ny.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/nz.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/px.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/py.jpg",
+  "web/gallery/assets/tsl-lighting/textures/cube/Park3Med/pz.jpg"
+ ],
+ "webgpu_pmrem_test": [
+  "web/gallery/assets/spot1Lux.hdr"
+ ],
+ "webgpu_portal": [
+  "web/gallery/assets/tsl-procedural/Xbot.glb"
+ ],
+ "webgpu_postprocessing_3dlut": [
+  "web/gallery/assets/tsl-next/luts/B&WLUT.png",
+  "web/gallery/assets/tsl-next/luts/Bourbon 64.CUBE",
+  "web/gallery/assets/tsl-next/luts/Chemical 168.CUBE",
+  "web/gallery/assets/tsl-next/luts/Clayton 33.CUBE",
+  "web/gallery/assets/tsl-next/luts/Cubicle 99.CUBE",
+  "web/gallery/assets/tsl-next/luts/NeutralLUT.png",
+  "web/gallery/assets/tsl-next/luts/NightLUT.png",
+  "web/gallery/assets/tsl-next/luts/Presetpro-Cinematic.3dl",
+  "web/gallery/assets/tsl-next/luts/Remy 24.CUBE",
+  "web/gallery/assets/tsl-next/models/gltf/coffeeMug.glb",
+  "web/gallery/assets/tsl-next/textures/noises/perlin/128x128.png"
+ ],
+ "webgpu_postprocessing_afterimage": [
+  "web/gallery/assets/circle.png"
+ ],
+ "webgpu_postprocessing_ao": [
+  "web/gallery/assets/gltf/tennyson-bust.glb"
+ ],
+ "webgpu_postprocessing_bloom": [
+  "web/models/PrimaryIonDrive.glb"
+ ],
+ "webgpu_postprocessing_bloom_emissive": [
+  "web/environments/moonless_golf_1k.hdr",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.bin",
+  "web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
+  "web/models/DamagedHelmet/glTF/Default_AO.jpg",
+  "web/models/DamagedHelmet/glTF/Default_albedo.jpg",
+  "web/models/DamagedHelmet/glTF/Default_emissive.jpg",
+  "web/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
+  "web/models/DamagedHelmet/glTF/Default_normal.jpg"
+ ],
+ "webgpu_postprocessing_dof": [
+  "web/gallery/assets/castle-nx.jpg",
+  "web/gallery/assets/castle-ny.jpg",
+  "web/gallery/assets/castle-nz.jpg",
+  "web/gallery/assets/castle-px.jpg",
+  "web/gallery/assets/castle-py.jpg",
+  "web/gallery/assets/castle-pz.jpg"
+ ],
+ "webgpu_postprocessing_dof_basic": [
+  "web/gallery/assets/tsl-lighting/models/gltf/bath_day.glb",
+  "web/gallery/assets/tsl-lighting/textures/equirectangular/spruit_sunrise_2k.hdr.jpg"
+ ],
+ "webgpu_postprocessing_fog": [
+  "web/gallery/assets/ply/binary/Lucy100k.ply"
+ ],
+ "webgpu_postprocessing_godrays": [
+  "web/gallery/assets/gltf/godrays_demo.glb"
+ ],
+ "webgpu_postprocessing_lensflare": [
+  "web/gallery/assets/tsl-lighting/models/gltf/space_ship_hallway.glb",
+  "web/gallery/assets/tsl-lighting/textures/equirectangular/ice_planet_close.jpg"
+ ],
+ "webgpu_postprocessing_masking": [
+  "web/gallery/assets/caravaggio.jpg",
+  "web/gallery/assets/panorama.jpg"
+ ],
+ "webgpu_postprocessing_motion_blur": [
+  "web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg",
+  "web/gallery/assets/tsl-procedural/Xbot.glb",
+  "web/gallery/assets/tsl-procedural/uv_grid_opengl.jpg"
+ ],
+ "webgpu_postprocessing_outline": [
+  "web/gallery/assets/outline/tree.obj"
+ ],
+ "webgpu_postprocessing_pixel": [
+  "web/gallery/assets/tsl-procedural/checker.png"
+ ],
+ "webgpu_postprocessing_retro": [
+  "web/gallery/assets/tsl-next/models/gltf/coffeeMug.glb",
+  "web/gallery/assets/tsl-next/textures/noises/perlin/128x128.png"
+ ],
+ "webgpu_postprocessing_smaa": [
+  "web/gallery/assets/tsl-next/textures/brick_diffuse.jpg"
+ ],
+ "webgpu_postprocessing_sobel": [
+  "web/gallery/assets/tsl-next/models/gltf/DragonAttenuation.glb"
+ ],
+ "webgpu_postprocessing_ssr": [
+  "web/gallery/assets/gltf/steampunk_camera.glb"
+ ],
+ "webgpu_postprocessing_ssr_denoise": [
+  "web/gallery/assets/draco-variants/quarry_01_1k.hdr",
+  "web/gallery/assets/probes-hdr/dungeon_warkarma.glb"
+ ],
+ "webgpu_postprocessing_sss": [
+  "web/gallery/assets/gltf/nemetona.glb"
+ ],
+ "webgpu_postprocessing_traa": [
+  "web/gallery/assets/tsl-next/textures/brick_diffuse.jpg"
+ ],
+ "webgpu_postprocessing_transition": [
+  "web/gallery/assets/transition1.png",
+  "web/gallery/assets/transition2.png",
+  "web/gallery/assets/transition3.png",
+  "web/gallery/assets/transition4.png",
+  "web/gallery/assets/transition5.png",
+  "web/gallery/assets/transition6.png"
+ ],
+ "webgpu_reflection": [
+  "web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg",
+  "web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Normal.jpg"
+ ],
+ "webgpu_reflection_blurred": [
+  "web/gallery/assets/tsl-procedural/uv_grid_directx.jpg",
+  "web/models/Michelle.glb"
+ ],
+ "webgpu_reflection_roughness": [
+  "web/gallery/assets/flames-rgb-256x256.png",
+  "web/gallery/assets/tsl-lighting/textures/equirectangular/spruit_sunrise_2k.hdr.jpg",
+  "web/gallery/assets/tsl-procedural/uv_grid_directx.jpg"
+ ],
+ "webgpu_refraction": [
+  "web/gallery/assets/tsl-viewport/textures/floors/FloorsCheckerboard_S_Normal.jpg"
+ ],
+ "webgpu_rendertarget_2d-array_3d": [
+  "web/gallery/assets/head256x256x109.zip"
+ ],
+ "webgpu_rtt": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgpu_sandbox": [
+  "web/gallery/assets/transition1.png",
+  "web/gallery/assets/tsl-primitives/2d_uastc.ktx2",
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgpu_shadowmap_opacity": [
+  "web/gallery/assets/tsl-next/models/gltf/DragonAttenuation.glb"
+ ],
+ "webgpu_shadowmap_progressive": [
+  "web/gallery/assets/gltf/ShadowmappableMesh.glb"
+ ],
+ "webgpu_skinning": [
+  "web/models/Michelle.glb"
+ ],
+ "webgpu_skinning_instancing": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_skinning_instancing_individual": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_skinning_points": [
+  "web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb"
+ ],
+ "webgpu_sprites": [
+  "web/gallery/assets/sprite1.png"
+ ],
+ "webgpu_texturegrad": [
+  "web/gallery/assets/uv-grid.jpg"
+ ],
+ "webgpu_textures_2d-array": [
+  "web/gallery/assets/head256x256x109.zip"
+ ],
+ "webgpu_textures_2d-array_compressed": [
+  "web/gallery/assets/spiritedaway.ktx2"
+ ],
+ "webgpu_textures_anisotropy": [
+  "web/gallery/assets/material-textures/crate.gif"
+ ],
+ "webgpu_textures_partialupdate": [
+  "web/gallery/assets/material-textures/Carbon.png"
+ ],
+ "webgpu_tonemapping": [
+  "web/environments/venice_sunset_1k.hdr",
+  "web/gallery/assets/lights-probes/venice_mask.glb"
+ ],
+ "webgpu_tsl_angular_slicing": [
+  "web/gallery/assets/tsl-lighting/textures/equirectangular/royal_esplanade_2k.hdr.jpg",
+  "web/gallery/assets/tsl-procedural/gears.glb"
+ ],
+ "webgpu_tsl_earth": [
+  "web/gallery/assets/earth_bump_roughness_clouds_4096.jpg",
+  "web/gallery/assets/earth_day_4096.jpg",
+  "web/gallery/assets/earth_night_4096.jpg"
+ ],
+ "webgpu_tsl_editor": [
+  "web/gallery/textures/uv_grid_opengl.jpg"
+ ],
+ "webgpu_tsl_graph": [
+  "web/environments/monochrome_studio_02_1k.hdr",
+  "web/gallery/assets/gltf/ShaderBall.glb"
+ ],
+ "webgpu_tsl_halftone": [
+  "web/models/Michelle.glb"
+ ],
+ "webgpu_tsl_interoperability": [
+  "web/gallery/assets/earth-lights.png"
+ ],
+ "webgpu_tsl_procedural_terrain": [
+  "web/gallery/assets/tsl-procedural/pedestrian_overpass_1k.hdr"
+ ],
+ "webgpu_tsl_vfx_flames": [
+  "web/gallery/assets/flames-grayscale-256x256.png",
+  "web/gallery/assets/flames-rgb-256x256.png"
+ ],
+ "webgpu_tsl_vfx_tornado": [
+  "web/gallery/assets/flames-rgb-256x256.png"
+ ],
+ "webgpu_tsl_wood": [
+  "web/gallery/assets/fonts/helvetiker_regular.typeface.json",
+  "web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr"
+ ],
+ "webgpu_upscaling_fsr1": [
+  "web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb"
+ ],
+ "webgpu_upscaling_taau": [
+  "web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb"
+ ],
+ "webgpu_video_frame": [
+  "web/gallery/assets/exporters-video/sintel.mp4"
+ ],
+ "webgpu_video_panorama": [
+  "web/gallery/assets/pano.webm"
+ ],
+ "webgpu_volume_caustics": [
+  "web/gallery/assets/gltf/duck.glb",
+  "web/gallery/assets/opengameart/Caustic_Free.jpg"
+ ],
+ "webgpu_volume_lighting": [
+  "web/gallery/assets/spot-skinning/colors.png"
+ ],
+ "webgpu_volume_lighting_traa": [
+  "web/gallery/assets/spot-skinning/colors.png"
+ ],
+ "webgpu_water": [
+  "web/environments/moonless_golf_2k.hdr.jpg",
+  "web/gallery/assets/gltf/pool.glb",
+  "web/gallery/assets/water/Water_1_M_Normal.jpg",
+  "web/gallery/assets/water/Water_2_M_Normal.jpg"
+ ]
+}

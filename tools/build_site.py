@@ -23,6 +23,15 @@ def examples(site):
         (out / page.name).write_text(page.read_text().replace('<base href="../">', base, 1))
 
 
+def upstream_base(site, value):
+    """The published pages' part of the upstream listing loads from `value`
+    ( web/gallery/upstream.js ), as the whole listing does."""
+    for page in sorted((site / "web/gallery/examples").glob("*.html")):
+        page.write_text(page.read_text().replace(
+            '<script type="application/json" id="upstream-assets">{"base":null,',
+            '<script type="application/json" id="upstream-assets">{"base":' + json.dumps(value) + ',', 1))
+
+
 def main():
     # The gallery's Wasm ( scripts/build-gallery ): the glue and its inline_js
     # modules, the primary module, the parts and their listing.
@@ -55,6 +64,7 @@ def main():
         shutil.copyfile(source, target)
     upstream["base"] = f"https://cdn.jsdelivr.net/gh/mrdoob/three.js@{upstream['commit']}/"
     (SITE / "web/gallery/upstream-assets.json").write_text(json.dumps(upstream, indent=1, ensure_ascii=False) + "\n")
+    upstream_base(SITE, upstream["base"])
     examples(SITE)
     (SITE / "index.html").write_text(
         '<!doctype html><html lang="en"><meta charset="utf-8">'

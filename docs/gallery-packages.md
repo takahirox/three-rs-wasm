@@ -12,9 +12,11 @@ constructors and its embedded shader sources ( `three_rs_wasm::sources` ).
 Each example module of `gallery/src/browser/` is a Cargo feature of the
 gallery, enabling the modules it uses; `example_<module>` also compiles the
 module's example programs and its browser oracle exports. The gallery's shell
-( `browser.rs`, `expanded.rs`, `gallery_scenes.rs` and the shared scenes:
-`gallery`, `gltf_viewer`, `point_lights`, `robot`, `expanded_*` ) is always
-built.
+( `browser.rs`: the page, its frame loop and its input; `expanded.rs`, which
+hands them to the example; `example.rs`, the example's hooks; and helpers the
+modules share, such as `gltf_viewer` ) is always built. It holds no example:
+every program, the MVP page's ( `mvp`, `geometry_cube`, `point_lights`,
+`loader_gltf` ) included, is a module's.
 
 `scripts/build-gallery` links the whole gallery once, every feature on, and
 splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
@@ -111,28 +113,32 @@ The WebXR examples' programs return the app `web/gallery/xr.js` drives with
 the session's frames; the transpiler's page calls its module's
 `tsl_transpile`, and the TSL editor's runs on the three-tsl crate's Wasm.
 
-## Sizes ( 2026-10-21 )
+## Sizes ( 2026-10-23 )
 
 | Build | Size | gzip |
 | --- | ---: | ---: |
-| Primary module | 2.82 MB | 1.06 MB |
-| Its glue ( `three_rs_wasm.js` ) | 235 KB | 26 KB |
-| 293 parts ( 219 modules, 74 chunks ) | 26.1 MB | 8.0 MB |
-| 220 parts' glue | 172 KB | 71 KB |
-| A page's Wasm: primary and parts, median over the examples | 2.99 MB | 1.12 MB |
-| A page's Wasm, largest | 5.03 MB | 1.71 MB |
-| A page's glue, median | 236 KB | 26 KB |
+| Primary module | 1.10 MB | 0.36 MB |
+| Its glue ( `three_rs_wasm.js` ) | 201 KB | 21 KB |
+| 334 parts ( 239 modules, 95 chunks ) | 28.0 MB | 8.9 MB |
+| 244 parts' glue | 215 KB | 84 KB |
+| A page's Wasm: primary and parts, median over the examples | 2.31 MB | 0.92 MB |
+| A page's Wasm, largest | 4.72 MB | 1.64 MB |
+| A page's glue, median | 240 KB | 29 KB |
 
-With one glue for every example ( 2026-10-20 ), the glue was 342 KB ( 37 KB
-compressed ) on every page and the primary module 2.96 MB: it held the
-wrappers of every example's program and the JavaScript functions the parts
-call. Giving every example its own program added about 2 MB to the parts
-together ( 24.0 MB before ), a few kilobytes per program; a page's Wasm went
-from 3.10 MB at the median to 2.99 MB.
+A page loads 15 parts at the median, 44 at most.
 
-A page loads up to 24 parts. Before the split, a page's package was 2.19 MB
+When the shell still held 27 examples' scenes ( the MVP page's, the glTF
+viewer's and the shell's own, until 2026-10-23 ), the primary module was
+2.82 MB: their code and the library code only they reached loaded on every
+page, and a page's Wasm was 2.99 MB at the median. With one glue for every
+example ( 2026-10-20 ), the glue was 342 KB ( 37 KB compressed ) on every
+page: it held the wrappers of every example's program and the JavaScript
+functions the parts call. Giving every example its own program added about
+2 MB to the parts together ( 24.0 MB before ), a few kilobytes per program.
+
+Before the split, a page's package was 2.19 MB
 compressed at the median over the examples ( 2.78 MB at most ), and the
-forty packages 144 MB together; the gallery's Wasm is now 27 MB, built in one
+forty packages 144 MB together; the gallery's Wasm is now 29 MB, built in one
 link instead of forty.
 
 The Draco decoder and the Basis Universal transcoders are installed by the
@@ -140,10 +146,7 @@ pages that use them, as three.js pages hand GLTFLoader a DRACOLoader or a
 KTX2Loader ( `compression::install_draco`, `basis::install`: the loaders call
 them through a function pointer, so only the installing modules reach them;
 without one, loading a compressed asset fails with GLTFLoader's message ).
-They are 1.3 MB of the primary module otherwise. webgl_loader_gltf_avif, an
-example the shell dispatches, installs Draco through
-`gallery/src/browser/draco_loader.rs`, a module of its own, so its page loads
-the decoder as a part.
+They are 1.3 MB of the primary module otherwise.
 
 Images follow the same rule. In the browser the shell decodes JPEG, WebP and
 AVIF with the browser's codecs, as TextureLoader and GLTFLoader do, and PNG
@@ -183,6 +186,13 @@ of 750 MB.
   of images, media and sources, `new Audio()` and images in HTML markup. A
   redirected image or medium loads with CORS, so canvases and GPU uploads can
   read it.
+- An example's page carries its part of the listing ( `#upstream-assets` ):
+  the files its example loads, as `tools/gallery/upstream_pages.mjs` records
+  them by opening every page ( `tools/gallery/upstream-pages.json`; rerun it
+  when an example's assets change ). A request for a listed file its part
+  lacks ( after input the recording did not give ) fails on the published
+  site and is retried with the whole listing; the offscreen worker and
+  `web/index.html` read the whole listing.
 
 The published-site check ( `tests/pages/` ) runs the examples against the
 CDN.

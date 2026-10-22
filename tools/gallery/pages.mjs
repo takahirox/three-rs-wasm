@@ -208,6 +208,19 @@ function uiRecords() {
 	};
 }
 
+// The page's part of the listing of r186's own assets ( web/gallery/upstream.js ):
+// the files its example loads ( tools/gallery/upstream-pages.json ), with the
+// listing's base, which the published site sets ( tools/build_site.py ).
+function upstreamAssets() {
+	const listing = JSON.parse(fs.readFileSync(path.join(GALLERY, 'upstream-assets.json'), 'utf8'));
+	const recorded = path.join(ROOT, 'tools/gallery/upstream-pages.json');
+	const pages = fs.existsSync(recorded) ? JSON.parse(fs.readFileSync(recorded, 'utf8')) : {};
+	return id => {
+		const files = Object.fromEntries((pages[id] ?? []).filter(f => listing.files[f]).map(f => [f, listing.files[f]]));
+		return `<script type="application/json" id="upstream-assets">${JSON.stringify({base: listing.base, files}).replaceAll('<', '\\u003c')}</script>\n`;
+	};
+}
+
 function importmap(id) {
 	// The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
 	// Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
@@ -232,6 +245,7 @@ export function pages() {
 	const src = fs.readFileSync(path.join(GALLERY, 'example.js'), 'utf8');
 	const ast = acorn.parse(src, {ecmaVersion: 'latest', sourceType: 'module'});
 	const ui = uiRecords();
+	const upstream = upstreamAssets();
 	const out = new Map();
 	for (const entry of catalog.examples) {
 		const ported = entry.port && entry.status !== 'excluded';
@@ -242,7 +256,7 @@ export function pages() {
 			: `import {explain} from './diagnostic.js';\nexplain('${entry.id}');`;
 		if (script.includes('</script')) throw new Error(`${entry.id}: the script closes its element`);
 		const title = `three-rs-wasm - ${entry.id.replaceAll('_', ' - ')}`;
-		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%UI%', () => ported ? ui(entry.id) : '').replace('%SCRIPT%', () => script);
+		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%UI%', () => ported ? ui(entry.id) : '').replace('%UPSTREAM%', () => ported ? upstream(entry.id) : '').replace('%SCRIPT%', () => script);
 		out.set(`${entry.id}.html`, html);
 	}
 	return out;
