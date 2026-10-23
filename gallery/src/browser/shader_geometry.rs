@@ -15,7 +15,7 @@ use crate::{
     tsl::{self, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/shader-geometry";
+const ASSETS: &str = "assets/shader-geometry";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -69,7 +69,7 @@ impl Demo {
         };
         let mut objects = vec![];
         if id == 172 {
-            let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+            let (asset, buffers, images) = load_asset("models/LeePerrySmith.glb").await?;
             let mut temp = Scene::default();
             crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(&mut temp)?;
             let g = temp

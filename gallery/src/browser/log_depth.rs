@@ -47,9 +47,7 @@ pub(super) struct Demo {
 }
 impl Demo {
     pub async fn create(s: &mut Scene, _c: Object3D, _id: u32, _r: &Renderer) -> Result<Self> {
-        let font = Font::parse(
-            &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
-        )?;
+        let font = Font::parse(&fetch("assets/fonts/helvetiker_regular.typeface.json").await?)?;
         s.background = Color::BLACK;
         s.insert(NodeKind::Light(Light::Ambient {
             color: Color::from_hex(0x777777),

@@ -17,7 +17,7 @@ use crate::{
 };
 use std::{cell::RefCell, collections::HashMap, f64::consts::PI, rc::Rc, sync::Arc};
 
-const ASSETS: &str = "/web/gallery/assets/ldraw";
+const ASSETS: &str = "assets/ldraw";
 /// modelFileList in its order.
 const MODELS: [&str; 17] = [
     "car.ldr_Packed.mpd",

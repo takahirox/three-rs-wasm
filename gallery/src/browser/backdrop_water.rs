@@ -317,7 +317,7 @@ impl Demo {
         // Michelle: the glTF scene, its skinned mesh's attributes ( skin
         // weights normalized as GLTFLoader does ) and the four maps.
         let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb").await?;
+            load_asset("assets/tsl-viewport/models/gltf/Michelle.glb").await?;
         let primitive = asset
             .meshes()
             .next()
@@ -430,8 +430,7 @@ impl Demo {
         let mut mixer = ThreeMixer::new();
         let action = mixer.clip_action(s, instance.clips[0].clone(), false)?;
         mixer.play(s, action)?;
-        let mut water_image =
-            decode_texture_image(&fetch("/web/gallery/assets/water.jpg").await?).await?;
+        let mut water_image = decode_texture_image(&fetch("assets/water.jpg").await?).await?;
         water_image.srgb = false;
         // TextureLoader's texture is flipped ( flipY ).
         let row = water_image.width as usize * 4;

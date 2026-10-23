@@ -3,7 +3,7 @@
 //! an `XRGPUBinding` projection layer with one array layer per view, the
 //! views' cameras ( an ArrayCamera with the union camera of two views ), and
 //! WebXRController's target-ray and grip spaces. The browser's XR session
-//! itself stays in the page's JavaScript ( `web/gallery/xr.js` ), which hands
+//! itself stays in the page's JavaScript ( `web/examples/xr.js` ), which hands
 //! each frame's views, layer texture and input poses to this module.
 //!
 //! Rendering keeps three's WebGPU structure: each view is drawn into its own

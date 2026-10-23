@@ -15,7 +15,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, renderer::*, s
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 
 /// three's `rand`, directNoise and the index / offsets / blend of textureNoTile.
 const NO_TILE: &str = "fn random_uv_rand(uv:vec2<f32>)->f32{let dt=dot(uv,vec2(12.9898,78.233));let sn=dt-3.141592653589793*floor(dt/3.141592653589793);return fract(sin(sn)*43758.5453);}

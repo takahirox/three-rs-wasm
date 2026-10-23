@@ -23,8 +23,8 @@ mod sampling;
 mod scene;
 mod textures;
 
-const MODEL: &str = "/web/gallery/assets/ldraw/7140-1-X-wingFighter.mpd_Packed.mpd";
-const ENVIRONMENT: &str = "/web/gallery/assets/probes-hdr/royal_esplanade_2k.hdr.jpg";
+const MODEL: &str = "assets/ldraw/7140-1-X-wingFighter.mpd_Packed.mpd";
+const ENVIRONMENT: &str = "assets/probes-hdr/royal_esplanade_2k.hdr.jpg";
 const FLOOR_SIZE: usize = 1024;
 
 /// The CPU side of setScene: the meshes in merge order, the merged geometry,

@@ -104,7 +104,7 @@ async function run( page, id, spec, runtime ) {
 	}
 
 	await page.setViewportSize( { width: 800, height: 600 } );
-	await page.goto( runtime === 'reference' ? `/reference/three-js/webxr-gpu.html?id=${ id }` : `/web/gallery/examples/${ id }.html` );
+	await page.goto( runtime === 'reference' ? `/reference/three-js/webxr-gpu.html?id=${ id }` : `/web/examples/${ id }.html` );
 	const button = page.locator( `#${ spec.button }` );
 	await expect( button ).toHaveText( spec.start, { timeout: 90000 } );
 	await page.waitForFunction( runtime => runtime === 'reference' ? window.fixtureScene !== undefined && window.fixtureRenderer !== undefined : window.app !== undefined, runtime, { polling: 100 } );

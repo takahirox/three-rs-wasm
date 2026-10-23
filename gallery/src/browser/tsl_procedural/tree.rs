@@ -147,10 +147,9 @@ impl Tree {
             ("FloorsCheckerboard_S_Diffuse.jpg", true),
             ("FloorsCheckerboard_S_Normal.jpg", false),
         ] {
-            let mut t = decode_texture_image(
-                &fetch(&format!("/web/gallery/assets/tsl-procedural/{name}")).await?,
-            )
-            .await?;
+            let mut t =
+                decode_texture_image(&fetch(&format!("assets/tsl-procedural/{name}")).await?)
+                    .await?;
             t.srgb = srgb;
             t.wrap_s = Wrapping::Repeat;
             t.wrap_t = Wrapping::Repeat;

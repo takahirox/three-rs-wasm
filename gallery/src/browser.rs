@@ -546,22 +546,6 @@ fn page_hook(name: &str) {
     }
 }
 
-fn asset_url(url: &str) -> Result<String> {
-    let Some(path) = url.strip_prefix("/web/") else {
-        return Ok(url.to_owned());
-    };
-    let base = web_sys::window()
-        .and_then(|window| window.document())
-        .ok_or(Error::Invalid("document"))?
-        .base_uri()
-        .map_err(|_| Error::Invalid("document base URI"))?
-        .ok_or(Error::Invalid("document base URI"))?;
-    let (prefix, _) = base
-        .rsplit_once("/web/")
-        .ok_or(Error::Invalid("demo must be served under web/"))?;
-    Ok(format!("{prefix}/web/{path}"))
-}
-
 type AnimationCallback = Closure<dyn FnMut(f64)>;
 struct State {
     timer: crate::time::Timer,
@@ -1604,7 +1588,7 @@ impl Page {
                 let mut state = state.borrow_mut();
                 state.request = None;
                 // The page's stats.js and Inspector hooks around the frame
-                // ( web/gallery/ui/ ), where the original calls them.
+                // ( web/examples/ui/ ), where the original calls them.
                 page_hook("galleryFrameBegin");
                 if let Err(error) = state.render() {
                     let _ = state.canvas.set_attribute("data-error", &error.to_string());

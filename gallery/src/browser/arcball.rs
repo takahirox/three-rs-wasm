@@ -214,7 +214,7 @@ impl Demo {
         s.background = Color::BLACK;
         s.background_alpha = 0.;
         let objects = parse_obj(&String::from_utf8_lossy(
-            &fetch("/web/gallery/assets/obj/cerberus/Cerberus.obj").await?,
+            &fetch("assets/obj/cerberus/Cerberus.obj").await?,
         ));
         let texture = |bytes: Vec<u8>, srgb: bool| async move {
             let mut t = decode_texture_image(&bytes).await?;
@@ -223,21 +223,9 @@ impl Demo {
             t.mipmap_filter = Some(Filter::Linear);
             Ok::<_, Error>(Arc::new(t))
         };
-        let map = texture(
-            fetch("/web/gallery/assets/obj/cerberus/Cerberus_A.jpg").await?,
-            true,
-        )
-        .await?;
-        let rm = texture(
-            fetch("/web/gallery/assets/obj/cerberus/Cerberus_RM.jpg").await?,
-            false,
-        )
-        .await?;
-        let normal = texture(
-            fetch("/web/gallery/assets/obj/cerberus/Cerberus_N.jpg").await?,
-            false,
-        )
-        .await?;
+        let map = texture(fetch("assets/obj/cerberus/Cerberus_A.jpg").await?, true).await?;
+        let rm = texture(fetch("assets/obj/cerberus/Cerberus_RM.jpg").await?, false).await?;
+        let normal = texture(fetch("assets/obj/cerberus/Cerberus_N.jpg").await?, false).await?;
         let material = Arc::new(Material::Standard(MeshStandardMaterial {
             energy_conservation: true,
             roughness: 1.,
@@ -280,9 +268,7 @@ impl Demo {
         let n = s.get_mut(group)?;
         n.quaternion = Quaternion::from_rotation_y(PI / 2.);
         n.position.x += 0.25;
-        let mut env = EnvironmentMap::from_hdr(
-            &fetch("/web/gallery/assets/usdz/venice_sunset_1k.hdr").await?,
-        )?;
+        let mut env = EnvironmentMap::from_hdr(&fetch("assets/usdz/venice_sunset_1k.hdr").await?)?;
         env.prefilter(r)?;
         s.environment = Some(Arc::new(env));
         // The gizmo circles ( Line, fog: false, transparent at 0.6 ).

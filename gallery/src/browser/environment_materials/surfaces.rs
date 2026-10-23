@@ -94,7 +94,7 @@ impl Demo {
         } else {
             self.params = [1., 10., 0., 0., 0., 0., 0., 0.];
             s.background = Color::from_hex(0x060708);
-            let (a, b, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+            let (a, b, images) = load_asset("models/LeePerrySmith.glb").await?;
             let mut temp = Scene::default();
             crate::gltf::import_decoded(&a, &b, &images)?.instantiate(&mut temp)?;
             let g = temp

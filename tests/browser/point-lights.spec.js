@@ -8,7 +8,7 @@ test('Point Lights model matches the r186 scene with adapted material and suppor
   let canvas=page.locator('canvas');
   await expect(canvas).toHaveAttribute('data-ready','true',{timeout:30000});
   const reference=await canvas.screenshot();
-  await page.goto('/web/?example=3&static=1');canvas=page.locator('canvas');
+  await page.goto('/web/examples/mvp.html?example=3&static=1');canvas=page.locator('canvas');
   await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:30000}).toBeGreaterThan(2);
   expect(await canvas.getAttribute('data-error')).toBeNull();
   const actual=await canvas.screenshot();

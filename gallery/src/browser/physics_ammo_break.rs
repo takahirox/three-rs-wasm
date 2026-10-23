@@ -344,8 +344,7 @@ impl Demo {
         // initPhysics().
         let physics = super::ammo::rigid_world(-7.8).await?;
         // createObjects(): the ground with the grid ( no color space ).
-        let mut grid =
-            decode_texture_image(&fetch("/web/gallery/assets/physics/grid.png").await?).await?;
+        let mut grid = decode_texture_image(&fetch("assets/physics/grid.png").await?).await?;
         grid.srgb = false;
         grid.mipmap_filter = Some(Filter::Linear);
         grid.wrap_s = Wrapping::Repeat;

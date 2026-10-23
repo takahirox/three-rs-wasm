@@ -490,6 +490,6 @@ watch's optional TAA and bloom, the FBX page's dynamic GUI and ArcballControls'
 multi-touch gestures are not ported. Each is listed with the example.
 
 Each port's limitations are recorded in the gallery catalog
-( `tools/gallery/build.py`, `web/gallery/catalog.json` ) and listed per
+( `tools/gallery/build.py`, `web/examples/catalog.json` ) and listed per
 example in [examples coverage](examples-coverage.md). The example pages
 themselves show only the original's page and UI.

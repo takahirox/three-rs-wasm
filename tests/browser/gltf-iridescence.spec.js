@@ -3,7 +3,7 @@ import {PNG} from 'pngjs';
 import {readFileSync,writeFileSync} from 'node:fs';
 const id='webgpu_loader_gltf_iridescence';
 async function candidate(page){
- const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));
+ const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));
  expect(catalog.examples.find(e=>e.id===id)?.port?.example).toBe(29);
 }
 
@@ -12,7 +12,7 @@ test('Iridescence glTF: original material, automatic orbit and manual camera vie
  const screenshots={};
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});
-  await page.goto(runtime==='reference'?`/reference/three-js/gltf-examples.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
+  await page.goto(runtime==='reference'?`/reference/three-js/gltf-examples.html?id=${id}`:`/web/examples/${id}.html?still=1`);
   const canvas=page.locator('canvas');
   if(runtime==='reference')await expect(canvas).toHaveAttribute('data-ready','true',{timeout:60000});
   else {await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:60000}).toBeGreaterThan(2);await page.addStyleTag({content:'#notice,#settings{display:none!important}'});}
@@ -47,7 +47,7 @@ test('Iridescence retains transmission draw resources and compact mipmapped exte
   }
   const destroy=GPUDevice.prototype.destroy;GPUDevice.prototype.destroy=function(){allocations.destroyed++;return destroy.call(this);};
  });
- await page.goto(`/web/gallery/examples/${id}.html`);const canvas=page.locator('canvas');
+ await page.goto(`/web/examples/${id}.html`);const canvas=page.locator('canvas');
  await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:60000}).toBeGreaterThan(10);
  const firstImage=await canvas.screenshot();
  const before=await page.evaluate(()=>({creates:allocations.creates,transfer:JSON.parse(app.transfer_counts()),textures:Array.from(app.resource_counts()),physical:allocations.physical}));

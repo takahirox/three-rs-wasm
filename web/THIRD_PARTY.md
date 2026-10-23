@@ -7,7 +7,7 @@ https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519
 
 Three.js attribution and MIT terms are in ../LICENSE-THREE.
 
-`/web/?example=2` ports the unit BoxGeometry, MeshBasicMaterial with sRGB texture,
+`/web/examples/mvp.html?example=2` ports the unit BoxGeometry, MeshBasicMaterial with sRGB texture,
 70-degree PerspectiveCamera (near 0.1, far 100, z=2), and per-frame Euler rotations
 (x += 0.005, y += 0.01) to Rust/Wasm. Click-to-pause is an additional demo control.
 The original fullscreen WebGL renderer becomes a 512x512 WebGPU canvas, with
@@ -25,7 +25,7 @@ archive (`examples/models/obj/walt/WaltHead.obj`). Model credit: David OReilly;
 displacement effect: oosmoxiecode, as credited by the official example:
 https://threejs.org/examples/webgpu_lights_pointlights.html
 
-The port is `/web/?example=3`, implemented in `src/browser/point_lights.rs`.
+The port is `/web/examples/mvp.html?example=3`, implemented in `src/browser/point_lights.rs`.
 It retains all 16,160 input triangles, expands them into 64,640 tetrahedron faces,
 and reproduces both point-light trajectories, intensities, camera and per-vertex
 distance/sine displacement. The original TSL displacement is translated to a GPU WGSL vertex program; MeshPhongNodeMaterial becomes MeshStandardMaterial (roughness 0.4), so the
@@ -124,13 +124,13 @@ and images; the model attribution above also applies.
 Additional example assets (Three.js r186, commit
 `148ef33ecb6d2502ff796d4554abd1549c95d519`):
 
-- `web/models/Horse/Horse.glb`: unmodified
+- `web/examples/models/Horse/Horse.glb`: unmodified
   `examples/models/gltf/Horse.glb` from the Three.js repository, used by
   `webgl_morphtargets_horse`. The embedded asset metadata identifies THREE.GLTFExporter.
-- `web/models/AnimatedMorphSphere/AnimatedMorphSphere.{gltf,bin}`: unmodified
+- `web/examples/models/AnimatedMorphSphere/AnimatedMorphSphere.{gltf,bin}`: unmodified
   `examples/models/gltf/AnimatedMorphSphere/glTF/` files. Howard Wolosky,
   CC0/public domain, as stated in the upstream model README.
-- `web/gallery/assets/disc.png`: unmodified `examples/textures/sprites/disc.png`.
+- `web/examples/assets/disc.png`: unmodified `examples/textures/sprites/disc.png`.
 - Hilbert/Catmull-Rom and procedural scene formulas are ports of the pinned
   Three.js examples/utilities; the Three.js MIT notice is retained in
   `../LICENSE-THREE`.
@@ -460,7 +460,7 @@ credited above; TAAU reuses Littlest Tokyo and its attribution listed above.
 The material/texture examples adapt pinned r186 `webgpu_materials_arrays.html`,
 `webgpu_clipping.html`, `webgpu_materials_texture_manualmipmap.html`,
 `webgpu_textures_anisotropy.html` and `webgpu_textures_partialupdate.html`
-(Three.js contributors, MIT). `web/gallery/assets/material-textures/` contains
+(Three.js contributors, MIT). `web/examples/assets/material-textures/` contains
 Carbon.png, crate.gif and the Caravaggio painting from their original
 `examples/textures/` paths. The painting is Caravaggio's *Basket of Fruit*;
 its original example credits the painting's Wikipedia page. The paper models
@@ -474,11 +474,11 @@ contributors, MIT). Their geometry is built at load by the Rust ports of the
 Three.js shape, NURBS, ConvexHull and SVGLoader stroke code. `disc.png` and
 `MPLUSRounded1c-Regular.typeface.json` come from the original examples; the
 Helvetiker and M PLUS Rounded 1c notices accompany them as `LICENSE-HELVETIKER`
-and `LICENSE-MPLUS`, with hashes in `web/gallery/assets/shapes/manifest.json`.
+and `LICENSE-MPLUS`, with hashes in `web/examples/assets/shapes/manifest.json`.
 
 The buffer-particle examples adapt pinned r186
 `webgl_buffergeometry_{points,points_interleaved,custom_attributes_particles,instancing_billboards,selective_draw}.html`
-(Three.js contributors, MIT). `web/gallery/assets/spark1.png` and the reused
+(Three.js contributors, MIT). `web/examples/assets/spark1.png` and the reused
 `circle.png` come from `examples/textures/sprites/`; their original bytes and
 source paths are recorded in `buffer-particles-manifest.json`.
 `tools/tsl/prepare.py` extracts them from the pinned archive. The selective-draw
@@ -572,7 +572,7 @@ reuse the retained LeePerrySmith head.
 `examples/models/stl/` and `models/gltf/Flamingo.glb` files. Their source paths
 and SHA-256 hashes are in `shapes-lights-manifest.json`; they are distributed
 alongside `LICENSE-THREE`. The flamingo is by mirada from ro.me, as the example
-credits it. The cube-map heads reuse the retained `web/models/WaltHead.obj` and
+credits it. The cube-map heads reuse the retained `web/examples/models/WaltHead.obj` and
 the castle cube.
 
 `gallery/assets/fonts/` holds unmodified r186 `examples/fonts/` typeface files:
@@ -596,7 +596,7 @@ are the unmodified r186 `examples/textures/matcaps/040full.exr`,
 - **Licenses.** They are distributed alongside `LICENSE-THREE`.
 - **Credits.** The matcap is courtesy of cyaoeu and ships with its
   `matcaps/040full.txt`. The Lee Perry-Smith normal map is covered by
-  `web/models/LeePerrySmith_License.txt`.
+  `web/examples/models/LeePerrySmith_License.txt`.
 
 `gallery/assets/pano.webm`, `pano.mp4` and `waternormals.jpg` are the
 unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
@@ -647,8 +647,8 @@ unmodified r186 `examples/textures/pano.webm`, `textures/pano.mp4` and
   `shadow-rtt-manifest.json`.
 - **Licenses.** They are distributed alongside `LICENSE-THREE`.
 - **Credits.** The Lee Perry-Smith maps are covered by
-  `web/models/LeePerrySmith_License.txt`. The normal-map example reuses
-  `web/models/LeePerrySmith.glb` and the credited
+  `web/examples/models/LeePerrySmith_License.txt`. The normal-map example reuses
+  `web/examples/models/LeePerrySmith.glb` and the credited
   `LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg`.
 
 `gallery/assets/probes-hdr/` holds the unmodified r186 files:

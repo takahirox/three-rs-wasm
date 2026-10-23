@@ -429,7 +429,7 @@ impl Demo {
             });
         }
         // collision-world.glb: drawn, and its triangles in the octree.
-        let (a, b, i) = load_asset("/web/gallery/assets/gltf/collision-world.glb").await?;
+        let (a, b, i) = load_asset("assets/gltf/collision-world.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         s.update()?;
         let mut triangles = vec![];

@@ -11,7 +11,7 @@ use std::sync::Arc;
 use wasm_bindgen::{JsCast, JsValue, closure::Closure};
 use wasm_bindgen_futures::JsFuture;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const MAPS: [&str; 2] = ["NormalMapOpenGL.png", "NormalMapDirectX.png"];
 /// The shared PlaneGeometry( 50, 50 ) and the two meshes' placement.
 struct Plane {
@@ -210,7 +210,7 @@ fn canvas(
 /// TextureLoader's HTMLImageElement.
 async fn image(url: &str) -> Result<web_sys::HtmlImageElement> {
     let image = web_sys::HtmlImageElement::new().map_err(js)?;
-    image.set_src(&super::asset_url(url)?);
+    image.set_src(url);
     JsFuture::from(image.decode()).await.map_err(js)?;
     Ok(image)
 }

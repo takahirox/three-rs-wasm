@@ -763,8 +763,7 @@ impl Demo {
             .collect();
         let displacement = vec![0f32; count];
         let buffer = GpuBuffer::new(r, bytemuck::cast_slice(&displacement), BufferAccess::Read)?;
-        let mut water =
-            decode_texture_image(&fetch("/web/gallery/assets/water.jpg").await?).await?;
+        let mut water = decode_texture_image(&fetch("assets/water.jpg").await?).await?;
         water.srgb = false;
         water.wrap_s = Wrapping::Repeat;
         water.wrap_t = Wrapping::Repeat;

@@ -127,8 +127,7 @@ impl Demo {
         // Ammo().then( init ): initPhysics().
         let physics = super::ammo::soft_world(-9.8).await?;
         // createObjects(): the grid ( sRGB ) on the ground and on the cloth.
-        let image =
-            decode_texture_image(&fetch("/web/gallery/assets/physics/grid.png").await?).await?;
+        let image = decode_texture_image(&fetch("assets/physics/grid.png").await?).await?;
         let grid = |repeat: Vector2| {
             let mut texture = image.clone();
             texture.srgb = true;

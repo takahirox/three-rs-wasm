@@ -19,7 +19,7 @@ const STYLE: &str = "#css2d-label-renderer{color:#fff;font-family:Monospace;font
 
 /// TextureLoader: flipped, mipmapped, in the given color space.
 async fn texture(path: &str, srgb: bool) -> Result<Arc<Texture>> {
-    let mut t = decode_texture_image(&fetch(&format!("/web/gallery/assets/{path}")).await?).await?;
+    let mut t = decode_texture_image(&fetch(&format!("assets/{path}")).await?).await?;
     t.srgb = srgb;
     t.mipmap_filter = Some(Filter::Linear);
     Ok(Arc::new(t))

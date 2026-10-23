@@ -16,7 +16,7 @@ export async function explain(id, error, status) {
  if (entry.preferred_example) {
   const preferred = catalog.examples.find(e => e.id === entry.preferred_example);
   const link = text('a', `WebGPU版: ${entry.preferred_example}${preferred?.port ? '' : '（移植待ち）'}`, diagnostic);
-  link.href = `examples/${encodeURIComponent(entry.preferred_example)}.html`;
+  link.href = `${encodeURIComponent(entry.preferred_example)}.html`;
  }
  const preview = document.createElement('img'); preview.src = `screenshots/${entry.id}.jpg`; preview.alt = 'Three.js公式のプレビュー（Rustの実行結果ではありません）'; diagnostic.append(preview);
  text('p', preview.alt, diagnostic);

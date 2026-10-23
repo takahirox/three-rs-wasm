@@ -144,7 +144,7 @@ impl Demo {
         s.add(holder, tree)?;
         let mut scale = 1.;
         for object in parse_obj(&String::from_utf8_lossy(
-            &fetch("/web/gallery/assets/outline/tree.obj").await?,
+            &fetch("assets/outline/tree.obj").await?,
         )) {
             let mut g = BufferGeometry::default();
             g.set_attribute("position", vec3s(object.positions)?);

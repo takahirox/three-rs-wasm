@@ -105,7 +105,7 @@ npx playwright test -c playwright.gallery.config.js point-clouds.spec.js shader-
 CLOUDS_DPR=2 GEOMETRY_DPR=2 MATERIALS_DPR=2 ENVIRONMENT_DPR=2 npx playwright test -c playwright.gallery.config.js point-clouds.spec.js shader-geometry.spec.js geometry-materials.spec.js environment-materials.spec.js
 ```
 
-Select any entry in `/web/gallery/` for interactive inspection. Reference
+Select any entry in `/web/examples/` for interactive inspection. Reference
 fixtures use `/reference/three-js/{point-clouds,shader-geometry,geometry-materials,environment-materials}.html?id=EXAMPLE_ID`.
 
 Final image coverage: 37 comparison cases at each DPR, totaling 596 saved states.

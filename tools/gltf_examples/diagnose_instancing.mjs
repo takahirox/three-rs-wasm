@@ -7,7 +7,7 @@ import { PNG } from 'pngjs';
 const base = process.env.BASE_URL || 'http://127.0.0.1:8173';
 const output = process.env.OUTPUT || '.cache/instancing-investigation/repro';
 const id = 'webgl_loader_gltf_instancing';
-const catalog = JSON.parse(readFileSync('web/gallery/catalog.json'));
+const catalog = JSON.parse(readFileSync('web/examples/catalog.json'));
 catalog.examples.find(e => e.id === id).port = { example: 16, limitations: [] };
 mkdirSync(output, { recursive: true });
 const diagnosticCases = [
@@ -224,7 +224,7 @@ try {
       }
       await page.goto(base + (runtime === 'gl'
         ? `/reference/three-js/expanded.html?id=${id}&samples=${scenario.samples}&backend=${referenceBackend}`
-        : `/web/gallery/examples/${id}.html`));
+        : `/web/examples/${id}.html`));
       await page.waitForFunction(() => document.querySelector('canvas')?.dataset.ready === 'true' || Number(document.querySelector('canvas')?.dataset.frames) > 0, null, { timeout: 90000 });
       if (runtime === 'gl') {
         if (referenceBackend === 'webgpu') {

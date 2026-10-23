@@ -128,7 +128,7 @@ fn describe(name: &str, s: &Shaders) -> String {
 }
 
 fn run() {
-    let sample = "../web/gallery/assets/materialx/resources/Materials/Examples/StandardSurface/";
+    let sample = "../web/examples/assets/materialx/resources/Materials/Examples/StandardSurface/";
     let mut names = vec![];
     let mut documents = vec![];
     for n in SAMPLES {
@@ -141,7 +141,7 @@ fn run() {
     for n in LOCAL {
         names.push(short(n));
         documents.push(Document {
-            text: std::fs::read_to_string(format!("../web/gallery/assets/materialx/three/{n}.mtlx")).unwrap(),
+            text: std::fs::read_to_string(format!("../web/examples/assets/materialx/three/{n}.mtlx")).unwrap(),
             path: "materialx/".into(),
         });
     }

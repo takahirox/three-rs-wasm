@@ -15,7 +15,7 @@ use crate::{
 use std::{cell::RefCell, f64::consts::PI, rc::Rc};
 use wgpu::util::DeviceExt;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const SHADOW_SIZE: u32 = 1024;

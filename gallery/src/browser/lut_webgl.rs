@@ -19,7 +19,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const LUTS: [&str; 9] = [
     "Bourbon 64.CUBE",
     "Chemical 168.CUBE",
@@ -79,7 +79,7 @@ impl Demo {
                 .await?;
         s.environment = Some(Arc::new(env));
         s.background_environment = true;
-        let (a, b, i) = load_asset("/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
+        let (a, b, i) = load_asset("models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
         crate::gltf::import_decoded(&a, &b, &i)?.instantiate(s)?;
         for h in s.handles().collect::<Vec<_>>() {
             if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {

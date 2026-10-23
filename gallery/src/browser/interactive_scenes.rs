@@ -286,10 +286,9 @@ impl Demo {
                     box50.clone(),
                     Arc::new(Material::Basic(m)),
                 ))));
-                let mut map = decode_texture_image(
-                    &fetch("/web/gallery/assets/square-outline-textured.png").await?,
-                )
-                .await?;
+                let mut map =
+                    decode_texture_image(&fetch("assets/square-outline-textured.png").await?)
+                        .await?;
                 map.srgb = true;
                 map.mipmap_filter = Some(Filter::Linear);
                 let mut m = MeshLambertMaterial::default();
@@ -480,10 +479,7 @@ impl Demo {
     }
     async fn blending(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
         let mut t = decode_texture_image(
-            &fetch(
-                "/web/gallery/assets/environment-materials/textures/lensflare/lensflare0_alpha.png",
-            )
-            .await?,
+            &fetch("assets/environment-materials/textures/lensflare/lensflare0_alpha.png").await?,
         )
         .await?;
         t.srgb = true;

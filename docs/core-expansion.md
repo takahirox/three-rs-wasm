@@ -29,7 +29,7 @@ tests exercise switching clips and reject requests for Three.js/GLTFLoader scrip
 `scripts/check-gltf-pbr` and `scripts/check-gallery` cover existing behavior.
 
 The current gallery contains 16 partial ports. Demo:
-`/web/gallery/#webgl_animation_skinning_morph`.
+`/web/examples/#webgl_animation_skinning_morph`.
 Import/evaluation success in the real-model probe is not a completed example or
 visual parity. Earlier all-example reports are historical baselines; their
 missing-feature labels do not describe the expanded Core.

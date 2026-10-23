@@ -2773,7 +2773,7 @@
       "requirements": {},
       "port": {
         "example": 9,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/picking.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "50個の線、カメラ回転、線レイキャストと交点マーカーを移植。頂点と変換を公式と比較。WebGLの線ラスタライズ・Statsは未一致。乱数は固定seed。"
@@ -2823,7 +2823,7 @@
       "requirements": {},
       "port": {
         "example": 10,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/picking.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "3種類の点群、回転カメラ、点レイキャスト、40個の縮小マーカーを移植。頂点と変換を公式と比較。WebGLの点ラスタライズ・Statsは未一致。"
@@ -7936,7 +7936,7 @@
       },
       "port": {
         "example": 11,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/texture_rotation.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "UVのoffset・repeat・rotation・centerとドラッグを移植。異方性フィルタリング対応。Orbit制限とGUI外観は未一致。"
@@ -12756,7 +12756,7 @@
       },
       "port": {
         "example": 12,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/buffergeometry_lines.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "10000頂点の線モーフをGPU頂点シェーダーで処理。回転・モーフ重みのみCPUで更新。乱数は固定seed、Statsは未移植。"
@@ -12777,7 +12777,7 @@
       "requirements": {},
       "port": {
         "example": 7,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/lines_indexed.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "雪片の再帰生成・頂点色・回転を移植。乱数は比較可能な固定seed。"
@@ -14352,7 +14352,7 @@
         "source": "gallery/src/browser/offscreen.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "ページのscene.js（sin関数の疑似乱数で配置した100個のマットキャップ二十面体、フォグ、Date.nowで回るグループ）を左右2つのキャンバスに描画。左はメインスレッドのギャラリーアプリ、右はOffscreenCanvasをモジュールWorker（web/gallery/offscreen-worker.js）へ渡し、Worker内で同じパッケージの別レンダラーと独自のアニメーションフレームで描画（ページのWorkerと同じ構成）。START JANKは1/60秒ごとにMath.randomを1000万回呼んでメインスレッドを塞ぎ、左のキャンバスだけを止める。ギャラリー時計の下では両方がDate.nowとしてギャラリー時間を使う。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "ページのscene.js（sin関数の疑似乱数で配置した100個のマットキャップ二十面体、フォグ、Date.nowで回るグループ）を左右2つのキャンバスに描画。左はメインスレッドのギャラリーアプリ、右はOffscreenCanvasをモジュールWorker（web/examples/offscreen-worker.js）へ渡し、Worker内で同じパッケージの別レンダラーと独自のアニメーションフレームで描画（ページのWorkerと同じ構成）。START JANKは1/60秒ごとにMath.randomを1000万回呼んでメインスレッドを塞ぎ、左のキャンバスだけを止める。ギャラリー時計の下では両方がDate.nowとしてギャラリー時間を使う。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -17726,7 +17726,7 @@
       },
       "port": {
         "example": 13,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/equirectangular.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "公式画像を直接サンプリングする背景、自動回転と明るさ調整を移植。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。Orbitの操作感は未一致。"
@@ -20480,7 +20480,7 @@
         "source": "gallery/src/browser/loader_materialx.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ShaderBall.glbの36個のモデルを6×6に並べ、MaterialXLoaderが読むMaterialXの標準サーフェスのサンプル12種とページのローカルテスト文書24種（OpenPBR、glTF PBRの分散ガラスを含む）のマテリアルを適用し、san_giuseppe_bridgeのPMREM（lodMax 9）で照らして半透明グリッドの地面の上に描く構成をRustで再現。ShaderBallのメッシュはページのcomputePrefabTangentsと同じく非インデックス化してMikkTSpaceの接線を付け（元の接線とビット単位で一致）、属性ごとのバッファで渡す。文書の画像はImageBitmapLoader同様に色変換・反転なしでデコードしてGPUでミップマップを作る。不透明物を手前から、透過物があれば解決済みフレームをミップ付きでコピーして透過物の裏面、透明リストを奥から描き、LinearToneMapping（露出0.5）の出力パスを通す。MaterialX文書は読み込み時に取得し、Rustへ移植したr186のMaterialXLoader（three-tslクレートのWasm、web/tsl-pkg）でページと同じシーンに解析・構築する。そのノードビルダーが生成するWGSLとテクスチャのバインディングで描画する。生成WGSLはオリジナルページでr186が生成するものと全36種と地面で文字単位で一致（tsl/tests/materialx.rs）。ローダーはthree-tslのWasmで動くため、ページ本体とは別にそのWasmを読み込む。ページでは文書ごとに別テクスチャとなるgrid.pngは1枚を共有する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ShaderBall.glbの36個のモデルを6×6に並べ、MaterialXLoaderが読むMaterialXの標準サーフェスのサンプル12種とページのローカルテスト文書24種（OpenPBR、glTF PBRの分散ガラスを含む）のマテリアルを適用し、san_giuseppe_bridgeのPMREM（lodMax 9）で照らして半透明グリッドの地面の上に描く構成をRustで再現。ShaderBallのメッシュはページのcomputePrefabTangentsと同じく非インデックス化してMikkTSpaceの接線を付け（元の接線とビット単位で一致）、属性ごとのバッファで渡す。文書の画像はImageBitmapLoader同様に色変換・反転なしでデコードしてGPUでミップマップを作る。不透明物を手前から、透過物があれば解決済みフレームをミップ付きでコピーして透過物の裏面、透明リストを奥から描き、LinearToneMapping（露出0.5）の出力パスを通す。MaterialX文書は読み込み時に取得し、Rustへ移植したr186のMaterialXLoader（three-tslクレートのWasm、web/build/tsl）でページと同じシーンに解析・構築する。そのノードビルダーが生成するWGSLとテクスチャのバインディングで描画する。生成WGSLはオリジナルページでr186が生成するものと全36種と地面で文字単位で一致（tsl/tests/materialx.rs）。ローダーはthree-tslのWasmで動くため、ページ本体とは別にそのWasmを読み込む。ページでは文書ごとに別テクスチャとなるgrid.pngは1枚を共有する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -22941,7 +22941,7 @@
       },
       "port": {
         "example": 6,
-        "source": "gallery/src/browser/gallery.rs",
+        "source": "gallery/src/browser/pmrem_equirectangular.rs",
         "test": "tests/browser/gallery.spec.js",
         "limitations": [
           "30個の球・材質・HDR背景は固定視点で公式と画像比較済み。Orbitの慣性・パン・ズーム制限とInspectorは未再現。"
@@ -23035,7 +23035,7 @@
       },
       "port": {
         "example": 14,
-        "source": "gallery/src/browser/gallery_scenes.rs",
+        "source": "gallery/src/browser/pmrem_test.rs",
         "test": "tests/browser/gallery-scenes.spec.js",
         "limitations": [
           "公式WebGPU版の33球の光量比較シーンを移植。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。Orbit制限は未一致。"

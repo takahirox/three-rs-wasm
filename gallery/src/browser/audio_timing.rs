@@ -1,7 +1,7 @@
 //! webaudio_timing: five balls bouncing in a ring over a shadowed floor, each
 //! playing its PositionalAudio when it turns from falling to rising. The
 //! bounce detection and the listener and source placement run here; the page
-//! drives the Web Audio graph (web/gallery/audio.js) from `audio_frame`.
+//! drives the Web Audio graph (web/examples/audio.js) from `audio_frame`.
 use super::controls_attributes::{CameraState, Controls, camera_state};
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::sync::Arc;

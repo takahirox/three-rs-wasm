@@ -266,7 +266,7 @@ impl Demo {
             }
         };
         // The statue: uv, normal, tangent and position, with its three WebP maps.
-        let (asset, buffers, images) = load_asset("/web/gallery/assets/gltf/nemetona.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/nemetona.glb").await?;
         let node = asset
             .nodes()
             .next()

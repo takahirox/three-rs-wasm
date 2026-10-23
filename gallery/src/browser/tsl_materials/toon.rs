@@ -47,7 +47,7 @@ impl Demo {
         }
         // TextGeometry( name, { font: gentilis, size: 20, depth: 1, curveSegments: 1 } ).
         let font = crate::shapes::Font::parse(
-            &fetch("/web/gallery/assets/fonts/gentilis_regular.typeface.json").await?,
+            &fetch("assets/fonts/gentilis_regular.typeface.json").await?,
         )?;
         let mut labels = ["-gradientMap", "+gradientMap", "-diffuse", "+diffuse"]
             .into_iter()

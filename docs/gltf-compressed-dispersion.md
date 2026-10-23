@@ -66,5 +66,5 @@ npx playwright test gltf-physical.spec.js --grep 'dispersion|compressed'
 ```
 
 Local demo routes:
-`/web/gallery/#webgpu_loader_gltf_compressed` and
-`/web/gallery/#webgpu_loader_gltf_dispersion`.
+`/web/examples/#webgpu_loader_gltf_compressed` and
+`/web/examples/#webgpu_loader_gltf_dispersion`.

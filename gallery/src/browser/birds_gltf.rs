@@ -373,7 +373,7 @@ impl Demo {
         if (random.next() * 2.).floor() != 0. {
             return Err(Error::Invalid("birds model selection"));
         }
-        let (asset, buffers, _) = load_asset("/web/gallery/assets/gltf/Parrot.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/Parrot.glb").await?;
         let mesh = asset
             .default_scene()
             .and_then(|scene| scene.nodes().next())

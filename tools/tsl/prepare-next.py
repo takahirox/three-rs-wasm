@@ -14,11 +14,11 @@ with tarfile.open(ROOT/'.cache/three-148ef33ecb6d2502ff796d4554abd1549c95d519.ta
   if rel not in paths and not rel.startswith('luts/') and rel != 'webgpu_instance_path.html':continue
   data=tar.extractfile(m).read()
   destinations=[ROOT/'.cache/three-r186'/p]
-  if not rel.endswith('.html'):destinations.append(ROOT/'web/gallery/assets/tsl-next'/rel)
+  if not rel.endswith('.html'):destinations.append(ROOT/'web/examples/assets/tsl-next'/rel)
   for dest in destinations:
    dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
 
 # Original SMAA lookup tables are embedded PNGs, not regenerated approximations.
 source=(ROOT/'.cache/three-r186/examples/jsm/tsl/display/SMAANode.js').read_text()
 for name, data in zip(['area','search'], re.findall(r"data:image/png;base64,([^']+)", source), strict=True):
- (ROOT/f'web/gallery/assets/tsl-next/smaa-{name}.png').write_bytes(base64.b64decode(data))
+ (ROOT/f'web/examples/assets/tsl-next/smaa-{name}.png').write_bytes(base64.b64decode(data))

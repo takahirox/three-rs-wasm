@@ -47,7 +47,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  await page.addInitScript(()=>{AnalyserNode.prototype.getByteFrequencyData=function(a){for(let i=0;i<a.length;i++)a[i]=(i*53+17)%256;};window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
-  await page.goto(runtime!=='rust'?`/reference/three-js/collada-3mf.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+  await page.goto(runtime!=='rust'?`/reference/three-js/collada-3mf.html?id=${official(kind)}&samples=${samples}`:`/web/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
@@ -90,7 +90,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  test(`Collada and 3MF loaders GPU residency: ${kind}`,async({page},info)=>{
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const runtime='rust';if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
@@ -135,7 +135,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
-   await page.goto(runtime==='reference'?`/reference/three-js/collada-3mf.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/collada-3mf.html?id=${official(kind)}`:`/web/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    if(spec.start&&runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);await page.waitForTimeout(100);}
    // Per-frame solvers (the IK chain) converge before the measured frame.
@@ -159,7 +159,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
 });
 
 for(const kind of ['webgl_loader_3mf','webgl_loader_3mf_materials'])test(`Collada and 3MF loaders on-demand scene stays idle: ${kind}`,async({page})=>{
- await page.goto(`/web/gallery/examples/${kind}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+ await page.goto(`/web/examples/${kind}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
  await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(300);expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
  await page.setViewportSize({width:640,height:400});await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
 });
@@ -172,7 +172,7 @@ test('Collada and 3MF loaders webaudio_timing plays on each bounce',async({page}
  await page.addInitScript(()=>{window.audioStarts=0;const start=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...a){audioStarts++;return start.apply(this,a);};});
  const counts={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/collada-3mf.html?id=webaudio_timing':'/web/gallery/examples/webaudio_timing.html?still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/collada-3mf.html?id=webaudio_timing':'/web/examples/webaudio_timing.html?still=1');
   await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
   if(runtime==='rust'){await page.evaluate(()=>document.getElementById('startButton').click());await page.waitForFunction(()=>window.galleryAudioStarted);}
   for(let k=1;k<=40;k++){await frames(page,runtime,k*0.1,1);await page.waitForTimeout(30);}

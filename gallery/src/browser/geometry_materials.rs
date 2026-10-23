@@ -15,7 +15,7 @@ use crate::{
     tsl::{self, surface::SurfaceNodes, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/geometry-materials";
+const ASSETS: &str = "assets/geometry-materials";
 fn call(name: &str, source: &str, args: &[Type], out: Type, nodes: &[Node]) -> Result<Node> {
     Ok(WgslFn::new(name, source, args, out)?.call(nodes))
 }

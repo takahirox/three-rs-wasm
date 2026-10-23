@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const TORAD: f64 = PI / 180.;
 const TARGET: Vector3 = Vector3::new(0., -0.1, 0.);
 

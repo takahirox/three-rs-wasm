@@ -87,18 +87,10 @@ impl Mirror {
         );
         let mut textures = vec![];
         for (url, srgb, repeat) in [
+            ("assets/tsl-procedural/decal-diffuse.png", true, false),
+            ("assets/tsl-procedural/decal-normal.jpg", false, false),
             (
-                "/web/gallery/assets/tsl-procedural/decal-diffuse.png",
-                true,
-                false,
-            ),
-            (
-                "/web/gallery/assets/tsl-procedural/decal-normal.jpg",
-                false,
-                false,
-            ),
-            (
-                "/web/gallery/assets/tsl-viewport/textures/floors/FloorsCheckerboard_S_Normal.jpg",
+                "assets/tsl-viewport/textures/floors/FloorsCheckerboard_S_Normal.jpg",
                 false,
                 true,
             ),

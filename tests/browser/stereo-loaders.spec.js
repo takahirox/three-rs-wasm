@@ -21,7 +21,7 @@ const pointLimits={effects_anaglyph:[.0125,.25],effects_parallaxbarrier:[.0065,.
 // Analytic coverage of the initial Zaghetto cloud: centered, rotated by PI about x, seen from
 // (0, 0, 1) with a 30 degree vertical field of view. Values are the resolved 8-bit white level.
 const pcdCoverage=(width,height,samples)=>{
- const data=readFileSync('web/gallery/assets/pcd/binary/Zaghetto.pcd');const start=data.indexOf('DATA binary\n')+12;const n=59750;
+ const data=readFileSync('web/examples/assets/pcd/binary/Zaghetto.pcd');const start=data.indexOf('DATA binary\n')+12;const n=59750;
  const p=new Float32Array(n*3);for(let i=0;i<n*3;i++)p[i]=data.readFloatLE(start+i*4);
  const low=[0,1,2].map(k=>Math.min(...p.filter((_,i)=>i%3===k))),high=[0,1,2].map(k=>Math.max(...p.filter((_,i)=>i%3===k)));
  const offsets=samples===4?[[.375,.125],[.875,.375],[.125,.625],[.625,.875]]:[[.5,.5]];
@@ -42,7 +42,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  await page.addInitScript(()=>{window.fixtureError=null;const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
-  await page.goto(runtime!=='rust'?`/reference/three-js/stereo-loaders.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+  await page.goto(runtime!=='rust'?`/reference/three-js/stereo-loaders.html?id=${official(kind)}&samples=${samples}`:`/web/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
@@ -89,7 +89,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  test(`Stereo and loaders GPU residency: ${kind}`,async({page},info)=>{
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const reports=[];
   for(const resize of [false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -125,7 +125,7 @@ if(a[0]!==4||count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1})
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
-   await page.goto(runtime==='reference'?`/reference/three-js/stereo-loaders.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/stereo-loaders.html?id=${official(kind)}`:`/web/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    for(const [n,t] of [1,2,3,1,2,3].entries()){if(n===5)await page.evaluate(()=>resetWork());await frames(page,runtime,t,1);}
    pair[runtime]=await page.evaluate(()=>work);
@@ -139,7 +139,7 @@ if(a[0]!==4||count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1})
 
 
 test('Stereo and loaders on-demand scene stays idle: loader_pcd',async({page})=>{
- await page.goto('/web/gallery/examples/webgl_loader_pcd.html');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+ await page.goto('/web/examples/webgl_loader_pcd.html');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
  await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(300);expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
  await page.setViewportSize({width:640,height:400});await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
 });

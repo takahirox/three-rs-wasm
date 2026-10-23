@@ -19,7 +19,7 @@ every program, the MVP page's ( `mvp`, `geometry_cube`, `point_lights`,
 `loader_gltf` ) included, is a module's.
 
 `scripts/build-gallery` links the whole gallery once, every feature on, and
-splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
+splits the result ( `tools/gallery/split/` ) into `web/build/`:
 
 - `three_rs_wasm_bg.wasm`, the primary module, with its part of
   wasm-bindgen's glue ( `three_rs_wasm.js` ): the library, the shell and the
@@ -34,8 +34,8 @@ splits the result ( `tools/gallery/split/` ) into `web/pkg/gallery/`:
   ( `tools/gallery/split/glue.mjs` );
 - `parts.json`, the parts each module loads and those with glue.
 
-A page loads the primary module, then its parts ( `web/gallery/runtime.js` );
-`web/gallery/modules.json` maps each example to its module
+A page loads the primary module, then its parts ( `web/examples/runtime.js` );
+`web/examples/modules.json` maps each example to its module
 ( `tools/gallery/modules.py`: the module whose file defines the example's
 program ), and the build writes the module's parts into the example's page.
 wasm-bindgen's adapters go with what they adapt: an export's ( a program's
@@ -86,9 +86,27 @@ The functions move with Binaryen's `wasm-split --multi-split` ( version 127,
 without placeholders: the parts load before the example starts ), the data
 with `tools/gallery/split/wasm.py`, and `wasm-opt -O` optimizes each module.
 
+## The site's layout
+
+`web/` is the site, laid out as the three.js repository is, and the same
+locally ( `/web/examples/<id>.html` ) and published
+( `/three-rs-wasm/examples/<id>.html` ):
+
+- `build/`, the build's output: the gallery's Wasm and glue
+  ( `scripts/build-gallery` ) and the TSL editor's ( `build/tsl/` );
+- `examples/`: the index, every example's page beside it, the pages' scripts,
+  and the examples' assets ( `models/`, `textures/`, `environments/`,
+  `assets/` ), which the ports load by paths relative to their pages, as
+  three.js examples do;
+- `files/`: the pages' stylesheet, fonts and icons, as three.js's `files/`;
+- `index.html`, which opens `examples/`.
+
+`tools/build_site.py` copies `web/` with the build's output, leaving out the
+r186 assets the CDN serves ( below ).
+
 ## A page and a program per example
 
-As in three.js, every example has its own page, `web/gallery/examples/<id>.html`,
+As in three.js, every example has its own page, `web/examples/<id>.html`,
 and its own program, a Rust function exported under the example's id
 ( `webgl_loader_texture_ktx`, `-` read as `_` ) in the module that ports it.
 The program creates the example's renderer, its scene and its frame loop
@@ -101,15 +119,15 @@ A page loads the primary module and its glue, then its parts and their glue,
 and calls its program. `scripts/build-gallery` writes the pages with
 `tools/gallery/pages.mjs`, as the parts are its output: the markup is
 `tools/gallery/page.html`, and a ported example's script is
-`web/gallery/example.js` with the example's id, parts and program written in,
+`web/examples/example.js` with the example's id, parts and program written in,
 the code for the other examples dropped ( the generator evaluates the
 conditions on `PAGE_EXAMPLE`, the catalog's number for the example ) and the
 imports the rest does not use removed. Examples not ported get a page with
-their diagnostic ( `web/gallery/diagnostic.js` ).
-`web/gallery/example.html?id=<id>`, the gallery's earlier URL, forwards to
+their diagnostic ( `web/examples/diagnostic.js` ).
+`web/examples/example.html?id=<id>`, the gallery's earlier URL, forwards to
 the example's page.
 
-The WebXR examples' programs return the app `web/gallery/xr.js` drives with
+The WebXR examples' programs return the app `web/examples/xr.js` drives with
 the session's frames; the transpiler's page calls its module's
 `tsl_transpile`, and the TSL editor's runs on the three-tsl crate's Wasm.
 
@@ -175,14 +193,14 @@ and cross-origin resource policy headers. The site is about 460 MB instead
 of 750 MB.
 
 - `tools/gallery/upstream_assets.py` lists them in
-  `web/gallery/upstream-assets.json`: each file under `web/gallery/assets`,
-  `web/gallery/textures`, `web/models` and `web/environments` whose bytes equal
+  `web/examples/upstream-assets.json`: each file under `web/examples/assets`,
+  `web/examples/textures`, `web/models` and `web/environments` whose bytes equal
   an r186 file's ( `.cache/three-r186` ). Its base is null: locally the pages
   load the repository's files.
 - `tools/build_site.py` leaves the listed files out and writes the CDN base
   into the published listing.
-- `web/gallery/upstream.js`, which the example pages, the offscreen worker and
-  `web/index.html` load first, redirects the listed URLs: `fetch()`, the `src`
+- `web/examples/upstream.js`, which the example pages, the offscreen worker and
+  `web/examples/mvp.html` load first, redirects the listed URLs: `fetch()`, the `src`
   of images, media and sources, `new Audio()` and images in HTML markup. A
   redirected image or medium loads with CORS, so canvases and GPU uploads can
   read it.
@@ -192,7 +210,7 @@ of 750 MB.
   when an example's assets change ). A request for a listed file its part
   lacks ( after input the recording did not give ) fails on the published
   site and is retried with the whole listing; the offscreen worker and
-  `web/index.html` read the whole listing.
+  `web/examples/mvp.html` read the whole listing.
 
 The published-site check ( `tests/pages/` ) runs the examples against the
 CDN.

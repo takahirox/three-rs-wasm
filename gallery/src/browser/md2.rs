@@ -10,7 +10,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/md2";
+const ASSETS: &str = "assets/md2";
 const SKINS: [&str; 5] = [
     "ratamahatta.png",
     "ctf_b.png",

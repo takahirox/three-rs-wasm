@@ -231,7 +231,7 @@ impl Demo {
         };
         // DRACOLoader, then computeVertexNormals().
         let mut geometry = crate::compression::decode_draco(
-            &super::gltf_viewer::fetch("/web/gallery/assets/draco-variants/bunny.drc").await?,
+            &super::gltf_viewer::fetch("assets/draco-variants/bunny.drc").await?,
         )?;
         geometry.compute_vertex_normals()?;
         let bunny = s.insert(NodeKind::Mesh(Mesh::new(

@@ -57,7 +57,7 @@ impl MotionBlur {
             }));
             s.get_mut(h)?.position = Vector3::Y;
         }
-        let (a, b, i) = load_asset("/web/gallery/assets/tsl-procedural/Xbot.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-procedural/Xbot.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let group = s.insert(NodeKind::Group);
         s.get_mut(group)?.quaternion = Quaternion::from_rotation_y(std::f64::consts::FRAC_PI_2);
@@ -84,7 +84,7 @@ impl MotionBlur {
             }
         }
         let mut floor = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg").await?,
+            &fetch("assets/tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg").await?,
         )
         .await?;
         floor.srgb = true;
@@ -108,10 +108,8 @@ impl MotionBlur {
             s.get_mut(h)?.receive_shadow = !walls;
             objects.push(h);
         }
-        let mut map = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-procedural/uv_grid_opengl.jpg").await?,
-        )
-        .await?;
+        let mut map =
+            decode_texture_image(&fetch("assets/tsl-procedural/uv_grid_opengl.jpg").await?).await?;
         map.srgb = true;
         map.mipmap_filter = Some(Filter::Linear);
         let mut m = MeshBasicMaterial::default();

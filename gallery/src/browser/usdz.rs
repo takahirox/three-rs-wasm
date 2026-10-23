@@ -27,7 +27,7 @@ use super::trackball_sprites::parse_rgbe;
 use crate::{Error, Result, camera::*, math::*, render_target::*, renderer::*, scene::*};
 use wgpu::util::DeviceExt;
 
-const ASSETS: &str = "/web/gallery/assets/usdz";
+const ASSETS: &str = "assets/usdz";
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth32Float;
 const SHADER: &str = r#"
 struct Frame {

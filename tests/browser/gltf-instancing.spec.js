@@ -10,7 +10,7 @@ test('Instancing material regression on a common backend, plus GPU residency',as
  await page.addInitScript(()=>{window.creates=0;for(const n of ['createBuffer','createTexture','createBindGroup','createRenderPipeline']){const f=GPUDevice.prototype[n];GPUDevice.prototype[n]=function(...a){creates++;return f.apply(this,a);};}});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});
-  await page.goto(runtime==='reference'?`/reference/three-js/expanded.html?id=${id}&backend=webgpu&samples=1`:`/web/gallery/examples/${id}.html`);
+  await page.goto(runtime==='reference'?`/reference/three-js/expanded.html?id=${id}&backend=webgpu&samples=1`:`/web/examples/${id}.html`);
   await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:90000});
   if(runtime==='reference')expect(await page.evaluate(()=>{let scale;reference.scene.traverse(o=>{if(o.isMesh)scale=o.material.normalScale.y;});return scale;})).toBe(1);
   if(runtime==='rust'){await page.evaluate(()=>app.set_samples(1));await page.addStyleTag({content:'#notice,#settings{display:none!important}'});}

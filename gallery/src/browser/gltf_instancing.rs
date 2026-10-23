@@ -14,8 +14,7 @@ impl super::example::Example for Instancing {
 
 async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<super::expanded::Demo> {
     let (asset, buffers, images) =
-        load_asset("/web/models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf")
-            .await?;
+        load_asset("models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf").await?;
     crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
     // r186 GLTFLoader applies assignFinalMaterial twice to InstancedMesh,
     // flipping derivative-tangent normalScale.y twice. Match this example's
@@ -32,7 +31,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
         }
     }
     scene.environment = Some(Arc::new(
-        super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg").await?,
+        super::ultra_hdr::environment("environments/royal_esplanade_2k.hdr.jpg").await?,
     ));
     scene.background_environment = true;
     scene.aces_tone_mapping = true;

@@ -500,7 +500,7 @@ impl Demo {
     async fn ocean_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         s.tone_mapping = ToneMapping::Aces;
         let mut t = super::gltf_viewer::decode_texture_image(
-            &super::gltf_viewer::fetch("/web/gallery/assets/waternormals.jpg").await?,
+            &super::gltf_viewer::fetch("assets/waternormals.jpg").await?,
         )
         .await?;
         // TextureLoader leaves the normals in NoColorSpace.

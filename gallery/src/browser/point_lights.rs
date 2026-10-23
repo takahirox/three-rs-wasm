@@ -22,7 +22,7 @@ impl PointLights {
         aspect: f64,
         renderer: &crate::renderer::Renderer,
     ) -> Result<Self> {
-        let bytes = super::gltf_viewer::fetch("/web/models/WaltHead.obj").await?;
+        let bytes = super::gltf_viewer::fetch("models/WaltHead.obj").await?;
         let source = std::str::from_utf8(&bytes).map_err(|_| Error::Invalid("model text"))?;
         let mut vertices = Vec::new();
         let mut base = Vec::new();

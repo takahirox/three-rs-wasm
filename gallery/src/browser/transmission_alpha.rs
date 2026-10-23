@@ -13,7 +13,7 @@ use crate::{Error, Result, camera::*, material::*, math::*, renderer::*, scene::
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 
 pub struct Demo {
     controls: Controls,

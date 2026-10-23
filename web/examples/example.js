@@ -21,7 +21,7 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
   // The transpiler page renders nothing: it needs no WebGPU.
   if (!navigator.gpu && PAGE_EXAMPLE !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
   if (PAGE_EXAMPLE === 497) {
-   // webgpu_tsl_editor runs on the three-tsl crate's own Wasm ( web/tsl-pkg ), not this app.
+   // webgpu_tsl_editor runs on the three-tsl crate's own Wasm ( web/build/tsl ), not this app.
    const {startTslEditor} = await import('./tsl-editor.js?v=tsl-2');
    await startTslEditor(loading);
   } else {
@@ -452,7 +452,7 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
     settings.innerHTML = '<label>Animation <input id="animate" type="checkbox" checked></label><label>Deformation <input id="amount" type="range" min="0" max="3" step="0.1" value="1"></label><label>Speed <input id="speed" type="range" min="0" max="2" step="0.1" value="1"></label>';
     settings.addEventListener('input', () => app.point_lights_controls(!document.querySelector('#animate').checked, Number(document.querySelector('#amount').value), Number(document.querySelector('#speed').value)));
    }
-   // The original's stats.js, lil-gui panels and Inspector ( web/gallery/ui/ ). Automated
+   // The original's stats.js, lil-gui panels and Inspector ( web/examples/ui/ ). Automated
    // rendering comparisons capture the canvas without them; ?ui=1 shows them there too
    // ( tests/browser/gallery-ui.spec.js ).
    if (window.galleryUi) {

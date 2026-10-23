@@ -5,7 +5,7 @@ for(const [kind,example] of [['anisotropy',30],['sheen',31],['transmission',32],
  const id=`webgpu_loader_gltf_${kind}`;
  test(`physical glTF views and controls: ${kind}`,async({page},info)=>{
   test.setTimeout(180000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));
-  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));expect(catalog.examples.find(e=>e.id===id)?.port?.example).toBe(example);
+  const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));expect(catalog.examples.find(e=>e.id===id)?.port?.example).toBe(example);
   const images={},compressedResources={};
   if(kind==='compressed')await page.addInitScript(()=>{
    window.compressedTextures=[];
@@ -15,7 +15,7 @@ for(const [kind,example] of [['anisotropy',30],['sheen',31],['transmission',32],
   });
   for(const runtime of ['reference','rust']){
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/gltf-examples.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/gltf-examples.html?id=${id}`:`/web/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>2,null,{timeout:90000});
    if(runtime==='rust')await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
    const states=[];
@@ -47,10 +47,10 @@ for(const [kind,example] of [['anisotropy',30],['sheen',31],['transmission',32],
   for(const r of results)expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.005);
  });
  test(`physical glTF GPU residency and resize: ${kind}`,async({page})=>{
-  const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));expect(catalog.examples.find(e=>e.id===id)?.port?.example).toBe(example);
+  const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));expect(catalog.examples.find(e=>e.id===id)?.port?.example).toBe(example);
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.addInitScript(()=>{window.creates=0;for(const n of ['createBuffer','createTexture','createBindGroup','createRenderPipeline']){const f=GPUDevice.prototype[n];GPUDevice.prototype[n]=function(...a){creates++;return f.apply(this,a);};}});
-  await page.goto(`/web/gallery/examples/${id}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>10,null,{timeout:90000});
+  await page.goto(`/web/examples/${id}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>10,null,{timeout:90000});
   for(const resized of [false,true]){
    if(resized){await page.setViewportSize({width:640,height:400});await page.waitForTimeout(250);}
    const before=await page.evaluate(()=>({creates,transfers:JSON.parse(app.transfer_counts()).slice(0,3),resources:Array.from(app.resource_counts())}));await page.waitForTimeout(350);

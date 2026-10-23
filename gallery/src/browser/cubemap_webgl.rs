@@ -48,7 +48,7 @@ impl Demo {
         }));
         s.get_mut(c)?.position = Vector3::new(0., 0., 75.);
         s.environment = Some(Arc::new(EnvironmentMap::from_hdr(
-            &fetch("/web/gallery/assets/draco-variants/quarry_01_1k.hdr").await?,
+            &fetch("assets/draco-variants/quarry_01_1k.hdr").await?,
         )?));
         s.background_environment = true;
         // cubeRenderTarget = new WebGLCubeRenderTarget( 256 ), half float.

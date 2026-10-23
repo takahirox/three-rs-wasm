@@ -1,7 +1,7 @@
 import{test,expect}from'@playwright/test';
 test('glTF controls, resize, recoverable failures and 20 overlapping replacement cycles',async({page})=>{
  test.setTimeout(300000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.goto('/web/?example=4&fixture=1');const canvas=page.locator('canvas');
+ await page.goto('/web/examples/mvp.html?example=4&fixture=1');const canvas=page.locator('canvas');
  await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:120000}).toBeGreaterThan(2);
  const nextFrame=async()=>{const frame=Number(await canvas.getAttribute('data-frames'));await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:30000}).toBeGreaterThan(frame+1);};
  const original=await canvas.screenshot();
@@ -17,7 +17,7 @@ test('glTF controls, resize, recoverable failures and 20 overlapping replacement
  // Delay an older environment load and allow the newer model load to win.
  let release;const delayed=new Promise(resolve=>release=resolve);
  await page.route('**/royal_esplanade_2k.hdr.jpg?stale',async route=>{await delayed;await route.continue();});
- await page.evaluate(()=>{window.pendingEnvironment=window.app.load_environment('/web/environments/royal_esplanade_2k.hdr.jpg?stale');});
+ await page.evaluate(()=>{window.pendingEnvironment=window.app.load_environment('/web/examples/environments/royal_esplanade_2k.hdr.jpg?stale');});
  expect(await page.evaluate(()=>window.app.load_model(4))).toBe(true);release();expect(await page.evaluate(()=>window.pendingEnvironment)).toBe(false);
  const before=await page.evaluate(()=>Array.from(window.app.resource_counts()));
  for(let i=0;i<20;i++){
@@ -26,8 +26,8 @@ test('glTF controls, resize, recoverable failures and 20 overlapping replacement
   expect(counts[0]).toBeLessThanOrEqual(6);expect(counts[2]).toBe(before[2]);
  }
  const stable=await page.evaluate(()=>Array.from(window.app.resource_counts()));await nextFrame();expect(await page.evaluate(()=>Array.from(window.app.resource_counts()))).toEqual(stable);
- const failure=await page.evaluate(async()=>{try{await window.app.load_environment('/web/environments/missing.hdr');return '';}catch(error){return String(error);}});expect(failure).toContain('404');await nextFrame();
- expect(await page.evaluate(()=>window.app.load_environment('/web/environments/royal_esplanade_2k.hdr.jpg'))).toBe(true);await nextFrame();
+ const failure=await page.evaluate(async()=>{try{await window.app.load_environment('/web/examples/environments/missing.hdr');return '';}catch(error){return String(error);}});expect(failure).toContain('404');await nextFrame();
+ expect(await page.evaluate(()=>window.app.load_environment('/web/examples/environments/royal_esplanade_2k.hdr.jpg'))).toBe(true);await nextFrame();
  expect((await page.evaluate(()=>Array.from(window.app.resource_counts())))[2]).toBe(stable[2]+1);
  expect(await canvas.getAttribute('data-error')).toBeNull();expect(errors).toEqual([]);
 });

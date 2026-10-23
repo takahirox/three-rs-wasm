@@ -171,8 +171,7 @@ impl Demo {
                 50 => "snowflake1.png",
                 _ => "circle.png",
             };
-            let mut image =
-                decode_image(&fetch(&format!("/web/gallery/assets/{name}")).await?).await?;
+            let mut image = decode_image(&fetch(&format!("assets/{name}")).await?).await?;
             out.size = Vector2::new(image.width as f64, image.height as f64);
             image.srgb = example == 50;
             image.mipmap_filter = Some(Filter::Linear);

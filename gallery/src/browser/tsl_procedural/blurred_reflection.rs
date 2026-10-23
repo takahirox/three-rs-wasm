@@ -102,7 +102,7 @@ impl BlurredReflection {
             .build(r, &[], &[])
             .await?,
         );
-        let (a, b, i) = load_asset("/web/models/Michelle.glb").await?;
+        let (a, b, i) = load_asset("models/Michelle.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let mut mixer = crate::animation::AnimationMixer::default();
         mixer.play(instance.clips[0].clone())?;
@@ -120,10 +120,9 @@ impl BlurredReflection {
                 }
             }
         }
-        let mut texture = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-procedural/uv_grid_directx.jpg").await?,
-        )
-        .await?;
+        let mut texture =
+            decode_texture_image(&fetch("assets/tsl-procedural/uv_grid_directx.jpg").await?)
+                .await?;
         texture.srgb = true;
         texture.mipmap_filter = Some(Filter::Linear);
         let mut material = MeshStandardMaterial {

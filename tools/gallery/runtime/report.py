@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 CACHE = ROOT / '.cache/gallery-runtime'
 OUTPUT = ROOT / 'docs/gallery-runtime-results.json'
-catalog = json.loads((ROOT / 'web/gallery/catalog.json').read_text())
+catalog = json.loads((ROOT / 'web/examples/catalog.json').read_text())
 
 
 def sanitize(value):

@@ -288,7 +288,7 @@ impl Demo {
     }
     /// combineBuffer( object, 'position' ): every mesh's positions in order.
     async fn combine(&self, path: &str) -> Result<Vec<f32>> {
-        let text = fetch(&format!("/web/gallery/assets/{path}")).await?;
+        let text = fetch(&format!("assets/{path}")).await?;
         Ok(parse_obj(&String::from_utf8_lossy(&text))
             .into_iter()
             .flat_map(|o| o.positions)

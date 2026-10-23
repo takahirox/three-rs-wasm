@@ -172,8 +172,7 @@ impl Demo {
                     "circle.png"
                 };
                 let mut image =
-                    decode_texture_image(&fetch(&format!("/web/gallery/assets/{name}")).await?)
-                        .await?;
+                    decode_texture_image(&fetch(&format!("assets/{name}")).await?).await?;
                 image.srgb = false;
                 image.mipmap_filter = Some(Filter::Linear);
                 Some(r.upload_texture(&Arc::new(image))?)

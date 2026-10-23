@@ -20,7 +20,7 @@ use crate::{
 use wgpu::util::DeviceExt;
 
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth32Float;
-const ASSETS: &str = "/web/gallery/assets/subsurface-scattering";
+const ASSETS: &str = "assets/subsurface-scattering";
 const SHADER: &str = r#"
 struct Frame {
 	view_projection: mat4x4<f32>,

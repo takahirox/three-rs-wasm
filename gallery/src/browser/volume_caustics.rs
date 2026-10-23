@@ -249,7 +249,7 @@ impl Demo {
                     .fold(0., f64::max),
             }
         };
-        let (asset, buffers, _) = load_asset("/web/gallery/assets/gltf/duck.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/duck.glb").await?;
         let primitive = asset
             .meshes()
             .next()
@@ -294,8 +294,7 @@ impl Demo {
         // Caustic_Free.jpg: sRGB, flipped on upload, mipmapped on the GPU.
         let mut mipmaps = Mipmaps::new(r);
         let image =
-            decode_texture_image(&fetch("/web/gallery/assets/opengameart/Caustic_Free.jpg").await?)
-                .await?;
+            decode_texture_image(&fetch("assets/opengameart/Caustic_Free.jpg").await?).await?;
         let size = (image.width, image.height);
         let format = wgpu::TextureFormat::Rgba8UnormSrgb;
         let t = texture(

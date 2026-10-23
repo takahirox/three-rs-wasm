@@ -8,7 +8,7 @@ use crate::tsl::{NodeMaterial, Type, WgslFn};
 use crate::{Error, Result, geometry::*, material::*, math::Color, renderer::*, scene::*};
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/wide-gamut";
+const ASSETS: &str = "assets/wide-gamut";
 /// A full-viewport background plane (depth test off, rendered first).
 const BACKGROUND: &str = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;out.clip=vec4(position.xy,1.0,1.0);return out;}";
 /// background.glsl: the texel at uvTransform × uv (u.custom[0]: repeat,

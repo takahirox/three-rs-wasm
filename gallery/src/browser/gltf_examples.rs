@@ -28,7 +28,7 @@ impl Demo {
             match example {
                 29 => (
                     "IridescenceLamp.glb",
-                    "/web/environments/venice_sunset_1k.hdr",
+                    "environments/venice_sunset_1k.hdr",
                     50.0,
                     0.05,
                     20.0,
@@ -41,7 +41,7 @@ impl Demo {
                 ),
                 30 => (
                     "AnisotropyBarnLamp.glb",
-                    "/web/environments/royal_esplanade_2k.hdr.jpg",
+                    "environments/royal_esplanade_2k.hdr.jpg",
                     40.0,
                     0.01,
                     10.0,
@@ -54,7 +54,7 @@ impl Demo {
                 ),
                 31 => (
                     "SheenChair.glb",
-                    "/web/environments/royal_esplanade_2k.hdr.jpg",
+                    "environments/royal_esplanade_2k.hdr.jpg",
                     45.0,
                     0.1,
                     20.0,
@@ -67,7 +67,7 @@ impl Demo {
                 ),
                 32 => (
                     "IridescentDishWithOlives.glb",
-                    "/web/environments/royal_esplanade_2k.hdr.jpg",
+                    "environments/royal_esplanade_2k.hdr.jpg",
                     45.0,
                     0.25,
                     20.0,
@@ -80,7 +80,7 @@ impl Demo {
                 ),
                 33 => (
                     "DispersionTest.glb",
-                    "/web/environments/pedestrian_overpass_1k.hdr",
+                    "environments/pedestrian_overpass_1k.hdr",
                     45.0,
                     0.01,
                     5.0,
@@ -106,7 +106,7 @@ impl Demo {
                 ),
                 _ => return Err(crate::Error::Invalid("glTF candidate id")),
             };
-        let (asset, buffers, images) = load_asset(&format!("/web/models/{model}")).await?;
+        let (asset, buffers, images) = load_asset(&format!("models/{model}")).await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let mut mixer = AnimationMixer::default();

@@ -11,7 +11,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const PROJECT: &str =
     "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
 const LIGHTS: usize = 300;

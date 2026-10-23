@@ -130,9 +130,9 @@ impl Demo {
         scene.get_mut(cam)?.position = position;
         scene.look_at(cam, target)?;
         let (asset, buffers, images) = super::super::gltf_viewer::load_asset(if emissive_only {
-            "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf"
+            "models/DamagedHelmet/glTF/DamagedHelmet.gltf"
         } else {
-            "/web/models/PrimaryIonDrive.glb"
+            "models/PrimaryIonDrive.glb"
         })
         .await?;
         let instance =
@@ -161,7 +161,7 @@ impl Demo {
         };
         if emissive_only {
             scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-                &super::super::gltf_viewer::fetch("/web/environments/moonless_golf_1k.hdr").await?,
+                &super::super::gltf_viewer::fetch("environments/moonless_golf_1k.hdr").await?,
             )?));
             scene.background_environment = true;
             let program = Arc::new(

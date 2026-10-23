@@ -166,8 +166,7 @@ impl Demo {
         n.quaternion = Quaternion::from_rotation_x(-PI / 2.);
         n.scale = Vector3::splat(100.);
         // The text, centered by its bounding box.
-        let font =
-            Font::parse(&fetch("/web/gallery/assets/fonts/helvetiker_bold.typeface.json").await?)?;
+        let font = Font::parse(&fetch("assets/fonts/helvetiker_bold.typeface.json").await?)?;
         let text = text_geometry(
             &font,
             "THREE.JS",
@@ -208,7 +207,7 @@ impl Demo {
             s.get_mut(block)?.position = Vector3::new(0., FLOOR - 50., 20.);
         }
         // The horse: its geometry, material and morph clip.
-        let (a, b, i) = load_asset("/web/gallery/assets/gltf/Horse.glb").await?;
+        let (a, b, i) = load_asset("assets/gltf/Horse.glb").await?;
         // The template mesh, from a scratch scene ( the page clones it ).
         let mut scratch = Scene::new();
         let template =

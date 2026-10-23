@@ -32,7 +32,8 @@ impl Angular {
         // UltraHDRLoader on the page's texture, at load.
         s.environment = Some(Arc::new(
             super::super::ultra_hdr::ultra_hdr(
-                &fetch("/web/gallery/assets/tsl-lighting/textures/equirectangular/royal_esplanade_2k.hdr.jpg").await?,
+                &fetch("assets/tsl-lighting/textures/equirectangular/royal_esplanade_2k.hdr.jpg")
+                    .await?,
             )
             .await?,
         ));
@@ -61,7 +62,7 @@ impl Angular {
             .await?,
         );
         let shadow = Arc::new(shadow_program(r, None, Some(mask)).await?);
-        let (a, b, i) = load_asset("/web/gallery/assets/tsl-procedural/gears.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-procedural/gears.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let mut hull = vec![];
         for h in instance.meshes {

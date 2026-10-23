@@ -8,7 +8,7 @@ use crate::{
     renderer::*, scene::*,
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/shapes";
+const ASSETS: &str = "assets/shapes";
 struct Object {
     kind: String,
     position: [f64; 3],
@@ -114,7 +114,7 @@ impl Demo {
                 let path = if id == 154 {
                     format!("{ASSETS}/disc.png")
                 } else {
-                    "/web/gallery/assets/uv-grid.jpg".to_owned()
+                    "assets/uv-grid.jpg".to_owned()
                 };
                 let mut t = decode_texture_image(&fetch(&path).await?).await?;
                 t.mipmap_filter = Some(Filter::Linear);
@@ -604,9 +604,8 @@ fn centered_text(shapes: &[crate::shapes::Shape]) -> Result<(BufferGeometry, f64
 
 /// webgl_geometry_text_shapes: the text's ShapeGeometry and its outlines as lines.
 async fn text_shapes() -> Result<Vec<(Object, BufferGeometry)>> {
-    let font = crate::shapes::Font::parse(
-        &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
-    )?;
+    let font =
+        crate::shapes::Font::parse(&fetch("assets/fonts/helvetiker_regular.typeface.json").await?)?;
     let shapes = font.shapes("   Three.js\nSimple text.", 100.);
     let (g, x_mid) = centered_text(&shapes)?;
     let mut out = vec![(
@@ -641,7 +640,7 @@ async fn text_shapes() -> Result<Vec<(Object, BufferGeometry)>> {
 /// Hebrew ( rtl ) and Chinese ( tb ) messages.
 async fn text_stroke() -> Result<Vec<(Object, BufferGeometry)>> {
     let font = crate::shapes::Font::parse(
-        &fetch("/web/gallery/assets/shapes/MPLUSRounded1c-Regular.typeface.json").await?,
+        &fetch("assets/shapes/MPLUSRounded1c-Regular.typeface.json").await?,
     )?;
     let mut out = vec![];
     for (message, direction, x, y) in [

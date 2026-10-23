@@ -289,7 +289,7 @@ impl Demo {
         let floor = geometry(&floor_geometry, &["normal", "position"])?;
         let water = geometry(&PlaneGeometry::build(30., 40., 1, 1)?, &["uv", "position"])?;
         // The pool: two Draco primitives ( clutter, walls ) with uv, normal and position.
-        let (asset, buffers, images) = load_asset("/web/gallery/assets/gltf/pool.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/pool.glb").await?;
         let mut meshes = vec![];
         for node in asset.nodes() {
             let primitive = node
@@ -356,8 +356,8 @@ impl Demo {
         // The water normal maps: TextureLoader's flipY, mipmapped.
         let mut normal_maps = vec![];
         for url in [
-            "/web/gallery/assets/water/Water_1_M_Normal.jpg",
-            "/web/gallery/assets/water/Water_2_M_Normal.jpg",
+            "assets/water/Water_1_M_Normal.jpg",
+            "assets/water/Water_2_M_Normal.jpg",
         ] {
             let image = decode_texture_image(&fetch(url).await?).await?;
             let row = image.width as usize * 4;
@@ -395,7 +395,7 @@ impl Demo {
             r,
             &linear,
             &sampler(ClampToEdge, Linear, Nearest),
-            "/web/environments/moonless_golf_2k.hdr.jpg",
+            "environments/moonless_golf_2k.hdr.jpg",
         )
         .await?;
         let cube = render_cube(r, &sampler(ClampToEdge, Linear, Nearest), &equirect, height)?;

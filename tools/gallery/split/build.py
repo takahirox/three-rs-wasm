@@ -202,8 +202,11 @@ def untrampoline(primary, parts):
 
 def main(raw, out):
     out = Path(out)
-    if out.exists():
-        shutil.rmtree(out)
+    # The split's own output; other builds share the directory ( web/build/tsl ).
+    for name in ('parts', 'snippets'):
+        shutil.rmtree(out / name, ignore_errors=True)
+    for path in [*out.glob('three_rs_wasm*'), out / 'parts.json']:
+        path.unlink(missing_ok=True)
     (out / 'parts').mkdir(parents=True)
     # $SPLIT_WORK keeps the intermediate modules ( and their names ) for inspection.
     keep = os.environ.get('SPLIT_WORK')

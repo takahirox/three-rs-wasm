@@ -147,10 +147,9 @@ impl Demo {
             .build(r, &[], &bindings)
             .await?,
         );
-        let (a, b, images) = super::super::gltf_viewer::load_asset(
-            "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
-        )
-        .await?;
+        let (a, b, images) =
+            super::super::gltf_viewer::load_asset("models/DamagedHelmet/glTF/DamagedHelmet.gltf")
+                .await?;
         crate::gltf::import_decoded(&a, &b, &images)?.instantiate(s)?;
         for h in s.handles().collect::<Vec<_>>() {
             if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {

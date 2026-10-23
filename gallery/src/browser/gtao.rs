@@ -688,7 +688,7 @@ impl Demo {
         ));
         // The bust: rotated π, scaled to 2.64 tall and stood on its pedestal
         // by Box3.setFromObject ( the geometry box's corners ).
-        let (asset, buffers, _) = load_asset("/web/gallery/assets/gltf/tennyson-bust.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/tennyson-bust.glb").await?;
         let node = asset.nodes().next().ok_or(Error::Invalid("bust node"))?;
         let primitive = node
             .mesh()

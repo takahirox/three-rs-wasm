@@ -22,7 +22,7 @@ use std::sync::Arc;
 /// origin and the two corner fields.
 type Edge = (u32, usize, usize, usize, usize, [f64; 3], usize, usize);
 
-const ASSETS: &str = "/web/gallery/assets/environment-materials/textures";
+const ASSETS: &str = "assets/environment-materials/textures";
 const MATERIALS: [&str; 13] = [
     "shiny",
     "chrome",

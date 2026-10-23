@@ -6,7 +6,7 @@ impl Demo {
         let mut size = 0;
         for face in ["px", "nx", "py", "ny", "pz", "nz"] {
             let path = if self.example == 108 {
-                format!("/web/gallery/assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr")
+                format!("assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr")
             } else {
                 format!("{ASSETS}/textures/cube/Park3Med/{face}.jpg")
             };

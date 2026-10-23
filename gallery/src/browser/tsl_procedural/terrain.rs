@@ -29,7 +29,7 @@ impl Terrain {
         let mut viewer = OrbitViewer::from_camera(center, d.length());
         viewer.fixture(d.x.atan2(d.z), (d.y / d.length()).asin(), 1.8);
         s.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-            &fetch("/web/gallery/assets/tsl-procedural/pedestrian_overpass_1k.hdr").await?,
+            &fetch("assets/tsl-procedural/pedestrian_overpass_1k.hdr").await?,
         )?));
         s.background_environment = true;
         s.background_blur = 0.5;

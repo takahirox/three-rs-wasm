@@ -29,8 +29,7 @@ impl Taau {
         s.background = Color::from_hex(0xbfe3dd);
         s.background_outputs = vec![BackgroundOutput::Color, BackgroundOutput::Zero];
         s.environment = Some(super::super::room_environment::environment(r)?);
-        let (a, b, i) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-viewport/models/gltf/LittlestTokyo.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let root = s.insert(NodeKind::Group);
         s.get_mut(root)?.scale = Vector3::splat(0.01);

@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 /// The example's MOLECULES menu, in its order.
 const MOLECULES: [&str; 17] = [
     "ethanol.pdb",
@@ -938,7 +938,7 @@ impl Demo {
 }
 /// `gltf.scene.children[ 0 ]` of LeePerrySmith.glb: its geometry and node scale.
 pub(super) async fn head() -> Result<(Arc<BufferGeometry>, Vector3)> {
-    let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+    let (asset, buffers, images) = load_asset("models/LeePerrySmith.glb").await?;
     let mut temp = Scene::default();
     crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(&mut temp)?;
     temp.handles()

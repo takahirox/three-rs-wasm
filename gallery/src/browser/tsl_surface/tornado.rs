@@ -20,7 +20,7 @@ impl Demo {
         scene.background = Color::from_hex(0x201919);
         scene.tone_mapping = ToneMapping::Aces;
         let mut image = super::super::gltf_viewer::decode_image(
-            &super::super::gltf_viewer::fetch("/web/gallery/assets/flames-rgb-256x256.png").await?,
+            &super::super::gltf_viewer::fetch("assets/flames-rgb-256x256.png").await?,
         )
         .await?;
         image.srgb = false;

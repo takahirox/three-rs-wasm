@@ -123,7 +123,7 @@ impl Demo {
             segments: true,
         }));
         let mut grid_map = decode_texture_image(
-            &fetch("/web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
+            &fetch("assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
         )
         .await?;
         grid_map.srgb = true;
@@ -190,9 +190,7 @@ impl Demo {
             [-200., 0., 0.],
         );
         // The hierarchy: hardwood2_diffuse without a colour space.
-        let mut wood =
-            decode_texture_image(&fetch("/web/gallery/assets/hardwood2_diffuse.jpg").await?)
-                .await?;
+        let mut wood = decode_texture_image(&fetch("assets/hardwood2_diffuse.jpg").await?).await?;
         wood.srgb = false;
         wood.mipmap_filter = Some(Filter::Linear);
         let wood = Arc::new(wood);
@@ -312,7 +310,7 @@ impl Demo {
         );
         s.get_mut(hidden)?.visible = false;
         // ShaderBall ( KHR_mesh_quantization ).
-        let (a, b, i) = load_asset("/web/gallery/assets/gltf/ShaderBall.glb").await?;
+        let (a, b, i) = load_asset("assets/gltf/ShaderBall.glb").await?;
         let model = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let ball = s.insert(NodeKind::Group);
         for h in model.roots {
@@ -342,7 +340,7 @@ impl Demo {
             .collect();
         s.get_mut(instanced)?.instances = instances;
         // coffeemat ( KTX2 textures, meshopt geometry ).
-        let (a, b, i) = load_asset("/web/gallery/assets/gltf/coffeemat.glb").await?;
+        let (a, b, i) = load_asset("assets/gltf/coffeemat.glb").await?;
         let coffeemat = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let coffee = s.insert(NodeKind::Group);
         for h in coffeemat.roots {

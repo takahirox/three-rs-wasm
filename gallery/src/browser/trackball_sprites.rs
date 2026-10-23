@@ -367,8 +367,7 @@ impl Demo {
     }
     async fn hdr(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         s.background = Color::BLACK;
-        let (width, height, texels) =
-            parse_rgbe(&fetch("/web/gallery/assets/memorial.hdr").await?)?;
+        let (width, height, texels) = parse_rgbe(&fetch("assets/memorial.hdr").await?)?;
         // HDRLoader: HalfFloatType, linear filtering, no mipmaps, flipY.
         let texture = r.device.create_texture(&wgpu::TextureDescriptor {
             label: Some("HDR texture"),
@@ -551,8 +550,7 @@ impl Demo {
         g.set_attribute("normal", vec3s(normals)?);
         g.set_attribute("uv", Attribute::F32(BufferAttribute::new(uvs, 2, false)?));
         g.set_index(Some(index));
-        let mut atlas =
-            decode_texture_image(&fetch("/web/gallery/assets/minecraft/atlas.png").await?).await?;
+        let mut atlas = decode_texture_image(&fetch("assets/minecraft/atlas.png").await?).await?;
         atlas.srgb = true;
         atlas.filter = Filter::Nearest;
         atlas.min_filter = Some(Filter::Linear);
@@ -614,7 +612,7 @@ impl Demo {
             near: 1500.,
             far: 2100.,
         });
-        let base = "/web/gallery/assets";
+        let base = "assets";
         let map_b = texture(&format!("{base}/sprite1.png"), true).await?;
         let map_c = texture(&format!("{base}/sprite2.png"), true).await?;
         let hud = texture(

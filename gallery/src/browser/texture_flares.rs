@@ -14,7 +14,7 @@ use std::f64::consts::PI;
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const PROJECT: &str =
     "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
 fn random(seed: &mut u32) -> f64 {
@@ -257,9 +257,7 @@ impl Demo {
         s.look_at(c, Vector3::ZERO)?;
         let image = web_sys::HtmlImageElement::new().map_err(|_| Error::Invalid("image"))?;
         image.set_cross_origin(Some(""));
-        image.set_src(&super::asset_url(&format!(
-            "{ASSETS}/tsl-procedural/uv_grid_opengl.jpg"
-        ))?);
+        image.set_src(&format!("{ASSETS}/tsl-procedural/uv_grid_opengl.jpg"));
         wasm_bindgen_futures::JsFuture::from(image.decode())
             .await
             .map_err(|_| Error::Asset("uv_grid_opengl.jpg".into()))?;
@@ -946,7 +944,7 @@ impl Demo {
             far: 15.,
         });
         let mut env = crate::environment::EnvironmentMap::from_hdr(
-            &fetch("/web/environments/venice_sunset_1k.hdr").await?,
+            &fetch("environments/venice_sunset_1k.hdr").await?,
         )?;
         env.prefilter(r)?;
         s.environment = Some(Arc::new(env));

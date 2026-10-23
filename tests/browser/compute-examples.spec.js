@@ -190,7 +190,7 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/(NodeBuffer_\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
-  await page.goto(runtime!=='rust'?`/reference/three-js/compute-examples.html?id=${official(kind)}&samples=${samples}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+  await page.goto(runtime!=='rust'?`/reference/three-js/compute-examples.html?id=${official(kind)}&samples=${samples}`:`/web/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(v=>{const c=document.querySelector(v);const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info,#stats,#selectBox,#blocker{display:none!important}'+(spec.hide?spec.hide+'{visibility:hidden!important}':'')});
@@ -236,7 +236,7 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  test(`Compute examples GPU residency: ${kind}`,async({page},info)=>{
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -298,7 +298,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
-   await page.goto(runtime==='reference'?`/reference/three-js/compute-examples.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/compute-examples.html?id=${official(kind)}`:`/web/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(v=>{const c=document.querySelector(v);if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},view);
    // Per-frame solvers (the IK chain) converge before the measured frame.
    // Steps a page must finish before its steady frames ( the decoded video's end ).
@@ -345,7 +345,7 @@ test('Bitonic sort: both sorts match the original step by step',async({page},inf
  await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...a){creates++;return original.apply(this,a);};}});
  const times=[0,.35,1.2,3.55,4.6,5.2,10.55,11.7,12.2];const shots={};
  for(const runtime of ['reference','rust']){
-  await page.goto(runtime==='reference'?'/reference/three-js/compute-examples.html?id=webgpu_compute_sort_bitonic':'/web/gallery/examples/webgpu_compute_sort_bitonic.html?still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/compute-examples.html?id=webgpu_compute_sort_bitonic':'/web/examples/webgpu_compute_sort_bitonic.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
   const list=[];const counts=[];
@@ -367,7 +367,7 @@ test('Linked particles: trails and links follow the pointer as in the original',
  const at=[20,40,60,80];const shots={};
  for(const runtime of ['reference','rust']){
   await page.mouse.move(256,256);
-  await page.goto(runtime==='reference'?'/reference/three-js/compute-examples.html?id=webgpu_tsl_vfx_linkedparticles':'/web/gallery/examples/webgpu_tsl_vfx_linkedparticles.html?still=1');
+  await page.goto(runtime==='reference'?'/reference/three-js/compute-examples.html?id=webgpu_tsl_vfx_linkedparticles':'/web/examples/webgpu_tsl_vfx_linkedparticles.html?still=1');
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   await page.addStyleTag({content:'#notice,#settings,#info,#stats{display:none!important}'});
   const list=[];

@@ -8,7 +8,7 @@ fn hdr_is_linear_and_lights_a_metal() {
     three_rs_wasm::basis::install();
     three_rs_wasm::compression::install_draco();
     let environment = EnvironmentMap::from_hdr(include_bytes!(
-        "../web/environments/pedestrian_overpass_1k.hdr"
+        "../web/examples/environments/pedestrian_overpass_1k.hdr"
     ))
     .unwrap();
     assert_eq!((environment.width, environment.height), (1024, 512));
@@ -91,7 +91,7 @@ fn importer_loads_original_pbr_maps_and_rejects_missing_buffers() {
     // The loaders' KTX2Loader and DRACOLoader.
     three_rs_wasm::basis::install();
     three_rs_wasm::compression::install_draco();
-    let bytes = include_bytes!("../web/models/BoomBox.glb");
+    let bytes = include_bytes!("../web/examples/models/BoomBox.glb");
     let asset = gltf::Gltf::from_slice(bytes).unwrap();
     assert!(three_rs_wasm::gltf::import(&asset, &[], &[]).is_err());
     let buffers = vec![asset.blob.clone().unwrap()];

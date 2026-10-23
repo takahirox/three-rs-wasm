@@ -275,7 +275,7 @@ impl Demo {
         controls.set_target(Vector3::ZERO);
         controls.update(s, c)?;
         let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/tsl-next/models/gltf/DragonAttenuation.glb").await?;
+            load_asset("assets/tsl-next/models/gltf/DragonAttenuation.glb").await?;
         let init = |label, data: &[u8], usage| {
             r.device
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {

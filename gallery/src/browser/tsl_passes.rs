@@ -163,8 +163,7 @@ impl Demo {
                 camera(scene, cam, 70.0, 0.1, 10.0, Vector3::new(0.0, 0.0, 3.0))?;
                 scene.background = Color::from_hex(0x0066ff);
                 let mut material = MeshBasicMaterial::default();
-                material.properties.map =
-                    Some(map("/web/gallery/assets/uv-grid.jpg", false, true).await?);
+                material.properties.map = Some(map("assets/uv-grid.jpg", false, true).await?);
                 out.objects.push(mesh(
                     scene,
                     BoxGeometry::build(1.0, 1.0, 1.0)?,
@@ -259,7 +258,7 @@ impl Demo {
                 out.viewer
                     .fixture(1.0_f64.atan2(3.0), (2.0 / 14.0_f64.sqrt()).asin(), 1.8);
                 let mut material = MeshBasicMaterial::default();
-                material.properties.map = Some(map("/web/crate.gif", true, true).await?);
+                material.properties.map = Some(map("textures/crate.gif", true, true).await?);
                 out.objects.push(mesh(
                     scene,
                     BoxGeometry::build(1.0, 1.0, 1.0)?,
@@ -313,8 +312,8 @@ impl Demo {
                     });
                 }
                 for (url, mips) in [
-                    ("/web/gallery/assets/caravaggio.jpg", false),
-                    ("/web/gallery/assets/panorama.jpg", true),
+                    ("assets/caravaggio.jpg", false),
+                    ("assets/panorama.jpg", true),
                 ] {
                     let image = map(url, true, mips).await?;
                     out.pictures.push(renderer.upload_texture(&image)?);

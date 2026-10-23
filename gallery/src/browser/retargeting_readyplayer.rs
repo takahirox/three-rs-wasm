@@ -290,8 +290,7 @@ impl Demo {
         let action = source_mixer.clip_action(s, clip.clone(), false)?;
         source_mixer.play(s, action)?;
         // The target: readyplayer.me, at the page's placement.
-        let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/gltf/readyplayer.me.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/readyplayer.me.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(s)?;
         let target_root = s.insert(NodeKind::Group);

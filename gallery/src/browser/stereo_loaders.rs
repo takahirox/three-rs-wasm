@@ -425,8 +425,7 @@ impl Demo {
             203..=205 | 334 => d.stereo_scene(s, r).await?,
             206 => {
                 for file in PCD_FILES {
-                    d.pcd
-                        .push(fetch(&format!("/web/gallery/assets/pcd/{file}")).await?);
+                    d.pcd.push(fetch(&format!("assets/pcd/{file}")).await?);
                 }
             }
             _ => {
@@ -436,8 +435,7 @@ impl Demo {
                 s.add(group, g)?;
                 d.group = Some(group);
                 let mut t =
-                    decode_texture_image(&fetch("/web/gallery/assets/earth_atmos_2048.jpg").await?)
-                        .await?;
+                    decode_texture_image(&fetch("assets/earth_atmos_2048.jpg").await?).await?;
                 t.srgb = true;
                 t.mipmap_filter = Some(Filter::Linear);
                 d.earth = Some(Arc::new(t));
@@ -453,15 +451,9 @@ impl Demo {
     }
     async fn stereo_scene(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
         let (base, ext) = if matches!(self.id, 203 | 334) {
-            (
-                "/web/gallery/assets/tsl-lighting/textures/cube/Park3Med",
-                "jpg",
-            )
+            ("assets/tsl-lighting/textures/cube/Park3Med", "jpg")
         } else {
-            (
-                "/web/gallery/assets/environment-materials/textures/cube/pisa",
-                "png",
-            )
+            ("assets/environment-materials/textures/cube/pisa", "png")
         };
         let env = cube(r, base, ext).await?;
         let sample = |d: Node| {

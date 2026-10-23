@@ -13,7 +13,7 @@ use crate::{
     tsl::{self, sprites::SpriteNodeMaterial, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/point-clouds";
+const ASSETS: &str = "assets/point-clouds";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -180,7 +180,7 @@ impl Demo {
                 let path = match id {
                     163 => format!("{ASSETS}/disc.png"),
                     164 => format!("{ASSETS}/snowflake{}.png", [2, 3, 1, 5, 4][group]),
-                    166 => "/web/gallery/assets/spark1.png".into(),
+                    166 => "assets/spark1.png".into(),
                     _ => format!("{ASSETS}/ball.png"),
                 };
                 let mut t = decode_texture_image(&fetch(&path).await?).await?;

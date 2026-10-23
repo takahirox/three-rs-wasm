@@ -34,7 +34,7 @@ impl Demo {
         // FBXLoader.load( 'models/fbx/nurbs.fbx' ): the curves as lines under
         // the loader's group.
         let fbx = crate::fbx::parse(
-            &fetch("/web/gallery/assets/fbx/nurbs.fbx").await?,
+            &fetch("assets/fbx/nurbs.fbx").await?,
             &crate::fbx::Options::default(),
         )?;
         let geometries: Vec<Arc<BufferGeometry>> = fbx

@@ -1,42 +1,42 @@
 [
   {
     "source": "examples/models/gltf/IridescenceLamp.glb",
-    "destination": "web/models/IridescenceLamp.glb",
+    "destination": "web/examples/models/IridescenceLamp.glb",
     "sha256": "60e991ad33985c7b2b3af1d8a0d0f62e1e2d1f3c05f5d8f0aabfb8db6b70be30"
   },
   {
     "source": "examples/textures/equirectangular/venice_sunset_1k.hdr",
-    "destination": "web/environments/venice_sunset_1k.hdr",
+    "destination": "web/examples/environments/venice_sunset_1k.hdr",
     "sha256": "0e72ed46b5316cb5fb67fc81ff85b024a09146fd89ef3811a8d2299647ada118"
   },
   {
     "source": "examples/models/gltf/AnisotropyBarnLamp.glb",
-    "destination": "web/models/AnisotropyBarnLamp.glb",
+    "destination": "web/examples/models/AnisotropyBarnLamp.glb",
     "sha256": "3068f5b617a63816aefb76a0154f22fde7a664ecd4bb29e7a530bd2dc77a0099"
   },
   {
     "source": "examples/models/gltf/SheenChair.glb",
-    "destination": "web/models/SheenChair.glb",
+    "destination": "web/examples/models/SheenChair.glb",
     "sha256": "07c80216eb5d57fc9d4148e1e14a69e19d3436eca1af33590d8d36c04957ffd4"
   },
   {
     "source": "examples/models/gltf/IridescentDishWithOlives.glb",
-    "destination": "web/models/IridescentDishWithOlives.glb",
+    "destination": "web/examples/models/IridescentDishWithOlives.glb",
     "sha256": "98a6db7fbc0b90b9807fd57189e8cf71642672ee0301609b0aabcc28c698f29f"
   },
   {
     "source": "examples/models/gltf/DispersionTest.glb",
-    "destination": "web/models/DispersionTest.glb",
+    "destination": "web/examples/models/DispersionTest.glb",
     "sha256": "bb7710e6eaeb1c81fc5f62000ed014689e4bd8ef300c3f9e3a08b2a6db821be7"
   },
   {
     "source": "examples/models/gltf/coffeemat.glb",
-    "destination": "web/models/coffeemat.glb",
+    "destination": "web/examples/models/coffeemat.glb",
     "sha256": "2cf091a8a32da5fc495f64beb02b1155fc57c0c9d3ef871ebce67981dedddf69"
   },
   {
     "source": "examples/textures/equirectangular/pedestrian_overpass_1k.hdr",
-    "destination": "web/environments/pedestrian_overpass_1k.hdr",
+    "destination": "web/examples/environments/pedestrian_overpass_1k.hdr",
     "sha256": "3d2c4068676cfead5dce9a12896cf1ebcac4e97914938e3c2987b70cad4e4c4a"
   }
 ]

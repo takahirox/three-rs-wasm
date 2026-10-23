@@ -80,12 +80,12 @@ identities.
 
 ## The gallery page
 
-`web/gallery/tsl-editor.js` builds the original page around the crate's own
-Wasm (`web/tsl-pkg`, built with `--profile web`). It uses:
+`web/examples/tsl-editor.js` builds the original page around the crate's own
+Wasm (`web/build/tsl`, built with `--profile web`). It uses:
 
 - Monaco and lil-gui from the CDNs the original uses;
 - the gallery's import map, which points `three/tsl` at
-  `web/gallery/tsl-module.js` (the crate's `Three.TSL.js` namespace);
+  `web/examples/tsl-module.js` (the crate's `Three.TSL.js` namespace);
 - the original script, with `THREE` from the crate.
 
 The runtime is synchronous. So the page requests the device as

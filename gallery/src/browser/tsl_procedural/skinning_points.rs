@@ -23,8 +23,7 @@ impl SkinningPoints {
         s.get_mut(c)?.position = Vector3::new(0., 300., -85.);
         s.look_at(c, Vector3::new(0., 0., -85.))?;
         s.background = Color::from_hex(0x111111);
-        let (a, b, i) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-viewport/models/gltf/Michelle.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let group = s.insert(NodeKind::Group);
         for root in instance.roots {

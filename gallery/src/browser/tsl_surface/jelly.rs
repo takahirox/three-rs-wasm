@@ -58,7 +58,7 @@ impl Demo {
         scene.get_mut(back)?.frustum_culled = false;
         scene.get_mut(back)?.render_order = i32::MIN;
         let (asset, buffers, images) =
-            super::super::gltf_viewer::load_asset("/web/models/LeePerrySmith.glb").await?;
+            super::super::gltf_viewer::load_asset("models/LeePerrySmith.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let h = instance.meshes[0];

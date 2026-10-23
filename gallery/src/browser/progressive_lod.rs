@@ -42,7 +42,7 @@ const MODELS: [(&str, f64, [f64; 3], f64); 3] = [
         PI,
     ),
 ];
-const ENVIRONMENT: &str = "/web/gallery/assets/draco-variants/quarry_01_1k.hdr";
+const ENVIRONMENT: &str = "assets/draco-variants/quarry_01_1k.hdr";
 
 pub(super) struct Demo {
     controls: Controls,

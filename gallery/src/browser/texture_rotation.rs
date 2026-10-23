@@ -78,7 +78,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
         (position.y / position.length()).asin(),
         1.8,
     );
-    let mut texture = decode_image(&fetch("/web/gallery/assets/uv-grid.jpg").await?).await?;
+    let mut texture = decode_image(&fetch("assets/uv-grid.jpg").await?).await?;
     texture.anisotropy = 16;
     texture.wrap_s = Wrapping::Repeat;
     texture.wrap_t = Wrapping::Repeat;

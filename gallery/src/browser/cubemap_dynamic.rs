@@ -297,7 +297,7 @@ impl Demo {
         for (layer, face) in ["px", "nx", "py", "ny", "pz", "nz"].iter().enumerate() {
             let (width, height, texels) = parse_rgbe(
                 &fetch(&format!(
-                    "/web/gallery/assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr"
+                    "assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr"
                 ))
                 .await?,
             )?;
@@ -337,7 +337,7 @@ impl Demo {
         let sky = cube_view(&sky_texture);
         // uv_grid_opengl.jpg: flipped, mipmapped, no color space.
         let image = decode_texture_image(
-            &fetch("/web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
+            &fetch("assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
         )
         .await?;
         let row = image.width as usize * 4;

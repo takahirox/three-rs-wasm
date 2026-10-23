@@ -8,7 +8,7 @@
 // not gets its own glue, parts/<name>.js: the wrappers of its exports and the
 // functions it imports. The primary module's glue keeps the rest and exports
 // what the parts' glue uses. A page loads the primary module's glue and its
-// parts' ( web/gallery/runtime.js ).
+// parts' ( web/examples/runtime.js ).
 //
 // A part's glue is a module whose default export binds it to the primary
 // module's glue, given as its namespace ( live: wasm, WASM_VECTOR_LEN ):

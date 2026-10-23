@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
 // The transpiler page's module ( tools/gallery/modules.py ).
-const pkg=JSON.parse(readFileSync('web/gallery/modules.json','utf8')).examples.webgpu_tsl_transpiler;
+const pkg=JSON.parse(readFileSync('web/examples/modules.json','utf8')).examples.webgpu_tsl_transpiler;
 // webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r186 one
 // ( examples/jsm/transpiler/ ), both run in the same page. The output text and the
 // error messages must match character for character, for both encoders.
@@ -19,7 +19,7 @@ test('Transpiler output matches the original for every GLSL input',async({page},
   const GLSLDecoder=(await import('/.cache/three-r186/examples/jsm/transpiler/GLSLDecoder.js')).default;
   const TSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/TSLEncoder.js')).default;
   const WGSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/WGSLEncoder.js')).default;
-  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime(pkg);
+  const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(pkg);
   // The page's GLSL, every three.js shader chunk and every examples shader.
   const base=[['page',pageGlsl]];
   const {ShaderChunk}=await import('/.cache/three-r186/src/renderers/shaders/ShaderChunk.js');
@@ -69,7 +69,7 @@ test('Transpiler output matches the original for every GLSL input',async({page},
 
 test('Gallery page transpiles with the page editors and encoder selection',async({page})=>{
  test.setTimeout(180000);const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.goto('/web/gallery/examples/webgpu_tsl_transpiler.html');
+ await page.goto('/web/examples/webgpu_tsl_transpiler.html');
  const builds=()=>page.evaluate(()=>Number(document.body.dataset.builds||0));
  await expect.poll(builds,{timeout:90000}).toBe(1);
  // The original runs in the fixture page, whose import map resolves three/webgpu.

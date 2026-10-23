@@ -21,7 +21,7 @@ which use WebGLRenderer, stay deferred.
 
 The work is split between JavaScript and Rust as three's own code splits it.
 
-**`web/gallery/xr.js`: the browser side of XRManager.setSession and
+**`web/examples/xr.js`: the browser side of XRManager.setSession and
 onAnimationFrame.**
 
 - It creates the XRButton (cubes) or VRButton with the original's labels and

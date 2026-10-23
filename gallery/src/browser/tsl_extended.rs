@@ -156,7 +156,7 @@ impl Demo {
         Ok(out)
     }
     async fn compressed_array(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        let bytes = fetch("/web/gallery/assets/spiritedaway.ktx2").await?;
+        let bytes = fetch("assets/spiritedaway.ktx2").await?;
         let texture = GpuTexture::from_basis_array(r, &bytes, true)?;
         let phase = uniform(0, Type::Float) * float(10.0) + float(1.0);
         let layer = phase.clone() - (phase / float(5.0)).floor() * float(5.0);
@@ -174,12 +174,11 @@ impl Demo {
         Ok(())
     }
     async fn texture_array(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
-        let data =
-            crate::compression::unzip(&fetch("/web/gallery/assets/head256x256x109.zip").await?)?
-                .into_iter()
-                .find(|(name, _)| name == "head256x256x109")
-                .map(|(_, data)| data)
-                .ok_or(Error::Invalid("head256x256x109.zip"))?;
+        let data = crate::compression::unzip(&fetch("assets/head256x256x109.zip").await?)?
+            .into_iter()
+            .find(|(name, _)| name == "head256x256x109")
+            .map(|(_, data)| data)
+            .ok_or(Error::Invalid("head256x256x109.zip"))?;
         if data.len() != 256 * 256 * 109 {
             return Err(Error::Invalid("head array texture length"));
         }
@@ -311,7 +310,7 @@ impl Demo {
         s.get_mut(bg)?.frustum_culled = false;
         s.get_mut(bg)?.render_order = -100;
         s.get_mut(bg)?.layers.mask = 1 << 31;
-        let mut image = decode_image(&fetch("/web/gallery/assets/blossom.png").await?).await?;
+        let mut image = decode_image(&fetch("assets/blossom.png").await?).await?;
         image.srgb = true;
         image.mipmap_filter = Some(Filter::Linear);
         let image = r.upload_texture(&Arc::new(image))?;

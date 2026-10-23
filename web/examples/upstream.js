@@ -14,12 +14,14 @@ const part = globalThis.document?.getElementById('upstream-assets');
 const listing = part ? JSON.parse(part.textContent) : await (await fetchFile(WHOLE)).json();
 let whole = part ? null : Promise.resolve(listing);
 
+// The listing names files by their path from the site's root ( web/ ).
+const ROOT = new URL('../', import.meta.url);
+
 function lookup(files, url) {
 	try {
 		const resolved = new URL(url, globalThis.document?.baseURI ?? globalThis.location.href);
-		const path = decodeURIComponent(resolved.pathname);
-		const at = path.indexOf('/web/');
-		const file = at < 0 ? undefined : files[path.slice(at + 1)];
+		if (resolved.origin !== ROOT.origin || !resolved.pathname.startsWith(ROOT.pathname)) return null;
+		const file = files[decodeURIComponent(resolved.pathname.slice(ROOT.pathname.length))];
 		return file ? listing.base + encodeURI(file) : null;
 	} catch {
 		return null;

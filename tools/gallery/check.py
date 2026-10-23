@@ -6,8 +6,8 @@ import tarfile
 from pathlib import Path
 from build import ARCHIVE, ROOT, UI_FILES, PORTS, WEBGPU_EQUIVALENTS
 
-catalog = json.loads((ROOT/'web/gallery/catalog.json').read_text())
-files = json.loads((ROOT/'web/gallery/files.json').read_text())
+catalog = json.loads((ROOT/'web/examples/catalog.json').read_text())
+files = json.loads((ROOT/'web/examples/files.json').read_text())
 rows = catalog['examples']
 ids = [row['id'] for row in rows]
 assets={'caravaggio.jpg':'examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg','panorama.jpg':'examples/textures/2294472375_24a3b8ef46_o.jpg','uv-grid.jpg':'examples/textures/uv_grid_opengl.jpg','spot1Lux.hdr':'examples/textures/equirectangular/spot1Lux.hdr','earth-lights.png':'examples/textures/planets/earth_lights_2048.png'}
@@ -18,14 +18,14 @@ assets.update({f'cube_m0{level}_c0{face}.jpg':f'examples/textures/cube/angus/cub
 assets.update({f'castle-{face}.jpg':f'examples/textures/cube/SwedishRoyalCastle/{face}.jpg' for face in ['px','nx','py','ny','pz','nz']})
 assets.update({name:f'examples/textures/planets/{name}' for name in ['earth_day_4096.jpg','earth_night_4096.jpg','earth_bump_roughness_clouds_4096.jpg']})
 assets.update({'spiritedaway.ktx2':'examples/textures/spiritedaway.ktx2','blossom.png':'examples/textures/sprites/blossom.png'})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-next')) for path in (ROOT/'web/gallery/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['smaa-area.png','smaa-search.png']})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-environment')) for path in (ROOT/'web/gallery/assets/tsl-environment').rglob('*') if path.is_file()})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-lighting')) for path in (ROOT/'web/gallery/assets/tsl-lighting').rglob('*') if path.is_file()})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-viewport')) for path in (ROOT/'web/gallery/assets/tsl-viewport').rglob('*') if path.is_file()})
-assets.update({str(path.relative_to(ROOT/'web/gallery/assets')):'examples/'+str(path.relative_to(ROOT/'web/gallery/assets/tsl-materials')) for path in (ROOT/'web/gallery/assets/tsl-materials').rglob('*') if path.is_file() and path.suffix not in ['.bin','.json']})
+assets.update({str(path.relative_to(ROOT/'web/examples/assets')):'examples/'+str(path.relative_to(ROOT/'web/examples/assets/tsl-next')) for path in (ROOT/'web/examples/assets/tsl-next').rglob('*') if path.is_file() and path.name not in ['smaa-area.png','smaa-search.png']})
+assets.update({str(path.relative_to(ROOT/'web/examples/assets')):'examples/'+str(path.relative_to(ROOT/'web/examples/assets/tsl-environment')) for path in (ROOT/'web/examples/assets/tsl-environment').rglob('*') if path.is_file()})
+assets.update({str(path.relative_to(ROOT/'web/examples/assets')):'examples/'+str(path.relative_to(ROOT/'web/examples/assets/tsl-lighting')) for path in (ROOT/'web/examples/assets/tsl-lighting').rglob('*') if path.is_file()})
+assets.update({str(path.relative_to(ROOT/'web/examples/assets')):'examples/'+str(path.relative_to(ROOT/'web/examples/assets/tsl-viewport')) for path in (ROOT/'web/examples/assets/tsl-viewport').rglob('*') if path.is_file()})
+assets.update({str(path.relative_to(ROOT/'web/examples/assets')):'examples/'+str(path.relative_to(ROOT/'web/examples/assets/tsl-materials')) for path in (ROOT/'web/examples/assets/tsl-materials').rglob('*') if path.is_file() and path.suffix not in ['.bin','.json']})
 assets.update({'tsl-procedural/checker.png':'examples/textures/checker.png','tsl-procedural/webgpu-audio-processing.mp3':'examples/sounds/webgpu-audio-processing.mp3','tsl-procedural/FloorsCheckerboard_S_Normal.jpg':'examples/textures/floors/FloorsCheckerboard_S_Normal.jpg','tsl-procedural/FloorsCheckerboard_S_Diffuse.jpg':'examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg','tsl-procedural/decal-diffuse.png':'examples/textures/decal/decal-diffuse.png','tsl-procedural/decal-normal.jpg':'examples/textures/decal/decal-normal.jpg','tsl-procedural/pedestrian_overpass_1k.hdr':'examples/textures/equirectangular/pedestrian_overpass_1k.hdr','tsl-procedural/san_giuseppe_bridge_2k.hdr':'examples/textures/equirectangular/san_giuseppe_bridge_2k.hdr','tsl-procedural/gears.glb':'examples/models/gltf/gears.glb','tsl-procedural/Xbot.glb':'examples/models/gltf/Xbot.glb','tsl-procedural/uv_grid_directx.jpg':'examples/textures/uv_grid_directx.jpg'})
-assets.update({'tsl-primitives/'+record['file']:'examples/'+record['source'] for record in json.loads((ROOT/'web/gallery/assets/tsl-primitives/manifest.json').read_text()) if 'source' in record})
-extra_assets={'web/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
+assets.update({'tsl-primitives/'+record['file']:'examples/'+record['source'] for record in json.loads((ROOT/'web/examples/assets/tsl-primitives/manifest.json').read_text()) if 'source' in record})
+extra_assets={'web/examples/models/Michelle.glb':'examples/models/gltf/Michelle.glb','web/examples/models/PrimaryIonDrive.glb':'examples/models/gltf/PrimaryIonDrive.glb','web/examples/models/LeePerrySmith.glb':'examples/models/gltf/LeePerrySmith/LeePerrySmith.glb','web/examples/models/LeePerrySmith_License.txt':'examples/models/gltf/LeePerrySmith/LeePerrySmith_License.txt','web/examples/environments/moonless_golf_1k.hdr':'examples/textures/equirectangular/moonless_golf_1k.hdr'}
 assert len(ids) == len(set(ids)), 'duplicate catalog ID'
 with tarfile.open(ARCHIVE) as tar:
  sources = {}
@@ -44,7 +44,7 @@ with tarfile.open(ARCHIVE) as tar:
    if name in WEBGPU_EQUIVALENTS: assert row['preferred_example']==WEBGPU_EQUIVALENTS[name]
    assert row['excluded_reason'] and not row['port']
   else:
-   assert (ROOT/f'web/gallery/screenshots/{name}.jpg').read_bytes()==sources[f'examples/screenshots/{name}.jpg'], name
+   assert (ROOT/f'web/examples/screenshots/{name}.jpg').read_bytes()==sources[f'examples/screenshots/{name}.jpg'], name
   if row['port']:
    assert row['port']==PORTS[name]
    assert (ROOT/row['port']['source']).is_file() and (ROOT/row['port']['test']).is_file()
@@ -52,34 +52,34 @@ with tarfile.open(ARCHIVE) as tar:
   else: assert row['status'] in ('excluded','not-ported')
   for evidence in row['requirements'].values():
    for item in evidence: assert sources[f'examples/{name}.html'].decode().splitlines()[item['line']-1].strip().startswith(item['text'])
- for name,upstream in assets.items():assert (ROOT/f'web/gallery/assets/{name}').read_bytes()==sources[upstream],name
+ for name,upstream in assets.items():assert (ROOT/f'web/examples/assets/{name}').read_bytes()==sources[upstream],name
  for name,upstream in extra_assets.items():assert (ROOT/name).read_bytes()==sources[upstream],name
  for name in UI_FILES: assert (ROOT/f'web/files/{name}').read_bytes()==sources[f'files/{name}'], name
  for name in ['webgl_loader_gltf_instancing','webgl_loader_gltf_compressed','webgl_loader_gltf_avif','webgl_depth_texture','webgl_loader_texture_ktx']:
   assert name in WEBGPU_EQUIVALENTS or next(r for r in rows if r['id']==name)['status']!='excluded', 'portable examples need a WebGPU equivalent to be excluded'
 print(f'Gallery inventory: {len(rows)} sources / {sum(r["status"]!="excluded" for r in rows)} included / {len(PORTS)} partial ports verified')
 
-for record in json.loads((ROOT/'web/gallery/assets/tsl-primitives/manifest.json').read_text()):
- assert hashlib.sha256((ROOT/'web/gallery/assets/tsl-primitives'/record['file']).read_bytes()).hexdigest()==record['sha256']
+for record in json.loads((ROOT/'web/examples/assets/tsl-primitives/manifest.json').read_text()):
+ assert hashlib.sha256((ROOT/'web/examples/assets/tsl-primitives'/record['file']).read_bytes()).hexdigest()==record['sha256']
 
-for record in json.loads((ROOT/"web/gallery/assets/material-textures/manifest.json").read_text())["files"]:
- assert hashlib.sha256((ROOT/"web/gallery/assets/material-textures"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+for record in json.loads((ROOT/"web/examples/assets/material-textures/manifest.json").read_text())["files"]:
+ assert hashlib.sha256((ROOT/"web/examples/assets/material-textures"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
 
-for record in json.loads((ROOT/"web/gallery/assets/shapes/manifest.json").read_text()):
- assert hashlib.sha256((ROOT/"web/gallery/assets/shapes"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+for record in json.loads((ROOT/"web/examples/assets/shapes/manifest.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/examples/assets/shapes"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
  if "source_sha256" in record:
   assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["source_sha256"]
 
-for record in json.loads((ROOT/"web/gallery/assets/buffer-particles-manifest.json").read_text()):
- assert hashlib.sha256((ROOT/"web/gallery/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+for record in json.loads((ROOT/"web/examples/assets/buffer-particles-manifest.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/examples/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
  assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]
 
 for folder in ['point-clouds','shader-geometry','geometry-materials','environment-materials','css3d','svg-renderer']:
- for record in json.loads((ROOT/'web/gallery/assets'/folder/'manifest.json').read_text()):
-  assert hashlib.sha256((ROOT/'web/gallery/assets'/folder/record['file']).read_bytes()).hexdigest()==record['sha256']
+ for record in json.loads((ROOT/'web/examples/assets'/folder/'manifest.json').read_text()):
+  assert hashlib.sha256((ROOT/'web/examples/assets'/folder/record['file']).read_bytes()).hexdigest()==record['sha256']
   expected=record.get('source_sha256',record['sha256'])
   assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==expected
 
-for record in json.loads((ROOT/"web/gallery/assets/interactive-objects-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/interactive-scenes-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/views-loaders-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/stereo-loaders-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/controls-attributes-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/trackball-sprites-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/terrain-loaders-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/models-modifiers-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/picking-buffers-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/helpers-formats-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/refraction-loaders-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/shapes-lights-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/text-clipping-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/exporters-matcap-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/sky-water-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/lights-probes-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/exporters-video-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/shadow-rtt-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/probes-hdr-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/passes-decals-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/draco-variants-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/texture-flares-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/spot-skinning-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/transform-curves-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/gltf-normals-manifest.json").read_text())+json.loads((ROOT/"web/gallery/assets/loaders-audio-manifest.json").read_text()):
- assert hashlib.sha256((ROOT/"web/gallery/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
+for record in json.loads((ROOT/"web/examples/assets/interactive-objects-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/interactive-scenes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/views-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/stereo-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/controls-attributes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/trackball-sprites-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/terrain-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/models-modifiers-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/picking-buffers-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/helpers-formats-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/refraction-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/shapes-lights-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/text-clipping-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/exporters-matcap-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/sky-water-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/lights-probes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/exporters-video-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/shadow-rtt-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/probes-hdr-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/passes-decals-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/draco-variants-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/texture-flares-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/spot-skinning-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/transform-curves-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/gltf-normals-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/loaders-audio-manifest.json").read_text()):
+ assert hashlib.sha256((ROOT/"web/examples/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
  assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]

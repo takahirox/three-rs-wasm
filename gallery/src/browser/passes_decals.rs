@@ -12,7 +12,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const PROJECT: &str =
     "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}";
 fn random(seed: &mut u32) -> f64 {
@@ -585,7 +585,7 @@ fn effect(uv:vec2<f32>)->vec4<f32>{return params[0].x*textureSample(wood_texture
         let n = s.get_mut(line)?;
         n.visible = false;
         n.frustum_culled = false;
-        let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+        let (asset, buffers, images) = load_asset("models/LeePerrySmith.glb").await?;
         let meshes = crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(s)?;
         let geometry = match &s.get(meshes[0])?.kind {
             NodeKind::Mesh(m) => m.geometry.clone(),

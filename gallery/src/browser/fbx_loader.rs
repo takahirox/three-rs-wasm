@@ -22,7 +22,7 @@ use std::f64::consts::PI;
 use std::rc::Rc;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/fbx-loader/models/fbx";
+const ASSETS: &str = "assets/fbx-loader/models/fbx";
 /// The page's asset list.
 const NAMES: [&str; 14] = [
     "Samba Dancing",

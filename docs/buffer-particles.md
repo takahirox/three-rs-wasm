@@ -83,7 +83,7 @@ npx playwright test -c playwright.gallery.config.js buffer-particles.spec.js
 PARTICLES_DPR=2 npx playwright test -c playwright.gallery.config.js buffer-particles.spec.js
 ```
 
-For interactive inspection, open `/web/gallery/#webgl_buffergeometry_points`
+For interactive inspection, open `/web/examples/#webgl_buffergeometry_points`
 or select any of the five entries in the gallery. Reference and diagnostic
 fixtures live at `/reference/three-js/buffer-particles.html?id=EXAMPLE_ID`;
 `&pointQuads=1` and `&webgpuLines=1` enable the explicitly adapted diagnostics.

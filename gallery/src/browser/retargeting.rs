@@ -522,9 +522,9 @@ impl Demo {
         let vertex = wgpu::BufferUsages::VERTEX;
         let index_usage = wgpu::BufferUsages::INDEX;
         let (michelle, michelle_buffers, michelle_images) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb").await?;
+            load_asset("assets/tsl-viewport/models/gltf/Michelle.glb").await?;
         let (soldier, soldier_buffers, soldier_images) =
-            load_asset("/web/gallery/assets/spot-skinning/Soldier.glb").await?;
+            load_asset("assets/spot-skinning/Soldier.glb").await?;
         let mut mipmaps = Mipmaps::new(r);
         // Michelle's maps: color, metalness / roughness, specular color, normal.
         let m_material = michelle

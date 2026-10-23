@@ -42,7 +42,7 @@ The page's MaterialXLoader is ported: r186's
 `libs/fflate.module.js` are transpiled to Rust in the three-tsl crate
 ( `tsl/src/three/addons/` ), on its JavaScript object model, with a Rust
 DOMParser ( `tsl/src/dom.rs` ). At load, the page fetches the 36 documents
-and hands them to three-tsl's Wasm ( `web/tsl-pkg`, the `materialx_shaders`
+and hands them to three-tsl's Wasm ( `web/build/tsl`, the `materialx_shaders`
 export ). There `tsl/src/materialx_page.rs` builds the page's scene
 ( renderer, tone mapping, environment, the TSL grid ground ), parses each
 document with the page's options ( top-left uv space, the strict interface

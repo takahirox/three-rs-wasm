@@ -17,7 +17,7 @@ use crate::{
 };
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 // The composer targets, by index.
 const SCENE: usize = 0;
 const FULL_A: usize = 1;
@@ -106,7 +106,7 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(light)?.position = Vector3::new(0., -0.1, 1.).normalize();
-        let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+        let (asset, buffers, images) = load_asset("models/LeePerrySmith.glb").await?;
         let mut temp = Scene::default();
         let meshes =
             crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(&mut temp)?;

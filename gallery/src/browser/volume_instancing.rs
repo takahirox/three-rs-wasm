@@ -145,7 +145,7 @@ impl Demo {
         let mut controls = Controls::new(Some(0.05), (0., f64::INFINITY), PI, true);
         controls.auto_rotate = Some(-1.);
         controls.update(s, c)?;
-        let (x, y, z, voxels) = volume(&fetch("/web/gallery/assets/vox/menger.vox").await?)?;
+        let (x, y, z, voxels) = volume(&fetch("assets/vox/menger.vox").await?)?;
         let size = wgpu::Extent3d {
             width: x,
             height: y,

@@ -135,8 +135,7 @@ impl Demo {
         // Ammo().then( init ): initPhysics().
         let physics = super::ammo::soft_world(-9.8).await?;
         // createObjects(): the ground with the grid ( sRGB ).
-        let mut grid =
-            decode_texture_image(&fetch("/web/gallery/assets/physics/grid.png").await?).await?;
+        let mut grid = decode_texture_image(&fetch("assets/physics/grid.png").await?).await?;
         grid.srgb = true;
         grid.mipmap_filter = Some(Filter::Linear);
         grid.wrap_s = Wrapping::Repeat;
@@ -185,8 +184,7 @@ impl Demo {
         )?;
         // The soft volumes, mapped with colors.png ( no color space ).
         let mut colors =
-            decode_texture_image(&fetch("/web/gallery/assets/spot-skinning/colors.png").await?)
-                .await?;
+            decode_texture_image(&fetch("assets/spot-skinning/colors.png").await?).await?;
         colors.srgb = false;
         colors.mipmap_filter = Some(Filter::Linear);
         let colors = Arc::new(colors);

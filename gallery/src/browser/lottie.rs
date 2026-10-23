@@ -20,7 +20,7 @@ use std::f64::consts::PI;
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const ASSET: &str = "/web/gallery/assets/lottie/24017-lottie-logo-animation.json";
+const ASSET: &str = "assets/lottie/24017-lottie-logo-animation.json";
 
 type Json = serde_json::Value;
 fn numbers(v: &Json) -> Vec<f64> {

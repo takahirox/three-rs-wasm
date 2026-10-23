@@ -16,7 +16,7 @@ fn install() {
 
 async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<super::expanded::Demo> {
     install();
-    let (asset, buffers, images) = load_asset("/web/models/AVIFTest/forest_house.glb").await?;
+    let (asset, buffers, images) = load_asset("models/AVIFTest/forest_house.glb").await?;
     crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
     scene.background = Color::from_hex(0xf6eedc);
     scene.get_mut(camera)?.kind = NodeKind::Camera(Camera::Perspective(PerspectiveCamera {

@@ -8,7 +8,7 @@ The page tracks the viewer's face with MediaPipe's FaceLandmarker ( tasks-vision
 
 MediaPipe is a JavaScript and Wasm library that runs its own GPU model. The
 gallery page loads and runs it exactly as the original page does
-( `web/gallery/example.js`, specialized into its page ):
+( `web/examples/example.js`, specialized into its page ):
 
 - the same CDN modules, model asset, options ( GPU delegate, blendshapes,
   transformation matrices, VIDEO mode, one face ) and getUserMedia constraint;

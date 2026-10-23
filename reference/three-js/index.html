@@ -13,7 +13,7 @@ try {
   if(example===1) {
     cube.position.x=-1.1;
     const group=new T.Group();group.position.set(.8,.6,0);scene.add(group);
-    const texture=await new T.TextureLoader().loadAsync('/web/checker.png');texture.colorSpace=T.SRGBColorSpace;texture.minFilter=T.LinearFilter;texture.generateMipmaps=false;
+    const texture=await new T.TextureLoader().loadAsync('/web/examples/textures/checker.png');texture.colorSpace=T.SRGBColorSpace;texture.minFilter=T.LinearFilter;texture.generateMipmaps=false;
     group.add(new T.Mesh(new T.SphereGeometry(.75,24,16),new T.MeshStandardMaterial({map:texture,roughness:.7})));
     scene.add(new T.AmbientLight(0xffffff,.3));
     const directional=new T.DirectionalLight(0xffffff,2);directional.position.set(2,3,4);scene.add(directional);
@@ -26,7 +26,7 @@ try {
     scene.background=new T.Color(0x000000);
     camera.fov=70;camera.near=.1;camera.far=100;camera.position.z=2;camera.updateProjectionMatrix();
     cube.geometry.dispose();cube.geometry=new T.BoxGeometry();
-    const texture=await new T.TextureLoader().loadAsync('/web/crate.gif');
+    const texture=await new T.TextureLoader().loadAsync('/web/examples/textures/crate.gif');
     texture.colorSpace=T.SRGBColorSpace;texture.minFilter=T.LinearFilter;texture.generateMipmaps=false;
     cube.material.dispose();cube.material=new T.MeshBasicMaterial({map:texture});
     cube.rotation.set(.4,.7,0);

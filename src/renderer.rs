@@ -351,7 +351,7 @@ impl Renderer {
         Ok(env)
     }
     pub async fn new() -> Result<Self> {
-        /// The gallery's Inspector times the passes ( web/gallery/ui/gpu-timing.js ),
+        /// The gallery's Inspector times the passes ( web/examples/ui/gpu-timing.js ),
         /// on pages that show the original's UI ( example.html's `galleryUi` ).
         fn timing_features() -> wgpu::Features {
             #[cfg(target_arch = "wasm32")]

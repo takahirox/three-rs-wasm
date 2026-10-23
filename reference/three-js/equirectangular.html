@@ -4,7 +4,7 @@ import * as T from 'three';
 const canvas=document.querySelector('canvas');
 const renderer=new T.WebGPURenderer({canvas,antialias:true});await renderer.init();renderer.setSize(512,512,false);
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(1,0,0);camera.lookAt(0,0,0);
-const map=await new T.TextureLoader().loadAsync('/web/gallery/assets/panorama.jpg');map.colorSpace=T.SRGBColorSpace;
+const map=await new T.TextureLoader().loadAsync('/web/examples/assets/panorama.jpg');map.colorSpace=T.SRGBColorSpace;
 scene.backgroundNode=T.TSL.texture(map,T.TSL.equirectUV(),0);
 await renderer.renderAsync(scene,camera);await renderer.backend.device.queue.onSubmittedWorkDone();canvas.dataset.ready='true';
 </script></body></html>

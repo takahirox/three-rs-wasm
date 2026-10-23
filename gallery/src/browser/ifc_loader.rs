@@ -18,7 +18,7 @@ use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
-const ASSETS: &str = "/web/gallery/assets/ifc-loader";
+const ASSETS: &str = "assets/ifc-loader";
 
 #[wasm_bindgen(inline_js = r#"
 const WEB_IFC_VERSION = '0.0.77';

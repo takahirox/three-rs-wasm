@@ -18,7 +18,7 @@ use std::sync::Arc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 
-const ASSET: &str = "/web/gallery/assets/exporters-video/sintel.mp4";
+const ASSET: &str = "assets/exporters-video/sintel.mp4";
 
 fn be32(d: &[u8], o: usize) -> Result<u32> {
     d.get(o..o + 4)

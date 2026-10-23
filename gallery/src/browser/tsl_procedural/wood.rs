@@ -62,13 +62,13 @@ impl Wood {
         s.tone_mapping = ToneMapping::Neutral;
         s.environment_intensity = 2.;
         s.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-            &fetch("/web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr").await?,
+            &fetch("assets/tsl-procedural/san_giuseppe_bridge_2k.hdr").await?,
         )?));
         // RoundedBoxGeometry( 0.125, 0.9, 0.9, 10, 0.02 ) and the finish, genus and
         // custom labels: TextGeometry ( helvetiker, size 0.1, depth 0.001 ) centered
         // on its bounding box.
         let font = crate::shapes::Font::parse(
-            &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
+            &fetch("assets/fonts/helvetiker_regular.typeface.json").await?,
         )?;
         let block = Arc::new(RoundedBoxGeometry::build(0.125, 0.9, 0.9, 10, 0.02)?);
         let mut geometries = vec![];

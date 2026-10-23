@@ -9,5 +9,5 @@ with tarfile.open(ROOT/'.cache/three-148ef33ecb6d2502ff796d4554abd1549c95d519.ta
  for member in tar:
   path=member.name.split('/',1)[-1]
   if not member.isfile() or path not in ['examples/'+p for p in paths]:continue
-  target=ROOT/'web/gallery/assets/tsl-environment'/path.removeprefix('examples/')
+  target=ROOT/'web/examples/assets/tsl-environment'/path.removeprefix('examples/')
   target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(tar.extractfile(member).read())

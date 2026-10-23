@@ -76,8 +76,7 @@ impl Pixel {
         );
         let shadow = Arc::new(shadow_program(r, None, None).await?);
         let mut checker =
-            decode_texture_image(&fetch("/web/gallery/assets/tsl-procedural/checker.png").await?)
-                .await?;
+            decode_texture_image(&fetch("assets/tsl-procedural/checker.png").await?).await?;
         checker.srgb = true;
         checker.min_filter = Some(Filter::Nearest);
         checker.filter = Filter::Nearest;

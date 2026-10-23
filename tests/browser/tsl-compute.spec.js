@@ -9,7 +9,7 @@ for(const kind of Object.keys(controls)){
   for(const runtime of ['reference','rust']){
    await page.mouse.move(-10,-10);
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl-compute.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl-compute.html?id=${id}`:`/web/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:60000});
    await page.addStyleTag({content:'html,body{background:#000}#notice,#settings{display:none!important}'});
    const frames=[];const counts=[];const capture=async(t,parameter=null,save=true)=>{
@@ -51,7 +51,7 @@ for(const kind of Object.keys(controls)){
  });
  test(`TSL compute GPU residency: ${kind}`,async({page},info)=>{
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   const reports=[];
   for(const resize of [false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -79,7 +79,7 @@ test('GPU compute/instancing workload matches upstream and keeps storage residen
  for(const kind of Object.keys(controls)){
   const pair={kind};
   for(const runtime of ['reference','rust']){
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl-compute.html?id=webgpu_${kind}`:`/web/gallery/examples/webgpu_${kind}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl-compute.html?id=webgpu_${kind}`:`/web/examples/webgpu_${kind}.html?still=1`);
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
    let tick=0;const step=async(reset=false)=>{const time=.5+(tick++)*.01;const prev=await page.locator('canvas').getAttribute('data-frames');await page.evaluate(async({runtime,reset,time})=>{if(reset)work={passes:0,dispatches:[],draws:[],indirect:0,attributeBytes:0,uniformBytes:0,largeUniformBytes:0};if(runtime==='reference')await renderFixture(time);else app.gallery_time(time);},{runtime,reset,time});if(runtime==='rust')await page.waitForFunction(n=>document.querySelector('canvas').dataset.frames!==n,prev);};
    for(let i=0;i<3;i++)await step();await step(true);pair[runtime]=await page.evaluate(()=>work);

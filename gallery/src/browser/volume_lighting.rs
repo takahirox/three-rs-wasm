@@ -164,8 +164,7 @@ pub(super) fn shadow_pipeline(r: &Renderer) -> wgpu::RenderPipeline {
 }
 /// The spot light's map: colors.png (no color space), flipped, mipmapped.
 pub(super) async fn spot_map(r: &Renderer) -> Result<wgpu::TextureView> {
-    let image =
-        decode_texture_image(&fetch("/web/gallery/assets/spot-skinning/colors.png").await?).await?;
+    let image = decode_texture_image(&fetch("assets/spot-skinning/colors.png").await?).await?;
     let size = (image.width, image.height);
     let colors = r.device.create_texture(&wgpu::TextureDescriptor {
         label: Some("spot map"),

@@ -11,7 +11,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 /// webgl_texture2darray_layerupdate: the three-layer array fed from spirited away.
 struct Layers {
     source: GpuTexture,

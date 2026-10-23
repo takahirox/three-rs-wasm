@@ -72,7 +72,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
         ..Default::default()
     }));
     scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_hdr(
-        &fetch("/web/gallery/assets/spot1Lux.hdr").await?,
+        &fetch("assets/spot1Lux.hdr").await?,
     )?));
     scene.background_environment = true;
     scene.aces_tone_mapping = true;

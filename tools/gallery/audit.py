@@ -37,7 +37,7 @@ def local_for(symbol):
  if 'Loader' in symbol or 'Exporter' in symbol:return 'src/gltf.rs'
  return 'src/lib.rs'
 
-catalog=json.loads((ROOT/'web/gallery/catalog.json').read_text())
+catalog=json.loads((ROOT/'web/examples/catalog.json').read_text())
 assets=json.loads((ROOT/'docs/gallery-gltf-attempts.json').read_text())
 rows=[]
 for entry in catalog['examples']:

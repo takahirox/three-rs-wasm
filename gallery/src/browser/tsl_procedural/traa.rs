@@ -43,10 +43,9 @@ impl Traa {
         a.properties.vertex_program = Some(program.clone());
         let left = mesh(s, geometry.clone(), Material::Basic(a));
         s.get_mut(left)?.position.x = -1.;
-        let mut texture = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-next/textures/brick_diffuse.jpg").await?,
-        )
-        .await?;
+        let mut texture =
+            decode_texture_image(&fetch("assets/tsl-next/textures/brick_diffuse.jpg").await?)
+                .await?;
         texture.srgb = true;
         texture.filter = Filter::Nearest;
         texture.min_filter = Some(Filter::Nearest);

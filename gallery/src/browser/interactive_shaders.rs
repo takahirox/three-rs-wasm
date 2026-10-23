@@ -235,10 +235,8 @@ impl Demo {
                 let attributes =
                     GpuBuffer::new(r, bytemuck::cast_slice(&records), BufferAccess::Read)?;
                 let sizes = GpuBuffer::new(r, bytemuck::cast_slice(&d.sizes), BufferAccess::Read)?;
-                let mut image = decode_texture_image(
-                    &fetch("/web/gallery/assets/point-clouds/disc.png").await?,
-                )
-                .await?;
+                let mut image =
+                    decode_texture_image(&fetch("assets/point-clouds/disc.png").await?).await?;
                 image.srgb = false;
                 // TextureLoader defaults: generated mipmaps, trilinear minification.
                 image.mipmap_filter = Some(Filter::Linear);

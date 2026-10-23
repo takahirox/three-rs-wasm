@@ -7,7 +7,7 @@ for(const id of [4,5])test(`glTF asset ${id}: Rust import matches Three.js and c
  await page.goto(`/reference/three-js/gltf.html?example=${id}`);
  await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:30000});
  const reference=await page.locator('canvas').screenshot();
- await page.goto(`/web/?example=${id}`);const canvas=page.locator('canvas');
+ await page.goto(`/web/examples/mvp.html?example=${id}`);const canvas=page.locator('canvas');
  await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:30000}).toBeGreaterThan(2);
  expect(await canvas.getAttribute('data-error')).toBeNull();
  expect(Number(await canvas.getAttribute('data-triangles'))).toBeGreaterThan(1000);

@@ -73,7 +73,7 @@ impl Portal {
             intensity: 7.,
         }));
         s.get_mut(h)?.position = Vector3::Y;
-        let (a, b, i) = load_asset("/web/gallery/assets/tsl-procedural/Xbot.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-procedural/Xbot.glb").await?;
         let imported = crate::gltf::import_animated_decoded(&a, &b, &i)?;
         let p = uv() * float(20.) + time();
         let color = tsl::materialx::fractal_vec3(

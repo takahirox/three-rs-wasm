@@ -75,15 +75,15 @@ impl Reflection {
         // UltraHDRLoader on the page's texture, at load.
         s.environment = Some(Arc::new(
             super::super::ultra_hdr::ultra_hdr(
-                &fetch("/web/gallery/assets/tsl-lighting/textures/equirectangular/spruit_sunrise_2k.hdr.jpg").await?,
+                &fetch("assets/tsl-lighting/textures/equirectangular/spruit_sunrise_2k.hdr.jpg")
+                    .await?,
             )
             .await?,
         ));
         s.background_environment = true;
-        let mut grid = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-procedural/uv_grid_directx.jpg").await?,
-        )
-        .await?;
+        let mut grid =
+            decode_texture_image(&fetch("assets/tsl-procedural/uv_grid_directx.jpg").await?)
+                .await?;
         grid.srgb = true;
         grid.mipmap_filter = Some(Filter::Linear);
         let grid = Arc::new(grid);
@@ -102,9 +102,7 @@ impl Reflection {
         );
         s.get_mut(h)?.position.y = 1.25;
         s.get_mut(h)?.scale = Vector3::splat(2.);
-        let mut t =
-            decode_texture_image(&fetch("/web/gallery/assets/flames-rgb-256x256.png").await?)
-                .await?;
+        let mut t = decode_texture_image(&fetch("assets/flames-rgb-256x256.png").await?).await?;
         t.srgb = true;
         t.wrap_s = Wrapping::Repeat;
         t.wrap_t = Wrapping::Repeat;

@@ -17,7 +17,7 @@ use std::sync::Arc;
 mod blending;
 mod reflections;
 mod surfaces;
-const ASSETS: &str = "/web/gallery/assets/environment-materials";
+const ASSETS: &str = "assets/environment-materials";
 fn mesh(s: &mut Scene, g: Arc<BufferGeometry>, m: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(g, Arc::new(m))))
 }

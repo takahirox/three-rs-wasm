@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 test('Rust app renders, animates, selects objects and releases its event loop', async ({ page }) => {
   const errors=[];
   page.on('pageerror', error => errors.push(String(error)));
-  await page.goto('/web/');
+  await page.goto('/web/examples/mvp.html');
   const canvas=page.locator('canvas');
   await expect.poll(async()=>({error:await canvas.getAttribute('data-error'),ready:Number(await canvas.getAttribute('data-frames'))>=5})).toEqual({error:null,ready:true});
   const before=await canvas.screenshot();
@@ -28,7 +28,7 @@ test('Rust app renders, animates, selects objects and releases its event loop', 
 });
 
 test('Rust scene rebuild updates attributes, groups and draw range and releases old resources',async({page})=>{
-  await page.goto('/web/?static=1');const canvas=page.locator('canvas');
+  await page.goto('/web/examples/mvp.html?static=1');const canvas=page.locator('canvas');
   await expect.poll(async()=>Number(await canvas.getAttribute('data-frames'))).toBeGreaterThan(2);
   const before=await canvas.screenshot();
   for(let i=0;i<20;i++)await page.evaluate(()=>window.app.rebuild());

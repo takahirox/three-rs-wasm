@@ -12,7 +12,7 @@ const STATIC = `const { vec4, uv, vec3 } = await import( 'three/tsl' );\noutput 
 
 const pages = {
 	reference: '/reference/three-js/tsl-editor.html',
-	port: '/web/gallery/examples/webgpu_tsl_editor.html'
+	port: '/web/examples/webgpu_tsl_editor.html'
 };
 
 async function open( page, url ) {

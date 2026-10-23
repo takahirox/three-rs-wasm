@@ -11,7 +11,7 @@ pub(super) async fn fetch(url: &str) -> Result<Vec<u8>> {
 /// as the browser's loaders issue them.
 pub(super) struct Started(String, JsFuture);
 pub(super) fn start_fetch(url: &str) -> Result<Started> {
-    let url = super::asset_url(url)?;
+    let url = url.to_owned();
     let request = JsFuture::from(
         web_sys::window()
             .ok_or(Error::Invalid("window"))?
@@ -73,9 +73,9 @@ impl OrbitViewer {
         environment: Option<Arc<crate::environment::EnvironmentMap>>,
     ) -> Result<Self> {
         let url = if example == 4 {
-            "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf"
+            "models/DamagedHelmet/glTF/DamagedHelmet.gltf"
         } else {
-            "/web/models/BoomBox.glb"
+            "models/BoomBox.glb"
         };
         let (asset, buffers, images) = load_asset(url).await?;
         let imported = crate::gltf::import_decoded(&asset, &buffers, &images)?;
@@ -85,8 +85,7 @@ impl OrbitViewer {
         let environment = match environment {
             Some(image) => image,
             None => Arc::new(
-                super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg")
-                    .await?,
+                super::ultra_hdr::environment("environments/royal_esplanade_2k.hdr.jpg").await?,
             ),
         };
         imported.instantiate(scene)?;

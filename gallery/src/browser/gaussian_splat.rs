@@ -38,20 +38,12 @@ macro_rules! wgsl {
 /// The page's sources: name, URL, Euler rotation and camera direction.
 const SOURCES: [(&str, [f64; 3], [f64; 3]); 3] = [
     (
-        "/web/gallery/assets/splat/millipede.splat",
+        "assets/splat/millipede.splat",
         [PI * 1.10, PI * -0.10, PI * 0.15],
         [0., 0.4, 1.],
     ),
-    (
-        "/web/gallery/assets/spz/lion.v3.spz",
-        [PI, 0., 0.],
-        [0., 0.2, 1.],
-    ),
-    (
-        "/web/gallery/assets/spz/tomatoes.v4.spz",
-        [0., 0., 0.],
-        [0., 0.35, 1.],
-    ),
+    ("assets/spz/lion.v3.spz", [PI, 0., 0.], [0., 0.2, 1.]),
+    ("assets/spz/tomatoes.v4.spz", [0., 0., 0.], [0., 0.35, 1.]),
 ];
 /// Uint8ClampedArray's ToUint8Clamp: round half to even within 0 … 255.
 fn clamp_u8(x: f64) -> u8 {

@@ -41,7 +41,7 @@ const settle = async (page, inflight) => {
 const open = async (page, runtime) => {
   await page.setViewportSize(size);
   if (runtime === 'rust') {
-    await page.goto(`/web/gallery/examples/${id}.html?still=1`);
+    await page.goto(`/web/examples/${id}.html?still=1`);
     await page.waitForFunction(() => window.app, null, {timeout: 120000});
   } else {
     await page.goto(`/reference/three-js/texture-volumes.html?id=${id}`);

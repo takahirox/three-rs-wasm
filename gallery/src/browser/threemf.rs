@@ -11,7 +11,7 @@ use std::collections::HashMap;
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const SAMPLES: [&str; 7] = [
     "cube_gears",
     "facecolors",

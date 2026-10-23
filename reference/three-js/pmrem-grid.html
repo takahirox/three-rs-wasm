@@ -6,7 +6,7 @@ const {normalWorldGeometry,uniform,pmremTexture}=T.TSL;
 const canvas=document.querySelector('canvas');
 const renderer=new T.WebGPURenderer({canvas,antialias:true});await renderer.init();renderer.setSize(256,256,false);renderer.toneMapping=T.ACESFilmicToneMapping;
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(0,0,8);
-const map=await new UltraHDRLoader().loadAsync('/web/environments/royal_esplanade_2k.hdr.jpg');map.mapping=T.EquirectangularReflectionMapping;
+const map=await new UltraHDRLoader().loadAsync('/web/examples/environments/royal_esplanade_2k.hdr.jpg');map.mapping=T.EquirectangularReflectionMapping;
 scene.backgroundNode=pmremTexture(map,normalWorldGeometry,uniform(.5));
 const geometry=new T.SphereGeometry(.4,64,64);
 for(let i=0;i<6;i++)for(let j=0;j<5;j++){const material=new T.MeshPhysicalNodeMaterial({roughness:i/5,metalness:j/4,envMap:map});const mesh=new T.Mesh(geometry,material);mesh.position.set(i-2.5,j-2,0);scene.add(mesh);}

@@ -1,6 +1,6 @@
 //! webgl_worker_offscreencanvas: the page's scene.js twice, side by side. The
 //! left canvas renders on the main thread with the gallery app; the right one
-//! is transferred to a module worker ( `web/gallery/offscreen-worker.js` ) that
+//! is transferred to a module worker ( `web/examples/offscreen-worker.js` ) that
 //! loads this package and renders the same scene into the OffscreenCanvas with
 //! its own renderer and animation frames, as the page's worker does. The scene
 //! is a hundred matcap icosahedra placed by scene.js's sine PRNG in fog, their
@@ -17,7 +17,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
-const MATCAP: &str = "/web/gallery/assets/offscreen/matcap-porcelain-white.jpg";
+const MATCAP: &str = "assets/offscreen/matcap-porcelain-white.jpg";
 
 fn global() -> JsValue {
     js_sys::global().into()
@@ -158,7 +158,7 @@ impl Demo {
             Camera::Perspective(p) => p.aspect,
             _ => 1.,
         };
-        let texture = matcap(&super::asset_url(MATCAP)?).await?;
+        let texture = matcap(MATCAP).await?;
         let group = build(s, c, aspect, Arc::new(texture))?;
         Ok(Self {
             group,

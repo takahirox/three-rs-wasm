@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.

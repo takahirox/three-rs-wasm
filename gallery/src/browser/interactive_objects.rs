@@ -306,10 +306,8 @@ impl Demo {
                 d.generate_target(s)?;
             }
             190 => {
-                let atlas = decode_texture_image(
-                    &fetch("/web/gallery/assets/sun_temple_stripe.jpg").await?,
-                )
-                .await?;
+                let atlas =
+                    decode_texture_image(&fetch("assets/sun_temple_stripe.jpg").await?).await?;
                 let (w, h) = (atlas.width, atlas.height);
                 let pixels = &atlas.rgba;
                 let mut materials = vec![];

@@ -262,8 +262,7 @@ impl Demo {
         let vertex_usage = wgpu::BufferUsages::VERTEX;
         let index_usage = wgpu::BufferUsages::INDEX;
         // The dungeon at a tenth of its size.
-        let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/probes-hdr/dungeon_warkarma.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/probes-hdr/dungeon_warkarma.glb").await?;
         let mut mipmaps = Mipmaps::new(r);
         let mut maps = vec![];
         let mut map_index = std::collections::HashMap::new();
@@ -380,7 +379,7 @@ impl Demo {
         // The quarry HDR ( HDRLoader, mipmapped ): the background cube, the
         // environment's PMREM and SSR's environment.
         let (width, height, texels) =
-            parse_rgbe(&fetch("/web/gallery/assets/draco-variants/quarry_01_1k.hdr").await?)?;
+            parse_rgbe(&fetch("assets/draco-variants/quarry_01_1k.hdr").await?)?;
         let row = width as usize * 4;
         let texels: Vec<u16> = texels.chunks(row).rev().flatten().copied().collect();
         let equirect = mipmapped_raw(

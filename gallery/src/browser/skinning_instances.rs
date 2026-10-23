@@ -154,7 +154,7 @@ impl Demo {
         let index_usage = wgpu::BufferUsages::INDEX;
         let storage = wgpu::BufferUsages::STORAGE;
         let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb").await?;
+            load_asset("assets/tsl-viewport/models/gltf/Michelle.glb").await?;
         let primitive = asset
             .meshes()
             .next()

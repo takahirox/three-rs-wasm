@@ -319,10 +319,8 @@ impl Demo {
                 });
                 out.targets = vec![target(renderer, 4)?, target(renderer, 4)?];
                 for i in 1..=6 {
-                    let mut texture = decode_image(
-                        &fetch(&format!("/web/gallery/assets/transition{i}.png")).await?,
-                    )
-                    .await?;
+                    let mut texture =
+                        decode_image(&fetch(&format!("assets/transition{i}.png")).await?).await?;
                     texture.srgb = false;
                     texture.mipmap_filter = Some(Filter::Linear);
                     out.pictures

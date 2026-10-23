@@ -234,8 +234,7 @@ impl Demo {
             g.update(s)?;
         }
         // The model: ShadowmappableMesh's faces ( its edges render on no layer ).
-        let (asset, buffers, _) =
-            load_asset("/web/gallery/assets/gltf/ShadowmappableMesh.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/ShadowmappableMesh.glb").await?;
         let primitive = asset
             .meshes()
             .next()

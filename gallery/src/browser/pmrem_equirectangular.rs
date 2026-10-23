@@ -12,7 +12,7 @@ async fn pmrem_grid(
 ) -> Result<OrbitViewer> {
     scene.dispose(placeholder)?;
     scene.environment = Some(Arc::new(
-        super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg").await?,
+        super::ultra_hdr::environment("environments/royal_esplanade_2k.hdr.jpg").await?,
     ));
     scene.background_environment = true;
     scene.background_blur = 0.5;

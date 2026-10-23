@@ -19,7 +19,7 @@ for(const [kind,parameters] of Object.entries(controls))for(const samples of (an
  // The procedural noise also renders the original with vUv.y perturbed by one ULP.
  for(const runtime of kind==='postprocessing_procedural'?['reference','rust','perturbed']:['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(256,256);
-  await page.goto(runtime==='rust'?`/web/gallery/examples/${official(kind)}.html?still=1`:`/reference/three-js/interactive-shaders.html?id=${official(kind)}&samples=${samples}${runtime==='perturbed'?'&uvUlp=1':''}`);
+  await page.goto(runtime==='rust'?`/web/examples/${official(kind)}.html?still=1`:`/reference/three-js/interactive-shaders.html?id=${official(kind)}&samples=${samples}${runtime==='perturbed'?'&uvUlp=1':''}`);
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info{display:none!important}'});
@@ -52,7 +52,7 @@ for(const [kind,parameters] of Object.entries(controls))for(const samples of (an
 for(const kind of Object.keys(controls)){const id=official(kind);
  test(`Interactive shaders GPU residency: ${kind}`,async({page},info)=>{
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   const reports=[];
   for(const resize of [false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -85,7 +85,7 @@ test('Interactive shaders resident geometry and official draw workload',async({p
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(256,256);
-   await page.goto(runtime==='reference'?`/reference/three-js/interactive-shaders.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/interactive-shaders.html?id=${official(kind)}`:`/web/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
    // Warm pass first: per-object draw records are created when an object first becomes visible.
    for(const [n,t] of [1,2,3,1,2,3].entries()){const prev=await page.locator('canvas').getAttribute('data-frames');await page.evaluate(async({runtime,t,last})=>{if(last)resetWork();if(runtime==='reference')await renderFixture(t);else app.gallery_time(t);},{runtime,t,last:n===5});if(runtime==='rust')await page.waitForFunction(p=>document.querySelector('canvas').dataset.frames!==p,prev);}

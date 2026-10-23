@@ -80,7 +80,7 @@ pub(super) struct Demo {
 }
 /// A glTF model's first mesh ( geometry, material ) and its morph clip.
 async fn model(name: &str) -> Result<(Arc<BufferGeometry>, Arc<Material>, Clip)> {
-    let (a, b, i) = load_asset(&format!("/web/gallery/assets/gltf/{name}.glb")).await?;
+    let (a, b, i) = load_asset(&format!("assets/gltf/{name}.glb")).await?;
     let mut scratch = Scene::new();
     let template = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(&mut scratch)?;
     let first = *template
@@ -189,8 +189,7 @@ impl Demo {
         n.quaternion = Quaternion::from_rotation_x(-PI / 2.);
         n.scale = Vector3::splat(100.);
         // The text, centered by its bounding box.
-        let font =
-            Font::parse(&fetch("/web/gallery/assets/fonts/helvetiker_bold.typeface.json").await?)?;
+        let font = Font::parse(&fetch("assets/fonts/helvetiker_bold.typeface.json").await?)?;
         let text = text_geometry(
             &font,
             "THREE.JS",

@@ -253,7 +253,7 @@ impl Demo {
         ] {
             meshes.push(make(&wall.0, &wall.1, &wall.2, model, Kind::Backdrop));
         }
-        let (asset, buffers, _) = load_asset("/web/gallery/assets/gltf/godrays_demo.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/godrays_demo.glb").await?;
         for node in asset.nodes() {
             let Some(primitive) = node.mesh().and_then(|m| m.primitives().next()) else {
                 continue;

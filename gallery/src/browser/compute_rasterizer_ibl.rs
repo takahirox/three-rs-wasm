@@ -268,11 +268,7 @@ async fn page_lods(asset: &gltf::Gltf, buffers: &[Vec<u8>]) -> Result<Lods> {
     };
     let (positions, normals) = (f32s("position")?, f32s("normal")?);
     let vertex_count = positions.len() / 3;
-    let meshopt = super::meshopt::Meshopt::three(
-        &super::asset_url(MESHOPT_SIMPLIFIER)?,
-        &super::asset_url(MESHOPT_CLUSTERIZER)?,
-    )
-    .await?;
+    let meshopt = super::meshopt::Meshopt::three(MESHOPT_SIMPLIFIER, MESHOPT_CLUSTERIZER).await?;
     // The page's lodTargets.
     let targets: [(f64, f64, [f64; 5], &[&str]); 6] = [
         (1.0, 0.0, [0.25, 0.25, 0.25, 0.5, 0.5], &[]),
@@ -394,8 +390,8 @@ async fn page_lods(asset: &gltf::Gltf, buffers: &[Vec<u8>]) -> Result<Lods> {
         offsets,
     ))
 }
-const MESHOPT_SIMPLIFIER: &str = "/web/gallery/assets/meshopt/meshopt_simplifier.module.js";
-const MESHOPT_CLUSTERIZER: &str = "/web/gallery/assets/meshopt/meshopt_clusterizer.module.js";
+const MESHOPT_SIMPLIFIER: &str = "assets/meshopt/meshopt_simplifier.module.js";
+const MESHOPT_CLUSTERIZER: &str = "assets/meshopt/meshopt_clusterizer.module.js";
 /// The resident storage buffers, by the page's names.
 struct Buffers {
     lod_offsets: wgpu::Buffer,
@@ -543,7 +539,7 @@ impl Demo {
         let (instance_data, position, look) = grid(false);
         Self::place(s, c, &mut walker, position, look)?;
         let (asset, buffers, images) =
-            load_asset("/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
+            load_asset("models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
         let lods = page_lods(&asset, &buffers).await?;
         let (vertices, normals, uvs, indices, meshlet_ids, bounds, offsets) = lods;
         let image = |i: usize| images.get(i).ok_or(Error::Invalid("helmet image"));
@@ -583,7 +579,7 @@ impl Demo {
             r,
             &linear_mips,
             &clamp,
-            "/web/environments/royal_esplanade_2k.hdr.jpg",
+            "environments/royal_esplanade_2k.hdr.jpg",
         )
         .await?;
         let bytes = |v: &[f32]| bytemuck::cast_slice::<f32, u8>(v).to_vec();

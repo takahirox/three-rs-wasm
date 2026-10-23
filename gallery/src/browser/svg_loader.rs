@@ -2054,8 +2054,7 @@ impl Demo {
         let mut texts = Vec::with_capacity(FILES.len());
         for file in FILES {
             texts.push(
-                String::from_utf8_lossy(&fetch(&format!("/web/gallery/assets/svg/{file}")).await?)
-                    .to_string(),
+                String::from_utf8_lossy(&fetch(&format!("assets/svg/{file}")).await?).to_string(),
             );
         }
         let mut demo = Self {

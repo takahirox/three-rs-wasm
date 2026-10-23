@@ -128,10 +128,9 @@ impl Demo {
         let geometry = Arc::new(BoxGeometry::build(120., 120., 120.)?);
         let mut wire = MeshBasicMaterial::default();
         wire.properties.wireframe = true;
-        let mut brick = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-next/textures/brick_diffuse.jpg").await?,
-        )
-        .await?;
+        let mut brick =
+            decode_texture_image(&fetch("assets/tsl-next/textures/brick_diffuse.jpg").await?)
+                .await?;
         brick.srgb = true;
         brick.filter = Filter::Nearest;
         brick.min_filter = Some(Filter::Nearest);

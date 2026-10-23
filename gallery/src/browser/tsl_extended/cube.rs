@@ -3,8 +3,7 @@ use crate::attribute::BufferAttribute;
 pub(super) async fn castle(r: &Renderer) -> Result<GpuTexture> {
     let mut faces = Vec::new();
     for name in ["px", "nx", "py", "ny", "pz", "nz"] {
-        let mut image =
-            decode_image(&fetch(&format!("/web/gallery/assets/castle-{name}.jpg")).await?).await?;
+        let mut image = decode_image(&fetch(&format!("assets/castle-{name}.jpg")).await?).await?;
         image.srgb = true;
         faces.push(image);
     }
@@ -100,10 +99,9 @@ impl Demo {
         for level in 0..9 {
             let mut faces = Vec::new();
             for face in 0..6 {
-                let mut image = decode_image(
-                    &fetch(&format!("/web/gallery/assets/cube_m0{level}_c0{face}.jpg")).await?,
-                )
-                .await?;
+                let mut image =
+                    decode_image(&fetch(&format!("assets/cube_m0{level}_c0{face}.jpg")).await?)
+                        .await?;
                 image.srgb = true;
                 faces.push(image);
             }

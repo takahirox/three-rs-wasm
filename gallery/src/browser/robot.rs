@@ -65,7 +65,7 @@ impl Robot {
             material: Arc::new(Material::Line(material)),
             segments: true,
         }));
-        let bytes = fetch("/web/models/RobotExpressive/RobotExpressive.glb").await?;
+        let bytes = fetch("models/RobotExpressive/RobotExpressive.glb").await?;
         let asset =
             gltf::Gltf::from_slice(&bytes).map_err(|e| crate::Error::Asset(e.to_string()))?;
         let imported = crate::gltf::import_animated(

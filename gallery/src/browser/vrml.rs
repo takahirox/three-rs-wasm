@@ -23,7 +23,7 @@ use crate::{Error, Result, camera::*, math::*, render_target::*, renderer::*, sc
 use std::collections::HashMap;
 use wgpu::util::DeviceExt;
 
-const ASSETS: &str = "/web/gallery/assets/vrml";
+const ASSETS: &str = "assets/vrml";
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth32Float;
 const NAMES: [&str; 16] = [
     "creaseAngle",

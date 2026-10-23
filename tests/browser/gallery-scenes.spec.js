@@ -17,10 +17,10 @@ for(const id of examples)test(`original scene comparison: ${id}`,async({page},in
  source=source.replace('camera.applyMatrix4( rotateY );','').replace('sphere.scale.multiplyScalar( 0.98 );','').replace('toggle += timer.getDelta();','');
  source=source.replace('renderer.render( scene, camera );','window.reference={scene,camera,renderer}; renderer.render( scene, camera );');
  await page.route(`**/.cache/three-r186/examples/${id}.html`,r=>r.fulfill({contentType:'text/html',body:source}));
- await page.route('**/textures/2294472375_24a3b8ef46_o.jpg',r=>r.fulfill({path:'web/gallery/assets/panorama.jpg'}));
- await page.route('**/textures/uv_grid_opengl.jpg',r=>r.fulfill({path:'web/gallery/assets/uv-grid.jpg'}));
- await page.route('**/textures/equirectangular/royal_esplanade_2k.hdr.jpg',r=>r.fulfill({path:'web/environments/royal_esplanade_2k.hdr.jpg'}));
- await page.route('**/textures/equirectangular/spot1Lux.hdr',r=>r.fulfill({path:'web/gallery/assets/spot1Lux.hdr'}));
+ await page.route('**/textures/2294472375_24a3b8ef46_o.jpg',r=>r.fulfill({path:'web/examples/assets/panorama.jpg'}));
+ await page.route('**/textures/uv_grid_opengl.jpg',r=>r.fulfill({path:'web/examples/assets/uv-grid.jpg'}));
+ await page.route('**/textures/equirectangular/royal_esplanade_2k.hdr.jpg',r=>r.fulfill({path:'web/examples/environments/royal_esplanade_2k.hdr.jpg'}));
+ await page.route('**/textures/equirectangular/spot1Lux.hdr',r=>r.fulfill({path:'web/examples/assets/spot1Lux.hdr'}));
  await page.goto(`/.cache/three-r186/examples/${id}.html`);
  await page.waitForFunction(()=>window.reference);
  if(id.includes('pmrem'))await page.waitForFunction(n=>window.reference.scene.children.length===n,id==='webgpu_pmrem_test'?34:30);
@@ -33,7 +33,7 @@ for(const id of examples)test(`original scene comparison: ${id}`,async({page},in
   const objects=[];window.reference.scene.traverse(o=>{if(o.isLine||o.isPoints)objects.push({position:o.geometry.morphAttributes.position?Array.from(o.geometry.attributes.position.array,(v,i)=>v+(o.geometry.morphAttributes.position[0].array[i]-v)*o.morphTargetInfluences[0]):Array.from(o.geometry.attributes.position.array),color:o.geometry.attributes.color?Array.from(o.geometry.attributes.color.array):null,index:o.geometry.index?Array.from(o.geometry.index.array):null,matrix:o.matrixWorld.elements,segments:!!o.isLineSegments});});return {vertices,indices,lines,points,objects};
  });
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
- await page.goto(`/web/gallery/examples/${id}.html?still`);
+ await page.goto(`/web/examples/${id}.html?still`);
  await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await expect(page.locator('canvas')).not.toHaveAttribute('data-error',/.+/);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
@@ -77,7 +77,7 @@ test('direct equirectangular background matches original TSL texture node',async
  await page.setViewportSize({width:512,height:512});
  await page.goto('/reference/three-js/equirectangular.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:90000});
  const reference=await page.locator('canvas').screenshot();
- await page.goto('/web/gallery/examples/webgpu_equirectangular.html?still');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
+ await page.goto('/web/examples/webgpu_equirectangular.html?still');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});const actual=await page.locator('canvas').screenshot();
  const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let differing=0;
  for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>6))differing++;

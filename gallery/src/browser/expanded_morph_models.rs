@@ -24,7 +24,7 @@ impl Horse {
             }));
             scene.get_mut(light)?.position = Vector3::splat(sign).normalize();
         }
-        let (asset, buffers, images) = load_asset("/web/models/Horse/Horse.glb").await?;
+        let (asset, buffers, images) = load_asset("models/Horse/Horse.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let root = scene.get_mut(instance.roots[0])?;
@@ -83,7 +83,7 @@ impl Sphere {
             intensity: 1.0,
         }));
         let (asset, buffers, images) =
-            load_asset("/web/models/AnimatedMorphSphere/AnimatedMorphSphere.gltf").await?;
+            load_asset("models/AnimatedMorphSphere/AnimatedMorphSphere.gltf").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let root = instance.roots[0];
@@ -96,7 +96,7 @@ impl Sphere {
             size_attenuation: false,
             ..Default::default()
         };
-        let mut map = decode_image(&fetch("/web/gallery/assets/disc.png").await?).await?;
+        let mut map = decode_image(&fetch("assets/disc.png").await?).await?;
         map.srgb = false;
         map.mipmap_filter = Some(Filter::Linear);
         material.properties.map = Some(Arc::new(map));

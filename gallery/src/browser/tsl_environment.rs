@@ -17,8 +17,8 @@ use crate::{
     tsl::{self, surface::*, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/tsl-environment";
-const NEXT_ASSETS: &str = "/web/gallery/assets/tsl-next";
+const ASSETS: &str = "assets/tsl-environment";
+const NEXT_ASSETS: &str = "assets/tsl-next";
 const HDR: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);

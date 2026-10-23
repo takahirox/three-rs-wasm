@@ -3,8 +3,8 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {PNG} from 'pngjs';
 import {routeSampleAssets} from './sample-assets.js';
 test.beforeEach(async({page})=>routeSampleAssets(page));
-const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));
-const files=readFileSync('web/gallery/files.json','utf8');
+const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));
+const files=readFileSync('web/examples/files.json','utf8');
 test('equivalent WebGL scenes are excluded and point to the preferred WebGPU scene',async({page})=>{
  const listed=Object.values(JSON.parse(files)).flat();
  const excluded=catalog.examples.filter(e=>e.preferred_example);
@@ -19,20 +19,20 @@ test('equivalent WebGL scenes are excluded and point to the preferred WebGPU sce
  expect(listed).toContain('webgpu_lights_rectarealight');
  expect(listed).toContain('webgl_loader_gltf_instancing');
  expect(listed).toContain('webgl_loader_gltf_avif');
- await page.goto('/web/gallery/examples/webgl_loader_gltf.html');
+ await page.goto('/web/examples/webgl_loader_gltf.html');
  await expect(page.locator('#diagnostic')).toBeVisible();
- await page.locator('a[href="examples/webgpu_loader_gltf.html"]').click();
+ await page.locator('a[href="webgpu_loader_gltf.html"]').click();
  await expect(page.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu',{timeout:90000});
 });
 for(const mode of [{name:'desktop-light',width:1280,height:900,colorScheme:'light'},{name:'mobile-dark',width:390,height:844,colorScheme:'dark'}]){
  test(`official gallery layout: ${mode.name}`,async({page},info)=>{
   await page.setViewportSize(mode);await page.emulateMedia({colorScheme:mode.colorScheme});
   await page.route('**/.cache/three-r186/examples/files.json',route=>route.fulfill({contentType:'application/json',body:files}));
-  await page.route('**/.cache/three-r186/examples/screenshots/*.jpg',route=>route.fulfill({path:`web/gallery/screenshots/${route.request().url().split('/').at(-1)}`}));
-  await page.route('**/.cache/three-r186/examples/files/thumbnails.svg',route=>route.fulfill({path:'web/gallery/files/thumbnails.svg'}));
+  await page.route('**/.cache/three-r186/examples/screenshots/*.jpg',route=>route.fulfill({path:`web/examples/screenshots/${route.request().url().split('/').at(-1)}`}));
+  await page.route('**/.cache/three-r186/examples/files/thumbnails.svg',route=>route.fulfill({path:'web/examples/files/thumbnails.svg'}));
   const ready=async()=>{await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port&&e.status!=='excluded').length);await page.evaluate(()=>document.fonts.ready);await page.waitForFunction(()=>[...document.querySelectorAll('.card img')].filter(i=>i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0).every(i=>i.complete&&i.naturalWidth));};
   await page.goto('/.cache/three-r186/examples/');await ready();const reference=await page.screenshot({animations:"disabled"});
-  await page.goto('/web/gallery/');await ready();const actual=await page.screenshot({animations:"disabled"});
+  await page.goto('/web/examples/');await ready();const actual=await page.screenshot({animations:"disabled"});
   const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let different=0;const diff=new PNG({width:a.width,height:a.height});
   for(let i=0;i<a.data.length;i+=4){let d=0;for(let c=0;c<3;c++){d=Math.max(d,Math.abs(a.data[i+c]-b.data[i+c]));diff.data[i+c]=Math.min(255,Math.abs(a.data[i+c]-b.data[i+c])*8);}diff.data[i+3]=255;if(d>6)different++;}
   for(const [name,data] of [['actual',actual],['reference',reference],['difference',PNG.sync.write(diff)]])writeFileSync(info.outputPath(`${name}.png`),data);
@@ -46,20 +46,20 @@ for(const mode of [{name:'desktop-light',width:1280,height:900,colorScheme:'ligh
 }
 test('unported examples show source evidence rather than a fake reproduction',async({page})=>{
  const requests=[];page.on('request',r=>requests.push(r.url()));
- await page.goto('/web/gallery/');
+ await page.goto('/web/examples/');
  await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port).length);
  await expect(page.locator('.card').filter({hasText:'postprocessing / unreal / bloom'})).toHaveCount(0);
- await page.goto('/web/gallery/examples/webgl_postprocessing_unreal_bloom.html');
+ await page.goto('/web/examples/webgl_postprocessing_unreal_bloom.html');
  await expect(page.locator('#diagnostic')).toBeVisible();
  await expect(page.locator('#diagnostic')).toContainText('Postprocessing passes');
  expect(requests.some(url=>url.includes('three.webgpu')||url.includes('three.module')||url.includes('three_rs_wasm'))).toBe(false);
- await page.goto('/web/gallery/example.html?id=unknown');await expect(page.locator('#diagnostic')).toContainText('Unknown example');
+ await page.goto('/web/examples/example.html?id=unknown');await expect(page.locator('#diagnostic')).toContainText('Unknown example');
 });
 for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime: ${entry.id}`,async({page})=>{
  // Sponza ( 481, 482 ) download about 50 MB from glTF-Sample-Assets at run time.
  const remote=[481,482].includes(entry.port.example);
  test.setTimeout(remote?600000:120000);const errors=[];const requests=[];page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>requests.push(r.url()));
- await page.goto(`/web/gallery/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
+ await page.goto(`/web/examples/#${entry.id}`);const viewer=page.frameLocator('#viewer'),canvas=viewer.locator('canvas').first();
  // The transpiler page draws nothing: it transpiles its editor's GLSL in Rust
  // ( tests/browser/tsl-transpiler.spec.js compares the output ).
  if(entry.port.example===483){await expect.poll(async()=>Number(await viewer.locator('body').getAttribute('data-builds')),{timeout:90000}).toBeGreaterThan(0);await expect(viewer.locator('#result')).toContainText('Three.js Transpiler r186');expect(errors).toEqual([]);return;}
@@ -86,7 +86,7 @@ for(const entry of catalog.examples.filter(e=>e.port))test(`Rust gallery runtime
 test('PMREM sphere grid matches original physical materials and background node',async({page},info)=>{
  await page.setViewportSize({width:256,height:256});
  await page.goto('/reference/three-js/pmrem-grid.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:90000});const reference=await page.locator('canvas').screenshot();
- await page.goto('/web/gallery/examples/webgpu_pmrem_equirectangular.html');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
+ await page.goto('/web/examples/webgpu_pmrem_equirectangular.html');await expect.poll(async()=>Number(await page.locator('canvas').getAttribute('data-frames')),{timeout:90000}).toBeGreaterThan(2);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});const actual=await page.locator('canvas').screenshot();
  const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let different=0;for(let i=0;i<a.data.length;i+=4)if([0,1,2].some(c=>Math.abs(a.data[i+c]-b.data[i+c])>6))different++;
  writeFileSync(info.outputPath('actual.png'),actual);writeFileSync(info.outputPath('reference.png'),reference);writeFileSync(info.outputPath('comparison.json'),JSON.stringify({different,fraction:different/(256*256)}));expect(different/(256*256)).toBeLessThanOrEqual(.005);
@@ -96,7 +96,7 @@ test('PMREM sphere grid matches original physical materials and background node'
 // their clock in the seek, so the free-running gallery must advance it too.
 for(const id of ['webgl_gpgpu_birds_gltf','webgl_postprocessing_dof2','webgl_materials_subsurface_scattering'])test(`free-running gallery animates: ${id}`,async({page})=>{
  await page.setViewportSize({width:512,height:512});
- await page.goto(`/web/gallery/examples/${id}.html`);
+ await page.goto(`/web/examples/${id}.html`);
  await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0,null,{timeout:60000});
  await page.waitForTimeout(1000);const a=await page.screenshot();await page.waitForTimeout(1500);const b=await page.screenshot();
  expect(a.equals(b)).toBe(false);

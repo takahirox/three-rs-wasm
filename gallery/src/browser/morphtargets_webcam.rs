@@ -19,7 +19,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const MODEL: &str = "/web/gallery/assets/draco-variants/facecap.glb";
+const MODEL: &str = "assets/draco-variants/facecap.glb";
 const MP_FOV: f64 = 63.;
 const VIDEO_DISTANCE: f64 = 100.;
 

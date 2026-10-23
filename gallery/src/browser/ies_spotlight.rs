@@ -15,7 +15,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/ies";
+const ASSETS: &str = "assets/ies";
 const FILES: [&str; 4] = [
     "007cfb11e343e2f42e3b476be4ab684e.ies",
     "06b4cfdc8805709e767b5e2e904be8ad.ies",

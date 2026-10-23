@@ -1,11 +1,11 @@
 // The pinned three.js r186's own assets each example's page loads
-// ( web/gallery/upstream-assets.json lists them, tools/gallery/upstream_assets.py ),
+// ( web/examples/upstream-assets.json lists them, tools/gallery/upstream_assets.py ),
 // recorded by opening every ported example's page in Chromium:
 // tools/gallery/upstream-pages.json. tools/gallery/pages.mjs writes each page's
 // part of the listing into it, so a published page redirects its assets to the
 // CDN without the whole listing; a page that asks for an asset its part lacks
 // ( after input the recording did not give ) reads the whole listing then
-// ( web/gallery/upstream.js ).
+// ( web/examples/upstream.js ).
 //
 //   node tools/gallery/upstream_pages.mjs   ( after scripts/build-gallery )
 import {chromium} from '@playwright/test';
@@ -24,8 +24,8 @@ const GESTURES = {
 	webgl_postprocessing_glitch: '#startButton',
 };
 
-const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/gallery/upstream-assets.json'), 'utf8')).files;
-const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/gallery/catalog.json'), 'utf8'));
+const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/examples/upstream-assets.json'), 'utf8')).files;
+const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/examples/catalog.json'), 'utf8'));
 const ids = catalog.examples.filter(e => e.port && e.status !== 'excluded').map(e => e.id);
 
 const server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1'], {cwd: ROOT, stdio: 'ignore'});
@@ -37,12 +37,13 @@ async function record(id) {
 	const page = await browser.newPage({viewport: {width: 1280, height: 720}});
 	const assets = new Set();
 	page.on('request', request => {
-		const at = decodeURIComponent(new URL(request.url()).pathname).indexOf('/web/');
-		const file = at < 0 ? null : decodeURIComponent(new URL(request.url()).pathname).slice(at + 1);
+		// By its path from the site's root ( web/ ), as the listing names it.
+		const path = decodeURIComponent(new URL(request.url()).pathname);
+		const file = path.startsWith('/web/') ? path.slice('/web/'.length) : null;
 		if (file && listing[file]) assets.add(file);
 	});
 	try {
-		await page.goto(`http://127.0.0.1:${PORT}/web/gallery/examples/${id}.html`);
+		await page.goto(`http://127.0.0.1:${PORT}/web/examples/${id}.html`);
 		// The gestures some pages wait for before they load their assets, as
 		// the published-site check gives them ( tests/pages/gallery.spec.js ).
 		const gesture = GESTURES[id];

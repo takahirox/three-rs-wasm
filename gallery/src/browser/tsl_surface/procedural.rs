@@ -73,7 +73,7 @@ impl Demo {
         let mut images = Vec::new();
         for name in ["flames-grayscale-256x256.png", "flames-rgb-256x256.png"] {
             let mut image = super::super::gltf_viewer::decode_image(
-                &super::super::gltf_viewer::fetch(&format!("/web/gallery/assets/{name}")).await?,
+                &super::super::gltf_viewer::fetch(&format!("assets/{name}")).await?,
             )
             .await?;
             image.srgb = false;

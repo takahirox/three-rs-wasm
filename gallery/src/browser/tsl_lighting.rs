@@ -15,7 +15,7 @@ use crate::{
     tsl::{self, surface::*, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/tsl-lighting";
+const ASSETS: &str = "assets/tsl-lighting";
 const HDR: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 fn mesh(s: &mut Scene, g: Arc<BufferGeometry>, m: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(g, Arc::new(m))))

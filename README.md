@@ -26,7 +26,7 @@ PATH="$(dirname "$(rustup which rustc)"):$PATH" scripts/build-gallery
 python3 tools/serve.py
 ```
 
-Open <http://127.0.0.1:8173/web/gallery/> in a WebGPU-capable browser.
+Open <http://127.0.0.1:8173/web/examples/> in a WebGPU-capable browser.
 `scripts/build-gallery core <package> …` builds only the named packages.
 
 The library is the repository's root crate. The gallery's ports are a separate

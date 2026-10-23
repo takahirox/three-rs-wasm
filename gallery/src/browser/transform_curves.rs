@@ -18,7 +18,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 /// CurveModifier's spline texture: 1024 points per curve, four rows each.
 const TEXTURE_WIDTH: u32 = 1024;
 const TEXTURE_HEIGHT: u32 = 4;

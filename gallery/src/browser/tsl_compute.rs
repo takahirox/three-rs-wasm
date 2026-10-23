@@ -208,7 +208,7 @@ impl Demo {
             range(r, 2000, 189, [0.1; 4], [4.0; 4])?,
             range(r, 1000, 190, [-1.0, 1.0, -1.0, 0.0], [1.0, 2.0, 1.0, 0.0])?,
         ];
-        let mut image = decode_image(&fetch("/web/gallery/assets/smoke1.png").await?).await?;
+        let mut image = decode_image(&fetch("assets/smoke1.png").await?).await?;
         image.srgb = false;
         image.mipmap_filter = Some(Filter::Linear);
         let tex = r.upload_texture(&Arc::new(image))?;
@@ -301,10 +301,9 @@ impl Demo {
         struct Asset {
             data: Data,
         }
-        let asset: Asset = serde_json::from_slice(
-            &fetch("/web/gallery/assets/suzanne_buffergeometry.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let asset: Asset =
+            serde_json::from_slice(&fetch("assets/suzanne_buffergeometry.json").await?)
+                .map_err(|e| Error::Asset(e.to_string()))?;
         let mut g = BufferGeometry::default();
         g.set_attribute(
             "position",

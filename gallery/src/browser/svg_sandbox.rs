@@ -286,9 +286,7 @@ impl Demo {
         )?;
         o.get_mut(directional)?.position = Vector3::new(-1., 0.5, 0.);
         // The loaders' callbacks: the QR code, then the hexagon.
-        let qr = qr_geometry(
-            &fetch("/web/gallery/assets/svg-renderer/QRCode_buffergeometry.json").await?,
-        )?;
+        let qr = qr_geometry(&fetch("assets/svg-renderer/QRCode_buffergeometry.json").await?)?;
         let mesh = add(
             &mut o,
             NodeKind::Mesh(Mesh::new(
@@ -304,8 +302,7 @@ impl Demo {
             )),
         )?;
         o.get_mut(mesh)?.scale = Vector3::splat(2.);
-        let text = String::from_utf8_lossy(&fetch("/web/gallery/assets/svg/hexagon.svg").await?)
-            .into_owned();
+        let text = String::from_utf8_lossy(&fetch("assets/svg/hexagon.svg").await?).into_owned();
         let node = doc
             .create_element_ns(ns, "g")
             .map_err(|_| Error::Invalid("svg group"))?;

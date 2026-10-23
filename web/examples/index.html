@@ -90,7 +90,7 @@
 					fragment.appendChild( link );
 
 					links[ file ] = link;
-					validRedirects.set( file, exampleHref( file ) );
+					validRedirects.set( file, file + '.html' );
 
 				}
 
@@ -212,19 +212,11 @@
 
 		}
 
-		// The example's page: web/gallery/examples/<id>.html, or examples/<id>.html on the published
-		// site's official-style layout ( tools/build_site.py ).
-		function exampleHref( file ) {
-
-			return document.querySelector( 'meta[name="three-rs-layout"]' ) ? '../../examples/' + encodeURIComponent( file ) + '.html' : 'examples/' + encodeURIComponent( file ) + '.html';
-
-		}
-
 		function createLink( file, tags ) {
 
 			const community = Array.isArray( tags ) && tags.includes( 'community' ) ? '<span class="tag">community</span>' : '';
 
-			let href = exampleHref( file );
+			let href = file + '.html';
 
 			if ( file === 'css3d_mixed' ) {
 

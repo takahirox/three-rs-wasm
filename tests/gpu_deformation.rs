@@ -7,7 +7,7 @@ fn gpu_skin_and_morph_match_cpu_oracle_with_shadows_without_vertex_reuploads() {
     let renderer = pollster::block_on(Renderer::new()).unwrap();
     let oracle = pollster::block_on(Renderer::new()).unwrap();
     let asset = gltf::Gltf::from_slice(include_bytes!(
-        "../web/models/RobotExpressive/RobotExpressive.glb"
+        "../web/examples/models/RobotExpressive/RobotExpressive.glb"
     ))
     .unwrap();
     let model =

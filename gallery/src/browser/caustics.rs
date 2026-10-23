@@ -219,7 +219,7 @@ impl Demo {
                     .fold(0., f64::max),
             }
         };
-        let (asset, buffers, _) = load_asset("/web/gallery/assets/gltf/duck.glb").await?;
+        let (asset, buffers, _) = load_asset("assets/gltf/duck.glb").await?;
         let primitive = asset
             .meshes()
             .next()
@@ -278,8 +278,7 @@ impl Demo {
                 wgpu::TextureFormat::Rgba8UnormSrgb,
             ),
         ] {
-            let image =
-                decode_texture_image(&fetch(&format!("/web/gallery/assets/{path}")).await?).await?;
+            let image = decode_texture_image(&fetch(&format!("assets/{path}")).await?).await?;
             let size = (image.width, image.height);
             let t = texture(
                 r,

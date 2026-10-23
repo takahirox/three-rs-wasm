@@ -4,8 +4,8 @@
 // three's build entries served from src/, while its UI libraries are wrapped
 // to record what the page creates. After the page settles, the UI's final
 // structure is read through the libraries' own objects and written to
-// web/gallery/ui/specs.json, which the gallery replays with the same
-// libraries ( web/gallery/ui/ ).
+// web/examples/ui/specs.json, which the gallery replays with the same
+// libraries ( web/examples/ui/ ).
 //
 // Usage: node tools/gallery/ui/extract.mjs [ids…] [--settle ms] [--workers n] [--merge]
 import { chromium } from 'playwright';
@@ -13,7 +13,7 @@ import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 
 const ROOT = new URL( '../../../', import.meta.url ).pathname;
-const OUT = ROOT + 'web/gallery/ui/specs.json';
+const OUT = ROOT + 'web/examples/ui/specs.json';
 const PORT = 8191;
 const args = process.argv.slice( 2 );
 const option = ( name, fallback ) => {
@@ -25,7 +25,7 @@ const option = ( name, fallback ) => {
 
 const settle = Number( option( '--settle', 6000 ) );
 const merge = args.includes( '--merge' );
-const catalog = JSON.parse( fs.readFileSync( ROOT + 'web/gallery/catalog.json', 'utf8' ) );
+const catalog = JSON.parse( fs.readFileSync( ROOT + 'web/examples/catalog.json', 'utf8' ) );
 let ids = args.filter( ( a, i ) => ! a.startsWith( '--' ) && ! [ '--settle', '--workers' ].includes( args[ i - 1 ] ) );
 if ( ids.length === 0 ) {
 
@@ -386,6 +386,6 @@ async function extract( id ) {
 
 await browser.close();
 server.kill();
-fs.mkdirSync( ROOT + 'web/gallery/ui', { recursive: true } );
+fs.mkdirSync( ROOT + 'web/examples/ui', { recursive: true } );
 const sorted = Object.fromEntries( Object.keys( specs ).sort().map( k => [ k, specs[ k ] ] ) );
 fs.writeFileSync( OUT, JSON.stringify( sorted, null, '\t' ) + '\n' );

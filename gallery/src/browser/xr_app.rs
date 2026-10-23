@@ -1,6 +1,6 @@
 //! webgpu_xr_cubes, webgpu_xr_rollercoaster and webgpu_xr_shadows: three
 //! r186's WebXR examples on the WebGPU renderer, without their WebGL
-//! fallback. The page's JavaScript ( `web/gallery/xr.js` ) owns the XR
+//! fallback. The page's JavaScript ( `web/examples/xr.js` ) owns the XR
 //! session, the XRButton / VRButton and the XRGPUBinding projection layer;
 //! this app owns the scene, the XRManager state ( `crate::xr` ) and the
 //! rendering, on the canvas before the session and into the layer's texture
@@ -1062,7 +1062,7 @@ impl XrApp {
 }
 
 /// The program of three.js examples/webgpu_xr_cubes.html: its renderer and
-/// its scene; web/gallery/xr.js runs the session and the frame loop.
+/// its scene; web/examples/xr.js runs the session and the frame loop.
 #[wasm_bindgen]
 pub async fn webgpu_xr_cubes(
     canvas: web_sys::HtmlCanvasElement,
@@ -1075,7 +1075,7 @@ pub async fn webgpu_xr_cubes(
 }
 
 /// The program of three.js examples/webgpu_xr_rollercoaster.html: its
-/// renderer and its scene; web/gallery/xr.js runs the session and the frame
+/// renderer and its scene; web/examples/xr.js runs the session and the frame
 /// loop.
 #[wasm_bindgen]
 pub async fn webgpu_xr_rollercoaster(
@@ -1091,7 +1091,7 @@ pub async fn webgpu_xr_rollercoaster(
 }
 
 /// The program of three.js examples/webgpu_xr_shadows.html: its renderer and
-/// its scene; web/gallery/xr.js runs the session and the frame loop.
+/// its scene; web/examples/xr.js runs the session and the frame loop.
 #[wasm_bindgen]
 pub async fn webgpu_xr_shadows(
     canvas: web_sys::HtmlCanvasElement,

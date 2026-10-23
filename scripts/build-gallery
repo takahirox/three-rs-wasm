@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Build the examples gallery into web/pkg/gallery/: every example linked once
+# Build the examples gallery into web/build/: every example linked once
 # ( gallery/ with its default features ), then split into the primary module and
 # a part per module and per chunk of code modules share, each with its glue
 # when it needs its own ( tools/gallery/split/build.py ), and every example's
-# page ( web/gallery/examples/, tools/gallery/pages.mjs ), which loads the
-# primary module and its parts ( web/gallery/runtime.js ). The split and the
+# page ( web/examples/, tools/gallery/pages.mjs ), which loads the
+# primary module and its parts ( web/examples/runtime.js ). The split and the
 # pages run on Node.js with the repository's packages ( npm ci ).
 #
 #   scripts/build-gallery [--dev]
@@ -14,11 +14,12 @@
 # Splitting needs Binaryen's wasm-split and wasm-opt ( version 127 or later ).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-OUT="$ROOT/web/pkg/gallery"
+OUT="$ROOT/web/build"
 python3 "$ROOT/tools/gallery/modules.py"
-rm -rf "$ROOT/web/pkg"
+# The gallery's own output; web/build/tsl ( the TSL editor's Wasm ) stays.
+rm -rf "$OUT/parts" "$OUT/snippets" "$OUT"/three_rs_wasm* "$OUT/parts.json"
 # The MVP page's scenes and the gallery examples the MVP checks open
-# ( web/index.html, tests/browser/ ).
+# ( web/examples/mvp.html, tests/browser/ ).
 MVP=example_mvp,example_geometry_cube,example_point_lights,example_loader_gltf,example_pmrem_equirectangular
 if [ "${1:-}" = "--dev" ]; then
   ( cd "$ROOT/gallery" && CARGO_TARGET_DIR="$ROOT/target/gallery-dev" \

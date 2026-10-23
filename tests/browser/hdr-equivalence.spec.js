@@ -5,8 +5,8 @@ test('Rust UltraHDR decoding matches the official UltraHDRLoader reconstruction'
  await page.goto('/reference/three-js/gltf-pbr.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:120000});
  const result=await page.evaluate(async()=>{
   const {DataUtils}=await import('/.cache/three-r186/src/Three.WebGPU.js');const a=window.reference.environment.image.data;
-  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime('core');
-  const bytes=new Uint8Array(await (await fetch('/web/environments/royal_esplanade_2k.hdr.jpg')).arrayBuffer());
+  const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime('core');
+  const bytes=new Uint8Array(await (await fetch('/web/examples/environments/royal_esplanade_2k.hdr.jpg')).arrayBuffer());
   const b=await rust.decode_environment(bytes);
   if(a.length!==b.length)throw new Error('HDR dimensions differ');let maximum=0,hdrPixels=0;
   for(let i=0;i<a.length;i+=4){const source=[0,1,2].map(c=>DataUtils.fromHalfFloat(a[i+c]));const peak=Math.max(...source);if(peak>1)hdrPixels++;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Which gallery module each ported example runs ( web/gallery/modules.json ).
+"""Which gallery module each ported example runs ( web/examples/modules.json ).
 
 Every example has its own program, a Rust function named after it
 ( `webgl_loader_texture_ktx`, `-` read as `_` ); its module is the module
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'web/gallery/modules.json'
+OUT = ROOT / 'web/examples/modules.json'
 BROWSER = ROOT / 'gallery/src/browser'
 SHELL_FILES = {'browser', 'expanded'}
 SHELL = {
@@ -38,7 +38,7 @@ def programs():
 
 
 def mapping():
-    catalog = json.loads((ROOT / 'web/gallery/catalog.json').read_text())
+    catalog = json.loads((ROOT / 'web/examples/catalog.json').read_text())
     found = programs()
     out = {}
     for e in sorted(catalog['examples'], key=lambda e: e['id']):
@@ -50,7 +50,7 @@ def mapping():
 
 def modules():
     """The modules that hold programs: the examples' and the MVP page's
-    ( web/index.html )."""
+    ( web/examples/mvp.html )."""
     return (set(mapping()['examples'].values()) | set(programs().values())) - {'core'}
 
 

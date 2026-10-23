@@ -1,11 +1,11 @@
-// Every example's own page, web/gallery/examples/<id>.html, as three.js has a
+// Every example's own page, web/examples/<id>.html, as three.js has a
 // page per example. A ported example's page loads the gallery's Wasm ( the
 // library, then the parts that carry the example's program, each with its
 // glue ) and runs its program; the other examples' pages show their diagnostic
-// ( web/gallery/diagnostic.js ). scripts/build-gallery writes them, as the
-// parts are its output ( web/pkg/gallery/parts.json ).
+// ( web/examples/diagnostic.js ). scripts/build-gallery writes them, as the
+// parts are its output ( web/build/parts.json ).
 //
-// A ported example's script is web/gallery/example.js specialized for it:
+// A ported example's script is web/examples/example.js specialized for it:
 // PAGE_ID, PAGE_PARTS ( its module's parts ) and PAGE_PROGRAM written in, the
 // conditions on PAGE_EXAMPLE, the gallery's number for the example, evaluated,
 // the code for other examples dropped and the imports it no longer uses
@@ -18,8 +18,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const GALLERY = path.join(ROOT, 'web/gallery');
-const OUT = path.join(GALLERY, 'examples');
+const GALLERY = path.join(ROOT, 'web/examples');
 const UNKNOWN = Symbol('unknown');
 
 // The value of an expression whose only variable is PAGE_EXAMPLE, or UNKNOWN.
@@ -187,7 +186,7 @@ function withoutUnusedImports(script) {
 	return out + script.slice(at);
 }
 
-// The records of the original's UI an example's page carries ( web/gallery/ui/ui.js ):
+// The records of the original's UI an example's page carries ( web/examples/ui/ui.js ):
 // its spec ( specs.json ), its page's chrome ( pages.json ), the gallery's
 // names for its controllers ( aliases.json ) and its live readout ( extras/ ).
 function uiRecords() {
@@ -208,7 +207,7 @@ function uiRecords() {
 	};
 }
 
-// The page's part of the listing of r186's own assets ( web/gallery/upstream.js ):
+// The page's part of the listing of r186's own assets ( web/examples/upstream.js ):
 // the files its example loads ( tools/gallery/upstream-pages.json ), with the
 // listing's base, which the published site sets ( tools/build_site.py ).
 function upstreamAssets() {
@@ -238,7 +237,7 @@ export function pages() {
 	const modules = JSON.parse(fs.readFileSync(path.join(GALLERY, 'modules.json'), 'utf8')).examples;
 	// The parts each module loads and those with glue ( tools/gallery/split/ );
 	// an unsplit build has none.
-	const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/pkg/gallery/parts.json'), 'utf8'));
+	const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/build/parts.json'), 'utf8'));
 	const glue = new Set(listing.glue ?? []);
 	const partsOf = module => ((listing.modules ?? listing)[module] ?? []).map(name => [name, glue.has(name)]);
 	const template = fs.readFileSync(path.join(ROOT, 'tools/gallery/page.html'), 'utf8');
@@ -263,8 +262,5 @@ export function pages() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-	const out = pages();
-	fs.rmSync(OUT, {recursive: true, force: true});
-	fs.mkdirSync(OUT, {recursive: true});
-	for (const [f, html] of out) fs.writeFileSync(path.join(OUT, f), html);
+	for (const [f, html] of pages()) fs.writeFileSync(path.join(GALLERY, f), html);
 }

@@ -100,7 +100,7 @@ impl Noise {
         let mut size = 0;
         for face in ["px", "nx", "py", "ny", "pz", "nz"] {
             let bytes = fetch(&format!(
-                "/web/gallery/assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr"
+                "assets/tsl-environment/textures/cube/pisaHDR/{face}.hdr"
             ))
             .await?;
             let im = image::load_from_memory(&bytes).map_err(|e| Error::Asset(e.to_string()))?;
@@ -151,7 +151,7 @@ impl Noise {
         // Two TextGeometry lines ( helvetiker, size 1.15, depth 0.02 ) under each
         // sphere, centered as the page centers them.
         let font = crate::shapes::Font::parse(
-            &fetch("/web/gallery/assets/fonts/helvetiker_regular.typeface.json").await?,
+            &fetch("assets/fonts/helvetiker_regular.typeface.json").await?,
         )?;
         let mut labels = vec![];
         for (i, lines) in NAMES.iter().enumerate() {

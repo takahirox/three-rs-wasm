@@ -1286,13 +1286,7 @@ pub(super) async fn esplanade(
     linear: &wgpu::Sampler,
     clamp: &wgpu::Sampler,
 ) -> Result<(wgpu::TextureView, u32, Pmrem, wgpu::RenderPipeline)> {
-    ultra_hdr_environment(
-        r,
-        linear,
-        clamp,
-        "/web/environments/royal_esplanade_2k.hdr.jpg",
-    )
-    .await
+    ultra_hdr_environment(r, linear, clamp, "environments/royal_esplanade_2k.hdr.jpg").await
 }
 /// A 2k UltraHDR equirect at `url` the same way.
 pub(super) async fn ultra_hdr_environment(

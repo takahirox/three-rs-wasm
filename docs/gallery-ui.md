@@ -10,7 +10,7 @@ original's own library and from what the pinned r186 page itself builds.
 lil-gui, the Inspector or stats.js, as published
 (`.cache/three-r186/examples/<id>.html`, three's build served from `src/`),
 at 1280×720. The libraries are wrapped to record what the page creates. When
-the UI stops changing, it writes `web/gallery/ui/specs.json`, which holds:
+the UI stops changing, it writes `web/examples/ui/specs.json`, which holds:
 
 - each lil-gui panel's tree: folders and controllers, with type, name,
   value, range, step, options, hidden and disabled state, listening;
@@ -26,10 +26,10 @@ It covers 366 examples. specs.json is recorded, not derived on CI: rerun
 the tool when the pinned examples change.
 
 **`tools/gallery/ui/page.py`** reads each page's HTML into
-`web/gallery/ui/pages.json`:
+`web/examples/ui/pages.json`:
 
 - its stylesheet (`main.css` or `example.css`, copied to
-  `web/gallery/ui/css/`);
+  `web/examples/ui/css/`);
 - its head `<style>` blocks;
 - its `#info`.
 
@@ -38,10 +38,10 @@ the tool when the pinned examples change.
 An example's page carries its own part of these records, and nothing of the
 other examples': `tools/gallery/pages.mjs` writes its spec, its page chrome,
 the gallery's names for its controllers whose original names differ
-(`web/gallery/ui/aliases.json`) and its readout module (`extras/`) into the
+(`web/examples/ui/aliases.json`) and its readout module (`extras/`) into the
 page as JSON (`#gallery-ui`).
 
-## The gallery side (`web/gallery/ui/`)
+## The gallery side (`web/examples/ui/`)
 
 Each library is the r186 package's, loaded from jsDelivr. They are identical
 to the pinned copies.

@@ -5,7 +5,7 @@ import tarfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 REV='148ef33ecb6d2502ff796d4554abd1549c95d519'
-OUT=ROOT/'web/gallery/assets/material-textures'
+OUT=ROOT/'web/examples/assets/material-textures'
 OUT.mkdir(parents=True,exist_ok=True)
 manifest=[]
 with tarfile.open(ROOT/f'.cache/three-{REV}.tar.gz') as tar:

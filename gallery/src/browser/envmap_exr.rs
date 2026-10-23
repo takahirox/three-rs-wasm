@@ -12,7 +12,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/envmap-exr";
+const ASSETS: &str = "assets/envmap-exr";
 /// The debug plane's MeshBasicMaterial with the PMREM render target as its
 /// map: the port's own cube-UV atlas at the plane's uv. Its layout is not
 /// three's, so the debug view is not compared.

@@ -42,10 +42,9 @@ impl Demo {
             Material::Basic(m),
         );
         s.get_mut(h)?.quaternion = Quaternion::from_rotation_x(-std::f64::consts::FRAC_PI_2);
-        let (a, b, i) = super::super::gltf_viewer::load_asset(
-            "/web/gallery/assets/tsl-viewport/models/gltf/Michelle.glb",
-        )
-        .await?;
+        let (a, b, i) =
+            super::super::gltf_viewer::load_asset("assets/tsl-viewport/models/gltf/Michelle.glb")
+                .await?;
         let imported = crate::gltf::import_animated_decoded(&a, &b, &i)?;
         let instance = imported.instantiate(s)?;
         let mut mixer = crate::animation::AnimationMixer::default();

@@ -24,8 +24,7 @@ impl Demo {
             ("earth_night_4096.jpg", true),
             ("earth_bump_roughness_clouds_4096.jpg", false),
         ] {
-            let mut image =
-                decode_image(&fetch(&format!("/web/gallery/assets/{name}")).await?).await?;
+            let mut image = decode_image(&fetch(&format!("assets/{name}")).await?).await?;
             image.srgb = srgb;
             image.anisotropy = 8;
             image.mipmap_filter = Some(Filter::Linear);

@@ -154,7 +154,7 @@ impl Demo {
         scene.get_mut(light)?.position = Vector3::Y;
         scene.add(cam, light)?;
         let (asset, buffers, images) =
-            super::super::gltf_viewer::load_asset("/web/models/Michelle.glb").await?;
+            super::super::gltf_viewer::load_asset("models/Michelle.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let default_program = Arc::new(

@@ -6,7 +6,7 @@ use crate::geometry::BufferGeometry;
 use crate::{Error, Result};
 
 /// The examples' models/fbx directory.
-pub(super) const MODELS: &str = "/web/gallery/assets/fbx-loader/models/fbx";
+pub(super) const MODELS: &str = "assets/fbx-loader/models/fbx";
 
 /// `new FBXLoader().load( 'models/fbx/stanford-bunny.fbx' )`'s
 /// `object.children[ 0 ].geometry`.

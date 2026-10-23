@@ -488,7 +488,7 @@ impl Demo {
             }
             200 => d.points_scene(s, r).await?,
             201 => {
-                let text = String::from_utf8(fetch("/web/gallery/assets/helix_201.xyz").await?)
+                let text = String::from_utf8(fetch("assets/helix_201.xyz").await?)
                     .map_err(|e| Error::Asset(e.to_string()))?;
                 // XYZLoader: three values per vertex, six with an sRGB byte color.
                 let (mut p, mut colors) = (vec![], vec![]);
@@ -530,8 +530,7 @@ impl Demo {
             _ => {
                 let g = Arc::new(BoxGeometry::build(1., 1., 1.)?);
                 for (name, x) in [("crate_grey8.tga", -1.), ("crate_color8.tga", 1.)] {
-                    let (w, h, rgba) =
-                        tga_rgba(&fetch(&format!("/web/gallery/assets/{name}")).await?)?;
+                    let (w, h, rgba) = tga_rgba(&fetch(&format!("assets/{name}")).await?)?;
                     let mut t = crate::material::Texture::from_rgba(w, h, rgba, true)?;
                     // TGALoader: flipY, generated mipmaps, sRGB set by the example.
                     t.srgb = true;
@@ -726,9 +725,7 @@ impl Demo {
         let size_buffer = GpuBuffer::new(r, bytemuck::cast_slice(&sizes), BufferAccess::Read)?;
         let order: Vec<u32> = (0..n as u32).collect();
         let order_buffer = GpuBuffer::new(r, bytemuck::cast_slice(&order), BufferAccess::Read)?;
-        let mut image =
-            decode_texture_image(&fetch("/web/gallery/assets/point-clouds/disc.png").await?)
-                .await?;
+        let mut image = decode_texture_image(&fetch("assets/point-clouds/disc.png").await?).await?;
         image.srgb = false;
         image.mipmap_filter = Some(Filter::Linear);
         let disc = r.upload_texture(&Arc::new(image))?;

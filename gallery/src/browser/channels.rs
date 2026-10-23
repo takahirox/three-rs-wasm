@@ -16,7 +16,7 @@ use crate::{Error, Result, camera::*, material::*, math::*, renderer::*, scene::
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/environment-materials";
+const ASSETS: &str = "assets/environment-materials";
 const SCALE: f64 = 2.436143;
 const BIAS: f64 = -0.428408;
 /// displacementmap_vertex: the image is stored from its top row, so the

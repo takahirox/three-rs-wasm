@@ -380,7 +380,7 @@ impl Demo {
         let vertex = wgpu::BufferUsages::VERTEX;
         let index_usage = wgpu::BufferUsages::INDEX;
         let (mut positions, index) = super::refraction_loaders::formats::parse_ply(
-            &fetch("/web/gallery/assets/ply/binary/Lucy100k.ply").await?,
+            &fetch("assets/ply/binary/Lucy100k.ply").await?,
         )?;
         for p in &mut positions {
             *p = (*p as f64 * 0.0024) as f32;

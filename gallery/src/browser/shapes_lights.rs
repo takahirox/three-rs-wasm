@@ -25,7 +25,7 @@ use formats::{ExtrudeOptions, extrude, parse_stl};
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -207,7 +207,7 @@ impl Demo {
         // envmap_fragment on Lambert: reflection or refraction of the view ray about
         // the world normal, x flipped, then Multiply or Mix by the reflectivity.
         let head = parse_obj(&String::from_utf8_lossy(
-            &fetch("/web/models/WaltHead.obj").await?,
+            &fetch("models/WaltHead.obj").await?,
         ))
         .into_iter()
         .next()

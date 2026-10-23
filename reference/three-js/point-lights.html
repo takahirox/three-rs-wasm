@@ -8,7 +8,7 @@ try {
   const renderer=new T.WebGPURenderer({canvas,antialias:false});await renderer.init();renderer.setSize(720,720,false);
   const scene=new T.Scene();scene.background=new T.Color(0);
   const camera=new T.PerspectiveCamera(50,1,1,1000);camera.position.z=100;
-  const source=await (await fetch('/web/models/WaltHead.obj')).text();
+  const source=await (await fetch('/web/examples/models/WaltHead.obj')).text();
   const vertices=[],base=[],normals=[],phases=[];let seed=186;
   const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   for(const line of source.split('\n')){

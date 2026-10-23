@@ -5,7 +5,7 @@
 // its data into the shared memory as it is instantiated, before the example
 // starts. A part's glue holds its exports' wrappers ( the example's program )
 // and the JavaScript functions only the part calls.
-const base = new URL('../pkg/gallery/', import.meta.url);
+const base = new URL('../build/', import.meta.url);
 
 // parts: [ [ name, whether it has glue ] ], as an example's page lists them
 // ( tools/gallery/pages.mjs ). The primary module's glue and the parts' glue

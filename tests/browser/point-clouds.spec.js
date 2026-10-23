@@ -8,7 +8,7 @@ for(const [kind,parameters] of Object.entries(controls))for(const samples of (ki
  test.setTimeout(240000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.addInitScript(()=>{window.fixtureError=null;window.modules=[];const fn=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){modules.push(d.code);return fn.call(this,d);};const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
  for(const runtime of ['reference','rust']){
-  await page.setViewportSize({width:512,height:512});await page.goto(runtime==='reference'?`/reference/three-js/point-clouds.html?id=${official(kind)}&samples=${samples}&${diagnostic}=1`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+  await page.setViewportSize({width:512,height:512});await page.goto(runtime==='reference'?`/reference/three-js/point-clouds.html?id=${official(kind)}&samples=${samples}&${diagnostic}=1`:`/web/examples/${official(kind)}.html?still=1`);
   await page.waitForFunction(()=>{const c=document.querySelector('canvas');const error=window.fixtureError||c?.dataset.error||document.querySelector('main p')?.textContent;if(error)throw Error(error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;},null,{timeout:90000});
   if(runtime==='rust'&&samples===1)await page.evaluate(()=>app.set_samples(1));
   await page.addStyleTag({content:'#notice,#settings,#info,.texture-label{display:none!important}'});
@@ -34,7 +34,7 @@ for(const [kind,parameters] of Object.entries(controls))for(const samples of (ki
 for(const kind of Object.keys(controls)){const id=`${official(kind)}`;
  test(`Point clouds GPU residency: ${kind}`,async({page},info)=>{
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+  await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
   const reports=[];
   for(const resize of [false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -63,7 +63,7 @@ test('Point clouds resident geometry and official draw workload',async({page},in
  for(const kind of Object.keys(controls)){
   const pair={kind};
   for(const runtime of ['reference','rust']){
-   await page.goto(runtime==='reference'?`/reference/three-js/point-clouds.html?id=${official(kind)}`:`/web/gallery/examples/${official(kind)}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/point-clouds.html?id=${official(kind)}`:`/web/examples/${official(kind)}.html?still=1`);
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');if(c?.dataset.error)throw Error(c.dataset.error);return c?.dataset.ready==='true'||Number(c?.dataset.frames)>0;});
    for(let t=1;t<=3;t++){const prev=await page.locator('canvas').getAttribute('data-frames');await page.evaluate(async({runtime,t})=>{if(t===3)resetWork();if(runtime==='reference')await renderFixture(t);else app.gallery_time(t);},{runtime,t});if(runtime==='rust')await page.waitForFunction(p=>document.querySelector('canvas').dataset.frames!==p,prev);}
    pair[runtime]=await page.evaluate(()=>({...work,attributeBuffers}));

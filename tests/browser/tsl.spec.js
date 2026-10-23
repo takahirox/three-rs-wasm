@@ -8,7 +8,7 @@ for(const id of ids){
   const images={};
   for(const runtime of ['reference','rust']){
    await page.setViewportSize({width:512,height:512});
-   await page.goto(runtime==='reference'?`/reference/three-js/tsl.html?id=${id}`:`/web/gallery/examples/${id}.html?still=1`);
+   await page.goto(runtime==='reference'?`/reference/three-js/tsl.html?id=${id}`:`/web/examples/${id}.html?still=1`);
    await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>2,null,{timeout:60000});
    if(runtime==='rust')await page.addStyleTag({content:'#notice,#settings{display:none!important}'});
    const capture=async()=>{await page.waitForTimeout(100);return PNG.sync.read(await page.locator('canvas').screenshot());};
@@ -39,7 +39,7 @@ for(const id of ids){
  test(`TSL GPU residency: ${id}`,async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.addInitScript(()=>{window.creates=0;for(const name of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createRenderPipelineAsync']){const fn=GPUDevice.prototype[name];GPUDevice.prototype[name]=function(...args){creates++;return fn.apply(this,args);};}});
-  await page.goto(`/web/gallery/examples/${id}.html`);
+  await page.goto(`/web/examples/${id}.html`);
   await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>12,null,{timeout:60000});
   for(const resized of [false,true]){
    if(resized){await page.setViewportSize({width:640,height:400});await page.waitForTimeout(200);}
@@ -54,7 +54,7 @@ test('TSL gallery loads matching versioned glue and Wasm instead of stale URLs',
  const requests=[];page.on('request',request=>requests.push(new URL(request.url())));
  // Emulate an obsolete entrypoint still available at the previous cached URL.
  await page.route('**/pkg/*/three_rs_wasm.js',route=>route.fulfill({contentType:'text/javascript',body:'export default async function(){}; export class BrowserApp {static create(){throw Error("invalid example id");}}'}));
- await page.goto('/web/gallery/#webgpu_texturegrad');
+ await page.goto('/web/examples/#webgpu_texturegrad');
  const frame=page.frameLocator('#viewer');
  await expect(frame.locator('body')).toHaveAttribute('data-backend','rust-wasm-webgpu');
  await expect.poll(async()=>Number(await frame.locator('canvas').getAttribute('data-frames'))).toBeGreaterThan(2);

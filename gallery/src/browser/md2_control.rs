@@ -9,7 +9,7 @@ use crate::{Result, camera::*, geometry::*, material::*, math::*, renderer::*, s
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/md2";
+const ASSETS: &str = "assets/md2";
 const SKINS: [&str; 13] = [
     "grok.jpg",
     "ogrobase.png",

@@ -145,10 +145,9 @@ impl Demo {
                 })
         };
         // The GLB as stored: its quantized views are uploaded unchanged.
-        let asset = gltf::Gltf::from_slice_without_validation(
-            &fetch("/web/gallery/assets/gltf/ShaderBall.glb").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let asset =
+            gltf::Gltf::from_slice_without_validation(&fetch("assets/gltf/ShaderBall.glb").await?)
+                .map_err(|e| Error::Asset(e.to_string()))?;
         let buffers = vec![
             asset
                 .blob
@@ -333,8 +332,7 @@ impl Demo {
             ..Default::default()
         });
         // scene.environment: the equirect HDR through PMREMGenerator.fromEquirectangular.
-        let (pmrem, _) =
-            rgbe_pmrem(r, &clamp, "/web/environments/monochrome_studio_02_1k.hdr").await?;
+        let (pmrem, _) = rgbe_pmrem(r, &clamp, "environments/monochrome_studio_02_1k.hdr").await?;
         Ok(Self {
             controls,
             time: 0.,

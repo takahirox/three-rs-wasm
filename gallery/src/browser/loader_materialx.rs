@@ -3,7 +3,7 @@
 //! samples and the page's 24 local test documents ), lit by the
 //! san_giuseppe_bridge PMREM ( lodMax 9 ) over the transparent grid ground.
 //! The documents are fetched and parsed at load by MaterialXLoader ported
-//! to Rust ( the three-tsl crate's Wasm, web/tsl-pkg: r186's
+//! to Rust ( the three-tsl crate's Wasm, web/build/tsl: r186's
 //! examples/jsm/loaders/MaterialX* and the node system transpiled ), which
 //! builds each material in the page's scene; the renderer's node builder
 //! there generates the ground's and the materials' WGSL and their texture
@@ -110,13 +110,13 @@ const LOCAL_PATH: &str = "materialx/";
 
 #[wasm_bindgen(inline_js = r#"
 // MaterialXLoader and the renderer's node builder run on the three-tsl
-// crate's Wasm ( web/tsl-pkg: three r186 and its addons transpiled to Rust ).
+// crate's Wasm ( web/build/tsl: three r186 and its addons transpiled to Rust ).
 let tsl;
 export async function materialxShaders( texts, paths ) {
 	if ( tsl === undefined ) {
 		const revision = 'tsl-2';
-		tsl = await import( new URL( `../tsl-pkg/three_tsl.js?v=${ revision }`, document.baseURI ) );
-		await tsl.default( { module_or_path: new URL( `../tsl-pkg/three_tsl_bg.wasm?v=${ revision }`, document.baseURI ) } );
+		tsl = await import( new URL( `../build/tsl/three_tsl.js?v=${ revision }`, document.baseURI ) );
+		await tsl.default( { module_or_path: new URL( `../build/tsl/three_tsl_bg.wasm?v=${ revision }`, document.baseURI ) } );
 	}
 	return tsl.materialx_shaders( texts, paths, innerWidth, innerHeight );
 }
@@ -201,7 +201,7 @@ async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> 
         paths.push(&JsValue::from_str(LOCAL_PATH));
     }
     for (_, file, _) in &documents {
-        let bytes = fetch(&format!("/web/gallery/assets/materialx/{file}")).await?;
+        let bytes = fetch(&format!("assets/materialx/{file}")).await?;
         let document =
             String::from_utf8(bytes).map_err(|_| Error::Invalid("materialx document"))?;
         texts.push(&JsValue::from_str(&document));
@@ -521,10 +521,9 @@ impl Demo {
                     usage,
                 })
         };
-        let asset = gltf::Gltf::from_slice_without_validation(
-            &fetch("/web/gallery/assets/gltf/ShaderBall.glb").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let asset =
+            gltf::Gltf::from_slice_without_validation(&fetch("assets/gltf/ShaderBall.glb").await?)
+                .map_err(|e| Error::Asset(e.to_string()))?;
         let blob = asset
             .blob
             .clone()
@@ -655,8 +654,7 @@ impl Demo {
         let mut images = vec![];
         for path in &image_paths {
             let mut image =
-                decode_image(&fetch(&format!("/web/gallery/assets/materialx/{path}")).await?)
-                    .await?;
+                decode_image(&fetch(&format!("assets/materialx/{path}")).await?).await?;
             image.srgb = false;
             images.push(mipmapped(
                 r,
@@ -767,7 +765,7 @@ impl Demo {
         let (pmrem, _) = rgbe_pmrem_at(
             r,
             &clamp,
-            "/web/gallery/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr",
+            "assets/tsl-procedural/san_giuseppe_bridge_2k.hdr",
             Some((9, GGX_9)),
         )
         .await?;

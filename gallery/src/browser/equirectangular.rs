@@ -57,7 +57,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
         far: 20.0,
         ..Default::default()
     }));
-    let texture = decode_image(&fetch("/web/gallery/assets/panorama.jpg").await?).await?;
+    let texture = decode_image(&fetch("assets/panorama.jpg").await?).await?;
     scene.environment = Some(Arc::new(crate::environment::EnvironmentMap::from_texture(
         &texture,
     )?));

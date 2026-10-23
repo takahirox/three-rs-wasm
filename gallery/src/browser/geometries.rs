@@ -69,7 +69,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
         decay: 0.0,
     }));
     scene.add(camera, point)?;
-    let mut map = decode_image(&fetch("/web/gallery/assets/uv-grid.jpg").await?).await?;
+    let mut map = decode_image(&fetch("assets/uv-grid.jpg").await?).await?;
     map.wrap_s = Wrapping::Repeat;
     map.wrap_t = Wrapping::Repeat;
     map.anisotropy = 16;

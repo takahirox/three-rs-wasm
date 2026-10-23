@@ -33,7 +33,7 @@ impl Demo {
         s.tone_mapping = ToneMapping::Aces;
         s.background = Color::from_hex(0xf0f0f0);
         s.environment = Some(super::room_environment::environment(r)?);
-        let (a, b, i) = load_asset("/web/gallery/assets/gltf/CarbonFrameBike.glb").await?;
+        let (a, b, i) = load_asset("assets/gltf/CarbonFrameBike.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let mut mixer = None;
         if let Some(clip) = instance.clips.first() {

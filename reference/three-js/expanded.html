@@ -46,26 +46,26 @@ try {
  } else if(id==='webgl_loader_gltf_avif') {
   camera=new T.PerspectiveCamera(45,1,.1,100);camera.position.set(1.5,4,9);scene.background=new T.Color(0xf6eedc);
   const draco=new DRACOLoader().setDecoderPath(DRACO_GLTF_CONFIG);
-  scene.add((await new GLTFLoader().setDRACOLoader(draco).loadAsync('/web/models/AVIFTest/forest_house.glb')).scene);draco.dispose();
+  scene.add((await new GLTFLoader().setDRACOLoader(draco).loadAsync('/web/examples/models/AVIFTest/forest_house.glb')).scene);draco.dispose();
  } else if(id==='webgl_loader_gltf_instancing') {
   // Scene/camera/assets and WebGL backend from the pinned official example.
   camera=new T.PerspectiveCamera(45,1,.25,20);camera.position.set(-.90,.41,-.89);camera.lookAt(0,.25,0);
-  const env=await new UltraHDRLoader().loadAsync('/web/environments/royal_esplanade_2k.hdr.jpg');env.mapping=T.EquirectangularReflectionMapping;
+  const env=await new UltraHDRLoader().loadAsync('/web/examples/environments/royal_esplanade_2k.hdr.jpg');env.mapping=T.EquirectangularReflectionMapping;
   scene.background=scene.environment=env;renderer.toneMapping=T.ACESFilmicToneMapping;
-  scene.add((await new GLTFLoader().loadAsync('/web/models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf')).scene);
+  scene.add((await new GLTFLoader().loadAsync('/web/examples/models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf')).scene);
  } else if(id==='webgl_morphtargets_horse') {
   camera=new T.PerspectiveCamera(50,1,1,10000);camera.position.set(0,300,600);camera.lookAt(0,150,0);scene.background=new T.Color(0xf0f0f0);
   for(const [color,sign] of [[0xefefff,1],[0xffefef,-1]]){const light=new T.DirectionalLight(color,5);light.position.set(sign,sign,sign).normalize();scene.add(light);}
-  const gltf=await new GLTFLoader().loadAsync('/web/models/Horse/Horse.glb'),mesh=gltf.scene.children[0];mesh.scale.setScalar(1.5);scene.add(mesh);horseMixer=new T.AnimationMixer(mesh);horseAction=horseMixer.clipAction(gltf.animations[0]).setDuration(1).play();
+  const gltf=await new GLTFLoader().loadAsync('/web/examples/models/Horse/Horse.glb'),mesh=gltf.scene.children[0];mesh.scale.setScalar(1.5);scene.add(mesh);horseMixer=new T.AnimationMixer(mesh);horseAction=horseMixer.clipAction(gltf.animations[0]).setDuration(1).play();
  } else if(id==='webgl_morphtargets_sphere') {
   camera=new T.PerspectiveCamera(45,1,.2,100);camera.position.set(0,5,5);camera.lookAt(0,0,0);
   for(const [color,intensity,sign] of [[0xff2200,50000,1],[0x22ff00,10000,-1]]){const light=new T.PointLight(color,intensity);light.position.set(100*sign,100*sign,100*sign);scene.add(light);}scene.add(new T.AmbientLight(0x111111));
-  const gltf=await new GLTFLoader().loadAsync('/web/models/AnimatedMorphSphere/AnimatedMorphSphere.gltf');sphereMesh=gltf.scene.getObjectByName('AnimatedMorphSphere');sphereMesh.rotation.z=Math.PI/2;sphereRotation=sphereMesh.rotation.y;scene.add(sphereMesh);
-  const map=await new T.TextureLoader().loadAsync('/web/gallery/assets/disc.png'),points=new T.Points(sphereMesh.geometry,new T.PointsMaterial({size:10,sizeAttenuation:false,map,alphaTest:.5}));points.morphTargetInfluences=sphereMesh.morphTargetInfluences;points.morphTargetDictionary=sphereMesh.morphTargetDictionary;sphereMesh.add(points);
+  const gltf=await new GLTFLoader().loadAsync('/web/examples/models/AnimatedMorphSphere/AnimatedMorphSphere.gltf');sphereMesh=gltf.scene.getObjectByName('AnimatedMorphSphere');sphereMesh.rotation.z=Math.PI/2;sphereRotation=sphereMesh.rotation.y;scene.add(sphereMesh);
+  const map=await new T.TextureLoader().loadAsync('/web/examples/assets/disc.png'),points=new T.Points(sphereMesh.geometry,new T.PointsMaterial({size:10,sizeAttenuation:false,map,alphaTest:.5}));points.morphTargetInfluences=sphereMesh.morphTargetInfluences;points.morphTargetDictionary=sphereMesh.morphTargetDictionary;sphereMesh.add(points);
  } else if(id==='webgl_geometries') {
   camera=new T.PerspectiveCamera(45,1,1,2000);camera.position.set(800,500,0);camera.lookAt(0,0,0);scene.add(camera);
   scene.add(new T.AmbientLight(0xcccccc,1.5));camera.add(new T.PointLight(0xffffff,2.5,0,0));
-  const map=await new T.TextureLoader().loadAsync('/web/gallery/assets/uv-grid.jpg');map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=16;map.colorSpace=T.SRGBColorSpace;
+  const map=await new T.TextureLoader().loadAsync('/web/examples/assets/uv-grid.jpg');map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=16;map.colorSpace=T.SRGBColorSpace;
   const material=new T.MeshPhongMaterial({map,side:T.DoubleSide});const points=Array.from({length:50},(_,i)=>new T.Vector2(Math.sin(i*.2)*Math.sin(i*.1)*15+50,(i-5)*2));
   const paramPlane=new ParametricGeometry(plane,10,10);paramPlane.scale(100,100,100);paramPlane.center();
   const geometries=[new T.SphereGeometry(75,20,10),new T.IcosahedronGeometry(75),new T.OctahedronGeometry(75),new T.TetrahedronGeometry(75),new T.PlaneGeometry(100,100,4,4),new T.BoxGeometry(100,100,100,4,4,4),new T.CircleGeometry(50,20,0,Math.PI*2),new T.RingGeometry(10,50,20,5,0,Math.PI*2),new T.CylinderGeometry(25,75,100,40,5),new T.LatheGeometry(points,20),new T.TorusGeometry(50,20,20,20),new T.TorusKnotGeometry(50,10,50,20),new T.CapsuleGeometry(20,50),paramPlane,new ParametricGeometry(klein,20,20),new ParametricGeometry(mobius,20,20)];

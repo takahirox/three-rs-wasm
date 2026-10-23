@@ -19,6 +19,6 @@ and materials use `Arc` rather than JavaScript object references. Browser image
 loading uses `Texture::load` through Rust browser bindings.
 
 Open `/reference/three-js/?example=0` or `?example=1` for the JavaScript reference,
-and `/web/?example=0&static=1` or `?example=1&static=1` for the Rust counterpart.
+and `/web/examples/mvp.html?example=0&static=1` or `?example=1&static=1` for the Rust counterpart.
 The normal Rust page animates unless `static=1` is supplied for deterministic
 comparison. No JavaScript scene or property synchronization layer is involved.

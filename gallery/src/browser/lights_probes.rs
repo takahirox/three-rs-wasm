@@ -10,7 +10,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -690,7 +690,7 @@ impl Demo {
         }));
         s.get_mut(light)?.position = Vector3::new(1., 0.05, 0.7);
         s.environment = Some(Arc::new(EnvironmentMap::from_hdr(
-            &fetch("/web/environments/venice_sunset_1k.hdr").await?,
+            &fetch("environments/venice_sunset_1k.hdr").await?,
         )?));
         s.background_environment = true;
         let (asset, buffers, images) =

@@ -192,7 +192,7 @@ impl Demo {
                     scalar(5),
                     float(20.0),
                 ]);
-                let map = image_map("/web/gallery/assets/earth-lights.png", true).await?;
+                let map = image_map("assets/earth-lights.png", true).await?;
                 for color in [color, crt()] {
                     let mut material = NodeMaterial::new(color).build(renderer, &[]).await?;
                     material.properties.map = Some(map.clone());
@@ -207,8 +207,7 @@ impl Demo {
             }
             36 => {
                 let mut material = NodeMaterial::new(gradient()).build(renderer, &[]).await?;
-                material.properties.map =
-                    Some(image_map("/web/gallery/assets/uv-grid.jpg", false).await?);
+                material.properties.map = Some(image_map("assets/uv-grid.jpg", false).await?);
                 materials.push(material);
             }
             37 => {

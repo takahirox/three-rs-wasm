@@ -265,7 +265,7 @@ impl Demo {
             ),
         ];
         // The duck: Draco glb geometry and its sRGB base color map.
-        let (asset, buffers, images) = load_asset("/web/gallery/assets/gltf/duck.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/duck.glb").await?;
         let primitive = asset
             .meshes()
             .next()
@@ -362,8 +362,7 @@ impl Demo {
             mipmap_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        let (pmrem, _) =
-            rgbe_pmrem(r, &clamp, "/web/environments/blouberg_sunrise_2_1k.hdr").await?;
+        let (pmrem, _) = rgbe_pmrem(r, &clamp, "environments/blouberg_sunrise_2_1k.hdr").await?;
         let renders = [
             uniform(r, "water background render", BACKGROUND_FS, "renderStruct")?,
             uniform(r, "duck render", wgsl!("duck_fs"), "renderStruct")?,

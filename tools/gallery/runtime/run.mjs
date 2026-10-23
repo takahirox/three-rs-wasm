@@ -3,7 +3,7 @@
 import {chromium} from '@playwright/test';
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import config from '../../../playwright.config.js';
-const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));
+const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));
 const root='.cache/gallery-runtime';mkdirSync(root,{recursive:true});
 const wanted=process.argv.slice(2);
 const cases=catalog.examples.filter(e=>e.status!=='excluded'&&(!wanted.length||wanted.includes(e.id)));

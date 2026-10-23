@@ -14,7 +14,7 @@ use crate::{
 };
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 const HEAD: [u32; 3] = [256, 256, 109];
 /// The plane's vertex stage: `vUv = position.xy / size + 0.5`, flipped in v.
 fn plane_projection(width: f64, height: f64) -> String {

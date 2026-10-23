@@ -15,7 +15,7 @@ use formats::{Ktx2Kind, Pixels};
 use std::f64::consts::PI;
 use std::sync::{Arc, Mutex};
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -220,7 +220,7 @@ impl Demo {
     async fn exporter_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         let ktx2 = self.id == 274;
         let hdr = if ktx2 {
-            "/web/environments/venice_sunset_1k.hdr".to_string()
+            "environments/venice_sunset_1k.hdr".to_string()
         } else {
             format!("{ASSETS}/tsl-procedural/san_giuseppe_bridge_2k.hdr")
         };

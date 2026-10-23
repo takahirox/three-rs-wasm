@@ -4,7 +4,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
-| `webgl_worker_offscreencanvas` | 444 | `offscreen.rs`, `web/gallery/offscreen-worker.js` | The page's scene.js on the main thread and on an OffscreenCanvas in a module Worker, with the main-thread jank button |
+| `webgl_worker_offscreencanvas` | 444 | `offscreen.rs`, `web/examples/offscreen-worker.js` | The page's scene.js on the main thread and on an OffscreenCanvas in a module Worker, with the main-thread jank button |
 | `webgpu_volume_fire` | 445 | `volume_fire.rs` | The 100 × 100 × 200 fluid fire's compute kernels per simulation step, the volume's colored spot shadow, the ray-marched volume, its denoise and BloomNode |
 | `webgl_batch_lod_bvh` | 446 | `batch_lod_bvh.rs` | 500,000 torus knot instances in one BatchedMesh with four meshoptimizer LODs, BVH frustum culling, LOD selection and hover ray casts each frame |
 | `webgl_loader_ldraw` | 447 | `ldraw.rs`, `ldraw_loader.rs` | The seventeen packed LDraw models parsed at load, with conditional lines, building steps and the page's GUI |
@@ -106,7 +106,7 @@ LDrawLoader is ported ( `ldraw_loader.rs` ):
 
 The results depend on JavaScript semantics, which the port keeps: the
 half-edge map's insertion order, the shared normal wrappers, and the stable
-color sort. The packed models are served from `web/gallery/assets/ldraw/`.
+color sort. The packed models are served from `web/examples/assets/ldraw/`.
 
 LDrawConditionalLineMaterial's vertex test runs as an engine shader program.
 The control points and direction travel in the vertex's normal, tangent and

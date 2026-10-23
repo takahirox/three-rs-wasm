@@ -174,7 +174,7 @@ impl Demo {
             seed as f64 / 4294967296.
         };
         let offsets: Vec<f64> = (0..COUNT).map(|_| random() * 3.).collect();
-        let (asset, buffers, _) = load_asset("/web/models/Horse/Horse.glb").await?;
+        let (asset, buffers, _) = load_asset("models/Horse/Horse.glb").await?;
         let primitive = asset
             .meshes()
             .next()

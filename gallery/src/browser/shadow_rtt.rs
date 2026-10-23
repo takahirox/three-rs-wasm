@@ -9,7 +9,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::f64::consts::{PI, TAU};
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn random(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.
@@ -786,7 +786,7 @@ fn effect(uv:vec2<f32>)->vec4<f32>{{let size=vec2<f32>(textureDimensions(depth_t
         };
         material.properties.color = Color::from_hex(0xefefef);
         material.properties.map = Some(Arc::new(map));
-        let (asset, buffers, images) = load_asset("/web/models/LeePerrySmith.glb").await?;
+        let (asset, buffers, images) = load_asset("models/LeePerrySmith.glb").await?;
         let meshes = crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(s)?;
         let geometry = match &s.get(meshes[0])?.kind {
             NodeKind::Mesh(m) => m.geometry.clone(),

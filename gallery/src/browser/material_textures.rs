@@ -16,7 +16,7 @@ use std::sync::Arc;
 mod paired;
 mod partial;
 mod solids;
-const ASSETS: &str = "/web/gallery/assets/material-textures";
+const ASSETS: &str = "assets/material-textures";
 fn mesh(s: &mut Scene, geometry: Arc<BufferGeometry>, material: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(geometry, Arc::new(material))))
 }

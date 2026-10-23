@@ -378,10 +378,9 @@ impl Demo {
             "objectStruct",
             &[("nodeUniform4", &m4(Matrix4::IDENTITY))],
         )?;
-        let mut image = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-procedural/uv_grid_directx.jpg").await?,
-        )
-        .await?;
+        let mut image =
+            decode_texture_image(&fetch("assets/tsl-procedural/uv_grid_directx.jpg").await?)
+                .await?;
         image.srgb = true;
         // TextureLoader's texture is flipped ( flipY ).
         let row = image.width as usize * 4;

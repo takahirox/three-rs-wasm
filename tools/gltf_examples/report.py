@@ -4,7 +4,7 @@ from collections import Counter
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 read=lambda name:json.loads((ROOT/name).read_text())
-catalog={r['id']:r for r in read('web/gallery/catalog.json')['examples']}
+catalog={r['id']:r for r in read('web/examples/catalog.json')['examples']}
 imports={r['asset']:r for r in read('docs/gltf-examples-import-attempts.json')}
 renders={r['id']:r for r in read('docs/gltf-examples-render-attempts.json')}
 targets={

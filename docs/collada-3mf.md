@@ -6,7 +6,7 @@ with the loader extensions in `gallery/src/browser/refraction_loaders/formats.rs
 The 3MF scenes are in `gallery/src/browser/threemf.rs`, the raycaster helper in
 `gallery/src/browser/raycaster_helper.rs`, and the audio timing scene in
 `gallery/src/browser/audio_timing.rs` with its Web Audio graph in
-`web/gallery/audio.js`. The MD2 examples are in `gallery/src/browser/md2.rs` and
+`web/examples/audio.js`. The MD2 examples are in `gallery/src/browser/md2.rs` and
 `gallery/src/browser/md2_control.rs`, and the visualizer, orientation and sandbox in
 `gallery/src/browser/audio_visual.rs`.
 
@@ -120,7 +120,7 @@ inventory and are compared against the WebGL renderer.
 - **Bounces.** Rust computes the heights and detects the turn from falling to
   rising. Each frame the page takes the listener and source placement and
   the pending plays from `audio_frame`.
-- **Web Audio.** `web/gallery/audio.js` builds three's graph: the listener
+- **Web Audio.** `web/examples/audio.js` builds three's graph: the listener
   gain, and one HRTF panner and gain per ball. Positions and orientations
   ramp to their values over the frame, and a play is ignored while that
   ball's previous sound is still playing, as `Audio.play()` does.

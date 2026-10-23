@@ -12,14 +12,14 @@
     {
       "id": "lit-textured-hierarchy",
       "rust": "gallery/src/browser.rs",
-      "page": "/web/?example=1",
+      "page": "/web/examples/mvp.html?example=1",
       "test": "tests/browser/migration.spec.js",
       "covers": ["scene-hierarchy", "multiple-meshes", "orthographic-camera", "sphere-geometry", "standard-material", "image-texture", "ambient-light", "directional-light", "point-light", "lines", "points"]
     },
     {
       "id": "geometry-resource-rebuild",
       "rust": "gallery/src/browser.rs",
-      "page": "/web/?static=1",
+      "page": "/web/examples/mvp.html?static=1",
       "test": "tests/browser/app.spec.js",
       "covers": ["buffer-geometry", "attribute-updates", "indexed-geometry", "groups", "draw-ranges", "plane-geometry", "object-add-remove", "resource-recreate"]
     }

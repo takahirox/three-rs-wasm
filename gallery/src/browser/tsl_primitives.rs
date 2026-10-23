@@ -15,7 +15,7 @@ use crate::{
     tsl::{self, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/tsl-primitives";
+const ASSETS: &str = "assets/tsl-primitives";
 fn mesh(s: &mut Scene, g: Arc<BufferGeometry>, m: Material) -> Object3D {
     s.insert(NodeKind::Mesh(Mesh::new(g, Arc::new(m))))
 }
@@ -25,8 +25,8 @@ fn random(seed: &mut u32) -> f64 {
 }
 async fn texture(r: &Renderer, name: &str) -> Result<GpuTexture> {
     let path = match name {
-        "uv_grid_opengl.jpg" => "/web/gallery/assets/uv-grid.jpg".to_owned(),
-        "transition1.png" => "/web/gallery/assets/transition1.png".to_owned(),
+        "uv_grid_opengl.jpg" => "assets/uv-grid.jpg".to_owned(),
+        "transition1.png" => "assets/transition1.png".to_owned(),
         _ => format!("{ASSETS}/{name}"),
     };
     let mut t = decode_texture_image(&fetch(&path).await?).await?;

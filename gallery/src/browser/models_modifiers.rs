@@ -639,7 +639,7 @@ impl Demo {
         Ok(d)
     }
     async fn mdd(&mut self, s: &mut Scene) -> Result<()> {
-        let (times, targets) = parse_mdd(&fetch("/web/gallery/assets/mdd/cube.mdd").await?)?;
+        let (times, targets) = parse_mdd(&fetch("assets/mdd/cube.mdd").await?)?;
         let mut g = BoxGeometry::build(1., 1., 1.)?;
         let count = targets.len();
         g.morph_attributes.insert(
@@ -664,7 +664,7 @@ impl Demo {
         // HemisphereLight sits at Object3D.DEFAULT_UP.
         s.get_mut(hemisphere)?.position = Vector3::Y;
         let objects = parse_obj(&String::from_utf8_lossy(
-            &fetch("/web/gallery/assets/obj/cerberus/Cerberus.obj").await?,
+            &fetch("assets/obj/cerberus/Cerberus.obj").await?,
         ));
         let o = objects
             .first()
@@ -677,8 +677,7 @@ impl Demo {
             index,
         });
         let mut map =
-            decode_texture_image(&fetch("/web/gallery/assets/obj/cerberus/Cerberus_A.jpg").await?)
-                .await?;
+            decode_texture_image(&fetch("assets/obj/cerberus/Cerberus_A.jpg").await?).await?;
         map.srgb = true;
         map.mipmap_filter = Some(Filter::Linear);
         self.cerberus_map = Some(Arc::new(map));
@@ -757,7 +756,7 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(light)?.position = Vector3::new(0., 0., 2.);
-        let base = "/web/gallery/assets/3ds/portalgun";
+        let base = "assets/3ds/portalgun";
         let load = |file: String| async move {
             // TextureLoader without a color space: NoColorSpace data, mipmapped.
             let mut t =
@@ -833,13 +832,9 @@ impl Demo {
             target: Vector3::ZERO,
         }));
         s.get_mut(light)?.position = Vector3::new(0.32, 0.39, 0.7);
-        let env = cube(
-            r,
-            "/web/gallery/assets/environment-materials/textures/cube/pisa",
-        )
-        .await?;
+        let env = cube(r, "assets/environment-materials/textures/cube/pisa").await?;
         let mut grid = decode_texture_image(
-            &fetch("/web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
+            &fetch("assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
         )
         .await?;
         grid.srgb = true;
@@ -991,8 +986,7 @@ impl Demo {
         );
         let mut surface_m = MeshLambertMaterial::default();
         surface_m.properties.color = Color::from_hex(0xfff784);
-        let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/gltf/Flower/Flower.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/Flower/Flower.glb").await?;
         let nodes = crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(s)?;
         let mut parts = HashMap::new();
         for h in nodes {

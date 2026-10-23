@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 // The ballpool page's module ( tools/gallery/modules.py ).
-const pkg = JSON.parse(readFileSync('web/gallery/modules.json', 'utf8')).examples.webgpu_postprocessing_ssgi_ballpool;
+const pkg = JSON.parse(readFileSync('web/examples/modules.json', 'utf8')).examples.webgpu_postprocessing_ssgi_ballpool;
 
 // webgpu_postprocessing_ssgi_ballpool steps @perplexdotgg/bounce. The Rust
 // port runs the same scripted session ( the example's walls, ball count and
@@ -23,7 +23,7 @@ for (const [aspect, frames, quiet] of [[1, 600, false], [16 / 9, 900, false], [1
 		await page.goto('/bounce-oracle.html');
 		const result = await page.evaluate(async ({ aspect, frames, quiet, pkg }) => {
 			const { World } = await import('@perplexdotgg/bounce');
-			const { loadRuntime } = await import('/web/gallery/runtime.js');
+			const { loadRuntime } = await import('/web/examples/runtime.js');
 			const wasm = await loadRuntime(pkg);
 			let seed = 186;
 			const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };

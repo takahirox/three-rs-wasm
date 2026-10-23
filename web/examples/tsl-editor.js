@@ -85,8 +85,8 @@ export async function startTslEditor( loading ) {
 
 	globalThis.__tslRealDevice = await requestDevice();
 	const revision = 'tsl-2';
-	const tsl = await import( `../tsl-pkg/three_tsl.js?v=${ revision }` );
-	await tsl.default( { module_or_path: new URL( `../tsl-pkg/three_tsl_bg.wasm?v=${ revision }`, import.meta.url ) } );
+	const tsl = await import( `../build/tsl/three_tsl.js?v=${ revision }` );
+	await tsl.default( { module_or_path: new URL( `../build/tsl/three_tsl_bg.wasm?v=${ revision }`, import.meta.url ) } );
 	tsl.tsl_init();
 	const THREE = tsl.three_namespace();
 	globalThis.__tslNamespace = tsl.tsl_namespace();

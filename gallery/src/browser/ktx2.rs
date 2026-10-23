@@ -14,7 +14,7 @@ use crate::{
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const ASSETS: &str = "/web/gallery/assets/ktx2";
+const ASSETS: &str = "assets/ktx2";
 const SECTIONS: [(&str, &str, &[&str]); 3] = [
     (
         "Uncompressed",

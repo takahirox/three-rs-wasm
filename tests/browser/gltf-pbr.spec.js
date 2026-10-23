@@ -19,7 +19,7 @@ for(let m=0;m<2;m++)test(`M2 PBR parity: ${manifest.models[m].name}`,async({page
  await expect(canvas).toHaveAttribute('data-ready','true',{timeout:120000});
  const references=[];
  for(let v=0;v<manifest.views.length;v++) {await page.evaluate(([m,v])=>window.renderFixture(m,v),[m,v]);references.push(await canvas.screenshot());}
- await page.goto(`/web/?example=${m+4}&fixture=1`);
+ await page.goto(`/web/examples/mvp.html?example=${m+4}&fixture=1`);
 
 
  await expect.poll(async()=>Number(await canvas.getAttribute('data-frames')),{timeout:120000}).toBeGreaterThan(0);
@@ -49,7 +49,7 @@ for(const size of [{width:640,height:360},{width:360,height:640}])test(`gallery 
   await window.renderFixture(0,0);
  },size);
  const reference=PNG.sync.read(await canvas.screenshot());
- await page.goto('/web/gallery/examples/webgpu_loader_gltf.html');
+ await page.goto('/web/examples/webgpu_loader_gltf.html');
  await expect.poll(()=>canvas.getAttribute('data-frames').then(Number),{timeout:90000}).toBeGreaterThan(0);
  await page.addStyleTag({content:'#settings,#notice{display:none!important}'});
  await setView(page,canvas,manifest.views[0]);

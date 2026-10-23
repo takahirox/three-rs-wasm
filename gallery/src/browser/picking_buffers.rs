@@ -430,8 +430,7 @@ impl Demo {
         s.background = Color::from_hex(0xeeeeee);
         let grid = super::interactive_scenes::grid_helper(400., 10, 0x444444, 0x888888)?;
         s.insert(NodeKind::Line(grid));
-        let text = String::from_utf8_lossy(&fetch("/web/gallery/assets/bvh/pirouette.bvh").await?)
-            .into_owned();
+        let text = String::from_utf8_lossy(&fetch("assets/bvh/pirouette.bvh").await?).into_owned();
         self.bones = parse_bvh(s, &text)?;
         self.duration = self
             .bones
@@ -943,10 +942,9 @@ impl Demo {
         struct Asset {
             data: Data,
         }
-        let asset: Asset = serde_json::from_slice(
-            &fetch("/web/gallery/assets/suzanne_buffergeometry.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let asset: Asset =
+            serde_json::from_slice(&fetch("assets/suzanne_buffergeometry.json").await?)
+                .map_err(|e| Error::Asset(e.to_string()))?;
         let mut g = BufferGeometry::default();
         g.set_attribute("position", vec3s(asset.data.attributes.position.array)?);
         g.set_index(Some(

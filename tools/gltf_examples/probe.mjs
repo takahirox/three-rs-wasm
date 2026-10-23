@@ -24,11 +24,11 @@ try {for(const entry of cases.filter(e=>!process.env.EXAMPLE||e.id===process.env
   });
   try {
    if(runtime==='rust'){
-    const catalog=JSON.parse(readFileSync('web/gallery/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===entry.id),{status:'partial',port:{example:entry.example,limitations:[]}});
-    await page.route('**/web/gallery/catalog.json',r=>r.fulfill({json:catalog}));
+    const catalog=JSON.parse(readFileSync('web/examples/catalog.json'));Object.assign(catalog.examples.find(e=>e.id===entry.id),{status:'partial',port:{example:entry.example,limitations:[]}});
+    await page.route('**/web/examples/catalog.json',r=>r.fulfill({json:catalog}));
    }
    const ref=entry.example===16?'expanded':'gltf-examples';
-   await page.goto('http://127.0.0.1:8173'+(runtime==='reference'?`/reference/three-js/${ref}.html?id=${entry.id}`:`/web/gallery/examples/${entry.id}.html?still=1`));
+   await page.goto('http://127.0.0.1:8173'+(runtime==='reference'?`/reference/three-js/${ref}.html?id=${entry.id}`:`/web/examples/${entry.id}.html?still=1`));
    await page.waitForFunction(()=>document.querySelector('canvas')?.dataset.ready==='true'||Number(document.querySelector('canvas')?.dataset.frames)>0||document.querySelector('canvas')?.dataset.error||document.body.dataset.error||document.body.dataset.status==='error',null,{timeout:30000});
    const error=await page.evaluate(()=>document.querySelector('canvas')?.dataset.error||document.body.dataset.error||document.body.dataset.status==='error'&&document.body.innerText);
    if(error)throw new Error(error);

@@ -15,7 +15,7 @@ use crate::{
     tsl::{self, surface::*, viewport as vp, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/tsl-viewport";
+const ASSETS: &str = "assets/tsl-viewport";
 const HDR: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 fn rgb(hex: u32) -> tsl::Node {
     let c = Color::from_hex(hex).0;

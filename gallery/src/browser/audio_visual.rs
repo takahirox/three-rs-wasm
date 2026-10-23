@@ -4,7 +4,7 @@
 //! BoomBox's directional PositionalAudio, its PositionalAudioHelper cone and
 //! the damping wall. The sandbox places three positional sources and turns
 //! their analysers' average frequency into emissive blue, under
-//! FirstPersonControls. The page runs the Web Audio graph (web/gallery/audio.js).
+//! FirstPersonControls. The page runs the Web Audio graph (web/examples/audio.js).
 use super::controls_attributes::{CameraState, Controls, camera_state};
 use super::environment_materials::cube;
 use super::gltf_viewer::load_asset;
@@ -201,7 +201,7 @@ impl Demo {
         add(s, NodeKind::Line(grid_helper(50., 50, 0xc1c1c1, 0xc1c1c1)?))?;
         // The BoomBox: each mesh's geometry turned by −π about y, the Swedish
         // Royal Castle cube as its environment map.
-        let (a, b, images) = load_asset("/web/gallery/assets/webaudio/BoomBox.glb").await?;
+        let (a, b, images) = load_asset("assets/webaudio/BoomBox.glb").await?;
         let mut temp = Scene::new();
         let meshes = crate::gltf::import_decoded(&a, &b, &images)?.instantiate(&mut temp)?;
         let boombox = add(s, NodeKind::Group)?;

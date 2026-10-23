@@ -13,7 +13,7 @@ with tarfile.open(ROOT / '.cache' / f'three-{REV}.tar.gz') as archive:
     payload = archive.extractfile(f'three.js-{REV}/{ASSET}').read()
     if hashlib.sha256(payload).hexdigest() != SHA256:
         raise SystemExit('Forest House checksum mismatch')
-    target = ROOT / 'web/models/AVIFTest/forest_house.glb'
+    target = ROOT / 'web/examples/models/AVIFTest/forest_house.glb'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(payload)
     for path in ('examples/jsm/loaders/DRACOLoader.js',

@@ -106,7 +106,7 @@ async fn lights_textures(page: &mut super::Page) -> Result<()> {
     scene.get_mut(mesh)?.position.x = -1.1;
     let group = scene.insert(NodeKind::Group);
     scene.get_mut(group)?.position = Vector3::new(0.8, 0.6, 0.0);
-    let texture = Arc::new(Texture::load(&super::asset_url("/web/checker.png")?).await?);
+    let texture = Arc::new(Texture::load("textures/checker.png").await?);
     let mut standard = MeshStandardMaterial::default();
     standard.properties.map = Some(texture);
     standard.roughness = 0.7;

@@ -317,7 +317,7 @@ impl Demo {
             Matrix4::from_translation(Vector3::new(0., 1.83, 0.)),
         );
         let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/tsl-next/models/gltf/coffeeMug.glb").await?;
+            load_asset("assets/tsl-next/models/gltf/coffeeMug.glb").await?;
         let node = asset
             .nodes()
             .find(|n| n.mesh().is_some())
@@ -359,7 +359,7 @@ impl Demo {
         let image = images.first().ok_or(Error::Invalid("mug image"))?;
         let mug_map = mipmapped(r, &mut mipmaps, image, wgpu::TextureFormat::Rgba8UnormSrgb);
         let noise = decode_texture_image(
-            &fetch("/web/gallery/assets/tsl-next/textures/noises/perlin/128x128.png").await?,
+            &fetch("assets/tsl-next/textures/noises/perlin/128x128.png").await?,
         )
         .await?;
         let row = noise.width as usize * 4;
@@ -1414,7 +1414,7 @@ struct HelmetData {
 type HelmetLoad = Rc<RefCell<Option<Result<HelmetData>>>>;
 async fn load_helmet() -> Result<HelmetData> {
     let (asset, buffers, images) =
-        load_asset("/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
+        load_asset("models/DamagedHelmet/glTF/DamagedHelmet.gltf").await?;
     let node = asset
         .nodes()
         .find(|n| n.mesh().is_some())
@@ -1452,8 +1452,7 @@ async fn load_helmet() -> Result<HelmetData> {
         Quaternion::from_xyzw(q[0] as f64, q[1] as f64, q[2] as f64, q[3] as f64),
         Vector3::new(0., 1., 0.),
     );
-    let (width, height, texels) =
-        parse_rgbe(&fetch("/web/environments/venice_sunset_1k.hdr").await?)?;
+    let (width, height, texels) = parse_rgbe(&fetch("environments/venice_sunset_1k.hdr").await?)?;
     let row = width as usize * 4;
     let texels = texels.chunks(row).rev().flatten().copied().collect();
     Ok(HelmetData {

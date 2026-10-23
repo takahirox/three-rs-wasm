@@ -16,7 +16,7 @@ use crate::{
     tsl::{self, surface::*, *},
 };
 use std::sync::Arc;
-const ASSETS: &str = "/web/gallery/assets/tsl-next";
+const ASSETS: &str = "assets/tsl-next";
 pub(super) struct Demo {
     lut: Option<lut::Lut>,
     sobel: Option<sobel::Sobel>,

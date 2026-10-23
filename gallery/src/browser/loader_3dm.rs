@@ -17,7 +17,7 @@ use std::f64::consts::PI;
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const ASSETS: &str = "/web/gallery/assets/3dm-loader";
+const ASSETS: &str = "assets/3dm-loader";
 
 use super::rhino3dm_loader::{self as loader, LoaderMaterial, MaterialType, NodeKind as Kind};
 

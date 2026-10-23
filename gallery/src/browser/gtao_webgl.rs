@@ -328,8 +328,7 @@ impl Demo {
         s.get_mut(c)?.position = Vector3::new(5., 2., 8.);
         s.background = Color::from_hex(0xbfe3dd);
         s.environment = Some(super::room_environment::environment(r)?);
-        let (a, b, i) =
-            load_asset("/web/gallery/assets/tsl-viewport/models/gltf/LittlestTokyo.glb").await?;
+        let (a, b, i) = load_asset("assets/tsl-viewport/models/gltf/LittlestTokyo.glb").await?;
         let instance = crate::gltf::import_animated_decoded(&a, &b, &i)?.instantiate(s)?;
         let group = s.insert(NodeKind::Group);
         let n = s.get_mut(group)?;

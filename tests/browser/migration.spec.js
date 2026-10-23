@@ -14,7 +14,7 @@ for(const [id,name] of [[0,'basic cube'],[1,'hierarchy, textures, lights, lines 
     await expect(canvas).toHaveAttribute('data-ready','true');
     expect(await canvas.getAttribute('data-error')).toBeNull();
     const reference=await canvas.screenshot();
-    await page.goto(`/web/?example=${id}&static=1`);
+    await page.goto(`/web/examples/mvp.html?example=${id}&static=1`);
     canvas=page.locator('canvas');
     await expect.poll(async()=>({error:await canvas.getAttribute('data-error'),ready:Number(await canvas.getAttribute('data-frames'))>=3})).toEqual({error:null,ready:true});
     const actual=await canvas.screenshot();

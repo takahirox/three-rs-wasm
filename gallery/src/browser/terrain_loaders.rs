@@ -868,7 +868,7 @@ impl Demo {
             218 | 219 => d.terrain_scene(s, c, r).await?,
             220 => {
                 for asset in GCODE_ASSETS {
-                    let bytes = fetch(&format!("/web/gallery/assets/gcode/{asset}.gcode")).await?;
+                    let bytes = fetch(&format!("assets/gcode/{asset}.gcode")).await?;
                     d.gcode.push(String::from_utf8_lossy(&bytes).into_owned());
                 }
                 s.background = Color::BLACK;
@@ -987,8 +987,7 @@ impl Demo {
             }));
             s.get_mut(light)?.position = p;
         }
-        let (chunks, palette, nodes) =
-            parse_vox(&fetch("/web/gallery/assets/vox/monu10.vox").await?)?;
+        let (chunks, palette, nodes) = parse_vox(&fetch("assets/vox/monu10.vox").await?)?;
         // result.scene.children[ 0 ]: buildObject( 0 ) returns the group of node 1 here,
         // whose first child is the transformed shape mesh.
         let (model, translation) =
@@ -1032,7 +1031,7 @@ impl Demo {
             decay: 2.,
         }));
         s.add(c, light)?;
-        let base = "/web/gallery/assets/obj/male02";
+        let base = "assets/obj/male02";
         let mtl = parse_mtl(&String::from_utf8_lossy(
             &fetch(&format!("{base}/male02.mtl")).await?,
         ));

@@ -381,7 +381,7 @@ impl Demo {
             objects.push(h);
         }
         let (asset, buffers, images) =
-            super::gltf_viewer::load_asset("/web/models/Michelle.glb").await?;
+            super::gltf_viewer::load_asset("models/Michelle.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let group = scene.insert(NodeKind::Group);
@@ -479,7 +479,7 @@ impl Demo {
             intensity: 1.0,
         }));
         let (asset, buffers, images) =
-            super::gltf_viewer::load_asset("/web/models/Michelle.glb").await?;
+            super::gltf_viewer::load_asset("models/Michelle.glb").await?;
         let instance =
             crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         let mut mixer = crate::animation::AnimationMixer::default();
@@ -658,7 +658,7 @@ impl Demo {
         scene.look_at(cam, Vector3::ZERO)?;
         scene.background = Color::from_hex(0x222222);
         let mut image = super::gltf_viewer::decode_image(
-            &super::gltf_viewer::fetch("/web/gallery/assets/hardwood2_diffuse.jpg").await?,
+            &super::gltf_viewer::fetch("assets/hardwood2_diffuse.jpg").await?,
         )
         .await?;
         image.srgb = true;

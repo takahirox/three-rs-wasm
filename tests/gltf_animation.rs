@@ -3,7 +3,7 @@ use three_rs_wasm::{animation::*, deformation::evaluate, scene::*};
 #[test]
 fn original_robot_clips_deform_real_gltf_and_export_comparison_samples() {
     let asset = gltf::Gltf::from_slice(include_bytes!(
-        "../web/models/RobotExpressive/RobotExpressive.glb"
+        "../web/examples/models/RobotExpressive/RobotExpressive.glb"
     ))
     .unwrap();
     let buffers = vec![asset.blob.clone().unwrap()];
@@ -50,7 +50,7 @@ fn original_robot_clips_deform_real_gltf_and_export_comparison_samples() {
 fn required_gpu_instancing_preserves_all_original_instances() {
     use three_rs_wasm::material::Texture;
     let base = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("web/models/DamagedHelmet/glTF-instancing");
+        .join("web/examples/models/DamagedHelmet/glTF-instancing");
     let bytes = std::fs::read(base.join("DamagedHelmetGpuInstancing.gltf")).unwrap();
     // gltf-json has no schema entry for EXT_mesh_gpu_instancing; the renderer
     // validates and handles its payload itself, rather than silently dropping it.
@@ -93,7 +93,8 @@ fn required_gpu_instancing_preserves_all_original_instances() {
 
 #[test]
 fn position_only_horse_morphs_use_gpu_flat_normals_and_keep_indexed_geometry() {
-    let asset = gltf::Gltf::from_slice(include_bytes!("../web/models/Horse/Horse.glb")).unwrap();
+    let asset =
+        gltf::Gltf::from_slice(include_bytes!("../web/examples/models/Horse/Horse.glb")).unwrap();
     let primitive = asset.meshes().next().unwrap().primitives().next().unwrap();
     assert!(primitive.get(&gltf::Semantic::Normals).is_none());
     let vertex_count = primitive.get(&gltf::Semantic::Positions).unwrap().count();

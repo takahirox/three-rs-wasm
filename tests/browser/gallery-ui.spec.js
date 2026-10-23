@@ -1,6 +1,6 @@
 // The gallery's ports show their original's UI: each lil-gui panel's DOM,
 // the WebGPU Inspector's parameter panel, stats.js and the page's #info equal
-// what the pinned r186 page builds ( web/gallery/ui/specs.json, recorded by
+// what the pinned r186 page builds ( web/examples/ui/specs.json, recorded by
 // tools/gallery/ui/extract.mjs at the same 1280×720 viewport, and pages.json ).
 // lil-gui's generated ids and the values of controllers that listen to a
 // changing property are normalized. Controllers without a port parameter are
@@ -8,9 +8,9 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const specs = JSON.parse( readFileSync( 'web/gallery/ui/specs.json', 'utf8' ) );
-const pages = JSON.parse( readFileSync( 'web/gallery/ui/pages.json', 'utf8' ) );
-const catalog = JSON.parse( readFileSync( 'web/gallery/catalog.json', 'utf8' ) );
+const specs = JSON.parse( readFileSync( 'web/examples/ui/specs.json', 'utf8' ) );
+const pages = JSON.parse( readFileSync( 'web/examples/ui/pages.json', 'utf8' ) );
+const catalog = JSON.parse( readFileSync( 'web/examples/catalog.json', 'utf8' ) );
 const ported = new Set( catalog.examples.filter( e => e.port ).map( e => e.id ) );
 
 // Normalized markup: generated ids, listened values and the gallery's marks.
@@ -83,7 +83,7 @@ for ( const id of ids ) test( `original UI: ${ id }`, async ( { page }, info ) =
 	const errors = [];
 	page.on( 'pageerror', e => errors.push( String( e ) ) );
 	await page.setViewportSize( { width: 1280, height: 720 } );
-	await page.goto( `/web/gallery/examples/${ id }.html?ui=1` );
+	await page.goto( `/web/examples/${ id }.html?ui=1` );
 	await page.waitForFunction( () => document.body.dataset.ui === 'ready' || document.body.dataset.status === 'error', null, { timeout: 90000, polling: 200 } );
 	expect( await page.evaluate( () => document.body.dataset.status ) ).not.toBe( 'error' );
 	expect( await page.evaluate( () => document.body.dataset.uiError ?? null ), 'UI installation' ).toBe( null );

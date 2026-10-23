@@ -9,7 +9,7 @@ use crate::tsl::{NodeMaterial, Type, WgslFn};
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/dds";
+const ASSETS: &str = "assets/dds";
 /// DDSLoader.parse: the format, base size, mip count and each face's mip
 /// chain (face-major). ARGB and RGB mips are reordered to RGBA as the
 /// loader does; block data is kept as stored.

@@ -116,9 +116,7 @@ impl Demo {
         let base = element("img")?
             .dyn_into::<web_sys::HtmlImageElement>()
             .map_err(|_| Error::Invalid("ball image"))?;
-        base.set_src(&super::asset_url(
-            "/web/gallery/assets/point-clouds/ball.png",
-        )?);
+        base.set_src("assets/point-clouds/ball.png");
         wasm_bindgen_futures::JsFuture::from(base.decode())
             .await
             .map_err(|_| Error::Invalid("ball image"))?;
@@ -421,7 +419,7 @@ impl Demo {
     }
 }
 fn url(index: usize) -> String {
-    format!("/web/gallery/assets/pdb/{}", MOLECULES[index])
+    format!("assets/pdb/{}", MOLECULES[index])
 }
 
 #[allow(unused_variables)]

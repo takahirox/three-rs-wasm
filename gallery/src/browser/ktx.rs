@@ -11,7 +11,7 @@ use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, rendere
 use std::sync::Arc;
 use wasm_bindgen::JsCast;
 
-const ASSETS: &str = "/web/gallery/assets/ktx";
+const ASSETS: &str = "assets/ktx";
 /// KTXLoader.parse: glInternalFormat, base size and each level's image.
 struct Ktx {
     internal: u32,

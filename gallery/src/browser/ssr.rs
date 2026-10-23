@@ -208,8 +208,7 @@ impl Demo {
         };
         let vertex = wgpu::BufferUsages::VERTEX;
         let index_usage = wgpu::BufferUsages::INDEX;
-        let (asset, buffers, images) =
-            load_asset("/web/gallery/assets/gltf/steampunk_camera.glb").await?;
+        let (asset, buffers, images) = load_asset("assets/gltf/steampunk_camera.glb").await?;
         let mut mipmaps = Mipmaps::new(r);
         let image = |i: usize| images.get(i).ok_or(Error::Invalid("steampunk image"));
         let texture_image = |t: gltf::Texture| -> usize {
@@ -338,7 +337,7 @@ impl Demo {
         let mut smaa = vec![];
         for name in ["smaa-area.png", "smaa-search.png"] {
             let image = crate::material::Texture::from_image(
-                &fetch(&format!("/web/gallery/assets/tsl-next/{name}")).await?,
+                &fetch(&format!("assets/tsl-next/{name}")).await?,
             )?;
             let t = r.device.create_texture_with_data(
                 &r.queue,

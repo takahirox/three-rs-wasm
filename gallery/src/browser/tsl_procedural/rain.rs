@@ -276,10 +276,9 @@ impl Rain {
         struct Asset {
             data: Data,
         }
-        let asset: Asset = serde_json::from_slice(
-            &fetch("/web/gallery/assets/suzanne_buffergeometry.json").await?,
-        )
-        .map_err(|e| Error::Asset(e.to_string()))?;
+        let asset: Asset =
+            serde_json::from_slice(&fetch("assets/suzanne_buffergeometry.json").await?)
+                .map_err(|e| Error::Asset(e.to_string()))?;
         let mut g = BufferGeometry::default();
         g.set_attribute(
             "position",

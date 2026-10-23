@@ -524,7 +524,7 @@ impl Demo {
             s.get_mut(light)?.position = Vector3::new(0., 1., z);
         }
         let mut texture = decode_texture_image(
-            &fetch("/web/gallery/assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
+            &fetch("assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
         )
         .await?;
         texture.srgb = true;

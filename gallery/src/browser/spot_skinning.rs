@@ -16,7 +16,7 @@ use crate::{
 use std::f64::consts::PI;
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets";
+const ASSETS: &str = "assets";
 fn vec3s(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }

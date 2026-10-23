@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 
-const catalog = JSON.parse(readFileSync('web/gallery/catalog.json'));
+const catalog = JSON.parse(readFileSync('web/examples/catalog.json'));
 test('site entry opens the gallery under the project prefix', async ({page}) => {
   await page.goto('/three-rs-wasm/');
   await expect(page).toHaveURL(/\/three-rs-wasm\/examples\/$/);
@@ -9,13 +9,13 @@ test('site entry opens the gallery under the project prefix', async ({page}) => 
 });
 
 // threejs.org's URLs: examples/#<id> opens the example in the viewer, which loads
-// examples/<id>.html; that page also runs on its own. web/gallery/ stays served.
+// examples/<id>.html; that page also runs on its own.
 test('official-style example URLs', async ({page}) => {
-  // Four page loads, each allowed 90 seconds on a software GPU.
+  // Three page loads, each allowed 90 seconds on a software GPU.
   test.setTimeout(360000);
   await page.goto('/three-rs-wasm/examples/#webgpu_materials');
   const viewer = page.frameLocator('#viewer');
-  await expect(page.locator('#viewer')).toHaveAttribute('src', /examples\/webgpu_materials\.html$/);
+  await expect(page.locator('#viewer')).toHaveAttribute('src', 'webgpu_materials.html');
   await expect(viewer.locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
   await expect.poll(async () => Number(await viewer.locator('canvas').first().getAttribute('data-frames')), {timeout: 90000}).toBeGreaterThan(2);
   await page.locator('.card a[href$="webgpu_xr_cubes.html"]').click();
@@ -23,9 +23,7 @@ test('official-style example URLs', async ({page}) => {
   await page.goto('/three-rs-wasm/examples/webgpu_materials.html');
   await expect(page.locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
   await page.goto('/three-rs-wasm/examples/webgl_loader_gltf.html');
-  await expect(page.locator('#diagnostic a[href$="examples/webgpu_loader_gltf.html"]')).toBeVisible();
-  await page.goto('/three-rs-wasm/web/gallery/#webgpu_materials');
-  await expect(page.frameLocator('#viewer').locator('body')).toHaveAttribute('data-backend', 'rust-wasm-webgpu', {timeout: 90000});
+  await expect(page.locator('#diagnostic a[href="webgpu_loader_gltf.html"]')).toBeVisible();
 });
 
 for (const entry of catalog.examples.filter(e => e.port)) {
@@ -45,7 +43,7 @@ for (const entry of catalog.examples.filter(e => e.port)) {
     page.on('request', request => {
       if (new URL(request.url()).pathname.startsWith('/web/')) escapedAssets.push(request.url());
     });
-    await page.goto(`/three-rs-wasm/web/gallery/#${entry.id}`);
+    await page.goto(`/three-rs-wasm/examples/#${entry.id}`);
     const viewer = page.frameLocator('#viewer');
     if(entry.id==='webgpu_compute_audio')await viewer.getByRole('button',{name:'Play',exact:true}).click();
     if(entry.id==='webgl_postprocessing_glitch')await viewer.locator('#startButton').click();

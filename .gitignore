@@ -2,9 +2,12 @@
 /node_modules/
 /.cache/
 __pycache__/
-/web/pkg/
 /test-results/
 /cesium.token
 tsl/target/
-/web/tsl-pkg/
-/web/gallery/examples/
+# The build's output: the Wasm and the example pages ( scripts/build-gallery ).
+/web/build/
+/web/examples/*.html
+!/web/examples/index.html
+!/web/examples/example.html
+!/web/examples/mvp.html

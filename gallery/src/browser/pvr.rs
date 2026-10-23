@@ -10,7 +10,7 @@ use super::pvrtc::decode;
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::sync::Arc;
 
-const ASSETS: &str = "/web/gallery/assets/pvrtc";
+const ASSETS: &str = "assets/pvrtc";
 /// PVRLoader.parse: size, bpp, faces and each ( face, level ) payload.
 pub(super) struct Pvr {
     pub width: u32,

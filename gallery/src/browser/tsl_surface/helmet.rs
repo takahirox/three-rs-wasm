@@ -21,14 +21,12 @@ impl Demo {
         let target = Vector3::new(0.0, -0.1, -0.2);
         scene.get_mut(cam)?.position = position;
         scene.look_at(cam, target)?;
-        let (asset, buffers, images) = super::super::gltf_viewer::load_asset(
-            "/web/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
-        )
-        .await?;
+        let (asset, buffers, images) =
+            super::super::gltf_viewer::load_asset("models/DamagedHelmet/glTF/DamagedHelmet.gltf")
+                .await?;
         crate::gltf::import_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
         scene.environment = Some(Arc::new(
-            super::super::ultra_hdr::environment("/web/environments/royal_esplanade_2k.hdr.jpg")
-                .await?,
+            super::super::ultra_hdr::environment("environments/royal_esplanade_2k.hdr.jpg").await?,
         ));
         scene.background = Color::BLACK;
         scene.background_alpha = 0.0;

@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 // The loader port is in webgl_loader_vrml's module ( tools/gallery/modules.py ).
-const PACKAGE=JSON.parse(readFileSync(new URL('../../web/gallery/modules.json',import.meta.url),'utf8')).examples.webgl_loader_vrml;
+const PACKAGE=JSON.parse(readFileSync(new URL('../../web/examples/modules.json',import.meta.url),'utf8')).examples.webgl_loader_vrml;
 // The Rust VRMLLoader against the pinned r186 VRMLLoader in the same engine:
 // every VRML asset webgl_loader_vrml loads, in the canonical form of
 // vrml::canonical ( numbers as their bits, buffers by hash ).
@@ -10,7 +10,7 @@ test('VRMLLoader port matches the original bit for bit',async({page})=>{
  test.setTimeout(120000);
  await page.goto('/reference/three-js/vrml-loader.html');await expect(page).toHaveTitle('ready');
  const results=await page.evaluate(async ([assets,pkg])=>{
-  const {loadRuntime}=await import('/web/gallery/runtime.js');const rust=await loadRuntime(pkg);
+  const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(pkg);
   const results=[];
   for(const asset of assets){
    const text=await (await fetch(`/.cache/three-r186/examples/models/vrml/${asset}.wrl`)).text();

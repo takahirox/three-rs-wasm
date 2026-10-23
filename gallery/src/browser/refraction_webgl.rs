@@ -83,8 +83,7 @@ impl Demo {
         });
         // TextureLoader's dudv map: flipped ( flipY ), mipmapped, repeating.
         let mut image =
-            decode_texture_image(&fetch("/web/gallery/assets/refraction/waterdudv.jpg").await?)
-                .await?;
+            decode_texture_image(&fetch("assets/refraction/waterdudv.jpg").await?).await?;
         image.srgb = false;
         let row = image.width as usize * 4;
         let image = crate::material::Texture {

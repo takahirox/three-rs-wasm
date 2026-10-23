@@ -1,7 +1,7 @@
 """The pinned examples' page chrome for the gallery's ports: the stylesheet a
-page links ( main.css or example.css, copied to web/gallery/ui/css/ ), the
+page links ( main.css or example.css, copied to web/examples/ui/css/ ), the
 <style> blocks of its head and its #info element, read from the HTML as
-published. Written to web/gallery/ui/pages.json.
+published. Written to web/examples/ui/pages.json.
 
 Usage: python3 tools/gallery/ui/page.py [--check]
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 EXAMPLES = ROOT / '.cache/three-r186/examples'
-OUT = ROOT / 'web/gallery/ui/pages.json'
+OUT = ROOT / 'web/examples/ui/pages.json'
 
 
 class Info(HTMLParser):
@@ -68,7 +68,7 @@ def page(html):
 
 
 def main():
-    catalog = json.loads((ROOT / 'web/gallery/catalog.json').read_text())
+    catalog = json.loads((ROOT / 'web/examples/catalog.json').read_text())
     pages = {}
     for entry in catalog['examples']:
         path = EXAMPLES / f"{entry['id']}.html"
@@ -77,7 +77,7 @@ def main():
     text = json.dumps(pages, indent='\t', ensure_ascii=False, sort_keys=True) + '\n'
     if '--check' in sys.argv:
         if OUT.read_text() != text:
-            sys.exit('web/gallery/ui/pages.json is stale: run python3 tools/gallery/ui/page.py')
+            sys.exit('web/examples/ui/pages.json is stale: run python3 tools/gallery/ui/page.py')
         return
     OUT.write_text(text)
     print(f'{len(pages)} pages')

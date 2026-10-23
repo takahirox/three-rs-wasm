@@ -67,9 +67,7 @@ async fn create(page: &mut super::Page) -> Result<()> {
     }));
     scene.get_mut(camera)?.position.z = 2.0;
     let mut material = Material::default();
-    material.properties_mut().map = Some(Arc::new(
-        Texture::load(&super::asset_url("/web/crate.gif")?).await?,
-    ));
+    material.properties_mut().map = Some(Arc::new(Texture::load("textures/crate.gif").await?));
     scene.get_mut(mesh)?.kind = NodeKind::Mesh(Mesh::new(
         Arc::new(BoxGeometry::build(1.0, 1.0, 1.0)?),
         Arc::new(material),
