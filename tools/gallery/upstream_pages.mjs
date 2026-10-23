@@ -19,6 +19,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const OUT = path.join(ROOT, 'tools/gallery/upstream-pages.json');
 const PORT = 8176;
 const WORKERS = 6;
+const GESTURES = {
+	webgpu_compute_audio: 'button:text-is("Play")',
+	webgl_postprocessing_glitch: '#startButton',
+};
 
 const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/gallery/upstream-assets.json'), 'utf8')).files;
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/gallery/catalog.json'), 'utf8'));
@@ -39,6 +43,10 @@ async function record(id) {
 	});
 	try {
 		await page.goto(`http://127.0.0.1:${PORT}/web/gallery/examples/${id}.html`);
+		// The gestures some pages wait for before they load their assets, as
+		// the published-site check gives them ( tests/pages/gallery.spec.js ).
+		const gesture = GESTURES[id];
+		if (gesture) await page.locator(gesture).click({timeout: 60000});
 		const start = Date.now();
 		while (Date.now() - start < 45000) {
 			const [frames, status, error] = await page.evaluate(() => {

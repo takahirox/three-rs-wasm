@@ -904,6 +904,9 @@
   "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/py.hdr",
   "web/gallery/assets/tsl-environment/textures/cube/pisaHDR/pz.hdr"
  ],
+ "webgpu_compute_audio": [
+  "web/gallery/assets/tsl-procedural/webgpu-audio-processing.mp3"
+ ],
  "webgpu_compute_cloth": [
   "web/environments/royal_esplanade_2k.hdr.jpg"
  ],
