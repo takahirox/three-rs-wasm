@@ -1,8 +1,35 @@
 import {test, expect} from '@playwright/test';
-import {readFileSync} from 'node:fs';
+import {existsSync, readFileSync} from 'node:fs';
 
 const catalog = JSON.parse(readFileSync('web/examples/catalog.json'));
-test('site entry opens the gallery under the project prefix', async ({page}) => {
+
+// CI's shards ( GALLERY_SHARD=i/n, .github/workflows/pages.yml ) share the
+// examples by their durations on its software GPU, recorded from a run's reports
+// ( tests/pages/durations.json, tools/ci/gallery_durations.py ): each example,
+// longest first, joins the shard with the least time so far. Playwright's own
+// --shard splits the list into runs of consecutive examples, whose costs differ
+// by half. The site's own tests run in the first shard.
+const SITE_TESTS = ['site entry', 'official-style example URLs'];
+const shardOf = (() => {
+  const [index, count] = (process.env.GALLERY_SHARD ?? '1/1').split('/').map(Number);
+  const recorded = existsSync('tests/pages/durations.json') ? JSON.parse(readFileSync('tests/pages/durations.json')) : {};
+  const known = Object.values(recorded).sort((a, b) => a - b);
+  const typical = known.length ? known[known.length >> 1] : 6;
+  // Without a record: the city and Sponza take minutes ( see their timeouts ).
+  const duration = id => recorded[id] ?? (['webgpu_generator_city', 'webgpu_lightprobes_sponza', 'webgpu_vxgi_sponza'].includes(id) ? 300 : typical);
+  const load = Array(count).fill(0);
+  const shard = new Map(SITE_TESTS.map(name => [name, 1]));
+  for (const name of SITE_TESTS) load[0] += duration(name);
+  const ids = catalog.examples.filter(e => e.port).map(e => e.id).sort((a, b) => duration(b) - duration(a) || a.localeCompare(b));
+  for (const id of ids) {
+    const least = load.indexOf(Math.min(...load));
+    load[least] += duration(id);
+    shard.set(id, least + 1);
+  }
+  return name => shard.get(name) === index;
+})();
+
+if (shardOf('site entry')) test('site entry opens the gallery under the project prefix', async ({page}) => {
   await page.goto('/three-rs-wasm/');
   await expect(page).toHaveURL(/\/three-rs-wasm\/examples\/$/);
   await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e => e.port).length);
@@ -10,7 +37,7 @@ test('site entry opens the gallery under the project prefix', async ({page}) => 
 
 // threejs.org's URLs: examples/#<id> opens the example in the viewer, which loads
 // examples/<id>.html; that page also runs on its own.
-test('official-style example URLs', async ({page}) => {
+if (shardOf('official-style example URLs')) test('official-style example URLs', async ({page}) => {
   // Three page loads, each allowed 90 seconds on a software GPU.
   test.setTimeout(360000);
   await page.goto('/three-rs-wasm/examples/#webgpu_materials');
@@ -26,7 +53,7 @@ test('official-style example URLs', async ({page}) => {
   await expect(page.locator('#diagnostic a[href="webgpu_loader_gltf.html"]')).toBeVisible();
 });
 
-for (const entry of catalog.examples.filter(e => e.port)) {
+for (const entry of catalog.examples.filter(e => e.port && shardOf(e.id))) {
   test(`published gallery: ${entry.id}`, async ({page}) => {
     // The city bakes 60 probe-cube faces per frame beside its 4096² shadow and 4×
     // MSAA scene: on the software GPU its first frames take minutes. Sponza

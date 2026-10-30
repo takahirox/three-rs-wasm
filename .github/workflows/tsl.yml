@@ -1,8 +1,19 @@
 name: TSL node system corpus
+# three-tsl builds on its own ( tsl/, excluded from the workspace ): only its
+# changes run the corpus. A pull request's branch is pushed here.
 on:
   push:
-  pull_request:
+    paths:
+      - 'tsl/**'
+      - 'tools/tsl/**'
+      - 'tests/tsl/**'
+      - 'scripts/check-tsl'
+      - 'package-lock.json'
+      - '.github/workflows/tsl.yml'
   workflow_dispatch:
+concurrency:
+  group: tsl-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   corpus:
     runs-on: ubuntu-24.04
@@ -12,12 +23,16 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: tsl -> target
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
-      - name: Install wasm-pack
-        run: cargo install wasm-pack --locked --version 0.14.0
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.14.0
       - name: Check every corpus program against the r186 goldens
         run: |
           npm ci --ignore-scripts

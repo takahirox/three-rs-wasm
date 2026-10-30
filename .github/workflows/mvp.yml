@@ -1,8 +1,12 @@
 name: MVP and glTF PBR acceptance
+# A push checks every branch; a pull request's branch is pushed here, so
+# pull_request would check the same commit again.
 on:
   push:
-  pull_request:
   workflow_dispatch:
+concurrency:
+  group: mvp-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   mvp:
     runs-on: ubuntu-24.04
@@ -13,6 +17,15 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
           components: rustfmt, clippy
+      # Dependencies of the host, wasm32 and --dev gallery builds ( scripts/check-mvp ).
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            . -> target
+            . -> target/gallery-dev
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.14.0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -26,7 +39,6 @@ jobs:
           sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium
-          cargo install wasm-pack --locked --version 0.14.0
       - name: Evaluate MVP and glTF PBR
         run: ./scripts/check-gltf-pbr
       - uses: actions/upload-artifact@v4
