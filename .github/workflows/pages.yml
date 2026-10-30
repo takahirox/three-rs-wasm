@@ -107,10 +107,10 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/report.json
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
+          sudo apt-get install -y libvulkan1 mesa-vulkan-drivers xvfb
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium
-          npx playwright test --config playwright.pages.config.js --reporter=dot,json
+          xvfb-run -a npx playwright test --config playwright.pages.config.js --reporter=dot,json
       # Each example's duration, for rebalancing the shards ( tools/ci/gallery_durations.py ).
       - uses: actions/upload-artifact@v4
         if: always()
