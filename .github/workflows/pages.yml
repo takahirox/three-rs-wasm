@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     outputs:
-      # The check runs in Playwright's image of the version the lockfile pins.
+      # The check caches the browser of the version the lockfile pins.
       playwright: ${{ steps.versions.outputs.playwright }}
     steps:
       - uses: actions/checkout@v4
@@ -70,18 +70,11 @@ jobs:
 
   # The published-gallery check opens every ported example on a software GPU
   # ( SwiftShader ), so it runs in shards against the uploaded site, balanced by
-  # the examples' recorded durations ( tests/pages/gallery.spec.js ). Playwright's
-  # image carries the browser and its system packages.
+  # the examples' recorded durations ( tests/pages/gallery.spec.js ).
   check:
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 60
-    container:
-      image: mcr.microsoft.com/playwright:v${{ needs.build.outputs.playwright }}-noble
-      options: --ipc=host
-    defaults:
-      run:
-        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -103,12 +96,20 @@ jobs:
         run: |
           mkdir -p .cache/pages/three-rs-wasm
           tar -xf .cache/pages-artifact/artifact.tar -C .cache/pages/three-rs-wasm
+      # The browser of the version the lockfile pins; its system packages install below.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ needs.build.outputs.playwright }}
       - name: Check published layout and examples
         env:
           GALLERY_SHARD: ${{ matrix.shard }}/6
           PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/report.json
         run: |
+          sudo apt-get update
+          sudo apt-get install -y libvulkan1 mesa-vulkan-drivers
           npm ci --ignore-scripts
+          npx playwright install --with-deps chromium
           npx playwright test --config playwright.pages.config.js --reporter=dot,json
       # Each example's duration, for rebalancing the shards ( tools/ci/gallery_durations.py ).
       - uses: actions/upload-artifact@v4
