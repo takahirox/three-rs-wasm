@@ -8,7 +8,9 @@ export default defineConfig({...base,
   testDir: './tests/pages',
   // Lets CI shard the per-example tests of the single spec file.
   fullyParallel: true,
-  use: {...base.use, baseURL: 'http://127.0.0.1:28180'},
+  // three.js's own example check renders 800×500 ( test/e2e/puppeteer.js ): the
+  // software GPU's cost follows the canvas's pixels.
+  use: {...base.use, baseURL: 'http://127.0.0.1:28180', viewport: {width: 800, height: 500}},
   webServer: {
     command: 'python3 -m http.server 28180 --bind 127.0.0.1 --directory .cache/pages',
     url: 'http://127.0.0.1:28180/three-rs-wasm/',
