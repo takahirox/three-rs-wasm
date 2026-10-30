@@ -4,10 +4,11 @@
 // index attributes, INDIRECT, STORAGE, UNIFORM, MAP_READ readback ), each
 // vertex buffer as a geometry; textures by their estimated size, and those
 // that can be rendered to as render targets too; shader modules as programs,
-// sized by their code. Loaded before the Wasm creates its device.
+// sized by their code. Imported by a ported example's page that shows the
+// original's UI, before the Wasm creates its device ( tools/gallery/pages.mjs ).
 ( () => {
 
-	// Only on pages that show the original's UI ( example.html's galleryUi ).
+	// Only on pages that show the original's UI ( the page's galleryUi ).
 	if ( typeof GPUDevice === 'undefined' || ! window.galleryUi ) return;
 	const memory = {
 		attributes: 0, attributesSize: 0, geometries: 0, indexAttributes: 0, indexAttributesSize: 0,

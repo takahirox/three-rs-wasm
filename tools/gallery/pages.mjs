@@ -86,6 +86,9 @@ function specialize(src, node, page) {
 	const edits = [];
 	const sub = node => specialize(src, node, page);
 	// A kept branch: a block without declarations of its own loses its braces.
+	// A chosen operand in its place: a name, a property path or a number needs
+	// no parentheses.
+	const operand = node => { const s = sub(node); return /^[\w$.]+$/.test(s) ? s : '(' + s + ')'; };
 	const branch = stmt => stmt.type === 'BlockStatement' && !stmt.body.some(lexical)
 		? stmt.body.map(sub).join('\n')
 		: sub(stmt);
@@ -108,14 +111,14 @@ function specialize(src, node, page) {
 			case 'ConditionalExpression': {
 				const v = evaluate(node.test, n);
 				if (v === UNKNOWN) break;
-				edits.push([node.start, node.end, '(' + sub(v ? node.consequent : node.alternate) + ')']);
+				edits.push([node.start, node.end, operand(v ? node.consequent : node.alternate)]);
 				return;
 			}
 			case 'LogicalExpression': {
 				const a = evaluate(node.left, n);
 				if (a !== UNKNOWN) {
 					const left = node.operator === '&&' ? !a : !!a;
-					edits.push([node.start, node.end, left ? JSON.stringify(a) : '(' + sub(node.right) + ')']);
+					edits.push([node.start, node.end, left ? JSON.stringify(a) : operand(node.right)]);
 					return;
 				}
 				// x && true, x || false: x
@@ -220,6 +223,13 @@ function upstreamAssets() {
 	};
 }
 
+// A ported example's page: whether it shows the original's UI ( automated
+// runs leave it out unless ?ui ), and with it the start of the GPU memory
+// counts the Inspector reads ( web/examples/ui/gpu-memory.js ), fetched while
+// the page parses.
+const PRELUDE = '<script>window.galleryUi=!navigator.webdriver||new URLSearchParams(location.search).has("ui");'
+	+ 'if(galleryUi)window.galleryGpuMemoryReady=import("./ui/gpu-memory.js").catch(e=>console.warn("gpu memory",e));</script>\n';
+
 function importmap(id) {
 	// The TSL editor's three/tsl is the three-tsl crate; elsewhere 'three' names resolve to the
 	// Inspector's stand-ins ( ui/three/shim.js ): no three.js renderer loads in the gallery.
@@ -255,7 +265,7 @@ export function pages() {
 			: `import {explain} from './diagnostic.js';\nexplain('${entry.id}');`;
 		if (script.includes('</script')) throw new Error(`${entry.id}: the script closes its element`);
 		const title = `three-rs-wasm - ${entry.id.replaceAll('_', ' - ')}`;
-		const html = template.replace('%TITLE%', title).replace('%IMPORTMAP%', importmap(entry.id)).replace('%UI%', () => ported ? ui(entry.id) : '').replace('%UPSTREAM%', () => ported ? upstream(entry.id) : '').replace('%SCRIPT%', () => script);
+		const html = template.replace('%TITLE%', title).replace('%PRELUDE%', () => ported ? PRELUDE : '').replace('%IMPORTMAP%', importmap(entry.id)).replace('%UI%', () => ported ? ui(entry.id) : '').replace('%UPSTREAM%', () => ported ? upstream(entry.id) : '').replace('%SCRIPT%', () => script);
 		out.set(`${entry.id}.html`, html);
 	}
 	return out;

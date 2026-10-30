@@ -7,7 +7,9 @@
 import './upstream.js';
 import {installElements} from './elements.js';
 import {installOrbit} from './orbit.js';
-import {explain, text} from './diagnostic.js';
+// The diagnostic, only when the example fails ( web/examples/diagnostic.js ).
+const explain = async (...args) => (await import('./diagnostic.js')).explain(...args);
+const text = (tag, value, parent) => { const element = document.createElement(tag); element.textContent = value; parent.append(element); return element; };
 // The gallery's Wasm: the primary module and the example module's parts.
 import {loadParts} from './runtime.js?v=parts-1';
 const canvas = document.querySelector('canvas');
@@ -18,8 +20,10 @@ let pending = 0;
 const release = () => { if (closing && pending === 0) {app?.free(); app = null;} };
 window.addEventListener('pagehide', () => { closing = true; release(); });
  try {
-  // The transpiler page renders nothing: it needs no WebGPU.
-  if (!navigator.gpu && PAGE_EXAMPLE !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
+  if (!navigator.gpu && /* The transpiler page renders nothing: it needs no WebGPU. */ PAGE_EXAMPLE !== 483) throw new Error('WebGPU対応ブラウザが必要です。');
+  // The Inspector's GPU memory counts, before the device exists ( the page's
+  // prelude starts ui/gpu-memory.js with its UI, tools/gallery/pages.mjs ).
+  await window.galleryGpuMemoryReady;
   if (PAGE_EXAMPLE === 497) {
    // webgpu_tsl_editor runs on the three-tsl crate's own Wasm ( web/build/tsl ), not this app.
    const {startTslEditor} = await import('./tsl-editor.js?v=tsl-2');
