@@ -5849,7 +5849,7 @@
         "source": "gallery/src/browser/svg_loader.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "SVGLoader（r187）をブラウザのDOMParserでの解析の上にRustで移植（属性/インラインstyle/CSSOM経由の<style>規則、入れ子とuseの変換と楕円弧の変換、パスコマンドと数値解析、rect/polygon/polyline/circle/ellipse/line、単位、線形/放射グラデーションのキャンバステクスチャ）。各パスをShapePath.toShapes（fill-rule）とShapeGeometryの塗り、pointsToStrokeの結合部と端点の線メッシュにして、ページ同様にrenderOrder順で35個のSVGを表示。ファイルや設定の変更時にCPUで構築。性能の完全な同等性は未保証。"
+          "SVGLoader（r187）をブラウザのDOMParserでの解析の上にRustで移植（属性/インラインstyle/CSSOM経由の<style>規則、入れ子とuseの変換と楕円弧の変換、パスコマンドと数値解析、rect/polygon/polyline/circle/ellipse/line、単位、線形/放射グラデーションのキャンバステクスチャ）。各パスをShapePath.toShapes（fill-rule）とShapeGeometryの塗り、pointsToStrokeの結合部と端点の線メッシュにして、ページ同様にrenderOrder順で38個のSVGを表示。ファイルや設定の変更時にCPUで構築。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
