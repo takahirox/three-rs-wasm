@@ -1,4 +1,4 @@
-//! Port of r186 webgpu_lights_pointlights with GPU vertex displacement.
+//! Port of r187 webgpu_lights_pointlights with GPU vertex displacement.
 use crate::{
     Error, Result, attribute::BufferAttribute, camera::*, geometry::*, material::*, math::*,
     scene::*,

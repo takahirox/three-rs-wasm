@@ -77,7 +77,7 @@ impl Component for half::f16 {
         } else {
             v
         };
-        // r186 DataUtils truncates the float32 mantissa and clamps overflow.
+        // r187 DataUtils truncates the float32 mantissa and clamps overflow.
         // IEEE round-to-nearest conversion alone would change observable values.
         let bits = (v.clamp(-65504.0, 65504.0) as f32).to_bits();
         let sign = (bits >> 16) & 0x8000;

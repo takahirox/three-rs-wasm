@@ -1,4 +1,4 @@
-//! Planar reflection camera construction, following r186 ReflectorNode.
+//! Planar reflection camera construction, following r187 ReflectorNode.
 //! Only camera/plane transforms run on the CPU; geometry is rendered on the GPU.
 use crate::{Error, Result, camera::PerspectiveCamera, math::*};
 

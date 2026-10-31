@@ -467,7 +467,7 @@ impl Demo {
             );
             stars.push(Arc::new(g));
         }
-        // r186's WebGPU Points draw PointsMaterial as native one-pixel points
+        // r187's WebGPU Points draw PointsMaterial as native one-pixel points
         // (`point-list`), whatever its size.
         let program = Arc::new(
             crate::shader::ShaderProgram::with_projection(
@@ -930,7 +930,7 @@ impl Demo {
     }
 }
 
-/// `scene.background = cubeTexture`: as in r186, a camera-centered 32 × 32 sphere
+/// `scene.background = cubeTexture`: as in r187, a camera-centered 32 × 32 sphere
 /// at the far plane.
 pub(super) async fn cube_background(
     s: &mut Scene,

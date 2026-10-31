@@ -1290,7 +1290,7 @@ fn promote(a: (Type, String), b: (Type, String)) -> Result<(Type, String, String
     ))
 }
 
-/// Separable GaussianBlurNode kernel (Three.js r186, MIT). Build once for each
+/// Separable GaussianBlurNode kernel (Three.js r187, MIT). Build once for each
 /// direction; `step` is direction * blur amount / input resolution.
 pub fn gaussian_blur(texture: Texture, coordinate: Node, step: Node, sigma: u32) -> Result<Node> {
     if sigma > 32 {
@@ -1347,7 +1347,7 @@ pub fn hue(color: Node, angle: Node) -> Node {
         + k.clone() * k.dot(color) * (float(1.0) - c))
         .max(float(0.0))
 }
-/// DotScreenNode r186. Supply the UVs used by the destination quad.
+/// DotScreenNode r187. Supply the UVs used by the destination quad.
 /// For a WebGPU render-to-texture pass these match Effect's top-left UVs.
 pub fn dot_screen(color: Node, coordinate: Node, size: Node, angle: Node, scale: Node) -> Node {
     let p = coordinate * size;
@@ -1455,7 +1455,7 @@ pub async fn multisampled_depth_effect(
     Effect::with_multisampled_depth(renderer, format, &source, depth).await
 }
 
-/// Rotate a position by XYZ Euler angles, matching r186's rotate(vec3, vec3).
+/// Rotate a position by XYZ Euler angles, matching r187's rotate(vec3, vec3).
 /// Evaluated per vertex on the GPU; does not rebuild geometry.
 pub fn rotate_euler(position: Node, angles: Node) -> Node {
     WgslFn::new("tsl_rotate_euler", "fn tsl_rotate_euler(p:vec3<f32>,a:vec3<f32>)->vec3<f32>{let c=cos(a);let s=sin(a);let z=vec3(c.z*p.x-s.z*p.y,s.z*p.x+c.z*p.y,p.z);let y=vec3(c.y*z.x+s.y*z.z,z.y,-s.y*z.x+c.y*z.z);return vec3(y.x,c.x*y.y-s.x*y.z,s.x*y.y+c.x*y.z);}", &[Type::Vec3,Type::Vec3],Type::Vec3).unwrap().call(&[position,angles])

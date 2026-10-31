@@ -2,7 +2,7 @@
 name = "three-rs-gallery"
 version = "0.1.0"
 edition = "2024"
-description = "The examples gallery: Rust ports of Three.js r186 examples, built on three-rs-wasm"
+description = "The examples gallery: Rust ports of Three.js r187 examples, built on three-rs-wasm"
 license = "MIT"
 publish = false
 rust-version = "1.94"

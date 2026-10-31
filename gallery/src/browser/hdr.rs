@@ -3,7 +3,7 @@
 //! pixel-space pass, through AfterImageNode ( the previous result faded by
 //! the decay where above 0.1, kept where brighter ) to the extended-sRGB
 //! output. The brush follows the pointer. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `hdr/`). The original presents
+//! three.js r187 generates for the page (in `hdr/`). The original presents
 //! a half-float, extended-range canvas: on a standard display its colors
 //! clamp to the displayable range, as the port's 8-bit output does.
 use super::controls_attributes::viewport_css;

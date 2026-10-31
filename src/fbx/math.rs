@@ -1,4 +1,4 @@
-//! The three.js r186 math FBXLoader computes with, operation for operation,
+//! The three.js r187 math FBXLoader computes with, operation for operation,
 //! so the loader's transforms and keyframes round as in the original.
 //! Elementary functions are the host's `Math` in the browser ( see
 //! `bounce::trig` ).

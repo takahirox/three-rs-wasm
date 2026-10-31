@@ -2,7 +2,7 @@
 //! column and a large ground in fog, lit by an ambient and a directional
 //! light with a BasicShadowMap. The page splices its PCSS functions into
 //! shadowmap_pars_fragment, but its second replacement (the call in
-//! getShadow) no longer matches r186's chunk, which has a blank line after
+//! getShadow) no longer matches r187's chunk, which has a blank line after
 //! `if ( frustumTest ) {`: the original draws the plain BasicShadowMap
 //! comparison, and so does the port. The shadow camera's CameraHelper keeps
 //! the projection it read when constructed (far 500: the page edits far

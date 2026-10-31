@@ -1,4 +1,4 @@
-//! SkyscraperGenerator ( three.js r186 addon ): the seeded tripartite tower,
+//! SkyscraperGenerator ( three.js r187 addon ): the seeded tripartite tower,
 //! its authored modules and shells instanced over the footprint faces and
 //! baked into one non-indexed geometry with a per-vertex partId and the
 //! glass panes' interior rooms. Computed in f64 with the Float32Array stores

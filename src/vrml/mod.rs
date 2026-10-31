@@ -1,4 +1,4 @@
-//! VRMLLoader ( examples/jsm/loaders/VRMLLoader.js, r186 ): VRML 2.0 text
+//! VRMLLoader ( examples/jsm/loaders/VRMLLoader.js, r187 ): VRML 2.0 text
 //! into the loader's scene — groups and transforms, shapes as Phong / basic
 //! meshes, line segments and points with their materials and textures
 //! ( ImageTexture URLs and PixelTexture data ), the Background node's sky

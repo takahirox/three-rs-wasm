@@ -8,7 +8,7 @@
 //! vertices reach the GPU as the addon's attribute update ranges: partial
 //! position and normal writes, the index rewritten when the topology
 //! changes, and new buffers only when the addon reallocates its arrays.
-//! Every stage runs the WGSL three.js r186 generates for the page ( in
+//! Every stage runs the WGSL three.js r187 generates for the page ( in
 //! `sculpt/`; the output pass in `output_pass/` ).
 mod sculptor;
 use super::controls_attributes::{Controls, camera_state, viewport_css};

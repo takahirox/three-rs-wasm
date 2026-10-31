@@ -1,4 +1,4 @@
-//! Pinned r186 material, contact-shadow and instanced-line examples.
+//! Pinned r187 material, contact-shadow and instanced-line examples.
 mod contact;
 mod lines;
 mod materials;

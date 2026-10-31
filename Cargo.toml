@@ -2,7 +2,7 @@
 name = "three-rs-wasm"
 version = "0.1.0"
 edition = "2024"
-description = "Rust-first WebGPU 3D library with Three.js r186 behavioral compatibility"
+description = "Rust-first WebGPU 3D library with Three.js r187 behavioral compatibility"
 license = "MIT"
 repository = "https://github.com/takahirox/three-rs-wasm"
 rust-version = "1.94"

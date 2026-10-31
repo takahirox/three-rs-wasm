@@ -1,4 +1,4 @@
-//! LightProbeGrid ( `examples/jsm/lighting/LightProbeGrid.js`, r186 ): a
+//! LightProbeGrid ( `examples/jsm/lighting/LightProbeGrid.js`, r187 ): a
 //! box of light probes baked on the GPU into a padded RGBA16F 3D atlas of L2
 //! spherical harmonics, which lit materials sample for diffuse irradiance
 //! as LightProbeGridNode does. A grid is a scene node of kind
@@ -10,7 +10,8 @@
 //! projection into a row of a 9 × N float batch target, and the seven repack
 //! passes into the atlas with its boundary padding. Indirect passes light
 //! the captures with a snapshot of the previous pass. The SH projection and
-//! repack shaders are the WGSL three.js r186 generates for them.
+//! repack shaders are the WGSL three.js r186 generated for them ( not yet
+//! re-captured on r187 ).
 use crate::{
     Error, Result,
     camera::{Camera, PerspectiveCamera},

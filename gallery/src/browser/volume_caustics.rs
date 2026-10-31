@@ -9,7 +9,7 @@
 //! it ( a high pass and five H / V Gaussian levels, then the composite ) and
 //! the output adds 0.7 of the bloom to the scene. Every stage runs the WGSL
 //! three.js r187 generates for the page (in `volume_caustics/`; the bloom
-//! blurs are `bloom_blur*_fs`, `blur*_fs` keep r186's for other ports).
+//! blurs are `bloom_blur*_fs`; `blur*_fs` are r186's, which no port loads now).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};

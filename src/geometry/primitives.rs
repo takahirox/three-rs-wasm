@@ -1,4 +1,4 @@
-//! Procedural meshes following the pinned Three.js r186 geometry conventions.
+//! Procedural meshes following the pinned Three.js r187 geometry conventions.
 use super::*;
 use std::f64::consts::{PI, TAU};
 

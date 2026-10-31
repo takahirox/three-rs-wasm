@@ -1,4 +1,4 @@
-//! The page's procedural geometry: LoftGeometry ( three.js r186 addon )
+//! The page's procedural geometry: LoftGeometry ( three.js r187 addon )
 //! over the sections each builder computes, and the CircleGeometry floor and
 //! coffee surface, in f64 with the Float32Array stores, three.js's indexed
 //! computeVertexNormals ( accumulated through the Float32Array ) and the

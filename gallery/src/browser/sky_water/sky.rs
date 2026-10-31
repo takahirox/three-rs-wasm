@@ -1,4 +1,4 @@
-//! SkyMesh: the Preetham sky with the r186 cloud layer, as a raw material whose
+//! SkyMesh: the Preetham sky with the r187 cloud layer, as a raw material whose
 //! output goes through the renderer's tone mapping like a NodeMaterial.
 use crate::{
     Result, geometry::BoxGeometry, material::*, math::*, renderer::Renderer, scene::*,

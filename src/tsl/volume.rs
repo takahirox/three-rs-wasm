@@ -1,4 +1,4 @@
-//! Fixed-cost GPU box raymarchers corresponding to r186's volume examples.
+//! Fixed-cost GPU box raymarchers corresponding to r187's volume examples.
 use super::*;
 /// `options` is (threshold, steps, refine, unused). Origin is in object space.
 pub fn opaque(texture: Texture, origin: Node, position: Node, options: Node) -> Node {

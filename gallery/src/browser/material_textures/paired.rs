@@ -127,7 +127,7 @@ impl Pair {
                 } else {
                     Filter::Nearest
                 };
-                // r186 WebGPU samples generated mips for LinearFilter, but
+                // r187 WebGPU samples generated mips for LinearFilter, but
                 // emits a level-zero textureLoad for NearestFilter.
                 t.mipmap_filter = if i == 0 && !filters {
                     Some(Filter::Nearest)

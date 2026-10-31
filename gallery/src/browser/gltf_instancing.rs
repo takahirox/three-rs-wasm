@@ -16,7 +16,7 @@ async fn create(scene: &mut Scene, camera: Object3D, aspect: f64) -> Result<supe
     let (asset, buffers, images) =
         load_asset("models/DamagedHelmet/glTF-instancing/DamagedHelmetGpuInstancing.gltf").await?;
     crate::gltf::import_animated_decoded(&asset, &buffers, &images)?.instantiate(scene)?;
-    // r186 GLTFLoader applies assignFinalMaterial twice to InstancedMesh,
+    // r187 GLTFLoader applies assignFinalMaterial twice to InstancedMesh,
     // flipping derivative-tangent normalScale.y twice. Match this example's
     // actual material without changing the glTF importer's convention.
     for root in scene.roots().to_vec() {

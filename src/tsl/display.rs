@@ -1,10 +1,10 @@
-//! Reusable ports of r186 display nodes. Adaptive loops execute in WGSL, not Rust.
+//! Reusable ports of r187 display nodes. Adaptive loops execute in WGSL, not Rust.
 use super::*;
 
 pub fn srgb(color: Node) -> Node {
     WgslFn::new("tsl_srgb", "fn tsl_srgb(c:vec3<f32>)->vec3<f32>{return select(1.055*pow(max(c,vec3(0.0)),vec3(0.41666))-0.055,c*12.92,c<=vec3(0.0031308));}", &[Type::Vec3], Type::Vec3).unwrap().call(&[color])
 }
-/// r186 radialBlur. `size` is the output pixel size and options are
+/// r187 radialBlur. `size` is the output pixel size and options are
 /// (weight, decay, integer sample count, exposure). Count is clamped to 1–64
 /// and remains a runtime GPU loop.
 pub fn radial_blur(texture: Texture, coordinate: Node, size: Node, options: Node) -> Node {
@@ -23,7 +23,7 @@ pub fn radial_blur(texture: Texture, coordinate: Node, size: Node, options: Node
     .unwrap()
     .call(&[texture.node(), texture.sampler(), coordinate, size, options])
 }
-/// r186 FXAANode including adaptive edge search. Input must already be sRGB.
+/// r187 FXAANode including adaptive edge search. Input must already be sRGB.
 pub fn fxaa(texture: Texture, coordinate: Node, inverse_size: Node) -> Node {
     WgslFn::new(
         "tsl_fxaa",
@@ -58,7 +58,7 @@ pub fn premultiplied_srgb(color: Node) -> Node {
     )
 }
 
-/// r186 Sobel edge magnitude. Pass display-encoded input when matching
+/// r187 Sobel edge magnitude. Pass display-encoded input when matching
 /// sobel(renderOutput(scenePass)); only the eight nonzero kernel taps are read.
 pub fn sobel(texture: Texture, coordinate: Node, inverse_size: Node) -> Node {
     WgslFn::new("tsl_sobel",r#"
@@ -71,7 +71,7 @@ fn tsl_sobel(t:texture_2d<f32>,s:sampler,p:vec2<f32>,d:vec2<f32>)->vec4<f32>{
 }"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec2],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,inverse_size])
 }
 
-/// r186 ChromaticAberrationNode: independently scaled, radial RGB samples.
+/// r187 ChromaticAberrationNode: independently scaled, radial RGB samples.
 pub fn chromatic_aberration(
     texture: Texture,
     coordinate: Node,
@@ -90,7 +90,7 @@ pub fn chromatic_aberration(
     )
 }
 
-/// r186 boxBlur. Kernel size and separation are runtime GPU inputs; the input
+/// r187 boxBlur. Kernel size and separation are runtime GPU inputs; the input
 /// must contain straight alpha unless `premultiplied_alpha` is requested.
 pub fn box_blur(
     texture: Texture,
@@ -108,7 +108,7 @@ fn tsl_box_blur(t:texture_2d<f32>,s:sampler,p:vec2<f32>,size:f32,separation:f32,
 }"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Float,Type::Float,Type::Bool],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,size,separation,premultiplied_alpha])
 }
 
-/// r186 lensflare ghost sampling. Render this at the chosen downsampled size;
+/// r187 lensflare ghost sampling. Render this at the chosen downsampled size;
 /// options are (threshold, sample count, spacing, attenuation exponent).
 pub fn lensflare(texture: Texture, coordinate: Node, tint: Node, options: Node) -> Node {
     WgslFn::new("tsl_lensflare",r#"
@@ -120,7 +120,7 @@ fn tsl_lensflare(t:texture_2d<f32>,s:sampler,p:vec2<f32>,tint:vec3<f32>,options:
 }"#,&[Type::Texture,Type::Sampler,Type::Vec2,Type::Vec3,Type::Vec4],Type::Vec4).unwrap().call(&[texture.node(),texture.sampler(),coordinate,tint,options])
 }
 
-/// r186 MotionBlur: one center sample plus `samples` offset samples, divided by
+/// r187 MotionBlur: one center sample plus `samples` offset samples, divided by
 /// `samples` (including the original 17/16 gain for the default 16). Motion is
 /// supplied in NDC by the example, without an additional UV conversion.
 pub fn motion_blur(texture: Texture, coordinate: Node, velocity: Node, samples: Node) -> Node {

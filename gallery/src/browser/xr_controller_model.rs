@@ -1,4 +1,4 @@
-//! three r186's XRControllerModelFactory ( `examples/jsm/webxr/` ) and the
+//! three r187's XRControllerModelFactory ( `examples/jsm/webxr/` ) and the
 //! motion-controllers library it bundles ( `examples/jsm/libs/
 //! motion-controllers.module.js`, @webxr-input-profiles/motion-controllers
 //! 1.0 ): on `connected`, the input source's profile is fetched from the

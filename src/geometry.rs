@@ -737,7 +737,7 @@ impl SphereGeometry {
             std::f64::consts::PI,
         )
     }
-    /// Sphere segment with the r186 pole UV and triangle conventions.
+    /// Sphere segment with the r187 pole UV and triangle conventions.
     pub fn with_angles(
         radius: f64,
         width_segments: u32,
@@ -772,7 +772,7 @@ impl SphereGeometry {
             for x in 0..=width_segments {
                 let u = x as f64 / width_segments as f64;
                 let phi = phi_start + u * phi_length;
-                // r186: the ring radius from the height, sqrt( r² − y² ).
+                // r187: the ring radius from the height, sqrt( r² − y² ).
                 let y = radius * crate::js_math::cos(theta_start + v * theta_length);
                 let ring = (radius * radius - y * y).sqrt();
                 let position = Vector3::new(

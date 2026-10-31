@@ -1,4 +1,4 @@
-//! Pinned r186 RoomEnvironment: one-time GPU cubemap capture, not a baked image.
+//! Pinned r187 RoomEnvironment: one-time GPU cubemap capture, not a baked image.
 use crate::{Result, geometry::*, material::*, math::*, renderer::*, scene::*};
 use std::sync::Arc;
 pub(super) fn environment(r: &Renderer) -> Result<Arc<crate::environment::EnvironmentMap>> {

@@ -1,7 +1,7 @@
 //! CSS3DRenderer, CSS3DObject and CSS3DSprite
 //! ( `examples/jsm/renderers/CSS3DRenderer.js` ): HTML elements transformed
 //! in 3D by CSS, under a camera element whose `perspective` and
-//! `matrix3d` follow the camera, as three.js r186 writes them.
+//! `matrix3d` follow the camera, as three.js r187 writes them.
 use crate::css2d::DomElement;
 #[cfg(target_arch = "wasm32")]
 use crate::{

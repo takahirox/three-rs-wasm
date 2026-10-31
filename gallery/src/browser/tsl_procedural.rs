@@ -1,4 +1,4 @@
-//! Pinned r186 procedural TSL scenes. Shading and skinning execute on the GPU.
+//! Pinned r187 procedural TSL scenes. Shading and skinning execute on the GPU.
 use super::gltf_viewer::{OrbitViewer, load_asset};
 use crate::{
     Error, Result,

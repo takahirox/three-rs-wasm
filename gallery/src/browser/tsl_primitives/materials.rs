@@ -77,7 +77,7 @@ impl Demo {
                     float(1.) - (screen_coordinate() / screen_size()).y(),
                 ),
             ),
-            // r186's Loop return is discarded: its generated DiffuseColor is zero.
+            // r187's Loop return is discarded: its generated DiffuseColor is zero.
             // Preserve the pinned output; this is not evidence of a general Loop API.
             splat(float(0.0), Type::Vec3),
         ];

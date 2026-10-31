@@ -1,4 +1,4 @@
-//! Rhino3dmLoader ( examples/jsm/loaders/3DMLoader.js, r186 ) on rhino3dm
+//! Rhino3dmLoader ( examples/jsm/loaders/3DMLoader.js, r187 ) on rhino3dm
 //! 8.32.1, the library the page loads from jsDelivr ( MIT, Robert McNeel &
 //! Associates ). rhino3dm is an emscripten module with its own memory, so it
 //! is loaded and called through JavaScript; the loader's code is ported: the

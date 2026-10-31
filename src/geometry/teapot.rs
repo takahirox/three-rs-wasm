@@ -1,6 +1,6 @@
 //! TeapotGeometry ( examples/jsm/geometries/TeapotGeometry.js ). The Bezier
 //! patch table (32 patches × 16 control points) and control-point coordinates
-//! are transcribed from the pinned r186 source.
+//! are transcribed from the pinned r187 source.
 use super::{Attribute, BufferGeometry};
 use crate::{Result, attribute::BufferAttribute, math::*};
 

@@ -1,4 +1,4 @@
-//! Persistent GPU history with Three.js r186 AfterImageNode's component threshold.
+//! Persistent GPU history with Three.js r187 AfterImageNode's component threshold.
 use super::Effect;
 use crate::{Result, renderer::*, tsl::*};
 pub struct AfterImagePass {

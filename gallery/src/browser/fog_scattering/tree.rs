@@ -1,4 +1,4 @@
-//! TreeGenerator (r186 addons/generators): a deterministic, recursive sweep of
+//! TreeGenerator (r187 addons/generators): a deterministic, recursive sweep of
 //! tapered tubes baked into one indexed geometry of positions and normals. The
 //! arithmetic follows the JavaScript in f64, with three.js's Vector3 and
 //! Quaternion formulas, and stores Float32 vertices as the original does.

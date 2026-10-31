@@ -1,4 +1,4 @@
-//! misc_controls_arcball: ArcballControls ( r186 ) around the Cerberus OBJ
+//! misc_controls_arcball: ArcballControls ( r187 ) around the Cerberus OBJ
 //! with its albedo, roughness / metalness and normal maps under the
 //! venice_sunset environment, Reinhard tone mapping at exposure 3 over the
 //! page's CSS gradient through the transparent canvas. The controls port the

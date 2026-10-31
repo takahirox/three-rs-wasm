@@ -38,7 +38,7 @@ impl Demo {
             tsl::Texture::External(i).sample(vec2(coordinate.x(), float(1.0) - coordinate.y()))
         };
         let clouds = tex(2, uv()).swizzle("z").smoothstep(float(0.2), float(1.0));
-        // r186 caches cloudsStrength before the bump context is evaluated; only
+        // r187 caches cloudsStrength before the bump context is evaluated; only
         // its raw height sample receives the forward-difference UV offset.
         let elevation = |coordinate: tsl::Node| tex(2, coordinate).x().max(clouds.clone());
         let orientation = normal_world().swizzle("z");

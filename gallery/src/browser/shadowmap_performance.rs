@@ -261,7 +261,7 @@ impl Demo {
             let mut cloned = material.as_ref().clone();
             if let Material::Standard(m) = &mut cloned {
                 m.properties.color = offset_hsl(base, ds, dl);
-                // r186's WebGL physical shading: the DFG LUT's multiple scattering.
+                // r187's WebGL physical shading: the DFG LUT's multiple scattering.
                 m.energy_conservation = true;
             }
             let group = (random.next() * GROUPS as f64).floor() as usize;

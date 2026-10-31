@@ -331,7 +331,7 @@ impl Ray {
         }
         Some(self.at(if tmin >= 0. { tmin } else { tmax }))
     }
-    /// intersectTriangle ( r186's watertight test ).
+    /// intersectTriangle ( r187's watertight test ).
     pub fn intersect_triangle(&self, a: V3, b: V3, c: V3, backface_culling: bool) -> Option<V3> {
         let o = self.origin;
         let [dx, dy, dz] = self.direction;

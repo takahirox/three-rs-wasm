@@ -978,7 +978,7 @@ impl Demo {
         for &h in &instance.roots {
             s.add(group, h)?;
         }
-        // r186 WebGL physical lighting also attenuates the ambient diffuse by the
+        // r187 WebGL physical lighting also attenuates the ambient diffuse by the
         // specular multiple scattering.
         for &h in &instance.meshes {
             if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {

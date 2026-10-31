@@ -3,7 +3,7 @@ mod path;
 use super::room_environment as room;
 mod smaa;
 mod sobel;
-// Five r186 node scenes: GPU path deformation, Sobel, SMAA, LUT and parallax.
+// Five r187 node scenes: GPU path deformation, Sobel, SMAA, LUT and parallax.
 use super::gltf_viewer::{OrbitViewer, decode_image, fetch};
 use crate::{
     Error, Result,

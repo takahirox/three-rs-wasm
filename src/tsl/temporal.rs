@@ -1,4 +1,4 @@
-//! GPU temporal reprojection with r186 variance clipping and Halton jitter.
+//! GPU temporal reprojection with r187 variance clipping and Halton jitter.
 //! The caller renders linear RGBA16F beauty, unjittered NDC motion, and depth
 //! into a single-sampled MRT. Geometry, including previous deformation, stays
 //! on the GPU. This pass owns only its resolve/history images.

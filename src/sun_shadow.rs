@@ -1,4 +1,4 @@
-//! Two stabilized shadow cascades, matching Three.js r186 SunLightShadow.
+//! Two stabilized shadow cascades, matching Three.js r187 SunLightShadow.
 use crate::{Error, Result, camera::*, math::*, shadow::Shadow};
 #[derive(Clone, Debug)]
 pub struct SunCascade {

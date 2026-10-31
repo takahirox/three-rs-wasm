@@ -1,6 +1,6 @@
 //! CSS2DRenderer and CSS2DObject ( `examples/jsm/renderers/CSS2DRenderer.js` ):
 //! HTML elements placed over the canvas at their objects' projected
-//! positions, as three.js r186 places them. A CSS2DObject is a scene node of
+//! positions, as three.js r187 places them. A CSS2DObject is a scene node of
 //! kind `NodeKind::CSS2DObject`; the renderer writes each element's
 //! `display`, `transform-origin`, `transform` and `z-index` with the same
 //! strings as the original.

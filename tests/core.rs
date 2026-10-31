@@ -111,7 +111,7 @@ fn geometry_clone_preserves_internal_aliasing_but_not_source_storage() {
 }
 
 #[test]
-fn manual_world_matrix_update_respects_r186_dirty_and_force_flags() {
+fn manual_world_matrix_update_respects_r187_dirty_and_force_flags() {
     let mut scene = Scene::new();
     let h = scene.insert(NodeKind::Group);
     let node = scene.get_mut(h).unwrap();

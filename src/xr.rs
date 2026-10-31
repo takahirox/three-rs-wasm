@@ -1,7 +1,9 @@
-//! WebXR presentation through the WebXR/WebGPU binding, as three r186's
+//! WebXR presentation through the WebXR/WebGPU binding, as three r187's
 //! XRManager drives it for a WebGPU backend ( `renderers/common/XRManager.js` ):
 //! an `XRGPUBinding` projection layer with one array layer per view, the
-//! views' cameras ( an ArrayCamera with the union camera of two views ), and
+//! views' cameras ( an ArrayCamera with the union camera of two views: r186's
+//! setProjectionFromUnion, which r187 removed, copying the first view's
+//! projection instead; the port still builds the union ), and
 //! WebXRController's target-ray and grip spaces. The browser's XR session
 //! itself stays in the page's JavaScript ( `web/examples/xr.js` ), which hands
 //! each frame's views, layer texture and input poses to this module.
@@ -468,7 +470,7 @@ mod tests {
 
     #[test]
     fn union_camera_matches_three() {
-        // Values from three r186's setProjectionFromUnion for the fake device's
+        // Values from three r186's setProjectionFromUnion ( r187 removed it ) for the fake device's
         // views ( tests/browser/fake-xr.js ), near 0.1 and far 10.
         let worlds = [
             Matrix4::from_translation(Vector3::new(-0.032, 1.6, 0.)),

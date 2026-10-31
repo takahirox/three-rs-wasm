@@ -1,4 +1,4 @@
-//! Motion-vector MRT. Clip transforms execute per vertex, as in r186 VelocityNode.
+//! Motion-vector MRT. Clip transforms execute per vertex, as in r187 VelocityNode.
 use super::*;
 
 /// Current/previous unjittered homogeneous clip coordinates, evaluated on the GPU

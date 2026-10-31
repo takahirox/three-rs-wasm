@@ -1,4 +1,4 @@
-//! Pinned r186 PMREM, baked lighting and depth/bloom postprocessing examples.
+//! Pinned r187 PMREM, baked lighting and depth/bloom postprocessing examples.
 mod lightmap;
 mod maps;
 mod post;

@@ -17,7 +17,7 @@
 //! stores. The material is MeshStandardMaterial ( vertex colors, flat,
 //! roughness 1 ) with the page's onBeforeCompile vertex stage, under the
 //! hemisphere and directional lights with linear fog; its program is a WGSL
-//! port of WebGLRenderer's physical shading ( the r186 DFG LUT, multiple
+//! port of WebGLRenderer's physical shading ( the r187 DFG LUT, multiple
 //! scattering compensation, fog after the sRGB conversion ).
 use super::controls_attributes::viewport_css;
 use super::gltf_viewer::load_asset;

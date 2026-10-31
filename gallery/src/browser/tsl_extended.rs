@@ -1,4 +1,4 @@
-//! Additional pinned r186 scenes. Static geometry and node programs stay on the GPU.
+//! Additional pinned r187 scenes. Static geometry and node programs stay on the GPU.
 mod anamorphic;
 mod cube;
 mod dof;

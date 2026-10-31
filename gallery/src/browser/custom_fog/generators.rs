@@ -1,4 +1,4 @@
-//! TerrainGenerator and ForestGenerator ( three.js r186 addons ): the baked
+//! TerrainGenerator and ForestGenerator ( three.js r187 addons ): the baked
 //! height grid with its thermal erosion and the scattered tree blobs, in
 //! f64 with the generators' Float32Array stores and three.js's Object3D
 //! matrix composition.

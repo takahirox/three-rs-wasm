@@ -1,5 +1,5 @@
 //! webgpu_xr_cubes, webgpu_xr_rollercoaster and webgpu_xr_shadows: three
-//! r186's WebXR examples on the WebGPU renderer, without their WebGL
+//! r187's WebXR examples on the WebGPU renderer, without their WebGL
 //! fallback. The page's JavaScript ( `web/examples/xr.js` ) owns the XR
 //! session, the XRButton / VRButton and the XRGPUBinding projection layer;
 //! this app owns the scene, the XRManager state ( `crate::xr` ) and the
@@ -386,7 +386,7 @@ impl Cubes {
     }
 }
 
-/// AdditiveBlending without premultiplied alpha, as r186's WebGPU pipelines
+/// AdditiveBlending without premultiplied alpha, as r187's WebGPU pipelines
 /// set it: color ( srcAlpha, one ), alpha ( one, one ).
 fn additive_blending() -> wgpu::BlendState {
     wgpu::BlendState {

@@ -7,8 +7,9 @@
 //! stopped at the scene depth. A two-pass Gaussian blur denoises it and the
 //! output adds it to the scene with NeutralToneMapping (exposure 2). Every
 //! stage runs the WGSL three.js r187 generates for the page (in
-//! `volume_lighting/`; `teapot_fs`/`teapot_vs` keep r186's teapot for
-//! volume_traa, the page's r187 teapot is `teapot_scene_*`).
+//! `volume_lighting/`; `teapot_fs`/`teapot_vs` are r186's teapot, which no
+//! port loads now ( volume_traa has its own ); the page's r187 teapot is
+//! `teapot_scene_*`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::lights_projector::{m3, m4, pack};

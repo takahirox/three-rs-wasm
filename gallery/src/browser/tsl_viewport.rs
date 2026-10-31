@@ -1,4 +1,4 @@
-//! r186 framebuffer effects, soft particles and spatial upscaling.
+//! r187 framebuffer effects, soft particles and spatial upscaling.
 mod backdrop;
 mod refraction;
 mod smoke;

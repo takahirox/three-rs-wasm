@@ -1,4 +1,4 @@
-//! r186 environment nodes, alpha hashing and chromatic aberration.
+//! r187 environment nodes, alpha hashing and chromatic aberration.
 mod box_projection;
 mod chromatic;
 mod hash;

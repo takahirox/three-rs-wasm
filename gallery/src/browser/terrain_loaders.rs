@@ -994,7 +994,7 @@ impl Demo {
             .get(model as usize)
             .ok_or(Error::Asset("VOX model".into()))?;
         let g = vox_mesh(chunk, &palette)?;
-        // r186's WebGL physical shading also conserves energy between the lobes.
+        // r187's WebGL physical shading also conserves energy between the lobes.
         let mut m = MeshStandardMaterial {
             energy_conservation: true,
             ..Default::default()

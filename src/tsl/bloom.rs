@@ -1,4 +1,4 @@
-//! Three.js r186's five-level HDR bloom. Adjacent Gaussian taps share bilinear fetches.
+//! Three.js r187's five-level HDR bloom. Adjacent Gaussian taps share bilinear fetches.
 use super::*;
 use crate::renderer::{RenderTarget, RenderTargetOptions};
 pub struct Bloom {

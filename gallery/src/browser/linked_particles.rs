@@ -4,8 +4,8 @@
 //! search over every particle, per particle, per frame), drawn as additive
 //! hue-cycling sprites inside a flat-shaded metallic icosahedron lit by an
 //! orbiting point light, with BloomNode, ACES tone mapping and auto-rotating
-//! OrbitControls. Every stage runs the WGSL three.js r186 generates for the
-//! page's TSL (in `linked_particles/`), over resident storage buffers that
+//! OrbitControls. Every stage runs the WGSL three.js r186 generated for the
+//! page's TSL (in `linked_particles/`, not yet re-captured on r187), over resident storage buffers that
 //! the sprites and ribbons read as vertex attributes, as in the original.
 use super::controls_attributes::{Controls, camera_state, viewport_css};
 use crate::{

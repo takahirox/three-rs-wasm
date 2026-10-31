@@ -1,7 +1,7 @@
 //! SVGRenderer and SVGObject ( `examples/jsm/renderers/SVGRenderer.js` ) with
 //! the Projector it draws through ( `examples/jsm/renderers/Projector.js` ):
 //! the scene's faces, lines, sprites and points projected and clipped on the
-//! CPU, painter-sorted and written as SVG paths, as three.js r186 writes
+//! CPU, painter-sorted and written as SVG paths, as three.js r187 writes
 //! them. SVG output is CPU-projected in the original too; nothing here
 //! replaces GPU work. The projection uses WebGL clip space ( z in −1 to 1 )
 //! as the original's camera does.
@@ -169,7 +169,7 @@ mod renderer {
             inv[0], inv[3], inv[6], inv[1], inv[4], inv[7], inv[2], inv[5], inv[8],
         ]
     }
-    /// Matrix4.invert() ( gl-matrix's cofactors, as r186 computes them ).
+    /// Matrix4.invert() ( gl-matrix's cofactors, as r187 computes them ).
     fn invert(te: &[f64; 16]) -> [f64; 16] {
         let (n11, n21, n31, n41) = (te[0], te[1], te[2], te[3]);
         let (n12, n22, n32, n42) = (te[4], te[5], te[6], te[7]);
@@ -928,6 +928,8 @@ mod renderer {
                             intensity,
                             ..
                         } => {
+                            // r186's direction: the light's position. r187 subtracts its
+                            // target's position, the same while the target is the origin.
                             let mut amount = dot(normal_model, normalize(*position));
                             if amount <= 0. {
                                 continue;

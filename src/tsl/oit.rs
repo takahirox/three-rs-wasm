@@ -1,4 +1,4 @@
-//! r186 weighted blended order-independent transparency (McGuire equation 9).
+//! r187 weighted blended order-independent transparency (McGuire equation 9).
 //! Render opaque geometry first, share its depth attachment, then draw the two
 //! transparent MRT outputs with depth writes disabled. Accumulation clears to
 //! zero and revealage to one. Composite in linear HDR before display encoding.

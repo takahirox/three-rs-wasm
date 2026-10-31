@@ -6,10 +6,11 @@
 //! the CPU, as the page casts them ( through the BVH, or every triangle when
 //! useBVH is off; firstHitOnly only changes how the nearest hit is found ),
 //! the origin and hit spheres of a dynamic InstancedMesh, the translucent ray
-//! LineSegments with their draw range. BVHHelper never draws under the
-//! pinned r186: its BVHRootHelper extends Object3D, whose intersectsFrustum
-//! returns undefined, so the renderer culls it while frustumCulled is set;
-//! displayHelper and helperDepth change nothing on screen. The bunny is parsed at load by the FBXLoader port.
+//! LineSegments with their draw range. Under r186 BVHHelper never drew: its
+//! BVHRootHelper extends Object3D, whose intersectsFrustum returned undefined,
+//! so the renderer culled it while frustumCulled was set. r187's
+//! Object3D.intersectsFrustum returns true, so the page draws the helper when
+//! displayHelper is on ( to helperDepth ); the port does not draw it yet. The bunny is parsed at load by the FBXLoader port.
 //! The page advances its rays and the bunny's turn once per animation frame;
 //! the port steps the same per-frame updates at 60 Hz of the example clock.
 use super::controls_attributes::{Controls, camera_state};

@@ -1,4 +1,4 @@
-//! The r186 shader transpiler ( `examples/jsm/transpiler/` ): GLSLDecoder
+//! The r187 shader transpiler ( `examples/jsm/transpiler/` ): GLSLDecoder
 //! parses GLSL into an AST, the Linker resolves its references, and
 //! TSLEncoder or WGSLEncoder emits TSL or WGSL. The output text is the
 //! original's, character for character.

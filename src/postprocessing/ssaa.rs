@@ -1,4 +1,4 @@
-//! r186 color-only SSAAPass: jittered GPU scene draws with weighted accumulation.
+//! r187 color-only SSAAPass: jittered GPU scene draws with weighted accumulation.
 use super::Effect;
 use crate::{
     Error, Result,

@@ -1,4 +1,4 @@
-//! SMAA 1x Medium, r186. Three resident HDR GPU passes with the original area
+//! SMAA 1x Medium, r187. Three resident HDR GPU passes with the original area
 //! and search tables; no CPU edge detection and no substitute FXAA pass.
 use crate::{Result, postprocessing::Effect, renderer::*};
 pub struct SmaaPass {

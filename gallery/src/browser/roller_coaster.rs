@@ -1,4 +1,4 @@
-//! three r186's `examples/jsm/misc/RollerCoaster.js`: the track, its lifters
+//! three r187's `examples/jsm/misc/RollerCoaster.js`: the track, its lifters
 //! and shadow, the sky's quads and the landscape's trees. The geometry is
 //! built once on the CPU, as the addon builds it.
 use super::xr_random::random;

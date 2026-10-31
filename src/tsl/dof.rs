@@ -1,4 +1,4 @@
-//! r186's near/far bokeh depth of field. CoC fields share an RG16F attachment;
+//! r187's near/far bokeh depth of field. CoC fields share an RG16F attachment;
 //! all filtering and compositing stays on the GPU.
 use super::*;
 use crate::renderer::{RenderTarget, RenderTargetOptions};

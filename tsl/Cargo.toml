@@ -2,7 +2,7 @@
 name = "three-tsl"
 version = "0.1.0"
 edition = "2024"
-description = "Three.js r186's node system ( TSL ) in Rust: the editor's WGSL and GLSL, character for character"
+description = "Three.js r187's node system ( TSL ) in Rust: the editor's WGSL and GLSL, character for character"
 license = "MIT"
 rust-version = "1.94"
 

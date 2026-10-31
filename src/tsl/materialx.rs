@@ -1,4 +1,4 @@
-//! GPU MaterialX noise with the pinned r186 hash and gradient conventions.
+//! GPU MaterialX noise with the pinned r187 hash and gradient conventions.
 use super::{Node, Type, WgslFn, float, uint, vec3, vec4};
 
 /// Coordinate dimensionality. Two-dimensional noise has its own hash and
@@ -80,7 +80,7 @@ pub fn worley(position: Node, dimension: Dimension, jitter: Node, style: Node) -
     .x()
 }
 /// Three nearest Worley distances: metric 0 is Euclidean, 1 squared
-/// Euclidean (the r186 vector default), 2 Manhattan, 3 Chebyshev.
+/// Euclidean (the r187 vector default), 2 Manhattan, 3 Chebyshev.
 pub fn worley_vec3(position: Node, dimension: Dimension, jitter: Node, metric: Node) -> Node {
     noise(
         position,

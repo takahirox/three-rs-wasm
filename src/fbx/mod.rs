@@ -1,4 +1,4 @@
-//! FBXLoader ( examples/jsm/loaders/FBXLoader.js, r186 ): binary ( ≥ 6400 )
+//! FBXLoader ( examples/jsm/loaders/FBXLoader.js, r187 ): binary ( ≥ 6400 )
 //! and ASCII ( ≥ 7000 ) FBX into the loader's scene graph — groups, bones,
 //! meshes and skinned meshes with their geometry, Phong / Lambert materials
 //! and textures, NURBS curves as lines, cameras and lights — and its

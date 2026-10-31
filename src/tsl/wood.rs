@@ -1,4 +1,4 @@
-//! Procedural wood color graph from r186 WoodNodeMaterial (Three.js MIT).
+//! Procedural wood color graph from r187 WoodNodeMaterial (Three.js MIT).
 use super::materialx::{self, Dimension};
 use super::*;
 pub struct WoodNodes {
@@ -69,7 +69,7 @@ impl WoodNodes {
         .fract()
             * self.bark_thickness.clone();
         let a = saturate(rings.clone() / self.ring_bias.clone());
-        // Pinned r186 mapRange clamps max(min(value,toMax),toMin).
+        // Pinned r187 mapRange clamps max(min(value,toMax),toMin).
         // Its descending [1,0] branch therefore returns 1, not a descending ramp.
         let sharp = a;
         let blur = (view_distance.clone() / float(10.)).max(float(1.));

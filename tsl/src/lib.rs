@@ -1,4 +1,4 @@
-//! Three.js r186's node system ( `src/nodes`, the node builders of the WebGPU
+//! Three.js r187's node system ( `src/nodes`, the node builders of the WebGPU
 //! and WebGL fallback backends and `materials/nodes` ) ported to Rust.
 //!
 //! The JavaScript classes are dynamic: a node's children are its own

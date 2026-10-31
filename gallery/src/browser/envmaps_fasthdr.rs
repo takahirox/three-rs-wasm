@@ -67,7 +67,7 @@ impl Demo {
             },
             metalness,
             roughness,
-            // r186's WebGL physical shading: the DFG LUT's multiple scattering.
+            // r187's WebGL physical shading: the DFG LUT's multiple scattering.
             energy_conservation: true,
             ..Default::default()
         };

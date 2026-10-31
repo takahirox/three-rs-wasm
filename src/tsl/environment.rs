@@ -10,7 +10,7 @@ fn tsl_pmrem(map:texture_cube<f32>,s:sampler,direction:vec3<f32>,roughness:f32,m
 }"#, &[Type::TextureCube,Type::Sampler,Type::Vec3,Type::Float,Type::Float],Type::Vec3).unwrap().call(&[texture.node(),texture.sampler(),direction,roughness,max_mip])
 }
 
-/// r186 getParallaxCorrectNormal: intersect the reflected ray with a box.
+/// r187 getParallaxCorrectNormal: intersect the reflected ray with a box.
 pub fn parallax_correct(direction: Node, position: Node, size: Node, center: Node) -> Node {
     WgslFn::new("tsl_parallax_correct",r#"
 fn tsl_parallax_correct(direction:vec3<f32>,position:vec3<f32>,size:vec3<f32>,center:vec3<f32>)->vec3<f32>{
@@ -33,7 +33,7 @@ fn tsl_material_normal_world(n:vec3<f32>)->vec3<f32>{return normalize((transpose
 "#,&[Type::Vec3],Type::Vec3).unwrap().call(&[normal_view()])
 }
 
-/// r186 GroundedSkybox: intersect the camera ray with a sphere clipped by a disk.
+/// r187 GroundedSkybox: intersect the camera ray with a sphere clipped by a disk.
 pub fn ground_projected_normal(position: Node, camera: Node, radius: Node, height: Node) -> Node {
     WgslFn::new("tsl_ground_projected",r#"
 fn tsl_ground_projected(position:vec3<f32>,camera:vec3<f32>,radius:f32,height:f32)->vec3<f32>{

@@ -25,7 +25,7 @@ pub struct SurfaceNodes {
     pub output: Option<Node>,
     /// Replace/mix diffuse lighting with framebuffer RGB; W is the mix factor.
     pub backdrop: Option<Node>,
-    /// RGB transmission tint for the r186 inexpensive subsurface scattering model.
+    /// RGB transmission tint for the r187 inexpensive subsurface scattering model.
     pub thickness_color: Option<Node>,
     /// Distortion, ambient scattering, attenuation and power.
     pub thickness: Option<Node>,
@@ -474,7 +474,7 @@ pub fn blend_overlay(base: Node, blend: Node) -> Node {
 
 /// Derivative-based parallax for geometry without vertex tangents. `normal` is
 /// the material's view-space normal, while `geometry_uv` is the original UV set.
-/// Matches r186's shared normal-map context: the UV derivatives, bitangent and
+/// Matches r187's shared normal-map context: the UV derivatives, bitangent and
 /// normalization factor come from the geometric normal; the tangent's first
 /// cross product uses the mapped normal when color nodes are evaluated.
 pub fn parallax_uv_frame(coordinate: Node, scale: Node, normal: Node, geometry_uv: Node) -> Node {
@@ -485,7 +485,7 @@ fn tsl_parallax_frame(uv:vec2<f32>,scale:vec2<f32>,normal:vec3<f32>,base:vec2<f3
 }
 
 /// Derivative-scaled alpha hashing; surviving fragments retain their opacity.
-/// Supply local position after instance transforms, as in r186 NodeMaterial.
+/// Supply local position after instance transforms, as in r187 NodeMaterial.
 pub fn alpha_hash(opacity: Node, position: Node, enabled: Node) -> Node {
     WgslFn::new(
         "tsl_alpha_hash",
@@ -497,7 +497,7 @@ pub fn alpha_hash(opacity: Node, position: Node, enabled: Node) -> Node {
     .call(&[opacity, position, enabled])
 }
 
-/// Back-face hull used by r186 ToonOutlinePassNode. Draw immediately before the
+/// Back-face hull used by r187 ToonOutlinePassNode. Draw immediately before the
 /// corresponding toon mesh, sharing its geometry and transform.
 pub async fn toon_outline(
     renderer: &Renderer,

@@ -53,7 +53,7 @@ impl super::example::Example for Cube {
     }
 }
 
-/// Three.js r186 examples/webgl_geometry_cube.html, ported to WebGPU.
+/// Three.js r187 examples/webgl_geometry_cube.html, ported to WebGPU.
 async fn create(page: &mut super::Page) -> Result<()> {
     let (scene, camera, mesh) = (&mut page.scene, page.camera, page.mesh);
     let aspect = page.canvas.width() as f64 / page.canvas.height() as f64;

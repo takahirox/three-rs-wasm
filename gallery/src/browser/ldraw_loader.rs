@@ -1,4 +1,4 @@
-//! A port of three.js r186's LDrawLoader for packed LDraw files ( every
+//! A port of three.js r187's LDrawLoader for packed LDraw files ( every
 //! subfile embedded with "0 FILE" ): the line parser, !COLOUR materials and
 //! their edge and conditional-edge materials, BFC winding, the subobject
 //! hierarchy ( parts become groups, primitives merge into their part ), the

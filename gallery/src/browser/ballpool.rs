@@ -1520,7 +1520,7 @@ impl Demo {
             SPATIAL_OFFSETS[frame_id % 4],
         );
         // SSGINode: resolutionScale 1 ( the depth is loaded, not gathered ),
-        // then its r186 uniforms.
+        // then its r187 uniforms.
         write(
             &self.ssgi_object,
             SSGI_FS,

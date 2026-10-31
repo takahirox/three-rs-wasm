@@ -85,7 +85,7 @@ impl Demo {
             if let NodeKind::Mesh(m) = &mut s.get_mut(h)?.kind {
                 for material in &mut m.materials {
                     if let Material::Standard(m) = Arc::make_mut(material) {
-                        // r186's WebGL physical shading: the DFG LUT's multiple scattering.
+                        // r187's WebGL physical shading: the DFG LUT's multiple scattering.
                         m.energy_conservation = true;
                     }
                 }

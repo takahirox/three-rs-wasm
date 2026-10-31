@@ -1,4 +1,4 @@
-//! Sculptor ( three.js r186 addon, adapted from SculptGL ): the dynamic
+//! Sculptor ( three.js r187 addon, adapted from SculptGL ): the dynamic
 //! topology sculpting mesh on the CPU, as the addon keeps it — welded
 //! vertices with their vertex and face rings, an octree of faces, the
 //! subdivision and decimation passes and the brush tools — with the
@@ -2192,7 +2192,7 @@ impl View {
         ]
     }
 }
-/// Matrix4.invert ( three.js r186 ).
+/// Matrix4.invert ( three.js r187 ).
 pub(super) fn invert(te: &[f64; 16]) -> [f64; 16] {
     let (n11, n21, n31, n41) = (te[0], te[1], te[2], te[3]);
     let (n12, n22, n32, n42) = (te[4], te[5], te[6], te[7]);

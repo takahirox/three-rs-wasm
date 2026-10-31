@@ -354,7 +354,7 @@ pub struct MeshBasicMaterial {
 #[derive(Clone, Debug, Serialize)]
 pub struct MeshStandardMaterial {
     pub properties: MaterialProperties,
-    /// r186 WebGPU punctual/ambient lighting: Fresnel diffuse attenuation and
+    /// r187 WebGPU punctual/ambient lighting: Fresnel diffuse attenuation and
     /// multiple-scattering specular compensation. False retains legacy lighting.
     pub energy_conservation: bool,
     pub roughness: f64,
@@ -476,7 +476,7 @@ impl Default for ShadowMaterial {
 /// Layered PBR with independent base and extension texture maps.
 #[derive(Clone, Debug, Serialize)]
 pub struct MeshPhysicalMaterial {
-    /// Blend the direct specular lobe toward the light source (r186 retroreflection).
+    /// Blend the direct specular lobe toward the light source (r187 retroreflection).
     pub retroreflectivity: f64,
     pub base: MeshStandardMaterial,
     pub ior: f64,
