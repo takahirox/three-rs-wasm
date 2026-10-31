@@ -53,11 +53,12 @@ until every ported example matches r187 again; it is removed when done.
    lightprobes_sponza draws Sponza through the ported MeshletDrawingPipeline
    ( `gallery/src/browser/meshlet.rs` ), its draws, indirect draws and compute
    passes matching the page's frame by frame. Left:
-   - gtao's reference starts its loading frame at a timing-dependent frameId
-     ( 8 in one probe ), the port at 0.
-   - A port that switches back mid-render to an output target it replaced in
-     an earlier frame renders into an expired canvas texture ( browser.rs
-     restores targets at a frame's start and end only; fog keeps one target ).
+   - gtao follows r187's frame numbering ( the loop `render()` starts counts
+     the PMREM's frame 1; `fixtureStopLoop` ); ssgi, ssgi_ballpool and sss
+     still restart at frameId 12000 after a timing-dependent loading frame.
+   Output targets an example may present ( `Example::on_output_targets_mut` )
+   each get their texture back around every frame, so switching back
+   mid-render no longer renders into an expired canvas texture.
 
 2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
    RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
@@ -89,9 +90,9 @@ until every ported example matches r187 again; it is removed when done.
 4. **Changed addons.** Ported and on r187's oracles: USD, SVGLoader,
    IESLoader ( and IESSpotLightNode ), PLYLoader, CCDIKSolver, Octree,
    BufferGeometryUtils, the PLY / OBJ / EXR exporters, GCode, PCD, PDB, STL and
-   TGA loaders, LatheGeometry's last normal. Left: GLTFLoader's
-   KHR_materials_diffuse_roughness ( MeshPhysicalMaterial.diffuseRoughness
-   and its BRDF; r187's new webgpu_loader_gltf_diffuse_roughness ). KTX2Loader
+   TGA loaders, LatheGeometry's last normal. GLTFLoader's
+   KHR_materials_diffuse_roughness ( diffuseRoughness and BRDF_EON in the
+   engine ) with r187's new webgpu_loader_gltf_diffuse_roughness. KTX2Loader
    cube maps and the background-only PMREM came with the engine's PMREM.
 5. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
    pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
