@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -25,7 +28,7 @@ var<uniform> object : objectStruct;
 var<private> nodeVar0 : vec4<f32>;
 
 // codes
-fn beautyTexelFromScreen ( screenTexel : vec2<i32>, beautySize : vec2<f32>, resolveSize : vec2<f32> ) -> vec2<i32> {
+fn fn140 ( screenTexel : vec2<i32>, beautySize : vec2<f32>, resolveSize : vec2<f32> ) -> vec2<i32> {
 
 	
 
@@ -43,7 +46,7 @@ fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 	// flow
 	// code
 
-	nodeVar0 = textureLoad( nodeUniform0, beautyTexelFromScreen( vec2<i32>( floor( ( fragCoord.xy - vec2<f32>( 0.5 ) ) ) ), vec2<f32>( textureDimensions( nodeUniform0, 0 ) ), object.nodeUniform1 ), u32( 0u ) );
+	nodeVar0 = textureLoad( nodeUniform0, fn140( vec2<i32>( floor( ( fragCoord.xy - vec2<f32>( 0.5 ) ) ) ), vec2<f32>( textureDimensions( nodeUniform0, 0 ) ), object.nodeUniform1 ), u32( 0u ) );
 
 	// result
 

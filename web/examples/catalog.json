@@ -26115,7 +26115,7 @@
         "source": "gallery/src/browser/ssr_denoise.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "dungeon_warkarmaのダンジョン（粗さ0.3、法線マップなし）をSunLightの2段カスケードの影とquarryのHDR環境の下で描き、確率的なSSRNodeの反射をTemporalReprojectNodeで再投影してRecurrentDenoiseNodeでノイズ除去し（その結果を次フレームのSSRの履歴にする）、シーン色に足してAgX・コントラスト・彩度・ガンマで調整し、TRAAとシャープ化で仕上げる構成をRustで再現。毎フレーム、TRAAのHaltonジッタを全パスのカメラに掛け、カスケードの影、シーンのMRT（色・法線と粗さ・速度・拡散色と金属度）、SSR、再投影（最初のフレームは履歴を入力で初期化）、ノイズ除去、合成と調整、TRAA、シャープ化、出力の順に描き、深度・法線・解決結果の履歴をノードと同じくコピーする。視錐台カリングとr186の不透明物の順序（境界球中心のクリップ空間z）はカメラとカスケードごと。各段はページからthree.js r186が生成するWGSL（ssr_denoise/）を実行する。出力モードの切り替え、step exponent、binary refine（シェーダーの再構築）は再現せず、ギャラリーにも置かない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「output」・「step exponent」・「binary refine」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
+          "dungeon_warkarmaのダンジョン（粗さ0.3、法線マップなし）をDirectionalLightの4096²の影（ページと同じく一度だけ描き、ライトを動かしたときに描き直す）とquarryのHDR環境（PMREMはfromEquirectangular、pmrem.rs）の下で描き、確率的なSSRNodeの反射をTemporalReprojectNodeで再投影してRecurrentDenoiseNodeでノイズ除去し（その結果を次フレームのSSRの履歴にする）、シーン色に足してAgX・コントラスト・彩度・ガンマで調整し、TRAAとシャープ化で仕上げる構成をRustで再現。毎フレーム、TRAAのHaltonジッタを全パスのカメラに掛け、（必要なときに）影、シーンのMRT（色・法線と粗さ・速度・拡散色と金属度）、SSR、再投影（最初のフレームは履歴を入力で初期化）、ノイズ除去、合成と調整、TRAA、シャープ化、出力の順に描き、深度・法線・解決結果の履歴をノードと同じくコピーする。視錐台カリングと不透明物の順序（境界球中心のクリップ空間z）はカメラごと。各段はページからthree.js r187が生成するWGSL（ssr_denoise/、PMREMはpmrem/）を実行する。出力モードの切り替え、step exponent、binary refine（シェーダーの再構築）は再現せず、ギャラリーにも置かない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「output」・「step exponent」・「binary refine」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

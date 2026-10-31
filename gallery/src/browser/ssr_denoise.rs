@@ -1,31 +1,32 @@
 //! webgpu_postprocessing_ssr_denoise: the dungeon_warkarma scene ( roughness
-//! 0.3 throughout, no normal maps ) under the SunLight addon's two fitted
-//! cascades and the quarry HDR environment, with stochastic SSRNode
+//! 0.3 throughout, no normal maps ) under a DirectionalLight with a 4096²
+//! shadow ( rendered once, and again when the light moves, as the page's
+//! shadow.autoUpdate = false and needsUpdate do ) and the quarry HDR
+//! environment ( its r187 PMREM, pmrem.rs ), with stochastic SSRNode
 //! reflections reprojected by TemporalReprojectNode and filtered by
 //! RecurrentDenoiseNode, whose output feeds back as SSR's history; the
 //! reflections are added to the scene color, graded ( AgX, contrast,
 //! saturation, gamma ), resolved by TRAA and sharpened. TRAA jitters the
 //! camera for the whole pipeline frame by the Halton sequence; the velocity
-//! uses the unjittered projection. Each frame, as r186 orders the passes:
-//! the cascades' shadow atlas, the scene MRT ( color, packed normal,
+//! uses the unjittered projection. Each frame, as r187 orders the passes:
+//! the shadow map when it needs an update, the scene MRT ( color, packed normal,
 //! velocity, diffuse color with metalness ), SSR, its copy, the temporal
 //! reprojection ( seeding its history on the first frame ), the denoise, the
 //! graded sum, TRAA ( its history copied from the input on the first frame ),
 //! the copy the sharpening reads, the sharpening and the output. The
 //! histories copy the depth, normal and resolve after their passes, as the
-//! nodes do. Frustum culling and r186's opaque order ( clip-space z of each
-//! geometry's bounding sphere center ) are per camera and per cascade. Every
-//! stage runs the WGSL three.js r186 generates for the page ( in
+//! nodes do. Frustum culling and the opaque order ( clip-space z of each
+//! geometry's bounding sphere center ) are per camera. Every
+//! stage runs the WGSL three.js r187 generates for the page ( in
 //! `ssr_denoise/`; the shadow modules are the fog_volume ones, TRAA the
 //! volume_traa ones and the blit vertex module the volume_caustics one, all
 //! byte-identical ). The output modes, the step exponent and the binary
 //! refinement ( build-time variants ) are not reproduced.
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::render_cube;
-use super::fog_volume::{Cascade, cascades_sized};
 use super::gltf_viewer::{fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind, flat_camera, source_pipeline};
+use super::pmrem::{Pmrem, from_equirect};
 use super::retro::{mipmapped, mipmapped_raw, uniform};
 use super::shadowmap_opacity::Mipmaps;
 use super::trackball_sprites::parse_rgbe;
@@ -38,9 +39,14 @@ use wgpu::util::DeviceExt;
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-/// SunLight: the shadow map per cascade and the light.
+/// The light's shadow.mapSize and position ( it shines towards its target
+/// at the origin ).
 const MAP: u32 = 4096;
 const SUN: [f64; 3] = [-10.9, 2.2, 10.75];
+/// The shadow camera: OrthographicCamera( -1.75, 1.75, 1.75, -1.75, 0.1, 50 ).
+const SHADOW_CAMERA: (f64, f64, f64) = (1.75, 0.1, 50.);
+/// The light's shadow.bias.
+const SHADOW_BIAS: f64 = -0.0005;
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("ssr_denoise/", $name, ".wgsl"))
@@ -173,8 +179,10 @@ pub(super) struct Demo {
     shadow_color: wgpu::TextureView,
     shadow_depth: wgpu::TextureView,
     shadow_pipelines: [wgpu::RenderPipeline; 2],
-    shadow_groups: Vec<[Vec<wgpu::BindGroup>; 2]>,
-    shadow_renders: [wgpu::Buffer; 2],
+    shadow_groups: Vec<Vec<wgpu::BindGroup>>,
+    shadow_render: wgpu::Buffer,
+    /// The light position the shadow map was last rendered for.
+    shadow_light: Option<[f64; 3]>,
     model_render: wgpu::Buffer,
     single_render: wgpu::Buffer,
     background_render: wgpu::Buffer,
@@ -189,6 +197,8 @@ pub(super) struct Demo {
     clamp: wgpu::Sampler,
     repeat: wgpu::Sampler,
     env_sampler: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
@@ -395,51 +405,8 @@ impl Demo {
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        let pmrem = Pmrem::new(r, &clamp, 8, GGX_8)?;
-        {
-            let source = source_pipeline(
-                r,
-                "dungeon PMREM equirect",
-                include_str!("retro/pmrem_equirect_vs.wgsl"),
-                include_str!("retro/pmrem_equirect_fs.wgsl"),
-            );
-            let object = init(
-                "dungeon PMREM",
-                &pack(
-                    include_str!("retro/pmrem_equirect_vs.wgsl"),
-                    "objectStruct",
-                    &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
-                )?,
-                wgpu::BufferUsages::UNIFORM,
-            );
-            let source_groups = [
-                bind(
-                    r,
-                    source.get_bind_group_layout(0),
-                    &[(
-                        0,
-                        flat_camera(r, include_str!("retro/pmrem_equirect_vs.wgsl"))?
-                            .as_entire_binding(),
-                    )],
-                ),
-                bind(
-                    r,
-                    source.get_bind_group_layout(1),
-                    &[
-                        (0, wgpu::BindingResource::Sampler(&clamp)),
-                        (1, wgpu::BindingResource::TextureView(&equirect)),
-                        (2, object.as_entire_binding()),
-                    ],
-                ),
-            ];
-            let mut encoder = r.device.create_command_encoder(&Default::default());
-            pmrem.encode(
-                &mut encoder,
-                &source,
-                [&source_groups[0], &source_groups[1]],
-            );
-            r.queue.submit([encoder.finish()]);
-        }
+        // scene.environment = hdrTexture: PMREMNode's fromEquirectangular.
+        let pmrem = from_equirect(r, &equirect, width)?;
         let cube = render_cube(r, &clamp, &equirect, height)?;
         let sphere = SphereGeometry::build(1., 32, 32)?;
         let read = |name: &str| -> Result<Vec<f32>> {
@@ -449,7 +416,7 @@ impl Demo {
             }
         };
         let sphere_index = sphere.index.clone().ok_or(Error::Invalid("sphere index"))?;
-        let shadow_size = (MAP * 2, MAP);
+        let shadow_size = (MAP, MAP);
         let shadow_color = texture(r, "sun shadow color", shadow_size, BYTE).view;
         let shadow_depth = texture(r, "sun shadow depth", shadow_size, DEPTH).view;
         let p0 = [wgpu::VertexAttribute {
@@ -471,27 +438,20 @@ impl Demo {
             }
             .build(r)
         });
-        let shadow_renders = [
-            uniform(r, "cascade render", SHADOW.0, "renderStruct")?,
-            uniform(r, "cascade render", SHADOW.0, "renderStruct")?,
-        ];
+        let shadow_render = uniform(r, "shadow render", SHADOW.0, "renderStruct")?;
         let mut shadow_groups = vec![];
         for m in &meshes {
             let p = &shadow_pipelines[usize::from(!m.double_sided)];
-            let per_cascade = [0, 1].map(|k| {
-                groups(
-                    r,
-                    |g| p.get_bind_group_layout(g),
-                    &[SHADOW.0, SHADOW.1],
-                    |name| match name {
-                        "render" => Some(shadow_renders[k].as_entire_binding()),
-                        "object" => Some(m.shadow_object.as_entire_binding()),
-                        _ => None,
-                    },
-                )
-            });
-            let [a, b] = per_cascade;
-            shadow_groups.push([a?, b?]);
+            shadow_groups.push(groups(
+                r,
+                |g| p.get_bind_group_layout(g),
+                &[SHADOW.0, SHADOW.1],
+                |name| match name {
+                    "render" => Some(shadow_render.as_entire_binding()),
+                    "object" => Some(m.shadow_object.as_entire_binding()),
+                    _ => None,
+                },
+            )?);
         }
         let repeat = r.device.create_sampler(&wgpu::SamplerDescriptor {
             address_mode_u: wgpu::AddressMode::Repeat,
@@ -508,6 +468,12 @@ impl Demo {
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
+        let trilinear = r.device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
         let compare = r.device.create_sampler(&wgpu::SamplerDescriptor {
             mag_filter: wgpu::FilterMode::Linear,
             min_filter: wgpu::FilterMode::Linear,
@@ -517,7 +483,7 @@ impl Demo {
         // The page's environmentIntensity is 3.14, not π.
         #[allow(clippy::approx_constant)]
         let params = [
-            0., 0.25, 0.5, 3., 0., 0.4, 1., 0.1, 3.14, 0.3, 1., 0.75, 20., 0.3, 5., 1.5, 0.725,
+            0., 0.25, 0., 3., 0., 0.4, 1., 0.1, 3.14, 0.3, 1., 0.75, 20., 0.3, 5., 1.5, 0.725,
             0.5, 16., 0.25, 1., 1., SUN[0], SUN[1], SUN[2], 20.,
         ];
         Ok(Self {
@@ -561,7 +527,8 @@ impl Demo {
             shadow_depth,
             shadow_pipelines,
             shadow_groups,
-            shadow_renders,
+            shadow_render,
+            shadow_light: None,
             model_render: uniform(r, "dungeon render", MODEL.1, "renderStruct")?,
             single_render: uniform(r, "dungeon render", SINGLE.1, "renderStruct")?,
             background_render: uniform(r, "background", BACKGROUND.1, "renderStruct")?,
@@ -576,6 +543,7 @@ impl Demo {
             clamp,
             repeat,
             env_sampler,
+            trilinear,
             compare,
             targets: None,
         })
@@ -739,7 +707,8 @@ impl Demo {
                 "nodeUniform13" => Some(tex(&r.dfg)),
                 "nodeUniform22" => Some(tex(&self.shadow_depth)),
                 "nodeUniform22_sampler" => Some(sampler(&self.compare)),
-                "nodeUniform36" => Some(tex(&self.pmrem.view)),
+                "nodeUniform26" => Some(tex(&self.pmrem.view)),
+                "nodeUniform26_sampler" => Some(sampler(&self.trilinear)),
                 _ => Some(sampler(&self.clamp)),
             })?);
         }
@@ -774,8 +743,8 @@ impl Demo {
         let [color, normal, velocity, diffuse] = &mrt;
         let ssr_draw = draw(r, fullscreen("ssr", SSR, HALF), SSR, |name| match name {
             "object" => Some(self.ssr_object.as_entire_binding()),
-            "nodeUniform0" => Some(tex(&depth.view)),
-            "nodeUniform3" => Some(tex(&normal.view)),
+            "nodeUniform2" => Some(tex(&depth.view)),
+            "nodeUniform5" => Some(tex(&normal.view)),
             "nodeUniform7" => Some(tex(&diffuse.view)),
             "nodeUniform14" => Some(tex(&color.view)),
             "nodeUniform15" => Some(tex(&denoise.view)),
@@ -815,10 +784,10 @@ impl Demo {
                     "nodeUniform0" => Some(tex(&depth.view)),
                     "nodeUniform1" => Some(tex(&ssr_copy.view)),
                     "nodeUniform3" => Some(tex(&normal.view)),
-                    "nodeUniform7" => Some(tex(&velocity.view)),
-                    "nodeUniform10" => Some(tex(&reproject_depth.view)),
-                    "nodeUniform12" => Some(tex(history)),
-                    "nodeUniform14" => Some(tex(&previous_normal.view)),
+                    "nodeUniform8" => Some(tex(&velocity.view)),
+                    "nodeUniform11" => Some(tex(&reproject_depth.view)),
+                    "nodeUniform13" => Some(tex(history)),
+                    "nodeUniform15" => Some(tex(&previous_normal.view)),
                     _ => Some(sampler(&self.clamp)),
                 },
             )?);
@@ -831,11 +800,11 @@ impl Demo {
             DENOISE,
             |name| match name {
                 "object" => Some(self.denoise_object.as_entire_binding()),
-                "nodeUniform1" => Some(tex(&ssr.view)),
-                "nodeUniform3" => Some(tex(&depth.view)),
-                "nodeUniform4" => Some(tex(&normal.view)),
-                "nodeUniform6" => Some(tex(&reproject.view)),
-                "nodeUniform8" => Some(tex(&diffuse.view)),
+                "nodeUniform0" => Some(tex(&depth.view)),
+                "nodeUniform1" => Some(tex(&normal.view)),
+                "nodeUniform3" => Some(tex(&reproject.view)),
+                "nodeUniform5" => Some(tex(&diffuse.view)),
+                "nodeUniform8" => Some(tex(&ssr.view)),
                 _ => Some(sampler(&self.clamp)),
             },
         )?;
@@ -998,57 +967,68 @@ impl Demo {
                 .write_buffer(buffer, 0, &pack(source, name, &values)?);
             Ok(())
         };
-        // SunLight's cascades, fitted with the jittered camera.
+        // The light's shadow camera looks from the light at its target; the
+        // map is rendered again only when the light has moved ( the page's
+        // GUI sets shadow.needsUpdate ).
         let light = Vector3::new(p[22], p[23], p[24]);
-        let fitted: [Cascade; 2] = cascades_sized(light, world, jittered, (near, far, 50.), MAP);
-        for (k, cascade) in fitted.iter().enumerate() {
+        let (half, shadow_near, shadow_far) = SHADOW_CAMERA;
+        let shadow_projection = Matrix4::from_cols_array(&[
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            -1. / (shadow_far - shadow_near),
+            0.,
+            0.,
+            0.,
+            -shadow_near / (shadow_far - shadow_near),
+            1.,
+        ]);
+        let shadow_view = Matrix4::look_at_rh(light, Vector3::ZERO, Vector3::Y);
+        let bias = Matrix4::from_cols_array(&[
+            0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
+        ]);
+        let shadow_update = self.shadow_light != Some(light.to_array());
+        if shadow_update {
+            self.shadow_light = Some(light.to_array());
             write(
-                &self.shadow_renders[k],
+                &self.shadow_render,
                 SHADOW.0,
                 "renderStruct",
                 &[
-                    ("cameraViewMatrix", m4(cascade.view)),
-                    ("cameraProjectionMatrix", m4(cascade.projection)),
+                    ("cameraViewMatrix", m4(shadow_view)),
+                    ("cameraProjectionMatrix", m4(shadow_projection)),
                 ],
             )?;
         }
-        let camera_values = |single: bool| {
-            let mut v = vec![
-                ("nodeUniform40", m4(previous.projection)),
-                ("cameraProjectionMatrix", m4(jittered)),
-                ("cameraViewMatrix", m4(view)),
-                ("nodeUniform17", vec![p[25]; 3]),
-                ("nodeUniform16", light.to_array().to_vec()),
-                ("nodeUniform20", m4(fitted[1].matrix)),
-                ("nodeUniform19", fitted[1].data.to_vec()),
-                ("nodeUniform26", m4(fitted[0].matrix)),
-                ("nodeUniform25", fitted[0].data.to_vec()),
-                ("nodeUniform18", vec![0.0015]),
-                ("nodeUniform21", vec![0.]),
-                ("nodeUniform23", vec![1.]),
-                ("nodeUniform24", vec![f64::from(MAP * 2), f64::from(MAP)]),
-                ("nodeUniform27", vec![0.]),
-                ("nodeUniform28", vec![1.]),
-                ("nodeUniform29", vec![f64::from(MAP * 2), f64::from(MAP)]),
-                ("nodeUniform30", vec![1.]),
-                ("cameraWorldMatrix", m4(world)),
-            ];
-            let _ = single;
-            v.sort_by_key(|_| 0);
-            v
-        };
-        write(
-            &self.model_render,
-            MODEL.1,
-            "renderStruct",
-            &camera_values(false),
-        )?;
-        write(
-            &self.single_render,
-            SINGLE.1,
-            "renderStruct",
-            &camera_values(true),
-        )?;
+        // The velocity's current and previous projections and previous view,
+        // the light's colour, position and target, and its shadow's matrix,
+        // normal bias, bias, radius, map size and intensity.
+        let camera_values = vec![
+            ("nodeUniform31", m4(projection)),
+            ("nodeUniform33", m4(previous.projection)),
+            ("nodeUniform34", m4(previous.view)),
+            ("cameraProjectionMatrix", m4(jittered)),
+            ("cameraViewMatrix", m4(view)),
+            ("nodeUniform18", vec![p[25]; 3]),
+            ("nodeUniform16", light.to_array().to_vec()),
+            ("nodeUniform17", vec![0.; 3]),
+            ("nodeUniform19", m4(bias * shadow_projection * shadow_view)),
+            ("nodeUniform20", vec![0.]),
+            ("nodeUniform21", vec![SHADOW_BIAS]),
+            ("nodeUniform23", vec![1.]),
+            ("nodeUniform24", vec![f64::from(MAP); 2]),
+            ("nodeUniform25", vec![1.]),
+            ("cameraWorldMatrix", m4(world)),
+        ];
+        write(&self.model_render, MODEL.1, "renderStruct", &camera_values)?;
+        write(&self.single_render, SINGLE.1, "renderStruct", &camera_values)?;
         for m in &self.meshes {
             let material = &self.materials[m.material];
             write(
@@ -1068,15 +1048,13 @@ impl Demo {
                     ("nodeUniform11", material.emissive.to_vec()),
                     ("nodeUniform12", vec![1.]),
                     ("nodeUniform14", m4(m.world)),
-                    ("nodeUniform31", vec![8.]),
-                    ("nodeUniform32", identity.clone()),
-                    ("nodeUniform34", vec![1. / 768.]),
-                    ("nodeUniform35", vec![1. / 1024.]),
-                    ("nodeUniform37", vec![1.]),
-                    ("nodeUniform38", m4(projection)),
-                    ("nodeUniform39", m4(m.world)),
-                    ("nodeUniform41", m4(previous.view)),
-                    ("nodeUniform42", m4(m.world)),
+                    // The environment's rotation, maxLod and intensity, then
+                    // the model and previous model matrices.
+                    ("nodeUniform27", identity.clone()),
+                    ("nodeUniform29", vec![f64::from(self.pmrem.max_lod)]),
+                    ("nodeUniform30", vec![1.]),
+                    ("nodeUniform32", m4(m.world)),
+                    ("nodeUniform35", m4(m.world)),
                 ],
             )?;
             write(
@@ -1091,10 +1069,12 @@ impl Demo {
             BACKGROUND.1,
             "renderStruct",
             &[
-                ("nodeUniform5", vec![0.]),
-                ("nodeUniform6", vec![1.]),
-                ("nodeUniform2", identity.clone()),
-                ("nodeUniform12", m4(previous.projection)),
+                ("nodeUniform4", vec![0.]),
+                ("nodeUniform5", vec![1.]),
+                ("nodeUniform1", identity.clone()),
+                ("nodeUniform8", m4(projection)),
+                ("nodeUniform11", m4(previous.projection)),
+                ("nodeUniform12", m4(previous.view)),
                 ("cameraProjectionMatrix", m4(jittered)),
                 ("cameraViewMatrix", m4(view)),
             ],
@@ -1104,16 +1084,13 @@ impl Demo {
             BACKGROUND.1,
             "objectStruct",
             &[
-                ("nodeUniform1", identity.clone()),
-                ("nodeUniform4", id3.clone()),
-                ("nodeUniform7", vec![1.]),
-                ("nodeUniform8", vec![f64::NAN]),
-                ("nodeUniform9", m4(projection)),
-                ("nodeUniform11", identity.clone()),
-                ("nodeUniform13", m4(previous.view)),
-                ("nodeUniform14", identity.clone()),
-                ("nodeUniform15", vec![f64::NAN]),
-                ("nodeUniform17", identity.clone()),
+                ("nodeUniform3", id3.clone()),
+                ("nodeUniform6", vec![1.]),
+                ("nodeUniform7", vec![f64::NAN]),
+                ("nodeUniform10", identity.clone()),
+                ("nodeUniform13", identity.clone()),
+                ("nodeUniform14", vec![f64::NAN]),
+                ("nodeUniform16", identity.clone()),
             ],
         )?;
         write(
@@ -1121,10 +1098,10 @@ impl Demo {
             SSR.1,
             "objectStruct",
             &[
-                ("nodeUniform1", m4(jittered.inverse())),
-                ("nodeUniform2", m4(world)),
-                ("nodeUniform4", vec![w, h]),
-                ("nodeUniform5", vec![self.frame as f64]),
+                ("nodeUniform0", vec![w, h]),
+                ("nodeUniform1", vec![self.frame as f64]),
+                ("nodeUniform3", m4(jittered.inverse())),
+                ("nodeUniform4", m4(world)),
                 ("nodeUniform6", vec![p[2]]),
                 ("nodeUniform8", vec![p[5]]),
                 ("nodeUniform9", vec![near]),
@@ -1145,50 +1122,43 @@ impl Demo {
             "objectStruct",
             &[("nodeUniform1", vec![w, h])],
         )?;
-        let mut reproject = vec![
-            ("nodeUniform2", vec![w, h]),
-            ("nodeUniform4", m4(view)),
-            ("nodeUniform5", m4(jittered.inverse())),
-            ("nodeUniform6", m4(world)),
-            ("nodeUniform8", m4(previous.world)),
-            ("nodeUniform9", m4(previous.jittered.inverse())),
-            ("nodeUniform16", m4(previous.view)),
-            ("nodeUniform26", world.w_axis.truncate().to_array().to_vec()),
-            ("nodeUniform27", vec![p[20]]),
-            ("nodeUniform28", m4(previous.jittered)),
-            ("nodeUniform41", vec![p[21]]),
-            ("nodeUniform42", vec![p[19]]),
-            ("nodeUniform43", vec![p[18]]),
-        ];
-        let names: Vec<String> = [11, 13, 15]
-            .into_iter()
-            .chain(17..=25)
-            .chain(29..=40)
-            .map(|i| format!("nodeUniform{i}"))
-            .collect();
-        for n in &names {
-            reproject.push((n.as_str(), id3.clone()));
-        }
         write(
             &self.reproject_object,
             REPROJECT.1,
             "objectStruct",
-            &reproject,
+            &[
+                ("nodeUniform2", vec![w, h]),
+                ("nodeUniform4", vec![p[20]]),
+                ("nodeUniform5", m4(view)),
+                ("nodeUniform6", m4(jittered.inverse())),
+                ("nodeUniform7", m4(world)),
+                ("nodeUniform9", m4(previous.world)),
+                ("nodeUniform10", m4(previous.jittered.inverse())),
+                ("nodeUniform12", id3.clone()),
+                ("nodeUniform14", id3.clone()),
+                ("nodeUniform16", id3.clone()),
+                ("nodeUniform17", m4(previous.view)),
+                ("nodeUniform18", world.w_axis.truncate().to_array().to_vec()),
+                ("nodeUniform19", m4(previous.jittered)),
+                ("nodeUniform20", vec![p[21]]),
+                ("nodeUniform21", vec![p[19]]),
+                ("nodeUniform22", vec![p[18]]),
+            ],
         )?;
         write(
             &self.denoise_object,
             DENOISE.1,
             "objectStruct",
             &[
-                ("nodeUniform0", vec![1.]),
-                ("nodeUniform2", vec![w, h]),
-                ("nodeUniform5", m4(view)),
-                ("nodeUniform7", m4(jittered.inverse())),
-                ("nodeUniform9", vec![fov.to_radians()]),
-                ("nodeUniform10", vec![if p[10] > 0.5 { p[15] } else { 0. }]),
-                ("nodeUniform11", vec![p[16]]),
-                ("nodeUniform12", vec![p[13]]),
-                ("nodeUniform13", vec![self.frame as f64]),
+                ("nodeUniform2", m4(view)),
+                ("nodeUniform4", m4(jittered.inverse())),
+                ("nodeUniform6", vec![w, h]),
+                ("nodeUniform7", vec![self.frame as f64]),
+                ("nodeUniform9", vec![1.]),
+                ("nodeUniform10", vec![fov.to_radians()]),
+                ("nodeUniform11", vec![if p[10] > 0.5 { p[15] } else { 0. }]),
+                ("nodeUniform12", vec![p[16]]),
+                ("nodeUniform13", vec![p[13]]),
                 ("nodeUniform14", vec![p[17]]),
                 ("nodeUniform15", m4(jittered)),
                 ("nodeUniform16", vec![p[11]]),
@@ -1249,43 +1219,33 @@ impl Demo {
             items.into_iter().map(|(_, k)| k).collect()
         };
         let mut encoder = r.device.create_command_encoder(&Default::default());
-        // The cascades into the shadow atlas.
-        for (k, cascade) in fitted.iter().enumerate() {
+        // The shadow map, when it needs an update.
+        if shadow_update {
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("sun cascade"),
+                label: Some("light shadow"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
                     view: &self.shadow_color,
                     depth_slice: None,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: if k == 0 {
-                            wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
                         store: wgpu::StoreOp::Store,
                     },
                 })],
                 depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
                     view: &self.shadow_depth,
                     depth_ops: Some(wgpu::Operations {
-                        load: if k == 0 {
-                            wgpu::LoadOp::Clear(1.)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(1.),
                         store: wgpu::StoreOp::Store,
                     }),
                     stencil_ops: None,
                 }),
                 ..Default::default()
             });
-            let [x, y, vw, vh] = cascade.viewport;
-            pass.set_viewport(x, y, vw, vh, 0., 1.);
-            for i in order(cascade.projection * cascade.view) {
+            for i in order(shadow_projection * shadow_view) {
                 let m = &self.meshes[i];
                 pass.set_pipeline(&self.shadow_pipelines[usize::from(!m.double_sided)]);
-                for (g, group) in self.shadow_groups[i][k].iter().enumerate() {
+                for (g, group) in self.shadow_groups[i].iter().enumerate() {
                     pass.set_bind_group(g as u32, group, &[]);
                 }
                 pass.set_vertex_buffer(0, m.vertex.slice(..));
