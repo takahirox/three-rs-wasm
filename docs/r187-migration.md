@@ -41,22 +41,18 @@ until every ported example matches r187 again; it is removed when done.
    retargeting_readyplayer, gaussian_splat, ssgi, volume_traa,
    volume_rectarea, lights_projector, instancing_morph, shadowmap_opacity,
    lights_dynamic, shadowmap_vsm, shadowmap_csm, backdrop_water,
-   fog_scattering. Left:
-   - In progress: generator_city, deferred, compute_cloth, fluid, gtao, ssr,
-     ssr_denoise, skinning_instances.
-   - webgpu_lightprobes ( r187 rewrote LightProbeGrid's bake; `lightprobes.rs`
-     is shared with lightprobes_complex/rooms.rs ).
-   - retro: the default helmet and its PMREM are r186; state 16 fails at
-     0.066 / 1.25 on r187's page ( the same before the move ).
+   fog_scattering, deferred, compute_cloth, fluid, generator_city,
+   lightprobes ( its bake shared with lightprobes_complex ), retro. Left:
+   - In progress: gtao, ssr, ssr_denoise, skinning_instances.
    - ballpool: r187's page runs RapierPhysics ( rapier.js 0.21.0 = rapier
      0.36.0 ), the engine is pinned at 0.26.1; state 0 differs in shadows too.
-   - `volume_fire/blur_h_fs.wgsl` holds the vertical blur ( the rebase took
-     the closest of two near-identical modules ); other H/V pairs may too.
    - fog's residency check ( creates 153 → 157, `src/draw_gpu.rs` ) fails on
      r187's tip already; the workload test fails for ballpool, geometry_loft,
      generator_building, ssr_denoise and skinning_instancing_individual.
-   - Hard-coded Object3D ids: r187 creates fewer objects before page content
-     ( backdrop_water's first ice id 19 → 16 ); recheck ports that use them.
+   - retro and cubemap_dynamic start single-sampled although their pages
+     antialias ( compute_cloth and fluid had the same bug, now fixed ).
+   - The workload test ( compute-examples.spec.js ) times out at 180 s before
+     it reaches every example.
    - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
      moved to cube targets too ).
 2. **Rapier.** r187's RapierPhysics loads rapier.js 0.21.0 ( rapier 0.36.0 )
