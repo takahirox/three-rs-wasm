@@ -48,6 +48,13 @@ pub(super) trait Example {
     fn on_output_target_mut(&mut self) -> Option<Option<&mut crate::renderer::RenderTarget>> {
         None
     }
+    /// Every target the example may make its output target, the current one
+    /// included ( fog's resolution scales each keep theirs ): the gallery
+    /// gives each its own color texture back after a frame, since a render
+    /// may switch to one the canvas aliased in an earlier frame.
+    fn on_output_targets_mut(&mut self) -> Vec<&mut crate::renderer::RenderTarget> {
+        self.on_output_target_mut().flatten().into_iter().collect()
+    }
     fn on_prepare(
         &mut self,
         renderer: &crate::renderer::Renderer,
