@@ -101,8 +101,8 @@ fn main( @builtin( vertex_index ) vertexIndex : u32,
 		if ( ( nodeVar0 != 0.0 ) ) {
 
 			let nodeConst0 = ( ( i32( vertexIndex ) * 1 ) + 0 );
-			let nodeConst1 = ( nodeConst0 / 120 );
-			let nodeConst2 = vec2<i32>( ( nodeConst0 - ( nodeConst1 * 120 ) ), nodeConst1 );
+			let nodeConst1 = ( nodeConst0 / 84 );
+			let nodeConst2 = vec2<i32>( ( nodeConst0 - ( nodeConst1 * 84 ) ), nodeConst1 );
 			nodeVar2 = textureLoad( nodeUniform2, nodeConst2, i, u32( 0u ) );
 			positionLocal = ( positionLocal + ( nodeVar2 * vec4<f32>( nodeVar0 ) ).xyz );
 			
