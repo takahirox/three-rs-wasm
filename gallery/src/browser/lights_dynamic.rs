@@ -5,7 +5,7 @@
 //! uniform arrays of at most 16 (the rest are ignored, as in the addon) so
 //! adding lights never recompiles; the materials loop over the arrays. The
 //! scene pass (multisampled, front-to-back with frustum culling) is followed
-//! by the sRGB output pass. Every stage runs the WGSL three.js r186 generates
+//! by the sRGB output pass. Every stage runs the WGSL three.js r187 generates
 //! for the page (in `lights_dynamic/`).
 use super::controls_attributes::{Controls, camera_state};
 use crate::{
@@ -660,11 +660,13 @@ impl Demo {
             r.queue.write_buffer(buffer, 0, bytemuck::cast_slice(data));
         }
         let ambient = Color::from_hex(0x404040).0.to_array().map(|v| v * 0.5);
+        // r187's render struct: the ambient light and the light count, then
+        // the camera matrices.
         Layout::new(144)
-            .m4(0, projection)
-            .m4(64, view)
-            .v3(128, ambient)
-            .i(140, count as i32)
+            .v3(0, ambient)
+            .i(12, count as i32)
+            .m4(16, projection)
+            .m4(80, view)
             .write(r, &self.render_uniforms);
         // Visible objects, sorted front to back (then in creation order).
         let mut draws = vec![];

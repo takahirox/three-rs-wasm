@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -12,37 +16,37 @@ var<private> output : OutputStruct;
 
 // uniforms
 
-struct NodeBuffer_1163Struct {
+struct nodeUniform6Struct {
 	value : array< vec4<f32>, MAX_LIGHTS >
 };
 @binding( 1 ) @group( 0 )
-var<uniform> NodeBuffer_1163 : NodeBuffer_1163Struct;
+var<uniform> nodeUniform6 : nodeUniform6Struct;
 
-struct NodeBuffer_1162Struct {
+struct nodeUniform7Struct {
 	value : array< vec4<f32>, MAX_LIGHTS >
 };
 @binding( 2 ) @group( 0 )
-var<uniform> NodeBuffer_1162 : NodeBuffer_1162Struct;
+var<uniform> nodeUniform7 : nodeUniform7Struct;
 
-struct NodeBuffer_1164Struct {
+struct nodeUniform8Struct {
 	value : array< vec4<f32>, MAX_LIGHTS >
 };
 @binding( 3 ) @group( 0 )
-var<uniform> NodeBuffer_1164 : NodeBuffer_1164Struct;
+var<uniform> nodeUniform8 : nodeUniform8Struct;
 
 struct objectStruct {
 	nodeUniform0 : vec3<f32>,
 	nodeUniform1 : f32,
-	nodeUniform6 : mat4x4<f32>
+	nodeUniform4 : mat4x4<f32>
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
 
 struct renderStruct {
-	cameraProjectionMatrix : mat4x4<f32>,
-	cameraViewMatrix : mat4x4<f32>,
 	nodeUniform2 : vec3<f32>,
-	nodeUniform3 : i32
+	nodeUniform5 : i32,
+	cameraProjectionMatrix : mat4x4<f32>,
+	cameraViewMatrix : mat4x4<f32>
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -51,35 +55,47 @@ var<uniform> render : renderStruct;
 var<private> DiffuseColor : vec4<f32>;
 var<private> Output : vec4<f32>;
 var<private> irradiance : vec3<f32>;
-var<private> nodeVar0 : vec3<f32>;
 var<private> dynPointDiffuse : vec3<f32>;
 var<private> dynPointSpecular : vec3<f32>;
 var<private> nodeVar1 : vec3<f32>;
 var<private> nodeVar2 : vec3<f32>;
-var<private> nodeVar3 : f32;
-var<private> nodeVar4 : f32;
-var<private> nodeVar5 : f32;
-var<private> nodeVar6 : f32;
-var<private> nodeVar7 : vec3<f32>;
+var<private> nodeVar3 : vec3<f32>;
 var<private> directDiffuse : vec3<f32>;
-var<private> nodeVar8 : vec3<f32>;
 var<private> directSpecular : vec3<f32>;
-var<private> nodeVar9 : vec3<f32>;
 var<private> indirectDiffuse : vec3<f32>;
-var<private> nodeVar10 : vec4<f32>;
 var<private> ambientOcclusion : f32;
-var<private> nodeVar11 : vec3<f32>;
-var<private> nodeVar12 : vec3<f32>;
 var<private> totalDiffuse : vec3<f32>;
-var<private> nodeVar13 : vec3<f32>;
 var<private> totalSpecular : vec3<f32>;
 var<private> indirectSpecular : vec3<f32>;
-var<private> nodeVar14 : vec3<f32>;
 var<private> outgoingLight : vec3<f32>;
-var<private> nodeVar15 : vec3<f32>;
-var<private> nodeVar16 : vec4<f32>;
 
 // codes
+fn fn44 ( lightDistance : f32, cutoffDistance : f32, decayExponent : f32 ) -> f32 {
+
+	var nodeVar0 : f32;
+
+
+	if ( ( cutoffDistance > 0.0 ) ) {
+
+		let nodeConst0 = ( 1.0 / max( pow( lightDistance, decayExponent ), 0.01 ) );
+		let nodeConst1 = ( lightDistance / cutoffDistance );
+		let nodeConst2 = clamp( ( 1.0 - ( ( ( nodeConst1 * nodeConst1 ) * nodeConst1 ) * nodeConst1 ) ), 0.0, 1.0 );
+		nodeVar0 = ( nodeConst0 * ( nodeConst2 * nodeConst2 ) );
+
+	} else {
+
+		let nodeConst0 = ( 1.0 / max( pow( lightDistance, decayExponent ), 0.01 ) );
+		nodeVar0 = nodeConst0;
+
+	}
+
+
+	return nodeVar0;
+
+}
+
+
+
 
 @fragment
 fn main( @location( 0 ) v_positionView : vec3<f32> ) -> OutputStruct {
@@ -91,61 +107,39 @@ fn main( @location( 0 ) v_positionView : vec3<f32> ) -> OutputStruct {
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform1 );
 	DiffuseColor.w = 1.0;
 	irradiance = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar0 = ( irradiance + render.nodeUniform2 );
-	irradiance = nodeVar0;
+	irradiance = ( irradiance + render.nodeUniform2 );
 	dynPointDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
 	dynPointSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
+	var nodeVar0 : vec3<f32> = v_positionView;
 
-	for ( var i : i32 = 0; i < render.nodeUniform3; i ++ ) {
+	for ( var i : i32 = 0; i < render.nodeUniform5; i ++ ) {
 
-		nodeVar1 = ( NodeBuffer_1163.value[ i ].xyz - v_positionView );
+		nodeVar1 = ( nodeUniform6.value[ i ].xyz - nodeVar0 );
 		nodeVar2 = normalize( nodeVar1 );
-
-		if ( ( NodeBuffer_1163.value[ i ].w > 0.0 ) ) {
-
-			nodeVar4 = length( nodeVar1 );
-			nodeVar5 = ( nodeVar4 / NodeBuffer_1163.value[ i ].w );
-			nodeVar6 = clamp( ( 1.0 - ( ( ( nodeVar5 * nodeVar5 ) * nodeVar5 ) * nodeVar5 ) ), 0.0, 1.0 );
-			nodeVar3 = ( ( 1.0 / max( pow( nodeVar4, NodeBuffer_1164.value[ i ].x ), 0.01 ) ) * ( nodeVar6 * nodeVar6 ) );
-
-		} else {
-
-			nodeVar3 = ( 1.0 / max( pow( length( nodeVar1 ), NodeBuffer_1164.value[ i ].x ), 0.01 ) );
-
-		}
-
-		nodeVar7 = ( NodeBuffer_1162.value[ i ].xyz * vec3<f32>( nodeVar3 ) );
+		nodeVar3 = ( nodeUniform7.value[ i ].xyz * vec3<f32>( fn44( length( nodeVar1 ), nodeUniform6.value[ i ].w, nodeUniform8.value[ i ].x ) ) );
 
 	}
 
 	directDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar8 = ( directDiffuse + dynPointDiffuse );
-	directDiffuse = nodeVar8;
+	directDiffuse = ( directDiffuse + dynPointDiffuse );
 	directSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar9 = ( directSpecular + dynPointSpecular );
-	directSpecular = nodeVar9;
+	directSpecular = ( directSpecular + dynPointSpecular );
 	indirectDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
 	indirectDiffuse = vec4<f32>( 0.0, 0.0, 0.0, 0.0 ).xyz;
-	nodeVar10 = ( vec4<f32>( indirectDiffuse, 1.0 ) + vec4<f32>( 1.0, 1.0, 1.0, 0.0 ) );
-	indirectDiffuse = nodeVar10.xyz;
+	indirectDiffuse = ( vec4<f32>( indirectDiffuse, 1.0 ) + vec4<f32>( 1.0, 1.0, 1.0, 0.0 ) ).xyz;
 	ambientOcclusion = 1.0;
-	nodeVar11 = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
-	indirectDiffuse = nodeVar11;
-	nodeVar12 = ( indirectDiffuse * DiffuseColor.xyz );
-	indirectDiffuse = nodeVar12;
-	nodeVar13 = ( directDiffuse + indirectDiffuse );
-	totalDiffuse = nodeVar13;
+	indirectDiffuse = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
+	indirectDiffuse = ( indirectDiffuse * DiffuseColor.xyz );
+	totalDiffuse = ( directDiffuse + indirectDiffuse );
 	indirectSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar14 = ( directSpecular + indirectSpecular );
-	totalSpecular = nodeVar14;
-	nodeVar15 = ( totalDiffuse + totalSpecular );
-	outgoingLight = nodeVar15;
-	nodeVar16 = max( vec4<f32>( outgoingLight, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar16;
+	totalSpecular = ( directSpecular + indirectSpecular );
+	outgoingLight = ( totalDiffuse + totalSpecular );
+	let nodeConst0 = max( vec4<f32>( outgoingLight, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar16;
+	output.color = nodeConst0;
 
 	return output;
 
