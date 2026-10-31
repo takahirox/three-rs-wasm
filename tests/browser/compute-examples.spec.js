@@ -74,12 +74,10 @@ const cases={
  // The balls fall for a second; pointer moves push the balls near the ray and move the light
  // ( the push stops 50 ms after the last move, on the example clock ); a held button respawns
  // five balls per frame; the resize rebuilds the pool for the new aspect.
- // State 0 is the second frame: r186's TRAANode restarts its history then from the
- // composite target its loading frame rendered mid-resize, which holds that image
- // offset ( measured: the top 85 rows black at 512 × 512 ). The port restarts from the
- // loading frame's composite, so that frame differs on the balls' silhouettes, where TRAA
- // keeps history; from the third frame on the outputs match (docs/ballpool.md).
- webgpu_postprocessing_ssgi_ballpool:{stateLimits:{0:[.045,1.4]},times:[0],parameters:[],at:0,script:[['run',60,1/60,1/60,'last'],['move',200,200,null],['move',300,260,null],['run',20,1+1/60,1/60,'last'],['down',0,300,260,null],['run',3,1+21/60,1/60,null],['up',0,300,260,null],['run',30,1+24/60,1/60,'last']]},
+ // The bodies step on rapier3d 0.36.0, rapier.js 0.21.0's engine, with its fixed-seed
+ // contact order: the trajectories match the page's. State 0 is the second frame, which
+ // blends the loading frame's history (docs/ballpool.md).
+ webgpu_postprocessing_ssgi_ballpool:{times:[0],parameters:[],at:0,script:[['run',60,1/60,1/60,'last'],['move',200,200,null],['move',300,260,null],['run',20,1+1/60,1/60,'last'],['down',0,300,260,null],['run',3,1+21/60,1/60,null],['up',0,300,260,null],['run',30,1+24/60,1/60,'last']]},
  webgpu_postprocessing_ssgi:{frames:60,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[11,false,0],[11,true,1],[1,4,4],[2,16,16],[3,5,5],[7,2,2],[8,40,40],[9,true,1],[10,false,0]],restore:[[1,2,2],[2,8,8],[3,12,12],[7,1,1],[8,10,10],[9,false,0],[10,true,1]],at:0,drag:[[256,256],[300,280]]},
  // Each requested frame counts toward the next height step ( every 7 − speed frames ).
  webgpu_compute_water:{antialias:true,times:[0,1,2],parameters:[[3,1,1],[5,true,1],[5,false,0],[4,false,0],[4,true,1],[0,.3,.3],[1,1,1],[2,.9,.9]],restore:[[3,5,5],[0,.12,.12],[1,.5,.5],[2,.96,.96]],at:2,

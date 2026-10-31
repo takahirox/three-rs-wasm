@@ -1,85 +1,56 @@
 # webgpu_postprocessing_ssgi_ballpool
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source |
 | --- | ---: | --- |
-| `webgpu_postprocessing_ssgi_ballpool` | 484 | `gallery/src/browser/ballpool.rs`, `src/bounce/` |
+| `webgpu_postprocessing_ssgi_ballpool` | 484 | `gallery/src/browser/ballpool.rs`, `src/physics.rs` |
 
-The page fills a box with balls and steps them with the
-[@perplexdotgg/bounce](https://www.npmjs.com/package/@perplexdotgg/bounce)
-1.8.1 rigid-body engine (and monomorph 2.3.1, its object pools). A
-shadow-casting point light follows the pointer. The frame runs the
+The page fills a box with balls and steps them with RapierPhysics.js, which
+loads rapier.js 0.21.0 ( `@dimforge/rapier3d-compat` ). A shadow-casting
+point light follows the pointer. The frame runs the
 webgpu_postprocessing_ssgi pipeline: the MRT scene pass, SSGI with 2 slices
 and 8 steps, the composite and TRAA. Then ACES Filmic tone mapping with
 exposure 0.5.
 
-## Physics: `crate::bounce`
+## Physics: `crate::physics`
 
-`src/bounce/` ports the parts of bounce the page reaches:
-- the world and its options;
-- box and sphere shapes, static and dynamic bodies, respawns and linear
-  impulses;
-- `advanceTime` and the step;
-- the BVH broadphase, GJK and EPA, the contact manifolds, the warm-started
-  sequential impulse solver, the position solver and sleeping islands.
+rapier.js 0.21.0 is the Rust crate rapier3d 0.36.0 built to wasm. The port
+links the same crate through `crate::physics::RapierPhysics`, as the
+physics_rapier ports do ( [physics-examples.md](physics-examples.md) ):
+- the walls are fixed bodies ( `addMesh( mesh, 0, 0.4 )`, the front wall
+  without a mesh ), the balls one dynamic body per instance
+  ( `addMesh( ballsMesh, 1, 0.5 )` );
+- RapierPhysics's 16 ms interval steps the world on the example clock with
+  its Timer's delta, at most 1 / 30 s, and writes each body's pose into the
+  instance matrices;
+- a rebuild removes the walls' bodies and the balls' mesh; respawns go
+  through `setMeshPosition` and `wakeUp`, pushes through `applyImpulse`.
 
-The port is written operation by operation from the package's build. It
-keeps monomorph's pool behavior:
-- free slots are reused last-in first-out;
-- live objects iterate in index order;
-- reference lists persist on reuse;
-- constructor defaults mutate the options object.
+rapier3d 0.36 orders contact pairs with a fixed-seed hash, so the port takes
+the same steps as the page: the captures match it after falling, pushes,
+respawns and the resize.
 
-It also keeps the package's quirks, such as the old-manifold index lookup in
-`addContactConstraint`. JavaScript's `Math.min` / `Math.max` NaN and −0
-semantics and stable sorts are written out.
-
-Two runtime dependencies are not part of the package's code:
-
-- **`Math.sin` / `Math.cos`.** Quaternion integration and the solver's
-  rotation deltas call them. Browsers differ in the last bit. Chrome's V8
-  uses LLVM libc's routines, which are not correctly rounded for every input
-  and depend on the CPU's FMA support. The Wasm build therefore calls the
-  host's own `Math.sin` / `Math.cos`. The page's other `Math.tan` and
-  `Math.exp` calls that feed the bodies (the camera fit and the pointer
-  easing) do the same. The native build, used only by unit tests, uses
-  correctly rounded double-double sin and cos.
-- **`performance.now()`.** `advanceTime( step, time )` with a falsy `time`
-  simulates the time since its first call. While that first call's time is
-  falsy too (0 at the fixture's time 0), it simulates one step. The page's
-  timer gives 0 whenever two frames share a timestamp. The port takes the
-  clock as an argument: the example clock in the gallery, and the fixture
-  sets the reference page's `performance.now` to that clock.
-
-`tests/browser/bounce-physics.spec.js` runs the original package and the
-Wasm port side by side in one page and compares every body's position,
-orientation, sleep flag and velocities bit for bit after every frame:
-- the page's wall and ball layout for aspects 1 (257 balls) and 16∶9
-  (458 balls), over 600 and 900 frames;
-- the timer's uneven deltas, the page's five-ball respawns and
-  pointer-style impulses;
-- a 1,500-frame undisturbed session in which bodies fall asleep.
+`src/bounce/` keeps the port of @perplexdotgg/bounce 1.8.1, which r186's page
+used; `tests/browser/bounce-physics.spec.js` still compares it with the
+package bit for bit.
 
 ## Rendering
 
 As in [compute-examples.md](compute-examples.md), every stage runs the WGSL
-three.js r186 generates for the page (`gallery/src/browser/ballpool/`). The SSGI,
+three.js r187 generates for the page (`gallery/src/browser/ballpool/`). The SSGI,
 composite and TRAA modules are byte-identical to webgpu_postprocessing_ssgi's
 and volume_traa's, and are shared with those ports.
 
 - **Instancing.** The balls are one InstancedMesh with the page's ten
-  instance colors. Every frame uploads the instance matrices, as the page's
-  `setMatrixAt` loop does. InstanceNode reads them, and the previous frame's
-  for the velocity, from two buffers:
-  - up to 1,024 balls (the 64 KiB uniform buffer limit): uniform arrays
-    sized to the count;
-  - more balls (aspects above 3.97): instanced vertex attributes.
-
-  Each path is its own captured module. The two number their uniforms from
-  different starts (the offset is applied by name). The previous matrices
-  are the array the last scene pass drew, or this frame's for a new mesh,
-  as InstanceNode's after-object update copies them.
+  instance colors. The instance matrices upload in frames after a physics
+  step ( RapierPhysics sets `needsUpdate` ), the previous ones when the
+  matrices they copy changed, as r187's attribute versions do.
+  InstanceNode reads them, and the previous frame's for the velocity, as
+  instanced vertex attributes: r187's InstancedMesh binds its instance data
+  per object for every count. The previous matrices are the array the last
+  scene pass drew, or a clone of the matrices for a new mesh, as
+  InstanceNode's after-object update copies them.
 - **Point shadow.** The 1024² cube (near 0.5, far 500: the light has no
   distance) draws the balls when the InstancedMesh's bounding sphere meets a
   face's frustum. The sphere is computed once, on the first frustum test,
@@ -94,15 +65,13 @@ and volume_traa's, and are shared with those ports.
 - **Resize.** The page rebuilds the world, the box and the balls from the
   new aspect on every resize. The port does the same when the output size
   changes, continuing the seeded random sequence.
-- **TRAA start-up.** r186's TRAANode builds its history at the composite
-  render target's initial 1 × 1 size on the first frame, because the target
-  only renders when the resolve samples it. The first frame then restarts
-  from the composite target, renders the passes after `setViewOffset` (so
-  even the first frame is jittered), and keeps no previous depth. It reads
-  the zero-initialized `DepthTexture( 1, 1 )`, the near plane, for two
-  resolves, so the second frame's history counts as disoccluded except on
-  edges. The second frame restarts the history again. The port follows
-  all of this.
+- **TRAA start-up.** r187's TRAANode builds its beauty ( the composite's
+  `convertToTexture` ) before itself, so the composite renders first. On the
+  loading frame the history's size differs, and TRAA restarts the history
+  from that composite; that resolve reads the freshly sized ( zero ) history
+  depth. The loading frame renders unjittered with frameId 1; the fixture
+  then restarts frameId, so the second frame is frameId 1 again, jittered,
+  and blends the loading frame's history. The port follows all of this.
 
 ## Comparison
 
@@ -114,29 +83,19 @@ captures:
 - three frames with the button held, then 30 more;
 - the 640 × 400 resize, which rebuilds a 412-ball pool.
 
-`tests/browser/ballpool-wide.spec.js` renders 40 frames at 2100 × 500.
-That is 1,083 balls, beyond the uniform-array limit, so they are drawn from
-instanced vertex attributes. One pixel exceeds the threshold.
+`tests/browser/ballpool-wide.spec.js` renders 40 frames at 2100 × 500,
+1,083 balls.
 
-From the third frame on, the outputs match. The worst capture has a mean
-error of 0.00002 levels and no pixel beyond the default threshold.
-
-The second frame has a scoped bound of 4.5% of pixels and a mean error of
-1.4. r186 restarts that frame's history from the composite target its
-loading frame rendered mid-resize, and that target holds the image offset.
-At 512 × 512 the top 85 rows are black; at 640 × 400 the image is
-stretched. The loading frame itself presents a flat 1 × 1 color. The port
-restarts from the loading frame's composite and presents that frame
-normally. So the second frame differs on the balls' silhouettes, where TRAA
-keeps history: 3.96% of pixels, mean error 1.21.
+All captures pass the default bounds: no pixel beyond the threshold, and a
+worst mean error of 0.00003 levels.
 
 ## Performance evidence
 
 The page's per-frame work is CPU physics, matrix uploads and the GPU
 passes. The port keeps the same execution architecture:
 - the physics steps on the CPU, in Wasm instead of JavaScript;
-- the instance matrices upload once per frame (the current and previous
-  arrays, 64 bytes per ball each);
+- the instance matrices upload after physics steps, the previous ones when
+  they change (64 bytes per ball each), as the page's attributes do;
 - the sphere geometry uploads once, and the walls' boxes once per rebuild.
 
 The GPU residency test checks that steady-state frames create no buffers,

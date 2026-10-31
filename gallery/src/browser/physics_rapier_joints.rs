@@ -7,7 +7,7 @@ use super::controls_attributes::{Controls, camera_state};
 use super::rapier_common::{Helper, Interval, StepTimer, next_due};
 use crate::physics::{PhysicsBody, PhysicsShape, RapierPhysics};
 use crate::{Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
-use rapier3d::prelude::{Point, RigidBodyHandle, SphericalJointBuilder};
+use rapier3d::prelude::{RigidBodyHandle, SphericalJointBuilder, Vector};
 use std::f64::consts::PI;
 use std::sync::Arc;
 
@@ -106,13 +106,13 @@ impl Demo {
             )?)?;
             // JointData.spherical( anchor on the previous body, ( 0, 1.15, 0 ) ).
             let anchor1 = if k == 0 {
-                Point::new(0., -0.5, 0.)
+                Vector::new(0., -0.5, 0.)
             } else {
-                Point::new(0., -1.15, 0.)
+                Vector::new(0., -1.15, 0.)
             };
             let joint = SphericalJointBuilder::new()
                 .local_anchor1(anchor1)
-                .local_anchor2(Point::new(0., 1.15, 0.));
+                .local_anchor2(Vector::new(0., 1.15, 0.));
             physics.bodies[body].set_angular_damping(10.);
             physics.impulse_joints.insert(previous, body, joint, true);
             previous = body;
