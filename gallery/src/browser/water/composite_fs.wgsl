@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -23,11 +26,11 @@ var<private> output : OutputStruct;
 @binding( 10 ) @group( 0 ) var nodeUniform10_sampler : sampler;
 @binding( 11 ) @group( 0 ) var nodeUniform10 : texture_2d<f32>;
 
-struct NodeBuffer_2936Struct {
+struct nodeUniform1Struct {
 	value : array< vec4<f32>, 5 >
 };
 @binding( 1 ) @group( 0 )
-var<uniform> NodeBuffer_2936 : NodeBuffer_2936Struct;
+var<uniform> nodeUniform1 : nodeUniform1Struct;
 
 struct objectStruct {
 	nodeUniform0 : f32,
@@ -42,15 +45,14 @@ struct objectStruct {
 var<uniform> object : objectStruct;
 
 // vars
-var<private> nodeVar0 : array< f32, 5 >;
+var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : vec4<f32>;
 var<private> nodeVar2 : vec4<f32>;
 var<private> nodeVar3 : vec4<f32>;
 var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec4<f32>;
 
 // codes
-fn fn4 ( factor : f32, radius : f32 ) -> f32 {
+fn fn130 ( factor : f32, radius : f32 ) -> f32 {
 
 	
 
@@ -68,16 +70,16 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// flow
 	// code
 
-	nodeVar0 = array< f32, 5 >( 1.0, 0.8, 0.6, 0.4, 0.2 );
-	nodeVar1 = textureSample( nodeUniform2, nodeUniform2_sampler, ( object.nodeUniform3 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
-	nodeVar2 = textureSample( nodeUniform4, nodeUniform4_sampler, ( object.nodeUniform5 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
-	nodeVar3 = textureSample( nodeUniform6, nodeUniform6_sampler, ( object.nodeUniform7 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
-	nodeVar4 = textureSample( nodeUniform8, nodeUniform8_sampler, ( object.nodeUniform9 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
-	nodeVar5 = textureSample( nodeUniform10, nodeUniform10_sampler, ( object.nodeUniform11 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
+	let nodeConst0 = array< f32, 5 >( 1.0, 0.8, 0.6, 0.4, 0.2 );
+	nodeVar0 = textureSample( nodeUniform2, nodeUniform2_sampler, ( object.nodeUniform3 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
+	nodeVar1 = textureSample( nodeUniform4, nodeUniform4_sampler, ( object.nodeUniform5 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
+	nodeVar2 = textureSample( nodeUniform6, nodeUniform6_sampler, ( object.nodeUniform7 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
+	nodeVar3 = textureSample( nodeUniform8, nodeUniform8_sampler, ( object.nodeUniform9 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
+	nodeVar4 = textureSample( nodeUniform10, nodeUniform10_sampler, ( object.nodeUniform11 * vec3<f32>( nodeVarying0, 1.0 ) ).xy );
 
 	// result
 
-	output.color = ( ( ( ( ( ( ( vec4<f32>( fn4( nodeVar0[ 0u ], object.nodeUniform0 ) ) * vec4<f32>( NodeBuffer_2936.value[ 0u ].xyz, 1.0 ) ) * nodeVar1 ) + ( ( vec4<f32>( fn4( nodeVar0[ 1u ], object.nodeUniform0 ) ) * vec4<f32>( NodeBuffer_2936.value[ 1u ].xyz, 1.0 ) ) * nodeVar2 ) ) + ( ( vec4<f32>( fn4( nodeVar0[ 2u ], object.nodeUniform0 ) ) * vec4<f32>( NodeBuffer_2936.value[ 2u ].xyz, 1.0 ) ) * nodeVar3 ) ) + ( ( vec4<f32>( fn4( nodeVar0[ 3u ], object.nodeUniform0 ) ) * vec4<f32>( NodeBuffer_2936.value[ 3u ].xyz, 1.0 ) ) * nodeVar4 ) ) + ( ( vec4<f32>( fn4( nodeVar0[ 4u ], object.nodeUniform0 ) ) * vec4<f32>( NodeBuffer_2936.value[ 4u ].xyz, 1.0 ) ) * nodeVar5 ) ) * vec4<f32>( object.nodeUniform12 ) );
+	output.color = ( ( ( ( ( ( ( vec4<f32>( fn130( nodeConst0[ 0u ], object.nodeUniform0 ) ) * vec4<f32>( nodeUniform1.value[ 0u ].xyz, 1.0 ) ) * nodeVar0 ) + ( ( vec4<f32>( fn130( nodeConst0[ 1u ], object.nodeUniform0 ) ) * vec4<f32>( nodeUniform1.value[ 1u ].xyz, 1.0 ) ) * nodeVar1 ) ) + ( ( vec4<f32>( fn130( nodeConst0[ 2u ], object.nodeUniform0 ) ) * vec4<f32>( nodeUniform1.value[ 2u ].xyz, 1.0 ) ) * nodeVar2 ) ) + ( ( vec4<f32>( fn130( nodeConst0[ 3u ], object.nodeUniform0 ) ) * vec4<f32>( nodeUniform1.value[ 3u ].xyz, 1.0 ) ) * nodeVar3 ) ) + ( ( vec4<f32>( fn130( nodeConst0[ 4u ], object.nodeUniform0 ) ) * vec4<f32>( nodeUniform1.value[ 4u ].xyz, 1.0 ) ) * nodeVar4 ) ) * vec4<f32>( object.nodeUniform12 ) );
 
 	return output;
 

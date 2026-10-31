@@ -4,14 +4,15 @@
 //! Worley noise on Phong and an animated, transparent fractal-noise basic
 //! material. A directional light and the monochrome_studio PMREM light them
 //! over the transparent grid ground, with 4× MSAA and the NeutralToneMapping
-//! output pass. Every stage runs the WGSL three.js r186 generates for the
-//! page (in `tsl_graph/`; the PMREM, mipmap and output modules are the retro,
-//! shadowmap_opacity and compute_cloth ones, which are byte-identical).
+//! output pass. Every stage runs the WGSL three.js r187 generates for the
+//! page (in `tsl_graph/`; the PMREM is pmrem.rs's fromEquirectangular, the
+//! output module the compute_cloth one, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::fetch;
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline, rgbe_pmrem};
+use super::pmrem::{Pmrem, equirect_pmrem};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::{target, uniform};
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
@@ -106,6 +107,8 @@ pub(super) struct Demo {
     output_object: wgpu::Buffer,
     output_quad: wgpu::Buffer,
     clamp: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     targets: Option<Targets>,
 }
 /// The glTF bufferView `view` of buffer 0.
@@ -223,6 +226,9 @@ impl Demo {
             .try_into()
             .map_err(|_| Error::Invalid("ShaderBall parts"))?;
         // createShaderBall( materials[ i ], ( ( i & 1 ) * 4 - 2, 0, ( i & 2 ) * 2 - 2 ) ).
+        // scene.environment: the equirect HDR through PMREMGenerator.fromEquirectangular.
+        let pmrem = equirect_pmrem(r, "environments/monochrome_studio_02_1k.hdr").await?;
+        let max_lod = pmrem.max_lod as f64;
         let mut balls = vec![];
         for (i, kind) in KINDS.into_iter().enumerate() {
             let position = Vector3::new((i & 1) as f64 * 4. - 2., 0., (i & 2) as f64 * 2. - 2.);
@@ -239,11 +245,9 @@ impl Demo {
                         ("nodeUniform6", vec![1.]),
                         ("nodeUniform7", vec![0.; 3]),
                         ("nodeUniform8", vec![1.]),
-                        ("nodeUniform14", vec![8.]),
                         ("nodeUniform15", m4(Matrix4::IDENTITY)),
-                        ("nodeUniform17", vec![1. / 768.]),
-                        ("nodeUniform18", vec![1. / 1024.]),
-                        ("nodeUniform20", vec![1.]),
+                        ("nodeUniform17", vec![max_lod]),
+                        ("nodeUniform18", vec![1.]),
                     ],
                     Kind::Standard => vec![
                         ("nodeUniform0", m4(model)),
@@ -251,11 +255,9 @@ impl Demo {
                         ("nodeUniform4", vec![1.]),
                         ("nodeUniform5", vec![0.; 3]),
                         ("nodeUniform6", vec![1.]),
-                        ("nodeUniform11", vec![8.]),
                         ("nodeUniform12", m4(Matrix4::IDENTITY)),
-                        ("nodeUniform14", vec![1. / 768.]),
-                        ("nodeUniform15", vec![1. / 1024.]),
-                        ("nodeUniform17", vec![1.]),
+                        ("nodeUniform14", vec![max_lod]),
+                        ("nodeUniform15", vec![1.]),
                     ],
                     Kind::Phong => vec![
                         ("nodeUniform0", m4(model)),
@@ -331,8 +333,6 @@ impl Demo {
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        // scene.environment: the equirect HDR through PMREMGenerator.fromEquirectangular.
-        let (pmrem, _) = rgbe_pmrem(r, &clamp, "environments/monochrome_studio_02_1k.hdr").await?;
         Ok(Self {
             controls,
             time: 0.,
@@ -359,6 +359,12 @@ impl Demo {
                 wgpu::BufferUsages::VERTEX,
             ),
             clamp,
+            trilinear: r.device.create_sampler(&wgpu::SamplerDescriptor {
+                mag_filter: wgpu::FilterMode::Linear,
+                min_filter: wgpu::FilterMode::Linear,
+                mipmap_filter: wgpu::FilterMode::Linear,
+                ..Default::default()
+            }),
             targets: None,
         })
     }
@@ -424,7 +430,7 @@ impl Demo {
                     entries.extend([
                         (1, sampler(&self.clamp)),
                         (2, tex(&r.dfg)),
-                        (3, sampler(&self.clamp)),
+                        (3, sampler(&self.trilinear)),
                         (4, tex(&self.pmrem.view)),
                     ]);
                 }

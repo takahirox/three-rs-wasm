@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -17,23 +17,22 @@ struct objectStruct {
 	nodeUniform8 : f32,
 	nodeUniform9 : vec3<f32>,
 	nodeUniform10 : f32,
-	nodeUniform22 : f32,
 	nodeUniform23 : mat4x4<f32>,
 	nodeUniform25 : f32,
-	nodeUniform26 : f32,
-	nodeUniform28 : f32,
-	nodeUniform29 : f32,
-	nodeUniform30 : f32,
-	nodeUniform31 : f32,
-	nodeUniform32 : f32
+	nodeUniform26 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
 
 struct renderStruct {
+	nodeUniform29 : f32,
+	nodeUniform27 : f32,
+	nodeUniform30 : f32,
+	nodeUniform28 : f32,
 	cameraProjectionMatrix : mat4x4<f32>,
 	cameraViewMatrix : mat4x4<f32>,
 	cameraPosition : vec3<f32>,
+	cameraWorldMatrix : mat4x4<f32>,
 	nodeUniform14 : vec3<f32>,
 	nodeUniform12 : vec3<f32>,
 	nodeUniform13 : vec3<f32>,
@@ -42,8 +41,7 @@ struct renderStruct {
 	nodeUniform17 : f32,
 	nodeUniform19 : f32,
 	nodeUniform20 : vec2<f32>,
-	nodeUniform21 : f32,
-	cameraWorldMatrix : mat4x4<f32>
+	nodeUniform21 : f32
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -62,7 +60,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> modelViewMatrix : mat4x4<f32>;
 var<private> normalLocal : vec3<f32>;
-var<private> VERTEX_nodeVar209 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> VERTEX_v_modelViewProjection : vec4<f32>;
@@ -84,8 +81,8 @@ fn main( @location( 0 ) position : vec3<f32>,
 	normalLocal = normal;
 	varyings.v_normalViewGeometry = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform4 * normalLocal ), 0.0 ) ).xyz );
 	varyings.v_positionViewDirection = ( - varyings.v_positionView );
-	VERTEX_nodeVar209 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar209;
+	let VERTEX_nodeConst61 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst61;
 
 	// result
 

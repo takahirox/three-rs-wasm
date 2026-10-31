@@ -6,14 +6,16 @@
 //! Fresnel term. The scene pass writes the beauty and emissive MRT; the
 //! emissive feeds BloomNode, the output adds it, tone maps ( ACES at 0.5 )
 //! and encodes sRGB, and FXAA resolves the edges. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `water/`; the PMREM, cube, bloom
-//! blur and quad modules are the deferred, volume_caustics and ssr ones,
-//! byte-identical).
+//! three.js r187 generates for the page (in `water/`; the PMREM is pmrem.rs's
+//! fromEquirectangular, the cube and quad modules are the deferred,
+//! volume_caustics and ssr ones, byte-identical but for their constants'
+//! numbering).
 use super::controls_attributes::{Controls, camera_state};
-use super::deferred::{Draw, culled_pipeline, render_cube, set, ultra_hdr_environment};
+use super::deferred::{Draw, culled_pipeline, render_cube, set};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{Pmrem, bind};
+use super::pmrem::{Pmrem, from_equirect};
+use super::pmrem_cube_uv::bind;
 use super::retro::{mipmapped, mipmapped_raw, uniform};
 use super::shadowmap_opacity::{Mipmaps, mip_count};
 use crate::{
@@ -50,11 +52,11 @@ const HIGH_VS: &str = include_str!("ssr/blur_vs.wgsl");
 const BLUR_VS: &str = include_str!("volume_caustics/blur_vs.wgsl");
 const QUAD_VS: &str = include_str!("volume_caustics/composite_vs.wgsl");
 const BLUR_FS: [&str; LEVELS] = [
-    include_str!("volume_caustics/blur0_fs.wgsl"),
-    include_str!("volume_caustics/blur1_fs.wgsl"),
-    include_str!("volume_caustics/blur2_fs.wgsl"),
-    include_str!("volume_caustics/blur3_fs.wgsl"),
-    include_str!("volume_caustics/blur4_fs.wgsl"),
+    include_str!("water/blur0_fs.wgsl"),
+    include_str!("water/blur1_fs.wgsl"),
+    include_str!("water/blur2_fs.wgsl"),
+    include_str!("water/blur3_fs.wgsl"),
+    include_str!("water/blur4_fs.wgsl"),
 ];
 /// A mesh's vertex buffers ( in the pipeline's slot order ), index and
 /// local bounding sphere.
@@ -391,13 +393,22 @@ impl Demo {
         let transmission_sampler = sampler(ClampToEdge, Nearest, Linear);
         // scene.background and scene.environment: the equirect as a cube
         // ( CubeMapNode ) and its PMREM.
-        let (equirect, height, pmrem, _) = ultra_hdr_environment(
+        // UltraHDRLoader: half float, flipped, mipmapped on the GPU.
+        let sky = super::ultra_hdr::ultra_hdr(&fetch("environments/moonless_golf_2k.hdr.jpg").await?)
+            .await?;
+        let row = sky.width as usize * 4;
+        let texels: Vec<half::f16> = sky.rgba.chunks(row).rev().flatten().copied().collect();
+        let mut sky_mipmaps = Mipmaps::new(r);
+        let equirect = mipmapped_raw(
             r,
-            &linear,
-            &sampler(ClampToEdge, Linear, Nearest),
-            "environments/moonless_golf_2k.hdr.jpg",
-        )
-        .await?;
+            &mut sky_mipmaps,
+            bytemuck::cast_slice(&texels),
+            (sky.width, sky.height),
+            8,
+            HALF,
+        );
+        let height = sky.height;
+        let pmrem = from_equirect(r, &equirect, sky.width)?;
         let cube = render_cube(r, &sampler(ClampToEdge, Linear, Nearest), &equirect, height)?;
         let uniforms = |prefix: &str| -> Result<Uniforms> {
             let (bg, floor, pool, clutter) = if prefix.is_empty() {
@@ -500,7 +511,7 @@ impl Demo {
         };
         let id3 = m3(Matrix4::IDENTITY);
         let id4 = m4(Matrix4::IDENTITY);
-        let texel = [vec![1. / 1536.], vec![1. / 2048.]];
+        let max_lod = self.pmrem.max_lod as f64;
         let node = |model: Matrix4| m3(model.inverse().transpose());
         let walls_model = self.pool_models()?.1;
         let clutter_model = self.pool_models()?.0;
@@ -523,10 +534,9 @@ impl Demo {
                 bg,
                 "objectStruct",
                 &[
-                    ("nodeUniform1", id4.clone()),
-                    ("nodeUniform4", id3.clone()),
-                    ("nodeUniform7", vec![1.]),
-                    ("nodeUniform9", id4.clone()),
+                    ("nodeUniform3", id3.clone()),
+                    ("nodeUniform6", vec![1.]),
+                    ("nodeUniform8", id4.clone()),
                 ],
             )?;
             write(
@@ -552,11 +562,9 @@ impl Demo {
                     ("nodeUniform19", m4(walls_model)),
                     ("nodeUniform21", id3.clone()),
                     ("nodeUniform22", vec![1., -1.]),
-                    ("nodeUniform23", vec![9.]),
                     ("nodeUniform24", id4.clone()),
-                    ("nodeUniform26", texel[0].clone()),
-                    ("nodeUniform27", texel[1].clone()),
-                    ("nodeUniform29", vec![1.]),
+                    ("nodeUniform26", vec![max_lod]),
+                    ("nodeUniform27", vec![1.]),
                 ],
             )?;
             write(
@@ -589,11 +597,9 @@ impl Demo {
                     ("nodeUniform30", id3.clone()),
                     ("nodeUniform31", vec![1., -1.]),
                     ("nodeUniform33", m4(clutter_model)),
-                    ("nodeUniform37", vec![9.]),
                     ("nodeUniform38", id4.clone()),
-                    ("nodeUniform40", texel[0].clone()),
-                    ("nodeUniform41", texel[1].clone()),
-                    ("nodeUniform43", vec![1.]),
+                    ("nodeUniform40", vec![max_lod]),
+                    ("nodeUniform41", vec![1.]),
                 ],
             )?;
         }
@@ -760,7 +766,7 @@ impl Demo {
                         (0, object.as_entire_binding()),
                         (1, sampler(&self.linear)),
                         (2, tex(&r.dfg)),
-                        (3, sampler(&self.linear)),
+                        (3, sampler(&self.trilinear)),
                         (4, tex(&self.pmrem.view)),
                     ],
                 )
@@ -779,7 +785,7 @@ impl Demo {
                 (6, tex(&r.dfg)),
                 (7, sampler(&self.repeat)),
                 (8, tex(&self.walls_maps[2])),
-                (9, sampler(&self.linear)),
+                (9, sampler(&self.trilinear)),
                 (10, tex(&self.pmrem.view)),
             ],
         );
@@ -806,7 +812,7 @@ impl Demo {
                         (12, tex(&r.dfg)),
                         (13, sampler(&self.transmission_sampler)),
                         (14, tex(transmission)),
-                        (15, sampler(&self.linear)),
+                        (15, sampler(&self.trilinear)),
                         (16, tex(&self.pmrem.view)),
                     ],
                 )
@@ -1000,8 +1006,8 @@ impl Demo {
                 &[
                     (0, sampler(&self.linear)),
                     (1, tex(&ldr)),
-                    (2, self.fxaa_steps.as_entire_binding()),
-                    (3, self.fxaa_object.as_entire_binding()),
+                    (2, self.fxaa_object.as_entire_binding()),
+                    (3, self.fxaa_steps.as_entire_binding()),
                 ],
             )],
         );
@@ -1185,6 +1191,7 @@ impl Demo {
         };
         let size = vec![t.width as f64, t.height as f64];
         let floor_models: Vec<Matrix4> = FLOORS.iter().map(|f| floor_model(*f)).collect();
+        let max_lod = self.pmrem.max_lod as f64;
         let floor_values = |model: Matrix4| {
             vec![
                 (
@@ -1198,11 +1205,9 @@ impl Demo {
                 ("nodeUniform6", vec![0.; 3]),
                 ("nodeUniform7", vec![1.]),
                 ("nodeUniform9", m4(model)),
-                ("nodeUniform10", vec![9.]),
                 ("nodeUniform11", m4(Matrix4::IDENTITY)),
-                ("nodeUniform13", vec![1. / 1536.]),
-                ("nodeUniform14", vec![1. / 2048.]),
-                ("nodeUniform16", vec![1.]),
+                ("nodeUniform13", vec![max_lod]),
+                ("nodeUniform14", vec![1.]),
             ]
         };
         let passes = [
@@ -1236,10 +1241,11 @@ impl Demo {
                 ("cameraProjectionMatrix", m4(p)),
                 ("cameraViewMatrix", m4(v)),
             ];
+            // backgroundBlurriness, backgroundIntensity and backgroundRotation.
             let mut bg_values = vec![
-                ("nodeUniform5", vec![0.]),
-                ("nodeUniform6", vec![1.]),
-                ("nodeUniform2", m4(Matrix4::IDENTITY)),
+                ("nodeUniform4", vec![0.]),
+                ("nodeUniform5", vec![1.]),
+                ("nodeUniform1", m4(Matrix4::IDENTITY)),
             ];
             bg_values.extend(camera_values.clone());
             write(&u.background_render, bg, "renderStruct", &bg_values)?;
@@ -1297,13 +1303,11 @@ impl Demo {
                     "objectStruct",
                     &[
                         ("nodeUniform1", id3.clone()),
-                        ("nodeUniform2", id3.clone()),
-                        ("nodeUniform3", direction.to_vec()),
+                        ("nodeUniform2", direction.to_vec()),
                         (
-                            "nodeUniform4",
+                            "nodeUniform3",
                             vec![1. / level.0 as f64, 1. / level.1 as f64],
                         ),
-                        ("nodeUniform5", id3.clone()),
                     ],
                 )?;
             }
@@ -1313,7 +1317,7 @@ impl Demo {
             wgsl!("fxaa_fs"),
             "objectStruct",
             &[(
-                "nodeUniform2",
+                "nodeUniform1",
                 vec![1. / t.width as f64, 1. / t.height as f64],
             )],
         )?;

@@ -1,26 +1,24 @@
 //! webgpu_generator_building: one SkyscraperGenerator tower, its seed-picked
 //! masonry colour and its single partId-shaded material ( brick coursing,
 //! weathering and interior-mapped rooms behind the glass ), under a SkyMesh
-//! sky and the SunLight addon's two shadow cascades, with an invisible
-//! shadow-catching ground, ACES ( exposure 0.25 ) and auto-rotating
-//! OrbitControls. The generator runs on the CPU when a building parameter
-//! changes, as the page's does, and bakes one non-indexed geometry drawn in
-//! one call per pass. updateSun() places the sun for the time of day and
-//! bakes the sky ( without its disc ) into the PMREM ( fromScene ). Each
-//! frame the cascades are fitted to the view and the tower renders into
-//! both, then the scene renders with 4× MSAA. Every stage runs the WGSL
-//! three.js r186 generates for the page ( in `generator_building/`; the sky,
-//! the PMREM capture and blur and the output are the custom_fog, retro and
+//! sky and a shadow-casting DirectionalLight aligned with its sun, with an
+//! invisible shadow-catching ground, ACES ( exposure 0.25 ) and
+//! auto-rotating OrbitControls. The generator runs on the CPU when a
+//! building parameter changes, as the page's does, and bakes one
+//! non-indexed geometry drawn in one call per pass. updateSun() places the
+//! sun for the time of day and bakes the sky ( without its disc ) into the
+//! PMREM ( fromScene, pmrem.rs ); fitShadowCamera() fits the light's 2048²
+//! shadow frustum to the tower and the shadow it casts. Each frame the tower
+//! renders into the shadow map, then the scene renders with 4× MSAA. Every
+//! stage runs the WGSL three.js r187 generates for the page
+//! ( in `generator_building/`; the sky and the output are the custom_fog and
 //! cubemap_dynamic modules, byte-identical ).
 pub(super) mod skyscraper;
 use super::controls_attributes::{Controls, camera_state};
-use super::custom_fog::{
-    Buffers, FACE_PROJECTION, FACE_VIEWS, TEXEL, layouts, pipeline, two_groups, upload,
-};
+use super::custom_fog::{Buffers, layouts, pipeline, two_groups, upload};
 use super::deferred::{Draw, culled_pipeline, set};
-use super::fog_volume::{Cascade, cascades};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem};
+use super::pmrem::{Pmrem, face_cameras};
 use super::retro::uniform;
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
@@ -32,15 +30,13 @@ use wgpu::util::DeviceExt;
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-/// The SunLight shadow atlas: two 2048² cascades side by side.
+/// The DirectionalLight's shadow.mapSize.
 const MAP: u32 = 2048;
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("generator_building/", $name, ".wgsl"))
     };
 }
-const BOX_VS: &str = include_str!("custom_fog/box_vs.wgsl");
-const BOX_FS: &str = include_str!("custom_fog/box_fs.wgsl");
 const SKY_VS: &str = include_str!("custom_fog/sky_vs.wgsl");
 const SKY_FS: &str = include_str!("custom_fog/sky_fs.wgsl");
 const OUTPUT_VS: &str = include_str!("cubemap_dynamic/output_vs.wgsl");
@@ -132,14 +128,13 @@ pub(super) struct Demo {
     sky_box: Buffers,
     pmrem: Pmrem,
     pmrem_depth: wgpu::TextureView,
-    box_draw: Draw,
     bake_draws: Vec<Draw>,
     bake_renders: Vec<wgpu::Buffer>,
     bake_object: wgpu::Buffer,
     shadow_color: wgpu::TextureView,
     shadow_depth: wgpu::TextureView,
-    shadow_draws: Vec<Draw>,
-    shadow_renders: Vec<wgpu::Buffer>,
+    shadow_draw: Draw,
+    shadow_render: wgpu::Buffer,
     shadow_object: wgpu::Buffer,
     tower_render: wgpu::Buffer,
     tower_object: wgpu::Buffer,
@@ -151,6 +146,8 @@ pub(super) struct Demo {
     output_object: wgpu::Buffer,
     output_quad: wgpu::Buffer,
     linear: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
@@ -242,53 +239,18 @@ impl Demo {
                 .create_view(&Default::default())
         };
         let attach = wgpu::TextureUsages::RENDER_ATTACHMENT;
-        let atlas = (MAP * 2, MAP);
-        let shadow_color = texture(atlas, BYTE, attach);
-        let shadow_depth = texture(atlas, DEPTH, attach | wgpu::TextureUsages::TEXTURE_BINDING);
+        let shadow_color = texture((MAP, MAP), BYTE, attach);
+        let shadow_depth = texture(
+            (MAP, MAP),
+            DEPTH,
+            attach | wgpu::TextureUsages::TEXTURE_BINDING,
+        );
         // PMREMGenerator.fromScene( envScene ): the cube camera's faces into
-        // level 0 of the cubeUV target, then the GGX levels.
-        let pmrem = Pmrem::new(r, &linear, 8, GGX_8)?;
-        let pmrem_depth = texture((768, 1024), DEPTH, attach);
+        // level 0 of the source target, then the PMREM's levels.
+        let pmrem = Pmrem::new(r, 256)?;
+        let pmrem_depth = texture((pmrem.size, pmrem.size), DEPTH, attach);
         let position_only = [wgpu::vertex_attr_array![0 => Float32x3].to_vec()];
         let box_layouts = layouts(&position_only, &[(12, false)]);
-        let box_render = uniform(r, "PMREM box", BOX_VS, "renderStruct")?;
-        let box_object = uniform(r, "PMREM box", BOX_FS, "objectStruct")?;
-        let box_draw = two_groups(
-            r,
-            pipeline(
-                r,
-                "PMREM box",
-                (BOX_VS, BOX_FS),
-                &box_layouts,
-                HALF,
-                1,
-                (wgpu::CompareFunction::Always, false),
-                true,
-            ),
-            &box_render,
-            &[(0, box_object.as_entire_binding())],
-        );
-        write(
-            r,
-            &box_render,
-            BOX_VS,
-            "renderStruct",
-            &[
-                ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                ("cameraViewMatrix", m4(Matrix4::IDENTITY)),
-            ],
-        )?;
-        write(
-            r,
-            &box_object,
-            BOX_FS,
-            "objectStruct",
-            &[
-                ("nodeUniform0", vec![0.; 3]),
-                ("nodeUniform1", vec![1.]),
-                ("nodeUniform4", m4(Matrix4::IDENTITY)),
-            ],
-        )?;
         let bake_object = uniform(r, "sky bake", SKY_FS, "objectStruct")?;
         let bake_pipeline = pipeline(
             r,
@@ -325,18 +287,13 @@ impl Demo {
             (wgpu::CompareFunction::LessEqual, true),
             true,
         );
-        let mut shadow_renders = vec![];
-        let mut shadow_draws = vec![];
-        for _ in 0..2 {
-            let render = uniform(r, "tower shadow", wgsl!("shadow_fs"), "renderStruct")?;
-            shadow_draws.push(two_groups(
-                r,
-                shadow_pipeline.clone(),
-                &render,
-                &[(0, shadow_object.as_entire_binding())],
-            ));
-            shadow_renders.push(render);
-        }
+        let shadow_render = uniform(r, "tower shadow", wgsl!("shadow_fs"), "renderStruct")?;
+        let shadow_draw = two_groups(
+            r,
+            shadow_pipeline,
+            &shadow_render,
+            &[(0, shadow_object.as_entire_binding())],
+        );
         Ok(Self {
             controls,
             pending: true,
@@ -349,14 +306,13 @@ impl Demo {
             sky_box,
             pmrem,
             pmrem_depth,
-            box_draw,
             bake_draws,
             bake_renders,
             bake_object,
             shadow_color,
             shadow_depth,
-            shadow_draws,
-            shadow_renders,
+            shadow_draw,
+            shadow_render,
             shadow_object,
             tower_render: uniform(r, "tower", wgsl!("building_fs"), "renderStruct")?,
             tower_object: uniform(r, "tower", wgsl!("building_fs"), "objectStruct")?,
@@ -368,6 +324,12 @@ impl Demo {
             output_object: uniform(r, "building output", OUTPUT_VS, "objectStruct")?,
             output_quad: vertex("building quad", &[-1., 3., 0., -1., -1., 0., 3., -1., 0.]),
             linear,
+            trilinear: r.device.create_sampler(&wgpu::SamplerDescriptor {
+                mag_filter: wgpu::FilterMode::Linear,
+                min_filter: wgpu::FilterMode::Linear,
+                mipmap_filter: wgpu::FilterMode::Linear,
+                ..Default::default()
+            }),
             compare,
             targets: None,
         })
@@ -458,7 +420,7 @@ impl Demo {
                 (2, tex(&r.dfg)),
                 (3, sampler(&self.compare)),
                 (4, tex(&self.shadow_depth)),
-                (5, sampler(&self.linear)),
+                (5, sampler(&self.trilinear)),
                 (6, tex(&self.pmrem.view)),
             ],
         );
@@ -588,7 +550,10 @@ impl Demo {
             "objectStruct",
             &self.sky_values(false),
         )?;
-        for (render, view) in self.bake_renders.iter().zip(FACE_VIEWS) {
+        // CubeCamera( 0.1, 100 ) at the origin; the cleared faces take the
+        // renderer's clear color ( black ) as the scene's background.
+        let cameras = face_cameras(0.1, 100., Vector3::ZERO);
+        for (render, (projection, view, _)) in self.bake_renders.iter().zip(&cameras) {
             write(
                 r,
                 render,
@@ -596,70 +561,81 @@ impl Demo {
                 "renderStruct",
                 &[
                     ("nodeUniform7", vec![time]),
-                    ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                    ("cameraViewMatrix", view.to_vec()),
+                    ("cameraProjectionMatrix", m4(*projection)),
+                    ("cameraViewMatrix", m4(*view)),
                     ("cameraPosition", vec![0.; 3]),
                 ],
             )?;
         }
-        let pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
-            let load = |c| {
-                if clear {
-                    wgpu::LoadOp::Clear(c)
-                } else {
-                    wgpu::LoadOp::Load
-                }
-            };
-            encoder
-                .begin_render_pass(&wgpu::RenderPassDescriptor {
-                    label: Some("PMREM fromScene"),
-                    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                        view: &self.pmrem.view,
-                        depth_slice: None,
-                        resolve_target: None,
-                        ops: wgpu::Operations {
-                            load: load(wgpu::Color::TRANSPARENT),
-                            store: wgpu::StoreOp::Store,
-                        },
-                    })],
-                    depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
-                        view: &self.pmrem_depth,
-                        depth_ops: Some(wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(1.)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        }),
-                        stencil_ops: None,
+        for (face, draw) in self.pmrem.source_faces().iter().zip(&self.bake_draws) {
+            let mut p = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("PMREM fromScene"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: face,
+                    depth_slice: None,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
+                    view: &self.pmrem_depth,
+                    depth_ops: Some(wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(1.),
+                        store: wgpu::StoreOp::Discard,
                     }),
-                    ..Default::default()
-                })
-                .forget_lifetime()
-        };
-        drop(pass(encoder, true));
-        {
-            let mut p = pass(encoder, false);
-            p.set_viewport(0., 0., 768., 1024., 0., 1.);
-            set(&mut p, &self.box_draw);
-            self.sky_box.draw(&mut p, 1);
-        }
-        for (i, draw) in self.bake_draws.iter().enumerate() {
-            let mut p = pass(encoder, false);
-            p.set_viewport(
-                (i % 3) as f32 * 256.,
-                (i / 3) as f32 * 256.,
-                256.,
-                256.,
-                0.,
-                1.,
-            );
+                    stencil_ops: None,
+                }),
+                ..Default::default()
+            });
             set(&mut p, draw);
             self.sky_box.draw(&mut p, 1);
         }
-        self.pmrem.encode_levels(encoder);
+        self.pmrem.encode_from_scene(encoder);
         Ok(())
+    }
+    /// fitShadowCamera(): the light and its target placed so the shadow
+    /// frustum holds the tower and the whole shadow it casts on the ground;
+    /// the light's position, its target and the shadow camera's view and
+    /// projection.
+    fn shadow_camera(&self) -> (Vector3, Vector3, Matrix4, Matrix4) {
+        let (sun, _) = self.sun();
+        let [height, width, depth] = [self.params[1], self.params[2], self.params[3]];
+        let tip = height / sun.y.max(0.05);
+        let (cx, cz) = (-sun.x * tip * 0.5, -sun.z * tip * 0.5);
+        let radius = width.hypot(depth) * 0.5;
+        let half = cx.hypot(cz) + radius + 20.;
+        let distance = half + height;
+        let target = Vector3::new(cx, 0., cz);
+        let light = Vector3::new(
+            cx + sun.x * distance,
+            sun.y * distance,
+            cz + sun.z * distance,
+        );
+        let (near, far) = (1., distance * 2.);
+        // OrthographicCamera( -half, half, half, -half, near, far ) in the
+        // WebGPU coordinate system.
+        let projection = Matrix4::from_cols_array(&[
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            -1. / (far - near),
+            0.,
+            0.,
+            0.,
+            -near / (far - near),
+            1.,
+        ]);
+        let view = Matrix4::look_at_rh(light, target, Vector3::Y);
+        (light, target, view, projection)
     }
     pub fn render(
         &mut self,
@@ -710,8 +686,13 @@ impl Demo {
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
         let position = world.w_axis.truncate();
-        let (sun, light_color) = self.sun();
-        let fitted: [Cascade; 2] = cascades(sun, world, projection, 1., 20000., 1000.);
+        let (_, light_color) = self.sun();
+        let (light, light_target, shadow_view, shadow_projection) = self.shadow_camera();
+        let bias = Matrix4::from_cols_array(&[
+            0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
+        ]);
+        let shadow_matrix = m4(bias * shadow_projection * shadow_view);
+        let max_lod = self.pmrem.max_lod as f64;
         let id3 = m3(Matrix4::IDENTITY);
         let id4 = m4(Matrix4::IDENTITY);
         let base = Color::from_hex(pick_building_color(self.params[0])).0;
@@ -729,43 +710,35 @@ impl Demo {
                 ("nodeUniform6", vec![1.]),
             ],
         )?;
-        for (render, cascade) in self.shadow_renders.iter().zip(&fitted) {
-            write(
-                r,
-                render,
-                wgsl!("shadow_fs"),
-                "renderStruct",
-                &[
-                    ("cameraProjectionMatrix", m4(cascade.projection)),
-                    ("cameraViewMatrix", m4(cascade.view)),
-                    (
-                        "cameraPosition",
-                        cascade.view.inverse().w_axis.truncate().to_array().to_vec(),
-                    ),
-                ],
-            )?;
-        }
-        let atlas = vec![(MAP * 2) as f64, MAP as f64];
-        let mut tower_render = vec![
+        write(
+            r,
+            &self.shadow_render,
+            wgsl!("shadow_fs"),
+            "renderStruct",
+            &[
+                ("cameraProjectionMatrix", m4(shadow_projection)),
+                ("cameraViewMatrix", m4(shadow_view)),
+                ("cameraPosition", light.to_array().to_vec()),
+            ],
+        )?;
+        let map = vec![MAP as f64; 2];
+        // The light's colour, position and target, then its shadow's matrix,
+        // normalBias, bias, radius, mapSize and intensity.
+        let tower_render = vec![
             ("cameraProjectionMatrix", m4(projection)),
             ("cameraViewMatrix", m4(view)),
             ("cameraPosition", position.to_array().to_vec()),
-            ("nodeUniform10", light_color),
-            ("nodeUniform9", sun.to_array().to_vec()),
-            ("nodeUniform13", m4(fitted[1].matrix)),
-            ("nodeUniform12", fitted[1].data.to_vec()),
-            ("nodeUniform19", m4(fitted[0].matrix)),
-            ("nodeUniform18", fitted[0].data.to_vec()),
-            ("nodeUniform11", vec![0.]),
+            ("cameraWorldMatrix", m4(world)),
+            ("nodeUniform11", light_color),
+            ("nodeUniform9", light.to_array().to_vec()),
+            ("nodeUniform10", light_target.to_array().to_vec()),
+            ("nodeUniform12", shadow_matrix.clone()),
+            ("nodeUniform13", vec![0.]),
             ("nodeUniform14", vec![-0.0004]),
             ("nodeUniform16", vec![1.]),
-            ("nodeUniform17", atlas.clone()),
-            ("nodeUniform20", vec![-0.0004]),
-            ("nodeUniform21", vec![1.]),
-            ("nodeUniform22", atlas.clone()),
-            ("nodeUniform23", vec![1.]),
+            ("nodeUniform17", map.clone()),
+            ("nodeUniform18", vec![1.]),
         ];
-        tower_render.push(("cameraWorldMatrix", m4(world)));
         write(
             r,
             &self.tower_render,
@@ -784,11 +757,9 @@ impl Demo {
                 ("nodeUniform3", base),
                 ("nodeUniform5", id3.clone()),
                 ("nodeUniform6", vec![1.]),
-                ("nodeUniform24", vec![8.]),
-                ("nodeUniform25", id4.clone()),
-                ("nodeUniform27", vec![TEXEL[0]]),
-                ("nodeUniform28", vec![TEXEL[1]]),
-                ("nodeUniform30", vec![0.25]),
+                ("nodeUniform20", id4.clone()),
+                ("nodeUniform22", vec![max_lod]),
+                ("nodeUniform23", vec![0.25]),
             ],
         )?;
         write(
@@ -818,18 +789,12 @@ impl Demo {
             &[
                 ("cameraProjectionMatrix", m4(projection)),
                 ("cameraViewMatrix", m4(view)),
-                ("nodeUniform8", m4(fitted[1].matrix)),
-                ("nodeUniform7", fitted[1].data.to_vec()),
-                ("nodeUniform14", m4(fitted[0].matrix)),
-                ("nodeUniform13", fitted[0].data.to_vec()),
-                ("nodeUniform6", vec![0.]),
-                ("nodeUniform9", vec![-0.0004]),
-                ("nodeUniform11", vec![1.]),
-                ("nodeUniform12", atlas.clone()),
-                ("nodeUniform15", vec![-0.0004]),
-                ("nodeUniform16", vec![1.]),
-                ("nodeUniform17", atlas),
-                ("nodeUniform18", vec![1.]),
+                ("nodeUniform3", shadow_matrix),
+                ("nodeUniform7", vec![0.]),
+                ("nodeUniform8", vec![-0.0004]),
+                ("nodeUniform10", vec![1.]),
+                ("nodeUniform11", map),
+                ("nodeUniform12", vec![1.]),
             ],
         )?;
         write(
@@ -841,7 +806,7 @@ impl Demo {
                 ("nodeUniform0", vec![0.; 3]),
                 ("nodeUniform1", vec![0.35]),
                 ("nodeUniform2", id4.clone()),
-                ("nodeUniform4", id3),
+                ("nodeUniform5", id3),
             ],
         )?;
         write(
@@ -868,49 +833,33 @@ impl Demo {
             "objectStruct",
             &[("nodeUniform5", id4)],
         )?;
-        // The SunLight shadow: the atlas cleared, then each cascade's tile.
-        let shadow_pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
-            encoder
-                .begin_render_pass(&wgpu::RenderPassDescriptor {
-                    label: Some("sun shadow"),
-                    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                        view: &self.shadow_color,
-                        depth_slice: None,
-                        resolve_target: None,
-                        ops: wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        },
-                    })],
-                    depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
-                        view: &self.shadow_depth,
-                        depth_ops: Some(wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(1.)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        }),
-                        stencil_ops: None,
+        // The DirectionalLight's shadow map.
+        {
+            let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("sun shadow"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: &self.shadow_color,
+                    depth_slice: None,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
+                    view: &self.shadow_depth,
+                    depth_ops: Some(wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(1.),
+                        store: wgpu::StoreOp::Store,
                     }),
-                    ..Default::default()
-                })
-                .forget_lifetime()
-        };
-        drop(shadow_pass(&mut encoder, true));
-        for (draw, cascade) in self.shadow_draws.iter().zip(&fitted) {
-            let mut pass = shadow_pass(&mut encoder, false);
-            let [x, y, w, h] = cascade.viewport;
-            pass.set_viewport(x, y, w, h, 0., 1.);
-            if Frustum::from_projection(cascade.projection * cascade.view)
+                    stencil_ops: None,
+                }),
+                ..Default::default()
+            });
+            if Frustum::from_projection(shadow_projection * shadow_view)
                 .intersects_sphere(self.tower.sphere)
             {
-                set(&mut pass, draw);
+                set(&mut pass, &self.shadow_draw);
                 self.tower.draw(&mut pass);
             }
         }

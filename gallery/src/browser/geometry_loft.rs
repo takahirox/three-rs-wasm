@@ -2,22 +2,23 @@
 //! coffee cup, saucer and handle, vase, nautilus shell, twisted star, gold
 //! ribbon, toothpaste tube, pumpkin, mushroom and copper goblet on marble
 //! pedestals, a stanchion-and-rope barrier and a theatre curtain — each
-//! dressed by its procedural node material, lit by the SunLight addon's two
-//! 4096² cascades and RoomEnvironment's PMREM over the screen-space vignette
-//! background, with NeutralToneMapping and OrbitControls. The group turns by
-//! 0.001 rad per frame, as the page's animate() does. The loft and circle
-//! geometry is built once on the CPU, as the page's is; each mesh renders
-//! with its own draw into both cascades and the 4× MSAA scene pass. The
-//! sections view draws each loft's section rings as line segments instead.
-//! Every stage runs the WGSL three.js r186 generates for the page ( in
-//! `geometry_loft/`; the background vertex stage, the default shadow stages,
-//! the line material and the output are the skinning_instances, fog_volume,
+//! dressed by its procedural node material, lit by a DirectionalLight with
+//! a 4096² PCF shadow and RoomEnvironment's PMREM ( fromScene with sigma
+//! 0.04, pmrem.rs ) over the screen-space vignette background, with
+//! NeutralToneMapping and OrbitControls. The group turns by 0.001 rad per
+//! frame, as the page's animate() does. The loft and circle geometry is
+//! built once on the CPU, as the page's is; each mesh renders with its own
+//! draw into the shadow map and the 4× MSAA scene pass. The sections view
+//! draws each loft's section rings as line segments instead. Every stage
+//! runs the WGSL three.js r187 generates for the page ( in `geometry_loft/`;
+//! the background vertex stage, the default shadow stages, the line
+//! material and the output are the skinning_instances, fog_volume,
 //! custom_fog, cubemap_dynamic and compute_cloth modules, byte-identical ).
 pub(super) mod shapes;
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, culled_pipeline, set};
-use super::fog_volume::{Cascade, cascades_sized};
 use super::lights_projector::{m3, m4, pack};
+use super::pmrem::room_environment;
 use super::pmrem_cube_uv::bind;
 use super::retro::uniform;
 use crate::{
@@ -30,15 +31,18 @@ use wgpu::util::DeviceExt;
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-/// The SunLight shadow: two 4096² cascades side by side.
+/// The light's shadow.mapSize.
 const MAP: u32 = 4096;
-/// The light's position ( it shines towards the origin ) and intensity.
+/// The light's position ( it shines towards its target at the origin ) and
+/// intensity.
 const SUN: [f64; 3] = [18., 30., 12.];
 const SUN_INTENSITY: f64 = 3.;
+/// The shadow camera: OrthographicCamera( -60, 60, 60, -60, 0.5, 110 ).
+const SHADOW_CAMERA: (f64, f64, f64) = (60., 0.5, 110.);
 /// scene.environmentIntensity.
 const ENVIRONMENT: f64 = 0.4;
-/// The cube-UV texel sizes at lodMax 8.
-const TEXEL: [f64; 2] = [1. / 768., 1. / 1024.];
+/// The PMREM's last level ( 256² faces down to 8² ).
+const MAX_LOD: f64 = 5.;
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("geometry_loft/", $name, ".wgsl"))
@@ -276,8 +280,7 @@ fn first_use<'a>(sources: &[&'a str], name: &str) -> Option<&'a str> {
 }
 /// The object uniforms of a node material by how its shaders use them:
 /// colour, opacity, metalness, roughness, emissive, the model and normal
-/// matrices, and the environment's lodMax, rotation, texel size and
-/// intensity.
+/// matrices, and the environment's rotation, maxLod and intensity.
 fn object_values(
     vs: &str,
     fs: &str,
@@ -313,12 +316,8 @@ fn object_values(
                     vec![0.; 3]
                 } else if used("vec3<f32>( # ) )") && line.contains("EmissiveColor") {
                     vec![1.]
-                } else if used("-2.0, # )") {
-                    vec![8.]
-                } else if used(".x * # )") {
-                    vec![TEXEL[0]]
-                } else if used(".y * # )") {
-                    vec![TEXEL[1]]
+                } else if used("( ( # * ") && line.contains("textureSampleLevel") {
+                    vec![MAX_LOD]
                 } else if line.contains("radiance + (") || line.contains("iblIrradiance + (") {
                     vec![ENVIRONMENT]
                 } else {
@@ -330,10 +329,9 @@ fn object_values(
     }
     Ok(out)
 }
-/// The camera and SunLight uniforms of a lit material, by field order:
-/// the light's colour and direction, then each cascade's matrix and data
-/// ( far cascade first ), the normal bias, each cascade's bias, radius and
-/// map size, and the shadow intensity.
+/// The camera and light uniforms of a lit material, by field order: the
+/// light's colour, position and target, then its shadow's matrix, normal
+/// bias, bias, radius, map size and intensity.
 fn render_values(
     fs: &str,
     camera: &[(&str, Vec<f64>)],
@@ -546,6 +544,8 @@ pub(super) struct Demo {
     shadow_depth: wgpu::TextureView,
     environment: wgpu::TextureView,
     linear: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
@@ -711,18 +711,15 @@ impl Demo {
                 .create_view(&Default::default())
         };
         let attach = wgpu::TextureUsages::RENDER_ATTACHMENT;
-        let atlas = (MAP * 2, MAP);
-        let shadow_color = texture(atlas, BYTE, attach);
-        let shadow_depth = texture(atlas, DEPTH, attach | wgpu::TextureUsages::TEXTURE_BINDING);
+        let shadow_color = texture((MAP, MAP), BYTE, attach);
+        let shadow_depth = texture(
+            (MAP, MAP),
+            DEPTH,
+            attach | wgpu::TextureUsages::TEXTURE_BINDING,
+        );
         // scene.environment = fromScene( new RoomEnvironment(), 0.04 ).
-        let room = super::room_environment::environment(r)?;
-        let environment = room
-            .gpu
-            .as_ref()
-            .ok_or(Error::Invalid("room environment"))?
-            .view
-            .clone();
-        let shadow_renders = (0..2)
+        let environment = room_environment(r, 0.04)?.view;
+        let shadow_renders = (0..1)
             .map(|_| uniform(r, "loft shadow", SHADOW_VS, "renderStruct"))
             .collect::<Result<Vec<_>>>()?;
         let shadow_pipelines: Vec<Option<wgpu::RenderPipeline>> = kinds
@@ -856,6 +853,12 @@ impl Demo {
             shadow_depth,
             environment,
             linear,
+            trilinear: r.device.create_sampler(&wgpu::SamplerDescriptor {
+                mag_filter: wgpu::FilterMode::Linear,
+                min_filter: wgpu::FilterMode::Linear,
+                mipmap_filter: wgpu::FilterMode::Linear,
+                ..Default::default()
+            }),
             compare,
             targets: None,
         })
@@ -904,10 +907,10 @@ impl Demo {
         for item in &self.items {
             let p = &main_pipelines[item.kind];
             let fs = self.kinds[item.kind].main.1;
-            // The lit materials' textures: the DFG LUT, the shadow atlas and
+            // The lit materials' textures: the DFG LUT, the shadow map and
             // the environment, in binding order.
             let mut entries = vec![(0, item.object.as_entire_binding())];
-            let mut textures = 0;
+            let (mut textures, mut samplers) = (0, 0);
             for line in fs.lines().filter(|l| l.contains("@group( 1 ) var")) {
                 let binding: u32 = line
                     .split("@binding(")
@@ -918,7 +921,12 @@ impl Demo {
                 let resource = if line.contains("sampler_comparison") {
                     sampler(&self.compare)
                 } else if line.contains(": sampler") {
-                    sampler(&self.linear)
+                    samplers += 1;
+                    sampler(if samplers == 1 {
+                        &self.linear
+                    } else {
+                        &self.trilinear
+                    })
                 } else if line.contains("texture_depth_2d") {
                     tex(&self.shadow_depth)
                 } else {
@@ -1129,24 +1137,41 @@ impl Demo {
         s.update()?;
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
-        let sun = Vector3::from_array(SUN);
-        let fitted: [Cascade; 2] = cascades_sized(sun, world, projection, (1., 1000., 110.), MAP);
+        // The light's shadow camera looks from the light at its target.
+        let (half, near, far) = SHADOW_CAMERA;
+        let shadow_projection = Matrix4::from_cols_array(&[
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            -1. / (far - near),
+            0.,
+            0.,
+            0.,
+            -near / (far - near),
+            1.,
+        ]);
+        let shadow_view =
+            Matrix4::look_at_rh(Vector3::from_array(SUN), Vector3::ZERO, Vector3::Y);
+        let bias = Matrix4::from_cols_array(&[
+            0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
+        ]);
         let group = rotation_y(self.rotation);
-        let size = vec![(MAP * 2) as f64, MAP as f64];
         let light = vec![
             vec![SUN_INTENSITY; 3],
             SUN.to_vec(),
-            m4(fitted[1].matrix),
-            fitted[1].data.to_vec(),
-            m4(fitted[0].matrix),
-            fitted[0].data.to_vec(),
+            vec![0.; 3],
+            m4(bias * shadow_projection * shadow_view),
             vec![0.],
             vec![-0.0005],
             vec![1.],
-            size.clone(),
-            vec![-0.0005],
-            vec![1.],
-            size,
+            vec![MAP as f64; 2],
             vec![1.],
         ];
         let camera_values = vec![
@@ -1167,15 +1192,15 @@ impl Demo {
                 &render_values(k.main.1, &camera_values, &light)?,
             )?;
         }
-        for (render, cascade) in self.shadow_renders.iter().zip(&fitted) {
+        for render in &self.shadow_renders {
             write(
                 r,
                 render,
                 SHADOW_VS,
                 "renderStruct",
                 &named(&[
-                    ("cameraProjectionMatrix", m4(cascade.projection)),
-                    ("cameraViewMatrix", m4(cascade.view)),
+                    ("cameraProjectionMatrix", m4(shadow_projection)),
+                    ("cameraViewMatrix", m4(shadow_view)),
                 ]),
             )?;
         }
@@ -1271,7 +1296,7 @@ impl Demo {
                 radius: sphere.radius * scale.max_element(),
             }
         };
-        // The SunLight shadow: the atlas cleared, then each cascade's tile.
+        // The light's shadow map.
         let shadow_pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
             encoder
                 .begin_render_pass(&wgpu::RenderPassDescriptor {
@@ -1306,11 +1331,10 @@ impl Demo {
                 .forget_lifetime()
         };
         drop(shadow_pass(&mut encoder, true));
-        for (i, cascade) in fitted.iter().enumerate() {
+        {
+            let i = 0;
             let mut pass = shadow_pass(&mut encoder, false);
-            let [x, y, w, h] = cascade.viewport;
-            pass.set_viewport(x, y, w, h, 0., 1.);
-            let frustum = Frustum::from_projection(cascade.projection * cascade.view);
+            let frustum = Frustum::from_projection(shadow_projection * shadow_view);
             for item in self.items.iter().filter(|item| self.shown(item)) {
                 let Some(draw) = item.shadow.get(i) else {
                     continue;

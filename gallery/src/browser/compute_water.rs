@@ -4,16 +4,17 @@
 //! and 100 instanced ducks that ride and drift on it (a second kernel). The
 //! water mesh reads its heights and normals from the current buffer in the
 //! vertex stage, a transparent double-sided standard material over the
-//! blouberg_sunrise sky (a blurred PMREM background) with the pool border,
-//! under ACES tone mapping with 4× MSAA. Every stage runs the WGSL three.js
-//! r186 generates for the page (in `compute_water/`, without the unused
-//! subgroup built-in; the PMREM, background and output modules are the
-//! retro, compute_cloth and cubemap_dynamic ones, which are byte-identical).
+//! blouberg_sunrise sky (its PMREM as the blurred background) with the pool
+//! border, under ACES tone mapping with 4× MSAA. Every stage runs the WGSL
+//! three.js r187 generates for the page (in `compute_water/`, without the
+//! unused subgroup built-in; the PMREM is pmrem.rs's fromEquirectangular,
+//! the output module the cubemap_dynamic one, byte-identical).
 use super::controls_attributes::{Controls, camera_state, viewport_css};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline, rgbe_pmrem};
+use super::pmrem::{Pmrem, equirect_pmrem};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::{mipmapped, target, uniform};
 use super::shadowmap_opacity::Mipmaps;
 use super::ssao::{Random, Simplex};
@@ -33,8 +34,8 @@ macro_rules! wgsl {
         include_str!(concat!("compute_water/", $name, ".wgsl"))
     };
 }
-const BACKGROUND_VS: &str = include_str!("compute_cloth/background_vs.wgsl");
-const BACKGROUND_FS: &str = include_str!("compute_cloth/background_fs.wgsl");
+const BACKGROUND_VS: &str = include_str!("compute_water/background_vs.wgsl");
+const BACKGROUND_FS: &str = include_str!("compute_water/background_fs.wgsl");
 const OUTPUT_VS: &str = include_str!("cubemap_dynamic/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("cubemap_dynamic/output_fs.wgsl");
 /// An indexed mesh's vertex buffers, triangle and wireframe indices and counts.
@@ -156,6 +157,8 @@ pub(super) struct Demo {
     output_quad: wgpu::Buffer,
     clamp: wgpu::Sampler,
     repeat: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     targets: Option<Targets>,
 }
 impl Demo {
@@ -216,10 +219,11 @@ impl Demo {
         let identity: Vec<f32> = (0..DUCKS)
             .flat_map(|_| Matrix4::IDENTITY.to_cols_array().map(|v| v as f32))
             .collect();
+        // InstancedMesh.instanceMatrix: identity per duck, an instanced attribute.
         let instances = init(
             "duck instances",
             bytemuck::cast_slice(&identity),
-            wgpu::BufferUsages::UNIFORM,
+            wgpu::BufferUsages::VERTEX,
         );
         let height_object = uniform(r, "water height object", wgsl!("height_ab"), "objectStruct")?;
         let duck_object = uniform(r, "water duck object", wgsl!("ducks"), "objectStruct")?;
@@ -362,7 +366,9 @@ impl Demo {
             mipmap_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        let (pmrem, _) = rgbe_pmrem(r, &clamp, "environments/blouberg_sunrise_2_1k.hdr").await?;
+        // scene.environment and scene.background: the equirect HDR through
+        // PMREMGenerator.fromEquirectangular.
+        let pmrem = equirect_pmrem(r, "environments/blouberg_sunrise_2_1k.hdr").await?;
         let renders = [
             uniform(r, "water background render", BACKGROUND_FS, "renderStruct")?,
             uniform(r, "duck render", wgsl!("duck_fs"), "renderStruct")?,
@@ -414,6 +420,12 @@ impl Demo {
             ),
             clamp,
             repeat,
+            trilinear: r.device.create_sampler(&wgpu::SamplerDescriptor {
+                mag_filter: wgpu::FilterMode::Linear,
+                min_filter: wgpu::FilterMode::Linear,
+                mipmap_filter: wgpu::FilterMode::Linear,
+                ..Default::default()
+            }),
             targets: None,
         })
     }
@@ -487,7 +499,6 @@ impl Demo {
                     ("mouseSize", &[mouse_size]),
                     ("mouseDeep", &[mouse_deep]),
                     ("mouseSpeed", &self.mouse_speed),
-                    ("nodeUniform8", &[(WIDTH * WIDTH) as f64]),
                 ],
             )?;
             let kernel = self.ping_pong as usize;
@@ -548,7 +559,17 @@ impl Demo {
             attributes: &attrs[i],
         };
         let two = [layout(0, 12), layout(1, 12)];
-        let three = [layout(0, 12), layout(1, 12), layout(2, 8)];
+        let matrix = wgpu::vertex_attr_array![3 => Float32x4, 4 => Float32x4, 5 => Float32x4, 6 => Float32x4];
+        let ducks = [
+            layout(0, 12),
+            layout(1, 12),
+            layout(2, 8),
+            wgpu::VertexBufferLayout {
+                array_stride: 64,
+                step_mode: wgpu::VertexStepMode::Instance,
+                attributes: &matrix,
+            },
+        ];
         let depth = Some((wgpu::CompareFunction::LessEqual, true));
         let pipeline =
             |label, shaders, buffers: &[wgpu::VertexBufferLayout], cw, blended, topology| {
@@ -607,9 +628,9 @@ impl Demo {
                 &p,
                 &self.renders[0],
                 &[
-                    (0, self.objects[0].as_entire_binding()),
-                    (1, sampler(&self.clamp)),
-                    (2, tex(&self.pmrem.view)),
+                    (0, sampler(&self.trilinear)),
+                    (1, tex(&self.pmrem.view)),
+                    (2, self.objects[0].as_entire_binding()),
                 ],
             );
             (p, g)
@@ -617,7 +638,7 @@ impl Demo {
         let duck = lit(
             "duck",
             (wgsl!("duck_vs"), wgsl!("duck_fs")),
-            &three,
+            &ducks,
             false,
             false,
             &self.renders[1],
@@ -627,10 +648,9 @@ impl Demo {
                 (2, tex(&self.duck_map)),
                 (3, sampler(&self.clamp)),
                 (4, tex(&r.dfg)),
-                (5, sampler(&self.clamp)),
+                (5, sampler(&self.trilinear)),
                 (6, tex(&self.pmrem.view)),
-                (7, self.instances.as_entire_binding()),
-                (8, self.ducks.as_entire_binding()),
+                (7, self.ducks.as_entire_binding()),
             ],
         );
         let border = lit(
@@ -644,7 +664,7 @@ impl Demo {
                 (0, self.objects[2].as_entire_binding()),
                 (1, sampler(&self.clamp)),
                 (2, tex(&r.dfg)),
-                (3, sampler(&self.clamp)),
+                (3, sampler(&self.trilinear)),
                 (4, tex(&self.pmrem.view)),
             ],
         );
@@ -652,7 +672,7 @@ impl Demo {
             (0, self.objects[3].as_entire_binding()),
             (1, sampler(&self.clamp)),
             (2, tex(&r.dfg)),
-            (3, sampler(&self.clamp)),
+            (3, sampler(&self.trilinear)),
             (4, tex(&self.pmrem.view)),
             (5, self.heights[0].as_entire_binding()),
             (6, self.heights[1].as_entire_binding()),
@@ -776,18 +796,19 @@ impl Demo {
                 (light[2], vec![0.; 3]),
             ]
         };
+        // backgroundBlurriness, backgroundIntensity and backgroundRotation.
         let mut background = camera_values(["", "", ""]);
         background.extend([
-            ("nodeUniform0", vec![0.3]),
-            ("nodeUniform9", vec![1.]),
-            ("nodeUniform3", m4(Matrix4::IDENTITY)),
+            ("nodeUniform6", vec![0.3]),
+            ("nodeUniform7", vec![1.]),
+            ("nodeUniform2", m4(Matrix4::IDENTITY)),
         ]);
         write(&self.renders[0], BACKGROUND_FS, "renderStruct", &background)?;
         write(
             &self.renders[1],
             wgsl!("duck_fs"),
             "renderStruct",
-            &camera_values(["nodeUniform17", "nodeUniform15", "nodeUniform16"]),
+            &camera_values(["nodeUniform20", "nodeUniform18", "nodeUniform19"]),
         )?;
         write(
             &self.renders[2],
@@ -802,34 +823,31 @@ impl Demo {
             &camera_values(["nodeUniform16", "nodeUniform14", "nodeUniform15"]),
         )?;
         let identity3 = m3(Matrix4::IDENTITY);
-        let texel =
-            |a: &'static str, b: &'static str| [(a, vec![1. / 768.]), (b, vec![1. / 1024.])];
-        let mut values = vec![
-            ("nodeUniform1", vec![8.]),
-            ("nodeUniform2", m4(Matrix4::IDENTITY)),
-            ("nodeUniform5", identity3.clone()),
-            ("nodeUniform10", vec![1.]),
-            ("nodeUniform12", m4(Matrix4::IDENTITY)),
-        ];
-        values.extend(texel("nodeUniform6", "nodeUniform7"));
-        write(&self.objects[0], BACKGROUND_FS, "objectStruct", &values)?;
-        let mut values = vec![
-            ("nodeUniform2", vec![1.; 3]),
+        let max_lod = self.pmrem.max_lod as f64;
+        let values = vec![
+            ("nodeUniform1", m4(Matrix4::IDENTITY)),
             ("nodeUniform4", identity3.clone()),
-            ("nodeUniform5", vec![1.]),
-            ("nodeUniform6", vec![0.]),
-            ("nodeUniform7", vec![0.02]),
-            ("nodeUniform9", identity3.clone()),
-            ("nodeUniform10", vec![0.; 3]),
-            ("nodeUniform11", vec![1.]),
-            ("nodeUniform13", m4(Matrix4::IDENTITY)),
-            ("nodeUniform18", vec![8.]),
-            ("nodeUniform19", m4(Matrix4::IDENTITY)),
-            ("nodeUniform24", vec![1.25]),
+            ("nodeUniform5", vec![max_lod]),
+            ("nodeUniform8", vec![1.]),
+            ("nodeUniform10", m4(Matrix4::IDENTITY)),
         ];
-        values.extend(texel("nodeUniform21", "nodeUniform22"));
+        write(&self.objects[0], BACKGROUND_FS, "objectStruct", &values)?;
+        let values = vec![
+            ("nodeUniform5", vec![1.; 3]),
+            ("nodeUniform7", identity3.clone()),
+            ("nodeUniform8", vec![1.]),
+            ("nodeUniform9", vec![0.]),
+            ("nodeUniform10", vec![0.02]),
+            ("nodeUniform12", identity3.clone()),
+            ("nodeUniform13", vec![0.; 3]),
+            ("nodeUniform14", vec![1.]),
+            ("nodeUniform16", m4(Matrix4::IDENTITY)),
+            ("nodeUniform22", m4(Matrix4::IDENTITY)),
+            ("nodeUniform24", vec![max_lod]),
+            ("nodeUniform25", vec![1.25]),
+        ];
         write(&self.objects[1], wgsl!("duck_fs"), "objectStruct", &values)?;
-        let mut values = vec![
+        let values = vec![
             (
                 "nodeUniform0",
                 Color::from_hex(0x908877).0.to_array().to_vec(),
@@ -841,11 +859,10 @@ impl Demo {
             ("nodeUniform6", vec![0.; 3]),
             ("nodeUniform7", vec![1.]),
             ("nodeUniform9", m4(Matrix4::IDENTITY)),
-            ("nodeUniform14", vec![8.]),
             ("nodeUniform15", m4(Matrix4::IDENTITY)),
-            ("nodeUniform20", vec![1.25]),
+            ("nodeUniform17", vec![max_lod]),
+            ("nodeUniform18", vec![1.25]),
         ];
-        values.extend(texel("nodeUniform17", "nodeUniform18"));
         write(
             &self.objects[2],
             wgsl!("border_fs"),
@@ -853,7 +870,7 @@ impl Demo {
             &values,
         )?;
         let water_model = Matrix4::from_rotation_x(-PI * 0.5);
-        let mut values = vec![
+        let values = vec![
             ("nodeUniform0", vec![self.read_from_a]),
             (
                 "nodeUniform3",
@@ -866,11 +883,10 @@ impl Demo {
             ("nodeUniform9", vec![0.; 3]),
             ("nodeUniform10", vec![1.]),
             ("nodeUniform12", m4(water_model)),
-            ("nodeUniform17", vec![8.]),
             ("nodeUniform18", m4(Matrix4::IDENTITY)),
-            ("nodeUniform23", vec![1.25]),
+            ("nodeUniform20", vec![max_lod]),
+            ("nodeUniform21", vec![1.25]),
         ];
-        values.extend(texel("nodeUniform20", "nodeUniform21"));
         write(&self.objects[3], wgsl!("water_fs"), "objectStruct", &values)?;
         write(
             &self.output_render,
@@ -929,6 +945,7 @@ impl Demo {
             self.background.draw(&mut pass, false, 1);
             if self.params[4] > 0.5 {
                 set(&mut pass, &lit(&t.duck));
+                pass.set_vertex_buffer(3, self.instances.slice(..));
                 self.duck.draw(&mut pass, wireframe, DUCKS);
             }
             set(&mut pass, &lit(&t.border));

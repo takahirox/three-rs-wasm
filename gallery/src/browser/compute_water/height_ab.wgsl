@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -36,8 +36,7 @@ struct objectStruct {
 	mousePos : vec2<f32>,
 	mouseSize : f32,
 	mouseDeep : f32,
-	mouseSpeed : vec2<f32>,
-	nodeUniform8 : u32
+	mouseSpeed : vec2<f32>
 };
 @binding( 2 ) @group( 0 )
 var<uniform> object : objectStruct;
@@ -45,8 +44,6 @@ var<uniform> object : objectStruct;
 // vars
 var<private> nodeVar0 : f32;
 var<private> nodeVar1 : f32;
-var<private> nodeVar2 : f32;
-var<private> nodeVar3 : f32;
 
 // codes
 
@@ -70,14 +67,14 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 
 	// flow -> Update Height A→B
-	if ( instanceIndex >= object.nodeUniform8 ) { return; }
-
 	nodeVar0 = HeightA.value[ instanceIndex ];
 	nodeVar1 = PrevHeight.value[ instanceIndex ];
-	nodeVar2 = ( ( ( HeightA.value[ ( ( min( u32( ( i32( ( instanceIndex / 128u ) ) + 1 ) ), ( 128u - 1u ) ) * 128u ) + u32( i32( ( instanceIndex % 128u ) ) ) ) ] + HeightA.value[ ( ( max( 0, ( i32( ( instanceIndex / 128u ) ) - 1 ) ) * 128 ) + i32( ( instanceIndex % 128u ) ) ) ] ) + HeightA.value[ ( ( i32( ( instanceIndex / 128u ) ) * 128 ) + i32( min( u32( ( i32( ( instanceIndex % 128u ) ) + 1 ) ), ( 128u - 1u ) ) ) ) ] ) + HeightA.value[ ( ( i32( ( instanceIndex / 128u ) ) * 128 ) + max( 0, ( i32( ( instanceIndex % 128u ) ) - 1 ) ) ) ] );
+	let nodeConst0 = i32( ( instanceIndex / 128u ) );
+	let nodeConst1 = i32( ( instanceIndex % 128u ) );
+	var nodeVar2 : f32 = ( ( ( HeightA.value[ ( ( min( ( nodeConst0 + 1 ), i32( ( 128u - 1u ) ) ) * 128 ) + nodeConst1 ) ] + HeightA.value[ ( ( max( 0, ( nodeConst0 - 1 ) ) * 128 ) + nodeConst1 ) ] ) + HeightA.value[ ( ( nodeConst0 * 128 ) + min( ( nodeConst1 + 1 ), i32( ( 128u - 1u ) ) ) ) ] ) + HeightA.value[ ( ( nodeConst0 * 128 ) + max( 0, ( nodeConst1 - 1 ) ) ) ] );
 	nodeVar2 = ( nodeVar2 * 0.5 );
 	nodeVar2 = ( nodeVar2 - nodeVar1 );
-	nodeVar3 = ( nodeVar2 * object.viscosity );
+	var nodeVar3 : f32 = ( nodeVar2 * object.viscosity );
 	nodeVar3 = ( nodeVar3 + ( ( ( cos( clamp( ( ( length( ( ( ( vec2<f32>( ( f32( globalId.x ) * 0.0078125 ), ( f32( globalId.y ) * 0.0078125 ) ) - vec2<f32>( 0.5, 0.5 ) ) * vec2<f32>( 6.0 ) ) - object.mousePos ) ) * 3.141592653589793 ) / object.mouseSize ), 0.0, 3.141592653589793 ) ) + 1.0 ) * object.mouseDeep ) * length( object.mouseSpeed ) ) );
 	PrevHeight.value[ instanceIndex ] = nodeVar0;
 	HeightB.value[ instanceIndex ] = nodeVar3;
