@@ -1,7 +1,9 @@
 """Generates tsl/src/three/**/mod.rs and tsl/src/three/order.rs: the ported
 modules ( a Rust file per JS file, same relative path in snake case ) and
 their initialization in the ES module evaluation order of Three.WebGPU.js,
-then the addons' ( addons/ ) in the pages' import order."""
+then the addons' ( addons/ ) in the pages' import order; and the same
+modules in the order the examples' build evaluates them ( bundle_order.txt,
+tools/tsl/module_order.py )."""
 import os, re
 
 ROOT = os.path.join(os.path.dirname(__file__), '../..')
@@ -36,6 +38,8 @@ def main():
         return [(js, rust_path(js)) for js in order if os.path.exists(os.path.join(TREE, *rust_path(js)) + '.rs')]
     ported = ported_of('module_order.txt')
     addons = ported_of('addon_order.txt')
+    bundled = ported_of('bundle_order.txt')
+    assert sorted(bundled) == sorted(ported)
     # mod.rs per directory.
     dirs = {}
     for js, rp in ported + addons:
@@ -58,7 +62,13 @@ def main():
         lines.append(f'    crate::reg::run_module("{js}", super::{"::".join(rp)}::init)?;')
     lines.append('    Ok(())')
     lines.append('}')
-    lines += ['', '/// Evaluate the ported addons ( after `init_all` ), in the ES evaluation',
+    lines += ['', '/// Evaluate every ported module once, in the order the examples\' build',
+              '/// ( build/three.core.js, three.tsl.js, three.webgpu.js ) evaluates them.',
+              'pub fn init_bundled() -> crate::rt::R<()> {']
+    for js, rp in bundled:
+        lines.append(f'    crate::reg::run_module("{js}", super::{"::".join(rp)}::init)?;')
+    lines += ['    Ok(())', '}']
+    lines += ['', '/// Evaluate the ported addons ( after `init_all` or `init_bundled` ), in the ES evaluation',
               '/// order of the pages\' imports: MaterialXLoader, then MaterialXInterfaceValidation.',
               'pub fn init_addons() -> crate::rt::R<()> {']
     for js, rp in addons:

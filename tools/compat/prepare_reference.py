@@ -11,11 +11,15 @@ baseline=json.loads((ROOT/'compat/three-r187/api.json').read_text())['baseline']
 commit=baseline['upstream_commit']
 destination=ROOT/'.cache/three-r187'
 stamp=destination/'.revision'
-extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js')
+# The build the examples load, whose module order tools/tsl/module_order.py follows.
+extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js','build/three.core.js','build/three.tsl.js','build/three.webgpu.js')
 # The addons and the example assets the loader and geometry oracles
-# ( tools/core/*-oracle.mjs ) run on.
-prefixes=('examples/jsm/','examples/fonts/','examples/models/fbx/','examples/models/vrml/','examples/models/usdz/')
-markers=('examples/jsm/loaders/VRMLLoader.js','examples/models/vrml/house.wrl','examples/models/usdz/saeukkang.usdz')
+# ( tools/core/*-oracle.mjs ) run on; the MaterialX page's local documents and
+# the textures they read, for its reference ( tests/browser/compute-examples.spec.js ).
+prefixes=('examples/jsm/','examples/fonts/','examples/models/fbx/','examples/models/vrml/','examples/models/usdz/','examples/materialx/')
+materialx_textures=tuple(f'examples/textures/{name}' for name in ('memorial.exr','memorial.hdr','tiff/crate_uncompressed.tif','brick_diffuse.jpg','brick_roughness.jpg','brick_bump.jpg','equirectangular/san_giuseppe_bridge_2k.hdr'))+('examples/models/gltf/ShaderBall.glb',)
+extras+=materialx_textures
+markers=('examples/jsm/loaders/VRMLLoader.js','examples/models/vrml/house.wrl','examples/models/usdz/saeukkang.usdz','examples/materialx/displacement.mtlx')
 if stamp.exists() and stamp.read_text().strip()==commit and all((destination/p).exists() for p in (*extras,*markers)):
     print('Three.js reference ready:',commit)
 else:

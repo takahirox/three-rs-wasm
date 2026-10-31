@@ -16,18 +16,30 @@ pub mod js;
 pub mod reg;
 pub mod three;
 
-/// Evaluate three's modules ( once ).
+thread_local! {
+    static EVALUATED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+/// Evaluate three's modules ( once ) in the order of `src/Three.WebGPU.js`'s
+/// imports, as the TSL corpus and the editor load them.
 pub fn init_three() -> rt::R<()> {
-    thread_local! {
-        static DONE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
-    }
-    if DONE.with(|d| d.replace(true)) {
+    if EVALUATED.with(|d| d.replace(true)) {
         return Ok(());
     }
     three::order::init_all()
 }
 
-/// Evaluate the ported addons ( after `three::order::init_all` ) with the
+/// Evaluate three's modules ( once ) in the order the examples' build
+/// ( `build/three.webgpu.js` ) evaluates them. A TSL Fn's layout is named by
+/// a counter, so the names a page's shaders carry follow this order.
+pub fn init_three_bundled() -> rt::R<()> {
+    if EVALUATED.with(|d| d.replace(true)) {
+        return Ok(());
+    }
+    three::order::init_bundled()
+}
+
+/// Evaluate the ported addons ( after `init_three` or `init_three_bundled` ) with the
 /// DOMParser and TextDecoder they read.
 pub fn init_addons() -> rt::R<()> {
     dom::install();
@@ -49,9 +61,12 @@ pub mod api {
     /// webgpu_loader_materialx's shaders ( `materialx_page` ) for the
     /// documents `texts`, each loaded from `paths[ i ]`, on a `width` ×
     /// `height` canvas: `{ grid, materials }`, each shader set
-    /// `{ vertexShader, fragmentShader, transparent, textures }` or
+    /// `{ vertexShader, fragmentShader, transparent, textures, back }` or
     /// `{ error }`, each texture binding `{ binding, source, uri, wrapS,
-    /// wrapT }` ( source 'image', 'dfg', 'pmrem' or 'transmission' ).
+    /// wrapT }` ( source 'image', 'dfg', 'pmrem' or 'transmission' ), `back`
+    /// the back side's `{ vertexShader, fragmentShader }` of a material the
+    /// renderer draws in two passes ( else null ). Each material's set has
+    /// its shaders on the UV plane as `plane`.
     #[wasm_bindgen]
     pub fn materialx_shaders(texts: Vec<String>, paths: Vec<String>, width: f64, height: f64) -> Result<JsValue, JsValue> {
         use crate::materialx_page::{Document, Shaders, Source, page_shaders};
@@ -79,19 +94,29 @@ pub mod api {
                     ])
                 })
                 .collect();
+            let back = match &sh.back {
+                Some((vertex, fragment)) => object(&[("vertexShader", s(vertex)), ("fragmentShader", s(fragment))]),
+                None => Val::Null,
+            };
             object(&[
                 ("vertexShader", s(&sh.vertex)),
                 ("fragmentShader", s(&sh.fragment)),
                 ("transparent", Val::Bool(sh.transparent)),
                 ("textures", array(textures)),
+                ("back", back),
             ])
         };
         let materials = page
             .materials
             .iter()
-            .map(|m| match m {
-                Ok(sh) => shaders(sh),
-                Err(e) => object(&[("error", s(e))]),
+            .zip(&page.planes)
+            .map(|(m, plane)| match (m, plane) {
+                (Ok(sh), Ok(plane)) => {
+                    let o = shaders(sh);
+                    let _ = crate::rt::set(&o, "plane", shaders(plane));
+                    o
+                }
+                (Err(e), _) | (_, Err(e)) => object(&[("error", s(e))]),
             })
             .collect();
         let result = object(&[("grid", shaders(&page.grid)), ("materials", array(materials))]);

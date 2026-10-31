@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -23,15 +23,13 @@ struct objectStruct {
 	nodeUniform1 : f32,
 	nodeUniform3 : mat3x3<f32>,
 	nodeUniform4 : f32,
-	nodeUniform5 : mat4x4<f32>,
-	nodeUniform6 : vec3<f32>,
-	nodeUniform7 : f32,
+	nodeUniform5 : vec3<f32>,
+	nodeUniform6 : f32,
+	nodeUniform9 : mat4x4<f32>,
 	nodeUniform11 : mat4x4<f32>,
-	nodeUniform15 : f32,
 	nodeUniform16 : mat4x4<f32>,
 	nodeUniform18 : f32,
-	nodeUniform19 : f32,
-	nodeUniform21 : f32
+	nodeUniform19 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -40,10 +38,8 @@ var<uniform> object : objectStruct;
 
 struct VaryingsStruct {
 	@location( 0 ) v_normalViewGeometry : vec3<f32>,
-	@location( 1 ) v_tangentView : vec3<f32>,
-	@location( 2 ) v_positionWorld : vec3<f32>,
-	@location( 3 ) v_positionViewDirection : vec3<f32>,
-	@location( 4 ) nodeVarying8 : vec4<f32>,
+	@location( 1 ) v_positionWorld : vec3<f32>,
+	@location( 2 ) v_positionViewDirection : vec3<f32>,
 	@builtin( position ) builtinClipSpace : vec4<f32>
 };
 var<private> varyings : VaryingsStruct;
@@ -51,8 +47,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> tangentLocal : vec3<f32>;
-var<private> VERTEX_nodeVar192 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
 var<private> positionLocal : vec3<f32>;
@@ -63,24 +57,20 @@ var<private> VERTEX_v_modelViewProjection : vec4<f32>;
 
 @vertex
 fn main( @location( 0 ) normal : vec3<f32>,
-	@location( 1 ) tangent : vec4<f32>,
-	@location( 2 ) position : vec3<f32> ) -> VaryingsStruct {
+	@location( 1 ) position : vec3<f32> ) -> VaryingsStruct {
 
 	// flow
 	// code
 
 	normalLocal = normal;
 	varyings.v_normalViewGeometry = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform3 * normalLocal ), 0.0 ) ).xyz );
-	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform5 );
-	tangentLocal = tangent.xyz;
-	varyings.v_tangentView = ( modelViewMatrix * vec4<f32>( tangentLocal, 0.0 ) ).xyz;
-	varyings.nodeVarying8 = tangent;
 	positionLocal = position;
-	varyings.v_positionWorld = ( object.nodeUniform5 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
+	varyings.v_positionWorld = ( object.nodeUniform9 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
+	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform9 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
-	VERTEX_nodeVar192 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar192;
+	let VERTEX_nodeConst37 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst37;
 
 	// result
 

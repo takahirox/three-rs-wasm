@@ -1,31 +1,36 @@
-//! webgpu_loader_materialx: 36 ShaderBall.glb models in a 6 × 6 grid, each
+//! webgpu_loader_materialx: 40 ShaderBall.glb models in rows of six, each
 //! with one MaterialXLoader material ( twelve MaterialX standard-surface
-//! samples and the page's 24 local test documents ), lit by the
-//! san_giuseppe_bridge PMREM ( lodMax 9 ) over the transparent grid ground.
+//! samples and the page's 28 local test documents ), lit by the
+//! san_giuseppe_bridge PMREM over the transparent grid ground; the
+//! Geometry selector shows each material on its model's UV plane instead.
 //! The documents are fetched and parsed at load by MaterialXLoader ported
-//! to Rust ( the three-tsl crate's Wasm, web/build/tsl: r186's
+//! to Rust ( the three-tsl crate's Wasm, web/build/tsl: r187's
 //! examples/jsm/loaders/MaterialX* and the node system transpiled ), which
 //! builds each material in the page's scene; the renderer's node builder
 //! there generates the ground's and the materials' WGSL and their texture
-//! bindings, which this module draws with. The ShaderBall's meshes are
+//! bindings, which this module draws with. The documents' images decode as
+//! the page's loaders read them ( ImageBitmapLoader, and the EXR, TIFF and
+//! HDR loaders the page registers, ported ). The ShaderBall's meshes are
 //! de-indexed with MikkTSpace tangents, as the page's computePrefabTangents
-//! leaves them. The frame draws the opaque balls front to back, then ( when
-//! a transmissive ball is visible ) copies the frame into the mipmapped
-//! transmission texture, draws the transmissive balls' back faces, then the
-//! transparent list back to front, and the LinearToneMapping output
-//! ( exposure 0.5 ). The PMREM, mipmap and output stages run the WGSL r186
-//! generates for them ( the PMREM, mipmap and output vertex modules are the
-//! deferred, shadowmap_opacity and compute_cloth ones, which are
-//! byte-identical ).
+//! leaves them. The frame draws the opaque objects front to back, then
+//! ( when a transmissive one is visible ) copies the frame into the back
+//! sides' mipmapped transmission texture, draws the transmissive objects'
+//! back sides, then the transparent list back to front, copying the frame
+//! into the front sides' texture before its first transmissive object, and
+//! the LinearToneMapping output ( exposure 0.5 ). The PMREM ( pmrem.rs ) and
+//! output stages run the WGSL r187 generates for them.
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, culled_pipeline, set};
 use super::generator_city::geo::normal_matrix;
 use super::generator_city::uniforms::{fields, inverse, uses};
 use super::gltf_viewer::{decode_image, fetch};
+use super::helpers_formats::formats::decode_tiff;
 use super::lights_projector::{m4, pack};
-use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline, rgbe_pmrem_at};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
+use super::refraction_loaders::formats::decode_exr;
 use super::retro::{mipmapped, target, uniform};
 use super::shadowmap_opacity::{Mipmaps, mip_count};
+use super::trackball_sprites::parse_rgbe;
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
 };
@@ -36,12 +41,9 @@ use wgpu::util::DeviceExt;
 
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-const OUTPUT_VS: &str = include_str!("compute_cloth/output_vs.wgsl");
+const OUTPUT_VS: &str = include_str!("loader_materialx/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("loader_materialx/output_fs.wgsl");
-const GGX_9: (&str, &str) = (
-    include_str!("deferred/pmrem_ggx_vs.wgsl"),
-    include_str!("deferred/pmrem_ggx_fs.wgsl"),
-);
+mod pmrem;
 /// How the material renders: opaque, transparent ( front faces ) or
 /// transmissive ( double-sided, transparent ).
 #[derive(Clone, Copy, PartialEq)]
@@ -79,7 +81,7 @@ const SAMPLES: [&str; 12] = [
     "velvet",
     "wood_tiled",
 ];
-const LOCAL_SAMPLES: [&str; 24] = [
+const LOCAL_SAMPLES: [&str; 28] = [
     "standard_surface_heightnormal",
     "standard_surface_conditional_if_float",
     "standard_surface_image_transform",
@@ -94,6 +96,9 @@ const LOCAL_SAMPLES: [&str; 24] = [
     "standard_surface_ior_test",
     "standard_surface_combined_test",
     "standard_surface_texture_opacity_test",
+    "standard_surface_image_exr_test",
+    "standard_surface_image_tiff_test",
+    "standard_surface_image_hdr_emission_test",
     "standard_surface_transmission_test",
     "standard_surface_transmission_only_test",
     "standard_surface_transmission_rough",
@@ -104,17 +109,18 @@ const LOCAL_SAMPLES: [&str; 24] = [
     "open_pbr_surface_velvet",
     "open_pbr_surface_pearl",
     "open_pbr_surface_honey",
+    "displacement",
 ];
 const SAMPLE_PATH: &str = "https://raw.githubusercontent.com/materialx/MaterialX/main/resources/Materials/Examples/StandardSurface/";
 const LOCAL_PATH: &str = "materialx/";
 
 #[wasm_bindgen(inline_js = r#"
 // MaterialXLoader and the renderer's node builder run on the three-tsl
-// crate's Wasm ( web/build/tsl: three r186 and its addons transpiled to Rust ).
+// crate's Wasm ( web/build/tsl: three r187 and its addons transpiled to Rust ).
 let tsl;
 export async function materialxShaders( texts, paths ) {
 	if ( tsl === undefined ) {
-		const revision = 'tsl-2';
+		const revision = 'tsl-3';
 		tsl = await import( new URL( `../build/tsl/three_tsl.js?v=${ revision }`, document.baseURI ) );
 		await tsl.default( { module_or_path: new URL( `../build/tsl/three_tsl_bg.wasm?v=${ revision }`, document.baseURI ) } );
 	}
@@ -129,14 +135,22 @@ extern "C" {
     ) -> std::result::Result<js_sys::Promise, JsValue>;
 }
 
-/// One sample: its document's material's WGSL, how it renders and its
-/// texture bindings.
-struct Sample {
-    name: String,
+/// A material's shaders on one geometry: its front side's WGSL ( its only
+/// side's, unless it renders in two passes ), its back side's ( the
+/// transmissive materials' ), and its texture bindings.
+struct Shaders {
     vs: String,
     fs: String,
-    kind: Kind,
+    back: Option<(String, String)>,
     textures: Vec<(u32, Tex)>,
+}
+/// One sample: its document's material on the ShaderBall and on the UV
+/// plane, and how it renders.
+struct Sample {
+    name: String,
+    kind: Kind,
+    ball: Shaders,
+    plane: Shaders,
 }
 fn js_error(e: JsValue) -> Error {
     Error::Asset(format!("THREE.MaterialXLoader: {e:?}"))
@@ -163,6 +177,36 @@ fn resolve(base: &str, uri: &str) -> String {
     }
     parts.join("/")
 }
+/// The three.js examples' textures the local documents read
+/// ( ../textures/… from examples/materialx/ ), where the gallery has them.
+const TEXTURES: [(&str, &str); 6] = [
+    ("textures/memorial.exr", "memorial.exr"),
+    ("textures/memorial.hdr", "memorial.hdr"),
+    (
+        "textures/tiff/crate_uncompressed.tif",
+        "tiff/crate_uncompressed.tif",
+    ),
+    (
+        "textures/brick_diffuse.jpg",
+        "tsl-next/textures/brick_diffuse.jpg",
+    ),
+    (
+        "textures/brick_bump.jpg",
+        "tsl-environment/textures/brick_bump.jpg",
+    ),
+    (
+        "textures/brick_roughness.jpg",
+        "materialx/textures/brick_roughness.jpg",
+    ),
+];
+/// An image's path under assets/: the MaterialX repository's and the local
+/// documents' own under materialx/, the examples' textures where listed.
+fn image_asset(path: &str) -> String {
+    match TEXTURES.iter().find(|(from, _)| *from == path) {
+        Some((_, to)) => format!("assets/{to}"),
+        None => format!("assets/materialx/{path}"),
+    }
+}
 fn address(wrap: f64) -> Result<wgpu::AddressMode> {
     Ok(match wrap as u32 {
         1000 => wgpu::AddressMode::Repeat,
@@ -171,13 +215,81 @@ fn address(wrap: f64) -> Result<wgpu::AddressMode> {
         _ => return Err(Error::Invalid("materialx wrap")),
     })
 }
+/// One shader set of `materialx_shaders`' result: its stages, its back
+/// side's, and its texture bindings, each image's path ( under the
+/// documents' directory `dir` once the loader's `path` is taken off its
+/// URI ) added to `images`.
+fn shaders(
+    set: &JsValue,
+    path: &str,
+    dir: &str,
+    images: &mut Vec<String>,
+) -> Result<(Shaders, bool)> {
+    let mut textures = vec![];
+    let mut transmissive = false;
+    for b in js_sys::Array::from(&field(set, "textures")?).iter() {
+        let binding = field(&b, "binding")?
+            .as_f64()
+            .ok_or(Error::Invalid("materialx binding"))? as u32;
+        let tex = match text(&b, "source")?.as_str() {
+            "image" => {
+                // A handler's URI carries the document's path.
+                let uri = text(&b, "uri")?;
+                let path = resolve(dir, uri.strip_prefix(path).unwrap_or(&uri));
+                let k = match images.iter().position(|p| *p == path) {
+                    Some(k) => k,
+                    None => {
+                        images.push(path);
+                        images.len() - 1
+                    }
+                };
+                let wrap = |key| address(field(&b, key)?.as_f64().unwrap_or(0.));
+                Image(k, wrap("wrapS")?, wrap("wrapT")?)
+            }
+            "dfg" => Dfg,
+            "pmrem" => Pmrem,
+            "transmission" => {
+                transmissive = true;
+                Transmission
+            }
+            _ => return Err(Error::Invalid("materialx texture")),
+        };
+        textures.push((binding, tex));
+    }
+    let back = field(set, "back")?;
+    let back = if back.is_null() || back.is_undefined() {
+        None
+    } else {
+        Some((text(&back, "vertexShader")?, text(&back, "fragmentShader")?))
+    };
+    let fs = text(set, "fragmentShader")?;
+    // The back side draws with the front's bindings.
+    if let Some((_, back_fs)) = &back
+        && fields(back_fs, "objectStruct") != fields(&fs, "objectStruct")
+    {
+        return Err(Error::Invalid("materialx back side"));
+    }
+    if transmissive != back.is_some() {
+        return Err(Error::Invalid("materialx back side"));
+    }
+    Ok((
+        Shaders {
+            vs: text(set, "vertexShader")?,
+            fs,
+            back,
+            textures,
+        },
+        transmissive,
+    ))
+}
 /// The ground's shaders and the samples, as the page's MaterialXLoader
 /// builds them from the documents, with the images their bindings sample
 /// ( paths under assets/materialx/ ).
 async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> {
     let texts = js_sys::Array::new();
     let paths = js_sys::Array::new();
-    // ( name, the document's directory in assets/materialx/ )
+    // ( name, the document's file in assets/materialx/, its directory there,
+    // the loader's path )
     let mut documents = vec![];
     for name in SAMPLES {
         let dir = "resources/Materials/Examples/StandardSurface/";
@@ -185,8 +297,8 @@ async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> 
             name.to_string(),
             format!("{dir}standard_surface_{name}.mtlx"),
             dir,
+            SAMPLE_PATH,
         ));
-        paths.push(&JsValue::from_str(SAMPLE_PATH));
     }
     for name in LOCAL_SAMPLES {
         let short = match (
@@ -197,14 +309,14 @@ async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> 
             (_, Some(r)) => format!("open_pbr_{r}"),
             _ => name.to_string(),
         };
-        documents.push((short, format!("three/{name}.mtlx"), "three/"));
-        paths.push(&JsValue::from_str(LOCAL_PATH));
+        documents.push((short, format!("three/{name}.mtlx"), "three/", LOCAL_PATH));
     }
-    for (_, file, _) in &documents {
+    for (_, file, _, path) in &documents {
         let bytes = fetch(&format!("assets/materialx/{file}")).await?;
         let document =
             String::from_utf8(bytes).map_err(|_| Error::Invalid("materialx document"))?;
         texts.push(&JsValue::from_str(&document));
+        paths.push(&JsValue::from_str(path));
     }
     let page = JsFuture::from(materialx_shaders(&texts, &paths).map_err(js_error)?)
         .await
@@ -214,40 +326,13 @@ async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> 
     let materials = field(&page, "materials")?;
     let mut images: Vec<String> = vec![];
     let mut samples = vec![];
-    for (i, (name, _, dir)) in documents.into_iter().enumerate() {
+    for (i, (name, _, dir, path)) in documents.into_iter().enumerate() {
         let material = js_sys::Reflect::get_u32(&materials, i as u32).map_err(js_error)?;
         if let Some(e) = field(&material, "error")?.as_string() {
             return Err(Error::Asset(format!("THREE.MaterialXLoader: {name}: {e}")));
         }
-        let mut textures = vec![];
-        let mut transmissive = false;
-        for b in js_sys::Array::from(&field(&material, "textures")?).iter() {
-            let binding = field(&b, "binding")?
-                .as_f64()
-                .ok_or(Error::Invalid("materialx binding"))? as u32;
-            let tex = match text(&b, "source")?.as_str() {
-                "image" => {
-                    let path = resolve(dir, &text(&b, "uri")?);
-                    let k = match images.iter().position(|p| *p == path) {
-                        Some(k) => k,
-                        None => {
-                            images.push(path);
-                            images.len() - 1
-                        }
-                    };
-                    let wrap = |key| address(field(&b, key)?.as_f64().unwrap_or(0.));
-                    Image(k, wrap("wrapS")?, wrap("wrapT")?)
-                }
-                "dfg" => Dfg,
-                "pmrem" => Pmrem,
-                "transmission" => {
-                    transmissive = true;
-                    Transmission
-                }
-                _ => return Err(Error::Invalid("materialx texture")),
-            };
-            textures.push((binding, tex));
-        }
+        let (ball, transmissive) = shaders(&material, path, dir, &mut images)?;
+        let (plane, _) = shaders(&field(&material, "plane")?, path, dir, &mut images)?;
         let kind = if transmissive {
             Transmissive
         } else if field(&material, "transparent")?.is_truthy() {
@@ -257,17 +342,17 @@ async fn load_samples() -> Result<((String, String), Vec<Sample>, Vec<String>)> 
         };
         samples.push(Sample {
             name,
-            vs: text(&material, "vertexShader")?,
-            fs: text(&material, "fragmentShader")?,
             kind,
-            textures,
+            ball,
+            plane,
         });
     }
     Ok((grid, samples, images))
 }
 /// The ShaderBall's vertex attributes, each in its own buffer as
-/// toNonIndexed leaves them and r186 uploads them.
-#[derive(Clone, Copy)]
+/// toNonIndexed leaves them and r187 uploads them; the UV plane's
+/// PlaneGeometry has position, normal and uv.
+#[derive(Clone, Copy, PartialEq)]
 enum Attribute {
     Position,
     Normal,
@@ -275,12 +360,15 @@ enum Attribute {
     Tangent,
 }
 impl Attribute {
-    fn layout(self) -> (u64, wgpu::VertexFormat) {
-        match self {
+    /// Its stride and format on the ShaderBall, or on the plane.
+    fn layout(self, plane: bool) -> (u64, wgpu::VertexFormat) {
+        match (self, plane) {
             // Int16 items of three, padded to four for WebGPU.
-            Attribute::Position | Attribute::Normal => (8, wgpu::VertexFormat::Snorm16x4),
-            Attribute::Uv => (4, wgpu::VertexFormat::Unorm16x2),
-            Attribute::Tangent => (16, wgpu::VertexFormat::Float32x4),
+            (Attribute::Position | Attribute::Normal, false) => (8, wgpu::VertexFormat::Snorm16x4),
+            (Attribute::Uv, false) => (4, wgpu::VertexFormat::Unorm16x2),
+            (Attribute::Position | Attribute::Normal, true) => (12, wgpu::VertexFormat::Float32x3),
+            (Attribute::Uv, true) => (8, wgpu::VertexFormat::Float32x2),
+            (Attribute::Tangent, _) => (16, wgpu::VertexFormat::Float32x4),
         }
     }
 }
@@ -323,12 +411,18 @@ fn object_binding(source: &str) -> Result<u32> {
         .ok_or(Error::Invalid("materialx object binding"))
 }
 /// The object struct's values, recognized by how the stages use each
-/// field: the model and normal matrices, the PMREM's rotation, texel sizes
-/// and lodMax, and the physical material's defaults ( opacity 1, ior 1.5,
+/// field: the model and normal matrices, the textures' uv transforms
+/// ( identity ), the environment's rotation ( identity ), the PMREM's last
+/// level `max_lod`, and the physical material's defaults ( opacity 1, ior 1.5,
 /// metalness 0, specularIntensity 1, emissive 0 at intensity 1, attenuation
 /// white at infinity, environment intensity 1 ). The loader sets thickness 1
 /// for transmissive materials without a thickness input.
-fn object_values(vs: &str, fs: &str, model: &[f64; 16]) -> Result<Vec<(String, Vec<f64>)>> {
+fn object_values(
+    vs: &str,
+    fs: &str,
+    model: &[f64; 16],
+    max_lod: u32,
+) -> Result<Vec<(String, Vec<f64>)>> {
     let mut out = vec![];
     for (name, ty) in fields(fs, "objectStruct") {
         let lines = uses(&[fs, vs], "object", &name);
@@ -337,8 +431,19 @@ fn object_values(vs: &str, fs: &str, model: &[f64; 16]) -> Result<Vec<(String, V
             lines.iter().any(|l| l.contains(&p))
         };
         let v = match ty.as_str() {
+            "mat3x3<f32>" if any("( # * vec3<f32>( vec2<f32>(") => {
+                vec![1., 0., 0., 0., 1., 0., 0., 0., 1.]
+            }
             "mat3x3<f32>" => normal_matrix(model).to_vec(),
-            "mat4x4<f32>" if any("getFace( ( #") => m4(Matrix4::IDENTITY),
+            // materialEnvRotation, on a direction; the model matrix otherwise.
+            "mat4x4<f32>"
+                if lines.iter().any(|l| {
+                    l.contains(&format!("( object.{name} * vec4<f32>("))
+                        && !l.contains("positionLocal")
+                }) =>
+            {
+                m4(Matrix4::IDENTITY)
+            }
             "mat4x4<f32>" => model.to_vec(),
             "vec3<f32>" if any("AttenuationColor = #") => vec![1.; 3],
             "vec3<f32>" if any("EmissiveColor = ( # *") => vec![0.; 3],
@@ -348,9 +453,8 @@ fn object_values(vs: &str, fs: &str, model: &[f64; 16]) -> Result<Vec<(String, V
             "f32" if any("Thickness = #;") => vec![1.],
             "f32" if any("AttenuationDistance = #;") => vec![f64::INFINITY],
             "f32" if any("SpecularColor = ( min(") => vec![1.],
-            "f32" if any("-2.0, # )") => vec![9.],
-            "f32" if any(".x * # )") => vec![1. / 1536.],
-            "f32" if any(".y * # )") => vec![1. / 2048.],
+            // roughnessToMip: maxLod × roughness × ( 2 - roughness ).
+            "f32" if any(".yz ), ( ( # * ") => vec![max_lod as f64],
             _ => return Err(Error::Asset(format!("materialx object uniform {name}"))),
         };
         out.push((name, v));
@@ -425,8 +529,16 @@ impl mikktspace::Geometry for Tangents {
         self.out[i..i + 4].copy_from_slice(&tangent);
     }
 }
-/// A ball's mesh: its model, part ( 0 calibration, 1 preview ), world
-/// model, object struct and render group.
+/// The UV plane: its position, normal and uv buffers and its index.
+struct PlanePart {
+    buffers: [wgpu::Buffer; 3],
+    index: wgpu::Buffer,
+    count: u32,
+}
+/// The part that is the UV plane.
+const PLANE: usize = 2;
+/// A model's mesh: its sample, part ( 0 calibration, 1 preview, 2 the UV
+/// plane ), world model, object struct and render group.
 struct Ball {
     sample: usize,
     part: usize,
@@ -443,8 +555,9 @@ struct Targets {
     color: wgpu::Texture,
     color_view: wgpu::TextureView,
     depth: wgpu::TextureView,
-    transmission: wgpu::Texture,
-    transmission_levels: Vec<(wgpu::TextureView, wgpu::BindGroup)>,
+    /// The back and front sides' transmission textures and their levels.
+    transmission: [wgpu::Texture; 2],
+    transmission_levels: [Vec<(wgpu::TextureView, wgpu::BindGroup)>; 2],
     /// Per ball, its front-face draw and ( transmissive ) back-face draw.
     balls: Vec<(Draw, Option<Draw>)>,
     ground: Draw,
@@ -455,19 +568,22 @@ pub(super) struct Demo {
     controls: Controls,
     /// The example clock: TSL time.
     time: f64,
-    /// Calibration and preview mesh visibility.
-    params: [f64; 2],
+    /// The Geometry selector ( 0 Shader Ball, 1 UV Plane ), then the
+    /// calibration and preview meshes' visibility.
+    params: [f64; 3],
     parts: [Part; 2],
+    plane: PlanePart,
     /// The documents' materials in the page's order.
     samples: Vec<Sample>,
     /// The ground's vertex and fragment WGSL.
     grid: (String, String),
-    /// Per sample, its vertex inputs in location order.
-    attributes: Vec<Vec<Attribute>>,
+    /// Per sample, its vertex inputs in location order on the ShaderBall
+    /// and on the plane.
+    attributes: Vec<(Vec<Attribute>, Vec<Attribute>)>,
     balls: Vec<Ball>,
     images: Vec<wgpu::TextureView>,
     ground: (wgpu::Buffer, wgpu::Buffer, u32, wgpu::Buffer),
-    pmrem: Pmrem,
+    pmrem: pmrem::CubePmrem,
     /// One render struct per distinct layout: its source and buffer.
     renders: Vec<(String, wgpu::Buffer)>,
     ground_render: wgpu::Buffer,
@@ -475,6 +591,7 @@ pub(super) struct Demo {
     output_object: wgpu::Buffer,
     output_quad: wgpu::Buffer,
     clamp: wgpu::Sampler,
+    pmrem_sampler: wgpu::Sampler,
     /// The images' samplers by wrapS and wrapT.
     image_samplers: Vec<((wgpu::AddressMode, wgpu::AddressMode), wgpu::Sampler)>,
     viewport_sampler: wgpu::Sampler,
@@ -647,57 +764,171 @@ impl Demo {
         let parts: [Part; 2] = parts
             .try_into()
             .map_err(|_| Error::Invalid("ShaderBall parts"))?;
-        // The documents' images: decoded without color conversion or flip
-        // ( ImageBitmapLoader with imageOrientation none ), mipmapped.
+        // The documents' images, each as its loader reads it. ImageBitmapLoader:
+        // no color conversion or flip, mipmapped. EXRLoader ( rows from the
+        // bottom ) and HDRLoader: half floats without mipmaps, rows from the
+        // top once MaterialXLoader inverts the loader's flipY. TIFFLoader:
+        // RGBA8 from the top. Their DataTextures generate no mipmaps.
         let mut mipmaps = Mipmaps::new(r);
         let (grid, samples, image_paths) = load_samples().await?;
         let mut images = vec![];
         for path in &image_paths {
-            let mut image =
-                decode_image(&fetch(&format!("assets/materialx/{path}")).await?).await?;
-            image.srgb = false;
-            images.push(mipmapped(
-                r,
-                &mut mipmaps,
-                &image,
-                wgpu::TextureFormat::Rgba8Unorm,
-            ));
+            let bytes = fetch(&image_asset(path)).await?;
+            let lower = path.to_lowercase();
+            let single = |label: &str, format, width: u32, height: u32, texels: &[u8]| {
+                r.device
+                    .create_texture_with_data(
+                        &r.queue,
+                        &wgpu::TextureDescriptor {
+                            label: Some(label),
+                            size: wgpu::Extent3d {
+                                width,
+                                height,
+                                depth_or_array_layers: 1,
+                            },
+                            mip_level_count: 1,
+                            sample_count: 1,
+                            dimension: wgpu::TextureDimension::D2,
+                            format,
+                            usage: wgpu::TextureUsages::TEXTURE_BINDING,
+                            view_formats: &[],
+                        },
+                        wgpu::util::TextureDataOrder::LayerMajor,
+                        texels,
+                    )
+                    .create_view(&Default::default())
+            };
+            images.push(if lower.ends_with(".exr") {
+                let (width, height, texels) = decode_exr(&bytes)?;
+                let row = width as usize * 4;
+                let texels: Vec<u16> = texels.chunks(row).rev().flatten().copied().collect();
+                single(
+                    "materialx exr",
+                    HALF,
+                    width,
+                    height,
+                    bytemuck::cast_slice(&texels),
+                )
+            } else if lower.ends_with(".hdr") {
+                let (width, height, texels) = parse_rgbe(&bytes)?;
+                single(
+                    "materialx hdr",
+                    HALF,
+                    width,
+                    height,
+                    bytemuck::cast_slice(&texels),
+                )
+            } else if lower.ends_with(".tif") || lower.ends_with(".tiff") {
+                let (width, height, rgba) = decode_tiff(&bytes)?;
+                single(
+                    "materialx tiff",
+                    wgpu::TextureFormat::Rgba8Unorm,
+                    width,
+                    height,
+                    &rgba,
+                )
+            } else {
+                let mut image = decode_image(&bytes).await?;
+                image.srgb = false;
+                mipmapped(r, &mut mipmaps, &image, wgpu::TextureFormat::Rgba8Unorm)
+            });
         }
+        // scene.environment: the equirect HDR through PMREMGenerator.fromEquirectangular.
+        let pmrem =
+            pmrem::equirect_pmrem(r, "assets/tsl-procedural/san_giuseppe_bridge_2k.hdr").await?;
+        // The UV plane: PlaneGeometry( 2, 2 ).
+        let plane_geometry = PlaneGeometry::build(2., 2., 1, 1)?;
+        let floats = |name: &str, size: usize| -> Result<Vec<f32>> {
+            let a = plane_geometry
+                .attributes
+                .get(name)
+                .ok_or(Error::Invalid("UV plane"))?;
+            (0..a.count())
+                .flat_map(|i| (0..size).map(move |k| (i, k)))
+                .map(|(i, k)| a.get_component(i, k).map(|v| v as f32))
+                .collect()
+        };
+        let plane_index = plane_geometry
+            .index
+            .clone()
+            .ok_or(Error::Invalid("UV plane index"))?;
+        let vertex_buffer = |label, data: &[f32]| {
+            init(
+                label,
+                bytemuck::cast_slice(data),
+                wgpu::BufferUsages::VERTEX,
+            )
+        };
+        let plane = PlanePart {
+            buffers: [
+                vertex_buffer("UV plane position", &floats("position", 3)?),
+                vertex_buffer("UV plane normal", &floats("normal", 3)?),
+                vertex_buffer("UV plane uv", &floats("uv", 2)?),
+            ],
+            index: init(
+                "UV plane index",
+                bytemuck::cast_slice(&plane_index),
+                wgpu::BufferUsages::INDEX,
+            ),
+            count: plane_index.len() as u32,
+        };
         // Distinct render structs share one buffer.
         let mut renders: Vec<(String, wgpu::Buffer)> = vec![];
         let struct_body = |source: &str| fields(source, "renderStruct");
+        let mut render_of = |fs: &str| -> Result<usize> {
+            render_layout(fs)?;
+            Ok(
+                match renders
+                    .iter()
+                    .position(|(source, _)| struct_body(source) == struct_body(fs))
+                {
+                    Some(k) => k,
+                    None => {
+                        renders.push((
+                            fs.to_string(),
+                            uniform(r, "materialx render", fs, "renderStruct")?,
+                        ));
+                        renders.len() - 1
+                    }
+                },
+            )
+        };
         // updateModelsAlign(): six columns, 3 apart.
         let line_count = (samples.len() / 6) as f64 - 1.5;
         let (offset_x, offset_z) = (3. * 5. * -0.5, 3. * line_count * 0.5);
         let mut balls = vec![];
         for (i, sample) in samples.iter().enumerate() {
-            render_layout(&sample.fs)?;
-            let render = match renders
-                .iter()
-                .position(|(source, _)| struct_body(source) == struct_body(&sample.fs))
-            {
-                Some(k) => k,
-                None => {
-                    renders.push((
-                        sample.fs.clone(),
-                        uniform(r, "materialx render", &sample.fs, "renderStruct")?,
-                    ));
-                    renders.len() - 1
-                }
-            };
             let position = Vector3::new(
                 (i % 6) as f64 * 3. + offset_x,
                 0.,
                 (i / 6) as f64 * -3. + offset_z,
             );
-            for (p, part) in parts.iter().enumerate() {
-                let model = Matrix4::from_translation(position) * part.node;
-                let values = object_values(&sample.vs, &sample.fs, &model.to_cols_array())?;
+            // The calibration and preview meshes, then the UV plane
+            // ( rotation.x -PI / 2, y 0.05 ).
+            let nodes = [
+                parts[0].node,
+                parts[1].node,
+                Matrix4::from_translation(Vector3::new(0., 0.05, 0.))
+                    * Matrix4::from_rotation_x(-PI / 2.),
+            ];
+            for (p, node) in nodes.into_iter().enumerate() {
+                let shaders = if p == PLANE {
+                    &sample.plane
+                } else {
+                    &sample.ball
+                };
+                let model = Matrix4::from_translation(position) * node;
+                let values = object_values(
+                    &shaders.vs,
+                    &shaders.fs,
+                    &model.to_cols_array(),
+                    pmrem.max_lod,
+                )?;
                 let values: Vec<(&str, &[f64])> =
                     values.iter().map(|(n, v)| (n.as_str(), &v[..])).collect();
                 let object = init(
                     "materialx object",
-                    &pack(&sample.fs, "objectStruct", &values)?,
+                    &pack(&shaders.fs, "objectStruct", &values)?,
                     wgpu::BufferUsages::UNIFORM,
                 );
                 balls.push(Ball {
@@ -705,7 +936,7 @@ impl Demo {
                     part: p,
                     model,
                     object,
-                    render,
+                    render: render_of(&shaders.fs)?,
                 });
             }
         }
@@ -761,17 +992,15 @@ impl Demo {
             wgpu::FilterMode::Linear,
             wgpu::FilterMode::Nearest,
         );
-        // scene.environment: the equirect HDR through PMREMGenerator.fromEquirectangular.
-        let (pmrem, _) = rgbe_pmrem_at(
-            r,
-            &clamp,
-            "assets/tsl-procedural/san_giuseppe_bridge_2k.hdr",
-            Some((9, GGX_9)),
-        )
-        .await?;
+        // The PMREM's: its render target's LinearMipmapLinearFilter.
+        let pmrem_sampler = sampler(
+            wgpu::AddressMode::ClampToEdge,
+            wgpu::FilterMode::Linear,
+            wgpu::FilterMode::Linear,
+        );
         let mut image_samplers = vec![];
         for s in &samples {
-            for &(_, t) in &s.textures {
+            for &(_, t) in s.ball.textures.iter().chain(&s.plane.textures) {
                 if let Image(_, u, v) = t
                     && !image_samplers.iter().any(|(w, _)| *w == (u, v))
                 {
@@ -790,11 +1019,12 @@ impl Demo {
         Ok(Self {
             controls,
             time: 0.,
-            params: [1., 1.],
+            params: [0., 1., 1.],
             parts,
+            plane,
             attributes: samples
                 .iter()
-                .map(|s| inputs(&s.vs))
+                .map(|s| Ok((inputs(&s.ball.vs)?, inputs(&s.plane.vs)?)))
                 .collect::<Result<_>>()?,
             balls,
             images,
@@ -824,6 +1054,7 @@ impl Demo {
                 wgpu::FilterMode::Linear,
             ),
             clamp,
+            pmrem_sampler,
             samples,
             grid,
             mipmaps,
@@ -843,92 +1074,126 @@ impl Demo {
         let size = (out.width, out.height);
         let samples = if out.options.samples > 1 { 4 } else { 1 };
         let depth = Some((wgpu::CompareFunction::LessEqual, true));
-        // The transmission ( viewport mip ) texture: the drawing buffer's size.
-        let transmission = r.device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("materialx transmission"),
-            size: wgpu::Extent3d {
-                width: size.0,
-                height: size.1,
-                depth_or_array_layers: 1,
-            },
-            mip_level_count: mip_count(size),
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: HALF,
-            usage: wgpu::TextureUsages::TEXTURE_BINDING
-                | wgpu::TextureUsages::COPY_DST
-                | wgpu::TextureUsages::RENDER_ATTACHMENT,
-            view_formats: &[],
+        // The transmission ( viewport mip ) textures, the drawing buffer's
+        // size: the back side's ( viewportBackSideTexture ) and the front
+        // side's ( viewportOpaqueMipTexture ), each copied before its first
+        // object in the frame.
+        let transmission = ["back", "front"].map(|side| {
+            r.device.create_texture(&wgpu::TextureDescriptor {
+                label: Some(&format!("materialx transmission {side}")),
+                size: wgpu::Extent3d {
+                    width: size.0,
+                    height: size.1,
+                    depth_or_array_layers: 1,
+                },
+                mip_level_count: mip_count(size),
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: HALF,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING
+                    | wgpu::TextureUsages::COPY_DST
+                    | wgpu::TextureUsages::RENDER_ATTACHMENT,
+                view_formats: &[],
+            })
         });
-        let transmission_levels = self.mipmaps.levels(r, &transmission);
-        let transmission_view = transmission.create_view(&Default::default());
+        let transmission_levels = transmission
+            .each_ref()
+            .map(|texture| self.mipmaps.levels(r, texture));
+        let transmission_views = transmission
+            .each_ref()
+            .map(|texture| texture.create_view(&Default::default()));
         let tex = wgpu::BindingResource::TextureView;
         let sampler = wgpu::BindingResource::Sampler;
-        // Per sample, its front ( and back ) pipeline.
-        let mut pipelines = vec![];
-        for (sample, attributes) in self.samples.iter().zip(&self.attributes) {
-            let formats: Vec<[wgpu::VertexAttribute; 1]> = attributes
-                .iter()
-                .enumerate()
-                .map(|(location, a)| {
-                    [wgpu::VertexAttribute {
-                        format: a.layout().1,
-                        offset: 0,
-                        shader_location: location as u32,
-                    }]
-                })
-                .collect();
-            let layouts: Vec<wgpu::VertexBufferLayout> = attributes
-                .iter()
-                .zip(&formats)
-                .map(|(a, f)| wgpu::VertexBufferLayout {
-                    array_stride: a.layout().0,
-                    step_mode: wgpu::VertexStepMode::Vertex,
-                    attributes: f,
-                })
-                .collect();
-            let pipeline = |cw| {
-                culled_pipeline(
-                    r,
-                    &sample.name,
-                    (&sample.vs, &sample.fs),
-                    &layouts,
-                    &[HALF],
-                    depth,
-                    (cw, sample.kind != Opaque),
-                    (samples, wgpu::PrimitiveTopology::TriangleList),
-                    Some(wgpu::Face::Back),
+        // Per sample, on the ShaderBall and on the plane, its front ( and
+        // back side's ) pipeline: the back side's draws the back faces.
+        type Pipelines = (wgpu::RenderPipeline, Option<wgpu::RenderPipeline>);
+        let mut pipelines: Vec<[Pipelines; 2]> = vec![];
+        for (sample, (ball, plane)) in self.samples.iter().zip(&self.attributes) {
+            let pipelines_on = |shaders: &Shaders, attributes: &[Attribute], on_plane: bool| {
+                let formats: Vec<[wgpu::VertexAttribute; 1]> = attributes
+                    .iter()
+                    .enumerate()
+                    .map(|(location, a)| {
+                        [wgpu::VertexAttribute {
+                            format: a.layout(on_plane).1,
+                            offset: 0,
+                            shader_location: location as u32,
+                        }]
+                    })
+                    .collect();
+                let layouts: Vec<wgpu::VertexBufferLayout> = attributes
+                    .iter()
+                    .zip(&formats)
+                    .map(|(a, f)| wgpu::VertexBufferLayout {
+                        array_stride: a.layout(on_plane).0,
+                        step_mode: wgpu::VertexStepMode::Vertex,
+                        attributes: f,
+                    })
+                    .collect();
+                let pipeline = |(vs, fs): (&str, &str), cw| {
+                    culled_pipeline(
+                        r,
+                        &sample.name,
+                        (vs, fs),
+                        &layouts,
+                        &[HALF],
+                        depth,
+                        (cw, sample.kind != Opaque),
+                        (samples, wgpu::PrimitiveTopology::TriangleList),
+                        Some(wgpu::Face::Back),
+                    )
+                };
+                (
+                    pipeline((&shaders.vs, &shaders.fs), false),
+                    shaders
+                        .back
+                        .as_ref()
+                        .map(|(vs, fs)| pipeline((vs, fs), true)),
                 )
             };
-            pipelines.push((
-                pipeline(false),
-                (sample.kind == Transmissive).then(|| pipeline(true)),
-            ));
+            pipelines.push([
+                pipelines_on(&sample.ball, ball, false),
+                pipelines_on(&sample.plane, plane, true),
+            ]);
         }
         let mut balls = vec![];
         for b in &self.balls {
             let sample = &self.samples[b.sample];
-            let mut entries = vec![(object_binding(&sample.fs)?, b.object.as_entire_binding())];
-            for &(binding, t) in &sample.textures {
-                let (s, view) = match t {
-                    Image(k, u, v) => (
-                        self.image_samplers
-                            .iter()
-                            .find(|(w, _)| *w == (u, v))
-                            .map(|(_, s)| s)
-                            .ok_or(Error::Invalid("materialx sampler"))?,
-                        self.images
-                            .get(k)
-                            .ok_or(Error::Invalid("materialx image"))?,
-                    ),
-                    Dfg => (&self.clamp, &r.dfg),
-                    Pmrem => (&self.clamp, &self.pmrem.view),
-                    Transmission => (&self.viewport_sampler, &transmission_view),
-                };
-                entries.extend([(binding - 1, sampler(s)), (binding, tex(view))]);
-            }
-            let draw = |p: &wgpu::RenderPipeline| -> Draw {
-                (
+            let shaders = if b.part == PLANE {
+                &sample.plane
+            } else {
+                &sample.ball
+            };
+            // The material's bindings, with the back or front side's
+            // transmission texture.
+            let entries = |back: bool| -> Result<Vec<(u32, wgpu::BindingResource)>> {
+                let mut entries =
+                    vec![(object_binding(&shaders.fs)?, b.object.as_entire_binding())];
+                for &(binding, t) in &shaders.textures {
+                    let (s, view) = match t {
+                        Image(k, u, v) => (
+                            self.image_samplers
+                                .iter()
+                                .find(|(w, _)| *w == (u, v))
+                                .map(|(_, s)| s)
+                                .ok_or(Error::Invalid("materialx sampler"))?,
+                            self.images
+                                .get(k)
+                                .ok_or(Error::Invalid("materialx image"))?,
+                        ),
+                        Dfg => (&self.clamp, &r.dfg),
+                        Pmrem => (&self.pmrem_sampler, &self.pmrem.view),
+                        Transmission => (
+                            &self.viewport_sampler,
+                            &transmission_views[(!back) as usize],
+                        ),
+                    };
+                    entries.extend([(binding - 1, sampler(s)), (binding, tex(view))]);
+                }
+                Ok(entries)
+            };
+            let draw = |p: &wgpu::RenderPipeline, back: bool| -> Result<Draw> {
+                Ok((
                     p.clone(),
                     vec![
                         bind(
@@ -936,12 +1201,15 @@ impl Demo {
                             p.get_bind_group_layout(0),
                             &[(0, self.renders[b.render].1.as_entire_binding())],
                         ),
-                        bind(r, p.get_bind_group_layout(1), &entries),
+                        bind(r, p.get_bind_group_layout(1), &entries(back)?),
                     ],
-                )
+                ))
             };
-            let (front, back) = &pipelines[b.sample];
-            balls.push((draw(front), back.as_ref().map(draw)));
+            let (front, back) = &pipelines[b.sample][(b.part == PLANE) as usize];
+            balls.push((
+                draw(front, false)?,
+                back.as_ref().map(|p| draw(p, true)).transpose()?,
+            ));
         }
         let position = [wgpu::vertex_attr_array![0 => Float32x3]];
         let ground_pipeline = culled_pipeline(
@@ -1140,22 +1408,38 @@ impl Demo {
         // ( renderOrder, z, id, ball ) with the ground as None.
         let mut opaque = vec![];
         let mut transparent = vec![];
+        // The Geometry selector: the ShaderBall's meshes ( each as its
+        // checkbox says ) or the UV planes.
+        let shader_ball = self.params[0] < 0.5;
         for (i, b) in self.balls.iter().enumerate() {
-            let part = &self.parts[b.part];
+            let visible = match b.part {
+                PLANE => !shader_ball,
+                p => shader_ball && self.params[p + 1] >= 0.5,
+            };
+            // PlaneGeometry( 2, 2 )'s bounding sphere.
+            let sphere = match b.part {
+                PLANE => Sphere {
+                    center: Vector3::ZERO,
+                    radius: 2f64.sqrt(),
+                },
+                p => self.parts[p].sphere,
+            };
             let (scale, _, translation) = b.model.to_scale_rotation_translation();
-            if self.params[b.part] < 0.5
+            if !visible
                 || !frustum.intersects_sphere(Sphere {
-                    center: b.model.transform_point3(part.sphere.center),
-                    radius: part.sphere.radius * scale.max_element(),
+                    center: b.model.transform_point3(sphere.center),
+                    radius: sphere.radius * scale.max_element(),
                 })
             {
                 continue;
             }
             let z = projected_z(&screen, translation);
-            match self.samples[b.sample].kind {
-                Opaque => opaque.push((0, z, i, Some(i))),
+            match (self.samples[b.sample].kind, b.part) {
+                (Opaque, _) => opaque.push((0, z, i, Some(i))),
+                // The UV plane keeps renderOrder 0.
+                (_, PLANE) => transparent.push((0, z, i, Some(i))),
                 // Transparent materials' meshes take renderOrder 1 and 2.
-                _ => transparent.push((b.part as i32 + 1, z, i, Some(i))),
+                (_, p) => transparent.push((p as i32 + 1, z, i, Some(i))),
             }
         }
         if frustum.intersects_sphere(Sphere {
@@ -1225,8 +1509,20 @@ impl Demo {
                 return;
             };
             set(pass, d);
+            if b.part == PLANE {
+                for (slot, &a) in self.attributes[b.sample].1.iter().enumerate() {
+                    // Pipelines exist only for the plane's own attributes.
+                    let Some(buffer) = self.plane.buffers.get(a as usize) else {
+                        return;
+                    };
+                    pass.set_vertex_buffer(slot as u32, buffer.slice(..));
+                }
+                pass.set_index_buffer(self.plane.index.slice(..), wgpu::IndexFormat::Uint32);
+                pass.draw_indexed(0..self.plane.count, 0, 0..1);
+                return;
+            }
             let part = &self.parts[b.part];
-            for (slot, &a) in self.attributes[b.sample].iter().enumerate() {
+            for (slot, &a) in self.attributes[b.sample].0.iter().enumerate() {
                 pass.set_vertex_buffer(slot as u32, part.buffers[a as usize].slice(..));
             }
             pass.draw(0..part.count, 0..1);
@@ -1237,25 +1533,37 @@ impl Demo {
                 draw(&mut pass, i, false);
             }
         }
-        if !double_pass.is_empty() {
-            // The transmission's viewport mip texture updates before its
-            // first object: the resolved frame, copied and mipmapped.
-            drop(pass);
+        // A transmission texture updates before its first object: the
+        // resolved frame, copied and mipmapped.
+        let update = |encoder: &mut wgpu::CommandEncoder, side: usize| {
             encoder.copy_texture_to_texture(
                 t.color.as_image_copy(),
-                t.transmission.as_image_copy(),
+                t.transmission[side].as_image_copy(),
                 t.color.size(),
             );
             self.mipmaps
-                .encode(&mut encoder, HALF, &t.transmission_levels);
+                .encode(encoder, HALF, &t.transmission_levels[side]);
+        };
+        if !double_pass.is_empty() {
+            drop(pass);
+            update(&mut encoder, 0);
             pass = scene_pass(&mut encoder, false);
             for &i in &double_pass {
                 draw(&mut pass, i, true);
             }
         }
+        let mut front_updated = false;
         for e in &transparent {
             match e.3 {
-                Some(i) => draw(&mut pass, i, false),
+                Some(i) => {
+                    if !front_updated && self.samples[self.balls[i].sample].kind == Transmissive {
+                        front_updated = true;
+                        drop(pass);
+                        update(&mut encoder, 1);
+                        pass = scene_pass(&mut encoder, false);
+                    }
+                    draw(&mut pass, i, false)
+                }
                 None => {
                     set(&mut pass, &t.ground);
                     pass.set_vertex_buffer(0, self.ground.0.slice(..));
@@ -1317,7 +1625,8 @@ impl Demo {
         }
         Ok(())
     }
-    /// Calibration and preview mesh visibility.
+    /// The Geometry selector ( 0 Shader Ball, 1 UV Plane ), then the
+    /// calibration and preview meshes' visibility.
     pub fn parameter(&mut self, index: usize, value: f32) -> Result<()> {
         *self
             .params

@@ -1016,10 +1016,17 @@ assets:
   ( Academy Software Foundation ) at commit
   `30e80703d9e508b77711ce314ca1620a8425c383`, Apache-2.0; the license is
   copied beside them ( `LICENSE.txt` ) and in `../LICENSE-MATERIALX`.
-- `gallery/assets/materialx/three/`: the page's 24 local test documents,
-  r186 `examples/materialx/*.mtlx`, unchanged, and the
+- `gallery/assets/materialx/three/`: the page's 28 local test documents,
+  r187 `examples/materialx/*.mtlx`, unchanged, and the
   `resources/Images/grid.png` they reference; SHA-256 of grid.png
   `e9d6a722f957302a8661a66d292144abf06cdb9689945421bc4e0ee63270f084`.
+- `gallery/assets/materialx/textures/brick_roughness.jpg`: r187
+  `examples/textures/brick_roughness.jpg`, unchanged, which the displacement
+  document reads; SHA-256
+  `6285e8504d5680ff4afbd4c4f5ca81f8a56e970a6e2bc69040e8dff77e078e37`. The other examples' textures the documents read
+  ( `memorial.exr`, `memorial.hdr`, `tiff/crate_uncompressed.tif`,
+  `brick_diffuse.jpg`, `brick_bump.jpg` ) are the gallery's copies credited
+  elsewhere in this file.
 - `gallery/assets/gltf/ShaderBall.glb`: r186 `models/gltf/ShaderBall.glb`,
   unchanged ( also used by the TSL graph example ); SHA-256
   `0f99ab2ffc65b6f1972fca3958ad4cbcea90f1a6a3db6c35b20ae947f3b573d2`.
