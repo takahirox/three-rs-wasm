@@ -7,8 +7,8 @@
 //! ImprovedNoise smoke texture, dithered by the Bayer texture and stopped at
 //! the scene depth. A two-pass Gaussian blur denoises it and the output adds
 //! it to the scene with NeutralToneMapping (exposure 2). Every stage runs the
-//! WGSL three.js r186 generates for the page (in `volume_rectarea/`; the blur
-//! and output are the same as `volume_lighting/`'s).
+//! WGSL three.js r187 generates for the page (in `volume_rectarea/`; the blur
+//! and output vertex stages are `volume_lighting/`'s).
 use super::controls_attributes::{Controls, camera_state};
 use super::lights_projector::{m3, m4, pack};
 use super::volume_lighting::{bayer_texture, noise_texture};
@@ -497,7 +497,7 @@ impl Demo {
                 ],
             ),
         ];
-        let blur = [shared!("blur_h_fs"), shared!("blur_v_fs")].map(|fs| {
+        let blur = [wgsl!("blur_h_fs"), wgsl!("blur_v_fs")].map(|fs| {
             pipeline(
                 "gaussian blur",
                 shared!("blur_vs"),
@@ -510,7 +510,7 @@ impl Demo {
         let output = pipeline(
             "render output",
             shared!("output_vs"),
-            shared!("output_fs"),
+            wgsl!("output_fs"),
             &[layout(2, 8)],
             out.options.format,
             (false, false, false),
@@ -636,12 +636,12 @@ impl Demo {
             })
             .collect();
         // RectAreaLightNode: the color × intensity, the view-space position
-        // and the rotated half extents.
+        // and the half extents rotated by the light's world matrix ( r187
+        // takes them to view space in the shader ).
         let light_values = |names: [[&'static str; 4]; 3]| {
             let mut values = vec![];
             for (i, (color, world)) in lights.iter().enumerate() {
-                let rotation = view * world;
-                let rotate = |v: Vector3| rotation.transform_vector3(v).to_array().to_vec();
+                let rotate = |v: Vector3| world.transform_vector3(v).to_array().to_vec();
                 let [c, p, w, h] = names[i];
                 values.push((c, color.iter().map(|v| v * 5.).collect::<Vec<_>>()));
                 values.push((
@@ -674,6 +674,33 @@ impl Demo {
             [
                 "nodeUniform14",
                 "nodeUniform15",
+                "nodeUniform17",
+                "nodeUniform18",
+            ],
+            [
+                "nodeUniform21",
+                "nodeUniform22",
+                "nodeUniform23",
+                "nodeUniform24",
+            ],
+            [
+                "nodeUniform27",
+                "nodeUniform28",
+                "nodeUniform29",
+                "nodeUniform30",
+            ],
+        ]));
+        write(
+            &self.standard_render,
+            wgsl!("standard_fs"),
+            "renderStruct",
+            &values,
+        )?;
+        let mut values = camera_values.clone();
+        values.extend(light_values([
+            [
+                "nodeUniform13",
+                "nodeUniform14",
                 "nodeUniform16",
                 "nodeUniform17",
             ],
@@ -688,33 +715,6 @@ impl Demo {
                 "nodeUniform27",
                 "nodeUniform28",
                 "nodeUniform29",
-            ],
-        ]));
-        write(
-            &self.standard_render,
-            wgsl!("standard_fs"),
-            "renderStruct",
-            &values,
-        )?;
-        let mut values = camera_values.clone();
-        values.extend(light_values([
-            [
-                "nodeUniform13",
-                "nodeUniform14",
-                "nodeUniform15",
-                "nodeUniform16",
-            ],
-            [
-                "nodeUniform19",
-                "nodeUniform20",
-                "nodeUniform21",
-                "nodeUniform22",
-            ],
-            [
-                "nodeUniform25",
-                "nodeUniform26",
-                "nodeUniform27",
-                "nodeUniform28",
             ],
         ]));
         write(
@@ -739,10 +739,10 @@ impl Demo {
         for name in [
             "nodeUniform10",
             "nodeUniform12",
-            "nodeUniform17",
             "nodeUniform18",
-            "nodeUniform23",
+            "nodeUniform19",
             "nodeUniform24",
+            "nodeUniform25",
         ] {
             values.push((name, identity.clone()));
         }
@@ -778,10 +778,10 @@ impl Demo {
             for name in [
                 "nodeUniform11",
                 "nodeUniform13",
-                "nodeUniform18",
                 "nodeUniform19",
-                "nodeUniform24",
+                "nodeUniform20",
                 "nodeUniform25",
+                "nodeUniform26",
             ] {
                 values.push((name, identity.clone()));
             }
