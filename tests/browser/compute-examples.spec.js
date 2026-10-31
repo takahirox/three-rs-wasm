@@ -87,11 +87,13 @@ const cases={
  webgpu_tsl_graph:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // The Geometry selector shows the materials on the UV planes, then the ShaderBalls again.
  webgpu_loader_materialx:{antialias:true,times:[0,1,2.5],parameters:[[1,false,0],[2,false,0],[1,true,1],[2,true,1],[0,'UV Plane',1],[0,'Shader Ball',0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
- // A resolution change rebakes the grid; with the probes shown the rebake also captures the
- // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
- // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.
- // Sponza loads from glTF-Sample-Assets; each capture renders 250 frames, the bake's four probes per frame.
- webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,frames:250,times:[0],parameters:[[0,false,0],[0,true,1],[9,true,1],[10,.5,.5],[9,false,0],[1,0,0],[8,0,0],[5,4,4]],at:0},
+ // A resolution change rebakes the grid ( a new grid, as LightProbeGrid allocates one ): the
+ // residency cycle leaves the parameters out. Sponza loads from glTF-Sample-Assets; each capture
+ // renders 250 frames ( the bake's 16 probes per frame, and the meshlets processed one geometry
+ // per projection ), and so does the workload check before its frames. The Pipeline control
+ // switches to the default drawing pipeline and back. gpuWork: the frame's indirect draws and
+ // compute passes ( the meshlet culling ) are compared too.
+ webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,gpuWork:true,frames:250,warmup:250,times:[0],parameters:[[0,'Default',1],[0,'Meshlet',0],[1,false,0],[1,true,1],[10,true,1],[11,.5,.5],[10,false,0],[2,0,0],[9,0,0],[6,4,4]],at:0},
  // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
  webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,40,40],[1,6,6],[2,3,3],[3,20,20]],restore:[[1,6,6],[2,3,3],[3,20,20]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
@@ -169,7 +171,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 // MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
 // At device pixel ratio 2 the 1,024 instanced horses' 4× MSAA edges reach 0.51% of the
 // pixels ( the same with the previous commit's build ).
-const msaaLimits={webgpu_lightprobes_sponza:[.035,1.2],webgpu_instancing_morph:[.006,.6],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
+const msaaLimits={webgpu_instancing_morph:[.006,.6],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -230,6 +232,9 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
   test.setTimeout(120000);
   await page.addInitScript(()=>{window.creates=0;for(const key of ['createBuffer','createTexture','createBindGroup','createShaderModule','createRenderPipeline','createComputePipeline']){const original=GPUDevice.prototype[key];GPUDevice.prototype[key]=function(...args){creates++;return original.apply(this,args);};}});
   await page.goto(`/web/examples/${id}.html?still=1`);await page.waitForFunction(v=>Number(document.querySelector(v)?.dataset.frames)>0,view);
+  // spec.warmup: frames of a page's load-time work before the cycles ( the meshlets processed one
+  // geometry per projection, the bake, the culling sized to its first counters ).
+  if(spec.warmup)await frames(page,'rust',0,spec.warmup);
   const reports=[];
   for(const resize of spec.noResize?[false]:[false,true]){
    if(resize)await page.setViewportSize({width:640,height:400});
@@ -269,7 +274,12 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
 for(const [kind,spec] of Object.entries(cases))test(`Compute examples resident geometry and official draw workload: ${kind}`,async({page},info)=>{
  test.setTimeout(180000);
  await page.addInitScript(()=>{
-  window.resetWork=()=>window.work={draws:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
+  window.resetWork=()=>window.work={draws:[],indirect:[],compute:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
+  // GPU-driven work: indirect draws ( by kind ) and compute passes ( their dispatches, direct and
+  // indirect ), counted alike on both runtimes.
+  for(const key of ['drawIndirect','drawIndexedIndirect']){const fn=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...a){work.indirect.push(key);return fn.apply(this,a);};}
+  const computePass=GPUCommandEncoder.prototype.beginComputePass;GPUCommandEncoder.prototype.beginComputePass=function(...a){const pass=computePass.apply(this,a);pass.workIndex=work.compute.push(0)-1;pass.workSet=work;return pass;};
+  for(const key of ['dispatchWorkgroups','dispatchWorkgroupsIndirect']){const fn=GPUComputePassEncoder.prototype[key];GPUComputePassEncoder.prototype[key]=function(...a){if(this.workSet===work)work.compute[this.workIndex]++;return fn.apply(this,a);};}
   for(const key of ['draw','drawIndexed']){const fn=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)work.draws.push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
   // Render bundles (r186's per-layer shadow passes) count their draws each time a pass
   // executes them.
@@ -316,6 +326,9 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const background=spec.backgroundSphere?5952:null;
   const referenceDraws=pair.reference.draws.filter(d=>d.count!==background);
   expect.soft(sort(pair.rust.draws.filter(d=>!spec.backgroundSphere||d.count!==36)),kind).toEqual(sort(referenceDraws));
+  // spec.gpuWork: the GPU-driven work matches as well: the indirect draws by kind, and the compute
+  // passes in order with their dispatches.
+  if(spec.gpuWork){expect.soft(pair.rust.indirect.slice().sort(),kind).toEqual(pair.reference.indirect.slice().sort());expect.soft(pair.rust.compute,kind).toEqual(pair.reference.compute);}
   // Each instance's matrix and color stream together (80 bytes) as resident draw data;
   // WebGL streams the 64-byte matrices, and the colors only during a tween.
   if(spec.batch)expect.soft(pair.rust.attributeBytes,kind).toBeLessThanOrEqual(pair.reference.textureBytes*1.25);
