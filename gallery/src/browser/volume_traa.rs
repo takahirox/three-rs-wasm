@@ -8,8 +8,8 @@
 //! reprojects its history by the velocity, rejects disoccluded history by
 //! the previous frame's depth and blends with flicker reduction; the output
 //! applies NeutralToneMapping (exposure 2). Every stage runs the WGSL
-//! three.js r186 generates for the page (in `volume_traa/`; the shadows and
-//! the pre-pass teapot are `volume_lighting/`'s).
+//! three.js r187 generates for the page (in `volume_traa/`; the shadow
+//! passes are `volume_lighting/`'s).
 use super::controls_attributes::{Controls, camera_state};
 use super::lights_projector::{m3, m4, pack};
 use super::volume_lighting::{
@@ -27,11 +27,16 @@ macro_rules! wgsl {
         include_str!(concat!("volume_traa/", $name, ".wgsl"))
     };
 }
-macro_rules! shared {
-    ($name:literal) => {
-        include_str!(concat!("volume_lighting/", $name, ".wgsl"))
-    };
-}
+/// r187's PointShadowNode WebGPU cube faces ( CubeCamera's orientations ):
+/// directions and ups.
+const POINT_FACES: [([f64; 3], [f64; 3]); 6] = [
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
+];
 /// TAAUtils' computeHaltonOffsets( 32 ): bases 2 and 3 from index 1.
 fn halton(index: usize) -> [f64; 2] {
     let h = |mut index: usize, base: usize| {
@@ -208,13 +213,23 @@ impl Demo {
             )?)?,
             floor: mesh(PlaneGeometry::build(100., 100., 1, 1)?)?,
             volume: mesh(BoxGeometry::build(20., 10., 20.)?)?,
-            shadows: Shadows::new(r),
+            shadows: Shadows::new(r).with_faces(POINT_FACES),
             teapot_render: sized(r, "teapot render", wgsl!("teapot_fs"), "renderStruct")?,
             teapot_object: sized(r, "teapot object", wgsl!("teapot_fs"), "objectStruct")?,
             floor_render: sized(r, "floor render", wgsl!("floor_fs"), "renderStruct")?,
             floor_object: sized(r, "floor object", wgsl!("floor_fs"), "objectStruct")?,
-            pre_teapot_render: sized(r, "pre teapot render", shared!("teapot_fs"), "renderStruct")?,
-            pre_teapot_object: sized(r, "pre teapot object", shared!("teapot_fs"), "objectStruct")?,
+            pre_teapot_render: sized(
+                r,
+                "pre teapot render",
+                wgsl!("teapot_pre_fs"),
+                "renderStruct",
+            )?,
+            pre_teapot_object: sized(
+                r,
+                "pre teapot object",
+                wgsl!("teapot_pre_fs"),
+                "objectStruct",
+            )?,
             pre_floor_render: sized(r, "pre floor render", wgsl!("floor_pre_fs"), "renderStruct")?,
             pre_floor_object: sized(r, "pre floor object", wgsl!("floor_pre_fs"), "objectStruct")?,
             volume_render: sized(r, "volume render", wgsl!("volume_fs"), "renderStruct")?,
@@ -431,8 +446,8 @@ impl Demo {
         let mrt = [HALF, HALF];
         let pre_teapot = pipeline(
             "traa pre teapot",
-            shared!("teapot_vs"),
-            shared!("teapot_fs"),
+            wgsl!("teapot_pre_vs"),
+            wgsl!("teapot_pre_fs"),
             &[layout(0, 12), layout(1, 12)],
             &[HALF],
             less,
@@ -707,11 +722,15 @@ impl Demo {
         ]);
         write(
             &self.pre_teapot_render,
-            shared!("teapot_fs"),
+            wgsl!("teapot_pre_fs"),
             "renderStruct",
             &teapot_values,
         )?;
-        teapot_values.push(("nodeUniform27", m4(motion.projection)));
+        teapot_values.extend([
+            ("nodeUniform25", m4(projection)),
+            ("nodeUniform27", m4(motion.projection)),
+            ("nodeUniform28", m4(motion.view)),
+        ]);
         write(
             &self.teapot_render,
             wgsl!("teapot_fs"),
@@ -731,15 +750,13 @@ impl Demo {
         };
         write(
             &self.pre_teapot_object,
-            shared!("teapot_fs"),
+            wgsl!("teapot_pre_fs"),
             "objectStruct",
             &standard(teapot_model),
         )?;
         let mut values = standard(teapot_model);
         values.extend([
-            ("nodeUniform25", m4(projection)),
             ("nodeUniform26", m4(teapot_model)),
-            ("nodeUniform28", m4(motion.view)),
             ("nodeUniform29", m4(motion.teapot)),
         ]);
         write(
@@ -756,10 +773,8 @@ impl Demo {
         )?;
         let mut values = standard(floor_model);
         values.extend([
-            ("nodeUniform40", m4(projection)),
-            ("nodeUniform41", m4(floor_model)),
-            ("nodeUniform43", m4(motion.view)),
             ("nodeUniform44", m4(floor_model)),
+            ("nodeUniform47", m4(floor_model)),
         ]);
         write(
             &self.floor_object,
@@ -769,32 +784,37 @@ impl Demo {
         )?;
         let mut floor_values = camera_values.clone();
         floor_values.extend([
-            ("nodeUniform11", point_color.clone()),
-            ("nodeUniform22", vec![100.]),
-            ("nodeUniform23", vec![2.]),
-            ("nodeUniform33", vec![cone]),
-            ("nodeUniform34", vec![1.]),
-            ("nodeUniform37", vec![0.]),
-            ("nodeUniform38", vec![2.]),
-            ("nodeUniform26", spot_color.clone()),
             ("nodeUniform10", point_view.clone()),
-            ("nodeUniform24", spot_view_position.clone()),
-            ("nodeUniform35", spot.to_array().to_vec()),
-            ("nodeUniform36", vec![0.; 3]),
-            ("nodeUniform25", m4(spot_matrix)),
+            ("nodeUniform11", point_color.clone()),
             ("nodeUniform12", m4(point_matrix)),
-            ("nodeUniform16", vec![0.5]),
-            ("nodeUniform15", vec![100.]),
+            // The point shadow's normal bias, far, near and bias ( read again
+            // by PointShadowFilter's samples ), radius, map size and intensity.
             ("nodeUniform14", vec![0.]),
+            ("nodeUniform15", vec![100.]),
+            ("nodeUniform16", vec![0.5]),
             ("nodeUniform17", vec![0.]),
-            ("nodeUniform19", vec![1.]),
-            ("nodeUniform20", vec![POINT_SIZE as f64; 2]),
-            ("nodeUniform21", vec![1.]),
-            ("nodeUniform27", vec![0.]),
-            ("nodeUniform28", vec![0.]),
-            ("nodeUniform30", vec![1.]),
-            ("nodeUniform31", vec![SPOT_SIZE as f64; 2]),
-            ("nodeUniform32", vec![0.98]),
+            ("nodeUniform18", vec![1.]),
+            ("nodeUniform19", vec![POINT_SIZE as f64; 2]),
+            ("nodeUniform20", vec![100.]),
+            ("nodeUniform21", vec![0.5]),
+            ("nodeUniform22", vec![0.]),
+            ("nodeUniform24", vec![1.]),
+            ("nodeUniform25", vec![100.]),
+            ("nodeUniform26", vec![2.]),
+            ("nodeUniform27", spot_view_position.clone()),
+            ("nodeUniform28", m4(spot_matrix)),
+            ("nodeUniform29", spot_color.clone()),
+            ("nodeUniform30", vec![0.]),
+            ("nodeUniform31", vec![0.]),
+            ("nodeUniform33", vec![1.]),
+            ("nodeUniform34", vec![SPOT_SIZE as f64; 2]),
+            ("nodeUniform35", vec![0.98]),
+            ("nodeUniform36", vec![cone]),
+            ("nodeUniform37", vec![1.]),
+            ("nodeUniform38", spot.to_array().to_vec()),
+            ("nodeUniform39", vec![0.; 3]),
+            ("nodeUniform40", vec![0.]),
+            ("nodeUniform41", vec![2.]),
         ]);
         write(
             &self.pre_floor_render,
@@ -802,7 +822,11 @@ impl Demo {
             "renderStruct",
             &floor_values,
         )?;
-        floor_values.push(("nodeUniform42", m4(motion.projection)));
+        floor_values.extend([
+            ("nodeUniform43", m4(projection)),
+            ("nodeUniform45", m4(motion.projection)),
+            ("nodeUniform46", m4(motion.view)),
+        ]);
         write(
             &self.floor_render,
             wgsl!("floor_fs"),
@@ -813,35 +837,40 @@ impl Demo {
         volume_values.extend([
             ("cameraNear", vec![0.1]),
             ("cameraFar", vec![100.]),
+            ("cameraPosition", camera_position.to_array().to_vec()),
+            ("nodeUniform11", vec![t.width as f64, t.height as f64]),
             ("nodeUniform12", point_color),
-            ("nodeUniform24", vec![100.]),
-            ("nodeUniform26", vec![2.]),
-            ("nodeUniform35", vec![cone]),
-            ("nodeUniform36", vec![1.]),
-            ("nodeUniform40", vec![0.]),
-            ("nodeUniform41", vec![2.]),
-            ("nodeUniform28", spot_color),
-            ("nodeUniform25", point_view),
-            ("nodeUniform37", spot_view_position),
-            ("nodeUniform38", spot.to_array().to_vec()),
-            ("nodeUniform39", vec![0.; 3]),
-            ("nodeUniform27", m4(spot_matrix)),
             ("nodeUniform13", m4(point_matrix)),
             ("nodeUniform16", vec![0.]),
             ("nodeUniform17", vec![100.]),
             ("nodeUniform18", vec![0.5]),
             ("nodeUniform19", vec![0.]),
-            ("nodeUniform21", vec![1.]),
-            ("nodeUniform22", vec![POINT_SIZE as f64; 2]),
-            ("nodeUniform23", vec![1.]),
-            ("nodeUniform29", vec![0.]),
-            ("nodeUniform30", vec![0.]),
-            ("nodeUniform32", vec![1.]),
-            ("nodeUniform33", vec![SPOT_SIZE as f64; 2]),
-            ("nodeUniform34", vec![0.98]),
-            ("cameraPosition", camera_position.to_array().to_vec()),
-            ("nodeUniform11", vec![t.width as f64, t.height as f64]),
-            ("nodeUniform48", m4(motion.projection)),
+            ("nodeUniform20", vec![1.]),
+            ("nodeUniform21", vec![POINT_SIZE as f64; 2]),
+            ("nodeUniform22", vec![100.]),
+            ("nodeUniform23", vec![0.5]),
+            ("nodeUniform24", vec![0.]),
+            ("nodeUniform26", vec![1.]),
+            ("nodeUniform27", point_view),
+            ("nodeUniform28", vec![100.]),
+            ("nodeUniform29", vec![2.]),
+            ("nodeUniform30", m4(spot_matrix)),
+            ("nodeUniform31", spot_color),
+            ("nodeUniform32", vec![0.]),
+            ("nodeUniform33", vec![0.]),
+            ("nodeUniform35", vec![1.]),
+            ("nodeUniform36", vec![SPOT_SIZE as f64; 2]),
+            ("nodeUniform37", vec![0.98]),
+            ("nodeUniform38", vec![cone]),
+            ("nodeUniform39", vec![1.]),
+            ("nodeUniform40", spot_view_position),
+            ("nodeUniform41", spot.to_array().to_vec()),
+            ("nodeUniform42", vec![0.; 3]),
+            ("nodeUniform43", vec![0.]),
+            ("nodeUniform44", vec![2.]),
+            ("nodeUniform49", m4(projection)),
+            ("nodeUniform51", m4(motion.projection)),
+            ("nodeUniform52", m4(motion.view)),
         ]);
         write(
             &self.volume_render,
@@ -861,12 +890,10 @@ impl Demo {
                 ("nodeUniform5", vec![temporal[0]]),
                 ("nodeUniform6", vec![temporal[1]]),
                 ("nodeUniform15", m3(volume_model.inverse().transpose())),
-                ("nodeUniform44", vec![time]),
-                ("nodeUniform45", vec![smoke]),
-                ("nodeUniform46", m4(projection)),
-                ("nodeUniform47", m4(volume_model)),
-                ("nodeUniform49", m4(motion.view)),
+                ("nodeUniform47", vec![time]),
+                ("nodeUniform48", vec![smoke]),
                 ("nodeUniform50", m4(volume_model)),
+                ("nodeUniform53", m4(volume_model)),
             ],
         )?;
         // TRAANode.updateBefore: the previous camera matrices (identity

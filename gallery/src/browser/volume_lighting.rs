@@ -285,8 +285,14 @@ pub(super) struct Shadows {
         wgpu::BindGroup,
     ),
     object: (wgpu::Buffer, wgpu::BindGroup),
+    /// The cube faces' directions and ups ( `FACES` unless a port sets its
+    /// release's with `with_faces` ).
+    faces: [([f64; 3], [f64; 3]); 6],
 }
 impl Shadows {
+    pub(super) fn with_faces(self, faces: [([f64; 3], [f64; 3]); 6]) -> Self {
+        Self { faces, ..self }
+    }
     pub(super) fn new(r: &Renderer) -> Self {
         let shadow_pipeline = shadow_pipeline(r);
         let shadow_render = |label| {
@@ -355,6 +361,7 @@ impl Shadows {
             point_cube,
             spot: spot_shadow,
             object: (shadow_object.1, shadow_object.0),
+            faces: FACES,
         }
     }
     /// Renders both shadow maps, each pass culling the teapot against its
@@ -424,7 +431,7 @@ impl Shadows {
         };
         // The point light's six cube faces, each culled against its camera.
         for (i, (color, depth, buffer, group)) in self.point_faces.iter().enumerate() {
-            let (direction, up) = FACES[i];
+            let (direction, up) = self.faces[i];
             let face_view = Matrix4::look_at_rh(
                 point,
                 point + Vector3::from_array(direction),
