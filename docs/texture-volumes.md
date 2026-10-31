@@ -109,8 +109,9 @@ compared pixel for pixel.
 - **Background.** An sRGB background texture is not tone mapped, as
   WebGLBackground turns tone mapping off for it: `Scene::background_tone_mapped`
   now carries that.
-- **Debug plane.** It shows the port's own cube-UV atlas, whose layout is not
-  three's, so it is not compared.
+- **Debug plane.** r187's PMREM is a cube, which WebGL cannot bind as the
+  plane's 2D map: the plane shows whichever 2D texture the unit held. The
+  port shows the equirectangular map; the view is not compared.
 
 ### Shadow-map viewer
 

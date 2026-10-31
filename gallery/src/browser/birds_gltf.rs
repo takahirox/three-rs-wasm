@@ -189,7 +189,7 @@ fn f_schlick(f0:vec3<f32>,f90:f32,dot_vh:f32)->vec3<f32>{
  let normal=normalize(cross(fdx,fdy));
  let dxy=max(abs(dpdx(normal)),abs(dpdy(normal)));
  let geometry_roughness=max(max(dxy.x,dxy.y),dxy.z);
- let roughness=min(max(1.0,0.0525)+geometry_roughness,1.0);
+ let roughness=min(max(1.0,0.045)+geometry_roughness,1.0);
  let diffuse_contribution=diffuse_color;
  let specular_color=vec3(0.04);
  let view_dir=normalize(in.view_position);

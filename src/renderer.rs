@@ -164,6 +164,14 @@ pub struct Renderer {
             crate::environment_gpu::GpuEnvironment,
         )>,
     >,
+    /// Sharp backgrounds' equirectangular maps, uploaded without a PMREM
+    /// ( WebGLBackground converts them to a cube, not a PMREM ).
+    background_sources: RefCell<
+        Vec<(
+            Weak<crate::environment::EnvironmentMap>,
+            crate::environment_gpu::GpuEnvironment,
+        )>,
+    >,
     /// The DFG lookup table that physical materials sample.
     pub dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
@@ -171,6 +179,8 @@ pub struct Renderer {
     /// The 1×1×1 atlas bound without a grid, the grid's linear sampler, and
     /// the atlas of the render in progress.
     grid_fallback: wgpu::TextureView,
+    /// The PMREM binding of a scene without an environment.
+    environment_fallback: wgpu::TextureView,
     grid_sampler: wgpu::Sampler,
     probe_grid: RefCell<Option<Arc<crate::light_probe_grid::GridAtlas>>>,
     physical_maps: RefCell<crate::physical_maps::Cache>,
@@ -330,6 +340,30 @@ impl Renderer {
         self.material_environments
             .borrow_mut()
             .retain(|(owner, _)| owner.strong_count() > 0);
+        self.background_sources
+            .borrow_mut()
+            .retain(|(owner, _)| owner.strong_count() > 0);
+    }
+    /// `scene.background = texture`: a sharp background needs only its
+    /// equirectangular map; a blurred one, or a map already prefiltered,
+    /// samples the PMREM ( WebGLBackground's usePMREM ).
+    fn background_environment(
+        &self,
+        image: &Arc<crate::environment::EnvironmentMap>,
+        blurred: bool,
+    ) -> Result<crate::environment_gpu::GpuEnvironment> {
+        if blurred || image.gpu.is_some() {
+            return self.material_environment(image);
+        }
+        let mut cache = self.background_sources.borrow_mut();
+        let weak = Arc::downgrade(image);
+        if let Some((_, env)) = cache.iter().find(|(owner, _)| owner.ptr_eq(&weak)) {
+            return Ok(env.clone());
+        }
+        cache.retain(|(owner, _)| owner.strong_count() > 0);
+        let env = crate::environment_gpu::source_only(&self.device, &self.queue, image)?;
+        cache.push((weak, env.clone()));
+        Ok(env)
     }
     /// A material's own environment, filtered on first use.
     fn material_environment(
@@ -420,7 +454,12 @@ impl Renderer {
                 } else {
                     wgpu::BindingType::Texture {
                         sample_type: wgpu::TextureSampleType::Float { filterable: true },
-                        view_dimension: wgpu::TextureViewDimension::D2,
+                        // 11: the PMREM cube.
+                        view_dimension: if binding == 11 {
+                            wgpu::TextureViewDimension::Cube
+                        } else {
+                            wgpu::TextureViewDimension::D2
+                        },
                         multisampled: false,
                     }
                 },
@@ -564,7 +603,7 @@ impl Renderer {
                 crate::geometry_gpu::vertex_entry_points(
                     &format!(
                         "{}\n{}\n{}\n{}\n{}\n{}\n{}",
-                        include_str!("shaders/cube_uv.wgsl"),
+                        include_str!("shaders/envmap.wgsl"),
                         concat!(
                             include_str!("shaders/deformation.wgsl"),
                             "\n",
@@ -609,6 +648,25 @@ impl Renderer {
                 view_formats: &[],
             })
             .create_view(&Default::default());
+        let environment_fallback = device
+            .create_texture(&wgpu::TextureDescriptor {
+                label: Some("PMREM fallback"),
+                size: wgpu::Extent3d {
+                    width: 1,
+                    height: 1,
+                    depth_or_array_layers: 6,
+                },
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: wgpu::TextureFormat::Rgba16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING,
+                view_formats: &[],
+            })
+            .create_view(&wgpu::TextureViewDescriptor {
+                dimension: Some(wgpu::TextureViewDimension::Cube),
+                ..Default::default()
+            });
         let grid_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("LightProbeGrid sampler"),
             mag_filter: wgpu::FilterMode::Linear,
@@ -638,10 +696,12 @@ impl Renderer {
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false)?),
             environment: RefCell::new(None),
             material_environments: RefCell::new(Vec::new()),
+            background_sources: RefCell::new(Vec::new()),
             dfg,
             ltc,
             ltc_sampler,
             grid_fallback,
+            environment_fallback,
             grid_sampler,
             probe_grid: RefCell::new(None),
             physical_maps: Default::default(),
@@ -1180,7 +1240,7 @@ impl Renderer {
         let background_map = scene
             .background_map
             .as_ref()
-            .map(|map| self.material_environment(map))
+            .map(|map| self.background_environment(map, scene.background_blur > 0.))
             .transpose()?;
         let prepare_background = |env: &crate::environment_gpu::GpuEnvironment| {
             crate::background::prepare(
@@ -1194,7 +1254,7 @@ impl Renderer {
                 [
                     scene.environment_rotation,
                     scene.background_blur,
-                    if env.source_is_cube_uv || scene.background_pmrem {
+                    if env.pmrem_background || scene.background_pmrem {
                         -1.0
                     } else if scene.background_equirectangular {
                         1.0
@@ -1802,6 +1862,7 @@ impl Renderer {
                         _ => [1.0, 1.0, 1.0, properties.alpha_test as f32],
                     },
                     environment: if let Some(own) = &properties.env_map {
+                        let own = self.material_environment(own)?;
                         [
                             match material {
                                 Material::Standard(m)
@@ -1811,8 +1872,8 @@ impl Renderer {
                                 _ => 1.0,
                             },
                             0.0,
-                            self.material_environment(own)?.max_mip,
-                            0.0,
+                            own.max_mip,
+                            f32::from(own.flip),
                         ]
                     } else {
                         [
@@ -1839,7 +1900,10 @@ impl Renderer {
                                 .borrow()
                                 .as_ref()
                                 .map_or(0.0, |(_, e)| e.max_mip),
-                            0.0,
+                            self.environment
+                                .borrow()
+                                .as_ref()
+                                .map_or(0.0, |(_, e)| f32::from(e.flip)),
                         ]
                     },
                     maps: match material {
@@ -2505,7 +2569,7 @@ impl Renderer {
             wgpu::BindGroupEntry {
                 binding: 11,
                 resource: wgpu::BindingResource::TextureView(
-                    env.map_or(&fallback.view, |e| &e.view),
+                    env.map_or(&self.environment_fallback, |e| &e.view),
                 ),
             },
             wgpu::BindGroupEntry {

@@ -19,6 +19,10 @@ until every ported example matches r187 again; it is removed when done.
   webgpu_compute_rasterizer_ibl left the gallery with their code, tests and
   docs; the generated gallery files list r187's examples.
 
+- WebGL's r187 PMREM ( cube targets ) in the engine ( `src/environment_gpu.rs`,
+  `src/shaders/pmrem.wgsl` ) for every WebGL port and the TSL environments;
+  envmaps_fasthdr loads r187's prefiltered KTX2 cubes; a sharp background
+  uploads only its texture.
 - Core inventory: `make compat-check` passes on r187's members ( 394, all
   accounted for ).
 - MaterialX: `three_tsl::materialx_page` follows the r187 page and builds its
@@ -53,8 +57,6 @@ until every ported example matches r187 again; it is removed when done.
      needs porting.
    - gtao's reference starts its loading frame at a timing-dependent frameId
      ( 8 in one probe ), the port at 0.
-   - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
-     moved to cube targets too ).
    - A port that switches back mid-render to an output target it replaced in
      an earlier frame renders into an expired canvas texture ( browser.rs
      restores targets at a frame's start and end only; fog keeps one target ).

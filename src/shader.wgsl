@@ -37,7 +37,7 @@ struct Uniforms {
 @group(0) @binding(8) var ao_sampler: sampler;
 @group(0) @binding(9) var emissive_map: texture_2d<f32>;
 @group(0) @binding(10) var emissive_sampler: sampler;
-@group(0) @binding(11) var environment_map: texture_2d<f32>;
+@group(0) @binding(11) var environment_map: texture_cube<f32>;
 @group(0) @binding(12) var environment_source: texture_2d<f32>;
 @group(0) @binding(13) var environment_sampler: sampler;
 @group(0) @binding(14) var dfg_map: texture_2d<f32>;
@@ -231,13 +231,14 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
     for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*u.shadow_filters[i].x/size*aspect;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
     return value*0.2;
 }
+// envmap_physical_pars_fragment ( r187 ): the PMREM's level for the roughness
+// along envMapRotation; an uploaded cube texture ( environment.w ) mirrors x.
 fn default_environment_sample(direction:vec3<f32>,roughness:f32)->vec3<f32> {
  let world=normalize((transpose(u.view)*vec4(direction,0.0)).xyz);
  let c=cos(u.environment.y);let s=sin(u.environment.y);
- let d=vec3(c*world.x-s*world.z,-world.y,s*world.x+c*world.z);
- let mip=clamp(roughness_mip(roughness),-2.0,u.environment.z);let lo=floor(mip);
- return mix(textureSampleLevel(environment_map,environment_sampler,cube_uv(d,lo,u.environment.z),0.0).rgb,
- textureSampleLevel(environment_map,environment_sampler,cube_uv(d,lo+1.0,u.environment.z),0.0).rgb,fract(mip))*u.environment.x;
+ var d=vec3(c*world.x-s*world.z,world.y,s*world.x+c*world.z);
+ if u.environment.w>0.5 {d.x=-d.x;}
+ return textureSampleLevel(environment_map,environment_sampler,d,roughness_to_mip(roughness,u.environment.z)).rgb*u.environment.x;
 }
 fn multiscattering(f0:vec3<f32>,dfg:vec2<f32>,f90:f32)->vec3<f32>{
  let single=f0*dfg.x+f90*dfg.y;let average=f0+(vec3(f90)-f0)*0.047619;let missing=1.0-dfg.x-dfg.y;
@@ -440,7 +441,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     let surface=transform_surface(in,LitSurface(n,u.material.y*mr.g,u.material.z*mr.b,u.emissive.xyz*emissive_sample,u.specular,vec3(0.0),vec4(0.0,0.0,0.0,-1.0),vec3(0.0),vec4(0.1,0.0,0.1,2.0),10.0,in.position));
     n=surface.normal;fragment_normal=n;fragment_emissive=surface.emissive;
     let geometry_roughness=max(derivative.x,max(derivative.y,derivative.z));
-    let roughness=min(max(surface.roughness,0.0525)+geometry_roughness,1.0);
+    let roughness=min(max(surface.roughness,0.045)+geometry_roughness,1.0);
     let metalness=clamp(surface.metalness,0.0,1.0);
     var transmission=0.0;if PHYSICAL {transmission=u.transmission[0].x*extension_sample(8u,in).r;}
     let diffuse=base.rgb*(1.0-metalness)*(1.0-transmission);
@@ -457,7 +458,7 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
         let m=iridescent(u.iridescence.y,film_nv,film_thickness,base.rgb);
         film_f=mix(d,m,metalness);film_d=mix(dielectric,fresnel_to_f0(d,film_nv),film);film_m=mix(base.rgb,fresnel_to_f0(m,film_nv),film);
     }
-    var cc=0.0;if PHYSICAL {cc=u.physical[0].x*extension_sample(0u,in).r;}let ccrough=min(max(u.physical[0].y*extension_sample(1u,in).g,0.0525)+geometry_roughness,1.0);
+    var cc=0.0;if PHYSICAL {cc=u.physical[0].x*extension_sample(0u,in).r;}let ccrough=min(max(u.physical[0].y*extension_sample(1u,in).g,0.045)+geometry_roughness,1.0);
     var sheen=vec3(0.0);if PHYSICAL {sheen=u.physical[1].rgb*extension_sample(3u,in).rgb;}let sheen_max=max(sheen.r,max(sheen.g,sheen.b));let sheenrough=max(u.physical[0].z*extension_sample(4u,in).a,0.07);
     var coat_n=geometry_normal*face;
     var coat_uv=extension_uv(2u,in);if u.extension_matrices[6u].w>0.5 {coat_uv.y=1.0-coat_uv.y;}let coat_st0=dpdx(coat_uv);let coat_st1=-dpdy(coat_uv);

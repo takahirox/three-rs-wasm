@@ -32,7 +32,7 @@ pub(crate) fn prepare(
         outputs.to_vec(),
     );
     let (pipeline, layout, slot) = cache.entry(key).or_insert_with(|| {
-        let mut source = format!("{}\n{}\n{}", include_str!("shaders/cube_uv.wgsl"),
+        let mut source = format!("{}\n{}\n{}", include_str!("shaders/envmap.wgsl"),
             include_str!("shaders/output.wgsl"), include_str!("shaders/background.wgsl"));
         if !outputs.is_empty() {
             source = source.replace("@fragment fn fs(in:Out)->@location(0) vec4<f32>",
@@ -109,7 +109,12 @@ pub(crate) fn prepare(
         options[0] as f32,
         options[1] as f32,
         environment.max_mip,
-        options[2] as f32,
+        // The PMREM ( -1 ), mirrored for an uploaded cube texture ( -2 ).
+        if options[2] < 0. && environment.flip {
+            -2.
+        } else {
+            options[2] as f32
+        },
         options[3] as f32,
         options[4] as f32,
         options[5] as f32,

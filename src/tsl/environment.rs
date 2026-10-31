@@ -1,12 +1,13 @@
 //! GPU PMREM sampling and direction corrections for custom PBR environments.
 use super::*;
 
+/// A PMREM cube's radiance along a world direction for a roughness ( r187:
+/// the level roughnessToMip gives below `max_mip`, the PMREM's last level ).
 pub fn pmrem(texture: Texture, direction: Node, roughness: Node, max_mip: Node) -> Node {
     WgslFn::new("tsl_pmrem", r#"
-fn tsl_pmrem(map:texture_2d<f32>,s:sampler,direction:vec3<f32>,roughness:f32,max_mip:f32)->vec3<f32>{
- let d=vec3(direction.x,-direction.y,direction.z);let mip=clamp(roughness_mip(roughness),-2.0,max_mip);let lo=floor(mip);
- return mix(textureSampleLevel(map,s,cube_uv(d,lo,max_mip),0.0).rgb,textureSampleLevel(map,s,cube_uv(d,lo+1.0,max_mip),0.0).rgb,fract(mip));
-}"#, &[Type::Texture,Type::Sampler,Type::Vec3,Type::Float,Type::Float],Type::Vec3).unwrap().call(&[texture.node(),texture.sampler(),direction,roughness,max_mip])
+fn tsl_pmrem(map:texture_cube<f32>,s:sampler,direction:vec3<f32>,roughness:f32,max_mip:f32)->vec3<f32>{
+ return textureSampleLevel(map,s,direction,roughness_to_mip(roughness,max_mip)).rgb;
+}"#, &[Type::TextureCube,Type::Sampler,Type::Vec3,Type::Float,Type::Float],Type::Vec3).unwrap().call(&[texture.node(),texture.sampler(),direction,roughness,max_mip])
 }
 
 /// r186 getParallaxCorrectNormal: intersect the reflected ray with a box.

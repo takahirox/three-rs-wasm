@@ -239,30 +239,32 @@ impl Demo {
             }
         }
         let environments = [Arc::new(generated), Arc::new(ldr), Arc::new(hdr)];
-        // The debug plane maps the chosen PMREM atlas in three's texel layout: the
-        // port's atlas stores each face region upside down with ±Y exchanged.
-        let mut planes = vec![];
-        for env in &environments {
-            let gpu = env.gpu.as_ref().ok_or(Error::Invalid("PMREM"))?;
-            let atlas = crate::tsl::WgslFn::new(
-                "three_atlas",
-                ATLAS,
-                &[crate::tsl::Type::Vec2],
-                crate::tsl::Type::Vec4,
-            )?
-            .call(&[crate::tsl::uv()]);
-            let program = ShaderProgram::with_projection(
-                r,
-                &NodeMaterial::new(atlas).wgsl(1)?,
-                &[],
-                &[(gpu.view(), gpu.sampler())],
-                PROJECT,
-            )
-            .await?;
-            planes.push(Arc::new(Material::Shader(ShaderMaterial::new(Arc::new(
-                program,
-            )))));
-        }
+        // The debug plane's MeshBasicMaterial takes the PMREM render target's
+        // texture as its map. r187's PMREM is a cube, which WebGL cannot bind
+        // to the map's 2D target ( INVALID_OPERATION ): the unit keeps the 2D
+        // texture the torus bound there, the DFG LUT, for every environment.
+        let lut_sampler = r.device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        let lut = crate::tsl::WgslFn::new(
+            "three_atlas",
+            ATLAS,
+            &[crate::tsl::Type::Vec2],
+            crate::tsl::Type::Vec4,
+        )?
+        .call(&[crate::tsl::uv()]);
+        let program = ShaderProgram::with_projection(
+            r,
+            &NodeMaterial::new(lut).wgsl(1)?,
+            &[],
+            &[(&r.dfg, &lut_sampler)],
+            PROJECT,
+        )
+        .await?;
+        let lut = Arc::new(Material::Shader(ShaderMaterial::new(Arc::new(program))));
+        let planes = vec![lut.clone(), lut.clone(), lut];
         let plane = s.insert(NodeKind::Mesh(Mesh::new(
             Arc::new(PlaneGeometry::build(200., 200., 1, 1)?),
             planes[2].clone(),
@@ -596,20 +598,7 @@ impl Demo {
 /// Sample the port's PMREM atlas at a uv of three's atlas (GL rows, bottom up):
 /// each face region is mirrored vertically and faces 1 and 4 trade places.
 const ATLAS: &str = "fn three_atlas(uv:vec2<f32>)->vec4<f32>{
- let size=vec2<f32>(textureDimensions(tsl_texture_0));let max_mip=log2(size.y/4.0);
- let p=uv*size;var q=p;
- for(var level=i32(max_mip);level>=-2;level--){
-  let extra=f32(max(4-level,0));let s=exp2(f32(max(level,4)));
-  let x0=extra*48.0;let y0=4.0*(exp2(max_mip)-s);
-  if p.y>=y0 && p.y<y0+2.0*s && p.x>=x0 && p.x<x0+3.0*s {
-   let col=floor((p.x-x0)/s);let row=floor((p.y-y0)/s);var face=u32(col+3.0*row);
-   if face==1u {face=4u;} else if face==4u {face=1u;}
-   let local=vec2(p.x-x0-col*s,p.y-y0-row*s);
-   q=vec2(x0+f32(face%3u)*s+local.x,y0+select(0.0,s,face>2u)+(s-local.y));
-   break;
-  }
- }
- return vec4(textureSampleLevel(tsl_texture_0,tsl_sampler_0,q/size,0.0).rgb,1.0);
+ return vec4(textureSampleLevel(tsl_texture_0,tsl_sampler_0,uv,0.0).rgb,1.0);
 }";
 
 #[allow(unused_variables)]
