@@ -308,6 +308,11 @@ pub struct MaterialProperties {
     #[serde(skip)]
     pub shadow_program: Option<Arc<crate::shadow::ShadowProgram>>,
     pub vertex_uniforms: [[f32; 4]; 16],
+    /// Material.id: three numbers its materials in creation order. WebGLRenderer
+    /// orders opaque draws of one render order by it before their depth
+    /// ( `Renderer::webgl` ); 0 when a port leaves it unset.
+    #[serde(skip)]
+    pub id: u64,
 }
 impl Default for MaterialProperties {
     fn default() -> Self {
@@ -343,6 +348,7 @@ impl Default for MaterialProperties {
             vertex_program: None,
             shadow_program: None,
             vertex_uniforms: [[0.0; 4]; 16],
+            id: 0,
             env_map: None,
         }
     }

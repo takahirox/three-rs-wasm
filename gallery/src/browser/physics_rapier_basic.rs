@@ -30,9 +30,16 @@ pub(super) struct Demo {
     now: f64,
     intervals: [Interval; 2],
     timer: StepTimer,
+    /// The last Material.id handed out ( `next_material_id` ).
+    materials: u64,
 }
 impl Demo {
-    pub async fn create(s: &mut Scene, c: Object3D, _id: u32, _r: &Renderer) -> Result<Self> {
+    pub async fn create(s: &mut Scene, c: Object3D, _id: u32, r: &Renderer) -> Result<Self> {
+        // WebGLRenderer draws opaque objects in their materials' creation order
+        // ( Material.id ): the floor's, the first body's, RapierHelper's, then each
+        // later body's. The collider outlines lie on the faces they outline, so
+        // that order decides which of the equal depths shows.
+        r.webgl.set(true);
         let aspect = match s.camera(c)?.0 {
             Camera::Perspective(p) => p.aspect,
             _ => 1.,
@@ -85,6 +92,7 @@ impl Demo {
             Arc::new(Material::Standard(MeshStandardMaterial {
                 properties: MaterialProperties {
                     map: Some(Arc::new(grid)),
+                    id: 1,
                     ..Default::default()
                 },
                 energy_conservation: true,
@@ -145,10 +153,18 @@ impl Demo {
                 Interval::new(0., 1000., 1),
             ],
             timer: StepTimer::default(),
+            materials: 1,
         };
         d.add_body(s)?;
+        let id = d.next_material_id();
+        d.helper.set_material_id(s, id)?;
         d.children.push(Child::Other);
         Ok(d)
+    }
+    /// The next Material.id: the floor's material is 1.
+    fn next_material_id(&mut self) -> u64 {
+        self.materials += 1;
+        self.materials
     }
     /// addBody(): a random geometry, color and position; mass 1, restitution 0.5.
     fn add_body(&mut self, s: &mut Scene) -> Result<()> {
@@ -160,6 +176,7 @@ impl Demo {
             Arc::new(Material::Standard(MeshStandardMaterial {
                 properties: MaterialProperties {
                     color,
+                    id: self.next_material_id(),
                     ..Default::default()
                 },
                 energy_conservation: true,
