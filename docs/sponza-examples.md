@@ -111,7 +111,10 @@ the cones' noise. Every stage runs the WGSL that r186 generates for the page
 - **Frame.** Each frame runs the shadow pass, the pre-pass ( packed normals
   and velocity ), the cone tracer, the scene pass and TRAA. The cone
   tracer's AO and GI rotate with `frameId`, and the scene pass reads them in
-  its lighting. TRAA then resolves the result.
+  its lighting. TRAA then resolves the result. The shadow and camera passes
+  cull each primitive by the bounding sphere GLTFLoader gives its geometry
+  ( the POSITION accessor box's center and half diagonal ), as three does,
+  so both sides draw the same primitives.
 - **GUI.** The GUI follows the page's order. Its output views follow
   `updatePostprocessing()`:
   - Direct renders the scene pass without the GI context, so the GI pass

@@ -1424,10 +1424,12 @@ impl Demo {
                     wgpu::BufferUsages::INDEX,
                 ),
                 count: index.len() as u32,
-                sphere: Sphere {
+                // GLTFLoader's computeBounds sphere ( the accessor box's
+                // center and half diagonal ), which the culling tests.
+                sphere: g.bounding_sphere.unwrap_or(Sphere {
                     center,
                     radius: points.iter().map(|p| p.distance(center)).fold(0., f64::max),
-                },
+                }),
                 model,
                 kind,
                 color,
