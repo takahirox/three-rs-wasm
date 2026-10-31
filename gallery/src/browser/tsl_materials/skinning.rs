@@ -50,22 +50,29 @@ impl Demo {
         let mut mixer = crate::animation::AnimationMixer::default();
         mixer.play(instance.clips[0].clone())?;
         self.mixer = Some(mixer);
-        let mut colors = 186u32;
-        let mut metals = 187u32;
-        let mut random = |_| {
-            let mut v = [0.0; 4];
-            for value in &mut v[..4] {
-                colors = colors.wrapping_mul(1664525).wrapping_add(1013904223);
-                *value = (colors as f64 / 4294967296.0) as f32;
-            }
-            metals = metals.wrapping_mul(1664525).wrapping_add(1013904223);
-            v[3] = (metals as f64 / 4294967296.0) as f32;
-            for _ in 0..3 {
-                metals = metals.wrapping_mul(1664525).wrapping_add(1013904223);
-            }
-            v
+        // r187's RangeNode: each instance's values hash its index with the
+        // object's seed ( Math.imul( object.id, 0x9E3779B9 ); the page's Ch03 is
+        // Object3D 86 ) and the node's salt ( Math.imul( rangeId, 0x85EBCA6B );
+        // the colors are range node 0, the metalness range node 1 ). Static per
+        // instance, they are written once into the instance buffer.
+        fn hash(seed: u32) -> f32 {
+            let state = seed.wrapping_mul(747796405).wrapping_add(2891336453);
+            let word = ((state >> ((state >> 28) + 4)) ^ state).wrapping_mul(277803737);
+            ((word >> 22) ^ word) as f32 * (1.0 / 4294967296.0)
+        }
+        const OBJECT_ID: u32 = 86;
+        let object_seed = OBJECT_ID.wrapping_mul(0x9E3779B9);
+        let random = |instance: u32, range_id: u32| {
+            let seed = object_seed ^ range_id.wrapping_mul(0x85EBCA6B);
+            let index = instance.wrapping_mul(4).wrapping_add(seed);
+            [0, 1, 2, 3].map(|k| hash(index.wrapping_add(k)))
         };
-        let values: Vec<[f32; 4]> = (0..30).map(&mut random).collect();
+        let values: Vec<[f32; 4]> = (0..30)
+            .map(|i| {
+                let [r, g, b, _] = random(i, 0);
+                [r, g, b, random(i, 1)[0]]
+            })
+            .collect();
         let buffer = GpuBuffer::new(r, bytemuck::cast_slice(&values), BufferAccess::Read)?;
         let osc = ((uniform(0, Type::Float) * float(0.1) + float(0.75))
             * float(std::f32::consts::TAU))
