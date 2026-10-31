@@ -105,10 +105,10 @@ changes `far` without updating it.
   WebGLRenderer program converts again. The original's lit colors are
   therefore sRGB-encoded twice, and the port's output hook does the same.
 - **Instanced rebuilds.** In r186, an InstancedMesh rebuilt after `clean()`
-  drew nothing under WebGLNodesHandler ( not re-checked on r187, whose
-  handler names buffer uniform groups per shader stage ). The port draws it.
-  The test changes the method and count only through the merged and naive
-  builds.
+  drew nothing under WebGLNodesHandler. r187's handler ( which names buffer
+  uniform groups per shader stage ) draws it, as the port does: the test
+  rebuilds the instanced method after the merged and naive ones and changes
+  its count.
 - **Fixture.** The fixture times WebGLNodesHandler's NodeFrame on the example
   clock.
 

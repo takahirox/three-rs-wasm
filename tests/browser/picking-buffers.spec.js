@@ -10,9 +10,9 @@ const cases={
  webgl_framebuffer_texture:{times:[0,.25,1,2],parameters:[],at:1,antialias:true,drag:[[256,256],[330,300]],wheel:[256,256,-300],pan:[[256,256],[300,220]]},
  webgl_read_float_buffer:{times:[0,.2,.6,1.3,2.5],parameters:[],at:1,antialias:false,noResize:true,hover:[[100,100],[400,300]]},
  webgl_interactive_cubes_gpu:{times:[0],parameters:[],at:0,antialias:true,noResize:true,pick:true,script:[['move',256,256,.5],['move',100,380,1],['drag',256,256,330,300,0,1.5],['move',300,200,2],['wheel',256,256,-300,2.5],['drag',256,256,300,200,2,3],['move',200,300,3.5]]},
- // r186's WebGLNodesHandler drew nothing for an InstancedMesh rebuilt after clean() ( not
- // re-checked on r187 ): the cases rebuild only the merged and naive methods (docs/shadow-volume-examples.md).
- webgl_tsl_instancing:{times:[0,.5,1.5],parameters:[[0,'MERGED',1,2],[0,'NAIVE',2,2.5],[1,300,300,3],[0,'MERGED',1,3.5],[1,3000,3000,4]],at:4,antialias:true,rebuilds:true},
+ // r186's WebGLNodesHandler drew nothing for an InstancedMesh rebuilt after clean(); r187's draws
+ // it, so the cases rebuild the instanced method too (docs/shadow-volume-examples.md).
+ webgl_tsl_instancing:{times:[0,.5,1.5],parameters:[[0,'MERGED',1,2],[0,'NAIVE',2,2.5],[1,300,300,3],[0,'MERGED',1,3.5],[1,3000,3000,4],[0,'INSTANCED',0,4.5],[1,1000,1000,5]],at:5,antialias:true,rebuilds:true},
  webgl_instancing_performance:{times:[0,.5,1.5],parameters:[[0,'MERGED',1,2],[0,'NAIVE',2,2.5],[1,300,300,3],[0,'INSTANCED',0,3.5],[1,5000,5000,4]],at:4,antialias:true,rebuilds:true},
 };
 const official=kind=>kind;

@@ -14643,7 +14643,7 @@
         "source": "gallery/src/browser/picking_buffers.rs",
         "test": "tests/browser/picking-buffers.spec.js",
         "limitations": [
-          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれなかった（原作の不具合。r187では未再確認）が、本移植は描画する。性能の完全な同等性は未保証。"
+          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれなかったが、r187では描画され、本移植も同様に描画する（作り直したINSTANCEDも比較）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
