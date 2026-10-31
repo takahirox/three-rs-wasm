@@ -652,7 +652,8 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     return apply_fog(max(vec4(result,base.a*transmission_alpha),vec4(0.0)),-in.view_position.z);
 }
 
-// r186 SunShadowNode: two view-depth cascades with five rotated Vogel PCF taps.
+// r187 SunShadowNode ( and WebGL's getSunShadow ): two view-depth cascades walked back to
+// front, blended over their fade bands, each filtered by PCF's five rotated Vogel taps.
 fn sun_cascade_sample(i:u32,layer:u32,position:vec3<f32>,normal:vec3<f32>,inset:f32)->f32 {
  let settings=u.shadow_params[i];
  let projected=u.shadow_matrices[layer]*vec4(position+normal*settings.z,1.0);
@@ -663,8 +664,9 @@ fn sun_cascade_sample(i:u32,layer:u32,position:vec3<f32>,normal:vec3<f32>,inset:
     let size=vec2<f32>(textureDimensions(shadow_atlas));
  if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
  let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
- // Original atlas is 2 tiles wide: the scalar filter radius uses its width.
- let scale=u.shadow_filters[i].x/vec2<f32>(textureDimensions(shadow_atlas))*vec2(1.0,0.5);
+ // The radius in the atlas's texels on each axis ( shadowRadius * texelSize, the
+ // texel size that of the 2 × 1 cascade atlas, one cascade per layer here ).
+ let scale=u.shadow_filters[i].x/vec2<f32>(textureDimensions(shadow_atlas));
  var value=0.0;
  for(var j=0u;j<5u;j++){let angle=f32(j)*2.399963229728653+phi;let offset=vec2(cos(angle),sin(angle))*sqrt((f32(j)+0.5)/5.0)*scale;value+=textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,uv+offset),i32(layer),ndc.z+settings.y);}
  return value*0.2;
