@@ -53,9 +53,8 @@ until every ported example matches r187 again; it is removed when done.
    lightprobes_sponza draws Sponza through the ported MeshletDrawingPipeline
    ( `gallery/src/browser/meshlet.rs` ), its draws, indirect draws and compute
    passes matching the page's frame by frame. Left:
-   - gtao follows r187's frame numbering ( the loop `render()` starts counts
-     the PMREM's frame 1; `fixtureStopLoop` ); ssgi, ssgi_ballpool and sss
-     still restart at frameId 12000 after a timing-dependent loading frame.
+   - gtao, ssgi, ssgi_ballpool and sss follow r187's frame numbering ( the
+     loop `render()` starts counts frame 1; `fixtureStopLoop` ).
    Output targets an example may present ( `Example::on_output_targets_mut` )
    each get their texture back around every frame, so switching back
    mid-render no longer renders into an expired canvas texture.
@@ -114,9 +113,7 @@ until every ported example matches r187 again; it is removed when done.
      the left view's matrix and projection; the gallery serves r187's
      Inspector, lil-gui and stats.js ( `three@0.187.0` ); webgpu_water and
      webgl_tsl_instancing's InstancedMesh rebuild are compared on r187.
-   - webgpu_water's first capture ( t = 0 ) differs by 16.5 % ( dark
-     distortion patches ); later states match.
-   - `tools/gallery/ui/specs.json`'s lil-gui / stats records of
-     webgl_gpgpu_birds_gltf, webgl_loader_svg ( three new options ),
-     webgl_materials_envmaps_fasthdr and webgl_postprocessing_dof2 still come
-     from r186's pages.
+   - webgpu_water draws r187's first two frames ( the output quad alone,
+     then the reflector's identity plane ); every state within 0.15 %.
+   - The UI records of webgl_gpgpu_birds_gltf, webgl_loader_svg ( r187's
+     three new files ), envmaps_fasthdr and dof2 come from r187's pages.
