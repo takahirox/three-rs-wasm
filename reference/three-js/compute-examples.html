@@ -77,9 +77,9 @@ window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixtur
 // TSL frameId advances on every animation frame of the renderer's own loop, so it depends on the
 // display's frame cadence: the fixture stops that loop (its frames are rendered on the example clock)
 // and restarts the count when the page is ready.
-if(id==='webgpu_volume_caustics'){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=0;}
+if(id==='webgpu_volume_caustics'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
 // The fire's volume offsets its ray march by frameId: the count restarts when the page is ready.
-if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=0;}
+if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
 // SSGINode rotates its slices by frameId % 6 and offsets its steps by frameId % 4 (SSSNode its rays by frameId % 4): the count restarts at a
 // multiple of 12 past every frame the loading loop rendered (a restart at 0 would repeat the loading frame's id).
 if(['webgpu_postprocessing_ssgi','webgpu_postprocessing_ssgi_ballpool','webgpu_postprocessing_sss','webgpu_postprocessing_ao'].includes(id)){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=12000;}

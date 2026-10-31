@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -31,17 +31,17 @@ struct renderStruct {
 	nodeUniform28 : f32,
 	nodeUniform29 : f32,
 	nodeUniform12 : vec3<f32>,
-	nodeUniform25 : vec3<f32>,
 	nodeUniform26 : vec3<f32>,
 	nodeUniform27 : vec3<f32>,
+	nodeUniform25 : vec3<f32>,
 	nodeUniform14 : mat4x4<f32>,
 	nodeUniform17 : f32,
 	nodeUniform18 : f32,
+	nodeUniform20 : f32,
+	nodeUniform21 : vec2<f32>,
 	nodeUniform22 : f32,
 	cameraPosition : vec3<f32>,
-	nodeUniform11 : vec2<f32>,
-	nodeUniform20 : f32,
-	nodeUniform21 : vec2<f32>
+	nodeUniform11 : vec2<f32>
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -58,7 +58,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar58 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
 var<private> positionLocal : vec3<f32>;
@@ -80,8 +79,8 @@ fn main( @location( 0 ) position : vec3<f32>,
 	varyings.v_normalViewGeometry = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform16 * normalLocal ), 0.0 ) ).xyz );
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform2 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar58 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar58;
+	let VERTEX_nodeConst16 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst16;
 
 	// result
 
