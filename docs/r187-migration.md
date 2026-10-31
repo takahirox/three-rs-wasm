@@ -45,18 +45,17 @@ until every ported example matches r187 again; it is removed when done.
    lightprobes ( its bake shared with lightprobes_complex ), retro, gtao, ssr,
    ssr_denoise, skinning_instances: every WebGPU port runs r187's shaders.
    Left:
-   - The workload check ( one test per example in compute-examples.spec.js )
-     fails for ssr_denoise ( 1698 draws, the page 173 ),
-     skinning_instancing_individual ( one extra draw ), vxgi_sponza ( two
-     4086-index draws missing ) and lightprobes_sponza ( the reference seems
-     measured before Sponza loads ).
-   - TRAA's first frames: r187 reads the history's depth from the first frame
-     and starts the loading frame at frameId 1 ( gtao and ballpool follow );
-     ssgi, volume_traa and the other TRAA ports still start as r186 did.
+   - lightprobes_sponza: r187's page draws Sponza through
+     MeshletDrawingPipeline ( GPU culling, indirect draws ) by default; the
+     port draws it directly, so its workload differs. MeshletDrawingPipeline
+     needs porting.
+   - gtao's reference starts its loading frame at a timing-dependent frameId
+     ( 8 in one probe ), the port at 0.
    - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
      moved to cube targets too ).
-   - `gallery/src/browser.rs` leaves a replaced output target pointing at the
-     canvas texture ( fog worked around it by keeping one target ).
+   - A port that switches back mid-render to an output target it replaced in
+     an earlier frame renders into an expired canvas texture ( browser.rs
+     restores targets at a frame's start and end only; fog keeps one target ).
 
 2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
    RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
