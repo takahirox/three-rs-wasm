@@ -80,13 +80,14 @@ until every ported example matches r187 again; it is removed when done.
    ( `Shadow::bounds`, PCF radius in texels, per-face point-shadow depth ).
    r187's `range()` ( an instance hash seeded by the object's id ) runs in
    the shaders of skinning_instancing, instance_mesh, particles,
-   particles_soft and tsl_galaxy ( `tsl::range` ). Left in texture-volumes'
-   combined workload test, reached now that its CSS pages load:
-   - physics_ammo_rope, _cloth and _volume stream attribute bytes ( 172,
-     14352, 64896 against the pages' 132, 8064, 36864 ) without a `streams`
-     entry; physics_ammo_terrain draws two extra 36-index draws.
-   - webgl_worker_offscreencanvas is flaky ( the reference side about 66
-     draws over the port in one of two runs ).
+   particles_soft and tsl_galaxy ( `tsl::range` ). texture-volumes' combined
+   workload test passes: a geometry's rewritten attributes upload alone
+   ( second vertex buffer ), so the ammo soft bodies stream exactly their
+   pages' bytes; the ammo pages step with Timer's signed delta; the
+   offscreen-canvas and CSS fixtures render once per fixture frame. Left:
+   - The reversed and logarithmic depth buffer references render without
+     the pages' styles ( white background, 8 px offset ).
+   - misc_controls_arcball's draw count differed once in a full run.
 4. **Changed addons.** Ported and on r187's oracles: USD, SVGLoader,
    IESLoader ( and IESSpotLightNode ), PLYLoader, CCDIKSolver, Octree,
    BufferGeometryUtils, the PLY / OBJ / EXR exporters, GCode, PCD, PDB, STL and
