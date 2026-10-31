@@ -182,7 +182,8 @@ impl LatheGeometry {
         let mut previous = Vector3::ZERO;
         for j in 0..points.len() {
             if j == points.len() - 1 {
-                normals.push(previous);
+                // The last vertex takes the last segment's normal, normalized.
+                normals.push(previous.normalize_or_zero());
                 break;
             }
             let d = points[j + 1] - points[j];

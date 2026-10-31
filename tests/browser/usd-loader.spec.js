@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {fixtures} from '../../tools/core/usd-fixtures.mjs';
 // The loader port is in webgl_loader_usdz's module ( tools/gallery/modules.py ).
 const PACKAGE=JSON.parse(readFileSync(new URL('../../web/examples/modules.json',import.meta.url),'utf8')).examples.webgl_loader_usdz;
-// The Rust USDLoader against the pinned r186 USDLoader in the same engine:
+// The Rust USDLoader against the pinned r187 USDLoader in the same engine:
 // webgl_loader_usdz's saeukkang.usdz and the fixtures of
 // tools/core/usd-fixtures.mjs, in the canonical form of usd::canonical
 // ( numbers as their bits, buffers by hash ).

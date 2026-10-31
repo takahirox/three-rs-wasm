@@ -1,4 +1,4 @@
-//! The USDLoader port against the pinned r186 USDLoader: webgl_loader_usdz's
+//! The USDLoader port against the pinned r187 USDLoader: webgl_loader_usdz's
 //! saeukkang.usdz, the fixtures of tools/core/usd-fixtures.mjs and, on
 //! macOS, the system's own USDC files, compared in the canonical form with
 //! full buffers ( tools/core/usd-oracle.mjs ).

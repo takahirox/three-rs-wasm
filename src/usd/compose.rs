@@ -8,7 +8,7 @@ use super::{
     UsdTexture, UsdTrack, UsdTrackKind,
 };
 use crate::attribute::BufferAttribute;
-use crate::fbx::math::{Euler, M3, M4, Order, Q, V3, srgb_to_linear};
+use crate::fbx::math::{Euler, M3, M4, Order, Q, V3};
 use crate::geometry::{
     Attribute, BoxGeometry, BufferGeometry, CapsuleGeometry, CylinderGeometry, SphereGeometry,
 };
@@ -1200,7 +1200,7 @@ impl Composer {
             for &m in &materials {
                 let mat = &mut w.materials[m];
                 if mat.color == [1.0; 3] && !mat.maps.contains_key("map") {
-                    mat.color = srgb(&display.at(0), &display.at(1), &display.at(2));
+                    mat.color = linear_rgb(&display.at(0), &display.at(1), &display.at(2));
                 }
             }
         }
@@ -2049,7 +2049,7 @@ impl Composer {
             true,
             Some(&|mat, c| {
                 if color3(c) {
-                    mat.color = srgb(&c.at(0), &c.at(1), &c.at(2));
+                    mat.color = linear_rgb(&c.at(0), &c.at(1), &c.at(2));
                 }
             }),
             false,
@@ -2057,7 +2057,7 @@ impl Composer {
         if let Some(sc) = Self::texture_scale(w, m, "map")
             && color3(&sc)
         {
-            w.materials[m].color = srgb(&sc.at(0), &sc.at(1), &sc.at(2));
+            w.materials[m].color = linear_rgb(&sc.at(0), &sc.at(1), &sc.at(2));
         }
         self.texture_or_value(
             w,
@@ -2069,7 +2069,7 @@ impl Composer {
             true,
             Some(&|mat, c| {
                 if color3(c) {
-                    mat.emissive = srgb(&c.at(0), &c.at(1), &c.at(2));
+                    mat.emissive = linear_rgb(&c.at(0), &c.at(1), &c.at(2));
                 }
             }),
             false,
@@ -2078,7 +2078,7 @@ impl Composer {
             match Self::texture_scale(w, m, "emissiveMap") {
                 Some(sc) => {
                     if color3(&sc) {
-                        w.materials[m].emissive = srgb(&sc.at(0), &sc.at(1), &sc.at(2));
+                        w.materials[m].emissive = linear_rgb(&sc.at(0), &sc.at(1), &sc.at(2));
                     }
                 }
                 None => w.materials[m].emissive = [1.0; 3],
@@ -2154,7 +2154,7 @@ impl Composer {
             true,
             Some(&|mat, c| {
                 if color3(c) {
-                    mat.specular_color = srgb(&c.at(0), &c.at(1), &c.at(2));
+                    mat.specular_color = linear_rgb(&c.at(0), &c.at(1), &c.at(2));
                 }
             }),
             false,
@@ -2162,7 +2162,7 @@ impl Composer {
         if let Some(sc) = Self::texture_scale(w, m, "specularColorMap")
             && color3(&sc)
         {
-            w.materials[m].specular_color = srgb(&sc.at(0), &sc.at(1), &sc.at(2));
+            w.materials[m].specular_color = linear_rgb(&sc.at(0), &sc.at(1), &sc.at(2));
         }
         let cc = f.get("inputs:clearcoat");
         if !cc.is_undefined() {
@@ -2215,7 +2215,7 @@ impl Composer {
             true,
             Some(&|mat, c| {
                 if color3(c) {
-                    mat.color = srgb(&c.at(0), &c.at(1), &c.at(2));
+                    mat.color = linear_rgb(&c.at(0), &c.at(1), &c.at(2));
                 }
             }),
             true,
@@ -2223,7 +2223,7 @@ impl Composer {
         if let Some(sc) = Self::texture_scale(w, m, "map")
             && color3(&sc)
         {
-            w.materials[m].color = srgb(&sc.at(0), &sc.at(1), &sc.at(2));
+            w.materials[m].color = linear_rgb(&sc.at(0), &sc.at(1), &sc.at(2));
         }
         self.texture_or_value(
             w,
@@ -2265,7 +2265,7 @@ impl Composer {
             true,
             Some(&|mat, c| {
                 if color3(c) {
-                    mat.emissive = srgb(&c.at(0), &c.at(1), &c.at(2));
+                    mat.emissive = linear_rgb(&c.at(0), &c.at(1), &c.at(2));
                 }
             }),
             true,
@@ -2588,7 +2588,16 @@ impl Composer {
                     transform,
                 ));
             }
-            return Ok(None);
+            // The LoadingManager ( a loader's manager is never null ) loads
+            // the base name.
+            return Ok(self.texture_from_data(
+                w,
+                base,
+                None,
+                Some(base.to_string()),
+                attrs,
+                transform,
+            ));
         }
         let name = if self.assets.get(&resolved).is_some() {
             resolved.clone()
@@ -2999,12 +3008,9 @@ fn track(name: &str, kind: UsdTrackKind, times: &[f64], values: &[f64]) -> UsdTr
     }
 }
 
-fn srgb(r: &Value, g: &Value, b: &Value) -> [f64; 3] {
-    [
-        srgb_to_linear(num(r)),
-        srgb_to_linear(num(g)),
-        srgb_to_linear(num(b)),
-    ]
+/// Color.setRGB( r, g, b, LinearSRGBColorSpace ).
+fn linear_rgb(r: &Value, g: &Value, b: &Value) -> [f64; 3] {
+    [num(r), num(g), num(b)]
 }
 fn wrap_mode(v: &Value) -> u32 {
     match v.as_str() {

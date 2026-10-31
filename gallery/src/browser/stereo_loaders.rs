@@ -123,10 +123,13 @@ fn parse_pcd(data: &[u8]) -> Result<(Vec<f32>, Vec<f32>)> {
         .ok_or(bad("points"))?;
     let index = |name: &str| fields.iter().position(|f| f == name);
     let mut offsets = vec![0; fields.len()];
-    let mut row = 0;
+    // ascii: the summed counts of the fields before; binary: their bytes.
+    let (mut row, mut values) = (0, 0);
     for (i, offset) in offsets.iter_mut().enumerate() {
-        *offset = if mode == "ascii" { i } else { row };
-        row += size.get(i).copied().unwrap_or(4) * count.get(i).copied().unwrap_or(1);
+        let n = count.get(i).copied().unwrap_or(1);
+        *offset = if mode == "ascii" { values } else { row };
+        values += n;
+        row += size.get(i).copied().unwrap_or(4) * n;
     }
     let read = |bytes: &[u8], at: usize, i: usize| -> f64 {
         let (t, s) = (types.get(i).map(String::as_str).unwrap_or("F"), size[i]);
@@ -156,7 +159,8 @@ fn parse_pcd(data: &[u8]) -> Result<(Vec<f32>, Vec<f32>)> {
                 if line.is_empty() {
                     continue;
                 }
-                let v: Vec<&str> = line.split(' ').collect();
+                // trim().split( /\s+/ ).
+                let v: Vec<&str> = line.split_whitespace().collect();
                 let num = |i: usize| {
                     v.get(i)
                         .and_then(|s| s.trim().parse::<f64>().ok())

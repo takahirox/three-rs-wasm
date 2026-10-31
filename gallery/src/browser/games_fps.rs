@@ -120,30 +120,40 @@ fn contains(t: &[V; 3], p: V) -> bool {
     let (x, y) = (1. - u - v, v);
     x >= 0. && y >= 0. && x + y <= 1.
 }
+// t2 < 0 || t2 > 1: NaN is not clamped again, as in JavaScript.
+#[allow(clippy::manual_range_contains)]
 fn line_to_line_closest(a0: V, a1: V, b0: V, b1: V) -> (V, V) {
     let r = a1 - a0;
     let s = b1 - b0;
     let w = b0 - a0;
     let (a, b, c, d, e) = (r.dot(s), r.dot(r), s.dot(s), s.dot(w), r.dot(w));
     let divisor = b * c - a * a;
-    let (mut t1, mut t2);
-    if divisor.abs() < EPS {
+    let mut t1 = if divisor.abs() < EPS {
         let d1 = -d / c;
         let d2 = (a - d) / c;
         if (d1 - 0.5).abs() < (d2 - 0.5).abs() {
-            t1 = 0.;
-            t2 = d1;
+            0.
         } else {
-            t1 = 1.;
-            t2 = d2;
+            1.
         }
     } else {
-        t1 = (d * a + e * c) / divisor;
-        t2 = (t1 * a - d) / c;
+        (e * c - d * a) / divisor
+    };
+    // Clamped to the segments: when the closest point on the second segment
+    // is clamped, the one on the first is recomputed.
+    t1 = clamp01(t1);
+    let mut t2 = (t1 * a - d) / c;
+    if t2 < 0. || t2 > 1. {
+        t2 = clamp01(t2);
+        if b > EPS {
+            t1 = clamp01((t2 * a + e) / b);
+        }
     }
-    t2 = 0f64.max(1f64.min(t2));
-    t1 = 0f64.max(1f64.min(t1));
     (r * t1 + a0, s * t2 + b0)
+}
+/// Math.max( 0, Math.min( 1, t ) ): NaN stays NaN.
+fn clamp01(t: f64) -> f64 {
+    if t.is_nan() { t } else { t.clamp(0., 1.) }
 }
 
 struct Octree {
@@ -317,7 +327,7 @@ fn triangle_sphere(center: V, radius: f64, t: &[V; 3]) -> Option<(V, f64)> {
         return None;
     }
     let depth = (distance - radius).abs();
-    let r2 = radius * radius - depth * depth;
+    let r2 = radius * radius;
     let plain = center - n * distance;
     if contains(t, center) {
         return Some((n, depth));

@@ -21,22 +21,22 @@ fn random(seed: &mut u32) -> f64 {
     *seed as f64 / 4294967296.
 }
 
-/// One asynchronous copy of a half-float render target to a mappable buffer,
-/// as `readRenderTargetPixelsAsync` does for the exporters.
-struct AtlasReadback {
+/// One asynchronous copy of a render target's half-float texture to a mappable
+/// buffer, as `readRenderTargetPixelsAsync` does for the exporters.
+struct TargetReadback {
     buffer: wgpu::Buffer,
     stride: u32,
     width: u32,
     height: u32,
     ready: Arc<Mutex<Option<std::result::Result<(), wgpu::BufferAsyncError>>>>,
 }
-impl AtlasReadback {
+impl TargetReadback {
     fn begin(r: &Renderer, texture: &wgpu::Texture) -> Self {
         let (width, height) = (texture.width(), texture.height());
         let stride = (width * 8).div_ceil(wgpu::COPY_BYTES_PER_ROW_ALIGNMENT)
             * wgpu::COPY_BYTES_PER_ROW_ALIGNMENT;
         let buffer = r.device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("render target export readback"),
+            label: Some("exporter render target readback"),
             size: stride as u64 * height as u64,
             usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
@@ -70,7 +70,8 @@ impl AtlasReadback {
             ready,
         }
     }
-    /// The half-float texels, once mapped, in WebGL's bottom-up row order.
+    /// The half-float texels, once mapped, bottom row first as WebGL's
+    /// readPixels returns them.
     fn take(&self) -> Option<Result<Vec<u16>>> {
         let result = self.ready.lock().unwrap().take()?;
         if result.is_err() {
@@ -89,24 +90,23 @@ impl AtlasReadback {
     }
 }
 
-/// misc_exporter_exr / misc_exporter_ktx2 ( r187 ): the equirectangular
-/// background, the data texture quad, the 1024 × 512 half-float render
-/// target and the export options.
+/// misc_exporter_exr / misc_exporter_ktx2: the equirectangular background, the
+/// 1024 × 512 HalfFloat render target, the data texture quad and the export
+/// options.
 struct Exporter {
     ktx2: bool,
-    /// The equirectangular texture, scene.background on the render-target view.
-    background: Arc<EnvironmentMap>,
+    /// The HDR texture, `scene.background` in the render-target view.
+    env: Arc<EnvironmentMap>,
+    target: RenderTarget,
     quad: Object3D,
     /// createDataTexture(): 800 × 800 RGBA Float32 normals.
     data: Vec<f32>,
     /// target (0 render-target, 1 data-texture), then for EXR type (0 Float,
     /// 1 Half) and compression (0 ZIP, 1 ZIPS, 2 RLE, 3 PIZ, 4 NONE).
     params: [f64; 3],
-    /// `new THREE.WebGLRenderTarget( 1024, 512, { type: HalfFloatType } )`.
-    target: RenderTarget,
-    /// An export of the render target waiting for the next frame's render.
-    render_export: bool,
-    readback: Option<AtlasReadback>,
+    /// exportFile() awaits a render into `target` before reading it back.
+    render: bool,
+    readback: Option<TargetReadback>,
 }
 /// webgpu_materials_video: the 20 × 10 cube wall.
 struct VideoWall {
@@ -197,10 +197,19 @@ impl Demo {
         } else {
             format!("{ASSETS}/tsl-procedural/san_giuseppe_bridge_2k.hdr")
         };
-        // scene.background = the equirectangular texture ( no environment ).
-        let background = Arc::new(EnvironmentMap::from_hdr(&fetch(&hdr).await?)?);
-        s.background_map = Some(background.clone());
-        s.background_environment = true;
+        // new WebGLRenderTarget( 1024, 512, { type: HalfFloatType } ).
+        let target = RenderTarget::with_options(
+            &r.device,
+            1024,
+            512,
+            RenderTargetOptions {
+                format: wgpu::TextureFormat::Rgba16Float,
+                ..Default::default()
+            },
+        )?;
+        // scene.background = texture, EquirectangularReflectionMapping.
+        let env = Arc::new(EnvironmentMap::from_hdr(&fetch(&hdr).await?)?);
+        s.background_map = Some(env.clone());
         if ktx2 {
             s.tone_mapping = ToneMapping::AgX;
         }
@@ -274,23 +283,14 @@ impl Demo {
         let mut controls = Controls::new(Some(0.05), (0., f64::INFINITY), PI, true);
         controls.update(s, c)?;
         self.controls = Some(controls);
-        let target = RenderTarget::with_options(
-            &r.device,
-            1024,
-            512,
-            crate::render_target::RenderTargetOptions {
-                format: wgpu::TextureFormat::Rgba16Float,
-                ..Default::default()
-            },
-        )?;
         self.exporter = Some(Exporter {
             ktx2,
-            background,
+            env,
+            target,
             quad,
             data,
             params: [0., 1., 0.],
-            target,
-            render_export: false,
+            render: false,
             readback: None,
         });
         Ok(())
@@ -584,20 +584,8 @@ impl Demo {
                         Vector3::new(10., 0., 0.)
                     };
                 }
-                s.background_environment = !data;
-                s.background_map = (!data).then(|| k.background.clone());
+                s.background_map = (!data).then(|| k.env.clone());
                 s.get_mut(k.quad)?.visible = data;
-                // exportFile(): the camera's clone at the target's aspect renders
-                // the scene into the target, then the target is read back.
-                if std::mem::take(&mut k.render_export) {
-                    let camera = s.camera(c)?.0.clone();
-                    if let NodeKind::Camera(Camera::Perspective(p)) = &mut s.get_mut(c)?.kind {
-                        p.aspect = 2.;
-                    }
-                    let result = r.render(s, c, &k.target);
-                    s.get_mut(c)?.kind = NodeKind::Camera(camera);
-                    result?;
-                }
                 if k.ktx2 {
                     s.tone_mapping = if data {
                         ToneMapping::None
@@ -608,6 +596,18 @@ impl Demo {
                 // animate() calls controls.update() once per frame, enabled or not.
                 if let Some(controls) = &mut self.controls {
                     controls.frame_update(s, c)?;
+                }
+                if std::mem::take(&mut k.render) {
+                    // exportFile(): the scene through a clone of the camera with the
+                    // target's aspect, then readRenderTargetPixelsAsync.
+                    let camera = s.get(c)?.kind.clone();
+                    if let NodeKind::Camera(Camera::Perspective(p)) = &mut s.get_mut(c)?.kind {
+                        p.aspect = k.target.width as f64 / k.target.height as f64;
+                    }
+                    let rendered = r.render(s, c, &k.target);
+                    s.get_mut(c)?.kind = camera;
+                    rendered?;
+                    k.readback = Some(TargetReadback::begin(r, &k.target.textures()[0]));
                 }
             }
             275 => self.video_step(r, s, c, steps)?,
@@ -781,14 +781,14 @@ impl Demo {
             if data {
                 self.export = Some((name, k.encode(&Pixels::Float(&k.data), 800, 800)));
             } else {
-                // The next frame renders the scene into the target first.
                 self.export = Some((name, vec![]));
-                k.render_export = true;
+                k.render = true;
                 k.readback = None;
             }
             return Ok(());
         }
-        if index >= export || !(0. ..5.).contains(&v) || (index < 2 && v >= 2.) {
+        let options = if index == 2 { 5. } else { 2. };
+        if index >= export || !(0. ..options).contains(&v) {
             return Err(Error::Invalid("exporter parameter"));
         }
         if index == 0 && v != k.params[0] {
@@ -801,21 +801,18 @@ impl Demo {
     pub fn seek(&mut self, t: f64) {
         self.time = t;
     }
-    /// The exported file: data textures at once, the render target after its
-    /// render and readback.
-    pub fn take_export(&mut self, r: &Renderer) -> Option<(String, Vec<u8>)> {
+    /// The exported file: data textures at once, the render target after the
+    /// next frame renders it and its readback completes.
+    pub fn take_export(&mut self, _r: &Renderer) -> Option<(String, Vec<u8>)> {
         let (name, bytes) = self.export.take()?;
         if !bytes.is_empty() {
             return Some((name, bytes));
         }
         let k = self.exporter.as_mut()?;
-        if k.render_export {
-            self.export = Some((name, vec![]));
+        let Some(readback) = &k.readback else {
+            self.export = Some((name, bytes));
             return None;
-        }
-        let readback = k
-            .readback
-            .get_or_insert_with(|| AtlasReadback::begin(r, &k.target.texture));
+        };
         match readback.take() {
             Some(Ok(texels)) => {
                 let (w, h) = (readback.width, readback.height);
@@ -838,17 +835,15 @@ impl Exporter {
         if self.ktx2 {
             let (kind, bytes): (Ktx2Kind, &[u8]) = match pixels {
                 Pixels::Float(v) => (Ktx2Kind::Float, bytemuck::cast_slice(v)),
-                Pixels::Half(v) => (Ktx2Kind::HalfLinear, bytemuck::cast_slice(v)),
+                Pixels::Half(v) => (Ktx2Kind::Half, bytemuck::cast_slice(v)),
             };
             formats::ktx2(kind, bytes, width, height)
         } else {
-            // RLE and PIZ ( r187's EXRExporter ) are not ported: they export
-            // uncompressed.
             let compression = [
                 formats::ZIP_COMPRESSION,
                 formats::ZIPS_COMPRESSION,
-                formats::NO_COMPRESSION,
-                formats::NO_COMPRESSION,
+                formats::RLE_COMPRESSION,
+                formats::PIZ_COMPRESSION,
                 formats::NO_COMPRESSION,
             ][self.params[2] as usize];
             formats::exr(

@@ -1,5 +1,5 @@
 // Oracle for the TextGeometry, ExtrudeGeometry and RoundedBoxGeometry ports:
-// the pinned r186 geometries the examples build, written to
+// the pinned r187 geometries the examples build, written to
 // .cache/shapes-oracle.json. tests/shapes.rs compares the Rust ports.
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {registerHooks} from 'node:module';

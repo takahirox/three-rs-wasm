@@ -1,4 +1,4 @@
-//! webgl_loader_svg: SVGLoader ( r186 ) on the page's 35 SVG files. The
+//! webgl_loader_svg: SVGLoader ( r187 ) on the page's 35 SVG files. The
 //! document is parsed by the browser's DOMParser, as the loader parses it,
 //! and the loader's walk is ported: presentation attributes, the browser's
 //! inline style declarations and <style> rules ( read through their CSSOM
@@ -18,7 +18,7 @@ use super::interactive_scenes::grid_helper;
 use super::text_shapes::triangulate;
 use crate::attribute::BufferAttribute;
 use crate::{Error, Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
-use js_sys::{Array, Function, Object, Reflect};
+use js_sys::{Array, Function, Reflect};
 use std::collections::HashMap;
 use std::f64::consts::PI;
 use std::sync::Arc;
@@ -726,17 +726,19 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
     let mut point: P2 = [0., 0.];
     let mut control: P2 = [0., 0.];
     let mut first: P2 = [0., 0.];
-    let mut is_first = true;
-    let mut set_first;
+    let mut is_path_closed = false;
     let at = |n: &[f64], i: usize| n.get(i).copied().unwrap_or(f64::NAN);
     let reflect = |a: f64, b: f64| a - (b - a);
     for command in commands {
         let kind = command.chars().next().unwrap_or(' ');
         let data = command[kind.len_utf8()..].trim();
-        set_first = false;
-        if is_first {
-            set_first = true;
-            is_first = false;
+        if is_path_closed {
+            // Commands after Z without M start a new subpath at the
+            // initial point.
+            if !matches!(kind, 'M' | 'm' | 'Z' | 'z') {
+                path.move_to(first);
+            }
+            is_path_closed = false;
         }
         let relative = kind.is_ascii_lowercase();
         let (ox, oy) = if relative {
@@ -767,14 +769,11 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
             }
             'H' | 'V' => {
                 let n = parse_floats(data, None, 0);
-                for (j, &v) in n.iter().enumerate() {
+                for &v in &n {
                     let axis = usize::from(kind.eq_ignore_ascii_case(&'v'));
                     point[axis] = if relative { point[axis] + v } else { v };
                     control = point;
                     path.line_to(point)?;
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                 }
             }
             'L' => {
@@ -789,9 +788,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                     }
                     control = point;
                     path.line_to(point)?;
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                     j += 2;
                 }
             }
@@ -811,9 +807,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                     )?;
                     control = [ox + at(&n, j + 2), oy + at(&n, j + 3)];
                     point = [ox + at(&n, j + 4), oy + at(&n, j + 5)];
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                     j += 6;
                 }
             }
@@ -833,9 +826,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                     )?;
                     control = [ox + at(&n, j), oy + at(&n, j + 1)];
                     point = [ox + at(&n, j + 2), oy + at(&n, j + 3)];
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                     j += 4;
                 }
             }
@@ -854,9 +844,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                     )?;
                     control = [ox + at(&n, j), oy + at(&n, j + 1)];
                     point = [ox + at(&n, j + 2), oy + at(&n, j + 3)];
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                     j += 4;
                 }
             }
@@ -873,9 +860,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                     path.quadratic_to(r, [ox + at(&n, j), oy + at(&n, j + 1)])?;
                     control = r;
                     point = [ox + at(&n, j), oy + at(&n, j + 1)];
-                    if j == 0 && set_first {
-                        first = point;
-                    }
                     j += 2;
                 }
             }
@@ -907,9 +891,6 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                             start,
                             point,
                         )?;
-                        if j == 0 && set_first {
-                            first = point;
-                        }
                     }
                     j += 7;
                 }
@@ -920,7 +901,7 @@ fn parse_path(node: &JsValue) -> Result<Option<ShapePath>> {
                 if !p.curves.is_empty() {
                     point = first;
                     p.current = point;
-                    is_first = true;
+                    is_path_closed = true;
                 }
             }
             _ => {}
@@ -957,7 +938,7 @@ fn point_pairs(text: &str) -> Vec<P2> {
         } else if !a {
             return None;
         }
-        if i < s.len() && (s[i] == b'e' || s[i] == b'E') {
+        if i < s.len() && s[i] == b'e' {
             let save = i;
             i += 1;
             if i < s.len() && (s[i] == b'+' || s[i] == b'-') {
@@ -1008,15 +989,15 @@ impl Parser {
             }
         }
         let inline = get(node, "style");
-        // addStyle: the attribute, the stylesheet entry by the style's own
-        // key, then the inline declaration.
-        let add = |svg: &str, js: &str, f: &mut dyn FnMut(&str)| {
+        // addStyle: the attribute, the stylesheet entry by the attribute's
+        // name, then the inline declaration.
+        let add = |svg: &str, f: &mut dyn FnMut(&str)| {
             if has(node, svg)
                 && let Some(v) = attr(node, svg)
             {
                 f(&v);
             }
-            if let Some(v) = sheet.get(js).filter(|v| !v.is_empty()) {
+            if let Some(v) = sheet.get(svg).filter(|v| !v.is_empty()) {
                 f(v);
             }
             if !inline.is_undefined()
@@ -1029,38 +1010,23 @@ impl Parser {
         };
         let clamp = |v: &str| js_max(0., js_min(1., units(v)));
         let positive = |v: &str| js_max(0., units(v));
-        add("fill", "fill", &mut |v| style.fill = Some(v.to_string()));
-        add("fill-opacity", "fillOpacity", &mut |v| {
-            style.fill_opacity = clamp(v)
-        });
-        add("fill-rule", "fillRule", &mut |v| {
-            style.fill_rule = Some(v.to_string())
-        });
-        add("opacity", "opacity", &mut |v| {
-            style.opacity = Some(clamp(v))
-        });
-        add("stroke", "stroke", &mut |v| {
-            style.stroke = Some(v.to_string())
-        });
-        add("stroke-opacity", "strokeOpacity", &mut |v| {
-            style.stroke_opacity = clamp(v)
-        });
-        add("stroke-width", "strokeWidth", &mut |v| {
-            style.stroke_width = positive(v)
-        });
-        add("stroke-linejoin", "strokeLineJoin", &mut |v| {
-            style.line_join = v.to_string()
-        });
-        add("stroke-linecap", "strokeLineCap", &mut |v| {
-            style.line_cap = v.to_string()
-        });
-        add("stroke-miterlimit", "strokeMiterLimit", &mut |v| {
+        add("fill", &mut |v| style.fill = Some(v.to_string()));
+        add("fill-opacity", &mut |v| style.fill_opacity = clamp(v));
+        add("fill-rule", &mut |v| style.fill_rule = Some(v.to_string()));
+        add("opacity", &mut |v| style.opacity = Some(clamp(v)));
+        add("stroke", &mut |v| style.stroke = Some(v.to_string()));
+        add("stroke-opacity", &mut |v| style.stroke_opacity = clamp(v));
+        add("stroke-width", &mut |v| style.stroke_width = positive(v));
+        add("stroke-linejoin", &mut |v| style.line_join = v.to_string());
+        add("stroke-linecap", &mut |v| style.line_cap = v.to_string());
+        add("stroke-miterlimit", &mut |v| {
             style.miter_limit = positive(v)
         });
-        add("visibility", "visibility", &mut |_| {});
+        add("visibility", &mut |_| {});
         style
     }
-    /// parseCSSStylesheet: each rule's Object.entries( style ) by selector.
+    /// parseCSSStylesheet: each rule's declared properties ( style[ j ] with
+    /// getPropertyValue ) by selector.
     fn parse_stylesheet(&mut self, node: &JsValue) {
         let sheet = get(node, "sheet");
         if sheet.is_undefined() || sheet.is_null() {
@@ -1072,12 +1038,14 @@ impl Parser {
             }
             let selector = get(&rule, "selectorText").as_string().unwrap_or_default();
             let style = get(&rule, "style");
-            let entries: Vec<(String, String)> = Object::entries(&Object::from(style))
+            let entries: Vec<(String, String)> = list(&style)
                 .iter()
-                .filter_map(|e| {
-                    let k = Reflect::get_u32(&e, 0).ok()?.as_string()?;
-                    let v = Reflect::get_u32(&e, 1).ok()?.as_string()?;
-                    (!v.is_empty()).then_some((k, v))
+                .filter_map(|p| {
+                    let k = p.as_string()?;
+                    let v = call(&style, "getPropertyValue", std::slice::from_ref(p))
+                        .as_string()
+                        .unwrap_or_default();
+                    Some((k, v))
                 })
                 .collect();
             for s in selector.split(',').map(str::trim).filter(|s| !s.is_empty()) {
@@ -1297,12 +1265,15 @@ impl Parser {
             "defs" => defs = true,
             "use" => {
                 style = self.parse_style(node, &style);
+                // The xlink:href, else the SVG 2 href.
                 let href = call(
                     node,
                     "getAttributeNS",
                     &["http://www.w3.org/1999/xlink".into(), "href".into()],
                 )
                 .as_string()
+                .filter(|h| !h.is_empty())
+                .or_else(|| attr(node, "href").filter(|h| !h.is_empty()))
                 .unwrap_or_default();
                 let id = href.get(1..).unwrap_or("").to_string();
                 let viewport = get(node, "viewportElement");

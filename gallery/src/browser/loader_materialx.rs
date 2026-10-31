@@ -11,9 +11,10 @@
 //! bindings, which this module draws with. The documents' images decode as
 //! the page's loaders read them ( ImageBitmapLoader, and the EXR, TIFF and
 //! HDR loaders the page registers, ported ). The ShaderBall's meshes are
-//! de-indexed with MikkTSpace tangents, as the page's computePrefabTangents
-//! leaves them. The frame draws the opaque objects front to back, then
-//! ( when a transmissive one is visible ) copies the frame into the back
+//! de-indexed with MikkTSpace tangents ( normalized Int16 like the normals ),
+//! as the page's computePrefabTangents leaves them. The frame draws the
+//! opaque objects front to back, then ( when a transmissive one is visible )
+//! copies the frame into the back
 //! sides' mipmapped transmission texture, draws the transmissive objects'
 //! back sides, then the transparent list back to front, copying the frame
 //! into the front sides' texture before its first transmissive object, and
@@ -368,7 +369,8 @@ impl Attribute {
             (Attribute::Uv, false) => (4, wgpu::VertexFormat::Unorm16x2),
             (Attribute::Position | Attribute::Normal, true) => (12, wgpu::VertexFormat::Float32x3),
             (Attribute::Uv, true) => (8, wgpu::VertexFormat::Float32x2),
-            (Attribute::Tangent, _) => (16, wgpu::VertexFormat::Float32x4),
+            (Attribute::Tangent, false) => (8, wgpu::VertexFormat::Snorm16x4),
+            (Attribute::Tangent, true) => (16, wgpu::VertexFormat::Float32x4),
         }
     }
 }
@@ -706,6 +708,13 @@ impl Demo {
             for w in tangents.out.iter_mut().skip(3).step_by(4) {
                 *w = -*w;
             }
+            // Quantized normals get tangents of the same precision: normalized
+            // Int16 ( MathUtils.normalize: Math.round( v × 32767 ) ).
+            let tangent: Vec<i16> = tangents
+                .out
+                .iter()
+                .map(|&v| (f64::from(v) * 32767. + 0.5).floor() as i16)
+                .collect();
             // computeBoundingSphere over the denormalized positions.
             let points: Vec<Vector3> = tangents
                 .position
@@ -736,7 +745,7 @@ impl Demo {
                     vertex_buffer("ShaderBall position", bytemuck::cast_slice(&positions)),
                     vertex_buffer("ShaderBall normal", bytemuck::cast_slice(&normals)),
                     vertex_buffer("ShaderBall uv", bytemuck::cast_slice(&uvs)),
-                    vertex_buffer("ShaderBall tangent", bytemuck::cast_slice(&tangents.out)),
+                    vertex_buffer("ShaderBall tangent", bytemuck::cast_slice(&tangent)),
                 ],
                 count: index.len() as u32,
                 // The nodes carry a translation and a uniform scale.

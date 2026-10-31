@@ -193,7 +193,7 @@ fn tga_rgba(data: &[u8]) -> Result<(u32, u32, Vec<u8>)> {
     }
     let u16_at = |i: usize| u16::from_le_bytes([data[i], data[i + 1]]) as usize;
     let (id_length, colormap_type, image_type) = (data[0] as usize, data[1], data[2]);
-    let (colormap_length, colormap_size) = (u16_at(5), data[7]);
+    let (colormap_index, colormap_length, colormap_size) = (u16_at(3), u16_at(5), data[7]);
     let (width, height, pixel_size, flags) = (u16_at(12), u16_at(14), data[16], data[17]);
     let (rle, pal, grey) = match image_type {
         1 => (false, true, false),
@@ -266,8 +266,16 @@ fn tga_rgba(data: &[u8]) -> Result<(u32, u32, Vec<u8>)> {
                 (true, 8) => [pixels[i], pixels[i], pixels[i], 255],
                 (true, 16) => [pixels[i], pixels[i], pixels[i], pixels[i + 1]],
                 (false, 8) => {
-                    let c = pixels[i] as usize * 3;
-                    [palette[c + 2], palette[c + 1], palette[c], 255]
+                    // The color map index minus its first entry's index is the
+                    // stored palette's; an entry outside the palette reads 0.
+                    let c = (pixels[i] as i64 - colormap_index as i64) * 3;
+                    let at = |k: i64| {
+                        usize::try_from(c + k)
+                            .ok()
+                            .and_then(|k| palette.get(k).copied())
+                            .unwrap_or(0)
+                    };
+                    [at(2), at(1), at(0), 255]
                 }
                 (false, 16) => {
                     let c = pixels[i] as u16 + ((pixels[i + 1] as u16) << 8);

@@ -23,17 +23,17 @@ equivalent and are compared against the original WebGL renderer.
 - **Background.** r187's pages show the equirectangular texture itself
   ( `Scene::background_map`, the sharp background ) and export a 1024 × 512
   half-float render target of the scene, rendered by the camera's clone at
-  aspect 2. EXRExporter's RLE and PIZ compressions are not ported.
+  aspect 2. A sharp background map uploads only its texture: the engine builds
+  no PMREM for it, as r187 builds none.
 - **Data texture.** `createDataTexture()` is computed in f64 and stored as
   Float32, as in the original. The quad shows it nearest-filtered from a
   half-float copy.
 - **Target switch.** `swapScene()` moves the camera, disables the controls for
   the data texture and, for KTX2, switches AgX tone mapping off. The damped
   controls update once per frame, enabled or not, as `animate()` does.
-- **Readback.** A PMREM export copies the atlas from the GPU asynchronously, as
-  `readRenderTargetPixelsAsync` does. The port samples its atlas with the
-  direction's y negated, so the readback reorders each face region: rows
-  reversed, ±Y faces exchanged. The result has three's texel layout.
+- **Readback.** The render target export copies the target from the GPU
+  asynchronously, as `readRenderTargetPixelsAsync` does, in WebGL's bottom-up
+  row order.
 - **EXR.** EXRExporter is ported: the A, B, G, R scanline order, the bottom-up
   rows, `DataUtils.toHalfFloat`, and ZIP (16 lines) and ZIPS (1 line) blocks.
   Blocks are compressed with miniz_oxide; fflate's zlib bytes differ, so

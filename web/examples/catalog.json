@@ -19368,7 +19368,7 @@
         "source": "gallery/src/browser/ies_spotlight.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "IESLoaderのLM-63プロファイル（180テクセルの半精度行）を持つ4つのIESSpotLight（影付き）と、中心へ揺れる各ターゲット、Phongの床と箱、SpotLightHelperの表示切替をRustで再現。IESSpotLightNodeと同じく、各ライトのコーン減衰をacos( L · D ) / πでサンプリングしたプロファイルに置き換える（コアのコーン減衰を無効化し、Phongマテリアルのライトごとの色フックで適用）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "IESLoaderのLM-63プロファイル（鉛直180×水平360、対称なら1行の半精度テクスチャ）を持つ4つのIESSpotLight（影付き）と、中心へ揺れる各ターゲット、Phongの床と箱、SpotLightHelperの表示切替をRustで再現。IESSpotLightNodeと同じく、各ライトのコーン減衰を、光源方向からの傾き角とライト投影座標のねじれ角でサンプリングしたプロファイルに置き換える（コアのコーン減衰を無効化し、Phongマテリアルのライトごとの色フックで適用）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -35918,7 +35918,7 @@
         "source": "gallery/src/browser/exporters_video.rs",
         "test": "tests/browser/exporters-video.spec.js",
         "limitations": [
-          "r187のページどおり、EXRExporter（ZIP・ZIPS・無圧縮、Half/Float）、正距円筒の背景とデータテクスチャ、1024×512のhalf floatレンダーターゲットへの描画の書き出し、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。レンダーターゲットの書き出しはGPUからの読み戻し。r187で加わったRLE・PIZ圧縮は未移植（無圧縮で書き出す）。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。性能の完全な同等性は未保証。"
+          "EXRExporter（ZIP・ZIPS・RLE・PIZ・無圧縮、Half/Float）、エクイレクタングラーHDRの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。render-targetの書き出しは、カメラの複製（アスペクト2）で1024×512のHalfFloatレンダーターゲットにシーンを描き、GPUから読み戻す。データテクスチャの無圧縮・RLE・PIZのファイルは原本とバイト単位で一致。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。背景のHDRテクスチャはエンジンの都合で読み込み時にPMREMアトラスも生成する（原本は生成しない）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -35953,7 +35953,7 @@
         "source": "gallery/src/browser/exporters_video.rs",
         "test": "tests/browser/exporters-video.spec.js",
         "limitations": [
-          "r187のページどおり、KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、正距円筒の背景（AgX）とデータテクスチャ、1024×512のhalf floatレンダーターゲットへの描画の書き出し、減衰付きOrbitControlsをRustで再現。レンダーターゲットの書き出しはGPUからの読み戻し。性能の完全な同等性は未保証。"
+          "KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、エクイレクタングラーHDRの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。render-targetの書き出しは、カメラの複製（アスペクト2）で1024×512のHalfFloatレンダーターゲットにシーンを描き、GPUから読み戻す。背景のHDRテクスチャはエンジンの都合で読み込み時にPMREMアトラスも生成する（原本は生成しない）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

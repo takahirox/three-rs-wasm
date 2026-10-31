@@ -37,7 +37,7 @@ export function canonical(group,images,full=false){
  out+='],"materials":[';
  out+=materials.map(m=>{
   const ti=t=>t?String(textures.indexOf(t)):'null';
-  return `[${ns(m.color.toArray())},${ns(m.emissive.toArray())},${ns([m.emissiveIntensity,m.roughness,m.metalness,m.ior,m.specularIntensity,m.clearcoat,m.clearcoatRoughness,m.transmission,m.thickness,m.attenuationDistance,m.iridescence,m.iridescenceIOR,m.iridescenceThicknessRange[0],m.iridescenceThicknessRange[1],m.anisotropy,m.opacity,m.alphaTest,m.normalScale.x,m.normalScale.y])},[${ns(m.specularColor.toArray())},${ns(m.attenuationColor.toArray())},${m.transparent}],[${keys.map(k=>ti(m[k])).join(',')}]]`;
+  return `[${ns(m.color.toArray())},${ns(m.emissive.toArray())},${ns([m.emissiveIntensity,m.roughness,m.metalness,m.ior,m.specularIntensity,m.clearcoat,m.clearcoatRoughness,m.transmission,m.thickness,m.attenuationDistance,m.iridescence,m.iridescenceIOR,m.iridescenceThicknessMinimum,m.iridescenceThicknessMaximum,m.anisotropy,m.opacity,m.alphaTest,m.normalScale.x,m.normalScale.y])},[${ns(m.specularColor.toArray())},${ns(m.attenuationColor.toArray())},${m.transparent}],[${keys.map(k=>ti(m[k])).join(',')}]]`;
  }).join(',');
  out+='],"textures":[';
  out+=textures.map(t=>{

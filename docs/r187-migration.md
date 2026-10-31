@@ -19,6 +19,8 @@ until every ported example matches r187 again; it is removed when done.
   webgpu_compute_rasterizer_ibl left the gallery with their code, tests and
   docs; the generated gallery files list r187's examples.
 
+- Core inventory: `make compat-check` passes on r187's members ( 394, all
+  accounted for ).
 - MaterialX: `three_tsl::materialx_page` follows the r187 page and builds its
   shaders with three's modules in the build's order ( `order::init_bundled`,
   `tools/tsl/module_order.py` ), as Fn layouts are named by a counter;
@@ -45,18 +47,17 @@ until every ported example matches r187 again; it is removed when done.
    lightprobes ( its bake shared with lightprobes_complex ), retro, gtao, ssr,
    ssr_denoise, skinning_instances: every WebGPU port runs r187's shaders.
    Left:
-   - The workload check ( one test per example in compute-examples.spec.js )
-     fails for ssr_denoise ( 1698 draws, the page 173 ),
-     skinning_instancing_individual ( one extra draw ), vxgi_sponza ( two
-     4086-index draws missing ) and lightprobes_sponza ( the reference seems
-     measured before Sponza loads ).
-   - TRAA's first frames: r187 reads the history's depth from the first frame
-     and starts the loading frame at frameId 1 ( gtao and ballpool follow );
-     ssgi, volume_traa and the other TRAA ports still start as r186 did.
+   - lightprobes_sponza: r187's page draws Sponza through
+     MeshletDrawingPipeline ( GPU culling, indirect draws ) by default; the
+     port draws it directly, so its workload differs. MeshletDrawingPipeline
+     needs porting.
+   - gtao's reference starts its loading frame at a timing-dependent frameId
+     ( 8 in one probe ), the port at 0.
    - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
      moved to cube targets too ).
-   - `gallery/src/browser.rs` leaves a replaced output target pointing at the
-     canvas texture ( fog worked around it by keeping one target ).
+   - A port that switches back mid-render to an output target it replaced in
+     an earlier frame renders into an expired canvas texture ( browser.rs
+     restores targets at a frame's start and end only; fog keeps one target ).
 
 2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
    RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
@@ -72,16 +73,17 @@ until every ported example matches r187 again; it is removed when done.
    webgpu_compute_particles_fluid, webgpu_compute_reduce, misc_exporter_ktx2,
    webgpu_postprocessing_ssr_denoise and 47 more
    ( `git diff --numstat 148ef33e r187 -- 'examples/*.html'` ).
-4. **Changed addons.** Ported loaders and addons that changed: GLTFLoader,
-   EXRLoader, SVGLoader, USD ( USDAParser, USDComposer, USDLoader ), PLYLoader,
-   KTX2Loader, IESLoader, LDrawLoader, OBJLoader, Collada, OrbitControls,
-   CCDIKSolver, Octree, SkyMesh, SkyscraperGenerator, LightProbeGrid,
-   BufferGeometryUtils, the exporters, the TSL display nodes. Regenerate the
-   oracle fixtures ( `tools/core/*-oracle.mjs`, `*-fixtures.mjs` ) on r187 and
-   fix what no longer matches.
-5. **Core inventory.** `make compat-check` on r187; classify new members.
-6. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
+4. **Changed addons.** Ported and on r187's oracles: USD, SVGLoader,
+   IESLoader ( and IESSpotLightNode ), PLYLoader, CCDIKSolver, Octree,
+   BufferGeometryUtils, the PLY / OBJ / EXR exporters, GCode, PCD, PDB, STL and
+   TGA loaders, LatheGeometry's last normal. Left: GLTFLoader's
+   KHR_materials_diffuse_roughness ( MeshPhysicalMaterial.diffuseRoughness
+   and its BRDF; r187's new webgpu_loader_gltf_diffuse_roughness ), KTX2Loader
+   cube maps ( r187's envmaps_fasthdr loads prefiltered `*.pmrem.ktx2` cubes ),
+   the engine's PMREM built for a background-only texture, and
+   webgl_loader_usdz's background ( 0.56 / 7.2, the PMREM gradient ).
+5. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
    pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
    `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
    until then `report.py --check` fails.
-7. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
+6. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.

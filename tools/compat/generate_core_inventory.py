@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the frozen Three.js r186 Core API member inventory.
+"""Generate the frozen Core API member inventory of the pinned Three.js release.
 
 No third-party dependencies. By default this reads the exact upstream commit
 recorded in compat/three-r187/api.json. For offline/reproducible use, pass
