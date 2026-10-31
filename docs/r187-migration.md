@@ -55,4 +55,8 @@ until every ported example matches r187 again; it is removed when done.
    oracle fixtures ( `tools/core/*-oracle.mjs`, `*-fixtures.mjs` ) on r187 and
    fix what no longer matches.
 6. **Core inventory.** `make compat-check` on r187; classify new members.
-7. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
+7. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
+   pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
+   `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
+   until then `report.py --check` fails.
+8. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
