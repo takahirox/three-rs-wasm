@@ -55,10 +55,6 @@ impl Default for RenderTargetOptions {
 
 /// Owns color/depth attachments. Clone and copy operations allocate independent
 /// attachments without copying pixels, as Three.js RenderTarget does.
-/// A render target's own color texture while it renders into another
-/// ( [`RenderTarget::alias_color`] ).
-#[must_use]
-pub struct ColorAlias(wgpu::Texture, wgpu::TextureView);
 pub struct RenderTarget {
     pub texture: wgpu::Texture,
     pub view: wgpu::TextureView,
@@ -78,6 +74,9 @@ pub struct RenderTarget {
     /// Presents to a canvas: display passes made for other formats may
     /// render into it ( postprocessing::Effect ).
     pub(crate) canvas: bool,
+    /// The target's own color texture and view while attachment 0 renders
+    /// into a canvas texture ( [`RenderTarget::alias_color`] ).
+    own_color: Option<(wgpu::Texture, wgpu::TextureView)>,
 }
 impl RenderTarget {
     pub fn new(device: &wgpu::Device, width: u32, height: u32) -> Result<Self> {
@@ -237,6 +236,7 @@ impl RenderTarget {
             dimension,
             layer: 0,
             canvas: false,
+            own_color: None,
         })
     }
     fn color_view(
@@ -266,10 +266,12 @@ impl RenderTarget {
     }
     /// Render color attachment 0 ( the resolve target when multisampled ) into
     /// `texture`, a canvas's current texture of the same size and format ( or
-    /// its sRGB view format ), as
-    /// three renders into the canvas when no output pass is needed. Returns
-    /// the target's own texture for [`Self::restore_color`].
-    pub fn alias_color(&mut self, texture: &wgpu::Texture) -> Result<ColorAlias> {
+    /// its sRGB view format ), as three renders into the canvas when no output
+    /// pass is needed. The target keeps its own texture for
+    /// [`Self::restore_color`]; aliasing again restores it first, so a target
+    /// never takes an earlier frame's canvas texture for its own.
+    pub fn alias_color(&mut self, texture: &wgpu::Texture) -> Result<()> {
+        self.restore_color();
         if self.dimension != wgpu::TextureDimension::D2
             || self.options.count != 1
             || self.options.depth != 1
@@ -286,17 +288,20 @@ impl RenderTarget {
         });
         self.textures[0] = texture.clone();
         self.views[0] = view.clone();
-        Ok(ColorAlias(
+        self.own_color = Some((
             std::mem::replace(&mut self.texture, texture.clone()),
             std::mem::replace(&mut self.view, view),
-        ))
+        ));
+        Ok(())
     }
-    pub fn restore_color(&mut self, alias: ColorAlias) {
-        let ColorAlias(texture, view) = alias;
-        self.textures[0] = texture.clone();
-        self.views[0] = view.clone();
-        self.texture = texture;
-        self.view = view;
+    /// Give an aliased target its own color texture back ( nothing otherwise ).
+    pub fn restore_color(&mut self) {
+        if let Some((texture, view)) = self.own_color.take() {
+            self.textures[0] = texture.clone();
+            self.views[0] = view.clone();
+            self.texture = texture;
+            self.view = view;
+        }
     }
     /// Mark a target that presents to a canvas ( see `canvas` ).
     pub fn set_canvas(&mut self, canvas: bool) {
@@ -431,7 +436,9 @@ impl RenderTarget {
         *self = source.clone_target(device)?;
         Ok(())
     }
-    pub fn dispose(self) {
+    pub fn dispose(mut self) {
+        // A canvas texture belongs to the canvas.
+        self.restore_color();
         for t in &self.textures {
             t.destroy();
         }

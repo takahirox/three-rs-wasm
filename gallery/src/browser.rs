@@ -715,18 +715,24 @@ impl State {
             None
         };
         // A canvas texture a target cannot render into falls back to the
-        // output pass.
-        let main_alias = frame
-            .as_ref()
-            .filter(|_| main)
-            .and_then(|frame| self.target.alias_color(&frame.texture).ok());
-        let output_alias = match &frame {
-            Some(frame) if output => self
-                .demo
-                .output_target_mut()
-                .and_then(|t| t.alias_color(&frame.texture).ok()),
-            _ => None,
-        };
+        // output pass. A target keeps its own texture while aliased: one the
+        // example replaced during an earlier frame kept that frame's canvas
+        // texture, and gets its own back when it is the output target at a
+        // frame's start or end ( restore_color ). One the example switches
+        // back to during a frame still holds the expired canvas texture for
+        // that frame, so an example keeps one output target across the
+        // switches it makes while rendering ( fog_volume.rs ).
+        if let Some(target) = self.demo.output_target_mut() {
+            target.restore_color();
+        }
+        if let Some(frame) = frame.as_ref().filter(|_| main) {
+            let _ = self.target.alias_color(&frame.texture);
+        }
+        if let Some(frame) = frame.as_ref().filter(|_| output)
+            && let Some(target) = self.demo.output_target_mut()
+        {
+            let _ = target.alias_color(&frame.texture);
+        }
         self.renderer
             .set_output_transform(self.scene.exposure, scene_tone);
         let rendered = (|| -> Result<()> {
@@ -750,14 +756,9 @@ impl State {
         let direct = frame
             .as_ref()
             .is_some_and(|frame| presentation_texture == frame.texture);
-        if let Some(alias) = main_alias {
-            self.target.restore_color(alias);
-        }
-        if let (Some(alias), Some(frame)) = (output_alias, &frame)
-            && let Some(target) = self.demo.output_target_mut()
-            && target.texture == frame.texture
-        {
-            target.restore_color(alias);
+        self.target.restore_color();
+        if let Some(target) = self.demo.output_target_mut() {
+            target.restore_color();
         }
         rendered?;
         if self.options.offscreen_output {
