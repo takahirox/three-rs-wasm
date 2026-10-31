@@ -273,7 +273,7 @@ async fn export_glb(plane: &Plane) -> Result<Vec<u8>> {
     let json = Object::new();
     let asset = Object::new();
     set(&asset, "version", "2.0")?;
-    set(&asset, "generator", "THREE.GLTFExporter r186")?;
+    set(&asset, "generator", "THREE.GLTFExporter r187")?;
     set(&json, "asset", asset)?;
     let scene = Object::new();
     set(&scene, "name", "AuxScene")?;
