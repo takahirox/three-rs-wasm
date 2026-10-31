@@ -43,7 +43,7 @@ fn main( @location( 0 ) position : vec3<f32>,
 	positionLocal = position;
 	let nodeConst0 = ( render.nodeUniform5.x / render.nodeUniform5.y );
 	let nodeConst1 = vec2<f32>( ( positionLocal.x * ( 0.4 / nodeConst0 ) ), ( positionLocal.y * 0.4 ) );
-	let nodeConst2 = vec2<f32>( ( nodeConst1.x + ( ( ( -1.0 + 0.05 ) + ( ( 0.4 / 2.0 ) / nodeConst0 ) ) + ( 0.0 * ( ( 0.4 / nodeConst0 ) + 0.01 ) ) ) ), ( nodeConst1.y + ( ( ( 1.0 - 0.05 ) - ( 0.4 / 2.0 ) ) - ( 1.0 * ( 0.4 + 0.01 ) ) ) ) );
+	let nodeConst2 = vec2<f32>( ( nodeConst1.x + ( ( ( -1.0 + 0.05 ) + ( ( 0.4 / 2.0 ) / nodeConst0 ) ) + ( 1.0 * ( ( 0.4 / nodeConst0 ) + 0.01 ) ) ) ), ( nodeConst1.y + ( ( ( 1.0 - 0.05 ) - ( 0.4 / 2.0 ) ) - ( 0.0 * ( 0.4 + 0.01 ) ) ) ) );
 	let nodeConst3 = vec4<f32>( nodeConst2.x, nodeConst2.y, 0.0, 1.0 );
 	varyings.v_clipSpace = nodeConst3;
 	varyings.nodeVarying2 = uv;

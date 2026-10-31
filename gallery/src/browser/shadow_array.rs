@@ -3,14 +3,17 @@
 //! ground, lit by an orbiting directional light whose shadow TileShadowNode
 //! splits into 2 × 2 orthographic tiles of a 4096² depth array. Each frame
 //! the tile cameras follow the light, each layer renders the shadow casters
-//! for its tile camera ( three.js r186 records a render bundle per layer )
-//! and the scene reads the minimum of the four tile lookups. The batched trees sort their draws front to back per camera on
-//! the CPU into the indirect texture, as BatchedMesh does. The
-//! TileShadowNodeHelper shows each layer as a screen overlay and each tile
-//! camera's frustum as a CameraHelper, one frame behind as the page updates
-//! it after rendering. Every stage runs the WGSL three.js r186 generates
-//! for the page (in `shadow_array/`; the output is the cubemap_dynamic
-//! module, byte-identical).
+//! for its tile camera into the depth array ( no colour attachment: three.js
+//! r187 only adds one for transmitted shadows ), and the scene projects each
+//! fragment with the light's full shadow matrix and reads the one tile it
+//! falls in. The instanced meshes read their matrices as instanced vertex
+//! attributes ( r187's InstanceNode ), sharing one build. The batched trees
+//! sort their draws front to back per camera on the CPU into the indirect
+//! texture, as BatchedMesh does. The TileShadowNodeHelper shows each layer
+//! as a screen overlay and each tile camera's frustum as a CameraHelper, one
+//! frame behind as the page updates it after rendering. Every stage runs the
+//! WGSL three.js r187 generates for the page (in `shadow_array/`; the output
+//! is the cubemap_dynamic module, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, culled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
@@ -26,6 +29,14 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const SHADOW: u32 = 4096;
 const TILES: usize = 4;
+/// The instance matrix columns, as InstanceNode binds `instanceMatrix`.
+const INSTANCE_ATTRIBUTES: [wgpu::VertexAttribute; 4] =
+    wgpu::vertex_attr_array![2 => Float32x4, 3 => Float32x4, 4 => Float32x4, 5 => Float32x4];
+const INSTANCE_LAYOUT: wgpu::VertexBufferLayout = wgpu::VertexBufferLayout {
+    array_stride: 64,
+    step_mode: wgpu::VertexStepMode::Instance,
+    attributes: &INSTANCE_ATTRIBUTES,
+};
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("shadow_array/", $name, ".wgsl"))
@@ -145,7 +156,8 @@ fn bounds(positions: &[f32]) -> Sphere {
     }
 }
 /// An InstancedMesh with a Phong material: the shared shading uniforms,
-/// its instance matrices and its main and shadow draws.
+/// its instance matrices ( an instanced vertex buffer ) and its main and
+/// shadow draws.
 struct Instanced {
     geometry: Geometry,
     count: u32,
@@ -154,20 +166,11 @@ struct Instanced {
     instances: wgpu::Buffer,
     object: wgpu::Buffer,
     shadow_object: wgpu::Buffer,
-    vs: &'static str,
-    shadow_vs: &'static str,
     /// The instances' world bounding sphere ( InstancedMesh.computeBoundingSphere ).
     sphere: Sphere,
 }
-/// An instanced group: its geometry, matrices, colour, roughness and stages.
-type InstancedSpec = (
-    BufferGeometry,
-    Vec<Matrix4>,
-    u32,
-    f64,
-    &'static str,
-    &'static str,
-);
+/// An instanced group: its geometry, matrices, colour and shininess.
+type InstancedSpec = (BufferGeometry, Vec<Matrix4>, u32, f64);
 struct Targets {
     width: u32,
     height: u32,
@@ -209,7 +212,6 @@ pub(super) struct Demo {
     /// The helpers' world matrices of the previous frame ( None before the
     /// first TileShadowNodeHelper.update ).
     helper_models: Option<Vec<Matrix4>>,
-    shadow_color: wgpu::Texture,
     shadow_depth: wgpu::Texture,
     shadow_array: wgpu::TextureView,
     shadow_projections: wgpu::Buffer,
@@ -236,9 +238,34 @@ pub(super) struct Demo {
     linear: wgpu::Sampler,
     targets: Option<Targets>,
 }
-/// The light's shadow camera and the tiles of TileShadowNode.generateTiles.
+/// The light's shadow camera: left, right, top, bottom, near, far.
+const SHADOW_CAMERA: [f64; 6] = [-180., 180., 180., -160., 1., 200.];
+/// OrthographicCamera.updateProjectionMatrix ( WebGPU depth ).
+fn orthographic(l: f64, r: f64, t: f64, b: f64) -> Matrix4 {
+    let (near, far) = (SHADOW_CAMERA[4], SHADOW_CAMERA[5]);
+    let (w, h, p) = (1. / (r - l), 1. / (t - b), 1. / (far - near));
+    rows([
+        2. * w,
+        0.,
+        0.,
+        -(r + l) * w,
+        0.,
+        2. * h,
+        0.,
+        -(t + b) * h,
+        0.,
+        0.,
+        -p,
+        -near * p,
+        0.,
+        0.,
+        0.,
+        1.,
+    ])
+}
+/// The tiles of TileShadowNode.generateTiles, top row first.
 fn tile_projections() -> Vec<Matrix4> {
-    let (left, right, top, bottom, near, far) = (-180., 180., 180., -160., 1., 200.);
+    let [left, right, top, bottom, ..] = SHADOW_CAMERA;
     let (width, height) = (right - left, top - bottom);
     (0..TILES)
         .map(|i| {
@@ -247,26 +274,7 @@ fn tile_projections() -> Vec<Matrix4> {
             let (y0, y1) = ((1 - y) as f64 * 0.5, (2 - y) as f64 * 0.5);
             let (l, r) = (left + x0 * width, left + x1 * width);
             let (b, t) = (bottom + y0 * height, bottom + y1 * height);
-            // OrthographicCamera.updateProjectionMatrix ( WebGPU depth ).
-            let (w, h, p) = (1. / (r - l), 1. / (t - b), 1. / (far - near));
-            rows([
-                2. * w,
-                0.,
-                0.,
-                -(r + l) * w,
-                0.,
-                2. * h,
-                0.,
-                -(t + b) * h,
-                0.,
-                0.,
-                -p,
-                -near * p,
-                0.,
-                0.,
-                0.,
-                1.,
-            ])
+            orthographic(l, r, t, b)
         })
         .collect()
 }
@@ -437,52 +445,35 @@ impl Demo {
                 columns,
                 0xdddddd,
                 20.,
-                wgsl!("column_vs"),
-                wgsl!("column_shadow_vs"),
             ),
             (
                 BoxGeometry::build(3., 3., 3.)?,
                 cubes[0].clone(),
                 0x6699cc,
                 20.,
-                wgsl!("cube0_vs"),
-                wgsl!("cube0_shadow_vs"),
             ),
             (
                 BoxGeometry::build(3., 3., 3.)?,
                 cubes[1].clone(),
                 0xcc6666,
                 20.,
-                wgsl!("cube1_vs"),
-                wgsl!("cube1_shadow_vs"),
             ),
             (
                 BoxGeometry::build(3., 3., 3.)?,
                 cubes[2].clone(),
                 0xcccc66,
                 20.,
-                wgsl!("cube2_vs"),
-                wgsl!("cube2_shadow_vs"),
             ),
-            (
-                SphereGeometry::build(2., 32, 32)?,
-                spheres,
-                0x88ccaa,
-                40.,
-                wgsl!("sphere_vs"),
-                wgsl!("sphere_shadow_vs"),
-            ),
+            (SphereGeometry::build(2., 32, 32)?, spheres, 0x88ccaa, 40.),
             (
                 TorusGeometry::build(3., 1., 16, 50, 2. * PI, 0., 2. * PI)?,
                 tori,
                 0xff99cc,
                 30.,
-                wgsl!("torus_vs"),
-                wgsl!("torus_shadow_vs"),
             ),
         ];
         let mut instanced = vec![];
-        for (g, matrices, color, shininess, vs, shadow_vs) in instanced_specs {
+        for (g, matrices, color, shininess) in instanced_specs {
             let geometry = upload(r, &g)?;
             let data: Vec<f32> = matrices
                 .iter()
@@ -515,7 +506,7 @@ impl Demo {
                 instances: init(
                     "shadow array instances",
                     bytemuck::cast_slice(&data),
-                    wgpu::BufferUsages::UNIFORM,
+                    wgpu::BufferUsages::VERTEX,
                 ),
                 object: uniform(
                     r,
@@ -529,8 +520,6 @@ impl Demo {
                     wgsl!("instance_shadow_fs"),
                     "objectStruct",
                 )?,
-                vs,
-                shadow_vs,
                 sphere: Sphere { center, radius },
             });
         }
@@ -705,9 +694,10 @@ impl Demo {
                 view_formats: &[],
             })
         };
-        let attach = wgpu::TextureUsages::RENDER_ATTACHMENT;
-        let shadow_color = texture(wgpu::TextureFormat::R8Unorm, attach);
-        let shadow_depth = texture(DEPTH, attach | wgpu::TextureUsages::TEXTURE_BINDING);
+        let shadow_depth = texture(
+            DEPTH,
+            wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
+        );
         let shadow_array = shadow_depth.create_view(&wgpu::TextureViewDescriptor {
             dimension: Some(wgpu::TextureViewDimension::D2Array),
             ..Default::default()
@@ -715,7 +705,7 @@ impl Demo {
         let shadow_projections = uniform_sized(r, 4 * 64);
         let shadow_views = uniform_sized(r, 4 * 64);
         // The shadow pipelines: the casters with the shadow material, each
-        // drawn for the four tile cameras ( ArrayCamera ).
+        // drawn for the four tile cameras ( ArrayCamera ), depth only.
         let pair = [
             wgpu::vertex_attr_array![0 => Float32x3],
             wgpu::vertex_attr_array![1 => Float32x3],
@@ -731,7 +721,7 @@ impl Demo {
                 "shadow array shadow",
                 (vs, fs),
                 layouts,
-                &[wgpu::TextureFormat::R8Unorm],
+                &[],
                 Some((wgpu::CompareFunction::LessEqual, true)),
                 (true, false),
                 (1, wgpu::PrimitiveTopology::TriangleList),
@@ -770,17 +760,23 @@ impl Demo {
                 ],
             )
         };
+        let instance_shadow = shadow_pipeline(
+            wgsl!("instance_shadow_vs"),
+            wgsl!("instance_shadow_fs"),
+            &[
+                pair_layouts[0].clone(),
+                pair_layouts[1].clone(),
+                INSTANCE_LAYOUT,
+            ],
+        );
         for m in &instanced {
-            let p = shadow_pipeline(m.shadow_vs, wgsl!("instance_shadow_fs"), &pair_layouts);
+            let p = instance_shadow.clone();
             let mut groups = vec![
                 cameras_group(&p),
                 bind(
                     r,
                     p.get_bind_group_layout(2),
-                    &[
-                        (0, m.shadow_object.as_entire_binding()),
-                        (1, m.instances.as_entire_binding()),
-                    ],
+                    &[(0, m.shadow_object.as_entire_binding())],
                 ),
             ];
             groups.extend(indices(&p));
@@ -838,7 +834,7 @@ impl Demo {
                 &m.shadow_object,
                 wgsl!("instance_shadow_fs"),
                 "objectStruct",
-                &[("nodeUniform1", vec![1.]), ("nodeUniform5", id4.clone())],
+                &[("nodeUniform4", vec![1.]), ("nodeUniform8", id4.clone())],
             )?;
         }
         write(
@@ -879,7 +875,6 @@ impl Demo {
             quad,
             helper_geometry,
             helper_models: None,
-            shadow_color,
             shadow_depth,
             shadow_array,
             shadow_projections,
@@ -956,6 +951,7 @@ impl Demo {
             attributes: a,
         };
         let pair = [layout(12, &attrs[0][..]), layout(12, &attrs[1][..])];
+        let instance_layouts = [pair[0].clone(), pair[1].clone(), INSTANCE_LAYOUT];
         let quad_layouts = [layout(12, &attrs[0][..]), layout(8, &attrs[2][..])];
         let less = (wgpu::CompareFunction::LessEqual, true);
         let pipeline = |label,
@@ -1040,24 +1036,25 @@ impl Demo {
             &self.ground_render,
             &shadowed!(self.ground_object),
         );
+        // The instanced meshes share one build ( r187's InstanceNode binds
+        // each mesh's instanceMatrix as attributes ).
+        let instanced_pipeline = pipeline(
+            "instanced",
+            (wgsl!("instance_vs"), wgsl!("instance_fs")),
+            &instance_layouts,
+            less,
+            false,
+            false,
+            triangles,
+        );
         let instanced = self
             .instanced
             .iter()
             .map(|m| {
-                let mut entries = shadowed!(m.object).to_vec();
-                entries.push((3, m.instances.as_entire_binding()));
                 two(
-                    pipeline(
-                        "instanced",
-                        (m.vs, wgsl!("instance_fs")),
-                        &pair,
-                        less,
-                        false,
-                        false,
-                        triangles,
-                    ),
+                    instanced_pipeline.clone(),
                     &self.instance_render,
-                    &entries,
+                    &shadowed!(m.object),
                 )
             })
             .collect();
@@ -1230,9 +1227,14 @@ impl Demo {
             self.tree_geometry.index.slice(..),
             wgpu::IndexFormat::Uint32,
         );
-        for (k, &i) in sorted.iter().enumerate() {
-            let (start, count) = self.tree_ranges[self.tree_instances[i].0];
-            pass.draw_indexed(start..start + count, 0, k as u32..k as u32 + 1);
+        // r187's BatchedMesh merges consecutive draws of the same range into
+        // one instanced draw.
+        let mut first = 0;
+        for run in sorted.chunk_by(|a, b| self.tree_instances[*a].0 == self.tree_instances[*b].0) {
+            let (start, count) = self.tree_ranges[self.tree_instances[run[0]].0];
+            let end = first + run.len() as u32;
+            pass.draw_indexed(start..start + count, 0, first..end);
+            first = end;
         }
     }
     fn sorted(&self, position: Vector3, forward: Vector3) -> Vec<usize> {
@@ -1340,14 +1342,15 @@ impl Demo {
         let ambient = (Color::from_hex(0xccccff).0 * 3.).to_array().to_vec();
         let sun = (Color::from_hex(0xffffaa).0 * 5.).to_array().to_vec();
         let fog = Color::from_hex(0xccccff).0.to_array().to_vec();
-        let shadow_matrices: Vec<Vec<f64>> = projections
-            .iter()
-            .map(|p| m4(bias * *p * light_view))
-            .collect();
+        // The light's own shadow matrix ( LightShadow.updateMatrices with
+        // WebGPU coordinates ): TileShadowNode.setup projects each fragment
+        // with it and picks the tile it falls in.
+        let [left, right, top, bottom, ..] = SHADOW_CAMERA;
+        let shadow_matrix = m4(bias * orthographic(left, right, top, bottom) * light_view);
         // The Phong render uniforms: ambient, the sun's colour, position and
-        // target, then per tile its shadow matrix, bias, normal bias and
-        // intensity, then the fog.
-        let phong = |names: [usize; 5], tiles: [[usize; 4]; 4], fog_at: usize| {
+        // target, the shadow matrix, normal bias, bias and intensity, then
+        // the fog.
+        let phong = |names: [usize; 4], shadow: [usize; 4], fog_at: usize| {
             let n = |k: usize| format!("nodeUniform{k}");
             let mut values: Vec<(String, Vec<f64>)> = vec![
                 ("cameraProjectionMatrix".into(), m4(projection)),
@@ -1356,13 +1359,11 @@ impl Demo {
                 (n(names[1]), sun.clone()),
                 (n(names[2]), light.to_array().to_vec()),
                 (n(names[3]), vec![0.; 3]),
+                (n(shadow[0]), shadow_matrix.clone()),
+                (n(shadow[1]), vec![0.]),
+                (n(shadow[2]), vec![0.]),
+                (n(shadow[3]), vec![1.]),
             ];
-            for (i, tile) in tiles.iter().enumerate() {
-                values.push((n(tile[0]), shadow_matrices[i].clone()));
-                values.push((n(tile[1]), vec![0.]));
-                values.push((n(tile[2]), vec![0.]));
-                values.push((n(tile[3]), vec![1.]));
-            }
             values.push((n(fog_at), fog.clone()));
             values.push((n(fog_at + 1), vec![700.]));
             values.push((n(fog_at + 2), vec![1000.]));
@@ -1379,44 +1380,17 @@ impl Demo {
         pack_named(
             &self.knot_render,
             wgsl!("knot_fs"),
-            phong(
-                [6, 12, 10, 11, 0],
-                [
-                    [14, 15, 16, 18],
-                    [19, 20, 21, 22],
-                    [23, 24, 25, 26],
-                    [27, 28, 29, 30],
-                ],
-                31,
-            ),
+            phong([6, 12, 10, 11], [14, 15, 16, 18], 19),
         )?;
         pack_named(
             &self.ground_render,
             wgsl!("ground_fs"),
-            phong(
-                [6, 12, 10, 11, 0],
-                [
-                    [13, 14, 15, 17],
-                    [18, 19, 20, 21],
-                    [22, 23, 24, 25],
-                    [26, 27, 28, 29],
-                ],
-                30,
-            ),
+            phong([6, 12, 10, 11], [13, 14, 15, 17], 18),
         )?;
         pack_named(
             &self.instance_render,
             wgsl!("instance_fs"),
-            phong(
-                [7, 13, 11, 12, 0],
-                [
-                    [15, 16, 17, 19],
-                    [20, 21, 22, 23],
-                    [24, 25, 26, 27],
-                    [28, 29, 30, 31],
-                ],
-                32,
-            ),
+            phong([10, 16, 14, 15], [18, 19, 20, 22], 23),
         )?;
         write(
             &self.tree_render,
@@ -1478,16 +1452,16 @@ impl Demo {
                 "objectStruct",
                 &[
                     (
-                        "nodeUniform1",
+                        "nodeUniform4",
                         Color::from_hex(m.color).0.to_array().to_vec(),
                     ),
-                    ("nodeUniform2", vec![1.]),
-                    ("nodeUniform3", vec![m.shininess]),
-                    ("nodeUniform4", specular.clone()),
-                    ("nodeUniform5", vec![0.; 3]),
-                    ("nodeUniform6", vec![1.]),
-                    ("nodeUniform9", m3(Matrix4::IDENTITY)),
-                    ("nodeUniform14", m4(Matrix4::IDENTITY)),
+                    ("nodeUniform5", vec![1.]),
+                    ("nodeUniform6", vec![m.shininess]),
+                    ("nodeUniform7", specular.clone()),
+                    ("nodeUniform8", vec![0.; 3]),
+                    ("nodeUniform9", vec![1.]),
+                    ("nodeUniform12", m3(Matrix4::IDENTITY)),
+                    ("nodeUniform17", m4(Matrix4::IDENTITY)),
                 ],
             )?;
         }
@@ -1592,26 +1566,14 @@ impl Demo {
         let shadow_order = self.sorted(Vector3::ZERO, -Vector3::Z);
         let mut encoder = r.device.create_command_encoder(&Default::default());
         for layer in 0..TILES as u32 {
-            let view = |t: &wgpu::Texture| {
-                t.create_view(&wgpu::TextureViewDescriptor {
-                    dimension: Some(wgpu::TextureViewDimension::D2),
-                    base_array_layer: layer,
-                    array_layer_count: Some(1),
-                    ..Default::default()
-                })
-            };
-            let (color_view, depth_view) = (view(&self.shadow_color), view(&self.shadow_depth));
+            let depth_view = self.shadow_depth.create_view(&wgpu::TextureViewDescriptor {
+                dimension: Some(wgpu::TextureViewDimension::D2),
+                base_array_layer: layer,
+                array_layer_count: Some(1),
+                ..Default::default()
+            });
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("shadow array tile"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                    view: &color_view,
-                    depth_slice: None,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
-                        store: wgpu::StoreOp::Store,
-                    },
-                })],
                 depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
                     view: &depth_view,
                     depth_ops: Some(wgpu::Operations {
@@ -1633,6 +1595,7 @@ impl Demo {
                         let g = &self.instanced[k].geometry;
                         pass.set_vertex_buffer(0, g.position.slice(..));
                         pass.set_vertex_buffer(1, g.normal.slice(..));
+                        pass.set_vertex_buffer(2, self.instanced[k].instances.slice(..));
                         pass.set_index_buffer(g.index.slice(..), wgpu::IndexFormat::Uint32);
                         pass.draw_indexed(0..g.count, 0, 0..self.instanced[k].count);
                     } else if k == n {
@@ -1706,6 +1669,7 @@ impl Demo {
             for (m, d) in self.instanced.iter().zip(&t.instanced) {
                 if frustum.intersects_sphere(m.sphere) {
                     set(&mut pass, d);
+                    pass.set_vertex_buffer(2, m.instances.slice(..));
                     draw(&mut pass, &m.geometry, false, m.count);
                 }
             }
