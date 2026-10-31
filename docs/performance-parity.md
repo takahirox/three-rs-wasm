@@ -1121,3 +1121,25 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   background box, which the port draws as a fullscreen triangle.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+### MeshletDrawingPipeline ( webgpu_lightprobes_sponza )
+
+- **GPU state.** The clusters, the geometry pool, the objects' transforms,
+  the batch and geometry tables, the work queues and the indirect arguments
+  stay in storage buffers. The tables upload when they change; the original
+  rewrites its batch tables every projection.
+- **GPU work as in the original.** Each render list culls its objects and
+  clusters in one compute pass ( the camera view's occlusion culling in two
+  phases around its depth and hierarchical depth ), and each batch draws its
+  visible clusters with one drawIndirect of pulled vertices. Nothing is
+  culled or merged on the CPU for them; the counters are read back without
+  waiting, as the original reads them.
+- **CPU work as in the original.** The meshlets and their levels of detail
+  are built at load through the meshoptimizer modules the page loads, one
+  geometry per projection; the objects not yet processed draw through the
+  regular pipeline, as they do in the original.
+- **Draws.** The workload check compares the direct draws, the indirect draws
+  and the compute passes with their dispatches ( `gpuWork` ): 37, 66 and
+  [ 5, 5, 5 ] on both sides, and frame by frame over the first 160 frames.
+
+Warmed cycles create no GPU resources. No GPU timing parity is claimed.

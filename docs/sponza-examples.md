@@ -20,66 +20,84 @@ against the original's 5.6 s).
 
 ## webgpu_lightprobes_sponza
 
-Sponza is lit by a shadowed SunLight ( 0xfff2dc, intensity 100, shadow far
-50, 2048² maps ) under SkyMesh with ACES, with FirstPersonControls and
-diffuse GI from a 10 × 7 × 7 LightProbeGrid. The grid bakes four probes per
-frame, in two passes ( one bounce ), as the page's `updateProbes()` does.
+The port follows the three.js r187 page ( `7e89746a` ). Sponza is lit by a
+shadowed SunLight ( 0xfff2dc, intensity 100, shadow far 50, two cascades of
+2048² side by side ) under SkyMesh with ACES, with FirstPersonControls and
+diffuse GI from a 10 × 7 × 7 LightProbeGrid ( 23.3 × 12.8 × 10.5 at
+( -0.5, 6, -0.3 ) ). The page bakes 16 probes per frame, in two passes
+( one bounce ). It draws through MeshletDrawingPipeline, the default of its
+Pipeline control. Every stage runs the WGSL r187 generates for the page:
+`gallery/src/browser/lightprobes_sponza/` ( the lit builds with GI and
+shadows on or off, direct and with pulled vertices, the captures, the sky,
+the shadow maps; `shaders.rs` lists each build's uniforms by meaning and its
+bindings ) and `gallery/src/browser/meshlet/` ( the culling ); the SH,
+repack and helper passes are lightprobes_complex's and the output pass
+cubemap_dynamic's, which are the same.
 
-The engine's `LightProbeGrid` ( `src/light_probe_grid.rs`,
-`NodeKind::LightProbeGrid` ) ports `LightProbeGrid.js`, `LightProbeGridNode`
-and `LightProbeGridHelper`:
-
-- **Bake.** `light_probe_grid::bake( baker, renderer, scene, grid, options )`
-  follows `LightProbeGrid.bake()`:
-  - a CubeCamera capture per probe, with the grid hidden and each
-    shadow-casting SunLight replaced by a directional bake light whose
-    shadow covers the casters' bounding sphere;
-  - each shadow map rendered once per bake;
-  - the 512-direction Fibonacci SH projection into a 9 × N batch row;
-  - the seven repack passes into the padded RGBA16F 3D atlas;
-  - indirect passes ( `pass`, `bounces` ) lit by a snapshot of the previous
-    pass's atlas.
-
-  The SH projection and repack shaders are the WGSL r186 generates. The
-  capture cube, batch target, bind groups, repack uniforms and bake camera
-  are pooled, so a frame of baking creates no GPU objects.
-- **Lighting.** Lit materials add the grid's irradiance to their indirect
-  diffuse, as LightProbeGridNode does:
-  - the atlas is sampled at the position offset half a probe spacing along
-    the normal, clamped to texel centres;
-  - L2 SH is evaluated for the shading normal;
-  - intensity and falloff apply.
-
-  The first visible baked grid applies. Only one grid is supported per
-  render.
-  The atlas binds only into the built-in materials' pipelines and into custom
-  shader programs that sample it ( `shaders/probe_grid.wgsl` ). Other custom
-  programs leave it out, so their pipelines stay within the 16 sampled
-  textures per stage that WebGPU guarantees ( SwiftShader's limit ).
-- **Helper.** `light_probe_grid::helper()` draws one instanced sphere per
-  probe, shaded by its SH irradiance, as LightProbeGridHelper does.
-
-Sponza's materials use energy conservation, as WebGPURenderer's
-MeshStandardMaterial does. Without it, indirect diffuse misses the
-`1 − ( single + multiple scattering )` factor and GI reads about 6 % brighter.
-
-The engine's shadow atlas now only grows. A pass with fewer shadow cameras
-reuses the atlas's first layers and keeps the other layers' caster slots;
-here, that is a bake's directional light between frames of the SunLight's
-two cascades.
+- **Bake.** As r187's LightProbeGrid bakes ( `lightprobes.rs` ): per batch
+  of 8 probes, one render of the 48 90° sub-cameras ( ArrayCamera ) into the
+  192 × 256 face atlas, culled per sub-camera; the solid-angle SH projection
+  into the batch rows; the repack of the probe range ( rows per Z slice )
+  into the padded RGBA16F atlas. The shadow-casting SunLight is replaced by a
+  directional bake light whose 2048² shadow covers the casters' sphere,
+  rendered once per bake call; the direct pass adds the unlit bounce grid,
+  the bounce pass the previous pass's snapshot.
+- **MeshletDrawingPipeline** ( `gallery/src/browser/meshlet.rs` ):
+  - MeshletGeometryUtils.createMeshlets runs at load, as the page runs it:
+    the vertices are welded, six levels are simplified and each is split into
+    clusters of 64 triangles ( padded with degenerate triangles ) by three's
+    bundled meshoptimizer 1.1 modules ( `web/examples/assets/meshopt/`,
+    called through JavaScript as the page calls them, so the clusters are the
+    page's ). Nothing is baked.
+  - One geometry is processed per projection; until every geometry a render
+    list needs is processed, its objects draw through the regular pipeline,
+    then its culling is created, sized for all of them.
+  - Each render list ( the camera, each shadow cascade, the bake light ) has
+    a culling: the objects' transforms, the clusters' spheres and cones, the
+    batch and geometry tables, the work queues and the indirect arguments, in
+    storage buffers that stay on the GPU. A projection runs one compute pass
+    ( reset, object culling with the level of detail, cluster arguments,
+    cluster culling — with normal cones in the camera view — and draw
+    arguments ); each batch ( a material and vertex layout ) then draws its
+    visible clusters with one drawIndirect of 192 vertices per cluster,
+    pulled from the geometry pool.
+  - The camera view occlusion-culls: the clusters visible in the last frame
+    are drawn into a depth buffer, its hierarchical depth is reduced on the
+    GPU ( kernels generated per view size, as three generates them ), and the
+    other clusters are tested against it. It is skipped while it culls fewer
+    than 30 % of the clusters, measured in the three projections before each
+    read of the counters ( every 30 projections, without waiting for the
+    GPU ). The reads grow the budgets that overflow and shrink the buffers to
+    the first measure.
+  - The double-sided alpha-tested materials, the sky, the probe helper and
+    the probes' ArrayCamera captures draw through the regular pipeline, as
+    MeshletDrawingPipeline leaves them.
+  - Not ported, as the page doesn't use them: LOD objects, instanced meshes,
+    position nodes, far materials, static bundle groups, the depth prepass
+    and the debug view. The batch table is uploaded when it changes, where
+    the original rewrites it every projection.
+- **Default.** The Pipeline control's Default draws every mesh directly,
+  culled on the CPU.
 
 `tests/browser/compute-examples.spec.js` compares the captures after 250
-frames ( a complete bake ) at each state:
-- the initial view;
-- GI off and on;
-- the probe helper shown, then resized;
-- a new light azimuth;
-- no bounce;
-- a 4 × 7 × 7 grid.
+frames ( the bake and the meshlets done ) at each state: the initial view,
+Default and Meshlet, GI off and on, the probe helper shown and resized, a new
+light azimuth, no bounce and a 4 × 7 × 7 grid. With and without 4× MSAA,
+every state matches at the default thresholds: at most 2 pixels differ
+( 0.0008 % ), with a mean error of at most 0.0036.
 
-Without MSAA, every state matches at the default thresholds ( at most 0.01 %
-of pixels differ ). With 4× MSAA, edge resolve allows 3.5 % / 1.2. The
-residency test checks that baking frames create nothing.
+The frames' GPU work matches the page's frame by frame. Over the first 160
+frames, each frame's compute passes, dispatches, render passes, indirect and
+direct draws are the original's: the regular draws while the meshlets are
+processed, the bake frames with the bake light's culling, the occlusion
+culling until its first measure ( frame 53 ), then three projections of it
+every 30 frames. The workload check compares a steady frame: 37 direct
+draws ( the alpha-tested materials and the sky ), 66 drawIndirect ( 22
+batches in the camera view and in each cascade ) and three compute passes of
+five dispatches, on both sides ( `gpuWork` ). The original uploads its batch
+tables each frame ( 1,584 bytes ); the port uploads nothing. The residency
+test starts after 250 frames ( `warmup` ) and checks that frames create
+nothing.
 
 The gallery renders at `min( devicePixelRatio, 1.5 )`, as the page sets.
 
