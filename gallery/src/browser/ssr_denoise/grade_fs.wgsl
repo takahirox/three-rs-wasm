@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -37,15 +40,11 @@ var<uniform> object : objectStruct;
 var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : vec4<f32>;
 var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : bool;
-var<private> nodeVar6 : vec4<f32>;
-var<private> nodeVar7 : vec4<f32>;
-var<private> nodeVar8 : vec4<f32>;
+var<private> nodeVar3 : bool;
+var<private> workingLuminanceCoefficients : vec3<f32>;
 
 // codes
-fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn4 ( color : vec4<f32> ) -> vec4<f32> {
 
 	var nodeVar0 : vec4<f32>;
 
@@ -66,12 +65,24 @@ fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
 }
 
 
-fn agxToneMapping ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
+fn fn41 ( x : vec3<f32> ) -> vec3<f32> {
 
 	var nodeVar0 : vec3<f32>;
 	var nodeVar1 : vec3<f32>;
 	var nodeVar2 : vec3<f32>;
-	var nodeVar3 : vec3<f32>;
+
+	nodeVar0 = x;
+	nodeVar1 = ( nodeVar0 * nodeVar0 );
+	nodeVar2 = ( nodeVar1 * nodeVar1 );
+
+	return ( ( ( vec3<f32>( 15.5 ) * ( nodeVar2 * nodeVar1 ) ) - ( vec3<f32>( 40.14 ) * ( nodeVar2 * nodeVar0 ) ) ) + ( ( ( vec3<f32>( 31.96 ) * nodeVar2 ) - ( vec3<f32>( 6.868 ) * ( nodeVar1 * nodeVar0 ) ) ) + ( ( vec3<f32>( 0.4298 ) * nodeVar1 ) + ( ( vec3<f32>( 0.1191 ) * nodeVar0 ) - vec3<f32>( 0.00232 ) ) ) ) );
+
+}
+
+
+fn fn42 ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
+
+	var nodeVar0 : vec3<f32>;
 
 	nodeVar0 = color;
 	nodeVar0 = ( nodeVar0 * vec3<f32>( exposure ) );
@@ -81,10 +92,7 @@ fn agxToneMapping ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
 	nodeVar0 = log2( nodeVar0 );
 	nodeVar0 = ( ( nodeVar0 - vec3<f32>( -12.47393 ) ) / vec3<f32>( ( 4.026069 - -12.47393 ) ) );
 	nodeVar0 = clamp( nodeVar0, vec3<f32>( 0.0 ), vec3<f32>( 1.0 ) );
-	nodeVar1 = nodeVar0;
-	nodeVar2 = ( nodeVar1 * nodeVar1 );
-	nodeVar3 = ( nodeVar2 * nodeVar2 );
-	nodeVar0 = ( ( ( vec3<f32>( 15.5 ) * ( nodeVar3 * nodeVar2 ) ) - ( vec3<f32>( 40.14 ) * ( nodeVar3 * nodeVar1 ) ) ) + ( ( ( vec3<f32>( 31.96 ) * nodeVar3 ) - ( vec3<f32>( 6.868 ) * ( nodeVar2 * nodeVar1 ) ) ) + ( ( vec3<f32>( 0.4298 ) * nodeVar2 ) + ( ( vec3<f32>( 0.1191 ) * nodeVar1 ) - vec3<f32>( 0.00232 ) ) ) ) );
+	nodeVar0 = fn41( nodeVar0 );
 	nodeVar0 = ( mat3x3<f32>( vec3<f32>( 1.1271005818144368, -0.1413297634984383, -0.14132976349843826 ), vec3<f32>( -0.11060664309660323, 1.157823702216272, -0.11060664309660294 ), vec3<f32>( -0.016493938717834573, -0.016493938717834257, 1.2519364065950405 ) ) * nodeVar0 );
 	nodeVar0 = pow( max( vec3<f32>( 0.0, 0.0, 0.0 ), nodeVar0 ), vec3<f32>( 2.2, 2.2, 2.2 ) );
 	nodeVar0 = ( mat3x3<f32>( vec3<f32>( 1.6605, -0.1246, -0.0182 ), vec3<f32>( -0.5876, 1.1329, -0.1006 ), vec3<f32>( -0.0728, -0.0083, 1.1187 ) ) * nodeVar0 );
@@ -95,7 +103,7 @@ fn agxToneMapping ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
 }
 
 
-fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
+fn fn2 ( color : vec3<f32> ) -> vec3<f32> {
 
 	
 
@@ -105,12 +113,22 @@ fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
 }
 
 
-fn fn0 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn3 ( color : vec4<f32> ) -> vec4<f32> {
 
 	
 
 
 	return vec4<f32>( ( color.xyz * vec3<f32>( color.w ) ), color.w );
+
+}
+
+
+fn fn32 ( color : vec3<f32>, adjustment : f32, luminanceCoefficients : vec3<f32> ) -> vec3<f32> {
+
+	
+
+
+	return max( mix( vec3<f32>( dot( color, luminanceCoefficients ) ), color, adjustment ), vec3<f32>( 0.0 ) );
 
 }
 
@@ -124,20 +142,20 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar0;
 	nodeVar1 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
-	nodeVar2 = nodeVar1;
-	nodeVar2 = nodeVar1;
-	nodeVar3 = textureSample( nodeUniform2, nodeUniform2_sampler, nodeVarying0 );
-	nodeVar4 = nodeVar3;
-	nodeVar4 = nodeVar3;
-	nodeVar5 = ( nodeVar4.w > 0.0 );
-	nodeVar6 = vec4<f32>( vec4<f32>( ( nodeVar0.xyz + vec4<f32>( nodeVar2.xyz, f32( nodeVar5 ) ).xyz ), 1.0 ).xyz, 1.0 );
-	nodeVar7 = fn1( vec4<f32>( nodeVar6.xyz, clamp( nodeVar6.w, 0.0, 1.0 ) ) );
-	nodeVar8 = vec4<f32>( agxToneMapping( nodeVar7.xyz, render.nodeUniform3 ), nodeVar7.w );
+	let nodeConst1 = nodeVar1;
+	nodeVar2 = textureSample( nodeUniform2, nodeUniform2_sampler, nodeVarying0 );
+	let nodeConst2 = nodeVar2;
+	nodeVar3 = ( nodeConst2.w > 0.0 );
+	let nodeConst3 = vec4<f32>( vec4<f32>( ( nodeConst0.xyz + vec4<f32>( nodeConst1.xyz, f32( nodeVar3 ) ).xyz ), 1.0 ).xyz, 1.0 );
+	let nodeConst4 = fn4( vec4<f32>( nodeConst3.xyz, clamp( nodeConst3.w, 0.0, 1.0 ) ) );
+	let nodeConst5 = vec4<f32>( fn42( nodeConst4.xyz, render.nodeUniform3 ), nodeConst4.w );
+	workingLuminanceCoefficients = vec3<f32>( 0.2126, 0.7152, 0.0722 );
 
 	// result
 
-	output.color = vec4<f32>( pow( max( max( mix( vec3<f32>( dot( ( ( ( fn0( vec4<f32>( sRGBTransferOETF( nodeVar8.xyz ), nodeVar8.w ) ).xyz - vec3<f32>( 0.5 ) ) * vec3<f32>( object.nodeUniform4 ) ) + vec3<f32>( 0.5 ) ), vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ), ( ( ( fn0( vec4<f32>( sRGBTransferOETF( nodeVar8.xyz ), nodeVar8.w ) ).xyz - vec3<f32>( 0.5 ) ) * vec3<f32>( object.nodeUniform4 ) ) + vec3<f32>( 0.5 ) ), object.nodeUniform5 ), vec3<f32>( 0.0 ) ), vec3<f32>( 0.0 ) ), vec3<f32>( ( 1.0 / object.nodeUniform6 ) ) ), 1.0 );
+	output.color = vec4<f32>( pow( max( fn32( ( ( ( fn3( vec4<f32>( fn2( nodeConst5.xyz ), nodeConst5.w ) ).xyz - vec3<f32>( 0.5 ) ) * vec3<f32>( object.nodeUniform4 ) ) + vec3<f32>( 0.5 ) ), object.nodeUniform5, workingLuminanceCoefficients ), vec3<f32>( 0.0 ) ), vec3<f32>( ( 1.0 / object.nodeUniform6 ) ) ), 1.0 );
 
 	return output;
 

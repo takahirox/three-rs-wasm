@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -35,10 +38,11 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar0;
 
 	// result
 
-	output.color = mix( vec4<f32>( 0.0, 0.0, 0.0, 0.0 ), nodeVar0, smoothstep( object.nodeUniform1, ( object.nodeUniform1 + object.nodeUniform2 ), dot( nodeVar0.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ) );
+	output.color = mix( vec4<f32>( 0.0, 0.0, 0.0, 0.0 ), nodeConst0, smoothstep( object.nodeUniform1, ( object.nodeUniform1 + object.nodeUniform2 ), dot( nodeConst0.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ) );
 
 	return output;
 

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -35,9 +35,7 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> nodeVar1 : vec3<f32>;
-var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
+var<private> nodeVar0 : vec3<f32>;
 var<private> positionLocal : vec3<f32>;
 
 // codes
@@ -57,21 +55,21 @@ fn main( @location( 0 ) normal : vec3<f32>,
 	if ( ( render.cameraProjectionMatrix[ 3u ][ 3u ] == 1.0 ) ) {
 
 		positionLocal = position;
-		nodeVar1 = ( positionLocal * vec3<f32>( ( ( 1.0 / render.cameraProjectionMatrix[ 1u ][ 1u ] ) * 3.0 ) ) );
+		nodeVar0 = ( positionLocal * vec3<f32>( ( ( 1.0 / render.cameraProjectionMatrix[ 1u ][ 1u ] ) * 3.0 ) ) );
 
 	} else {
 
 		positionLocal = position;
-		nodeVar1 = positionLocal;
+		nodeVar0 = positionLocal;
 
 	}
 
-	nodeVar2 = ( render.cameraProjectionMatrix * vec4<f32>( ( modelViewMatrix * vec4<f32>( nodeVar1, 0.0 ) ).xyz, 1.0 ) );
-	nodeVar3 = vec4<f32>( nodeVar2.x, nodeVar2.y, nodeVar2.w, nodeVar2.w );
+	let nodeConst1 = ( render.cameraProjectionMatrix * vec4<f32>( ( modelViewMatrix * vec4<f32>( nodeVar0, 0.0 ) ).xyz, 1.0 ) );
+	let nodeConst2 = vec4<f32>( nodeConst1.x, nodeConst1.y, nodeConst1.w, nodeConst1.w );
 
 	// result
 
-	varyings.builtinClipSpace = nodeVar3;
+	varyings.builtinClipSpace = nodeConst2;
 
 	return varyings;
 

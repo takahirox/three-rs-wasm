@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs

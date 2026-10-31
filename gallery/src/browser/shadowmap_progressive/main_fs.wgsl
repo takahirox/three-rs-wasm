@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -47,24 +50,15 @@ var<private> EmissiveColor : vec3<f32>;
 var<private> Output : vec4<f32>;
 var<private> irradiance : vec3<f32>;
 var<private> nodeVar0 : vec4<f32>;
-var<private> nodeVar1 : vec3<f32>;
-var<private> nodeVar2 : vec3<f32>;
 var<private> indirectDiffuse : vec3<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec4<f32>;
 var<private> ambientOcclusion : f32;
-var<private> nodeVar6 : vec3<f32>;
 var<private> totalDiffuse : vec3<f32>;
 var<private> directDiffuse : vec3<f32>;
-var<private> nodeVar7 : vec3<f32>;
 var<private> totalSpecular : vec3<f32>;
 var<private> directSpecular : vec3<f32>;
 var<private> indirectSpecular : vec3<f32>;
-var<private> nodeVar8 : vec3<f32>;
 var<private> outgoingLight : vec3<f32>;
-var<private> nodeVar9 : vec3<f32>;
-var<private> nodeVar10 : vec4<f32>;
+var<private> nodeVar1 : vec4<f32>;
 
 // codes
 
@@ -84,33 +78,25 @@ fn main( @location( 0 ) v_positionView : vec3<f32>,
 	EmissiveColor = ( object.nodeUniform4 * vec3<f32>( object.nodeUniform5 ) );
 	irradiance = vec3<f32>( 0.0, 0.0, 0.0 );
 	nodeVar0 = textureSample( nodeUniform6, nodeUniform6_sampler, ( object.nodeUniform7 * vec3<f32>( nodeVarying4, 1.0 ) ).xy );
-	nodeVar1 = ( nodeVar0.xyz * vec3<f32>( object.nodeUniform8 ) );
-	nodeVar2 = ( irradiance + nodeVar1 );
-	irradiance = nodeVar2;
+	irradiance = ( irradiance + ( nodeVar0.xyz * vec3<f32>( object.nodeUniform8 ) ) );
 	indirectDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar3 = ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) );
-	nodeVar4 = ( vec4<f32>( irradiance, 1.0 ) * nodeVar3 );
-	nodeVar5 = ( vec4<f32>( indirectDiffuse, 1.0 ) + nodeVar4 );
-	indirectDiffuse = nodeVar5.xyz;
+	indirectDiffuse = ( vec4<f32>( indirectDiffuse, 1.0 ) + ( vec4<f32>( irradiance, 1.0 ) * ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) ) ) ).xyz;
 	ambientOcclusion = 1.0;
-	nodeVar6 = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
-	indirectDiffuse = nodeVar6;
+	indirectDiffuse = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
 	directDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar7 = ( directDiffuse + indirectDiffuse );
-	totalDiffuse = nodeVar7;
+	totalDiffuse = ( directDiffuse + indirectDiffuse );
 	directSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
 	indirectSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar8 = ( directSpecular + indirectSpecular );
-	totalSpecular = nodeVar8;
-	nodeVar9 = ( totalDiffuse + totalSpecular );
-	outgoingLight = nodeVar9;
+	totalSpecular = ( directSpecular + indirectSpecular );
+	outgoingLight = ( totalDiffuse + totalSpecular );
 	Output = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	nodeVar10 = vec4<f32>( mix( Output.xyz, render.nodeUniform9, smoothstep( render.nodeUniform10, render.nodeUniform11, ( - v_positionView.z ) ) ), Output.w );
-	Output = nodeVar10;
+	nodeVar1 = vec4<f32>( mix( Output.xyz, render.nodeUniform9, smoothstep( render.nodeUniform10, render.nodeUniform11, ( - v_positionView.z ) ) ), Output.w );
+	let nodeConst0 = nodeVar1;
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar10;
+	output.color = nodeConst0;
 
 	return output;
 

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -48,17 +48,9 @@ var<private> nodeVar0 : vec3<f32>;
 var<private> nodeVar1 : vec2<f32>;
 var<private> nodeVar2 : f32;
 var<private> nodeVar3 : f32;
-var<private> nodeVar4 : u32;
-var<private> nodeVar5 : u32;
+var<private> nodeVar4 : f32;
+var<private> nodeVar5 : f32;
 var<private> nodeVar6 : f32;
-var<private> nodeVar7 : u32;
-var<private> nodeVar8 : u32;
-var<private> nodeVar9 : f32;
-var<private> nodeVar10 : u32;
-var<private> nodeVar11 : u32;
-var<private> nodeVar12 : f32;
-var<private> nodeVar13 : u32;
-var<private> nodeVar14 : u32;
 
 // codes
 
@@ -89,11 +81,13 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 	if ( bool( object.nodeUniform1 ) ) {
 
-		nodeVar2 = HeightA.value[ ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		nodeVar2 = HeightA.value[ nodeConst0 ];
 
 	} else {
 
-		nodeVar2 = HeightB.value[ ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		nodeVar2 = HeightB.value[ nodeConst0 ];
 
 	}
 
@@ -103,57 +97,81 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 	if ( bool( object.nodeUniform1 ) ) {
 
-		nodeVar4 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar3 = HeightA.value[ ( ( i32( ( nodeVar4 / 128u ) ) * 128 ) + max( 0, ( i32( ( nodeVar4 % 128u ) ) - 1 ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst3 = ( ( nodeConst1 * 128 ) + max( 0, ( nodeConst2 - 1 ) ) );
+		nodeVar3 = HeightA.value[ nodeConst3 ];
 
 	} else {
 
-		nodeVar5 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar3 = HeightB.value[ ( ( i32( ( nodeVar5 / 128u ) ) * 128 ) + max( 0, ( i32( ( nodeVar5 % 128u ) ) - 1 ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst3 = ( ( nodeConst1 * 128 ) + max( 0, ( nodeConst2 - 1 ) ) );
+		nodeVar3 = HeightB.value[ nodeConst3 ];
 
 	}
 
 
 	if ( bool( object.nodeUniform1 ) ) {
 
-		nodeVar7 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar6 = HeightA.value[ ( ( i32( ( nodeVar7 / 128u ) ) * 128 ) + i32( min( u32( ( i32( ( nodeVar7 % 128u ) ) + 1 ) ), ( 128u - 1u ) ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst4 = ( ( nodeConst1 * 128 ) + min( ( nodeConst2 + 1 ), i32( ( 128u - 1u ) ) ) );
+		nodeVar4 = HeightA.value[ nodeConst4 ];
 
 	} else {
 
-		nodeVar8 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar6 = HeightB.value[ ( ( i32( ( nodeVar8 / 128u ) ) * 128 ) + i32( min( u32( ( i32( ( nodeVar8 % 128u ) ) + 1 ) ), ( 128u - 1u ) ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst4 = ( ( nodeConst1 * 128 ) + min( ( nodeConst2 + 1 ), i32( ( 128u - 1u ) ) ) );
+		nodeVar4 = HeightB.value[ nodeConst4 ];
 
 	}
 
-	nodeVar1.x = ( nodeVar1.x + ( ( ( nodeVar3 - nodeVar6 ) * 21.333333333333332 ) * 0.015 ) );
+	nodeVar1.x = ( nodeVar1.x + ( ( ( nodeVar3 - nodeVar4 ) * 21.333333333333332 ) * 0.015 ) );
 
 	if ( bool( object.nodeUniform1 ) ) {
 
-		nodeVar10 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar9 = HeightA.value[ ( ( max( 0, ( i32( ( nodeVar10 / 128u ) ) - 1 ) ) * 128 ) + i32( ( nodeVar10 % 128u ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst5 = ( ( max( 0, ( nodeConst1 - 1 ) ) * 128 ) + nodeConst2 );
+		nodeVar5 = HeightA.value[ nodeConst5 ];
 
 	} else {
 
-		nodeVar11 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar9 = HeightB.value[ ( ( max( 0, ( i32( ( nodeVar11 / 128u ) ) - 1 ) ) * 128 ) + i32( ( nodeVar11 % 128u ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst5 = ( ( max( 0, ( nodeConst1 - 1 ) ) * 128 ) + nodeConst2 );
+		nodeVar5 = HeightB.value[ nodeConst5 ];
 
 	}
 
 
 	if ( bool( object.nodeUniform1 ) ) {
 
-		nodeVar13 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar12 = HeightA.value[ ( ( min( u32( ( i32( ( nodeVar13 / 128u ) ) + 1 ) ), ( 128u - 1u ) ) * 128u ) + u32( i32( ( nodeVar13 % 128u ) ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst6 = ( ( min( ( nodeConst1 + 1 ), i32( ( 128u - 1u ) ) ) * 128 ) + nodeConst2 );
+		nodeVar6 = HeightA.value[ nodeConst6 ];
 
 	} else {
 
-		nodeVar14 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
-		nodeVar12 = HeightB.value[ ( ( min( u32( ( i32( ( nodeVar14 / 128u ) ) + 1 ) ), ( 128u - 1u ) ) * 128u ) + u32( i32( ( nodeVar14 % 128u ) ) ) ) ];
+		let nodeConst0 = ( ( u32( clamp( floor( ( ( ( nodeVar0.z / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) * 128u ) + u32( clamp( floor( ( ( ( nodeVar0.x / 6.0 ) + 0.5 ) * 128.0 ) ), 0.0, 127.0 ) ) );
+		let nodeConst1 = i32( ( nodeConst0 / 128u ) );
+		let nodeConst2 = i32( ( nodeConst0 % 128u ) );
+		let nodeConst6 = ( ( min( ( nodeConst1 + 1 ), i32( ( 128u - 1u ) ) ) * 128 ) + nodeConst2 );
+		nodeVar6 = HeightB.value[ nodeConst6 ];
 
 	}
 
-	nodeVar1.y = ( nodeVar1.y + ( ( ( nodeVar9 - nodeVar12 ) * 21.333333333333332 ) * 0.015 ) );
+	nodeVar1.y = ( nodeVar1.y + ( ( ( nodeVar5 - nodeVar6 ) * 21.333333333333332 ) * 0.015 ) );
 	nodeVar0.x = ( nodeVar0.x + nodeVar1.x );
 	nodeVar0.z = ( nodeVar0.z + nodeVar1.y );
 

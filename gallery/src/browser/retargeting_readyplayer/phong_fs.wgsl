@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -55,62 +58,15 @@ var<private> normalViewGeometry : vec3<f32>;
 var<private> NORMAL_normalView : vec3<f32>;
 var<private> normalView : vec3<f32>;
 var<private> normalWorld : vec3<f32>;
-var<private> nodeVar1 : f32;
-var<private> nodeVar2 : f32;
-var<private> nodeVar3 : f32;
-var<private> nodeVar4 : vec3<f32>;
-var<private> nodeVar5 : vec3<f32>;
 var<private> directDiffuse : vec3<f32>;
-var<private> nodeVar6 : vec3<f32>;
-var<private> nodeVar7 : vec4<f32>;
-var<private> nodeVar8 : vec4<f32>;
-var<private> nodeVar9 : vec3<f32>;
-var<private> nodeVar10 : vec3<f32>;
-var<private> nodeVar11 : f32;
-var<private> nodeVar12 : vec3<f32>;
-var<private> nodeVar13 : vec3<f32>;
-var<private> nodeVar14 : vec3<f32>;
-var<private> nodeVar15 : vec3<f32>;
 var<private> directSpecular : vec3<f32>;
 var<private> positionViewDirection : vec3<f32>;
-var<private> nodeVar16 : vec3<f32>;
-var<private> nodeVar17 : f32;
-var<private> nodeVar18 : f32;
-var<private> nodeVar19 : vec3<f32>;
-var<private> nodeVar20 : vec3<f32>;
-var<private> nodeVar21 : vec3<f32>;
-var<private> nodeVar22 : vec3<f32>;
-var<private> nodeVar23 : vec3<f32>;
-var<private> nodeVar24 : vec4<f32>;
-var<private> nodeVar25 : vec4<f32>;
-var<private> nodeVar26 : vec3<f32>;
-var<private> nodeVar27 : vec3<f32>;
-var<private> nodeVar28 : f32;
-var<private> nodeVar29 : vec3<f32>;
-var<private> nodeVar30 : vec3<f32>;
-var<private> nodeVar31 : vec3<f32>;
-var<private> nodeVar32 : vec3<f32>;
-var<private> nodeVar33 : vec3<f32>;
-var<private> nodeVar34 : f32;
-var<private> nodeVar35 : f32;
-var<private> nodeVar36 : vec3<f32>;
-var<private> nodeVar37 : vec3<f32>;
-var<private> nodeVar38 : vec3<f32>;
-var<private> nodeVar39 : vec3<f32>;
 var<private> indirectDiffuse : vec3<f32>;
-var<private> nodeVar40 : vec4<f32>;
-var<private> nodeVar41 : vec4<f32>;
-var<private> nodeVar42 : vec4<f32>;
 var<private> ambientOcclusion : f32;
-var<private> nodeVar43 : vec3<f32>;
 var<private> totalDiffuse : vec3<f32>;
-var<private> nodeVar44 : vec3<f32>;
 var<private> totalSpecular : vec3<f32>;
 var<private> indirectSpecular : vec3<f32>;
-var<private> nodeVar45 : vec3<f32>;
 var<private> outgoingLight : vec3<f32>;
-var<private> nodeVar46 : vec3<f32>;
-var<private> nodeVar47 : vec4<f32>;
 
 // codes
 
@@ -133,74 +89,38 @@ fn main( @location( 0 ) v_positionViewDirection : vec3<f32>,
 	NORMAL_normalView = normalViewGeometry;
 	normalView = NORMAL_normalView;
 	normalWorld = normalize( ( vec4<f32>( normalView, 0.0 ) * render.cameraViewMatrix ).xyz );
-	nodeVar1 = dot( normalWorld, normalize( render.nodeUniform14 ) );
-	nodeVar2 = ( nodeVar1 * 0.5 );
-	nodeVar3 = ( nodeVar2 + 0.5 );
-	nodeVar4 = mix( render.nodeUniform9, render.nodeUniform10, nodeVar3 );
-	nodeVar5 = ( irradiance + nodeVar4 );
-	irradiance = nodeVar5;
+	irradiance = ( irradiance + mix( render.nodeUniform9, render.nodeUniform10, ( ( dot( normalWorld, normalize( render.nodeUniform14 ) ) * 0.5 ) + 0.5 ) ) );
 	directDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar6 = ( render.nodeUniform15 - render.nodeUniform16 );
-	nodeVar7 = vec4<f32>( nodeVar6, 0.0 );
-	nodeVar8 = ( render.cameraViewMatrix * nodeVar7 );
-	nodeVar9 = normalize( nodeVar8.xyz );
-	nodeVar10 = nodeVar9;
-	nodeVar11 = dot( normalView, nodeVar10 );
-	nodeVar12 = ( vec3<f32>( clamp( nodeVar11, 0.0, 1.0 ) ) * render.nodeUniform17 );
-	nodeVar13 = ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar14 = ( nodeVar12 * nodeVar13 );
-	nodeVar15 = ( directDiffuse + nodeVar14 );
-	directDiffuse = nodeVar15;
+	let nodeConst1 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( render.nodeUniform15 - render.nodeUniform16 ), 0.0 ) ).xyz );
+	let nodeConst2 = ( vec3<f32>( clamp( dot( normalView, nodeConst1 ), 0.0, 1.0 ) ) * render.nodeUniform17 );
+	directDiffuse = ( directDiffuse + ( nodeConst2 * ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) ) ) );
 	directSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
 	positionViewDirection = normalize( v_positionViewDirection );
-	nodeVar16 = normalize( ( nodeVar10 + positionViewDirection ) );
-	nodeVar17 = clamp( dot( positionViewDirection, nodeVar16 ), 0.0, 1.0 );
-	nodeVar18 = exp2( ( ( ( nodeVar17 * -5.55473 ) - 6.98316 ) * nodeVar17 ) );
-	nodeVar19 = ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeVar18 ) ) ) + vec3<f32>( ( 1.0 * nodeVar18 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeVar16 ), 0.0, 1.0 ), Shininess ) ) ) );
-	nodeVar20 = ( nodeVar12 * nodeVar19 );
-	nodeVar21 = ( nodeVar20 * vec3<f32>( 1.0 ) );
-	nodeVar22 = ( directSpecular + nodeVar21 );
-	directSpecular = nodeVar22;
-	nodeVar23 = ( render.nodeUniform19 - render.nodeUniform20 );
-	nodeVar24 = vec4<f32>( nodeVar23, 0.0 );
-	nodeVar25 = ( render.cameraViewMatrix * nodeVar24 );
-	nodeVar26 = normalize( nodeVar25.xyz );
-	nodeVar27 = nodeVar26;
-	nodeVar28 = dot( normalView, nodeVar27 );
-	nodeVar29 = ( vec3<f32>( clamp( nodeVar28, 0.0, 1.0 ) ) * render.nodeUniform21 );
-	nodeVar30 = ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar31 = ( nodeVar29 * nodeVar30 );
-	nodeVar32 = ( directDiffuse + nodeVar31 );
-	directDiffuse = nodeVar32;
-	nodeVar33 = normalize( ( nodeVar27 + positionViewDirection ) );
-	nodeVar34 = clamp( dot( positionViewDirection, nodeVar33 ), 0.0, 1.0 );
-	nodeVar35 = exp2( ( ( ( nodeVar34 * -5.55473 ) - 6.98316 ) * nodeVar34 ) );
-	nodeVar36 = ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeVar35 ) ) ) + vec3<f32>( ( 1.0 * nodeVar35 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeVar33 ), 0.0, 1.0 ), Shininess ) ) ) );
-	nodeVar37 = ( nodeVar29 * nodeVar36 );
-	nodeVar38 = ( nodeVar37 * vec3<f32>( 1.0 ) );
-	nodeVar39 = ( directSpecular + nodeVar38 );
-	directSpecular = nodeVar39;
+	let nodeConst3 = normalize( ( nodeConst1 + positionViewDirection ) );
+	let nodeConst4 = clamp( dot( positionViewDirection, nodeConst3 ), 0.0, 1.0 );
+	let nodeConst5 = exp2( ( ( ( nodeConst4 * -5.55473 ) - 6.98316 ) * nodeConst4 ) );
+	directSpecular = ( directSpecular + ( ( nodeConst2 * ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeConst5 ) ) ) + vec3<f32>( ( 1.0 * nodeConst5 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeConst3 ), 0.0, 1.0 ), Shininess ) ) ) ) ) * vec3<f32>( 1.0 ) ) );
+	let nodeConst6 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( render.nodeUniform19 - render.nodeUniform20 ), 0.0 ) ).xyz );
+	let nodeConst7 = ( vec3<f32>( clamp( dot( normalView, nodeConst6 ), 0.0, 1.0 ) ) * render.nodeUniform21 );
+	directDiffuse = ( directDiffuse + ( nodeConst7 * ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) ) ) );
+	let nodeConst8 = normalize( ( nodeConst6 + positionViewDirection ) );
+	let nodeConst9 = clamp( dot( positionViewDirection, nodeConst8 ), 0.0, 1.0 );
+	let nodeConst10 = exp2( ( ( ( nodeConst9 * -5.55473 ) - 6.98316 ) * nodeConst9 ) );
+	directSpecular = ( directSpecular + ( ( nodeConst7 * ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeConst10 ) ) ) + vec3<f32>( ( 1.0 * nodeConst10 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeConst8 ), 0.0, 1.0 ), Shininess ) ) ) ) ) * vec3<f32>( 1.0 ) ) );
 	indirectDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar40 = ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) );
-	nodeVar41 = ( vec4<f32>( irradiance, 1.0 ) * nodeVar40 );
-	nodeVar42 = ( vec4<f32>( indirectDiffuse, 1.0 ) + nodeVar41 );
-	indirectDiffuse = nodeVar42.xyz;
+	indirectDiffuse = ( vec4<f32>( indirectDiffuse, 1.0 ) + ( vec4<f32>( irradiance, 1.0 ) * ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) ) ) ).xyz;
 	ambientOcclusion = 1.0;
-	nodeVar43 = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
-	indirectDiffuse = nodeVar43;
-	nodeVar44 = ( directDiffuse + indirectDiffuse );
-	totalDiffuse = nodeVar44;
+	indirectDiffuse = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
+	totalDiffuse = ( directDiffuse + indirectDiffuse );
 	indirectSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar45 = ( directSpecular + indirectSpecular );
-	totalSpecular = nodeVar45;
-	nodeVar46 = ( totalDiffuse + totalSpecular );
-	outgoingLight = nodeVar46;
-	nodeVar47 = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar47;
+	totalSpecular = ( directSpecular + indirectSpecular );
+	outgoingLight = ( totalDiffuse + totalSpecular );
+	let nodeConst11 = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst11;
 
 	// result
 
-	output.color = nodeVar47;
+	output.color = nodeConst11;
 
 	return output;
 

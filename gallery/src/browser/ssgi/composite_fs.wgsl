@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -37,13 +40,15 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar0;
 	nodeVar1 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 ).x;
+	let nodeConst1 = nodeVar1;
 	nodeVar2 = textureSample( nodeUniform2, nodeUniform2_sampler, nodeVarying0 );
 	nodeVar3 = textureSample( nodeUniform3, nodeUniform3_sampler, nodeVarying0 ).xyz;
 
 	// result
 
-	output.color = vec4<f32>( ( ( nodeVar0.xyz * vec3<f32>( nodeVar1 ) ) + ( nodeVar2.xyz * nodeVar3 ) ), nodeVar0.w );
+	output.color = vec4<f32>( ( ( nodeConst0.xyz * vec3<f32>( nodeConst1 ) ) + ( nodeVar2.xyz * nodeVar3 ) ), nodeConst0.w );
 
 	return output;
 

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -52,10 +52,8 @@ var<private> nodeVar2 : vec4<f32>;
 var<private> nodeVar3 : vec4<f32>;
 var<private> nodeVar4 : vec4<f32>;
 var<private> nodeVar5 : vec4<f32>;
-var<private> nodeVar6 : mat4x4<f32>;
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar8 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_cameraIndex : u32;
@@ -74,33 +72,36 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 	// code
 
 	let nodeConst0 = i32( textureDimensions( nodeUniform0, 0 ).x );
-	let nodeConst1 = ( i32( instanceIndex ) % nodeConst0 );
-	let nodeConst2 = ( i32( instanceIndex ) / nodeConst0 );
-	nodeVar0 = textureLoad( nodeUniform0, vec2<i32>( nodeConst1, nodeConst2 ), u32( 0u ) ).x;
+	let nodeConst1 = i32( instanceIndex );
+	let nodeConst2 = ( nodeConst1 % nodeConst0 );
+	let nodeConst3 = ( nodeConst1 / nodeConst0 );
+	nodeVar0 = textureLoad( nodeUniform0, vec2<i32>( nodeConst2, nodeConst3 ), u32( 0u ) ).x;
 	varyings.vBatchIndirectId = nodeVar0;
-	let nodeConst3 = i32( textureDimensions( nodeUniform1, 0 ).x );
-	let nodeConst4 = i32( ( f32( nodeVar0 ) * 4.0 ) );
-	let nodeConst5 = ( nodeConst4 % nodeConst3 );
-	let nodeConst6 = ( nodeConst4 / nodeConst3 );
-	let nodeConst7 = i32( textureDimensions( nodeUniform2, 0 ).x );
-	let nodeConst8 = ( i32( nodeVar0 ) % nodeConst7 );
-	let nodeConst9 = ( i32( nodeVar0 ) / nodeConst7 );
-	nodeVar1 = textureLoad( nodeUniform2, vec2<i32>( nodeConst8, nodeConst9 ), u32( 0u ) );
+	let nodeConst4 = i32( textureDimensions( nodeUniform1, 0 ).x );
+	let nodeConst5 = i32( ( f32( nodeVar0 ) * 4.0 ) );
+	let nodeConst6 = ( nodeConst5 % nodeConst4 );
+	let nodeConst7 = ( nodeConst5 / nodeConst4 );
+	let nodeConst8 = i32( textureDimensions( nodeUniform2, 0 ).x );
+	let nodeConst9 = i32( nodeVar0 );
+	let nodeConst10 = ( nodeConst9 % nodeConst8 );
+	let nodeConst11 = ( nodeConst9 / nodeConst8 );
+	nodeVar1 = textureLoad( nodeUniform2, vec2<i32>( nodeConst10, nodeConst11 ), u32( 0u ) );
 	varyings.vBatchColor = nodeVar1;
 	positionLocal = position;
-	nodeVar2 = textureLoad( nodeUniform1, vec2<i32>( nodeConst5, nodeConst6 ), u32( 0u ) );
-	nodeVar3 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst5 + 1 ), nodeConst6 ), u32( 0u ) );
-	nodeVar4 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst5 + 2 ), nodeConst6 ), u32( 0u ) );
-	nodeVar5 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst5 + 3 ), nodeConst6 ), u32( 0u ) );
-	nodeVar6 = mat4x4<f32>( nodeVar2, nodeVar3, nodeVar4, nodeVar5 );
-	positionLocal = ( nodeVar6 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
+	nodeVar2 = textureLoad( nodeUniform1, vec2<i32>( nodeConst6, nodeConst7 ), u32( 0u ) );
+	nodeVar3 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst6 + 1 ), nodeConst7 ), u32( 0u ) );
+	nodeVar4 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst6 + 2 ), nodeConst7 ), u32( 0u ) );
+	nodeVar5 = textureLoad( nodeUniform1, vec2<i32>( ( nodeConst6 + 3 ), nodeConst7 ), u32( 0u ) );
+	let nodeConst12 = mat4x4<f32>( nodeVar2, nodeVar3, nodeVar4, nodeVar5 );
+	positionLocal = ( nodeConst12 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	normalLocal = normal;
-	normalLocal = ( mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz ) * ( normalLocal / vec3<f32>( dot( mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 0u ], mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 0u ] ), dot( mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 1u ], mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 1u ] ), dot( mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 2u ], mat3x3<f32>( nodeVar6[ 0 ].xyz, nodeVar6[ 1 ].xyz, nodeVar6[ 2 ].xyz )[ 2u ] ) ) ) );
+	let nodeConst13 = mat3x3<f32>( nodeConst12[ 0 ].xyz, nodeConst12[ 1 ].xyz, nodeConst12[ 2 ].xyz );
+	normalLocal = ( nodeConst13 * ( normalLocal / vec3<f32>( dot( nodeConst13[ 0u ], nodeConst13[ 0u ] ), dot( nodeConst13[ 1u ], nodeConst13[ 1u ] ), dot( nodeConst13[ 2u ], nodeConst13[ 2u ] ) ) ) );
 	v_cameraIndex = cameraIndex.u_cameraIndex;
 	modelViewMatrix = ( cameraViewMatrices.value[ v_cameraIndex ] * object.nodeUniform7 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar8 = ( cameraProjectionMatrices.value[ v_cameraIndex ] * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar8;
+	let VERTEX_nodeConst15 = ( cameraProjectionMatrices.value[ v_cameraIndex ] * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst15;
 
 	// result
 

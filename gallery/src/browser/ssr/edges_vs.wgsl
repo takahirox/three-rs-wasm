@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -26,10 +26,7 @@ struct VaryingsStruct {
 var<private> varyings : VaryingsStruct;
 
 // vars
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar11 : vec4<f32>;
-var<private> nodeVar19 : vec4<f32>;
-var<private> nodeVar26 : vec4<f32>;
+
 
 // codes
 
@@ -42,17 +39,17 @@ fn main( @builtin( vertex_index ) vertexIndex : u32,
 	// code
 
 	varyings.nodeVarying3 = uv;
-	nodeVar3 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( -1.0, 0.0, 0.0, -1.0 ) ) );
-	varyings.nodeVarying0 = nodeVar3;
-	nodeVar11 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( 1.0, 0.0, 0.0, 1.0 ) ) );
-	varyings.nodeVarying1 = nodeVar11;
-	nodeVar19 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( -2.0, 0.0, 0.0, -2.0 ) ) );
-	varyings.nodeVarying2 = nodeVar19;
-	nodeVar26 = vec4<f32>( array< f32, 3 >( -1.0, -1.0, 3.0 )[ vertexIndex ], array< f32, 3 >( 3.0, -1.0, -1.0 )[ vertexIndex ], 0.0, 1.0 );
+	let nodeConst0 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( -1.0, 0.0, 0.0, -1.0 ) ) );
+	varyings.nodeVarying0 = nodeConst0;
+	let nodeConst3 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( 1.0, 0.0, 0.0, 1.0 ) ) );
+	varyings.nodeVarying1 = nodeConst3;
+	let nodeConst6 = ( vec4<f32>( uv, uv ) + ( vec4<f32>( object.nodeUniform1, object.nodeUniform1 ) * vec4<f32>( -2.0, 0.0, 0.0, -2.0 ) ) );
+	varyings.nodeVarying2 = nodeConst6;
+	let nodeConst9 = vec4<f32>( array< f32, 3 >( -1.0, -1.0, 3.0 )[ vertexIndex ], array< f32, 3 >( 3.0, -1.0, -1.0 )[ vertexIndex ], 0.0, 1.0 );
 
 	// result
 
-	varyings.builtinClipSpace = nodeVar26;
+	varyings.builtinClipSpace = nodeConst9;
 
 	return varyings;
 

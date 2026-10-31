@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -43,20 +46,12 @@ var<uniform> render : renderStruct;
 // vars
 var<private> nodeVar0 : f32;
 var<private> nodeVar1 : vec2<u32>;
-var<private> nodeVar2 : vec3<f32>;
+var<private> nodeVar2 : f32;
 var<private> nodeVar3 : vec3<f32>;
 var<private> nodeVar4 : f32;
-var<private> nodeVar5 : f32;
+var<private> nodeVar5 : vec3<f32>;
 var<private> nodeVar6 : f32;
 var<private> nodeVar7 : f32;
-var<private> nodeVar8 : f32;
-var<private> nodeVar9 : f32;
-var<private> nodeVar10 : vec3<f32>;
-var<private> nodeVar11 : vec3<f32>;
-var<private> nodeVar12 : f32;
-var<private> nodeVar13 : vec3<f32>;
-var<private> nodeVar14 : f32;
-var<private> nodeVar15 : f32;
 
 // codes
 fn tsl_clampWrapping_float( coord: f32 ) -> f32 { return clamp( coord, 0.0, 1.0 ); }
@@ -69,7 +64,7 @@ fn tsl_coord_clampS_clampT_2d( coord : vec2f ) -> vec2f {
 
 }
 
-fn interleavedGradientNoise ( position : vec2<f32> ) -> f32 {
+fn fn24 ( position : vec2<f32> ) -> f32 {
 
 	
 
@@ -89,42 +84,43 @@ fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 
 	nodeVar1 = textureDimensions( nodeUniform4 );
 	nodeVar0 = textureLoad( nodeUniform4, vec2<u32>( clamp( floor( tsl_coord_clampS_clampT_2d( ( fragCoord.xy / render.nodeUniform3 ) ) * vec2<f32>( nodeVar1 ) ), vec2<f32>( 0 ), vec2<f32>( nodeVar1 - vec2<u32>( 1, 1 ) ) ) ), u32( 0 ) );
-	nodeVar2 = ( ( object.nodeUniform1 * vec4<f32>( ( ( object.nodeUniform2 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( ( fragCoord.xy / render.nodeUniform3 ).x, ( 1.0 - ( fragCoord.xy / render.nodeUniform3 ).y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar0 ), 1.0 ) ).xyz / vec3<f32>( ( object.nodeUniform2 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( ( fragCoord.xy / render.nodeUniform3 ).x, ( 1.0 - ( fragCoord.xy / render.nodeUniform3 ).y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar0 ), 1.0 ) ).w ) ), 1.0 ) ).xyz - object.nodeUniform0 );
-	nodeVar3 = normalize( nodeVar2 );
+	let nodeConst0 = ( object.nodeUniform2 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( ( fragCoord.xy / render.nodeUniform3 ).x, ( 1.0 - ( fragCoord.xy / render.nodeUniform3 ).y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar0 ), 1.0 ) );
+	let nodeConst1 = ( ( object.nodeUniform1 * vec4<f32>( ( nodeConst0.xyz / vec3<f32>( nodeConst0.w ) ), 1.0 ) ).xyz - object.nodeUniform0 );
+	let nodeConst2 = normalize( nodeConst1 );
 
-	if ( ( nodeVar3.y >= 0.0 ) ) {
+	if ( ( nodeConst2.y >= 0.0 ) ) {
 
-		nodeVar4 = max( nodeVar3.y, 0.00001 );
+		nodeVar2 = max( nodeConst2.y, 0.00001 );
 
 	} else {
 
-		nodeVar4 = min( nodeVar3.y, -0.00001 );
+		nodeVar2 = min( nodeConst2.y, -0.00001 );
 
 	}
 
-	nodeVar5 = ( ( -1.0 - object.nodeUniform0.y ) / nodeVar4 );
-	nodeVar6 = ( ( ( -1.0 + object.nodeUniform5 ) - object.nodeUniform0.y ) / nodeVar4 );
-	nodeVar7 = max( min( nodeVar5, nodeVar6 ), 0.0 );
-	nodeVar8 = length( nodeVar2 );
-	nodeVar9 = ( max( ( min( min( max( nodeVar5, nodeVar6 ), nodeVar8 ), ( nodeVar7 + object.nodeUniform6 ) ) - nodeVar7 ), 0.0 ) / object.nodeUniform7 );
-	nodeVar10 = ( nodeVar3 * vec3<f32>( nodeVar9 ) );
-	nodeVar11 = ( ( object.nodeUniform0 + ( nodeVar3 * vec3<f32>( nodeVar7 ) ) ) + ( nodeVar10 * vec3<f32>( interleavedGradientNoise( fragCoord.xy ) ) ) );
-	nodeVar12 = 0.0;
+	let nodeConst3 = ( ( -1.0 - object.nodeUniform0.y ) / nodeVar2 );
+	let nodeConst4 = ( ( ( -1.0 + object.nodeUniform5 ) - object.nodeUniform0.y ) / nodeVar2 );
+	let nodeConst5 = max( min( nodeConst3, nodeConst4 ), 0.0 );
+	let nodeConst6 = length( nodeConst1 );
+	let nodeConst7 = ( max( ( min( min( max( nodeConst3, nodeConst4 ), nodeConst6 ), ( nodeConst5 + object.nodeUniform6 ) ) - nodeConst5 ), 0.0 ) / object.nodeUniform7 );
+	let nodeConst8 = ( nodeConst2 * vec3<f32>( nodeConst7 ) );
+	nodeVar3 = ( ( object.nodeUniform0 + ( nodeConst2 * vec3<f32>( nodeConst5 ) ) ) + ( nodeConst8 * vec3<f32>( fn24( fragCoord.xy ) ) ) );
+	nodeVar4 = 0.0;
 
 	for ( var i : i32 = 0; i < i32( object.nodeUniform7 ); i ++ ) {
 
-		nodeVar13 = ( nodeVar11 * vec3<f32>( object.nodeUniform8 ) );
-		nodeVar14 = textureSample( nodeUniform9, nodeUniform9_sampler, ( nodeVar13 + vec3<f32>( ( object.nodeUniform10 * 0.3 ), ( object.nodeUniform10 * 0.05 ), ( object.nodeUniform10 * 0.2 ) ) ) ).x;
-		nodeVar15 = textureSample( nodeUniform9, nodeUniform9_sampler, ( ( ( ( nodeVar13 * vec3<f32>( 2.2 ) ) + vec3<f32>( 1.7, 0.9, 2.5 ) ) + vec3<f32>( ( ( - object.nodeUniform10 ) * 0.15 ), ( object.nodeUniform10 * 0.1 ), ( object.nodeUniform10 * 0.08 ) ) ) + vec3<f32>( ( nodeVar14 * 0.5 ) ) ) ).x;
-		nodeVar12 = ( nodeVar12 + ( ( ( max( ( ( nodeVar14 + ( nodeVar15 * 0.5 ) ) - object.nodeUniform11 ), 0.0 ) * pow( clamp( ( 1.0 - ( ( nodeVar11.y - -1.0 ) / max( object.nodeUniform5, 0.01 ) ) ), 0.0, 1.0 ), object.nodeUniform12 ) ) * nodeVar9 ) * object.nodeUniform13 ) );
-		nodeVar11 = ( nodeVar11 + nodeVar10 );
+		nodeVar5 = ( nodeVar3 * vec3<f32>( object.nodeUniform8 ) );
+		nodeVar6 = textureSample( nodeUniform9, nodeUniform9_sampler, ( nodeVar5 + vec3<f32>( ( object.nodeUniform10 * 0.3 ), ( object.nodeUniform10 * 0.05 ), ( object.nodeUniform10 * 0.2 ) ) ) ).x;
+		nodeVar7 = textureSample( nodeUniform9, nodeUniform9_sampler, ( ( ( ( nodeVar5 * vec3<f32>( 2.2 ) ) + vec3<f32>( 1.7, 0.9, 2.5 ) ) + vec3<f32>( ( ( - object.nodeUniform10 ) * 0.15 ), ( object.nodeUniform10 * 0.1 ), ( object.nodeUniform10 * 0.08 ) ) ) + vec3<f32>( ( nodeVar6 * 0.5 ) ) ) ).x;
+		nodeVar4 = ( nodeVar4 + ( ( ( max( ( ( nodeVar6 + ( nodeVar7 * 0.5 ) ) - object.nodeUniform11 ), 0.0 ) * pow( clamp( ( 1.0 - ( ( nodeVar3.y - -1.0 ) / max( object.nodeUniform5, 0.01 ) ) ), 0.0, 1.0 ), object.nodeUniform12 ) ) * nodeConst7 ) * object.nodeUniform13 ) );
+		nodeVar3 = ( nodeVar3 + nodeConst8 );
 
 	}
 
 
 	// result
 
-	output.color = max( ( 1.0 - exp( ( - nodeVar12 ) ) ), clamp( ( ( nodeVar8 - object.nodeUniform14 ) / max( ( object.nodeUniform15 - object.nodeUniform14 ), 0.001 ) ), 0.0, 1.0 ) );
+	output.color = max( ( 1.0 - exp( ( - nodeVar4 ) ) ), clamp( ( ( nodeConst6 - object.nodeUniform14 ) / max( ( object.nodeUniform15 - object.nodeUniform14 ), 0.001 ) ), 0.0, 1.0 ) );
 
 	return output;
 

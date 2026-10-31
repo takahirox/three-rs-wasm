@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -23,8 +26,6 @@ struct objectStruct {
 var<uniform> object : objectStruct;
 
 // vars
-var<private> nodeVar0 : vec4<f32>;
-var<private> nodeVar1 : i32;
 var<private> nodeVar2 : vec4<f32>;
 
 // codes
@@ -36,8 +37,8 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// flow
 	// code
 
-	nodeVar0 = vec4<f32>( 0.0, 0.0, 0.0, 0.0 );
-	nodeVar1 = 0;
+	var nodeVar0 : vec4<f32> = vec4<f32>( 0.0, 0.0, 0.0, 0.0 );
+	var nodeVar1 : i32 = 0;
 
 	for ( var i : i32 = i32( ( - 1.0 ) ); i <= 1; i ++ ) {
 

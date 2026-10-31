@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -36,7 +39,6 @@ var<private> NORMAL_normalView : vec3<f32>;
 var<private> normalView : vec3<f32>;
 var<private> normalWorld : vec3<f32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar0 : vec4<f32>;
 
 // codes
 
@@ -54,12 +56,12 @@ fn main( @location( 0 ) v_normalViewGeometry : vec3<f32> ) -> OutputStruct {
 	DiffuseColor = ( vec4<f32>( mix( vec3<f32>( 0.6307571363387763, 0.7304607400847158, 0.7991027380100881 ), vec3<f32>( 0.8713671191959567, 0.913098651791473, 0.913098651791473 ), max( normalWorld.y, 0.0 ) ), 1.0 ) * vec4<f32>( render.nodeUniform3 ) );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform4 );
 	DiffuseColor.w = 1.0;
-	nodeVar0 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar0;
+	let nodeConst0 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar0;
+	output.color = nodeConst0;
 
 	return output;
 

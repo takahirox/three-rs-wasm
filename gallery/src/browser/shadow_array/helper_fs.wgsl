@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -51,11 +54,12 @@ fn main( @location( 0 ) v_positionView : vec3<f32>,
 	DiffuseColor.w = 1.0;
 	Output = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
 	nodeVar0 = vec4<f32>( mix( Output.xyz, render.nodeUniform2, smoothstep( render.nodeUniform3, render.nodeUniform4, ( - v_positionView.z ) ) ), Output.w );
-	Output = nodeVar0;
+	let nodeConst0 = nodeVar0;
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar0;
+	output.color = nodeConst0;
 
 	return output;
 

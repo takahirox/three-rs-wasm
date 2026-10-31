@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 enable subgroups;
@@ -53,7 +53,7 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 	if ( instanceIndex >= object.nodeUniform2 ) { return; }
 
-	Current_Left.value[ instanceIndex ] = ( Current_Left.value[ instanceIndex ] + Current_Left.value[ ( instanceIndex + u32( object.nodeUniform1 ) ) ] );
+	Current_Left.value[ instanceIndex ] = ( Current_Left.value[ instanceIndex ] + Current_Left.value[ u32( ( f32( instanceIndex ) + object.nodeUniform1 ) ) ] );
 
 	
 

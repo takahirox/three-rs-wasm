@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -18,7 +18,7 @@ struct VaryingsStruct {
 var<private> varyings : VaryingsStruct;
 
 // vars
-var<private> nodeVar11 : vec4<f32>;
+
 
 // codes
 
@@ -30,11 +30,11 @@ fn main( @location( 0 ) uv : vec2<f32> ) -> VaryingsStruct {
 	// code
 
 	varyings.nodeVarying0 = uv;
-	nodeVar11 = vec4<f32>( ( ( uv - vec2<f32>( 0.5, 0.5 ) ) * vec2<f32>( 2.0 ) ), 1.0, 1.0 );
+	let nodeConst0 = vec4<f32>( ( ( uv - vec2<f32>( 0.5, 0.5 ) ) * vec2<f32>( 2.0 ) ), 1.0, 1.0 );
 
 	// result
 
-	varyings.builtinClipSpace = nodeVar11;
+	varyings.builtinClipSpace = nodeConst0;
 
 	return varyings;
 

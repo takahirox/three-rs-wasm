@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -25,15 +25,13 @@ struct objectStruct {
 var<uniform> object : objectStruct;
 
 // vars
-var<private> nodeVar0 : vec3<u32>;
-var<private> nodeVar1 : vec3<f32>;
+var<private> nodeVar0 : vec4<f32>;
+var<private> nodeVar1 : vec4<f32>;
 var<private> nodeVar2 : vec4<f32>;
 var<private> nodeVar3 : vec4<f32>;
 var<private> nodeVar4 : vec4<f32>;
 var<private> nodeVar5 : vec4<f32>;
 var<private> nodeVar6 : vec4<f32>;
-var<private> nodeVar7 : vec4<f32>;
-var<private> nodeVar8 : vec4<f32>;
 
 // codes
 
@@ -59,16 +57,16 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> jacobiBA
 	if ( instanceIndex >= object.nodeUniform3 ) { return; }
 
-	nodeVar0 = vec3<u32>( ( instanceIndex % 100u ), ( ( instanceIndex / 100u ) % 100u ), ( instanceIndex / 10000u ) );
-	nodeVar1 = ( ( vec3<f32>( nodeVar0 ) + vec3<f32>( 0.5 ) ) / vec3<f32>( 100.0, 100.0, 200.0 ) );
-	nodeVar2 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 + vec3<f32>( 0.01, 0.0, 0.0 ) ), 0.0 );
-	nodeVar3 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 - vec3<f32>( 0.01, 0.0, 0.0 ) ), 0.0 );
-	nodeVar4 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 + vec3<f32>( 0.0, 0.01, 0.0 ) ), 0.0 );
-	nodeVar5 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 - vec3<f32>( 0.0, 0.01, 0.0 ) ), 0.0 );
-	nodeVar6 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 + vec3<f32>( 0.0, 0.0, 0.005 ) ), 0.0 );
-	nodeVar7 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeVar1 - vec3<f32>( 0.0, 0.0, 0.005 ) ), 0.0 );
-	nodeVar8 = textureSampleLevel( nodeUniform2, nodeUniform2_sampler, nodeVar1, 0.0 );
-	textureStore( nodeUniform0, nodeVar0, vec4<f32>( ( ( ( ( ( ( ( nodeVar2.x + nodeVar3.x ) + nodeVar4.x ) + nodeVar5.x ) + nodeVar6.x ) + nodeVar7.x ) - nodeVar8.x ) / 6.0 ), 0.0, 0.0, 0.0 ) );
+	let nodeConst0 = vec3<u32>( ( instanceIndex % 100u ), ( ( instanceIndex / 100u ) % 100u ), ( instanceIndex / 10000u ) );
+	let nodeConst1 = ( ( vec3<f32>( nodeConst0 ) + vec3<f32>( 0.5 ) ) / vec3<f32>( 100.0, 100.0, 200.0 ) );
+	nodeVar0 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 + vec3<f32>( 0.01, 0.0, 0.0 ) ), 0.0 );
+	nodeVar1 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 - vec3<f32>( 0.01, 0.0, 0.0 ) ), 0.0 );
+	nodeVar2 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 + vec3<f32>( 0.0, 0.01, 0.0 ) ), 0.0 );
+	nodeVar3 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 - vec3<f32>( 0.0, 0.01, 0.0 ) ), 0.0 );
+	nodeVar4 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 + vec3<f32>( 0.0, 0.0, 0.005 ) ), 0.0 );
+	nodeVar5 = textureSampleLevel( nodeUniform1, nodeUniform1_sampler, ( nodeConst1 - vec3<f32>( 0.0, 0.0, 0.005 ) ), 0.0 );
+	nodeVar6 = textureSampleLevel( nodeUniform2, nodeUniform2_sampler, nodeConst1, 0.0 );
+	textureStore( nodeUniform0, nodeConst0, vec4<f32>( ( ( ( ( ( ( ( nodeVar0.x + nodeVar1.x ) + nodeVar2.x ) + nodeVar3.x ) + nodeVar4.x ) + nodeVar5.x ) - nodeVar6.x ) / 6.0 ), 0.0, 0.0, 0.0 ) );
 
 	
 

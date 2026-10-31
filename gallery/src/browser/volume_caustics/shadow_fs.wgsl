@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -31,15 +34,11 @@ var<private> positionViewDirection : vec3<f32>;
 var<private> normalViewGeometry : vec3<f32>;
 var<private> NORMAL_normalView : vec3<f32>;
 var<private> normalView : vec3<f32>;
-var<private> nodeVar0 : vec2<f32>;
-var<private> nodeVar1 : f32;
+var<private> nodeVar0 : vec4<f32>;
+var<private> nodeVar1 : vec4<f32>;
 var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : f32;
-var<private> nodeVar6 : vec3<f32>;
+var<private> nodeVar3 : vec3<f32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar7 : vec4<f32>;
 
 // codes
 
@@ -55,21 +54,21 @@ fn main( @location( 0 ) v_positionViewDirection : vec3<f32>,
 	normalViewGeometry = normalize( v_normalViewGeometry );
 	NORMAL_normalView = normalViewGeometry;
 	normalView = NORMAL_normalView;
-	nodeVar0 = ( normalize( refract( ( - positionViewDirection ), normalView, ( 1.0 / 1.5 ) ) ).xy * vec2<f32>( 0.6 ) );
-	nodeVar1 = ( pow( normalView.z, -0.9 ) * 0.004 );
-	nodeVar2 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVar0 + vec2<f32>( ( - nodeVar1 ), 0.0 ) ) );
-	nodeVar3 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVar0 + vec2<f32>( 0.0, ( - nodeVar1 ) ) ) );
-	nodeVar4 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVar0 + vec2<f32>( nodeVar1, nodeVar1 ) ) );
-	nodeVar5 = pow( normalView.z, object.nodeUniform4 );
-	nodeVar6 = ( ( ( vec3<f32>( nodeVar2.x, nodeVar3.y, nodeVar4.z ) * vec3<f32>( ( nodeVar5 * 60.0 ) ) ) + vec3<f32>( nodeVar5 ) ) * object.nodeUniform5 );
-	DiffuseColor = vec4<f32>( nodeVar6, vec4<f32>( nodeVar6, 1.0 ).w );
+	let nodeConst0 = ( normalize( refract( ( - positionViewDirection ), normalView, ( 1.0 / 1.5 ) ) ).xy * vec2<f32>( 0.6 ) );
+	let nodeConst1 = ( pow( normalView.z, -0.9 ) * 0.004 );
+	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeConst0 + vec2<f32>( ( - nodeConst1 ), 0.0 ) ) );
+	nodeVar1 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeConst0 + vec2<f32>( 0.0, ( - nodeConst1 ) ) ) );
+	nodeVar2 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeConst0 + vec2<f32>( nodeConst1, nodeConst1 ) ) );
+	let nodeConst2 = pow( normalView.z, object.nodeUniform4 );
+	nodeVar3 = ( ( ( vec3<f32>( nodeVar0.x, nodeVar1.y, nodeVar2.z ) * vec3<f32>( ( nodeConst2 * 60.0 ) ) ) + vec3<f32>( nodeConst2 ) ) * object.nodeUniform5 );
+	DiffuseColor = vec4<f32>( nodeVar3, vec4<f32>( nodeVar3, 1.0 ).w );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform6 );
-	nodeVar7 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar7;
+	let nodeConst3 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst3;
 
 	// result
 
-	output.color = nodeVar7;
+	output.color = nodeConst3;
 
 	return output;
 

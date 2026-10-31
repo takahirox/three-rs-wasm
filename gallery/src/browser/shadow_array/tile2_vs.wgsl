@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -28,10 +28,6 @@ struct VaryingsStruct {
 var<private> varyings : VaryingsStruct;
 
 // vars
-var<private> nodeVar0 : f32;
-var<private> nodeVar1 : vec2<f32>;
-var<private> nodeVar2 : vec2<f32>;
-var<private> nodeVar3 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 
 // codes
@@ -45,16 +41,16 @@ fn main( @location( 0 ) position : vec3<f32>,
 	// code
 
 	positionLocal = position;
-	nodeVar0 = ( render.nodeUniform5.x / render.nodeUniform5.y );
-	nodeVar1 = vec2<f32>( ( positionLocal.x * ( 0.4 / nodeVar0 ) ), ( positionLocal.y * 0.4 ) );
-	nodeVar2 = vec2<f32>( ( nodeVar1.x + ( ( ( -1.0 + 0.05 ) + ( ( 0.4 / 2.0 ) / nodeVar0 ) ) + ( 0.0 * ( ( 0.4 / nodeVar0 ) + 0.01 ) ) ) ), ( nodeVar1.y + ( ( ( 1.0 - 0.05 ) - ( 0.4 / 2.0 ) ) - ( 1.0 * ( 0.4 + 0.01 ) ) ) ) );
-	nodeVar3 = vec4<f32>( nodeVar2.x, nodeVar2.y, 0.0, 1.0 );
-	varyings.v_clipSpace = nodeVar3;
+	let nodeConst0 = ( render.nodeUniform5.x / render.nodeUniform5.y );
+	let nodeConst1 = vec2<f32>( ( positionLocal.x * ( 0.4 / nodeConst0 ) ), ( positionLocal.y * 0.4 ) );
+	let nodeConst2 = vec2<f32>( ( nodeConst1.x + ( ( ( -1.0 + 0.05 ) + ( ( 0.4 / 2.0 ) / nodeConst0 ) ) + ( 0.0 * ( ( 0.4 / nodeConst0 ) + 0.01 ) ) ) ), ( nodeConst1.y + ( ( ( 1.0 - 0.05 ) - ( 0.4 / 2.0 ) ) - ( 1.0 * ( 0.4 + 0.01 ) ) ) ) );
+	let nodeConst3 = vec4<f32>( nodeConst2.x, nodeConst2.y, 0.0, 1.0 );
+	varyings.v_clipSpace = nodeConst3;
 	varyings.nodeVarying2 = uv;
 
 	// result
 
-	varyings.builtinClipSpace = nodeVar3;
+	varyings.builtinClipSpace = nodeConst3;
 
 	return varyings;
 

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -37,10 +37,8 @@ struct VaryingsStruct {
 var<private> varyings : VaryingsStruct;
 
 // vars
-var<private> nodeVar0 : mat4x4<f32>;
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar4 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -85,18 +83,18 @@ fn main( @location( 0 ) position : vec3<f32>,
 	// code
 
 	positionLocal = position;
-	nodeVar0 = mat4x4<f32>( nodeAttribute0, nodeAttribute1, nodeAttribute2, nodeAttribute3 );
-	positionLocal = ( nodeVar0 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
+	let nodeConst0 = mat4x4<f32>( nodeAttribute0, nodeAttribute1, nodeAttribute2, nodeAttribute3 );
+	positionLocal = ( nodeConst0 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	normalLocal = normal;
-	normalLocal = normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( nodeVar0[ 0 ].xyz, nodeVar0[ 1 ].xyz, nodeVar0[ 2 ].xyz ) ) ) * normalLocal ) );
+	normalLocal = normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( nodeConst0[ 0 ].xyz, nodeConst0[ 1 ].xyz, nodeConst0[ 2 ].xyz ) ) ) * normalLocal ) );
 	positionLocal = ( positionLocal * vec3<f32>( step( ( ( distance( cull.xyz, object.nodeUniform4 ) - object.nodeUniform5 ) / ( object.nodeUniform6 - object.nodeUniform5 ) ), cull.w ) ) );
 	varyings.nodeVarying5 = region;
 	varyings.nodeVarying6 = ao;
 	varyings.v_positionWorld = ( object.nodeUniform7 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform7 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar4 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar4;
+	let VERTEX_nodeConst3 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst3;
 
 	// result
 

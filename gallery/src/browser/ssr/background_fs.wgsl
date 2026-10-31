@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -39,10 +42,8 @@ var<private> Output : vec4<f32>;
 var<private> normalViewGeometry : vec3<f32>;
 var<private> NORMAL_normalView : vec3<f32>;
 var<private> normalView : vec3<f32>;
-var<private> nodeVar0 : vec3<f32>;
 var<private> Metalness : f32;
 var<private> Roughness : f32;
-var<private> nodeVar1 : vec2<f32>;
 
 // codes
 
@@ -62,10 +63,10 @@ fn main( @location( 0 ) v_normalViewGeometry : vec3<f32>,
 	normalViewGeometry = normalize( v_normalViewGeometry );
 	NORMAL_normalView = ( normalViewGeometry * vec3<f32>( -1.0 ) );
 	normalView = NORMAL_normalView;
-	nodeVar0 = ( ( normalView * vec3<f32>( 0.5 ) ) + vec3<f32>( 0.5 ) );
-	output.m1 = vec4<f32>( nodeVar0, 1.0 );
-	nodeVar1 = vec2<f32>( Metalness, Roughness );
-	output.m2 = vec4<f32>( vec3<f32>( nodeVar1, 0.0 ), 1.0 );
+	let nodeConst0 = ( ( normalView * vec3<f32>( 0.5 ) ) + vec3<f32>( 0.5 ) );
+	output.m1 = vec4<f32>( nodeConst0, 1.0 );
+	let nodeConst1 = vec2<f32>( Metalness, Roughness );
+	output.m2 = vec4<f32>( vec3<f32>( nodeConst1, 0.0 ), 1.0 );
 
 	// result
 

@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -42,7 +45,7 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	nodeVar1 = nodeVar0;
 	nodeVar2 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
 	nodeVar3 = nodeVar2;
-	let nodeConst0 = 0.1;
+	const nodeConst0 = 0.1;
 	nodeVar1 = ( nodeVar1 * ( vec4<f32>( object.afterImageDecay ) * max( sign( ( nodeVar1 - vec4<f32>( nodeConst0 ) ) ), vec4<f32>( 0.0 ) ) ) );
 
 	// result

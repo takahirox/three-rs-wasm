@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -79,8 +79,7 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> nodeVar148 : vec2<f32>;
-var<private> nodeVar149 : vec4<f32>;
+var<private> nodeVar29 : vec2<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_positionView : vec3<f32>;
 
@@ -103,12 +102,12 @@ fn main( @location( 0 ) normal : vec3<f32>,
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
 	varyings.nodeVarying5 = uv1;
-	nodeVar148 = uv1;
-	nodeVar149 = vec4<f32>( ( ( vec2<f32>( nodeVar148.x, 1.0 - nodeVar148.y ) - vec2<f32>( 0.5, 0.5 ) ) * vec2<f32>( 2.0 ) ), 1.0, 1.0 );
+	nodeVar29 = uv1;
+	let nodeConst60 = vec4<f32>( ( ( vec2<f32>( nodeVar29.x, 1.0 - nodeVar29.y ) - vec2<f32>( 0.5, 0.5 ) ) * vec2<f32>( 2.0 ) ), 1.0, 1.0 );
 
 	// result
 
-	varyings.builtinClipSpace = nodeVar149;
+	varyings.builtinClipSpace = nodeConst60;
 
 	return varyings;
 
