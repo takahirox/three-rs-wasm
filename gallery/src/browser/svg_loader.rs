@@ -1042,7 +1042,7 @@ impl Parser {
                 .iter()
                 .filter_map(|p| {
                     let k = p.as_string()?;
-                    let v = call(&style, "getPropertyValue", &[p.clone()])
+                    let v = call(&style, "getPropertyValue", std::slice::from_ref(p))
                         .as_string()
                         .unwrap_or_default();
                     Some((k, v))
