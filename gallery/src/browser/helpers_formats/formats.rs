@@ -91,9 +91,9 @@ pub(in crate::browser) fn parse_pdb(text: &str) -> Result<Molecule> {
     let mut hashes = std::collections::HashSet::new();
     for line in text.split('\n') {
         if slice(line, 0, 4) == "ATOM" || slice(line, 0, 6) == "HETATM" {
-            let x = parse_float(slice(line, 30, 37));
-            let y = parse_float(slice(line, 38, 45));
-            let z = parse_float(slice(line, 46, 53));
+            let x = parse_float(slice(line, 30, 38));
+            let y = parse_float(slice(line, 38, 46));
+            let z = parse_float(slice(line, 46, 54));
             let index = parse_int(slice(line, 6, 11)).map(|v| v - 1);
             let mut e = slice(line, 76, 78).trim().to_lowercase();
             if e.is_empty() {

@@ -126,7 +126,8 @@ pub(in crate::browser) fn parse_ply(data: &[u8]) -> Result<(Vec<f32>, Vec<u32>)>
                 if v.len() == 3 {
                     index.extend([v[0], v[1], v[2]]);
                 } else if v.len() == 4 {
-                    index.extend([v[0], v[1], v[3], v[1], v[2], v[3]]);
+                    // Quads split by the spec's rule: 0 1 2 3 makes 0,1,2 and 0,2,3.
+                    index.extend([v[0], v[1], v[2], v[0], v[2], v[3]]);
                 }
             }
         }

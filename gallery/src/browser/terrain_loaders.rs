@@ -174,7 +174,9 @@ fn parse_gcode(text: &str) -> (Vec<f32>, Vec<f32>) {
         best
     };
     for line in cleaned.split('\n') {
-        let mut tokens = line.split(' ');
+        // line.trim().split( /\s+/ ): runs of whitespace separate the tokens.
+        let line = line.trim();
+        let mut tokens = line.split(char::is_whitespace).filter(|t| !t.is_empty());
         let cmd = tokens.next().unwrap_or("").to_uppercase();
         let mut args: HashMap<char, f64> = HashMap::new();
         for token in tokens {
@@ -207,15 +209,11 @@ fn parse_gcode(text: &str) -> (Vec<f32>, Vec<f32>) {
                 if let Some(&v) = args.get(&'f') {
                     line.f = absolute(state.f, v, state.relative);
                 }
-                let delta = if state.relative {
-                    line.e
-                } else {
-                    line.e - state.e
-                };
-                // The segment is extruded when it adds filament: the flag is set on the old
-                // state after the new one was cloned, so it is not carried forward. The
-                // unsplit layers concatenate in chronological order.
-                let extruding = delta > 0.;
+                // The segment is extruded when it adds filament ( line.e > state.e ):
+                // the flag is set on the old state after the new one was cloned, so
+                // it is not carried forward. The unsplit layers concatenate in
+                // chronological order.
+                let extruding = line.e > state.e;
                 let target = if extruding { &mut extruded } else { &mut path };
                 target
                     .extend([state.x, state.y, state.z, line.x, line.y, line.z].map(|v| v as f32));

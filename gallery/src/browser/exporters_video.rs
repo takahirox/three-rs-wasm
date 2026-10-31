@@ -21,22 +21,22 @@ fn random(seed: &mut u32) -> f64 {
     *seed as f64 / 4294967296.
 }
 
-/// One asynchronous copy of a PMREM atlas to a mappable buffer, as
-/// `readRenderTargetPixelsAsync` does for the exporters.
-struct AtlasReadback {
+/// One asynchronous copy of a render target's half-float texture to a mappable
+/// buffer, as `readRenderTargetPixelsAsync` does for the exporters.
+struct TargetReadback {
     buffer: wgpu::Buffer,
     stride: u32,
     width: u32,
     height: u32,
     ready: Arc<Mutex<Option<std::result::Result<(), wgpu::BufferAsyncError>>>>,
 }
-impl AtlasReadback {
+impl TargetReadback {
     fn begin(r: &Renderer, texture: &wgpu::Texture) -> Self {
         let (width, height) = (texture.width(), texture.height());
         let stride = (width * 8).div_ceil(wgpu::COPY_BYTES_PER_ROW_ALIGNMENT)
             * wgpu::COPY_BYTES_PER_ROW_ALIGNMENT;
         let buffer = r.device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("PMREM export readback"),
+            label: Some("exporter render target readback"),
             size: stride as u64 * height as u64,
             usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
             mapped_at_creation: false,
@@ -70,17 +70,17 @@ impl AtlasReadback {
             ready,
         }
     }
-    /// The half-float texels, once mapped. The atlas rows are stored in the same
-    /// order as WebGL's bottom-up readback of three's cube-UV target.
+    /// The half-float texels, once mapped, bottom row first as WebGL's
+    /// readPixels returns them.
     fn take(&self) -> Option<Result<Vec<u16>>> {
         let result = self.ready.lock().unwrap().take()?;
         if result.is_err() {
-            return Some(Err(Error::Invalid("PMREM readback")));
+            return Some(Err(Error::Invalid("render target readback")));
         }
         let mapped = self.buffer.slice(..).get_mapped_range();
         let row = self.width as usize * 4;
         let mut texels = Vec::with_capacity(row * self.height as usize);
-        for y in 0..self.height as usize {
+        for y in (0..self.height as usize).rev() {
             let start = y * self.stride as usize;
             texels.extend_from_slice(bytemuck::cast_slice(&mapped[start..start + row * 2]));
         }
@@ -90,50 +90,23 @@ impl AtlasReadback {
     }
 }
 
-/// Reorder a readback of the port's PMREM atlas into three's cube-UV texels. The
-/// port samples its atlas with the direction's y negated (`cube_uv.wgsl`), so each
-/// face region is stored upside down and the ±Y faces trade places.
-fn three_cube_uv(texels: &[u16], width: u32, height: u32) -> Vec<u16> {
-    let (width, height) = (width as usize, height as usize);
-    let max_mip = (height / 4).ilog2() as i32;
-    let mut out = texels.to_vec();
-    // Resolution levels max_mip..=4, then six extra 16-texel levels offset in x.
-    for level in (-2..=max_mip).rev() {
-        let extra = (4 - level).max(0) as usize;
-        let size = 1usize << level.max(4);
-        let (x0, y0) = (extra * 48, 4 * ((1usize << max_mip) - size));
-        for face in 0..6usize {
-            let target = match face {
-                1 => 4,
-                4 => 1,
-                f => f,
-            };
-            let origin = |f: usize| (x0 + (f % 3) * size, y0 + if f > 2 { size } else { 0 });
-            let ((sx, sy), (dx, dy)) = (origin(face), origin(target));
-            for row in 0..size {
-                let from = ((sy + size - 1 - row) * width + sx) * 4;
-                let to = ((dy + row) * width + dx) * 4;
-                if from + size * 4 <= texels.len() && to + size * 4 <= out.len() {
-                    out[to..to + size * 4].copy_from_slice(&texels[from..from + size * 4]);
-                }
-            }
-        }
-    }
-    out
-}
-
-/// misc_exporter_exr / misc_exporter_ktx2: the PMREM background, the data
-/// texture quad and the export options.
+/// misc_exporter_exr / misc_exporter_ktx2: the equirectangular background, the
+/// 1024 × 512 HalfFloat render target, the data texture quad and the export
+/// options.
 struct Exporter {
     ktx2: bool,
+    /// The HDR texture, `scene.background` in the render-target view.
     env: Arc<EnvironmentMap>,
+    target: RenderTarget,
     quad: Object3D,
     /// createDataTexture(): 800 × 800 RGBA Float32 normals.
     data: Vec<f32>,
-    /// target (0 pmrem, 1 data-texture), then for EXR type (0 Float, 1 Half)
-    /// and compression (0 ZIP, 1 ZIPS, 2 NONE).
+    /// target (0 render-target, 1 data-texture), then for EXR type (0 Float,
+    /// 1 Half) and compression (0 ZIP, 1 ZIPS, 2 RLE, 3 PIZ, 4 NONE).
     params: [f64; 3],
-    readback: Option<AtlasReadback>,
+    /// exportFile() awaits a render into `target` before reading it back.
+    render: bool,
+    readback: Option<TargetReadback>,
 }
 /// webgpu_materials_video: the 20 × 10 cube wall.
 struct VideoWall {
@@ -224,13 +197,19 @@ impl Demo {
         } else {
             format!("{ASSETS}/tsl-procedural/san_giuseppe_bridge_2k.hdr")
         };
-        // PMREMGenerator.fromEquirectangular: the cube-UV atlas is the background.
-        let mut env = EnvironmentMap::from_hdr(&fetch(&hdr).await?)?;
-        env.prefilter(r)?;
-        let env = Arc::new(env);
-        s.environment = Some(env.clone());
-        s.background_environment = true;
-        s.background_pmrem = true;
+        // new WebGLRenderTarget( 1024, 512, { type: HalfFloatType } ).
+        let target = RenderTarget::with_options(
+            &r.device,
+            1024,
+            512,
+            RenderTargetOptions {
+                format: wgpu::TextureFormat::Rgba16Float,
+                ..Default::default()
+            },
+        )?;
+        // scene.background = texture, EquirectangularReflectionMapping.
+        let env = Arc::new(EnvironmentMap::from_hdr(&fetch(&hdr).await?)?);
+        s.background_map = Some(env.clone());
         if ktx2 {
             s.tone_mapping = ToneMapping::AgX;
         }
@@ -307,9 +286,11 @@ impl Demo {
         self.exporter = Some(Exporter {
             ktx2,
             env,
+            target,
             quad,
             data,
             params: [0., 1., 0.],
+            render: false,
             readback: None,
         });
         Ok(())
@@ -603,7 +584,7 @@ impl Demo {
                         Vector3::new(10., 0., 0.)
                     };
                 }
-                s.background_environment = !data;
+                s.background_map = (!data).then(|| k.env.clone());
                 s.get_mut(k.quad)?.visible = data;
                 if k.ktx2 {
                     s.tone_mapping = if data {
@@ -615,6 +596,18 @@ impl Demo {
                 // animate() calls controls.update() once per frame, enabled or not.
                 if let Some(controls) = &mut self.controls {
                     controls.frame_update(s, c)?;
+                }
+                if std::mem::take(&mut k.render) {
+                    // exportFile(): the scene through a clone of the camera with the
+                    // target's aspect, then readRenderTargetPixelsAsync.
+                    let camera = s.get(c)?.kind.clone();
+                    if let NodeKind::Camera(Camera::Perspective(p)) = &mut s.get_mut(c)?.kind {
+                        p.aspect = k.target.width as f64 / k.target.height as f64;
+                    }
+                    let rendered = r.render(s, c, &k.target);
+                    s.get_mut(c)?.kind = camera;
+                    rendered?;
+                    k.readback = Some(TargetReadback::begin(r, &k.target.textures()[0]));
                 }
             }
             275 => self.video_step(r, s, c, steps)?,
@@ -778,18 +771,24 @@ impl Demo {
             let data = k.params[0] > 0.5;
             let name = format!(
                 "{}.{}",
-                if data { "data-texture" } else { "pmrem" },
+                if data {
+                    "data-texture"
+                } else {
+                    "render-target"
+                },
                 if k.ktx2 { "ktx2" } else { "exr" }
             );
             if data {
                 self.export = Some((name, k.encode(&Pixels::Float(&k.data), 800, 800)));
             } else {
                 self.export = Some((name, vec![]));
+                k.render = true;
                 k.readback = None;
             }
             return Ok(());
         }
-        if index >= export || !(0. ..3.).contains(&v) {
+        let options = if index == 2 { 5. } else { 2. };
+        if index >= export || !(0. ..options).contains(&v) {
             return Err(Error::Invalid("exporter parameter"));
         }
         if index == 0 && v != k.params[0] {
@@ -802,21 +801,21 @@ impl Demo {
     pub fn seek(&mut self, t: f64) {
         self.time = t;
     }
-    /// The exported file: data textures at once, the PMREM after its readback.
-    pub fn take_export(&mut self, r: &Renderer) -> Option<(String, Vec<u8>)> {
+    /// The exported file: data textures at once, the render target after the
+    /// next frame renders it and its readback completes.
+    pub fn take_export(&mut self, _r: &Renderer) -> Option<(String, Vec<u8>)> {
         let (name, bytes) = self.export.take()?;
         if !bytes.is_empty() {
             return Some((name, bytes));
         }
         let k = self.exporter.as_mut()?;
-        let gpu = k.env.gpu.as_ref()?;
-        let readback = k
-            .readback
-            .get_or_insert_with(|| AtlasReadback::begin(r, gpu.texture()));
+        let Some(readback) = &k.readback else {
+            self.export = Some((name, bytes));
+            return None;
+        };
         match readback.take() {
             Some(Ok(texels)) => {
                 let (w, h) = (readback.width, readback.height);
-                let texels = three_cube_uv(&texels, w, h);
                 k.readback = None;
                 Some((name, k.encode(&Pixels::Half(&texels), w, h)))
             }
@@ -836,13 +835,15 @@ impl Exporter {
         if self.ktx2 {
             let (kind, bytes): (Ktx2Kind, &[u8]) = match pixels {
                 Pixels::Float(v) => (Ktx2Kind::Float, bytemuck::cast_slice(v)),
-                Pixels::Half(v) => (Ktx2Kind::HalfLinear, bytemuck::cast_slice(v)),
+                Pixels::Half(v) => (Ktx2Kind::Half, bytemuck::cast_slice(v)),
             };
             formats::ktx2(kind, bytes, width, height)
         } else {
             let compression = [
                 formats::ZIP_COMPRESSION,
                 formats::ZIPS_COMPRESSION,
+                formats::RLE_COMPRESSION,
+                formats::PIZ_COMPRESSION,
                 formats::NO_COMPRESSION,
             ][self.params[2] as usize];
             formats::exr(

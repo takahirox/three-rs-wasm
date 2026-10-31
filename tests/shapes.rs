@@ -1,6 +1,6 @@
 //! TextGeometry ( FontLoader shapes extruded with ExtrudeGeometry's
 //! WorldUVGenerator uvs and computeVertexNormals ) and RoundedBoxGeometry
-//! against the pinned r186 geometries ( tools/core/shapes-oracle.mjs ).
+//! against the pinned r187 geometries ( tools/core/shapes-oracle.mjs ).
 use serde_json::Value;
 use std::f64::consts::PI;
 use three_rs_wasm::geometry::{

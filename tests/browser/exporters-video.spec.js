@@ -6,8 +6,8 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
- misc_exporter_exr:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'pmrem',0]],script:[['param',0,'pmrem',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- misc_exporter_ktx2:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'pmrem',0]],script:[['param',0,'pmrem',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_exr:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'render-target',0]],script:[['param',0,'render-target',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_ktx2:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'render-target',0]],script:[['param',0,'render-target',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgpu_materials_video:{times:[],parameters:[],at:8,antialias:true,script:[['video',3.5,0],['wait',2],['wait',4],['move',400,300,null],['wait',5],['wait',6],['move',100,100,null],['wait',8]]},
  webgpu_compile_async:{times:[0,0.5,1,1.5,2.25],parameters:[],at:2.25,antialias:true},
  webgl_materials_normalmap_object_space:{times:[0],parameters:[],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -129,8 +129,8 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
    pair[runtime]=await page.evaluate(()=>work);
   }
   report.push(pair);const sort=a=>a.map(x=>x.count*x.instances).sort((a,b)=>a-b);
-  // The port draws the PMREM background with a fullscreen triangle; WebGL uses a 36-index
-  // box. All scene mesh draws must still match.
+  // The port draws the equirectangular background with a fullscreen triangle; WebGL uses
+  // a 36-index box. All scene mesh draws must still match.
   const referenceDraws=kind.startsWith('misc_exporter')?pair.reference.draws.filter(d=>d.count!==36):pair.reference.draws;
   expect.soft(sort(pair.rust.draws),kind).toEqual(sort(referenceDraws));
   expect.soft(pair.rust.attributeBytes,kind).toBe(streams.includes(kind)?pair.reference.attributeBytes:0);
@@ -151,27 +151,38 @@ const exportCases={
  misc_exporter_exr:{button:3,files:[
   [[0,'data-texture',1],[1,'HalfFloatType',1],[2,'ZIP',0]],
   [[1,'FloatType',0],[2,'ZIPS',1]],
-  [[1,'HalfFloatType',1],[2,'NONE',2]],
-  [[0,'pmrem',0],[1,'HalfFloatType',1],[2,'ZIP',0]],
+  [[1,'HalfFloatType',1],[2,'NONE',4]],
+  [[2,'RLE',2]],
+  [[1,'FloatType',0]],
+  [[2,'PIZ',3]],
+  [[1,'HalfFloatType',1]],
+  [[0,'render-target',0],[1,'HalfFloatType',1],[2,'ZIP',0]],
+  [[2,'RLE',2]],
+  [[2,'NONE',4]],
  ]},
- misc_exporter_ktx2:{button:1,files:[[[0,'data-texture',1]],[[0,'pmrem',0]]]},
+ misc_exporter_ktx2:{button:1,files:[[[0,'data-texture',1]],[[0,'render-target',0]]]},
 };
-// Split a file into its exact container bytes and its pixel payload. EXR blocks are
-// inflated and their byte predictor and interleave undone: zlib output itself differs
-// between fflate and miniz_oxide.
+// Split a file into its exact container bytes and its pixel payload. ZIP/ZIPS blocks are
+// inflated and RLE blocks expanded, then their byte predictor and interleave undone: zlib
+// output itself differs between fflate and miniz_oxide. Blocks that did not shrink are
+// stored as they are. NONE, RLE and PIZ files are also kept whole to compare byte for byte.
 const summarize=async({bytes,kind})=>{
  const b64=a=>{let s='';for(let i=0;i<a.length;i+=32768)s+=String.fromCharCode(...a.subarray(i,i+32768));return btoa(s);};
  const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
  if(kind==='ktx2'){const level=Number(dv.getBigUint64(80,true));return {container:b64(bytes.subarray(0,level)),data:b64(bytes.subarray(level)),type:dv.getUint32(4,true)};}
- const compression=bytes[36],height=dv.getUint32(193,true)+1,lines=compression===3?16:1,blocks=Math.ceil(height/lines);
+ const compression=bytes[36],width=dv.getUint32(189,true)+1,height=dv.getUint32(193,true)+1,lines={3:16,4:32}[compression]??1,blocks=Math.ceil(height/lines);
+ const type=dv.getUint32(259,true),dataSize=type===1?2:4;
  let p=331+blocks*8;const ys=[],parts=[];
  for(let i=0;i<blocks;i++){const y=dv.getUint32(p,true),size=dv.getUint32(p+4,true);let data=bytes.subarray(p+8,p+8+size);p+=8+size;ys.push(y);
-  if(compression!==0){const stream=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate'));const raw=new Uint8Array(await new Response(stream).arrayBuffer());
+  const full=width*4*Math.min(lines,height-y)*dataSize;
+  if((compression===1||compression===2||compression===3)&&size<full){let raw;
+   if(compression===1){raw=new Uint8Array(full);let o=0;for(let s=0;s<data.length;){const n=(data[s]<<24)>>24;s++;if(n<0){raw.set(data.subarray(s,s-n),o);o-=n;s-=n;}else{raw.fill(data[s],o,o+n+1);o+=n+1;s++;}}}
+   else{const stream=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate'));raw=new Uint8Array(await new Response(stream).arrayBuffer());}
    for(let t=1;t<raw.length;t++)raw[t]=(raw[t-1]+raw[t]-128)&255;const out=new Uint8Array(raw.length);let t1=0,t2=Math.floor((raw.length+1)/2),s=0;
    for(;;){if(s>=raw.length)break;out[s++]=raw[t1++];if(s>=raw.length)break;out[s++]=raw[t2++];}data=out;}
   parts.push(data);}
  const raw=new Uint8Array(parts.reduce((n,a)=>n+a.length,0));let o=0;for(const a of parts){raw.set(a,o);o+=a.length;}
- return {container:b64(bytes.subarray(0,331)),ys,data:b64(raw),type:dv.getUint32(259,true)};
+ return {container:b64(bytes.subarray(0,331)),ys,data:b64(raw),type,compression,file:[0,1,4].includes(compression)?b64(bytes):null};
 };
 const half=h=>{const e=(h>>10)&31,f=h&1023,s=h>>15?-1:1;return s*(e?e===31?(f?NaN:Infinity):2**(e-15)*(1+f/1024):2**-14*(f/1024));};
 for(const [kind,spec] of Object.entries(exportCases))test(`Exporters and video exported files: ${kind}`,async({page},info)=>{
@@ -198,9 +209,10 @@ for(const [kind,spec] of Object.entries(exportCases))test(`Exporters and video e
   const [a,b]=[files.rust[k],files.reference[k]];
   expect(a.container,`${kind} ${k} container`).toBe(b.container);expect(a.ys).toEqual(b.ys);
   const [da,db]=[Buffer.from(a.data,'base64'),Buffer.from(b.data,'base64')];expect(da.length,`${kind} ${k} data size`).toBe(db.length);
-  // Data textures are exact; the PMREM atlases are compared as half floats.
-  const pmrem=spec.files[k].some(([i,v])=>i===0&&v==='pmrem')||(k>0&&!spec.files[k].some(([i])=>i===0)&&spec.files.slice(0,k).reverse().find(s=>s.some(([i])=>i===0))?.find(([i])=>i===0)[1]==='pmrem');
-  if(!pmrem){report.push({k,exact:da.equals(db)});expect(da.equals(db),`${kind} ${k} data`).toBe(true);continue;}
+  // Data textures are exact, and their NONE, RLE and PIZ files byte for byte; the
+  // rendered targets are compared as half floats.
+  const rendered=spec.files[k].some(([i,v])=>i===0&&v==='render-target')||(k>0&&!spec.files[k].some(([i])=>i===0)&&spec.files.slice(0,k).reverse().find(s=>s.some(([i])=>i===0))?.find(([i])=>i===0)[1]==='render-target');
+  if(!rendered){const file=b.file===undefined?undefined:a.file===b.file;report.push({k,exact:da.equals(db),file});expect(da.equals(db),`${kind} ${k} data`).toBe(true);if(b.file)expect(a.file===b.file,`${kind} ${k} file`).toBe(true);continue;}
   if(process.env.EXPORT_DUMP){writeFileSync(info.outputPath(`${k}-rust.bin`),da);writeFileSync(info.outputPath(`${k}-reference.bin`),db);}
   const [ha,hb]=[new Uint16Array(da.buffer,da.byteOffset,da.length/2),new Uint16Array(db.buffer,db.byteOffset,db.length/2)];
   let bad=0,sum=0,max=0;for(let i=0;i<ha.length;i++){const x=half(ha[i]),y=half(hb[i]);const d=Math.abs(x-y)/Math.max(1,Math.abs(y));sum+=d;max=Math.max(max,d);if(d>0.02)bad++;}

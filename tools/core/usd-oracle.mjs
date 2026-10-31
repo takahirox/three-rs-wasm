@@ -1,4 +1,4 @@
-// Oracle for the USDLoader port: the pinned r186 USDLoader's parse of
+// Oracle for the USDLoader port: the pinned r187 USDLoader's parse of
 // webgl_loader_usdz's saeukkang.usdz, the fixtures of tools/core/usd-fixtures.mjs
 // and, when present, macOS's own USDC files ( crate layers the repository
 // cannot ship ), in the canonical form with full buffers
@@ -9,12 +9,13 @@ import {registerHooks} from 'node:module';
 const root=new URL('../../',import.meta.url);
 const three=new URL('.cache/three-r187/src/Three.Core.js',root).href;
 registerHooks({resolve(specifier,context,next){if(specifier==='three')return {url:three,shortCircuit:true};return next(specifier,context);}});
-// The composer decodes images through object URLs and Image elements: keep
-// the bytes, and load every image.
+// The composer decodes images through object URLs and its ImageLoader's img
+// elements: keep the bytes, and load every image.
 const blobs=new Map();
 URL.createObjectURL=blob=>{const url=`blob:oracle/${blobs.size}`;blobs.set(url,blob);return url;};
 URL.revokeObjectURL=()=>{};
-globalThis.Image=class{getAttribute(){return this._src;}set src(v){this._src=v;setTimeout(()=>this.onload?.(),0);}get src(){return this._src;}};
+class Img{constructor(){this.listeners={};}addEventListener(type,f){this.listeners[type]=f;}removeEventListener(type){delete this.listeners[type];}getAttribute(){return this._src;}set src(v){this._src=v;setTimeout(()=>this.listeners.load?.call(this),0);}get src(){return this._src;}}
+globalThis.document={createElementNS:(ns,name)=>{if(name!=='img')throw new Error(`oracle: <${name}>`);return new Img();}};
 const {USDLoader}=await import(new URL('.cache/three-r187/examples/jsm/loaders/USDLoader.js',root).href);
 const {canonical}=await import(new URL('tools/core/usd-canonical.mjs',root).href);
 const {fixtures}=await import(new URL('tools/core/usd-fixtures.mjs',root).href);

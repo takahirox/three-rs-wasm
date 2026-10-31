@@ -140,9 +140,10 @@ fn attr_match(key: &str) -> Option<(&str, &str)> {
     typed_name(key)
 }
 
-/// `/^[\d.]+$/`.
+/// `/^-?[\d.]+$/`.
 fn is_frame_key(key: &str) -> bool {
-    !key.is_empty() && key.chars().all(|c| c.is_ascii_digit() || c == '.')
+    let digits = key.strip_prefix('-').unwrap_or(key);
+    !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit() || c == '.')
 }
 
 /// Find the first '=' that's not inside quotes.
@@ -199,27 +200,55 @@ fn strip_inline_comment(line: &str) -> &str {
     line
 }
 
+/// _stripBlockComments( text ): strings are copied as is since they may
+/// contain /* ( e.g. path expressions ).
 fn strip_block_comments(text: &str) -> String {
     let b: Vec<char> = text.chars().collect();
+    let at = |i: usize, t: &[char]| b.len() >= i + t.len() && b[i..i + t.len()] == *t;
     let mut out = String::with_capacity(text.len());
     let mut i = 0;
+    // The tokens /\/\*|"""|'''|["']/g, in their alternation order.
     while i < b.len() {
-        if b[i] == '/' && i + 1 < b.len() && b[i + 1] == '*' {
-            let mut j = i + 2;
-            while j < b.len() {
-                if b[j] == '*' && j + 1 < b.len() && b[j + 1] == '/' {
-                    j += 2;
-                    break;
-                }
-                j += 1;
-            }
-            i = j;
+        if at(i, &['/', '*']) {
+            // Move past the comment ( or to the end if unclosed ).
+            i = (i + 2..b.len())
+                .find(|&j| at(j, &['*', '/']))
+                .map_or(b.len(), |end| end + 2);
+        } else if b[i] == '"' || b[i] == '\'' {
+            let end = find_string_end(&b, i);
+            out.extend(&b[i..end]);
+            i = end;
         } else {
             out.push(b[i]);
             i += 1;
         }
     }
     out
+}
+
+/// _findStringEnd( text, start, quote ), the quote ( single or triple ) at
+/// `start`.
+fn find_string_end(b: &[char], start: usize) -> usize {
+    let q = b[start];
+    if b.len() >= start + 3 && b[start + 1] == q && b[start + 2] == q {
+        return (start + 3..b.len())
+            .find(|&j| b.len() >= j + 3 && b[j..j + 3] == [q; 3])
+            .map_or(b.len(), |end| end + 3);
+    }
+    // Single-line string with escapes, ends at the line end if unclosed.
+    let mut i = start + 1;
+    while i < b.len() {
+        let ch = b[i];
+        if ch == '\\' {
+            i += 1;
+        } else if ch == q {
+            return i + 1;
+        } else if ch == '\n' {
+            return i;
+        }
+        i += 1;
+    }
+    b.len()
 }
 
 fn collapse_triple_quoted_strings(text: &str) -> String {

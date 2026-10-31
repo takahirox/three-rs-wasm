@@ -877,9 +877,19 @@ impl Ik {
             let axis = norm(effector_vec.cross(target_vec));
             let n = s.get_mut(link)?;
             n.quaternion *= axis_angle(axis, angle);
-            // rotation.setFromVector3( rotation.max( rotationMin ) ), then .min( rotationMax ).
-            n.quaternion = quaternion_xyz(euler_xyz(n.quaternion).max(Vector3::from_array(min)));
-            n.quaternion = quaternion_xyz(euler_xyz(n.quaternion).min(Vector3::from_array(max)));
+            // The rotation's angles wrapped to within ±π of the limits' center
+            // ( ranges crossing ±π clamp correctly ), clamped to rotationMin
+            // and rotationMax, then set once.
+            let (min, max) = (Vector3::from_array(min), Vector3::from_array(max));
+            let center = (min + max) * 0.5;
+            let wrap = |v: f64, c: f64| c + euclidean_modulo(v - c + PI, 2. * PI) - PI;
+            let v = euler_xyz(n.quaternion);
+            let v = Vector3::new(
+                wrap(v.x, center.x),
+                wrap(v.y, center.y),
+                wrap(v.z, center.z),
+            );
+            n.quaternion = quaternion_xyz(v.max(min).min(max));
             s.update_world_matrix(link, false, true)?;
         }
         Ok(())
@@ -938,6 +948,10 @@ fn quaternion_xyz(e: Vector3) -> Quaternion {
 fn norm(v: Vector3) -> Vector3 {
     let l = v.length();
     if l == 0. { v } else { v / l }
+}
+/// MathUtils.euclideanModulo( n, m ).
+fn euclidean_modulo(n: f64, m: f64) -> f64 {
+    ((n % m) + m) % m
 }
 impl Demo {
     async fn ik_scene(&mut self, s: &mut Scene, r: &Renderer) -> Result<()> {
