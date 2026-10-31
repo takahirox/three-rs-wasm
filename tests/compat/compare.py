@@ -26,4 +26,4 @@ def compare(actual, expected, path=""):
 reference = json.loads(subprocess.check_output(["node", "tests/compat/reference.mjs"]))
 rust = json.loads(subprocess.check_output(["cargo", "run", "--locked", "--quiet", "--example", "compat_probe"]))
 compare(rust, reference)
-print(f"Behavior differential tests: PASS ({len(reference)} cases, Three.js r186)")
+print(f"Behavior differential tests: PASS ({len(reference)} cases, Three.js r187)")

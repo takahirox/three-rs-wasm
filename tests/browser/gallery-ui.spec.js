@@ -1,6 +1,6 @@
 // The gallery's ports show their original's UI: each lil-gui panel's DOM,
 // the WebGPU Inspector's parameter panel, stats.js and the page's #info equal
-// what the pinned r186 page builds ( web/examples/ui/specs.json, recorded by
+// what the pinned r187 page builds ( web/examples/ui/specs.json, recorded by
 // tools/gallery/ui/extract.mjs at the same 1280×720 viewport, and pages.json ).
 // lil-gui's generated ids and the values of controllers that listen to a
 // changing property are normalized. Controllers without a port parameter are

@@ -51,9 +51,9 @@ const cases={
  // The first frame after loading differs in sparse forest pixels (0.35% without, 0.55% with
  // MSAA); every later state matches exactly.
  webgpu_custom_fog:{antialias:true,limits:[.006,.2],times:[0,1,2],parameters:[[0,20,20],[1,200,200],[2,-10,-10],[3,80,80],[4,.003,.003],[5,200,200],[6,400,400]],restore:[[0,11,11],[1,150,150],[2,-20,-20],[3,55,55],[4,.0012,.0012],[5,300,300],[6,620,620]],at:2,drag:[[256,256],[300,280]]},
- // The water's flow follows the example clock (a fixture patch). After a resize r186 copies
+ // The water's flow follows the example clock (a fixture patch). After a resize r186 copied
  // the transmission source at the new size from a target still at the old size, failing
- // validation: resize is left out.
+ // validation ( not re-checked on r187 ): resize is left out.
  webgpu_water:{noResize:true,times:[0,1,2.5],parameters:[[1,5,5],[2,-.5,-.5],[3,.3,.3]],restore:[[1,2,2]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // The splats are depth-sorted on the GPU when the view turns; the sources load on selection.
  webgpu_gaussian_splat:{times:[0,1],parameters:[],at:1,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true,
@@ -122,8 +122,9 @@ const cases={
  webgpu_postprocessing_retro:{antialias:true,times:[0,1,2.5],parameters:[[2,.1,.1],[3,8,8],[4,.8,.8],[5,.5,.5],[6,.05,.05],[7,.7,.7],[8,.004,.004],[9,1,1],[10,true,1],[10,false,0],[1,false,0],[1,true,1]],restore:[[2,.02,.02],[3,32,32],[4,.3,.3],[5,1,1],[6,0,0],[7,.3,.3],[8,.001,.001],[9,0,0]],at:2.5,drag:[[256,256],[300,280]],settle:true,
   // The helmet and its environment load on selection: the retro, filtered and plain (PMREM) helmet, the mug again, then the helmet for the drag and resize.
   script:[['param',0,'Damaged Helmet',1,null],['wait',8000,2.5],['param',10,true,1,2.5],['param',10,false,0,null],['param',1,false,0,2.5],['param',1,true,1,null],['param',0,'Coffee Mug',0,null],['wait',3000,2.5],['param',0,'Damaged Helmet',1,null],['wait',3000,2.5]]},
- // TRAA accumulates over frames: each capture renders 60 frames, past three.js r186's first
- // resolves into its not yet resized 1 × 1 targets (see docs/shadow-volume-examples.md).
+ // TRAA accumulates over frames: each capture renders 60 frames, past the first resolves
+ // ( three.js r186 rendered them into its not yet resized 1 × 1 targets; see
+ // docs/shadow-volume-examples.md ).
  webgpu_volume_lighting_traa:{frames:60,times:[0,1,2.5,3],parameters:[[2,6,6],[3,5,5],[4,150,150],[6,1,1],[1,false,0],[1,true,1],[0,false,0],[0,true,1]],restore:[[2,12,12],[3,3,3],[4,100,100],[6,2,2]],at:3},
  webgpu_volume_lighting_rectarea:{times:[0,1,2.5],parameters:[[0,.5,.5],[1,6,6],[2,.2,.2],[3,false,0],[3,true,1],[4,1.5,1.5],[5,.5,.5]],restore:[[0,.25,.25],[1,12,12],[2,.6,.6],[4,1,1],[5,2,2]],at:2.5,drag:[[256,256],[300,280]]},
  webgpu_volume_lighting:{times:[0,1,2.5],parameters:[[0,.5,.5],[1,6,6],[2,.2,.2],[3,false,0],[3,true,1],[4,5,5],[5,40,40],[6,1.5,1.5],[7,.5,.5]],restore:[[0,.25,.25],[1,12,12],[2,.6,.6],[4,3,3],[5,100,100],[6,1,1],[7,2,2]],at:2.5,drag:[[256,256],[300,280]]},
@@ -285,7 +286,7 @@ for(const [kind,spec] of Object.entries(cases))test(`Compute examples resident g
   const computePass=GPUCommandEncoder.prototype.beginComputePass;GPUCommandEncoder.prototype.beginComputePass=function(...a){const pass=computePass.apply(this,a);pass.workIndex=work.compute.push(0)-1;pass.workSet=work;return pass;};
   for(const key of ['dispatchWorkgroups','dispatchWorkgroupsIndirect']){const fn=GPUComputePassEncoder.prototype[key];GPUComputePassEncoder.prototype[key]=function(...a){if(this.workSet===work)work.compute[this.workIndex]++;return fn.apply(this,a);};}
   for(const key of ['draw','drawIndexed']){const fn=GPURenderPassEncoder.prototype[key];GPURenderPassEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)work.draws.push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
-  // Render bundles (r186's per-layer shadow passes) count their draws each time a pass
+  // Render bundles (r187's per-layer shadow passes) count their draws each time a pass
   // executes them.
   for(const key of ['draw','drawIndexed']){const fn=GPURenderBundleEncoder.prototype[key];GPURenderBundleEncoder.prototype[key]=function(...a){if(a[0]>3||a[1]>1)(this.recorded??=[]).push({count:a[0],instances:a[1]??1});return fn.apply(this,a);};}
   const finish=GPURenderBundleEncoder.prototype.finish;GPURenderBundleEncoder.prototype.finish=function(...a){const bundle=finish.apply(this,a);bundle.recorded=this.recorded??[];return bundle;};

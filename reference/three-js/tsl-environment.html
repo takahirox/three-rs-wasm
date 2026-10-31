@@ -7,7 +7,7 @@ import {uniform,reference as originalReference,renderGroup} from 'three/tsl';
 const id=new URLSearchParams(location.search).get('id');
 if(!['webgpu_cubemap_mix','webgpu_cubemap_adjustments','webgpu_materials_envmaps_bpcem','webgpu_materials_alphahash','webgpu_postprocessing_ca'].includes(id))throw Error('invalid fixture');
 window.fixtureTime=uniform(0).setGroup(renderGroup);window.fixtureSeconds=0;window.fixtureControls=[];
-// r186's object refresh observer overlooks scene.environmentNode dependencies.
+// r187's object refresh observer overlooks scene.environmentNode dependencies.
 // Keep scene-node controls in the render group so GUI changes reach static meshes;
 // shader expressions and PMREM generation remain the official implementations.
 window.fixtureUniform=(...args)=>uniform(...args).setGroup(renderGroup);

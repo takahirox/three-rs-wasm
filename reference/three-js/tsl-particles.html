@@ -20,7 +20,7 @@ module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createPar
 .replaceAll('Math.random()','fixtureRandom()').replaceAll('Date.now()','(window.fixtureSeconds*1000)')
 .replaceAll("'textures/","'/.cache/three-r187/examples/textures/");
 module='const time=window.fixtureTime,range=window.fixtureRange;let fixtureSeed=186;function fixtureRandom(){fixtureSeed=(Math.imul(fixtureSeed,1664525)+1013904223)>>>0;return fixtureSeed/4294967296;}\n'+module;
-// r186's material observer does not detect scene.fogNode uniforms. The
+// r187's material observer does not detect scene.fogNode uniforms. The
 // fixture uses an opacity=1 node marker so deterministic same-pose edits
 // refresh scene-level uniforms, without changing the rendered expression.
 if(id==='webgpu_fog_height')module=module.replace('color: 0xcd959a','color: 0xcd959a, opacityNode: uniform(1)');

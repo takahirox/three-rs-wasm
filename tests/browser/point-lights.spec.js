@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {PNG} from 'pngjs';
 import {readFileSync,writeFileSync} from 'node:fs';
 const tolerance=JSON.parse(readFileSync(new URL('../../migration/manifest.json',import.meta.url))).comparison;
-test('Point Lights model matches the r186 scene with adapted material and supports controls',async({page},testInfo)=>{
+test('Point Lights model matches the r187 scene with adapted material and supports controls',async({page},testInfo)=>{
   test.setTimeout(90000);
   await page.goto('/reference/three-js/point-lights.html');
   let canvas=page.locator('canvas');

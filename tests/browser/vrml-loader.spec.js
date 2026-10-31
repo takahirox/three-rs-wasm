@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 // The loader port is in webgl_loader_vrml's module ( tools/gallery/modules.py ).
 const PACKAGE=JSON.parse(readFileSync(new URL('../../web/examples/modules.json',import.meta.url),'utf8')).examples.webgl_loader_vrml;
-// The Rust VRMLLoader against the pinned r186 VRMLLoader in the same engine:
+// The Rust VRMLLoader against the pinned r187 VRMLLoader in the same engine:
 // every VRML asset webgl_loader_vrml loads, in the canonical form of
 // vrml::canonical ( numbers as their bits, buffers by hash ).
 const ASSETS=['creaseAngle','crystal','house','elevationGrid1','elevationGrid2','extrusion1','extrusion2','extrusion3','lines','linesTransparent','meshWithLines','meshWithTexture','pixelTexture','points','camera','multilineString'];

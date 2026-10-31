@@ -1,5 +1,5 @@
 // webgpu_tsl_editor: the gallery's port ( the three-tsl crate ) against the
-// original page on the pinned r186 sources ( reference/three-js/tsl-editor.html ).
+// original page on the pinned r187 sources ( reference/three-js/tsl-editor.html ).
 // Both pages run the same TSL with the same option changes; every shader text
 // must match, the previews must agree, and the port's steady frames must
 // create no GPU objects. The clock is frozen in both ( time stays 0 ).

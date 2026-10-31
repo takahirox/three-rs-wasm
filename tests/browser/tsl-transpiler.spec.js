@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {readFileSync,readdirSync,writeFileSync} from 'node:fs';
 // The transpiler page's module ( tools/gallery/modules.py ).
 const pkg=JSON.parse(readFileSync('web/examples/modules.json','utf8')).examples.webgpu_tsl_transpiler;
-// webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r186 one
+// webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r187 one
 // ( examples/jsm/transpiler/ ), both run in the same page. The output text and the
 // error messages must match character for character, for both encoders.
 const html=readFileSync('.cache/three-r187/examples/webgpu_tsl_transpiler.html','utf8');

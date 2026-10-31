@@ -37,7 +37,8 @@ while(!window.fixtureRenderer)await new Promise(r=>setTimeout(r,10));
 if(window.fixtureRenderer.init)await window.fixtureRenderer.init();
 while(pending||(!window.reference&&!window.fixtureCallback))await new Promise(r=>setTimeout(r,10));
 window.renderFixture=async(t=0)=>{fixtureSeconds=t;window.fixtureStep=(t-(window.fixtureLast??t))*60;window.fixtureLast=t;runFixtureTimers(t*1000);while(pending)await new Promise(r=>setTimeout(r,10));for(const v of window.pointQuadViewports??[])v.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);window.pointQuadViewport?.set(innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);if(window.reference?.renderer._nodes){reference.renderer._nodes.nodeFrame.update();reference.renderer._nodes.nodeFrame.time=t;}if(window.fixtureCallback)await fixtureCallback(t*1000);else reference.renderer.render(reference.scene,reference.camera);if(reference.renderer.backend)await reference.renderer.backend.device.queue.onSubmittedWorkDone();};
-// r186's NodeMaterialObserver does not track light intensities: the lightprobe sphere shows an
+// r186's NodeMaterialObserver did not track light intensities: the lightprobe sphere showed an
 // intensity change only at its next refresh, which the fixture forces by disposing the materials.
+// r187 updates the probe's coefficients every render ( renderGroup ); the refresh stays, harmless.
 window.fixtureParameter=(i,v)=>{fixtureControls[i].setValue(v);if(id==='webgpu_lightprobe')reference.scene.traverse(o=>o.material?.dispose());};await renderFixture();reference.renderer.domElement.dataset.ready='true';
 </script></body></html>

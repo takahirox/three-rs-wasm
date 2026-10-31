@@ -56,7 +56,7 @@ for(const [kind,parameters] of Object.entries(controls))test(`TSL procedural off
  }
  results.push(metric);writeFileSync(info.outputPath(`${state}-actual.png`),PNG.sync.write(a));writeFileSync(info.outputPath(`${state}-reference.png`),PNG.sync.write(b));}
  writeFileSync(info.outputPath('comparison.json'),JSON.stringify(results,null,2));expect(errors).toEqual([]);for(const r of results){
-  // Float32 UV sensitivity of r186 hashBlur is measured independently by
+  // Float32 UV sensitivity of r187 hashBlur is measured independently by
   // tools/tsl/check-retro-precision.mjs; keep both raw and spatial error bounded.
   if(kind==='materials_retroreflection'&&Number(process.env.TSL_PROCEDURAL_DPR||1)>1){
    expect(r.fraction,JSON.stringify(r)).toBeLessThanOrEqual(.01);

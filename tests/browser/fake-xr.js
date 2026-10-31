@@ -1,6 +1,6 @@
 // A WebXR device with the WebXR/WebGPU binding ( XRGPUBinding, Immersive Web
 // editor's draft of 2026-06-15 ), for comparing the gallery's ports with the
-// pinned r186 pages without a headset. It is injected with addInitScript and
+// pinned r187 pages without a headset. It is injected with addInitScript and
 // installs navigator.xr, XRGPUBinding, XRRigidTransform and XRWebGLLayer-free
 // globals before the page runs.
 //

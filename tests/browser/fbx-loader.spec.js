@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 // The loader port is in webgl_loader_fbx's module ( tools/gallery/modules.py ).
 const PACKAGE=JSON.parse(readFileSync(new URL('../../web/examples/modules.json',import.meta.url),'utf8')).examples.webgl_loader_fbx;
-// The Rust FBXLoader against the pinned r186 FBXLoader in the same engine:
+// The Rust FBXLoader against the pinned r187 FBXLoader in the same engine:
 // every FBX model the examples load, in the canonical form of fbx::canonical
 // ( numbers as their bits, buffers by hash ).
 const ASSETS=['Samba Dancing','morph_test','monkey','monkey_embedded_texture','vCube','archer/ArcherRi01','warrior/Warrior','stanford-bunny','mixamo','RotationTest','exampleWindow','Head_69','morph-translation','ball_anims_asc_2018','nurbs'];

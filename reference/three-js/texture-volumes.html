@@ -44,7 +44,7 @@ if(id==='webgl_raycaster_bvh')source=source.replace('window.(window.fixtureSecon
 // Each chosen model renders once the loading manager has its file and textures.
 if(id==='webgl_loader_fbx')source=source.replace("loader.load( '/.cache/three-r187/examples/models/fbx/' + asset + '.fbx', function ( group ) {","let fixtureLoaded;window.fixtureAwait=new Promise(r=>fixtureLoaded=r);manager.onLoad=()=>setTimeout(fixtureLoaded);loader.load( '/.cache/three-r187/examples/models/fbx/' + asset + '.fbx', function ( group ) {");
 if(id==='webgl_random_uv')source=source.replace("loader.load( 'ShaderBall2.glb', function ( gltf ) {","loader.load( 'ShaderBall2.glb', function ( gltf ) {setTimeout(window.fixtureLoaded);").replace("new HDRLoader()","window.fixtureAwait=new Promise(r=>window.fixtureLoaded=r);new HDRLoader()");
-// The worker example's scene.js imports the r186 build, which the cache leaves out: both
+// The worker example's scene.js imports the release build ( build/three.module.js ), which the cache leaves out: both
 // copies import the source tree from blob modules instead, their Date.now() on the fixture
 // clock ( posted to the worker every 10 ms ). The page's styles and jank button come along.
 if(id==='webgl_worker_offscreencanvas'){const page=new DOMParser().parseFromString(html,'text/html');for(const node of page.querySelectorAll('head style'))document.head.appendChild(document.importNode(node,true));document.body.appendChild(document.importNode(page.querySelector('#ui'),true));

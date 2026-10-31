@@ -1,4 +1,4 @@
-//! The VRMLLoader port against the pinned r186 VRMLLoader: every VRML asset
+//! The VRMLLoader port against the pinned r187 VRMLLoader: every VRML asset
 //! webgl_loader_vrml loads, compared in the canonical form with full buffers
 //! ( tools/core/vrml-oracle.mjs ).
 use serde_json::Value;

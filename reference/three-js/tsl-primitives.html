@@ -30,7 +30,7 @@ module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createPar
 module=module.replaceAll('oscSine()', 'oscSine(time)');
 module=module.replace(/import \{ GUI \}[^;]*;/,`class GUI {constructor(){return new Inspector().createParameters();}}`)
 .replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)
-.replace('matLine.dashOffset = val;', 'matLine.dashOffset = val; matLine.needsUpdate = true; // r186 caches a zero offset as a literal')
+.replace('matLine.dashOffset = val;', 'matLine.dashOffset = val; matLine.needsUpdate = true; // r187 caches a zero offset as a literal')
 .replaceAll('Math.random()', 'fixtureRandom()').replace('new THREE.Vector3().random()', 'new THREE.Vector3(fixtureRandom(),fixtureRandom(),fixtureRandom())')
 .replace('mesh.rotation.z = fixtureRandom() * 200 - 100;', 'mesh.rotation.z = fixtureRandom() * 200 - 100;mesh.userData.initialRotation=mesh.rotation.clone();')
 .replace('object.rotation.x += 0.01', 'object.rotation.x = object.userData.initialRotation.x + window.fixtureSeconds * .6')

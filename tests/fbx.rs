@@ -1,4 +1,4 @@
-//! The FBXLoader port against the pinned r186 FBXLoader: every FBX model the
+//! The FBXLoader port against the pinned r187 FBXLoader: every FBX model the
 //! examples load, compared node by node, buffer by buffer and keyframe by
 //! keyframe with the original's parse ( tools/core/fbx-oracle.mjs ).
 use serde_json::Value;

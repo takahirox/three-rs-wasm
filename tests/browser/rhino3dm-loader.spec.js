@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
-// The Rust Rhino3dmLoader port against the pinned r186 Rhino3dmLoader in the
+// The Rust Rhino3dmLoader port against the pinned r187 Rhino3dmLoader in the
 // same engine, both on rhino3dm 8.32.1 from jsDelivr: webgl_loader_3dm's
 // Rhino_Logo.3dm, in the canonical form of rhino3dm_loader.rs ( numbers as
 // their bits, buffers by hash ).

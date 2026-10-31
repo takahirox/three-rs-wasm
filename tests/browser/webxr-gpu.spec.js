@@ -1,5 +1,5 @@
 // webgpu_xr_cubes / webgpu_xr_rollercoaster / webgpu_xr_shadows: the gallery's
-// ports against the pinned r186 pages ( reference/three-js/webxr-gpu.html ) on
+// ports against the pinned r187 pages ( reference/three-js/webxr-gpu.html ) on
 // the same fake WebXR device with the WebXR/WebGPU binding
 // ( tests/browser/fake-xr.js ). Both pages run the same window frames, enter
 // the session through their XRButton / VRButton, run the same session frames
