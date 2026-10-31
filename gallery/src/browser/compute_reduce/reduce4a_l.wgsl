@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 enable subgroups;
@@ -7,7 +7,7 @@ enable subgroups;
 var<private> instanceIndex : u32;
 
 // locals
-var<workgroup> WorkgroupArray_3780: array< u32, 64 >;
+var<workgroup> WorkgroupArray_1393: array< u32, 64 >;
 
 // structs
 
@@ -43,20 +43,12 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 
 	// local vars
 	
-	var nodeVar0 : u32;
-	var nodeVar1 : u32;
-	var nodeVar2 : u32;
-	var nodeVar3 : u32;
-	var nodeVar4 : vec4<u32>;
+	var nodeVar3 : vec4<u32>;
 	var subgroupSizeLog : u32;
-	var nodeVar5 : u32;
 	var spineSizeLog : u32;
-	var nodeVar6 : u32;
 	var alignedSize : u32;
-	var nodeVar7 : u32;
-	var nodeVar8 : u32;
 	var isValidSubgroupIndex : bool;
-	var nodeVar9 : u32;
+	var nodeVar6 : u32;
 	var t : u32;
 
 
@@ -68,19 +60,19 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 	// flow
 	// code
 
-	nodeVar0 = ( invocationLocalIndex / subgroupSize );
-	nodeVar1 = ( ( nodeVar0 * subgroupSize ) * 4u );
-	nodeVar1 = ( nodeVar1 + invocationSubgroupIndex );
-	nodeVar2 = ( nodeVar1 + ( workgroupId.x * ( 256u * 4u ) ) );
-	nodeVar3 = 0u;
+	let nodeConst0 = ( invocationLocalIndex / subgroupSize );
+	var nodeVar0 : u32 = ( ( nodeConst0 * subgroupSize ) * 4u );
+	nodeVar0 = ( nodeVar0 + invocationSubgroupIndex );
+	var nodeVar1 : u32 = ( nodeVar0 + ( workgroupId.x * ( 256u * 4u ) ) );
+	var nodeVar2 : u32 = 0u;
 
 	if ( ( workgroupId.x < ( 64u - 1u ) ) ) {
 
 
 		for ( var currentSubgroupInBlock : u32 = 0u; currentSubgroupInBlock < 4u; currentSubgroupInBlock ++ ) {
 
-			nodeVar3 = ( nodeVar3 + u32( dot( vec4<u32>( 1u, 1u, 1u, 1u ), CurrentVectorized_Left.value[ nodeVar2 ] ) ) );
-			nodeVar2 = ( nodeVar2 + subgroupSize );
+			nodeVar2 = u32( ( f32( nodeVar2 ) + dot( vec4<f32>( vec4<u32>( 1u, 1u, 1u, 1u ) ), vec4<f32>( CurrentVectorized_Left.value[ nodeVar1 ] ) ) ) );
+			nodeVar1 = ( nodeVar1 + subgroupSize );
 
 		}
 
@@ -94,8 +86,8 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 
 		for ( var currentSubgroupInBlock : u32 = 0u; currentSubgroupInBlock < 4u; currentSubgroupInBlock ++ ) {
 
-			nodeVar3 = ( nodeVar3 + u32( dot( select( vec4<u32>( 0u, 0u, 0u, 0u ), CurrentVectorized_Left.value[ nodeVar2 ], ( nodeVar2 < 65536u ) ), vec4<u32>( 1u, 1u, 1u, 1u ) ) ) );
-			nodeVar2 = ( nodeVar2 + subgroupSize );
+			nodeVar2 = u32( ( f32( nodeVar2 ) + dot( vec4<f32>( select( vec4<u32>( 0u, 0u, 0u, 0u ), CurrentVectorized_Left.value[ nodeVar1 ], ( nodeVar1 < 65536u ) ) ), vec4<f32>( vec4<u32>( 1u, 1u, 1u, 1u ) ) ) ) );
+			nodeVar1 = ( nodeVar1 + subgroupSize );
 
 		}
 
@@ -103,47 +95,47 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 
 	}
 
-	nodeVar3 = subgroupAdd( nodeVar3 );
+	nodeVar2 = subgroupAdd( nodeVar2 );
 
 	if ( ( invocationSubgroupIndex == 0u ) ) {
 
-		WorkgroupArray_3780[ nodeVar0 ] = nodeVar3;
+		WorkgroupArray_1393[ nodeConst0 ] = nodeVar2;
 		
 
 	}
 
 	workgroupBarrier();
 	subgroupSizeLog = countTrailingZeros( subgroupSize );
-	nodeVar5 = ( 256u >> subgroupSizeLog );
-	spineSizeLog = countTrailingZeros( nodeVar5 );
-	nodeVar6 = ( ( spineSizeLog + subgroupSizeLog ) - 1u );
-	nodeVar6 = ( nodeVar6 / subgroupSizeLog );
-	nodeVar6 = ( nodeVar6 * subgroupSizeLog );
-	alignedSize = ( 1u << nodeVar6 );
-	nodeVar7 = 0u;
+	let nodeConst1 = ( 256u >> subgroupSizeLog );
+	spineSizeLog = countTrailingZeros( nodeConst1 );
+	var nodeVar4 : u32 = ( ( spineSizeLog + subgroupSizeLog ) - 1u );
+	nodeVar4 = ( nodeVar4 / subgroupSizeLog );
+	nodeVar4 = ( nodeVar4 * subgroupSizeLog );
+	alignedSize = ( 1u << nodeVar4 );
+	var nodeVar5 : u32 = 0u;
 
 	for ( var j : u32 = subgroupSize; j <= alignedSize; j <<= subgroupSizeLog ) {
 
-		nodeVar8 = ( ( ( invocationLocalIndex + 1u ) << nodeVar7 ) - 1u );
-		isValidSubgroupIndex = ( nodeVar8 < nodeVar5 );
-		t = subgroupAdd( select( 0u, WorkgroupArray_3780[ nodeVar8 ], isValidSubgroupIndex ) );
+		let nodeConst2 = ( ( ( invocationLocalIndex + 1u ) << nodeVar5 ) - 1u );
+		isValidSubgroupIndex = ( nodeConst2 < nodeConst1 );
+		t = subgroupAdd( select( 0u, WorkgroupArray_1393[ nodeConst2 ], isValidSubgroupIndex ) );
 
 		if ( isValidSubgroupIndex ) {
 
-			WorkgroupArray_3780[ nodeVar8 ] = t;
+			WorkgroupArray_1393[ nodeConst2 ] = t;
 			
 
 		}
 
 		workgroupBarrier();
-		nodeVar7 = ( nodeVar7 + subgroupSizeLog );
+		nodeVar5 = ( nodeVar5 + subgroupSizeLog );
 
 	}
 
 
 	if ( ( invocationLocalIndex == 0u ) ) {
 
-		WorkgroupSums_Left.value[ workgroupId.x ] = WorkgroupArray_3780[ ( nodeVar5 - 1u ) ];
+		WorkgroupSums_Left.value[ workgroupId.x ] = WorkgroupArray_1393[ ( nodeConst1 - 1u ) ];
 		
 
 	}

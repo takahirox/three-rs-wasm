@@ -7,7 +7,7 @@
 //! element 0 holds the element count ), then resets its buffers. Each half
 //! shows one of the four display modes ( the input as a 512 × 512 grid, its
 //! power-of-two elements, element 0 and the workgroup sums ). Every compute
-//! and render stage runs the WGSL three.js r186 generates for the page ( in
+//! and render stage runs the WGSL three.js r187 generates for the page ( in
 //! `compute_reduce/`; the output pass in `output_pass/` ), with
 //! the device's subgroups feature.
 use super::deferred::{Draw, culled_pipeline, set};
@@ -252,11 +252,15 @@ struct Side {
     /// The background: Color( 0x313131 ) left, 0x212121 right ( linear ).
     background: f64,
 }
-/// A pending buffer log ( a ReadbackBuffer ).
+/// A side's ReadbackBuffer: one MAP_READ buffer of the largest storage
+/// buffer's size, created on the first log and reused, and the log in
+/// flight ( its byte count and map result ) until it is released.
+#[derive(Default)]
 struct Readback {
-    buffer: wgpu::Buffer,
-    ready: Arc<Mutex<Option<std::result::Result<(), wgpu::BufferAsyncError>>>>,
+    buffer: Option<wgpu::Buffer>,
+    mapped: Option<(u64, MapResult)>,
 }
+type MapResult = Arc<Mutex<Option<std::result::Result<(), wgpu::BufferAsyncError>>>>;
 struct Targets {
     width: u32,
     height: u32,
@@ -275,7 +279,7 @@ pub(super) struct Demo {
     logged: usize,
     /// Log buttons pressed: ( side, buffer ).
     log_requests: Vec<(usize, usize)>,
-    readbacks: Vec<Readback>,
+    readbacks: [Readback; 2],
     plane: (wgpu::Buffer, wgpu::Buffer, wgpu::Buffer),
     quad: wgpu::Buffer,
     output_renders: [wgpu::Buffer; 2],
@@ -401,7 +405,7 @@ impl Demo {
             pending: true,
             logged: 0,
             log_requests: vec![],
-            readbacks: vec![],
+            readbacks: Default::default(),
             plane,
             quad: vertex("reduce quad", bytemuck::cast_slice(&quad), v),
             output_renders: [
@@ -743,21 +747,26 @@ impl Demo {
     pub fn prepare(&mut self, _s: &mut Scene, _c: Object3D, _r: &Renderer) -> Result<()> {
         Ok(())
     }
-    /// Logs a finished readback, as the page's console.log( result ).
+    /// Logs a finished readback, as the page's
+    /// console.log( new Uint32Array( readbackBuffer.buffer ) ), then
+    /// releases it ( unmaps the buffer for the next log ).
     fn flush_logs(&mut self) {
-        self.readbacks.retain(|rb| {
-            let Some(result) = rb.ready.lock().map(|mut g| g.take()).unwrap_or(None) else {
-                return true;
+        for rb in &mut self.readbacks {
+            let (Some(buffer), Some((size, ready))) = (&rb.buffer, &rb.mapped) else {
+                continue;
+            };
+            let Some(result) = ready.lock().map(|mut g| g.take()).unwrap_or(None) else {
+                continue;
             };
             if result.is_ok() {
                 let values: Vec<String> = {
-                    let mapped = rb.buffer.slice(..).get_mapped_range();
+                    let mapped = buffer.slice(..*size).get_mapped_range();
                     bytemuck::cast_slice::<u8, u32>(&mapped)
                         .iter()
                         .map(u32::to_string)
                         .collect()
                 };
-                rb.buffer.unmap();
+                buffer.unmap();
                 #[cfg(target_arch = "wasm32")]
                 web_sys::console::log_1(
                     &format!("Uint32Array({}) [{}]", values.len(), values.join(", ")).into(),
@@ -765,8 +774,8 @@ impl Demo {
                 #[cfg(not(target_arch = "wasm32"))]
                 let _ = values;
             }
-            false
-        });
+            rb.mapped = None;
+        }
     }
     pub fn render(
         &mut self,
@@ -781,28 +790,41 @@ impl Demo {
             self.resize(r, out)?;
         }
         for (k, which) in std::mem::take(&mut self.log_requests) {
-            // new THREE.ReadbackBuffer( buffer ) and getArrayBufferAsync.
+            // getArrayBufferAsync( storage, readbackBuffer, 0, size ) into
+            // the side's ReadbackBuffer( largest storage byteLength ).
             let s = &self.sides[k].storage;
-            let source = [&s.input, &s.vectorized, &s.sums, &s.debug][which];
-            let buffer = r.device.create_buffer(&wgpu::BufferDescriptor {
-                label: Some("compute reduce readback"),
-                size: source.size(),
-                usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
-                mapped_at_creation: false,
+            let sources = [&s.input, &s.vectorized, &s.sums, &s.debug];
+            let source = sources[which];
+            let rb = &mut self.readbacks[k];
+            if rb.mapped.is_some() {
+                #[cfg(target_arch = "wasm32")]
+                web_sys::console::error_1(
+                    &"THREE.WebGPUAttributeUtils: ReadbackBuffer must be released before being used again.".into(),
+                );
+                continue;
+            }
+            let buffer = rb.buffer.get_or_insert_with(|| {
+                r.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("compute reduce readback"),
+                    size: sources.iter().map(|b| b.size()).max().unwrap_or(4),
+                    usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                })
             });
+            let size = source.size();
             let mut encoder = r.device.create_command_encoder(&Default::default());
-            encoder.copy_buffer_to_buffer(source, 0, &buffer, 0, source.size());
+            encoder.copy_buffer_to_buffer(source, 0, buffer, 0, size);
             r.queue.submit([encoder.finish()]);
             let ready = Arc::new(Mutex::new(None));
             let signal = ready.clone();
             buffer
-                .slice(..)
+                .slice(..size)
                 .map_async(wgpu::MapMode::Read, move |result| {
                     if let Ok(mut g) = signal.lock() {
                         *g = Some(result);
                     }
                 });
-            self.readbacks.push(Readback { buffer, ready });
+            rb.mapped = Some((size, ready));
         }
         self.flush_logs();
         let (width, height) = self
