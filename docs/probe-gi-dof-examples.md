@@ -1,10 +1,11 @@
-# Compute rasterizer IBL, progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
+# Progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`. The
+batch's `webgpu_compute_rasterizer_ibl` port (414) left the gallery with r187,
+which removed the example.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
-| `webgpu_compute_rasterizer_ibl` | 414 | `compute_rasterizer_ibl.rs` | 15,625 turning DamagedHelmets in Meshopt LODs and 64-triangle meshlets, the compute passes (clear, frustum, LOD and HZB occlusion culling, indirect dispatch, the atomic rasterizer, indirect draw arguments), the visibility resolve under the royal_esplanade PMREM, the hardware queue and the next frame's depth pyramid |
 | `webgpu_shadowmap_progressive` | 415 | `shadowmap_progressive.rs` | ProgressiveLightMapGPU accumulating four random lights' soft shadows into a 1024² float lightmap over the ground and the ShadowmappableMesh model, the potpack uv layout, the blurred seams, fog and the two TransformControls |
 | `webgpu_animation_retargeting_readyplayer` | 416 | `retargeting_readyplayer.rs` | The Mixamo dance retargeted onto ten Ready Player Me avatars and two source characters, GPU skinning, the hemisphere and two directional lights, and the reflector floor |
 | `webgpu_postprocessing_ssr_denoise` | 417 | `ssr_denoise.rs` | The dungeon under the SunLight cascades and the quarry HDR, stochastic SSR, the temporal reprojection, the recurrent denoise fed back into SSR, the grade, TRAA and sharpening |
@@ -15,7 +16,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | `webgl_loader_vrml` | 422 | `vrml.rs` | The sixteen VRML samples (meshes, background spheres, lines, points and textures) with the damped orbit that resets on each load |
 | `webgl_loader_usdz` | 423 | `usdz.rs` | The saeukkang model lit by the venice_sunset PMREM, the blurred background and ACES at exposure 2 |
 
-The four WebGPU examples are compared against the WebGPU renderer
+The three WebGPU examples are compared against the WebGPU renderer
 (`tests/browser/compute-examples.spec.js`). The six WebGL examples have no
 WebGPU counterpart in r186 and are compared against WebGLRenderer
 (`tests/browser/texture-volumes.spec.js`).
@@ -38,17 +39,6 @@ up the screen, so the flat normals negate WGSL's `dpdy`. Textures uploaded
 with `flipY` are sampled at `1 - v`. The canvas is tone mapped (where the page
 asks) and sRGB-encoded in the shader, and transparent objects blend on the
 encoded canvas, as in WebGL.
-
-### Compute rasterizer IBL (414)
-
-The page builds the helmet's LODs and meshlets with meshoptimizer 1.1 at load,
-and so does the port: it loads three.js's bundled MeshoptSimplifier and
-MeshoptClusterizer, runs the page's LOD loop ported to Rust on the helmet with
-its node transform applied, and packs the result into the page's storage
-buffers. The HZB kernels are generated per level from the page's template, and
-each frame culls against the previous frame's pyramid. The page's first frame
-is computed with the matrices from before the renderer switches the camera to
-WebGPU's clip space, and the port does the same.
 
 ### Progressive shadow map (415)
 
@@ -196,22 +186,12 @@ and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
   bounds are 16% / 3.5.
 - **USDZ.** With MSAA the silhouette's edges differ in 0.5–0.6% of pixels.
   The MSAA bounds are 0.8% / 0.6.
-- **Compute rasterizer IBL.** At DPR 2 the first frame after switching to the
-  XZ grid (capture 12) differs in 3.2% of pixels. Its occlusion test reads
-  the previous grid's pyramid with each instance's previous position, and
-  the original culls more distant chunks than the port does. The inputs
-  checked against the original at DPR 2 match: the screen size, the pyramid
-  levels, the previous view-projection and the pass order. The
-  port's occlusion is active, since a pyramid filled with the near plane culls
-  everything. The cause is not identified. That capture alone uses 3.5% / 2.8.
-  Every other capture uses the default bounds. At DPR 1 it is within 0.03%.
 
 The largest fractions of differing pixels over all states, with and without
-MSAA and at DPR 1 and 2 (excluding the scoped capture above):
+MSAA and at DPR 1 and 2:
 
 | Example | Largest fraction |
 | --- | ---: |
-| Compute rasterizer IBL (414) | 0.04% |
 | Progressive shadow map (415) | 0.09% |
 | Ready Player Me retargeting (416) | 0.02% |
 | SSR denoise (417) | 0.08% |
@@ -227,13 +207,11 @@ MSAA and at DPR 1 and 2 (excluding the scoped capture above):
 - **Residency.** Warmed cycles of time, controls, parameters and resize
   create no GPU resources. The DoF bokeh programs are built once per setting,
   and the VRML scenes are all resident.
-- **GPU state.** The compute rasterizer's queues, visibility buffers and depth
-  pyramid, the progressive lightmap, the SSR, reprojection, denoise and TRAA
-  histories, the simple GI vertex colors, and the birds' simulation textures
-  stay on the GPU.
+- **GPU state.** The progressive lightmap, the SSR, reprojection, denoise and
+  TRAA histories, the simple GI vertex colors, and the birds' simulation
+  textures stay on the GPU.
 - **CPU work kept as in the originals:**
-  - the retargeted clip, the helmet LODs and meshlets, and the potpack layout,
-    once;
+  - the retargeted clip and the potpack layout, once;
   - the SunLight cascade fitting and the culling and ordering of the scenes,
     each frame;
   - the DoF raycast autofocus and the leaves' motion, each frame.

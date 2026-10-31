@@ -351,9 +351,9 @@ auto-rotation step each OrbitControls.update() call takes, and the world
 matrices retargetClip reads while the loader has left them stale. The fixture
 patches are documented with the batch.
 
-The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array, compute
-rasterizer, building generator, loft geometry and sculpting batch
-([probe-sculpt-examples.md](probe-sculpt-examples.md)) compares its ten WebGPU
+The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array, building
+generator, loft geometry and sculpting batch
+([probe-sculpt-examples.md](probe-sculpt-examples.md)) compares its nine WebGPU
 examples against the WebGPU renderer, running the WGSL three.js generates for
 each page. The CPU generators the pages call (terrain and forest, the
 skyscraper, the loft sections and the Sculptor addon) are ported to match the
@@ -363,10 +363,10 @@ behaves unexpectedly the port follows the original's visible result or leaves
 the state out: the water page's transmission copy fails validation after a
 resize, so that resize is not compared.
 
-The compute rasterizer IBL, progressive shadow map, Ready Player Me
-retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU
-birds, VRML and USDZ batch ([probe-gi-dof-examples.md](probe-gi-dof-examples.md))
-ports four WebGPU examples and six WebGL-only ones. The WebGPU four run the
+The progressive shadow map, Ready Player Me retargeting, SSR denoise, simple
+GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ batch
+([probe-gi-dof-examples.md](probe-gi-dof-examples.md)) ports three WebGPU
+examples and six WebGL-only ones. The WebGPU three run the
 WGSL three.js generates for each page and are compared against the WebGPU
 renderer. The six WebGL scenes have no r186 WebGPU counterpart. They run WGSL
 translations of the GLSL WebGLRenderer builds and are compared against
@@ -445,12 +445,6 @@ scripts the landmarker's results and the webcam
 `webgl_loader_gltf_progressive_lod` streams its Needle Cloud models at run time,
 as the page does. Once the LODs settle, every mesh's geometry and texture levels
 must equal the original's ([progressive-lod.md](progressive-lod.md)).
-
-`webgl_renderer_pathtracer` is WebGL-only. It runs three-gpu-pathtracer's
-PhysicalPathTracingMaterial, converted from the GLSL the page compiles, over
-data textures that must match the original's uploads byte for byte. Its image
-tolerance covers ANGLE's and Dawn's float rounding, which makes individual
-paths diverge into scattered noise ([pathtracer.md](pathtracer.md)).
 
 `webgpu_tsl_transpiler` runs the r186 transpiler's port in Rust behind the
 page's own Monaco editors, and its output must match the original's text

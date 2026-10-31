@@ -856,13 +856,12 @@ The marching cubes, advanced postprocessing and IES examples reuse the retained
 `environment-materials` SwedishRoyalCastle cube and `uv_grid_opengl.jpg`, the
 `shadow-rtt` `Map-COL.jpg` and the `LeePerrySmith` normal map.
 
-The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array, compute
-rasterizer, building generator, loft geometry and sculpting batch embeds the
-WGSL Three.js r186 generates for those official WebGPU pages
+The Gaussian splat, water, custom fog, VXGI, GTAO, shadow-map array,
+building generator, loft geometry and sculpting batch embeds the WGSL
+Three.js r186 generates for those official WebGPU pages
 (`src/browser/gaussian_splat/`, `water/`, `custom_fog/`, `vxgi/`, `gtao/`,
-`shadow_array/`, `compute_rasterizer/`, `generator_building/`,
-`geometry_loft/` and `sculpt/`), with only unused subgroup directives
-removed. The terrain, forest, skyscraper, loft and Sculptor ports translate the
+`shadow_array/`, `generator_building/`, `geometry_loft/`, `sculpt/` and the
+shared `output_pass/`), with only unused subgroup directives removed. The terrain, forest, skyscraper, loft and Sculptor ports translate the
 MIT-licensed r186 addons. The batch adds these unmodified r186 example assets,
 distributed alongside `LICENSE-THREE` and their upstream licenses:
 
@@ -892,22 +891,15 @@ distributed alongside `LICENSE-THREE` and their upstream licenses:
   `textures/equirectangular/moonless_golf_2k.hdr.jpg` (Poly Haven, CC0);
   SHA-256 `ac051dede91a9bb8d63f8ee4b384f0af5b9ed64a93e3947452a692a3de9fa285`.
 
-The compute rasterizer IBL, progressive shadow map, Ready Player Me
-retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU
-birds, VRML and USDZ batch runs the WGSL three.js r186 generates for its
-WebGPU pages (`compute_rasterizer_ibl/`, `shadowmap_progressive/`,
+The progressive shadow map, Ready Player Me retargeting, SSR denoise, simple
+GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ batch runs the
+WGSL three.js r186 generates for its WebGPU pages (`shadowmap_progressive/`,
 `retargeting_readyplayer/` and `ssr_denoise/`) and WGSL translations of the
 GLSL WebGLRenderer builds for its WebGL pages; both derive from MIT-licensed
 three.js. The bakes are produced by `tools/tsl/prepare-*.mjs` from the pinned
-r186 example files with the r186 loaders and libraries (meshoptimizer 1.1 for
-the helmet LODs). The batch adds these r186 example assets and derived bakes,
-distributed alongside `LICENSE-THREE`:
+r186 example files with the r186 loaders and libraries. The batch adds these
+r186 example assets and derived bakes, distributed alongside `LICENSE-THREE`:
 
-- `gallery/assets/meshopt/meshopt_simplifier.module.js` and
-  `meshopt_clusterizer.module.js`: three.js r186's
-  `examples/jsm/libs/` builds of meshoptimizer 1.1 (MIT, Arseny Kapoulkine),
-  unchanged, which the rasterizer page loads to build the helmet's LODs and
-  meshlets at load.
 - `gallery/assets/gltf/ShadowmappableMesh.glb`: `models/gltf/ShadowmappableMesh.glb`;
   SHA-256 `1a5d49c27bf0b884b5cf70562c9023a3b931a90e05944eed02f3c5c226ff1c5d`.
 - `gallery/assets/gltf/readyplayer.me.glb`: `models/gltf/readyplayer.me.glb`, a

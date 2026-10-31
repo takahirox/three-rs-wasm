@@ -36,14 +36,6 @@ const cases={
  // Math.random; each capture renders 30 frames. The orbit slides there and back, so the
  // residency cycle returns to the same view.
  webgpu_shadowmap_progressive:{antialias:true,frames:30,times:[0],parameters:[[2,50,50],[3,100,100],[4,.2,.2],[1,false,0],[0,false,0],[0,true,1]],restore:[[1,true,1],[2,200,200],[3,50,50],[4,.5,.5]],at:0,slide:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
- // The helmets turn by the TSL time; each frame culls against the previous frame's depth
- // pyramid. FirstPersonControls leave the camera still without input.
- // At DPR 2 the first frame after the switch to the XZ grid (capture 12), whose occlusion test
- // reads the previous grid's pyramid, culls more distant chunks in the original than in the port
- // (docs/probe-gi-dof-examples.md); every other capture uses the default bounds.
- webgpu_compute_rasterizer_ibl:{stateLimits:{12:[.035,2.8]},times:[0,1,2.5],parameters:[[0,'Meshlet Debug',1],[0,'Geometry Normal',2],[0,'UV',4],[0,'Emissive',8],[0,'Default',0],[1,'SW Only',0],[1,'HW Only',1],[1,'Both',2],[2,'XYZ',1],[2,'XZ',0],[3,0,0],[4,8,8],[5,.5,.5]],restore:[[3,.0008,.0008],[4,3,3],[5,1,1]],at:2.5},
- // The teapots turn by the TSL time. FirstPersonControls leave the camera still without input.
- webgpu_compute_rasterizer:{times:[0,1,2.5],parameters:[[0,'Texture',1],[1,'SW Only',0],[1,'HW Only',1],[1,'Both',2],[2,.5,.5]],restore:[[0,'Meshlet Debug',0],[2,1,1]],at:2.5},
  // The light orbits by the loop's time and the knot turns by the Timer; the tile helpers follow
  // one frame behind, as the page updates them after rendering. BatchedMesh rewrites its
  // indirect texture each frame, as the original does.

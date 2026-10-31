@@ -15939,46 +15939,6 @@
             }
           },
           {
-            "kind": "webgpu_compute_rasterizer_ibl",
-            "reference": {
-              "draws": [
-                {
-                  "count": 5952,
-                  "instances": 1
-                }
-              ],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            },
-            "rust": {
-              "draws": [
-                {
-                  "count": 5952,
-                  "instances": 1
-                }
-              ],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            }
-          },
-          {
-            "kind": "webgpu_compute_rasterizer",
-            "reference": {
-              "draws": [],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            },
-            "rust": {
-              "draws": [],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            }
-          },
-          {
             "kind": "webgpu_shadowmap_array",
             "reference": {
               "draws": [
@@ -28515,55 +28475,6 @@
           }
         ]
       },
-      "compute-examples-Compute-e-1f955-ompute-rasterizer-samples-1": {
-        "comparison": [
-          {
-            "state": 0,
-            "fraction": 3.814697265625e-05,
-            "meanError": 0.001621246337890625
-          },
-          {
-            "state": 1,
-            "fraction": 7.62939453125e-05,
-            "meanError": 0.0032793680826822915
-          },
-          {
-            "state": 2,
-            "fraction": 3.814697265625e-05,
-            "meanError": 0.0015996297200520833
-          },
-          {
-            "state": 3,
-            "fraction": 1.52587890625e-05,
-            "meanError": 0.00016657511393229166
-          },
-          {
-            "state": 4,
-            "fraction": 2.6702880859375e-05,
-            "meanError": 0.0004247029622395833
-          },
-          {
-            "state": 5,
-            "fraction": 0,
-            "meanError": 0
-          },
-          {
-            "state": 6,
-            "fraction": 1.9073486328125e-05,
-            "meanError": 0.0002962748209635417
-          },
-          {
-            "state": 7,
-            "fraction": 2.6702880859375e-05,
-            "meanError": 0.0002644856770833333
-          },
-          {
-            "state": 8,
-            "fraction": 2.734375e-05,
-            "meanError": 0.00029947916666666664
-          }
-        ]
-      },
       "compute-examples-Compute-e-20f5e-g-webgpu-deferred-samples-1": {
         "comparison": [
           {
@@ -30306,68 +30217,6 @@
           }
         ]
       },
-      "compute-examples-Compute-e-62004-y-webgpu-compute-rasterizer": {
-        "residency": [
-          {
-            "resize": false,
-            "before": {
-              "creates": 107,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 107,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "resize": true,
-            "before": {
-              "creates": 127,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 127,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          }
-        ]
-      },
       "compute-examples-Compute-e-62c06-y-webgpu-postprocessing-fog": {
         "residency": [
           {
@@ -30868,95 +30717,6 @@
             "state": 7,
             "fraction": 3.90625e-06,
             "meanError": 0.00026432291666666667
-          }
-        ]
-      },
-      "compute-examples-Compute-e-6feae-te-rasterizer-ibl-samples-1": {
-        "comparison": [
-          {
-            "state": 0,
-            "fraction": 0,
-            "meanError": 0.0003369649251302083
-          },
-          {
-            "state": 1,
-            "fraction": 0,
-            "meanError": 0.0003331502278645833
-          },
-          {
-            "state": 2,
-            "fraction": 0,
-            "meanError": 0.00032806396484375
-          },
-          {
-            "state": 3,
-            "fraction": 0,
-            "meanError": 4.0690104166666664e-05
-          },
-          {
-            "state": 4,
-            "fraction": 0,
-            "meanError": 4.0690104166666664e-05
-          },
-          {
-            "state": 5,
-            "fraction": 0,
-            "meanError": 4.0690104166666664e-05
-          },
-          {
-            "state": 6,
-            "fraction": 0,
-            "meanError": 4.0690104166666664e-05
-          },
-          {
-            "state": 7,
-            "fraction": 0,
-            "meanError": 0.00032806396484375
-          },
-          {
-            "state": 8,
-            "fraction": 0,
-            "meanError": 0.00032806396484375
-          },
-          {
-            "state": 9,
-            "fraction": 0,
-            "meanError": 6.612141927083333e-05
-          },
-          {
-            "state": 10,
-            "fraction": 0,
-            "meanError": 0.00032806396484375
-          },
-          {
-            "state": 11,
-            "fraction": 4.9591064453125e-05,
-            "meanError": 0.0030911763509114585
-          },
-          {
-            "state": 12,
-            "fraction": 0,
-            "meanError": 0.00031280517578125
-          },
-          {
-            "state": 13,
-            "fraction": 0.000240325927734375,
-            "meanError": 0.017182668050130207
-          },
-          {
-            "state": 14,
-            "fraction": 1.52587890625e-05,
-            "meanError": 0.0013287862141927083
-          },
-          {
-            "state": 15,
-            "fraction": 0.000469207763671875,
-            "meanError": 0.030125935872395832
-          },
-          {
-            "state": 16,
-            "fraction": 0.00034375,
-            "meanError": 0.025026041666666665
           }
         ]
       },
@@ -32323,68 +32083,6 @@
             "state": 13,
             "fraction": 0,
             "meanError": 0
-          }
-        ]
-      },
-      "compute-examples-Compute-e-89beb-bgpu-compute-rasterizer-ibl": {
-        "residency": [
-          {
-            "resize": false,
-            "before": {
-              "creates": 353,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 353,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "resize": true,
-            "before": {
-              "creates": 406,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 406,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
           }
         ]
       },
@@ -51833,46 +51531,6 @@
             }
           },
           {
-            "kind": "webgpu_compute_rasterizer_ibl",
-            "reference": {
-              "draws": [
-                {
-                  "count": 5952,
-                  "instances": 1
-                }
-              ],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            },
-            "rust": {
-              "draws": [
-                {
-                  "count": 5952,
-                  "instances": 1
-                }
-              ],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            }
-          },
-          {
-            "kind": "webgpu_compute_rasterizer",
-            "reference": {
-              "draws": [],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            },
-            "rust": {
-              "draws": [],
-              "attributeBytes": 0,
-              "transformBytes": 0,
-              "textureBytes": 0
-            }
-          },
-          {
             "kind": "webgpu_shadowmap_array",
             "reference": {
               "draws": [
@@ -64409,55 +64067,6 @@
           }
         ]
       },
-      "compute-examples-Compute-e-1f955-ompute-rasterizer-samples-1": {
-        "comparison": [
-          {
-            "state": 0,
-            "fraction": 4.1961669921875e-05,
-            "meanError": 0.001873016357421875
-          },
-          {
-            "state": 1,
-            "fraction": 6.29425048828125e-05,
-            "meanError": 0.002682367960611979
-          },
-          {
-            "state": 2,
-            "fraction": 5.245208740234375e-05,
-            "meanError": 0.002120335896809896
-          },
-          {
-            "state": 3,
-            "fraction": 2.47955322265625e-05,
-            "meanError": 0.0004431406656901042
-          },
-          {
-            "state": 4,
-            "fraction": 2.09808349609375e-05,
-            "meanError": 0.0003534952799479167
-          },
-          {
-            "state": 5,
-            "fraction": 0,
-            "meanError": 0
-          },
-          {
-            "state": 6,
-            "fraction": 2.47955322265625e-05,
-            "meanError": 0.00035063425699869793
-          },
-          {
-            "state": 7,
-            "fraction": 2.6702880859375e-05,
-            "meanError": 0.00039958953857421875
-          },
-          {
-            "state": 8,
-            "fraction": 4.8828125e-05,
-            "meanError": 0.0009807942708333333
-          }
-        ]
-      },
       "compute-examples-Compute-e-20f5e-g-webgpu-deferred-samples-1": {
         "comparison": [
           {
@@ -66200,68 +65809,6 @@
           }
         ]
       },
-      "compute-examples-Compute-e-62004-y-webgpu-compute-rasterizer": {
-        "residency": [
-          {
-            "resize": false,
-            "before": {
-              "creates": 107,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 107,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "resize": true,
-            "before": {
-              "creates": 127,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 127,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          }
-        ]
-      },
       "compute-examples-Compute-e-62c06-y-webgpu-postprocessing-fog": {
         "residency": [
           {
@@ -66762,95 +66309,6 @@
             "state": 7,
             "fraction": 8.7890625e-06,
             "meanError": 0.0002265625
-          }
-        ]
-      },
-      "compute-examples-Compute-e-6feae-te-rasterizer-ibl-samples-1": {
-        "comparison": [
-          {
-            "state": 0,
-            "fraction": 1.9073486328125e-06,
-            "meanError": 0.0004259745279947917
-          },
-          {
-            "state": 1,
-            "fraction": 0,
-            "meanError": 0.000316619873046875
-          },
-          {
-            "state": 2,
-            "fraction": 1.9073486328125e-06,
-            "meanError": 0.0003859202067057292
-          },
-          {
-            "state": 3,
-            "fraction": 3.814697265625e-06,
-            "meanError": 0.00017674763997395834
-          },
-          {
-            "state": 4,
-            "fraction": 9.5367431640625e-07,
-            "meanError": 4.1961669921875e-05
-          },
-          {
-            "state": 5,
-            "fraction": 0,
-            "meanError": 3.337860107421875e-05
-          },
-          {
-            "state": 6,
-            "fraction": 0,
-            "meanError": 3.337860107421875e-05
-          },
-          {
-            "state": 7,
-            "fraction": 9.5367431640625e-07,
-            "meanError": 0.0003325144449869792
-          },
-          {
-            "state": 8,
-            "fraction": 1.9073486328125e-06,
-            "meanError": 0.00038750966389973957
-          },
-          {
-            "state": 9,
-            "fraction": 0,
-            "meanError": 6.993611653645833e-05
-          },
-          {
-            "state": 10,
-            "fraction": 3.814697265625e-06,
-            "meanError": 0.0004634857177734375
-          },
-          {
-            "state": 11,
-            "fraction": 5.626678466796875e-05,
-            "meanError": 0.003772735595703125
-          },
-          {
-            "state": 12,
-            "fraction": 0.03151226043701172,
-            "meanError": 2.594333012898763
-          },
-          {
-            "state": 13,
-            "fraction": 5.340576171875e-05,
-            "meanError": 0.0038493474324544272
-          },
-          {
-            "state": 14,
-            "fraction": 2.86102294921875e-05,
-            "meanError": 0.00240325927734375
-          },
-          {
-            "state": 15,
-            "fraction": 0.0004253387451171875,
-            "meanError": 0.036407470703125
-          },
-          {
-            "state": 16,
-            "fraction": 2.63671875e-05,
-            "meanError": 0.0023317057291666666
           }
         ]
       },
@@ -68217,68 +67675,6 @@
             "state": 13,
             "fraction": 0,
             "meanError": 0
-          }
-        ]
-      },
-      "compute-examples-Compute-e-89beb-bgpu-compute-rasterizer-ibl": {
-        "residency": [
-          {
-            "resize": false,
-            "before": {
-              "creates": 353,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 353,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
-          },
-          {
-            "resize": true,
-            "before": {
-              "creates": 406,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            },
-            "after": {
-              "creates": 406,
-              "transfers": [
-                0,
-                0,
-                0
-              ],
-              "resources": [
-                0,
-                0,
-                0
-              ]
-            }
           }
         ]
       },

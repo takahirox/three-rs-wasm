@@ -44,10 +44,6 @@ mod composer_passes;
 mod compute_birds;
 #[cfg(feature = "compute_cloth")]
 mod compute_cloth;
-#[cfg(feature = "compute_rasterizer")]
-mod compute_rasterizer;
-#[cfg(feature = "compute_rasterizer_ibl")]
-mod compute_rasterizer_ibl;
 #[cfg(feature = "compute_reduce")]
 mod compute_reduce;
 #[cfg(feature = "compute_water")]
@@ -246,7 +242,7 @@ mod md2_control;
 mod memory_outline;
 #[cfg(feature = "mesh_batch")]
 mod mesh_batch;
-#[cfg(any(feature = "compute_rasterizer_ibl", feature = "batch_lod_bvh"))]
+#[cfg(feature = "batch_lod_bvh")]
 mod meshopt;
 #[cfg(feature = "mirror_webgl")]
 mod mirror_webgl;
@@ -266,8 +262,6 @@ mod offscreen;
 mod outline;
 #[cfg(feature = "passes_decals")]
 mod passes_decals;
-#[cfg(feature = "pathtracer")]
-mod pathtracer;
 #[cfg(feature = "periodic_table")]
 mod periodic_table;
 #[cfg(feature = "physics_ammo_break")]

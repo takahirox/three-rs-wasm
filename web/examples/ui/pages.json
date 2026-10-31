@@ -1067,7 +1067,7 @@
 	},
 	"webgl_materials_envmaps_fasthdr": {
 		"css": "main",
-		"info": "<div id=\"info\"><a href=\"https://threejs.org\" target=\"_blank\" rel=\"noopener\">threejs</a> - Example of <a href=\"https://cloud.needle.tools/hdris\" target=\"_blank\">FastHDR</a>, loading 10x faster and using 95% less GPU memory than EXR.<br/>Photography by <a href=\"https://cloud.needle.tools/hdris?img=Ballroom\" target=\"_blank\" rel=\"noopener\">Sergej Majboroda</a></div>",
+		"info": "<div id=\"info\"><a href=\"https://threejs.org\" target=\"_blank\" rel=\"noopener\">three.js</a> - <a href=\"https://cloud.needle.tools/hdris\" target=\"_blank\" rel=\"noopener\">FastHDR</a> prefiltered HDR cubemaps.<br/>Environments by <a href=\"https://polyhaven.com\" target=\"_blank\" rel=\"noopener\">Poly Haven</a> (CC0).</div>",
 		"styles": []
 	},
 	"webgl_materials_envmaps_hdr": {
@@ -1376,13 +1376,6 @@
 			"body {\n\t\t\t\tcolor: #444;\n\t\t\t}\n\t\t\ta {\n\t\t\t\tcolor: #08f;\n\t\t\t}"
 		]
 	},
-	"webgl_renderer_pathtracer": {
-		"css": "main",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org\" target=\"_blank\" rel=\"noopener\">three.js</a> pathtracer - <a href=\"https://github.com/gkjohnson/three-gpu-pathtracer\" target=\"_blank\" rel=\"noopener\">three-gpu-pathtracer</a><br/>\n\t\t\tSee <a href=\"https://github.com/gkjohnson/three-gpu-pathtracer\" target=\"_blank\" rel=\"noopener\">main project repository</a> for more information and examples on high fidelity path tracing.\n\t\t</div>",
-		"styles": [
-			"body {\n\t\t\t\tcolor: #444;\n\t\t\t\tbackground-color: white;\n\t\t\t}\n\n\t\t\ta {\n\t\t\t\tcolor: #fb8c00;\n\t\t\t}\n\n\t\t\t.checkerboard {\n\t\t\t\tbackground-image:\n\t\t\t\t\tlinear-gradient(45deg, #ddd 25%, transparent 25%),\n\t\t\t\t\tlinear-gradient(-45deg, #ddd 25%, transparent 25%),\n\t\t\t\t\tlinear-gradient(45deg, transparent 75%, #ddd 75%),\n\t\t\t\t\tlinear-gradient(-45deg, transparent 75%, #ddd 75%);\n\t\t\t\tbackground-size: 20px 20px;\n\t\t\t\tbackground-position: 0 0, 0 10px, 10px -10px, -10px 0px;\n\t\t\t}\n\n\t\t\t.lil-gui .gui-render {\n\t\t\t\tline-height: var(--widget-height);\n\t\t\t\tpadding: var(--padding);\n\t\t\t}"
-		]
-	},
 	"webgl_rendertarget_texture2darray": {
 		"css": "main",
 		"info": null,
@@ -1631,7 +1624,7 @@
 	},
 	"webgpu_compute_particles_rain": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Compute Rain</span>\n\t\t\t</div>\n\n\t\t\t<small>Compatible with native lights and shadows using post-processing pass.</small>\n\t\t</div>",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Compute Rain</span>\n\t\t\t</div>\n\n\t\t\t<small>Compute-driven rain particles represented by an instanced mesh of merged billboards.</small>\n\t\t</div>",
 		"styles": []
 	},
 	"webgpu_compute_particles_snow": {
@@ -1642,16 +1635,6 @@
 	"webgpu_compute_points": {
 		"css": "example",
 		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a>\n\t\t\t\t<span>Compute</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\t300k points animated using GPU.\n\t\t\t</small>\n\t\t</div>",
-		"styles": []
-	},
-	"webgpu_compute_rasterizer": {
-		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>GPU-Driven Compute Rasterizer</span>\n\t\t\t</div>\n\n\t\t\t<small>Rendering <span id=\"triangleCount\"></span> triangles.</small>\n\t\t</div>",
-		"styles": []
-	},
-	"webgpu_compute_rasterizer_ibl": {
-		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>GPU-Driven Compute Rasterizer — IBL</span>\n\t\t\t</div>\n\n\t\t\t<small>Rendering <span id=\"triangleCount\"></span> triangles.<br/>Battle Damaged Sci-fi Helmet by theblueturtle_</small>\n\t\t</div>",
 		"styles": []
 	},
 	"webgpu_compute_reduce": {
@@ -2069,7 +2052,7 @@
 	},
 	"webgpu_mesh_batch": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t<div class=\"title-wrapper\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Batch Mesh</span>\n\t\t</div>\n\n\t\t<small>Mirror reflections using procedural effects.</small>\n\t</div>",
+		"info": "<div id=\"info\">\n\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t<div class=\"title-wrapper\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Batch Mesh</span>\n\t\t</div>\n\n\t\t<small>Batched mesh with randomized geometries and transformations.</small>\n\t</div>",
 		"styles": []
 	},
 	"webgpu_mirror": {
@@ -2140,7 +2123,7 @@
 	},
 	"webgpu_ocean": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Occlusion</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tThe plane is green when the sphere is completely occluded.\n\t\t\t</small>\n\t\t</div>",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Occlusion</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tAnimated water surface reflecting a procedural sky.\n\t\t\t</small>\n\t\t</div>",
 		"styles": []
 	},
 	"webgpu_oit": {
@@ -2394,7 +2377,7 @@
 	},
 	"webgpu_rendertarget_2d-array_3d": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>RenderTarget Array/3D</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tRenderTargetArray and RenderTarget3D examples.\n\t\t\t</small>\n\t\t</div>",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>RenderTarget Array/3D</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tRenderTargetArray and RenderTarget3D examples.<br />\n\t\t\t\tHead data from the\n\t\t\t\t<a href=\"https://www.bic.mni.mcgill.ca/ServicesAtlases/ICBM152NLin2009\" target=\"_blank\" rel=\"noopener\">MNI ICBM 2009c</a> template.\n\t\t\t</small>\n\t\t</div>",
 		"styles": [
 			".viewport-label {\n\t\t\t\tposition: absolute;\n\t\t\t\tcolor: white;\n\t\t\t\tbackground-color: rgba(0, 0, 0, 0.7);\n\t\t\t\tpadding: 5px 10px;\n\t\t\t\tborder-radius: 4px;\n\t\t\t\tfont-family: monospace;\n\t\t\t\tpointer-events: none;\n\t\t\t\tz-index: 1000;\n\t\t\t\tuser-select: none;\n\t\t\t}"
 		]
@@ -2490,7 +2473,7 @@
 	},
 	"webgpu_sky": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Sky</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tSky + Sun shader.\n\t\t\t</small>\n\t\t</div>",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>Sky</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tProcedural skydome with atmospheric scattering and clouds.\n\t\t\t</small>\n\t\t</div>",
 		"styles": []
 	},
 	"webgpu_sprites": {
@@ -2525,7 +2508,7 @@
 	},
 	"webgpu_textures_2d-array": {
 		"css": "example",
-		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>2D Texture Array</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tScanned head data by\n\t\t\t\t<a href=\"https://www.codeproject.com/Articles/352270/Getting-started-with-Volume-Rendering\" target=\"_blank\" rel=\"noopener\">Divine Augustine</a> licensed under <a href=\"https://www.codeproject.com/info/cpol10.aspx\" target=\"_blank\" rel=\"noopener\">CPOL</a>.\n\t\t\t</small>\n\t\t</div>",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>2D Texture Array</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tHead data from the\n\t\t\t\t<a href=\"https://www.bic.mni.mcgill.ca/ServicesAtlases/ICBM152NLin2009\" target=\"_blank\" rel=\"noopener\">MNI ICBM 2009c</a> template.\n\t\t\t</small>\n\t\t</div>",
 		"styles": []
 	},
 	"webgpu_textures_2d-array_compressed": {

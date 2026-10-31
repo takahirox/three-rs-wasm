@@ -1,6 +1,8 @@
-# Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, compute rasterizer, building generator, loft geometry and sculpting
+# Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, building generator, loft geometry and sculpting
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`. The
+batch's `webgpu_compute_rasterizer` port (410) left the gallery with r187,
+which removed the example.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -10,12 +12,11 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | `webgpu_vxgi` | 407 | `vxgi.rs` | The Cornell box voxelized once into a 72 × 56 × 72 opacity volume and its mips, the radiance volume relit when the injection settings change, the cone-traced AO and GI, the scene pass, TRAA and the output views |
 | `webgpu_postprocessing_ao` | 408 | `gtao.rs` | The gallery room with the Draco Tennyson bust, three spotlights, the RoomEnvironment PMREM, GTAONode at half resolution with its magic-square noise, TRAA and NeutralToneMapping |
 | `webgpu_shadowmap_array` | 409 | `shadow_array.rs` | Instanced columns, boxes, spheres and tori, the batched forest, the torus knot, TileShadowNode's 2 × 2 tiles in a 4096² depth array and the tile helpers |
-| `webgpu_compute_rasterizer` | 410 | `compute_rasterizer.rs` | 160,000 teapots in seven LODs through the five compute passes (clear, frustum and LOD culling into the work queue, indirect dispatch, the atomic software rasterizer, the hardware queue's indirect draw), the visibility resolve and the hardware fallback |
 | `webgpu_generator_building` | 411 | `generator_building.rs` | SkyscraperGenerator's tower generated when a building parameter changes, its partId-shaded material, the SkyMesh sky baked into the PMREM for the time of day, the SunLight cascades, the shadow-catching ground and the auto-rotating orbit |
 | `webgpu_geometry_loft` | 412 | `geometry_loft.rs` | Twenty LoftGeometry pieces and two circles generated once, their seventeen node materials, the SunLight's 4096² cascades, the RoomEnvironment PMREM, the vignette background, the turning group and the sections view |
 | `webgpu_sculpt` | 413 | `sculpt.rs` | The Sculptor addon's dynamic-topology strokes on the CPU with its nine tools, the attribute update ranges, the brush cursor and the damped orbit |
 
-All ten are WebGPU examples compared against the WebGPU renderer
+All nine are WebGPU examples compared against the WebGPU renderer
 (`tests/browser/compute-examples.spec.js`).
 
 ## Port notes
@@ -27,9 +28,10 @@ three.js r186 generates for its page, captured from `createShaderModule` on
 the reference page with the pipelines, bind groups, passes and uniform
 writes. Uniform structs are packed by name from each module's own struct. The
 modules run unchanged with automatic layouts, except that the compute kernels
-of 407 and 410 drop the subgroup built-ins they declare but never use. Shaders
+of 407 drop the subgroup built-ins they declare but never use. Shaders
 shared with earlier ports are included from those ports' directories, byte for
-byte.
+byte; the output pass that 413 shares with `webgpu_compute_reduce` is in
+`output_pass/`.
 
 ### Gaussian splats (404)
 
@@ -84,16 +86,6 @@ front to back on the CPU into the indirect texture per camera, as BatchedMesh
 does. The tile helpers and the camera helper follow one frame behind, since
 the page updates them after rendering.
 
-### Compute rasterizer (410)
-
-The seven TeapotGeometry LODs, the meshlet IDs, the 64-triangle chunk bounds
-and the instance placements are packed once at load into storage buffers.
-Each frame runs the five compute passes, the indirect dispatch and the
-indirect hardware draw. Resizing reallocates only the visibility buffers. The
-fixture's GUI stand-in gains addEventListener for the Mode control. The page's
-output pass after the quad is overwritten by the final output pass and is not
-repeated.
-
 ### Building generator (411)
 
 SkyscraperGenerator is ported in f64: the seeded style, the footprint and its
@@ -144,8 +136,8 @@ and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
 
 The largest fractions of differing pixels over all states (DPR 1, with and
 without MSAA) are 0.005% for 404, 0.16% for 405, 0.01% for 407, 0.02% for 408,
-0.32% for 409, 0.006% for 410, 0.12% for 411 and 0.003% for 412. Sculpting
-(413) matches exactly in every state.
+0.32% for 409, 0.12% for 411 and 0.003% for 412. Sculpting (413) matches
+exactly in every state.
 
 ## Performance evidence
 
@@ -154,12 +146,11 @@ without MSAA) are 0.005% for 404, 0.16% for 405, 0.01% for 407, 0.02% for 408,
   building parameter, as the page does, so its cycle leaves those parameters
   out. The sculpting cycle covers hovering and orbiting, since strokes change
   the mesh.
-- **GPU state.** The splat sort, the voxel volumes, the compute rasterizer's
-  queues and visibility buffers and the shadow arrays stay on the GPU.
+- **GPU state.** The splat sort, the voxel volumes and the shadow arrays stay
+  on the GPU.
 - **CPU work kept as in the originals:**
   - The splat decoding, the terrain and forest, the voxelization triangles,
-    the teapot LODs, the loft geometry and the tower generation, once (or per
-    regeneration).
+    the loft geometry and the tower generation, once (or per regeneration).
   - The SunLight cascade fitting and BatchedMesh's tree sorting each frame.
   - The sculpting strokes on the CPU, as the Sculptor addon does them.
 - **Uploads.** No vertex or index data is written in steady frames. Sculpting

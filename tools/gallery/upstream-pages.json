@@ -803,10 +803,6 @@
  "webgl_refraction": [
   "examples/assets/refraction/waterdudv.jpg"
  ],
- "webgl_renderer_pathtracer": [
-  "examples/assets/ldraw/7140-1-X-wingFighter.mpd_Packed.mpd",
-  "examples/assets/probes-hdr/royal_esplanade_2k.hdr.jpg"
- ],
  "webgl_rendertarget_texture2darray": [
   "examples/assets/head256x256x109.zip"
  ],
@@ -921,19 +917,6 @@
  ],
  "webgpu_compute_particles_rain": [
   "examples/assets/suzanne_buffergeometry.json"
- ],
- "webgpu_compute_rasterizer": [
-  "examples/assets/tsl-procedural/uv_grid_directx.jpg"
- ],
- "webgpu_compute_rasterizer_ibl": [
-  "examples/environments/royal_esplanade_2k.hdr.jpg",
-  "examples/models/DamagedHelmet/glTF/DamagedHelmet.bin",
-  "examples/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
-  "examples/models/DamagedHelmet/glTF/Default_AO.jpg",
-  "examples/models/DamagedHelmet/glTF/Default_albedo.jpg",
-  "examples/models/DamagedHelmet/glTF/Default_emissive.jpg",
-  "examples/models/DamagedHelmet/glTF/Default_metalRoughness.jpg",
-  "examples/models/DamagedHelmet/glTF/Default_normal.jpg"
  ],
  "webgpu_compute_water": [
   "examples/assets/gltf/duck.glb",

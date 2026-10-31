@@ -965,17 +965,16 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
-### Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, compute rasterizer, building generator, loft geometry and sculpting
+### Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, building generator, loft geometry and sculpting
 
-- **GPU state.** The splat sort, the VXGI opacity and radiance volumes, the
-  compute rasterizer's work queues, indirect arguments and visibility buffers,
-  and the shadow-map array stay on the GPU. The splat sort runs only when the
+- **GPU state.** The splat sort, the VXGI opacity and radiance volumes and the
+  shadow-map array stay on the GPU. The splat sort runs only when the
   view turns, and the radiance volume is re-injected only when its inputs
   change, as in the originals.
 - **CPU work as in the originals.** The splat decoding, the terrain and
-  forest, the voxelization triangles, the teapot LODs, the loft geometry and
-  the skyscraper are generated once, or when a parameter regenerates them. The
-  SunLight cascade fitting and BatchedMesh's tree sorting run each frame.
+  forest, the voxelization triangles, the loft geometry and the skyscraper are
+  generated once, or when a parameter regenerates them. The SunLight cascade
+  fitting and BatchedMesh's tree sorting run each frame.
   Sculpting runs the Sculptor addon's strokes on the CPU, as the addon does.
 - **Uploads.** No vertex or index data is written in steady frames. A
   sculpting stroke uploads only the addon's attribute update ranges and, when
@@ -984,14 +983,13 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
-### Compute rasterizer IBL, progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
+### Progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
 
-- **GPU state.** The compute rasterizer's queues, visibility buffers and
-  depth pyramid, the progressive lightmap, the SSR, reprojection, denoise and
+- **GPU state.** The progressive lightmap, the SSR, reprojection, denoise and
   TRAA histories, the simple GI vertex colors and the birds' simulation
   textures stay on the GPU.
-- **CPU work as in the originals.** The retargeted clip, the helmet LODs and
-  the potpack layout are built once. The SunLight cascade fitting, the scenes'
+- **CPU work as in the originals.** The retargeted clip and the potpack
+  layout are built once. The SunLight cascade fitting, the scenes'
   culling and ordering, and the DoF raycast autofocus run each frame.
 - **CPU work moved to the GPU.** SimpleGI's per-vertex readback and byte sum
   run in a compute pass that writes the vertex colors in place.

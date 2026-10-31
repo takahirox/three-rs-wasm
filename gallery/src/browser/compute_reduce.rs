@@ -8,7 +8,7 @@
 //! shows one of the four display modes ( the input as a 512 × 512 grid, its
 //! power-of-two elements, element 0 and the workgroup sums ). Every compute
 //! and render stage runs the WGSL three.js r186 generates for the page ( in
-//! `compute_reduce/`; the output pass is the compute_rasterizer one ), with
+//! `compute_reduce/`; the output pass in `output_pass/` ), with
 //! the device's subgroups feature.
 use super::deferred::{Draw, culled_pipeline, set};
 use super::lights_projector::pack;
@@ -27,8 +27,8 @@ macro_rules! wgsl {
         include_str!(concat!("compute_reduce/", $name, ".wgsl"))
     };
 }
-const OUTPUT_VS: &str = include_str!("compute_rasterizer/8.wgsl");
-const OUTPUT_FS: &str = include_str!("compute_rasterizer/9.wgsl");
+const OUTPUT_VS: &str = include_str!("output_pass/vs.wgsl");
+const OUTPUT_FS: &str = include_str!("output_pass/fs.wgsl");
 /// The algorithms in the GUI's order.
 pub(super) const ALGORITHMS: [&str; 6] = [
     "Reduce 0 (N/2)",

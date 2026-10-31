@@ -193,23 +193,6 @@
 
 			};
 
-			window.addEventListener( 'hashchange', () => {
-                const file = window.location.hash.substring( 1 );
-                if ( validRedirects.has( file ) && selected !== file ) {
-                    selectFile( file ); viewer.src = validRedirects.get( file ); updateLinkScroll();
-                }
-            } );
-
-            // iOS iframe auto-resize workaround
-
-			if ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) {
-
-				viewer.style.width = getComputedStyle( viewer ).width;
-				viewer.style.height = getComputedStyle( viewer ).height;
-				viewer.setAttribute( 'scrolling', 'no' );
-
-			}
-
 		}
 
 		function createLink( file, tags ) {
@@ -266,7 +249,7 @@
 
 			// Reveal "View source" button and set attributes to this example
 			viewSrcButton.style.display = '';
-			viewSrcButton.href = 'https://github.com/mrdoob/three.js/blob/148ef33ecb6d2502ff796d4554abd1549c95d519/examples/' + selected + '.html';
+			viewSrcButton.href = 'https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/examples/' + selected + '.html';
 			viewSrcButton.title = 'View source code for ' + getName( selected ) + ' on GitHub';
 
 		}

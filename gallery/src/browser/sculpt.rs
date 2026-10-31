@@ -9,7 +9,7 @@
 //! position and normal writes, the index rewritten when the topology
 //! changes, and new buffers only when the addon reallocates its arrays.
 //! Every stage runs the WGSL three.js r186 generates for the page ( in
-//! `sculpt/`; the output is the compute_rasterizer module's, byte-identical ).
+//! `sculpt/`; the output pass in `output_pass/` ).
 mod sculptor;
 use super::controls_attributes::{Controls, camera_state, viewport_css};
 use super::deferred::{Draw, culled_pipeline, set};
@@ -30,8 +30,8 @@ macro_rules! wgsl {
         include_str!(concat!("sculpt/", $name, ".wgsl"))
     };
 }
-const OUTPUT_VS: &str = include_str!("compute_rasterizer/8.wgsl");
-const OUTPUT_FS: &str = include_str!("compute_rasterizer/9.wgsl");
+const OUTPUT_VS: &str = include_str!("output_pass/vs.wgsl");
+const OUTPUT_FS: &str = include_str!("output_pass/fs.wgsl");
 const LOCATION0: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![0 => Float32x3];
 const LOCATION1: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![1 => Float32x3];
 /// The cursor dot's radius in pixels of the brush size.
