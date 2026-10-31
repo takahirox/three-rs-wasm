@@ -142,8 +142,9 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // The skinning instances write each frame's bone and instance matrices to storage buffers,
-// as the original's needsUpdate storage attributes are.
-const streams=['webgpu_skinning_instancing_individual'];
+// as the original's needsUpdate storage attributes are. The ballpool's RapierPhysics writes the
+// instance matrices each step, bound as instanced attributes with the previous frame's ( r187 ).
+const streams=['webgpu_skinning_instancing_individual','webgpu_postprocessing_ssgi_ballpool'];
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
