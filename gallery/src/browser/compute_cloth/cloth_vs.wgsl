@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,11 +8,11 @@
 
 // uniforms
 
-struct NodeBuffer_991Struct {
+struct nodeUniform0Struct {
 	value : array< vec3<f32> >
 };
 @binding( 5 ) @group( 1 )
-var<storage, read> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
@@ -37,11 +37,9 @@ struct objectStruct {
 	nodeUniform12 : f32,
 	nodeUniform15 : mat3x3<f32>,
 	nodeUniform16 : mat4x4<f32>,
-	nodeUniform17 : f32,
 	nodeUniform18 : mat4x4<f32>,
 	nodeUniform20 : f32,
-	nodeUniform21 : f32,
-	nodeUniform23 : f32
+	nodeUniform21 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -61,7 +59,6 @@ var<private> nodeVar1 : vec3<f32>;
 var<private> nodeVar2 : vec3<f32>;
 var<private> nodeVar3 : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar174 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -78,17 +75,17 @@ fn main( @location( 0 ) position : vec3<f32>,
 	// code
 
 	positionLocal = position;
-	nodeVar0 = NodeBuffer_991.value[ vertexIds.x ];
-	nodeVar1 = NodeBuffer_991.value[ vertexIds.y ];
-	nodeVar2 = NodeBuffer_991.value[ vertexIds.z ];
-	nodeVar3 = NodeBuffer_991.value[ vertexIds.w ];
+	nodeVar0 = nodeUniform0.value[ vertexIds.x ];
+	nodeVar1 = nodeUniform0.value[ vertexIds.y ];
+	nodeVar2 = nodeUniform0.value[ vertexIds.z ];
+	nodeVar3 = nodeUniform0.value[ vertexIds.w ];
 	positionLocal = ( ( ( ( nodeVar0 + nodeVar1 ) + nodeVar2 ) + nodeVar3 ) * vec3<f32>( 0.25 ) );
 	varyings.nodeVarying3 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform15 * cross( normalize( ( ( nodeVar1 + nodeVar3 ) - ( nodeVar0 + nodeVar2 ) ) ), normalize( ( ( nodeVar2 + nodeVar3 ) - ( nodeVar0 + nodeVar1 ) ) ) ) ), 0.0 ) ).xyz );
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform16 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
-	VERTEX_nodeVar174 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar174;
+	let VERTEX_nodeConst16 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst16;
 
 	// result
 

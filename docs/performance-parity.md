@@ -932,7 +932,8 @@ No GPU timing parity is claimed.
 - **Simulations.** The protoplanet's GPUComputationRenderer pair, the cloth's
   Verlet buffers and the fluid's particles and grid stay on the GPU. Each
   requested frame runs their passes, as the originals do per animate(); the
-  fluid writes its own indirect-dispatch counts.
+  fluid dispatches its five kernels in one compute pass, each for its
+  particle or cell count, as r187's page does.
 - **Per-frame passes.** The dynamic cubemap's six faces and PMREM, the
   light-probe scenes' point shadows and the caustic volume's mipmapped frame
   copies run every frame, as in the originals, on targets created once per

@@ -5,14 +5,16 @@
 //! roughness ), resolves the lighting on a full-screen quad over the sky
 //! background with the opaque depth, renders the transparent planes over
 //! that depth and composites the two; forward mode renders the scene lit in
-//! one pass. The sky is CubeMapNode's 1024² cube in the background and a
-//! lodMax 9 PMREM for the lighting. Every stage runs the WGSL three.js r186
-//! generates for the page (in `deferred/`).
+//! one pass. The sky is CubeMapNode's 1024² cube in the background and
+//! r187's cube PMREM ( fromEquirectangular, 512² faces, `pmrem.rs` ) for the
+//! lighting. Every stage runs the WGSL three.js r187 generates for the page
+//! (in `deferred/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::fetch;
 use super::lights_projector::{m3, m4, pack};
 use super::models_modifiers::teapot;
-use super::pmrem_cube_uv::{Pmrem, bind, flat_camera, raw_pipeline, source_pipeline};
+use super::pmrem::Pmrem;
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::probes_hdr::ultra_hdr;
 use super::retro::{mipmapped_raw, target, uniform};
 use super::shadowmap_opacity::Mipmaps;
@@ -291,6 +293,18 @@ pub(super) fn set(pass: &mut wgpu::RenderPass, (pipeline, groups): &Draw) {
         pass.set_bind_group(i as u32, g, &[]);
     }
 }
+/// The draws independent of the drawing-buffer size.
+struct Draws {
+    /// The resolved and forward passes' background, and the MRT's.
+    background: Draw,
+    mrt_background: Draw,
+    /// Opaque draws in the MRT ( the spheres, then the teapot ) and lit in
+    /// the forward pass.
+    opaque: Vec<Draw>,
+    forward_opaque: Vec<Draw>,
+    /// Back and front faces of each plane.
+    planes: Vec<[Draw; 2]>,
+}
 struct Targets {
     width: u32,
     height: u32,
@@ -331,15 +345,7 @@ pub(super) struct Demo {
     pmrem: Pmrem,
     clamp: wgpu::Sampler,
     linear: wgpu::Sampler,
-    /// The resolved and forward passes' background, and the MRT's.
-    background_draw: Draw,
-    mrt_background: Draw,
-    /// Opaque draws in the MRT ( the spheres, then the teapot ) and lit in
-    /// the forward pass.
-    opaque: Vec<Draw>,
-    forward_opaque: Vec<Draw>,
-    /// Back and front faces of each plane.
-    planes: Vec<[Draw; 2]>,
+    draws: Option<Draws>,
     background_render: wgpu::Buffer,
     background_object: wgpu::Buffer,
     mrt_background_render: wgpu::Buffer,
@@ -411,7 +417,7 @@ impl Demo {
         };
         let linear = sampler(wgpu::FilterMode::Linear);
         let clamp = sampler(wgpu::FilterMode::Nearest);
-        let (equirect, height, pmrem, source) = esplanade(r, &linear, &clamp).await?;
+        let (equirect, height, pmrem) = esplanade(r, &linear).await?;
         let cube = render_cube(r, &clamp, &equirect, height)?;
         let init = |label, data: &[u8], usage| {
             r.device
@@ -465,11 +471,7 @@ impl Demo {
             pmrem,
             clamp,
             linear,
-            background_draw: (source.clone(), vec![]),
-            mrt_background: (source, vec![]),
-            opaque: vec![],
-            forward_opaque: vec![],
-            planes: vec![],
+            draws: None,
             background_render: uniform(
                 r,
                 "deferred background",
@@ -531,11 +533,11 @@ impl Demo {
             )?,
             targets: None,
         };
-        demo.build(r);
+        demo.draws = Some(demo.build(r));
         Ok(demo)
     }
     /// The draws independent of the drawing-buffer size.
-    fn build(&mut self, r: &Renderer) {
+    fn build(&self, r: &Renderer) -> Draws {
         let three = [HALF; 3];
         let less = Some((wgpu::CompareFunction::LessEqual, true));
         let always = Some((wgpu::CompareFunction::Always, false));
@@ -577,21 +579,21 @@ impl Demo {
                 );
                 (p, g)
             };
-        self.background_draw = background(
+        let background_draw = background(
             wgsl!("forward_background_vs"),
             wgsl!("forward_background_fs"),
             &[HALF],
             &self.background_render,
             &self.background_object,
         );
-        self.mrt_background = background(
+        let mrt_background = background(
             wgsl!("background_vs"),
             wgsl!("background_fs"),
             &three,
             &self.mrt_background_render,
             &self.mrt_background_object,
         );
-        let opaque = pipeline(
+        let opaque_pipeline = pipeline(
             r,
             "deferred opaque",
             wgsl!("opaque_vs"),
@@ -602,14 +604,14 @@ impl Demo {
             false,
             false,
         );
-        self.opaque = self
+        let opaque = self
             .opaque_objects
             .iter()
             .map(|object| {
                 (
-                    opaque.clone(),
+                    opaque_pipeline.clone(),
                     groups(
-                        &opaque,
+                        &opaque_pipeline,
                         &self.opaque_render,
                         vec![(0, object.as_entire_binding())],
                     ),
@@ -625,7 +627,7 @@ impl Demo {
                         (0, object.as_entire_binding()),
                         (1, sampler(&self.clamp)),
                         (2, tex(&r.dfg)),
-                        (3, sampler(&self.clamp)),
+                        (3, sampler(&self.linear)),
                         (4, tex(&self.pmrem.view)),
                     ],
                 )
@@ -641,7 +643,7 @@ impl Demo {
             false,
             false,
         );
-        self.forward_opaque = self
+        let forward_opaque = self
             .forward_objects
             .iter()
             .map(|object| (lit.clone(), lit_groups(&lit, &self.lit_render, object)))
@@ -668,7 +670,7 @@ impl Demo {
             false,
             true,
         );
-        self.planes = self
+        let planes = self
             .plane_objects
             .iter()
             .map(|object| {
@@ -681,6 +683,13 @@ impl Demo {
                 ]
             })
             .collect();
+        Draws {
+            background: background_draw,
+            mrt_background,
+            opaque,
+            forward_opaque,
+            planes,
+        }
     }
     /// animate(): the groups turn by the timer's delta while animated.
     fn step(&mut self, s: &mut Scene, c: Object3D, dt: f64) -> Result<()> {
@@ -763,7 +772,7 @@ impl Demo {
                     (7, tex(&mrt[2])),
                     (8, sampler(&self.clamp)),
                     (9, tex(&r.dfg)),
-                    (10, sampler(&self.clamp)),
+                    (10, sampler(&self.linear)),
                     (11, tex(&self.pmrem.view)),
                 ],
             ),
@@ -893,10 +902,11 @@ impl Demo {
             ("cameraProjectionMatrix", m4(projection)),
             ("cameraViewMatrix", m4(view)),
         ];
+        // backgroundBlurriness, backgroundIntensity and backgroundRotation.
         let background = [
-            ("nodeUniform5", vec![0.]),
-            ("nodeUniform6", vec![1.]),
-            ("nodeUniform2", m4(Matrix4::IDENTITY)),
+            ("nodeUniform4", vec![0.]),
+            ("nodeUniform5", vec![1.]),
+            ("nodeUniform1", m4(Matrix4::IDENTITY)),
         ];
         let mut values = named(camera_values.clone());
         values.extend(named(background.to_vec()));
@@ -918,9 +928,8 @@ impl Demo {
         )?;
         let background_object = |last: &'static str| {
             named(vec![
-                ("nodeUniform1", m4(Matrix4::IDENTITY)),
-                ("nodeUniform4", identity3.clone()),
-                ("nodeUniform7", vec![1.]),
+                ("nodeUniform3", identity3.clone()),
+                ("nodeUniform6", vec![1.]),
                 (last, m4(Matrix4::IDENTITY)),
             ])
         };
@@ -928,13 +937,13 @@ impl Demo {
             &self.background_object,
             wgsl!("forward_background_fs"),
             "objectStruct",
-            &background_object("nodeUniform9"),
+            &background_object("nodeUniform8"),
         )?;
         write(
             &self.mrt_background_object,
             wgsl!("background_fs"),
             "objectStruct",
-            &background_object("nodeUniform10"),
+            &background_object("nodeUniform9"),
         )?;
         // The light group, the planes group and the teapot sit 0.15 below the origin.
         let lights_group = Matrix4::from_translation(Vector3::new(0., -0.15, 0.))
@@ -988,13 +997,12 @@ impl Demo {
             .collect();
         meshes.push((Color::from_hex(0x333333), 0.8, 0.2, teapot_model));
         let normal = |model: Matrix4| m3(model.inverse().transpose());
+        // PMREMNode: the environment rotation, maxLod and environmentIntensity.
         let pmrem_values = |first: usize| {
             vec![
-                (uniform_name(first), vec![9.]),
                 (uniform_name(first + 1), m4(Matrix4::IDENTITY)),
-                (uniform_name(first + 3), vec![1. / 1536.]),
-                (uniform_name(first + 4), vec![1. / 2048.]),
-                (uniform_name(first + 6), vec![1.]),
+                (uniform_name(first + 3), vec![self.pmrem.max_lod as f64]),
+                (uniform_name(first + 4), vec![1.]),
             ]
         };
         let lit_object =
@@ -1138,9 +1146,13 @@ impl Demo {
                 &self.teapot
             }
         };
+        let draws = self
+            .draws
+            .as_ref()
+            .ok_or(Error::Invalid("deferred draws"))?;
         let draw_planes = |pass: &mut wgpu::RenderPass| {
             for &(_, i) in &planes {
-                for draw in &self.planes[i] {
+                for draw in &draws.planes[i] {
                     set(pass, draw);
                     self.plane.draw(pass);
                 }
@@ -1163,10 +1175,10 @@ impl Demo {
                     ),
                     ..Default::default()
                 });
-                set(&mut pass, &self.mrt_background);
+                set(&mut pass, &draws.mrt_background);
                 self.background.draw(&mut pass);
                 for &(_, i) in &opaque {
-                    set(&mut pass, &self.opaque[i]);
+                    set(&mut pass, &draws.opaque[i]);
                     mesh_of(i).draw(&mut pass);
                 }
             }
@@ -1180,7 +1192,7 @@ impl Demo {
                     ),
                     ..Default::default()
                 });
-                set(&mut pass, &self.background_draw);
+                set(&mut pass, &draws.background);
                 self.background.draw(&mut pass);
                 set(&mut pass, &t.resolve);
                 pass.set_vertex_buffer(0, self.quad[0].slice(..));
@@ -1206,10 +1218,10 @@ impl Demo {
                 ),
                 ..Default::default()
             });
-            set(&mut pass, &self.background_draw);
+            set(&mut pass, &draws.background);
             self.background.draw(&mut pass);
             for &(_, i) in &opaque {
-                set(&mut pass, &self.forward_opaque[i]);
+                set(&mut pass, &draws.forward_opaque[i]);
                 mesh_of(i).draw(&mut pass);
             }
             draw_planes(&mut pass);
@@ -1280,21 +1292,12 @@ impl Demo {
 }
 /// royal_esplanade_2k.hdr.jpg as UltraHDRLoader returns it ( half float,
 /// flipped, mipmapped ) with its height, and scene.environment's PMREM
-/// ( fromEquirectangular at lodMax 9 ) with the source pipeline.
+/// ( r187's fromEquirectangular, the equirect sampled through `linear` ).
 pub(super) async fn esplanade(
     r: &Renderer,
     linear: &wgpu::Sampler,
-    clamp: &wgpu::Sampler,
-) -> Result<(wgpu::TextureView, u32, Pmrem, wgpu::RenderPipeline)> {
-    ultra_hdr_environment(r, linear, clamp, "environments/royal_esplanade_2k.hdr.jpg").await
-}
-/// A 2k UltraHDR equirect at `url` the same way.
-pub(super) async fn ultra_hdr_environment(
-    r: &Renderer,
-    linear: &wgpu::Sampler,
-    clamp: &wgpu::Sampler,
-    url: &str,
-) -> Result<(wgpu::TextureView, u32, Pmrem, wgpu::RenderPipeline)> {
+) -> Result<(wgpu::TextureView, u32, Pmrem)> {
+    let url = "environments/royal_esplanade_2k.hdr.jpg";
     let sky = ultra_hdr(&fetch(url).await?).await?;
     let row = sky.width as usize * 4;
     let texels: Vec<half::f16> = sky.rgba.chunks(row).rev().flatten().copied().collect();
@@ -1307,51 +1310,12 @@ pub(super) async fn ultra_hdr_environment(
         8,
         HALF,
     );
-    let pmrem = Pmrem::new(r, clamp, 9, (wgsl!("pmrem_ggx_vs"), wgsl!("pmrem_ggx_fs")))?;
-    let source = source_pipeline(
-        r,
-        "PMREM equirect",
-        wgsl!("pmrem_equirect_vs"),
-        wgsl!("pmrem_equirect_fs"),
-    );
-    let source_object = r
-        .device
-        .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("PMREM equirect"),
-            contents: &pack(
-                wgsl!("pmrem_equirect_vs"),
-                "objectStruct",
-                &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
-            )?,
-            usage: wgpu::BufferUsages::UNIFORM,
-        });
-    let source_groups = [
-        bind(
-            r,
-            source.get_bind_group_layout(0),
-            &[(
-                0,
-                flat_camera(r, wgsl!("pmrem_equirect_vs"))?.as_entire_binding(),
-            )],
-        ),
-        bind(
-            r,
-            source.get_bind_group_layout(1),
-            &[
-                (0, wgpu::BindingResource::Sampler(linear)),
-                (1, wgpu::BindingResource::TextureView(&equirect)),
-                (2, source_object.as_entire_binding()),
-            ],
-        ),
-    ];
+    let pmrem = Pmrem::new(r, sky.width / 4)?;
+    let source = pmrem.equirect_source(r, &equirect, linear)?;
     let mut encoder = r.device.create_command_encoder(&Default::default());
-    pmrem.encode(
-        &mut encoder,
-        &source,
-        [&source_groups[0], &source_groups[1]],
-    );
+    pmrem.encode_from_texture(&mut encoder, &source);
     r.queue.submit([encoder.finish()]);
-    Ok((equirect, sky.height, pmrem, source))
+    Ok((equirect, sky.height, pmrem))
 }
 /// CubeMapNode: the equirect texture rendered into a size² cube by a
 /// CubeCamera ( near 1, far 10 ) inside a 5 × 5 × 5 back-faced box.

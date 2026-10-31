@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,17 +8,17 @@
 
 // uniforms
 
-struct NodeBuffer_991Struct {
+struct nodeUniform0Struct {
 	value : array< vec3<f32> >
 };
 @binding( 1 ) @group( 1 )
-var<storage, read> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_995Struct {
+struct nodeUniform1Struct {
 	value : array< vec2<u32> >
 };
 @binding( 2 ) @group( 1 )
-var<storage, read> NodeBuffer_995 : NodeBuffer_995Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
 
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
@@ -45,7 +45,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> nodeVar0 : u32;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar2 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -64,21 +63,21 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 
 	positionLocal = position;
 
-	if ( ( f32( vertexIndex ) == 0.0 ) ) {
+	if ( ( vertexIndex == 0u ) ) {
 
-		nodeVar0 = NodeBuffer_995.value[ instanceIndex ].x;
+		nodeVar0 = nodeUniform1.value[ instanceIndex ].x;
 
 	} else {
 
-		nodeVar0 = NodeBuffer_995.value[ instanceIndex ].y;
+		nodeVar0 = nodeUniform1.value[ instanceIndex ].y;
 
 	}
 
-	positionLocal = NodeBuffer_991.value[ nodeVar0 ];
+	positionLocal = nodeUniform0.value[ nodeVar0 ];
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform6 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar2 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar2;
+	let VERTEX_nodeConst1 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst1;
 
 	// result
 

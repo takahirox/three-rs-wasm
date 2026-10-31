@@ -6,12 +6,15 @@
 //! storage buffers. The cloth mesh reads the positions in its vertex stage
 //! and renders double-sided with MeshPhysicalNodeMaterial's sheen; the
 //! wireframe mode draws the springs as instanced lines and the vertices as
-//! instanced sprites. Every stage runs the WGSL three.js r186 generates for
-//! the page (in `compute_cloth/`), without its unused subgroup-size builtin.
+//! instanced sprites. The sky's blurred background and the lighting sample
+//! r187's cube PMREM ( `pmrem.rs` ). Every stage runs the WGSL three.js r187
+//! generates for the page (in `compute_cloth/`), without its unused
+//! subgroup-size builtin.
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, color, depth_attachment, esplanade, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline};
+use super::pmrem::Pmrem;
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::{target, uniform};
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
@@ -153,6 +156,8 @@ pub(super) struct Demo {
     output_quad: wgpu::Buffer,
     pmrem: Pmrem,
     clamp: wgpu::Sampler,
+    /// The PMREM's trilinear sampler.
+    linear: wgpu::Sampler,
     background_render: wgpu::Buffer,
     background_object: wgpu::Buffer,
     lit_render: wgpu::Buffer,
@@ -197,7 +202,7 @@ impl Demo {
         };
         let linear = sampler(wgpu::FilterMode::Linear);
         let clamp = sampler(wgpu::FilterMode::Nearest);
-        let (_, _, pmrem, _) = esplanade(r, &linear, &clamp).await?;
+        let (_, _, pmrem) = esplanade(r, &linear).await?;
         let v = verlet();
         let init = |label, data: &[u8], usage| {
             r.device
@@ -451,6 +456,7 @@ impl Demo {
             ),
             pmrem,
             clamp,
+            linear,
             background_render: render("cloth background", wgsl!("background_fs"))?,
             background_object: object("cloth background", wgsl!("background_fs"))?,
             lit_render: render("cloth sphere", wgsl!("sphere_fs"))?,
@@ -546,9 +552,9 @@ impl Demo {
             &background,
             &self.background_render,
             vec![
-                (0, self.background_object.as_entire_binding()),
-                (1, sampler(&self.clamp)),
-                (2, tex(&self.pmrem.view)),
+                (0, sampler(&self.linear)),
+                (1, tex(&self.pmrem.view)),
+                (2, self.background_object.as_entire_binding()),
             ],
         );
         // The sphere's or the cloth's object, the DFG LUT and the PMREM.
@@ -562,7 +568,7 @@ impl Demo {
                 (0, object.as_entire_binding()),
                 (1, sampler(&self.clamp)),
                 (2, tex(&r.dfg)),
-                (3, sampler(&self.clamp)),
+                (3, sampler(&self.linear)),
                 (4, tex(&self.pmrem.view)),
             ]
         };
@@ -772,11 +778,13 @@ impl Demo {
             ("cameraViewMatrix", m4(view)),
         ];
         let identity3 = m3(Matrix4::IDENTITY);
+        let max_lod = self.pmrem.max_lod as f64;
+        // backgroundBlurriness 0.5, backgroundIntensity and backgroundRotation.
         let mut values = camera_values.clone();
         values.extend([
-            ("nodeUniform0", vec![0.5]),
-            ("nodeUniform9", vec![1.]),
-            ("nodeUniform3", m4(Matrix4::IDENTITY)),
+            ("nodeUniform6", vec![0.5]),
+            ("nodeUniform7", vec![1.]),
+            ("nodeUniform2", m4(Matrix4::IDENTITY)),
         ]);
         write(
             &self.background_render,
@@ -789,13 +797,11 @@ impl Demo {
             wgsl!("background_fs"),
             "objectStruct",
             &[
-                ("nodeUniform1", vec![9.]),
-                ("nodeUniform2", m4(Matrix4::IDENTITY)),
-                ("nodeUniform5", identity3.clone()),
-                ("nodeUniform6", vec![1. / 1536.]),
-                ("nodeUniform7", vec![1. / 2048.]),
-                ("nodeUniform10", vec![1.]),
-                ("nodeUniform12", m4(Matrix4::IDENTITY)),
+                ("nodeUniform1", m4(Matrix4::IDENTITY)),
+                ("nodeUniform4", identity3.clone()),
+                ("nodeUniform5", vec![max_lod]),
+                ("nodeUniform8", vec![1.]),
+                ("nodeUniform10", m4(Matrix4::IDENTITY)),
             ],
         )?;
         let mut lit_render = camera_values.clone();
@@ -826,11 +832,10 @@ impl Demo {
                 ("nodeUniform6", vec![0.; 3]),
                 ("nodeUniform7", vec![1.]),
                 ("nodeUniform9", m4(sphere_model)),
-                ("nodeUniform10", vec![9.]),
+                // PMREMNode: rotation, maxLod and environmentIntensity.
                 ("nodeUniform11", m4(Matrix4::IDENTITY)),
-                ("nodeUniform13", vec![1. / 1536.]),
-                ("nodeUniform14", vec![1. / 2048.]),
-                ("nodeUniform16", vec![1.]),
+                ("nodeUniform13", vec![max_lod]),
+                ("nodeUniform14", vec![1.]),
             ],
         )?;
         // MeshPhysicalNodeMaterial: color and sheenColor set from sRGB hex.
@@ -854,11 +859,9 @@ impl Demo {
                 ("nodeUniform12", vec![1.]),
                 ("nodeUniform15", identity3),
                 ("nodeUniform16", m4(Matrix4::IDENTITY)),
-                ("nodeUniform17", vec![9.]),
                 ("nodeUniform18", m4(Matrix4::IDENTITY)),
-                ("nodeUniform20", vec![1. / 1536.]),
-                ("nodeUniform21", vec![1. / 2048.]),
-                ("nodeUniform23", vec![1.]),
+                ("nodeUniform20", vec![max_lod]),
+                ("nodeUniform21", vec![1.]),
             ],
         )?;
         write(
@@ -1182,7 +1185,9 @@ pub async fn webgpu_compute_cloth(
         canvas,
         animate,
         super::PageOptions {
-            samples: 1,
+            // WebGPURenderer( { antialias: true } ): the scene's 4× MSAA
+            // targets follow the main target's samples.
+            samples: 4,
             encode_srgb: true,
             format: super::TargetFormat::Canvas,
             raw_output: true,

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -26,17 +26,17 @@ struct StructType1 {
 
 // uniforms
 
-struct NodeBuffer_992Struct {
+struct nodeUniform0Struct {
 	value : array< StructType0 >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read_write> NodeBuffer_992 : NodeBuffer_992Struct;
+var<storage, read_write> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_994Struct {
+struct nodeUniform2Struct {
 	value : array< StructType1 >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read_write> NodeBuffer_994 : NodeBuffer_994Struct;
+var<storage, read_write> nodeUniform2 : nodeUniform2Struct;
 
 struct objectStruct {
 	nodeUniform1 : vec3<f32>,
@@ -47,7 +47,6 @@ var<uniform> object : objectStruct;
 
 // vars
 var<private> nodeVar0 : vec3<f32>;
-var<private> nodeVar1 : f32;
 
 // codes
 
@@ -73,9 +72,9 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> p2g1Kernel
 	if ( instanceIndex >= object.nodeUniform3 ) { return; }
 
-	let particlePosition = NodeBuffer_992.value[ instanceIndex ].position;
-	let particleVelocity = NodeBuffer_992.value[ instanceIndex ].velocity;
-	let C = NodeBuffer_992.value[ instanceIndex ].C;
+	let particlePosition = nodeUniform0.value[ instanceIndex ].position;
+	let particleVelocity = nodeUniform0.value[ instanceIndex ].velocity;
+	let C = nodeUniform0.value[ instanceIndex ].C;
 	nodeVar0 = ( particlePosition * object.nodeUniform1 );
 	let cellIndex = ( vec3<i32>( nodeVar0 ) - vec3<i32>( i32( 1.0 ) ) );
 	let cellDiff = ( fract( nodeVar0 ) - vec3<f32>( 0.5 ) );
@@ -91,13 +90,13 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 				let nodeConst0 = ( cellIndex + vec3<i32>( gx, gy, gz ) );
 				let cellDist = ( ( vec3<f32>( nodeConst0 ) + vec3<f32>( 0.5 ) ) - nodeVar0 );
-				nodeVar1 = ( ( weights[ gx ].x * weights[ gy ].y ) * weights[ gz ].z );
-				let velContrib = ( vec3<f32>( nodeVar1 ) * ( particleVelocity + ( C * cellDist ) ) );
-				let nodeConst1 = ( ( ( nodeConst0.x * 4096 ) + ( nodeConst0.y * 64 ) ) + nodeConst0.z );
-				atomicAdd( &NodeBuffer_994.value[ nodeConst1 ].x, i32( ( velContrib.x * 10000000.0 ) ) );
-				atomicAdd( &NodeBuffer_994.value[ nodeConst1 ].y, i32( ( velContrib.y * 10000000.0 ) ) );
-				atomicAdd( &NodeBuffer_994.value[ nodeConst1 ].z, i32( ( velContrib.z * 10000000.0 ) ) );
-				atomicAdd( &NodeBuffer_994.value[ nodeConst1 ].mass, i32( ( nodeVar1 * 10000000.0 ) ) );
+				let nodeConst1 = ( ( weights[ gx ].x * weights[ gy ].y ) * weights[ gz ].z );
+				let velContrib = ( vec3<f32>( nodeConst1 ) * ( particleVelocity + ( C * cellDist ) ) );
+				let nodeConst2 = ( ( ( nodeConst0.x * 4096 ) + ( nodeConst0.y * 64 ) ) + nodeConst0.z );
+				atomicAdd( &nodeUniform2.value[ nodeConst2 ].x, i32( ( velContrib.x * 10000000.0 ) ) );
+				atomicAdd( &nodeUniform2.value[ nodeConst2 ].y, i32( ( velContrib.y * 10000000.0 ) ) );
+				atomicAdd( &nodeUniform2.value[ nodeConst2 ].z, i32( ( velContrib.z * 10000000.0 ) ) );
+				atomicAdd( &nodeUniform2.value[ nodeConst2 ].mass, i32( ( nodeConst1 * 10000000.0 ) ) );
 
 			}
 
