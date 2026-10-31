@@ -6,7 +6,7 @@
 //! alternative casts its colors.png through 80 % opacity. Each frame draws
 //! the shadow (both faces), the floor, then the transmissive object's back
 //! and front faces, each refracting a fresh mipmapped copy of the frame.
-//! Every stage runs the WGSL three.js r186 generates for the page (in
+//! Every stage runs the WGSL three.js r187 generates for the page (in
 //! `caustics/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
@@ -740,8 +740,8 @@ impl Demo {
         });
         let output = pipeline(
             "render output",
-            include_str!("lights_dynamic/output_vs.wgsl"),
-            include_str!("lights_dynamic/output_fs.wgsl"),
+            wgsl!("output_vs"),
+            wgsl!("output_fs"),
             &[buffer(&p0[..], 12)],
             out.options.format,
             false,

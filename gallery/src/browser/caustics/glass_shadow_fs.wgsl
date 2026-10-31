@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -27,11 +31,10 @@ var<uniform> object : objectStruct;
 var<private> DiffuseColor : vec4<f32>;
 var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : vec4<f32>;
-var<private> nodeVar2 : vec4<f32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
 
 // codes
+
 
 @fragment
 fn main( @location( 0 ) nodeVarying4 : vec2<f32> ) -> OutputStruct {
@@ -40,16 +43,16 @@ fn main( @location( 0 ) nodeVarying4 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, ( object.nodeUniform1 * vec3<f32>( nodeVarying4, 1.0 ) ).xy );
-	nodeVar1 = vec4<f32>( nodeVar0.xyz, 0.8 );
-	nodeVar2 = textureSample( nodeUniform0, nodeUniform0_sampler, ( object.nodeUniform2 * vec3<f32>( nodeVarying4, 1.0 ) ).xy );
-	DiffuseColor = vec4<f32>( nodeVar1.xyz, ( nodeVar1.w * nodeVar2.w ) );
+	let nodeConst0 = vec4<f32>( nodeVar0.xyz, 0.8 );
+	nodeVar1 = textureSample( nodeUniform0, nodeUniform0_sampler, ( object.nodeUniform2 * vec3<f32>( nodeVarying4, 1.0 ) ).xy );
+	DiffuseColor = vec4<f32>( nodeConst0.xyz, ( nodeConst0.w * nodeVar1.w ) );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform3 );
-	nodeVar3 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar3;
+	let nodeConst1 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst1;
 
 	// result
 
-	output.color = nodeVar3;
+	output.color = nodeConst1;
 
 	return output;
 
