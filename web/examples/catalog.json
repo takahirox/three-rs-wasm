@@ -24171,7 +24171,7 @@
         "source": "gallery/src/browser/gtao.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "チェッカーボードの床、壁、台座、柱、トーラスノット、旋盤形状の花瓶、角丸ボックスのアームチェア、サイドテーブル、ラグ、押し出し成形の額縁、DracoのTennyson胸像からなるギャラリーを、3つのスポットライトとRoomEnvironmentのPMREMの下でRustで再現。GTAONodeのアンビエントオクルージョンをマテリアルの環境項に入れ、TRAA（サブピクセル補正なし）で時間方向に解決する。プリパス（法線と速度）、半解像度のGTAO（frameIdでスライスを回転、5×5の魔方陣ノイズ）、シーンパス、TRAA、出力（Neutralトーンマッピング）の順に描く。各段はページからthree.js r186が生成するWGSL（gtao/）を実行する。SSAOへの切り替え、サンプル数（シェーダー定数）、半透明メッシュの表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "チェッカーボードの床、壁、台座、柱、トーラスノット、旋盤形状の花瓶、角丸ボックスのアームチェア、サイドテーブル、ラグ、押し出し成形の額縁、DracoのTennyson胸像からなるギャラリーを、3つのスポットライトとRoomEnvironmentのPMREM（fromSceneでページのWGSLが描くキューブをsigma 0.04でぼかす）の下でRustで再現。GTAONodeのアンビエントオクルージョンをマテリアルの環境項に入れ、TRAA（サブピクセル補正なし）で時間方向に解決する。プリパス（法線と速度）、半解像度のGTAO（frameIdでスライスを回転、5×5の魔方陣ノイズ）、シーンパス、TRAA、出力（Neutralトーンマッピング）の順に描く。各段はページからthree.js r187が生成するWGSL（gtao/、PMREMとRoomEnvironmentはpmrem/）を実行する。SSAOへの切り替え、サンプル数（シェーダー定数）、半透明メッシュの表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
