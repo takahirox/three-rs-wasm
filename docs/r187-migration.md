@@ -61,9 +61,11 @@ until every ported example matches r187 again; it is removed when done.
 
 2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
    RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
-   ballpool matching its page at every state. Open: physics_rapier_basic's
-   MSAA capture of the dragged pile ( state 5 ) at 1.30 % / 0.33 against
-   1.2 % / 0.35, collider outlines and shadow edges.
+   ballpool matching its page at every state. physics_rapier_basic passes
+   its bounds ( MSAA states 5 / 6 at 1.06 % / 1.18 % against 1.2 % ) by
+   drawing in WebGLRenderer's order ( material id before depth ) with
+   `gl_FragCoord`'s shadow noise, behind the opt-in `Renderer::webgl`; the
+   other WebGL ports still sort by depth and take top-left noise.
 3. **Changed pages.** 65 ported pages changed in r187; each port follows its
    page. Largest first: webgpu_postprocessing_ssgi_ballpool,
    webgpu_lightprobes_complex, webgl_materials_envmaps_fasthdr,
@@ -75,14 +77,15 @@ until every ported example matches r187 again; it is removed when done.
    ( `git diff --numstat 148ef33e r187 -- 'examples/*.html'` ). All follow
    their pages now; the WebGL pages moved to r187's DirectionalLight shadows
    ( `Shadow::bounds`, PCF radius in texels, per-face point-shadow depth ).
-   Left:
-   - r187's `range()` hashes the instance index with a seed from the object's
-     id instead of Math.random ( webgpu_skinning_instancing follows it );
-     webgpu_instance_mesh, webgpu_particles, webgpu_particles_soft and
-     webgpu_tsl_galaxy may use it too.
-   - texture-volumes' combined workload test: webgpu_postprocessing_outline
-     draws 22 more than its page ( 2280 ), then the run hangs loading
-     css3d_periodictable.
+   r187's `range()` ( an instance hash seeded by the object's id ) runs in
+   the shaders of skinning_instancing, instance_mesh, particles,
+   particles_soft and tsl_galaxy ( `tsl::range` ). Left in texture-volumes'
+   combined workload test, reached now that its CSS pages load:
+   - physics_ammo_rope, _cloth and _volume stream attribute bytes ( 172,
+     14352, 64896 against the pages' 132, 8064, 36864 ) without a `streams`
+     entry; physics_ammo_terrain draws two extra 36-index draws.
+   - webgl_worker_offscreencanvas is flaky ( the reference side about 66
+     draws over the port in one of two runs ).
 4. **Changed addons.** Ported and on r187's oracles: USD, SVGLoader,
    IESLoader ( and IESSpotLightNode ), PLYLoader, CCDIKSolver, Octree,
    BufferGeometryUtils, the PLY / OBJ / EXR exporters, GCode, PCD, PDB, STL and
