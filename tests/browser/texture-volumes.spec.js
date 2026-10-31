@@ -143,8 +143,8 @@ const cases={
  // raycast and recolor the hovered instance. Freeze keeps the last culling while the
  // view pans.
  webgl_batch_lod_bvh:{antialias:true,multiDraw:true,times:[0],parameters:[[3,false,0],[3,true,1],[2,false,0],[2,true,1]],at:0,script:[['move',256,300,0],['move',150,330,0],['param',1,true,1,null],['drag',256,256,330,256,0,0],['param',1,false,0,0]],residency:[['move',256,300,0],['move',150,330,0]],drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- // The main thread's scene renders on its own animation frames, which may run before a
- // request reaches them: the workload holds the clock at 0 so every frame turns the same.
+ // The reference's main-thread scene renders once a fixture frame ( its animate() without
+ // its own animation frames ), as the port's does; the worker canvas keeps its frames.
  webgl_worker_offscreencanvas:{workloadTimes:[0,0,0,0,0,0],view:'#container',pick:true,antialias:true,times:[],parameters:[],at:0,script:[['wait',2000,0],['wait',0,1],['wait',0,2.5]]},
  // The mirror-smooth box reflects WebGL's RoomEnvironment PMREM a little differently.
  webgl_loader_texture_lottie:{limits:[.025,.9],antialias:true,times:[0,.3,.6,.9,1.2,1.6,2.5,4],parameters:[],at:4,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -212,7 +212,10 @@ const official=kind=>kind;
 // webgpu_display_stereo streams its 500 instance matrices each frame.
 // RapierHelper replaces its line attributes every frame on the page; the port streams the
 // same position and color ( 28 bytes a vertex ).
-const streams=['physics_rapier_basic','physics_rapier_joints','physics_rapier_character_controller','physics_rapier_vehicle_controller','webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg'];
+// The ammo.js soft bodies set their attributes' needsUpdate each frame: the rope's 11
+// positions ( 132 bytes ), the cloth's and the volumes' positions and normals ( 8,064 and
+// 36,864 bytes ); the port writes the same attributes alone, without their uvs or index.
+const streams=['physics_rapier_basic','physics_rapier_joints','physics_rapier_character_controller','physics_rapier_vehicle_controller','webgpu_display_stereo','webgl_marchingcubes','webgl_geometry_csg','physics_ammo_rope','physics_ammo_cloth','physics_ammo_volume'];
 // A deterministic webcam: getUserMedia returns a 1280 × 720 canvas stream of a fixed
 // gradient and shapes, redrawn each animation frame so the stream keeps presenting.
 const fakeCamera=()=>{if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia=async()=>{const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=720;const g=canvas.getContext('2d');const draw=()=>{const gradient=g.createLinearGradient(0,0,1280,720);gradient.addColorStop(0,'#203080');gradient.addColorStop(.5,'#c04060');gradient.addColorStop(1,'#f0d040');g.fillStyle=gradient;g.fillRect(0,0,1280,720);g.fillStyle='#ffffff';g.fillRect(160,120,320,480);g.fillStyle='#10a050';g.beginPath();g.arc(900,360,220,0,Math.PI*2);g.fill();requestAnimationFrame(draw);};draw();return canvas.captureStream(30);};};
