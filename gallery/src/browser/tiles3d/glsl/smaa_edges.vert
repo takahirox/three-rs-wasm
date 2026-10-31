@@ -24,7 +24,7 @@ precision highp float;
 #define HIGH_PRECISION
 #define SHADER_TYPE ShaderMaterial
 #define SHADER_NAME EdgeDetectionMaterial
-#define THREE_REVISION 186
+#define THREE_REVISION 187
 #define LOCAL_CONTRAST_ADAPTATION_FACTOR 2.0
 #define EDGE_THRESHOLD 0.100000
 #define DEPTH_THRESHOLD 0.010000

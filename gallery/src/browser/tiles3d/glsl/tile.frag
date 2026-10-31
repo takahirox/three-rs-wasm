@@ -56,7 +56,7 @@ vec4 sRGBTransferOETF( in vec4 value ) {
 
 
 vec4 linearToOutputTexel( vec4 value ) {
-	return LinearTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );
+	return LinearTransferOETF( vec4( mat3( 1.0000,0.0000,-0.0000,-0.0000,1.0000,-0.0000,-0.0000,0.0000,1.0000 ) * value.rgb, value.a ) );
 }
 float luminance( const in vec3 rgb ) {
 	const vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );
@@ -285,6 +285,11 @@ float F_Schlick( const in float f0, const in float f90, const in float dotVH ) {
 	varying vec2 vRoughnessMapUv;
 
 #endif
+#ifdef USE_DIFFUSE_ROUGHNESSMAP
+
+	varying vec2 vDiffuseRoughnessMapUv;
+
+#endif
 #ifdef USE_ANISOTROPYMAP
 
 	varying vec2 vAnisotropyMapUv;
@@ -461,11 +466,20 @@ float F_Schlick( const in float f0, const in float f90, const in float dotVH ) {
 
 	uniform float envMapIntensity;
 	uniform mat3 envMapRotation;
+	uniform samplerCube envMap;
 
-	#ifdef ENVMAP_TYPE_CUBE
-		uniform samplerCube envMap;
-	#else
-		uniform sampler2D envMap;
+	#ifdef ENVMAP_TYPE_PMREM
+
+		// Invert PMREMGenerator.lodToRoughness(). Matches Filament's perceptualRoughnessToLod().
+		// https://github.com/google/filament/blob/main/shaders/src/surface_light_indirect.fs
+		float roughnessToMip( const in float roughness ) {
+
+			float r = clamp( roughness, 0.0, 1.0 );
+
+			return ENVMAP_MAX_LOD * r * ( 2.0 - r );
+
+		}
+
 	#endif
 
 #endif

@@ -52,7 +52,7 @@ vec4 sRGBTransferOETF( in vec4 value ) {
 
 
 vec4 linearToOutputTexel( vec4 value ) {
-	return LinearTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );
+	return LinearTransferOETF( vec4( mat3( 1.0000,0.0000,-0.0000,-0.0000,1.0000,-0.0000,-0.0000,0.0000,1.0000 ) * value.rgb, value.a ) );
 }
 float luminance( const in vec3 rgb ) {
 	const vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );

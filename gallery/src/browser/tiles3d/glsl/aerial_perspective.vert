@@ -24,7 +24,7 @@ precision highp float;
 #define HIGH_PRECISION
 #define SHADER_TYPE ShaderMaterial
 #define SHADER_NAME EffectMaterial
-#define THREE_REVISION 186
+#define THREE_REVISION 187
 #define DEPTH_PACKING 3200
 #define ENCODE_OUTPUT 1
 #define PERSPECTIVE_CAMERA 1
