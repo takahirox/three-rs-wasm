@@ -19081,7 +19081,7 @@
         "source": "gallery/src/browser/lights_clustered.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r186が生成するWGSL（lights_clustered/）を、描画バッファの大きさに合わせたタイル格子で実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r187が生成するWGSL（lights_clustered/）を実行し、タイル格子の大きさはユニフォームなのでリサイズでパイプラインを作り直さず、光源インデックスのストレージは足りなくなったときだけ余裕を持って作り直す。球のインスタンス行列はr187と同じくインスタンス属性として毎フレーム書き込む。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
