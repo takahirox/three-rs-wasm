@@ -20,9 +20,10 @@ equivalent and are compared against the original WebGL renderer.
 
 ### Exporters
 
-- **Background.** `scene.background` is the PMREM render target itself, so the
-  background samples the cube-UV atlas at blurriness 0. `Scene::background_pmrem`
-  selects that path.
+- **Background.** r187's pages show the equirectangular texture itself
+  ( `Scene::background_map`, the sharp background ) and export a 1024 × 512
+  half-float render target of the scene, rendered by the camera's clone at
+  aspect 2. EXRExporter's RLE and PIZ compressions are not ported.
 - **Data texture.** `createDataTexture()` is computed in f64 and stored as
   Float32, as in the original. The quad shows it nearest-filtered from a
   half-float copy.

@@ -72,7 +72,9 @@ they must match bit for bit.
 Values above one remain unclamped through lighting and four-sample RGBA16F
 resolve; ACES exposure and the sRGB attachment conversion occur afterward.
 
-The GGX prefilter, cube-UV layout/roughness mapping and 16x16 DFG LUT follow r186.
+The PMREM ( a cube with r187's GGX VNDF and integration levels, sampled at
+roughnessToMip ) and the minimum roughness 0.045 follow r187; the 16x16 DFG LUT is
+unchanged from r186.
 Alpha-mask discard is specialized per pipeline; opaque shaders retain helper-lane
 derivatives for normal mapping and geometric roughness on hardware WebGPU.
 The sharp background reproduces the reference's panorama-to-cube interpolation
