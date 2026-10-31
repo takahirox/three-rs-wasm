@@ -24,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,probe_grid:array<vec4<f32>,3>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,39>,extension_sizes:array<vec4<f32>,13>,extension_wraps:array<vec4<f32>,13>,extension_sampling:array<vec4<f32>,13>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,probe_grid:array<vec4<f32>,3>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -62,7 +62,7 @@ fn wrap_texel(coordinate:i32,size:i32,mode:f32)->i32 {
     return select(p,size*2-1-p,p>=size);
 }
 // Derivatives are evaluated before material-dependent fragment control flow.
-var<private> extension_lod:array<f32,12>;
+var<private> extension_lod:array<f32,13>;
 fn extension_texel(index:u32,p:vec2<i32>,level:i32)->vec4<f32> {
     let info=u.extension_sizes[index];let size=max(vec2(1.0),floor(info.xy/exp2(f32(level))));let mode=u.extension_wraps[index];
     let value=textureLoad(extension_maps,vec2(wrap_texel(p.x,i32(size.x),mode.x),wrap_texel(p.y,i32(size.y),mode.y)),i32(u.extension_sampling[index].w),level);
@@ -244,6 +244,30 @@ fn multiscattering(f0:vec3<f32>,dfg:vec2<f32>,f90:f32)->vec3<f32>{
  let single=f0*dfg.x+f90*dfg.y;let average=f0+(vec3(f90)-f0)*0.047619;let missing=1.0-dfg.x-dfg.y;
  return single*average/(1.0-missing*average)*missing;
 }
+// BRDF_EON ( r187, KHR_materials_diffuse_roughness ): Portsmouth et al. 2025's
+// energy-preserving rough diffuse lobe, and its directional albedo for the
+// indirect diffuse terms.
+fn fon_albedo(mu:f32,r:f32,a:f32)->f32 {let c=1.0-mu;return a*(r*(c*(c*(c*(c*0.0714429953-0.332181442)+0.491881867)+0.0571085289))+1.0);}
+fn brdf_eon(l:vec3<f32>,v:vec3<f32>,n:vec3<f32>,color:vec3<f32>,r:f32)->vec3<f32> {
+    let rho=clamp(color,vec3(0.0),vec3(1.0));
+    if r<=1e-7 {return rho*0.3183098861837907;}
+    let nl=clamp(dot(n,l),0.0,1.0);let nv=clamp(dot(n,v),0.0,1.0);
+    let s=dot(l,v)-nl*nv;let s_over_t=select(s,s/max(max(nl,nv),1e-7),s>0.0);
+    let a=1.0/(r*(0.5-2.0/(3.0*3.14159265359))+1.0);
+    let single=rho*0.3183098861837907*a*(r*s_over_t+1.0);
+    let average=a*(r*(2.0/3.0-28.0/(15.0*3.14159265359))+1.0);
+    let multi_rho=rho*rho*average/max(vec3(1.0)-rho*(1.0-average),vec3(1e-7));
+    return single+multi_rho*0.3183098861837907*max(1e-7,1.0-fon_albedo(nv,r,a))*max(1e-7,1.0-fon_albedo(nl,r,a))/max(1e-7,1.0-average);
+}
+fn eon_albedo(color:vec3<f32>,r:f32,nv:f32)->vec3<f32> {
+    let rho=clamp(color,vec3(0.0),vec3(1.0));
+    if r<=1e-7 {return rho;}
+    let a=1.0/(r*(0.5-2.0/(3.0*3.14159265359))+1.0);
+    let directional=fon_albedo(clamp(nv,0.0,1.0),r,a);
+    let average=a*(r*(2.0/3.0-28.0/(15.0*3.14159265359))+1.0);
+    let multi_rho=rho*rho*average/max(vec3(1.0)-rho*(1.0-average),vec3(1e-7));
+    return rho*directional+multi_rho*(1.0-directional);
+}
 fn sheen_albedo(nv:f32,r:f32)->f32 {
  let a=-1.9362+1.0678*r+0.4573*r*r-0.8469/(r+0.1);
  let b=-0.6014+0.5538*r-0.4670*r*r-0.1255/(r+0.1);
@@ -354,7 +378,7 @@ fn material_output(in:VertexOut,front:bool)->vec4<f32> {
 struct LitSurface {normal:vec3<f32>,roughness:f32,metalness:f32,emissive:vec3<f32>,specular:vec4<f32>,light_map:vec3<f32>,backdrop:vec4<f32>,thickness_color:vec3<f32>,thickness:vec4<f32>,thickness_scale:f32,shadow_position:vec3<f32>,}
 fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     if PHYSICAL {
-        for(var i=0u;i<12u;i++) {
+        for(var i=0u;i<13u;i++) {
             if (EXTENSION_MAP_MASK&(1u<<i))==0u {continue;}
             let uv=extension_uv(i,in)*u.extension_sizes[i].xy;
             let dx=dpdx(uv);let dy=dpdy(uv);
@@ -445,6 +469,11 @@ fn shade_fragment(in:VertexOut,front:bool)->vec4<f32> {
     let metalness=clamp(surface.metalness,0.0,1.0);
     var transmission=0.0;if PHYSICAL {transmission=u.transmission[0].x*extension_sample(8u,in).r;}
     let diffuse=base.rgb*(1.0-metalness)*(1.0-transmission);
+    // MeshPhysicalMaterial.diffuseRoughness × diffuseRoughnessMap.r: above 0
+    // the indirect terms take EON's directional albedo and direct light BRDF_EON.
+    var diffuse_roughness=0.0;if PHYSICAL && u.coat_normal.z>0.0 {diffuse_roughness=clamp(u.coat_normal.z*extension_sample(12u,in).r,0.0,1.0);}
+    let eon=PHYSICAL && u.coat_normal.z>0.0;
+    var indirect_diffuse=diffuse;if eon {indirect_diffuse=eon_albedo(base.rgb,diffuse_roughness,clamp(dot(n,v),0.0,1.0))*(1.0-metalness);}
     let specular_color=u.physical[2].rgb*extension_sample(7u,in).rgb;let specular_intensity=u.physical[2].w*extension_sample(6u,in).a;
     var dielectric=vec3(0.04);var f90=1.0;
     if PHYSICAL && u.physical[3].y>0.5 {let ratio=(u.physical[0].w-1.0)/(u.physical[0].w+1.0);dielectric=min(vec3(ratio*ratio)*specular_color,vec3(1.0))*specular_intensity;f90=mix(specular_intensity,1.0,metalness);}
@@ -492,7 +521,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
     }
     var ao=1.0;if AO_MAP {ao=(textureSample(ao_map,ao_sampler,map_uv(3u,in)).r-1.0)*u.pbr.z+1.0;}
     let grid_irradiance=probe_grid_irradiance(in.position,normalize((transpose(u.view)*vec4(n,0.0)).xyz));
-    var result=ao*indirect_energy*diffuse*(u.ambient.xyz+surface.light_map+grid_irradiance)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
+    var result=ao*indirect_energy*indirect_diffuse*(u.ambient.xyz+surface.light_map+grid_irradiance)/3.14159265359*(1.0-sheen_max*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough))+surface.emissive;
     var total_diffuse=result-surface.emissive;
     sheen_light+=ao*(u.ambient.xyz+grid_irradiance)*sheen*sheen_albedo(clamp(dot(n,v),0.0,1.0),sheenrough)/3.14159265359;
     if u.environment.x>0.0 && material_kind()==1.0 {
@@ -512,8 +541,8 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         let irradiance=environment_sample(n,1.0);
         let specular_ao=clamp(pow(nv+ao,exp2(-16.0*roughness-1.0))-1.0+ao,0.0,1.0);
         let sheen_comp=1.0-sheen_max*sheen_albedo(nv,sheenrough);
-        total_diffuse+=diffuse*(1.0-sd-md)*irradiance*ao*sheen_comp;
-        result+=(diffuse*(1.0-sd-md)*irradiance*ao+(radiance*mix(sd,sm,metalness)+irradiance*mix(md,mm,metalness))*specular_ao)*sheen_comp;
+        total_diffuse+=indirect_diffuse*(1.0-sd-md)*irradiance*ao*sheen_comp;
+        result+=(indirect_diffuse*(1.0-sd-md)*irradiance*ao+(radiance*mix(sd,sm,metalness)+irradiance*mix(md,mm,metalness))*specular_ao)*sheen_comp;
         sheen_light+=irradiance*sheen*sheen_albedo(nv,sheenrough)*ao;
         if cc>0.0 {
             let coatdfg=textureSampleLevel(dfg_map,environment_sampler,vec2(ccrough,clamp(dot(coat_n,v),0.0,1.0)),0.0).rg;
@@ -542,7 +571,7 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
         }
         if light_type(i)==3.0 {
             let weight=dot(n,light)*0.5+0.5;
-            let hemi=ao*indirect_energy*diffuse*mix(u.light_params[i].xyz,light_color,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
+            let hemi=ao*indirect_energy*indirect_diffuse*mix(u.light_params[i].xyz,light_color,weight)/3.14159265359;total_diffuse+=hemi;result+=hemi;
             continue;
         }
         if light_type(i)>0.5 {
@@ -618,8 +647,9 @@ var coat=vec3(0.0);var sheen_light=vec3(0.0);
             specular_brdf=mix(specular_brdf,retro_f*retro_distribution*retro_visibility,u.physical[3].w);
             if u.physical[3].z>0.5 {diffuse_energy=mix(diffuse_energy,vec3(1.0)-(dielectric+(vec3(f90)-dielectric)*retro_weight),u.physical[3].w);}
         }
-        total_diffuse+=diffuse_energy*diffuse/3.14159265359*irradiance*sheen_comp;
-        result+=(diffuse_energy*diffuse/3.14159265359+direct_energy*specular_brdf)*irradiance*sheen_comp;
+        var diffuse_brdf=diffuse/3.14159265359;if eon {diffuse_brdf=brdf_eon(light,v,n,base.rgb,diffuse_roughness)*(1.0-metalness);}
+        total_diffuse+=diffuse_energy*diffuse_brdf*irradiance*sheen_comp;
+        result+=(diffuse_energy*diffuse_brdf+direct_energy*specular_brdf)*irradiance*sheen_comp;
         if sheen_max>0.0 {
             let inv=1.0/(sheenrough*sheenrough);let charlie=(2.0+inv)*pow(max(1.0-nh*nh,0.0078125),inv*0.5)/(2.0*3.14159265359);
             let neubelt=clamp(1.0/(4.0*max(nl+nv-nl*nv,0.000001)),0.0,1.0);

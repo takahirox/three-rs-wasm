@@ -1986,7 +1986,7 @@ impl Renderer {
                         &if let Material::Physical(m) = material {
                             m.extension_maps()
                         } else {
-                            [None; 12]
+                            [None; crate::physical_maps::COUNT]
                         },
                     ),
                     line: if let Material::Line(m) = material {
@@ -2030,11 +2030,15 @@ impl Renderer {
                     } else {
                         [0.0; 4]
                     },
+                    // clearcoatNormalScale, then diffuseRoughness ( EON when above 0 ).
                     coat_normal: if let Material::Physical(m) = material {
+                        if !m.diffuse_roughness.is_finite() {
+                            return Err(Error::Invalid("physical diffuse roughness"));
+                        }
                         [
                             m.clearcoat_normal_scale.x as f32,
                             m.clearcoat_normal_scale.y as f32,
-                            0.0,
+                            m.diffuse_roughness as f32,
                             0.0,
                         ]
                     } else {
@@ -2519,7 +2523,7 @@ impl Renderer {
             if let Material::Physical(m) = material {
                 m.extension_maps()
             } else {
-                [None; 12]
+                [None; crate::physical_maps::COUNT]
             },
         )?;
         let maps = material.texture_maps();

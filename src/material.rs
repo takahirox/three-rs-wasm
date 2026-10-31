@@ -494,6 +494,11 @@ pub struct MeshPhysicalMaterial {
     pub attenuation_color: Color,
     pub attenuation_distance: f64,
     pub dispersion: f64,
+    /// KHR_materials_diffuse_roughness ( r187 ): the EON rough diffuse lobe's
+    /// roughness, multiplied by `diffuse_roughness_map`'s red channel; 0
+    /// keeps the Lambertian lobe.
+    pub diffuse_roughness: f64,
+    pub diffuse_roughness_map: Option<Arc<Texture>>,
     pub iridescence: f64,
     pub iridescence_ior: f64,
     pub iridescence_thickness_range: [f64; 2],
@@ -531,6 +536,8 @@ impl Default for MeshPhysicalMaterial {
             attenuation_color: Color::WHITE,
             attenuation_distance: f64::INFINITY,
             dispersion: 0.0,
+            diffuse_roughness: 0.0,
+            diffuse_roughness_map: None,
             iridescence: 0.0,
             iridescence_ior: 1.3,
             iridescence_thickness_range: [100.0, 400.0],
@@ -726,7 +733,7 @@ impl ShaderMaterial {
 }
 
 impl MeshPhysicalMaterial {
-    pub(crate) fn extension_maps(&self) -> [Option<&Arc<Texture>>; 12] {
+    pub(crate) fn extension_maps(&self) -> [Option<&Arc<Texture>>; crate::physical_maps::COUNT] {
         [
             self.clearcoat_map.as_ref(),
             self.clearcoat_roughness_map.as_ref(),
@@ -740,6 +747,7 @@ impl MeshPhysicalMaterial {
             self.thickness_map.as_ref(),
             self.iridescence_map.as_ref(),
             self.iridescence_thickness_map.as_ref(),
+            self.diffuse_roughness_map.as_ref(),
         ]
     }
 }
