@@ -49,8 +49,11 @@ per animate(); a separate test follows it frame by frame over 120 frames.
   the pass resolution, affine texturing, level-0 reads), as RetroPassNode
   does.
 - **Helmet.** Selecting Damaged Helmet loads it and venice_sunset_1k.hdr: a
-  512² CubeMapNode cube in retro mode, a PMREM (cubeUV 768 × 1024, ten GGX
-  levels) otherwise.
+  512² CubeMapNode cube in retro mode, r187's cube PMREM ( 256², shared
+  `pmrem.rs` ) otherwise. fromEquirectangularTexture gives the cube target
+  generateMipmaps: its mip chain is generated after the six faces, and the
+  filtered retro helmet's implicit-LOD reads pick the nearest level, as the
+  cube's LinearFilter sampler does.
 - **Known differences.** The port keeps both models' buffers after a switch
   (the original disposes and reloads the geometry), and does not draw the
   helmet until its environment has loaded (the original draws it first

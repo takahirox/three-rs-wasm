@@ -60,10 +60,10 @@ struct renderStruct {
 	nodeUniform36 : f32,
 	nodeUniform30 : vec3<f32>,
 	nodeUniform31 : vec3<f32>,
-	cameraProjectionMatrixInverse : mat4x4<f32>,
-	nodeUniform33 : vec3<f32>,
 	nodeUniform10 : vec2<f32>,
-	cameraWorldMatrix : mat4x4<f32>
+	cameraWorldMatrix : mat4x4<f32>,
+	cameraProjectionMatrixInverse : mat4x4<f32>,
+	nodeUniform33 : vec3<f32>
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;

@@ -6,15 +6,15 @@
 //! level-0 texture reads); barrelUV reads it back nearest-neighbour; the
 //! output applies color bleeding, the Bayer dither, posterize, the vignette
 //! and the scanlines before the sRGB output. Every stage runs the WGSL
-//! three.js r187 generates for the page (in `retro/`), except the plain
-//! (non-retro) helmet and its PMREM ( `plain_helmet_*`, `pmrem_*` ), which
-//! still run r186's CubeUV-atlas PMREM. The helmet loads when selected, with
+//! three.js r187 generates for the page (in `retro/`; the plain helmet's
+//! PMREM is the shared `pmrem.rs`). The helmet loads when selected, with
 //! venice_sunset_1k.hdr: the retro helmet reads it through CubeMapNode's 512²
 //! cube, the plain one through scene.environment's PMREM.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind, flat_camera, raw_pipeline, source_pipeline};
+use super::pmrem::{CubeMipmaps, Pmrem, cube_texture, cube_view, face_view, from_equirect};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::shadowmap_opacity::{Mipmaps, mip_count};
 use super::trackball_sprites::parse_rgbe;
 use crate::{
@@ -243,6 +243,8 @@ pub(super) struct Demo {
     quad_uv: wgpu::Buffer,
     repeat: wgpu::Sampler,
     clamp: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     targets: Option<Targets>,
 }
 impl Demo {
@@ -435,6 +437,7 @@ impl Demo {
             ),
             repeat: sampler(wgpu::AddressMode::Repeat, wgpu::FilterMode::Linear),
             clamp: sampler(wgpu::AddressMode::ClampToEdge, wgpu::FilterMode::Nearest),
+            trilinear: sampler(wgpu::AddressMode::ClampToEdge, wgpu::FilterMode::Linear),
             targets: None,
         })
     }
@@ -1009,7 +1012,8 @@ impl Demo {
                 "renderStruct",
                 &values,
             )?;
-            // The PMREM's lodMax and texel size, and the environment rotation and intensity.
+            // The environment rotation, the PMREM's maxLod and the intensity.
+            let max_lod = h.pmrem.as_ref().map_or(0., |p| p.max_lod as f64);
             write(
                 &h.plain_object,
                 wgsl!("plain_helmet_fs"),
@@ -1031,11 +1035,9 @@ impl Demo {
                     ("nodeUniform19", m4(h.model)),
                     ("nodeUniform21", identity),
                     ("nodeUniform22", vec![1., -1.]),
-                    ("nodeUniform32", vec![8.]),
                     ("nodeUniform33", m4(Matrix4::IDENTITY)),
-                    ("nodeUniform35", vec![1. / 768.]),
-                    ("nodeUniform36", vec![1. / 1024.]),
-                    ("nodeUniform38", vec![1.]),
+                    ("nodeUniform35", vec![max_lod]),
+                    ("nodeUniform36", vec![1.]),
                 ],
             )?;
         }
@@ -1311,7 +1313,7 @@ impl Demo {
             }
         } else {
             if h.pmrem.is_none() {
-                h.generate_pmrem(r, &self.clamp)?;
+                h.generate_pmrem(r)?;
             }
             if t.helmet.plain.is_none() {
                 let pmrem = h.pmrem.as_ref().ok_or(Error::Invalid("helmet PMREM"))?;
@@ -1335,7 +1337,7 @@ impl Demo {
                         (10, tex(&r.dfg)),
                         (11, repeat()),
                         (12, tex(normal)),
-                        (13, sampler(&self.clamp)),
+                        (13, sampler(&self.trilinear)),
                         (14, tex(&pmrem.view)),
                     ],
                 ));
@@ -1483,6 +1485,7 @@ struct Helmet {
     /// Albedo, metal-roughness, emissive, AO and normal.
     maps: [wgpu::TextureView; 5],
     equirect: wgpu::TextureView,
+    equirect_width: u32,
     /// CubeMapNode's 512² cube, rendered the first time the retro helmet draws.
     cube: Option<wgpu::TextureView>,
     /// scene.environment's PMREM, generated the first time the plain pass draws the helmet.
@@ -1558,6 +1561,7 @@ impl Helmet {
             },
             maps,
             equirect,
+            equirect_width: *width,
             cube: None,
             pmrem: None,
             render: uniform(r, "helmet render", wgsl!("helmet_fs"), "renderStruct")?,
@@ -1574,22 +1578,13 @@ impl Helmet {
     }
     /// CubeMapNode: the equirect texture rendered into a 512² cube by a
     /// CubeCamera ( near 1, far 10 ) inside a 5 × 5 × 5 back-faced box.
+    /// fromEquirectangularTexture sets the equirect's generateMipmaps, which
+    /// the cube target copies: the cube gets its mip chain after the faces
+    /// render ( the filtered retro helmet samples it with implicit LODs; its
+    /// LinearFilter sampler picks the nearest level ).
     fn render_cube(&mut self, r: &Renderer, clamp: &wgpu::Sampler) -> Result<()> {
         const SIZE: u32 = 512;
-        let cube = r.device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("helmet cube"),
-            size: wgpu::Extent3d {
-                width: SIZE,
-                height: SIZE,
-                depth_or_array_layers: 6,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: HALF,
-            usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
-            view_formats: &[],
-        });
+        let cube = cube_texture(r, "helmet cube", SIZE, SIZE.ilog2() + 1);
         let depth = target(r, (SIZE, SIZE), DEPTH, 1);
         let geometry = BoxGeometry::build(5., 5., 5.)?;
         let a = geometry
@@ -1708,12 +1703,7 @@ impl Helmet {
                 pipeline.get_bind_group_layout(0),
                 &[(0, render.as_entire_binding())],
             );
-            let face = cube.create_view(&wgpu::TextureViewDescriptor {
-                dimension: Some(wgpu::TextureViewDimension::D2),
-                base_array_layer: layer as u32,
-                array_layer_count: Some(1),
-                ..Default::default()
-            });
+            let face = face_view(&cube, layer as u32, 0);
             {
                 let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                     label: Some("helmet cube"),
@@ -1745,57 +1735,15 @@ impl Helmet {
             }
             renders.push(render);
         }
+        CubeMipmaps::new(r, &cube).encode(&mut encoder);
         r.queue.submit([encoder.finish()]);
-        self.cube = Some(cube.create_view(&wgpu::TextureViewDescriptor {
-            dimension: Some(wgpu::TextureViewDimension::Cube),
-            ..Default::default()
-        }));
+        self.cube = Some(cube_view(&cube, None));
         Ok(())
     }
     /// PMREMGenerator.fromEquirectangular: the equirect texture into the
-    /// cubeUV target, then the GGX levels.
-    fn generate_pmrem(&mut self, r: &Renderer, clamp: &wgpu::Sampler) -> Result<()> {
-        let pmrem = Pmrem::new(r, clamp, 8, GGX_8)?;
-        let equirect = source_pipeline(
-            r,
-            "helmet PMREM equirect",
-            wgsl!("pmrem_equirect_vs"),
-            wgsl!("pmrem_equirect_fs"),
-        );
-        let object = r
-            .device
-            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("helmet PMREM"),
-                contents: &pack(
-                    wgsl!("pmrem_equirect_vs"),
-                    "objectStruct",
-                    &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
-                )?,
-                usage: wgpu::BufferUsages::UNIFORM,
-            });
-        let groups = [
-            bind(
-                r,
-                equirect.get_bind_group_layout(0),
-                &[(
-                    0,
-                    flat_camera(r, wgsl!("pmrem_equirect_vs"))?.as_entire_binding(),
-                )],
-            ),
-            bind(
-                r,
-                equirect.get_bind_group_layout(1),
-                &[
-                    (0, wgpu::BindingResource::Sampler(clamp)),
-                    (1, wgpu::BindingResource::TextureView(&self.equirect)),
-                    (2, object.as_entire_binding()),
-                ],
-            ),
-        ];
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        pmrem.encode(&mut encoder, &equirect, [&groups[0], &groups[1]]);
-        r.queue.submit([encoder.finish()]);
-        self.pmrem = Some(pmrem);
+    /// source cube target, its mipmaps, then every level.
+    fn generate_pmrem(&mut self, r: &Renderer) -> Result<()> {
+        self.pmrem = Some(from_equirect(r, &self.equirect, self.equirect_width)?);
         Ok(())
     }
 }
