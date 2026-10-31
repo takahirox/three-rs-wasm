@@ -463,13 +463,7 @@ struct Lines<'a> {
     colors: &'a mut Vec<f32>,
 }
 impl DebugRenderBackend for Lines<'_> {
-    fn draw_line(
-        &mut self,
-        _object: DebugRenderObject,
-        a: Vector,
-        b: Vector,
-        color: [f32; 4],
-    ) {
+    fn draw_line(&mut self, _object: DebugRenderObject, a: Vector, b: Vector, color: [f32; 4]) {
         self.vertices.extend_from_slice(&a.to_array());
         self.vertices.extend_from_slice(&b.to_array());
         let [r, g, b] = hsl_to_rgb(color[0], color[1], color[2]);
