@@ -30,17 +30,37 @@ until every ported example matches r187 again; it is removed when done.
 
 ## To do
 
-1. **PMREM.** r187 replaces the CubeUV atlas with cube render targets
-   ( `PMREMGenerator`, `PMREMNode`, `PMREMUtils`; WebGL's `PMREMGenerator`
-   too ). `gallery/src/browser/loader_materialx/pmrem.rs` already ports
-   `fromEquirectangular` with r187's WGSL. The gallery's PMREM and every
-   port that samples it move to the r187 layout: 19 WebGPU shader sets with `getUV`/`getFace`/`roughnessToMip`,
-   and the WebGL ports' hand-written CubeUV sampling.
-2. **Generated WGSL.** Every WebGPU port runs the WGSL its page generates;
-   r187 changes it for every page captured so far. For each port, capture the
-   r187 page ( `node tools/compat/capture_wgsl.mjs .cache/upstream r187 … ` over
-   a checkout of r186 and r187 side by side ) and replace the port's shaders,
-   adapting bindings where they moved.
+1. **PMREM and generated WGSL.** r187's PMREM is shared
+   ( `gallery/src/browser/pmrem.rs`: fromEquirectangular, fromCubemap,
+   fromScene, RoomEnvironment ). `tools/compat/rebase_wgsl.py` moved the
+   shaders whose interface stayed; ports moved by hand since: loader_materialx,
+   cubemap_dynamic, custom_fog, tsl_graph, generator_building, geometry_loft,
+   water, compute_water, caustics, godrays, compute_reduce, shadow_array,
+   volume_lighting, volume_caustics, volume_fire, vxgi, vxgi_sponza, fog,
+   test_memory, sss, lightprobes_complex, shadowmap_progressive, retargeting,
+   retargeting_readyplayer, gaussian_splat, ssgi, volume_traa,
+   volume_rectarea, lights_projector, instancing_morph, shadowmap_opacity,
+   lights_dynamic, shadowmap_vsm, shadowmap_csm, backdrop_water,
+   fog_scattering. Left:
+   - In progress: generator_city, deferred, compute_cloth, fluid, gtao, ssr,
+     ssr_denoise, skinning_instances.
+   - webgpu_lightprobes ( r187 rewrote LightProbeGrid's bake; `lightprobes.rs`
+     is shared with lightprobes_complex/rooms.rs ).
+   - retro: the default helmet and its PMREM are r186; state 16 fails at
+     0.066 / 1.25 on r187's page ( the same before the move ).
+   - ballpool: r187's page runs RapierPhysics ( rapier.js 0.21.0 = rapier
+     0.36.0 ), the engine is pinned at 0.26.1; state 0 differs in shadows too.
+   - `volume_fire/blur_h_fs.wgsl` holds the vertical blur ( the rebase took
+     the closest of two near-identical modules ); other H/V pairs may too.
+   - fog's residency check ( creates 153 → 157, `src/draw_gpu.rs` ) fails on
+     r187's tip already; the workload test fails for ballpool, geometry_loft,
+     generator_building, ssr_denoise and skinning_instancing_individual.
+   - Hard-coded Object3D ids: r187 creates fewer objects before page content
+     ( backdrop_water's first ice id 19 → 16 ); recheck ports that use them.
+   - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
+     moved to cube targets too ).
+2. **Rapier.** r187's RapierPhysics loads rapier.js 0.21.0 ( rapier 0.36.0 )
+   for the physics_rapier_* pages and the ballpool.
 3. **Changed pages.** 65 ported pages changed in r187; each port follows its
    page. Largest first: webgpu_postprocessing_ssgi_ballpool,
    webgpu_lightprobes_complex, webgl_materials_envmaps_fasthdr,
