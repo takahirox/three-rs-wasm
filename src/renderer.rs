@@ -171,6 +171,8 @@ pub struct Renderer {
     /// The 1×1×1 atlas bound without a grid, the grid's linear sampler, and
     /// the atlas of the render in progress.
     grid_fallback: wgpu::TextureView,
+    /// The PMREM binding of a scene without an environment.
+    environment_fallback: wgpu::TextureView,
     grid_sampler: wgpu::Sampler,
     probe_grid: RefCell<Option<Arc<crate::light_probe_grid::GridAtlas>>>,
     physical_maps: RefCell<crate::physical_maps::Cache>,
@@ -420,7 +422,12 @@ impl Renderer {
                 } else {
                     wgpu::BindingType::Texture {
                         sample_type: wgpu::TextureSampleType::Float { filterable: true },
-                        view_dimension: wgpu::TextureViewDimension::D2,
+                        // 11: the PMREM cube.
+                        view_dimension: if binding == 11 {
+                            wgpu::TextureViewDimension::Cube
+                        } else {
+                            wgpu::TextureViewDimension::D2
+                        },
                         multisampled: false,
                     }
                 },
@@ -564,7 +571,7 @@ impl Renderer {
                 crate::geometry_gpu::vertex_entry_points(
                     &format!(
                         "{}\n{}\n{}\n{}\n{}\n{}\n{}",
-                        include_str!("shaders/cube_uv.wgsl"),
+                        include_str!("shaders/envmap.wgsl"),
                         concat!(
                             include_str!("shaders/deformation.wgsl"),
                             "\n",
@@ -609,6 +616,25 @@ impl Renderer {
                 view_formats: &[],
             })
             .create_view(&Default::default());
+        let environment_fallback = device
+            .create_texture(&wgpu::TextureDescriptor {
+                label: Some("PMREM fallback"),
+                size: wgpu::Extent3d {
+                    width: 1,
+                    height: 1,
+                    depth_or_array_layers: 6,
+                },
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: wgpu::TextureFormat::Rgba16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING,
+                view_formats: &[],
+            })
+            .create_view(&wgpu::TextureViewDescriptor {
+                dimension: Some(wgpu::TextureViewDimension::Cube),
+                ..Default::default()
+            });
         let grid_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("LightProbeGrid sampler"),
             mag_filter: wgpu::FilterMode::Linear,
@@ -642,6 +668,7 @@ impl Renderer {
             ltc,
             ltc_sampler,
             grid_fallback,
+            environment_fallback,
             grid_sampler,
             probe_grid: RefCell::new(None),
             physical_maps: Default::default(),
@@ -1194,7 +1221,7 @@ impl Renderer {
                 [
                     scene.environment_rotation,
                     scene.background_blur,
-                    if env.source_is_cube_uv || scene.background_pmrem {
+                    if env.pmrem_background || scene.background_pmrem {
                         -1.0
                     } else if scene.background_equirectangular {
                         1.0
@@ -1802,6 +1829,7 @@ impl Renderer {
                         _ => [1.0, 1.0, 1.0, properties.alpha_test as f32],
                     },
                     environment: if let Some(own) = &properties.env_map {
+                        let own = self.material_environment(own)?;
                         [
                             match material {
                                 Material::Standard(m)
@@ -1811,8 +1839,8 @@ impl Renderer {
                                 _ => 1.0,
                             },
                             0.0,
-                            self.material_environment(own)?.max_mip,
-                            0.0,
+                            own.max_mip,
+                            f32::from(own.flip),
                         ]
                     } else {
                         [
@@ -1839,7 +1867,10 @@ impl Renderer {
                                 .borrow()
                                 .as_ref()
                                 .map_or(0.0, |(_, e)| e.max_mip),
-                            0.0,
+                            self.environment
+                                .borrow()
+                                .as_ref()
+                                .map_or(0.0, |(_, e)| f32::from(e.flip)),
                         ]
                     },
                     maps: match material {
@@ -2505,7 +2536,7 @@ impl Renderer {
             wgpu::BindGroupEntry {
                 binding: 11,
                 resource: wgpu::BindingResource::TextureView(
-                    env.map_or(&fallback.view, |e| &e.view),
+                    env.map_or(&self.environment_fallback, |e| &e.view),
                 ),
             },
             wgpu::BindGroupEntry {

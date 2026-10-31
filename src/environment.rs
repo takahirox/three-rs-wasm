@@ -68,20 +68,28 @@ impl EnvironmentMap {
     }
 }
 
-/// GPU-only prefiltered scene lighting. Views keep their backing textures alive.
+/// GPU-only prefiltered scene lighting: an r187 PMREM cube. Views keep their
+/// backing textures alive.
 #[derive(Clone, Debug)]
 pub struct PrefilteredEnvironment {
-    /// The cube-UV atlas that `view` shows.
+    /// The PMREM cube that `view` shows, its levels prefiltered for
+    /// `PMREMGenerator.lodToRoughness`.
     pub(crate) texture: wgpu::Texture,
     pub view: wgpu::TextureView,
+    /// The equirectangular map it was generated from, or level 0's first face.
     pub source: wgpu::TextureView,
     pub(crate) sampler: wgpu::Sampler,
+    /// The PMREM's last level ( ENVMAP_MAX_LOD ).
     pub(crate) max_mip: f32,
-    pub(crate) source_is_cube_uv: bool,
+    /// No equirectangular source: the background samples the PMREM.
+    pub(crate) pmrem_background: bool,
+    /// An uploaded cube texture ( not a render target ): sampled with x
+    /// mirrored, as WebGLMaterials' envMapRotation does.
+    pub(crate) flip: bool,
 }
 
 impl EnvironmentMap {
-    /// Prepare a resident GPU atlas once, also reusable by custom TSL environments.
+    /// Prepare the resident PMREM once, also reusable by custom TSL environments.
     pub fn prefilter(
         &mut self,
         renderer: &crate::renderer::Renderer,
@@ -97,10 +105,11 @@ impl EnvironmentMap {
     }
 }
 impl EnvironmentMap {
-    /// A prefiltered cube-UV PMREM atlas from a UASTC HDR KTX2 file, used as
-    /// `scene.environment` with CubeUVReflectionMapping.
-    pub fn from_cube_uv_ktx2(renderer: &crate::renderer::Renderer, bytes: &[u8]) -> Result<Self> {
-        let gpu = crate::environment_gpu::cube_uv_ktx2(&renderer.device, &renderer.queue, bytes)?;
+    /// A prefiltered PMREM cube from a UASTC HDR KTX2 file ( r187's
+    /// `textures/pmrem/` ), used as `scene.environment` with
+    /// `texture.isPMREMTexture = true`.
+    pub fn from_pmrem_ktx2(renderer: &crate::renderer::Renderer, bytes: &[u8]) -> Result<Self> {
+        let gpu = crate::environment_gpu::pmrem_ktx2(&renderer.device, &renderer.queue, bytes)?;
         let size = gpu.texture.size();
         Ok(Self {
             width: size.width,
@@ -120,9 +129,13 @@ impl PrefilteredEnvironment {
     pub fn max_mip(&self) -> f32 {
         self.max_mip
     }
-    /// The Rgba16Float cube-UV atlas, copyable for readback.
+    /// The PMREM cube texture ( six layers, max_mip + 1 levels ).
     pub fn texture(&self) -> &wgpu::Texture {
         &self.texture
+    }
+    /// Whether the cube is sampled with x mirrored ( an uploaded cube texture ).
+    pub fn flip(&self) -> bool {
+        self.flip
     }
 }
 pub use crate::environment_gpu::CubeCapture;

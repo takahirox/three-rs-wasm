@@ -115,10 +115,10 @@ const cases={
  // transform; the model loads from Needle Cloud, as on the page. The dragon's specular and
  // transmission sparkle differs in scattered pixels ( 0.9 %, 2.7 % with MSAA ) from the first frame.
  webgl_loader_gltf_animation_pointer:{limits:[.012,.4],antialias:true,times:[0,2,5,9,14,20,27,31],parameters:[],at:9,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- // The FastHDR atlases load from Needle's CDN, as on the page; image changes wait for the download.
- // WebGL draws the cube-UV background as a 36-index box, in the transmission pass and the main
+ // The prefiltered cubemaps load from textures/pmrem/, as on the page; image changes wait for
+ // the download. WebGL draws the PMREM background as a 36-index box, in the transmission pass and the main
  // render; the port draws it as a fullscreen triangle.
- webgl_materials_envmaps_fasthdr:{maskDraws:[36,2,0],rebuilds:true,frames:120,times:[0,1],parameters:[[0,'https://cdn.needle.tools/static/hdris/cannon_2k.pmrem.ktx2',3],[0,'https://cdn.needle.tools/static/hdris/studio_small_09_2k.pmrem.ktx2',6],[1,1.6,1.6],[2,70,70],[3,.4,.4]],restore:[[3,0,0],[2,40,40],[1,1,1],[0,'https://cdn.needle.tools/static/hdris/ballroom_2k.pmrem.ktx2',0]],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ webgl_materials_envmaps_fasthdr:{maskDraws:[36,2,0],rebuilds:true,frames:120,times:[0,1],parameters:[[0,'cannon',3],[0,'studio_small_09',6],[1,1.6,1.6],[2,70,70],[3,.4,.4]],restore:[[3,0,0],[2,40,40],[1,1,1],[0,'ballroom',0]],at:1,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  physics_rapier_terrain:{antialias:true,times:[0,1,3.5,4,4.5,6,8],parameters:[],at:8,drag:[[256,256],[330,300]]},
  // The residency cycles walk forward and back the same frames, so the character returns. A
  // drag would turn the camera further each cycle, culling the scattered bodies in and out.

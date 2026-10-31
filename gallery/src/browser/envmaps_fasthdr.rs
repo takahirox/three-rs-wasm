@@ -1,10 +1,11 @@
-//! webgl_materials_envmaps_fasthdr: five spheres ( transmissive glass,
-//! rough, mirror, brushed metal and glossy green ) lit by a FastHDR
-//! environment, a Poly Haven HDRI prefiltered into PMREMGenerator's cube-UV
-//! atlas and stored as UASTC HDR KTX2. As on the page, the atlas loads from
-//! Needle's CDN and serves as scene.environment and scene.background with
-//! CubeUVReflectionMapping, without filtering again; ACES Filmic, damped
-//! OrbitControls and the image, exposure, fov and blurriness GUI.
+//! webgl_materials_envmaps_fasthdr ( r187 ): five spheres ( transmissive
+//! glass, rough, mirror, brushed metal and glossy green ) lit by a FastHDR
+//! prefiltered HDR cubemap: a Poly Haven HDRI that PMREMGenerator filtered
+//! into a cube of six 512-texel faces and seven levels, stored as UASTC HDR
+//! KTX2 ( textures/pmrem/ ). As on the page, KTX2Loader loads it and it serves
+//! as scene.environment and scene.background with isPMREMTexture, without
+//! filtering again; ACES Filmic, damped OrbitControls and the image,
+//! exposure, fov and blurriness GUI.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::fetch;
 use crate::environment::EnvironmentMap;
@@ -25,18 +26,17 @@ const IMAGES: [&str; 8] = [
     "studio_small_09",
     "wide_street_01",
 ];
+/// KTX2Loader.setPath( 'textures/pmrem/' ).loadAsync( `${ name }_2k.pmrem.ktx2` ).
 fn url(image: usize) -> String {
-    format!(
-        "https://cdn.needle.tools/static/hdris/{}_2k.pmrem.ktx2",
-        IMAGES[image]
-    )
+    format!("textures/pmrem/{}_2k.pmrem.ktx2", IMAGES[image])
 }
-type Loaded = Rc<RefCell<Option<Result<Vec<u8>>>>>;
+type Loaded = Rc<RefCell<Option<(usize, Result<Vec<u8>>)>>>;
 pub(super) struct Demo {
     controls: Controls,
     /// The image requested by the GUI, and the one fetched or in flight.
     image: usize,
     requested: Option<usize>,
+    /// A finished load and the image it is of.
     loaded: Loaded,
     fov: f64,
     exposure: f64,
@@ -109,18 +109,22 @@ impl Demo {
     pub fn update(&mut self, _s: &mut Scene, _c: Object3D, _dt: f64, _animate: bool) -> Result<()> {
         Ok(())
     }
-    /// A changed image loads in the background, then replaces the environment
-    /// and the background; render(): controls.update().
+    /// A changed image loads in the background; a load that is no longer the
+    /// GUI's image is dropped ( texture.dispose() ), else it replaces the
+    /// environment and the background. render(): controls.update().
     pub fn prepare(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         if self.requested != Some(self.image) {
             self.requested = Some(self.image);
-            let (slot, url) = (self.loaded.clone(), url(self.image));
+            let (slot, image) = (self.loaded.clone(), self.image);
             wasm_bindgen_futures::spawn_local(async move {
-                let result = fetch(&url).await;
-                *slot.borrow_mut() = Some(result);
+                let result = fetch(&url(image)).await;
+                *slot.borrow_mut() = Some((image, result));
             });
         }
-        if let Some(bytes) = self.loaded.borrow_mut().take() {
+        let loaded = self.loaded.borrow_mut().take();
+        if let Some((image, bytes)) = loaded
+            && image == self.image
+        {
             install(s, r, &bytes?)?;
         }
         // render(): toneMappingExposure and backgroundBlurriness from the GUI.
@@ -167,10 +171,10 @@ impl Demo {
     }
     pub fn seek(&mut self, _t: f64) {}
 }
-/// `texture.mapping = CubeUVReflectionMapping; scene.environment =
-/// scene.background = texture`.
+/// `texture.isPMREMTexture = true; scene.environment = scene.background =
+/// texture`.
 fn install(s: &mut Scene, r: &Renderer, bytes: &[u8]) -> Result<()> {
-    s.environment = Some(Arc::new(EnvironmentMap::from_cube_uv_ktx2(r, bytes)?));
+    s.environment = Some(Arc::new(EnvironmentMap::from_pmrem_ktx2(r, bytes)?));
     s.background_environment = true;
     s.background_pmrem = true;
     // WebGLBackground tone-maps textures that are not sRGB.

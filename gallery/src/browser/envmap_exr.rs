@@ -1,7 +1,7 @@
 //! webgl_materials_envmaps_exr: the PIZ-compressed EXR and the PNG
 //! equirectangular maps, each prefiltered once into a PMREM for the
 //! reflective torus knot and shown as the background, with ACES exposure,
-//! roughness, metalness and the debug plane showing the PMREM atlas.
+//! roughness, metalness and the debug plane.
 use super::controls_attributes::{CameraState, Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::refraction_loaders::formats::decode_exr;
@@ -14,8 +14,10 @@ use std::sync::Arc;
 
 const ASSETS: &str = "assets/envmap-exr";
 /// The debug plane's MeshBasicMaterial with the PMREM render target as its
-/// map: the port's own cube-UV atlas at the plane's uv. Its layout is not
-/// three's, so the debug view is not compared.
+/// map. r187's PMREM is a cube, which WebGL cannot bind to the map's 2D
+/// target ( INVALID_OPERATION ): the plane shows whichever 2D texture the
+/// unit held. The port shows the equirectangular map; the debug view is not
+/// compared.
 async fn atlas_material(r: &Renderer, env: &mut EnvironmentMap) -> Result<Arc<Material>> {
     let gpu = env.prefilter(r)?;
     let color = WgslFn::new(
@@ -29,7 +31,7 @@ async fn atlas_material(r: &Renderer, env: &mut EnvironmentMap) -> Result<Arc<Ma
         r,
         &NodeMaterial::new(color).wgsl(1)?,
         &[],
-        &[(gpu.view(), gpu.sampler())],
+        &[(&gpu.source, gpu.sampler())],
         "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{return surface;}",
     )
     .await?;

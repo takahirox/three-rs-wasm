@@ -134,13 +134,15 @@ fn pbr_features_have_independent_visible_effects() {
         PerspectiveCamera::default(),
     )));
     scene.get_mut(camera).unwrap().position.z = 3.0;
+    // Dim enough that the rough levels ( r187's PMREM integrates the whole
+    // hemisphere for them ) stay below the tone mapping's shoulder.
     let rgba = (0..32)
         .flat_map(|y| {
             (0..64).flat_map(move |x| {
                 [
-                    if x > 30 && x < 40 { 12.0 } else { 0.1 },
-                    y as f32 / 8.0,
-                    x as f32 / 16.0,
+                    if x > 30 && x < 40 { 3.0 } else { 0.025 },
+                    y as f32 / 32.0,
+                    x as f32 / 64.0,
                     1.0,
                 ]
                 .map(half::f16::from_f32)
