@@ -49,8 +49,17 @@ clicked splat is not reproduced.
   loop, so no display frame takes a step.
 - **Floors.** Each floor has its own object uniforms, as the page's meshes do.
 - **Resize.** After a resize r186 copied the transmission source at the new
-  size from a target still at the old size and failed validation ( not
-  re-checked on r187 ). The comparison leaves the resize out.
+  size from a target still at the old size and failed validation; r187's page
+  resizes without the error, and the resize is compared.
+- **First frames.** RenderPipeline's first render draws its output quad
+  before any pass has rendered, so the page's first frame is black. The
+  second draws the scene, and builds the water's material: WaterNode's setup
+  adds the reflector's target to the water then, so that frame's reflector
+  reads the target's world matrix before its first update ( the identity, a
+  plane through the origin facing +z ). From the page's camera it faces away
+  and leaves the default texture ( zeros ): that frame's water has no
+  reflection. The port follows both frames, and the reflector's clearing of
+  its target when it turns away after a render.
 
 ### Custom fog (406)
 
