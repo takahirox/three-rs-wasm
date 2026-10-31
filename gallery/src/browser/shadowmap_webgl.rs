@@ -156,9 +156,9 @@ impl Demo {
         n.shadow.extent = 2000.;
         n.shadow.near = 1200.;
         n.shadow.far = 2500.;
-        // reversedDepthBuffer: the bias is added to the reversed depth, so it
-        // moves the compared depth toward the light.
-        n.shadow.bias = -0.0001;
+        // reversedDepthBuffer: r187 subtracts the bias from the reversed
+        // depth, which adds it to the forward depth the engine compares.
+        n.shadow.bias = 0.0001;
         n.shadow.reversed_depth = true;
         n.shadow.map_size = Some(MAP.0);
         n.shadow.map_height = Some(MAP.1);

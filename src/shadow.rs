@@ -27,6 +27,9 @@ pub struct Shadow {
     pub far: f64,
     /// Half width/height of a directional light's orthographic shadow camera.
     pub extent: f64,
+    /// A directional light's asymmetric shadow camera ( left, right, top,
+    /// bottom ), replacing `extent` when set.
+    pub bounds: Option<[f64; 4]>,
     /// Offset added to the comparison depth, in normalized depth units.
     pub bias: f64,
     /// Offset the receiving surface along its world-space normal.
@@ -50,6 +53,7 @@ impl Default for Shadow {
             near: 0.5,
             far: 500.0,
             extent: 5.0,
+            bounds: None,
             bias: 0.0,
             normal_bias: 0.0,
             radius: 1.0,
@@ -451,6 +455,9 @@ impl ShadowRenderer {
                 || shadow.near <= 0.0
                 || shadow.far <= shadow.near
                 || shadow.extent <= 0.0
+                || shadow.bounds.is_some_and(|[l, r, t, b]| {
+                    ![l, r, t, b].iter().all(|v| v.is_finite()) || r <= l || t <= b
+                })
                 || shadow.radius < 0.0
             {
                 return Err(Error::Invalid("shadow camera or filter"));
@@ -493,11 +500,13 @@ impl ShadowRenderer {
             let projection = match &node.kind {
                 NodeKind::Light(Light::Directional { target, .. }) => {
                     views.push(view(position, *target, node.up));
+                    let e = shadow.extent;
+                    let [left, right, top, bottom] = shadow.bounds.unwrap_or([-e, e, e, -e]);
                     OrthographicCamera {
-                        left: -shadow.extent,
-                        right: shadow.extent,
-                        top: shadow.extent,
-                        bottom: -shadow.extent,
+                        left,
+                        right,
+                        top,
+                        bottom,
                         near: shadow.near,
                         far: shadow.far,
                         ..Default::default()
