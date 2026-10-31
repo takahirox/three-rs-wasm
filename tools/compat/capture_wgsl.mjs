@@ -34,11 +34,12 @@ for ( const id of ids ) {
 	try {
 		await page.goto( `http://127.0.0.1:${ port }/${ tree }/examples/${ id }.html`, { timeout: 60000 } );
 		// Shaders compiled after load ( async pipelines, the first frames, lazily built passes ).
-		let count = - 1;
-		for ( let i = 0; i < 20; i ++ ) {
+		// Until some exist and none have been added for three seconds ( at most 45 s ).
+		let count = - 1, still = 0;
+		for ( let i = 0; i < 45 && still < 3; i ++ ) {
 			await page.waitForTimeout( 1000 );
 			const now = await page.evaluate( () => window.__wgsl.length );
-			if ( now === count && i >= 4 ) break;
+			still = now > 0 && now === count ? still + 1 : 0;
 			count = now;
 		}
 		const shaders = await page.evaluate( () => window.__wgsl );

@@ -223,7 +223,6 @@ fn textures(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Vec<Bind
     )?;
     let state = m(&render_object, "getNodeBuilderState", &[])?;
     let groups = get(&state, "bindings")?;
-    let cube_uv = get(&three, "CubeUVReflectionMapping")?;
     let mut out = vec![];
     for g in 0..to_number(&get(&groups, "length")?) as usize {
         let group = get_index(&groups, g)?;
@@ -241,7 +240,7 @@ fn textures(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Vec<Bind
             let uri = if !image.is_nullish() { get(&image, "materialxURI")? } else { Val::Undef };
             let source = if get(&texture, "isFramebufferTexture")?.truthy() {
                 Source::Transmission
-            } else if get(&texture, "mapping")?.strict_eq(&cube_uv) {
+            } else if get(&texture, "isPMREMTexture")?.truthy() {
                 Source::Pmrem
             } else if !uri.is_undef() {
                 Source::Image(display(&uri))
