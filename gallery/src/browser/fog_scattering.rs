@@ -5,10 +5,10 @@
 //! factor of the pass's view depth. Ten tree variants are grown on the CPU
 //! once, as the page does, and drawn as instanced meshes with their seeded
 //! placements, plus two hero trunks, over a black ground. FirstPersonControls
-//! move the camera. Every stage runs the WGSL three.js r186 generates for the
-//! page (in `fog_scattering/`; the instanced vertex module is the page's with
-//! each mesh's instance count, and the plain output is the volume_caustics
-//! and ssgi modules, byte-identical).
+//! move the camera. Every stage runs the WGSL three.js r187 generates for the
+//! page (in `fog_scattering/`; the trees read their instance matrices as
+//! instanced attributes, and the plain output is the volume_caustics and ssgi
+//! modules, byte-identical).
 mod tree;
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
@@ -29,8 +29,35 @@ macro_rules! wgsl {
 }
 const PLAIN_VS: &str = include_str!("volume_caustics/high_vs.wgsl");
 const PLAIN_FS: &str = include_str!("ssgi/output_direct_fs.wgsl");
-/// The instanced vertex module's matrix array, sized by the mesh's count.
-const INSTANCES: &str = "array< mat4x4<f32>, 18 >";
+/// The lit meshes' vertex buffers: positions and normals, then, for the
+/// instanced trees, the instance matrices ( four instanced vec4 columns, as
+/// r187's InstanceNode reads them ).
+fn lit_layouts(instanced: bool) -> Vec<wgpu::VertexBufferLayout<'static>> {
+    const POSITION: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![0 => Float32x3];
+    const NORMAL: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![1 => Float32x3];
+    const MATRIX: [wgpu::VertexAttribute; 4] =
+        wgpu::vertex_attr_array![2 => Float32x4, 3 => Float32x4, 4 => Float32x4, 5 => Float32x4];
+    let mut layouts = vec![
+        wgpu::VertexBufferLayout {
+            array_stride: 12,
+            step_mode: wgpu::VertexStepMode::Vertex,
+            attributes: &POSITION,
+        },
+        wgpu::VertexBufferLayout {
+            array_stride: 12,
+            step_mode: wgpu::VertexStepMode::Vertex,
+            attributes: &NORMAL,
+        },
+    ];
+    if instanced {
+        layouts.push(wgpu::VertexBufferLayout {
+            array_stride: 64,
+            step_mode: wgpu::VertexStepMode::Instance,
+            attributes: &MATRIX,
+        });
+    }
+    layouts
+}
 const FOG: u32 = 0xc6cace;
 fn linear(hex: u32, intensity: f64) -> Vec<f64> {
     [16, 8, 0]
@@ -299,21 +326,12 @@ impl Demo {
                 placements[v].push(compose([x, 0., z], rotation, [scale, sy, scale]));
             }
         }
-        let attrs = [
-            wgpu::vertex_attr_array![0 => Float32x3],
-            wgpu::vertex_attr_array![1 => Float32x3],
-        ];
-        let layouts = [0, 1].map(|i| wgpu::VertexBufferLayout {
-            array_stride: 12,
-            step_mode: wgpu::VertexStepMode::Vertex,
-            attributes: &attrs[i],
-        });
-        let lit = |vs: &str, fs: &str, samples| {
+        let lit = |vs: &str, fs: &str, instanced: bool, samples| {
             sampled_pipeline(
                 r,
                 "fog scattering tree",
                 (vs, fs),
-                &layouts,
+                &lit_layouts(instanced),
                 &[HALF],
                 Some((wgpu::CompareFunction::LessEqual, true)),
                 (false, false),
@@ -329,7 +347,7 @@ impl Demo {
                 variant: v,
                 instances: 1,
                 sphere: transform(variants[v].sphere, model),
-                pipeline: lit(wgsl!("hero_vs"), wgsl!("hero_fs"), samples),
+                pipeline: lit(wgsl!("hero_vs"), wgsl!("hero_fs"), false, samples),
                 object: uniform(r, "fog scattering hero", wgsl!("hero_fs"), "objectStruct")?,
                 matrices: None,
                 hero: Some(model),
@@ -339,8 +357,6 @@ impl Demo {
             if list.is_empty() {
                 continue;
             }
-            let vs = wgsl!("tree_vs")
-                .replace(INSTANCES, &format!("array< mat4x4<f32>, {} >", list.len()));
             let data: Vec<f32> = list
                 .iter()
                 .flat_map(|m| m.to_cols_array().map(|v| v as f32))
@@ -355,12 +371,12 @@ impl Demo {
                 variant: v,
                 instances: list.len() as u32,
                 sphere,
-                pipeline: lit(&vs, wgsl!("tree_fs"), samples),
+                pipeline: lit(wgsl!("tree_vs"), wgsl!("tree_fs"), true, samples),
                 object: uniform(r, "fog scattering trees", wgsl!("tree_fs"), "objectStruct")?,
                 matrices: Some(init(
                     "fog scattering instances",
                     bytemuck::cast_slice(&data),
-                    wgpu::BufferUsages::UNIFORM,
+                    wgpu::BufferUsages::VERTEX,
                 )),
                 hero: None,
             });
@@ -493,22 +509,11 @@ impl Demo {
                 let pipeline = if samples == 4 {
                     item.pipeline.clone()
                 } else {
-                    let attrs = [
-                        wgpu::vertex_attr_array![0 => Float32x3],
-                        wgpu::vertex_attr_array![1 => Float32x3],
-                    ];
-                    let layouts = [0, 1].map(|i| wgpu::VertexBufferLayout {
-                        array_stride: 12,
-                        step_mode: wgpu::VertexStepMode::Vertex,
-                        attributes: &attrs[i],
-                    });
+                    let layouts = lit_layouts(item.hero.is_none());
                     let vs = if item.hero.is_some() {
-                        wgsl!("hero_vs").to_string()
+                        wgsl!("hero_vs")
                     } else {
-                        wgsl!("tree_vs").replace(
-                            INSTANCES,
-                            &format!("array< mat4x4<f32>, {} >", item.instances),
-                        )
+                        wgsl!("tree_vs")
                     };
                     let fs = if item.hero.is_some() {
                         wgsl!("hero_fs")
@@ -518,7 +523,7 @@ impl Demo {
                     sampled_pipeline(
                         r,
                         "fog scattering tree",
-                        (&vs, fs),
+                        (vs, fs),
                         &layouts,
                         &[HALF],
                         Some((wgpu::CompareFunction::LessEqual, true)),
@@ -531,14 +536,11 @@ impl Demo {
                 } else {
                     &self.tree_render
                 };
-                let mut entries = vec![
+                let entries = [
                     (0, item.object.as_entire_binding()),
                     (1, sampler(&self.clamp)),
                     (2, tex(&r.dfg)),
                 ];
-                if let Some(m) = &item.matrices {
-                    entries.push((3, m.as_entire_binding()));
-                }
                 (
                     pipeline.clone(),
                     vec![
@@ -787,14 +789,14 @@ impl Demo {
         )?;
         let mut tree_values = camera_values.to_vec();
         tree_values.extend([
-            ("nodeUniform9", sky.clone()),
-            ("nodeUniform11", up.clone()),
-            ("nodeUniform8", ground_color.clone()),
-            ("nodeUniform14", sun),
-            ("nodeUniform12", vec![-3., 8., 5.]),
-            ("nodeUniform13", vec![0.; 3]),
-            ("nodeUniform15", fog.clone()),
-            ("nodeUniform16", vec![density]),
+            ("nodeUniform12", sky.clone()),
+            ("nodeUniform14", up.clone()),
+            ("nodeUniform11", ground_color.clone()),
+            ("nodeUniform17", sun),
+            ("nodeUniform15", vec![-3., 8., 5.]),
+            ("nodeUniform16", vec![0.; 3]),
+            ("nodeUniform18", fog.clone()),
+            ("nodeUniform19", vec![density]),
         ]);
         write(
             &self.tree_render,
@@ -846,11 +848,11 @@ impl Demo {
                     wgsl!("tree_fs"),
                     "objectStruct",
                     &[
-                        ("nodeUniform1", vec![1.]),
-                        ("nodeUniform3", m3(Matrix4::IDENTITY)),
-                        ("nodeUniform4", vec![0.; 3]),
-                        ("nodeUniform5", vec![1.]),
-                        ("nodeUniform7", m4(Matrix4::IDENTITY)),
+                        ("nodeUniform4", vec![1.]),
+                        ("nodeUniform6", m3(Matrix4::IDENTITY)),
+                        ("nodeUniform7", vec![0.; 3]),
+                        ("nodeUniform8", vec![1.]),
+                        ("nodeUniform10", m4(Matrix4::IDENTITY)),
                     ],
                 )?,
             }
@@ -939,6 +941,9 @@ impl Demo {
                         set(&mut pass, &t.items[i]);
                         pass.set_vertex_buffer(0, v.positions.slice(..));
                         pass.set_vertex_buffer(1, v.normals.slice(..));
+                        if let Some(m) = &item.matrices {
+                            pass.set_vertex_buffer(2, m.slice(..));
+                        }
                         pass.set_index_buffer(v.index.slice(..), wgpu::IndexFormat::Uint32);
                         pass.draw_indexed(0..v.count, 0, 0..item.instances);
                     }
