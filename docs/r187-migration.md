@@ -42,19 +42,22 @@ until every ported example matches r187 again; it is removed when done.
    volume_rectarea, lights_projector, instancing_morph, shadowmap_opacity,
    lights_dynamic, shadowmap_vsm, shadowmap_csm, backdrop_water,
    fog_scattering, deferred, compute_cloth, fluid, generator_city,
-   lightprobes ( its bake shared with lightprobes_complex ), retro. Left:
-   - In progress: gtao, ssr, ssr_denoise, skinning_instances.
-   - ssgi's loading frame runs with frameId 0, r187's with 1 ( ballpool
-     follows r187's TRAA start-up now ); check its history blend.
-   - fog's residency check ( creates 153 → 157, `src/draw_gpu.rs` ) fails on
-     r187's tip already; the workload test fails for ballpool, geometry_loft,
-     generator_building, ssr_denoise and skinning_instancing_individual.
-   - retro and cubemap_dynamic start single-sampled although their pages
-     antialias ( compute_cloth and fluid had the same bug, now fixed ).
-   - The workload test ( compute-examples.spec.js ) times out at 180 s before
-     it reaches every example.
+   lightprobes ( its bake shared with lightprobes_complex ), retro, gtao, ssr,
+   ssr_denoise, skinning_instances: every WebGPU port runs r187's shaders.
+   Left:
+   - The workload check ( one test per example in compute-examples.spec.js )
+     fails for ssr_denoise ( 1698 draws, the page 173 ),
+     skinning_instancing_individual ( one extra draw ), vxgi_sponza ( two
+     4086-index draws missing ) and lightprobes_sponza ( the reference seems
+     measured before Sponza loads ).
+   - TRAA's first frames: r187 reads the history's depth from the first frame
+     and starts the loading frame at frameId 1 ( gtao and ballpool follow );
+     ssgi, volume_traa and the other TRAA ports still start as r186 did.
    - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
      moved to cube targets too ).
+   - `gallery/src/browser.rs` leaves a replaced output target pointing at the
+     canvas texture ( fog worked around it by keeping one target ).
+
 2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
    RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
    ballpool matching its page at every state. Open: physics_rapier_basic's
