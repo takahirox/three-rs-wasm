@@ -300,9 +300,10 @@ impl Demo {
     pub fn parameter(&mut self, _index: usize, _value: f32) -> Result<()> {
         Ok(())
     }
-    /// The page's clock set directly: the Timer's delta from the previous time.
+    /// The page's clock set directly: the Timer's delta from the previous time,
+    /// negative when the clock goes back ( Timer.update does not clamp it ).
     pub fn seek(&mut self, t: f64) {
-        self.delta += (t * 1000. - self.now).max(0.) / 1000.;
+        self.delta += (t * 1000. - self.now) / 1000.;
         self.now = t * 1000.;
         self.pending = true;
     }
