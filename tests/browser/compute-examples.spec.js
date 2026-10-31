@@ -96,7 +96,7 @@ const cases={
  webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,frames:250,times:[0],parameters:[[0,false,0],[0,true,1],[9,true,1],[10,.5,.5],[9,false,0],[1,0,0],[8,0,0],[5,4,4]],at:0},
  // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
  webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
- webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,40,40],[1,6,6],[2,3,3],[3,20,20]],restore:[[1,6,6],[2,3,3],[3,20,20]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,60,60],[1,6,6],[2,3,3],[3,30,30]],restore:[[1,6,6],[2,3,3],[3,30,30]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The original compiles its pipelines asynchronously and presents stale frames until they are ready.
  // During an orbit drag the original's pointer ray reads the camera matrix OrbitControls has
