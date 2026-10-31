@@ -46,6 +46,7 @@ pub mod renderer;
 pub mod renderer_utils;
 pub mod sampled_texture;
 pub mod sampler;
+pub mod standard_drawing_pipeline;
 pub mod storage3_d_texture;
 pub mod storage_array_texture;
 pub mod storage_buffer;

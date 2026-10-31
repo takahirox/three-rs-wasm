@@ -13,6 +13,7 @@ pub mod mesh_sss_node_material;
 pub mod mesh_standard_node_material;
 pub mod mesh_toon_node_material;
 pub mod node_material;
+pub mod node_material_instance;
 pub mod node_materials;
 pub mod points_node_material;
 pub mod shadow_node_material;

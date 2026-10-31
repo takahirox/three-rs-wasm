@@ -149,6 +149,8 @@ pub(crate) fn install() {
         ("Map", "Object"),
         ("Set", "Object"),
         ("WeakMap", "Object"),
+        ("WeakRef", "Object"),
+        ("FinalizationRegistry", "Object"),
     ] {
         register_proto(name, Obj::with(Some(proto(parent)), Kind::Plain));
     }
@@ -777,6 +779,12 @@ fn install_string() {
             native!("toLowerCase", 0, |this, _a| Ok(Val::from(this_str(this)?.to_lowercase()))),
             native!("trim", 0, |this, _a| {
                 Ok(Val::from(this_str(this)?.trim_matches(|c: char| c.is_whitespace() || c == '\u{FEFF}').to_string()))
+            }),
+            native!("trimStart", 0, |this, _a| {
+                Ok(Val::from(this_str(this)?.trim_start_matches(|c: char| c.is_whitespace() || c == '\u{FEFF}').to_string()))
+            }),
+            native!("trimEnd", 0, |this, _a| {
+                Ok(Val::from(this_str(this)?.trim_end_matches(|c: char| c.is_whitespace() || c == '\u{FEFF}').to_string()))
             }),
             native!("repeat", 1, |this, a| {
                 let n = to_number(&arg(a, 0));

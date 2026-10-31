@@ -21,6 +21,7 @@ pub mod normal;
 pub mod object3_d_node;
 pub mod point_uv_node;
 pub mod position;
+pub mod reference_attribute_node;
 pub mod reference_base_node;
 pub mod reference_element_node;
 pub mod reference_node;

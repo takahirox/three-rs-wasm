@@ -501,6 +501,58 @@ fn install_collection_ctors() {
     );
 }
 
+// WeakRef and FinalizationRegistry ( r187's renderers track their resources
+// with them ). Objects here are reference counted and never collected while a
+// WeakRef reaches them, so deref() always answers the target and the cleanup
+// callbacks never run, as when no collection happens in the original.
+fn install_weak_refs() {
+    thread_local! {
+        static TARGETS: Val = new_weak_map();
+    }
+    let ctor = |name: &'static str, construct: NativeFn| {
+        let c = Obj::with(
+            Some(proto("Function")),
+            Kind::Func(Func {
+                name: RefCell::new(Rc::from(name)),
+                length: Cell::new(1),
+                call: None,
+                init: None,
+                construct: Some(construct),
+                forward: RefCell::new(None),
+            }),
+        );
+        let p = proto(name);
+        c.define("prototype", p.clone(), false);
+        p.define("constructor", c.clone(), false);
+        define_global(name, Val::Obj(c));
+    };
+    ctor(
+        "WeakRef",
+        Rc::new(|_t, a| {
+            let target = arg(a, 0);
+            if !matches!(target, Val::Obj(_)) {
+                return Err(type_error("WeakRef: invalid target"));
+            }
+            let r = Val::Obj(Obj::with(Some(proto("WeakRef")), Kind::Plain));
+            TARGETS.with(|t| super::m(t, "set", &[r.clone(), target]))?;
+            Ok(r)
+        }),
+    );
+    proto("WeakRef").define("deref", func("deref", 0, |this, _a| TARGETS.with(|t| super::m(t, "get", &[this.clone()]))), false);
+    ctor(
+        "FinalizationRegistry",
+        Rc::new(|_t, a| {
+            if !matches!(arg(a, 0), Val::Obj(ref o) if o.func().is_some()) {
+                return Err(type_error("FinalizationRegistry: cleanup must be callable"));
+            }
+            Ok(Val::Obj(Obj::with(Some(proto("FinalizationRegistry")), Kind::Plain)))
+        }),
+    );
+    let p = proto("FinalizationRegistry");
+    p.define("register", func("register", 2, |_this, _a| Ok(Val::Undef)), false);
+    p.define("unregister", func("unregister", 1, |_this, _a| Ok(Val::Bool(false))), false);
+}
+
 fn install_errors() {
     for kind in ["Error", "TypeError", "RangeError", "SyntaxError"] {
         let p = proto(kind);
@@ -1191,6 +1243,7 @@ pub(crate) fn install_globals() {
     install_number();
     install_object();
     install_collection_ctors();
+    install_weak_refs();
     install_errors();
     install_regexp();
     install_promise();

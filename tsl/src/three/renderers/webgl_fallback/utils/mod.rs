@@ -7,3 +7,4 @@ pub mod web_gl_state;
 pub mod web_gl_texture_utils;
 pub mod web_gl_timestamp_query_pool;
 pub mod web_gl_utils;
+pub mod web_gl_vertex_array_utils;

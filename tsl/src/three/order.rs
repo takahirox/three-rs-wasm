@@ -231,7 +231,6 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/core/Node.js", super::nodes::core_::node::init)?;
     crate::reg::run_module("nodes/utils/ArrayElementNode.js", super::nodes::utils::array_element_node::init)?;
     crate::reg::run_module("nodes/utils/ConvertNode.js", super::nodes::utils::convert_node::init)?;
-    crate::reg::run_module("nodes/core/TempNode.js", super::nodes::core_::temp_node::init)?;
     crate::reg::run_module("nodes/utils/JoinNode.js", super::nodes::utils::join_node::init)?;
     crate::reg::run_module("nodes/utils/SplitNode.js", super::nodes::utils::split_node::init)?;
     crate::reg::run_module("nodes/utils/SetNode.js", super::nodes::utils::set_node::init)?;
@@ -248,6 +247,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/code/FunctionCallNode.js", super::nodes::code::function_call_node::init)?;
     crate::reg::run_module("nodes/math/OperatorNode.js", super::nodes::math::operator_node::init)?;
     crate::reg::run_module("nodes/math/MathNode.js", super::nodes::math::math_node::init)?;
+    crate::reg::run_module("nodes/core/NodeError.js", super::nodes::core_::node_error::init)?;
     crate::reg::run_module("nodes/math/ConditionalNode.js", super::nodes::math::conditional_node::init)?;
     crate::reg::run_module("nodes/core/ContextNode.js", super::nodes::core_::context_node::init)?;
     crate::reg::run_module("nodes/core/VarNode.js", super::nodes::core_::var_node::init)?;
@@ -277,7 +277,6 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/accessors/UV.js", super::nodes::accessors::uv::init)?;
     crate::reg::run_module("nodes/accessors/TextureSizeNode.js", super::nodes::accessors::texture_size_node::init)?;
     crate::reg::run_module("nodes/utils/MaxMipLevelNode.js", super::nodes::utils::max_mip_level_node::init)?;
-    crate::reg::run_module("nodes/core/NodeError.js", super::nodes::core_::node_error::init)?;
     crate::reg::run_module("nodes/accessors/TextureNode.js", super::nodes::accessors::texture_node::init)?;
     crate::reg::run_module("nodes/accessors/BufferNode.js", super::nodes::accessors::buffer_node::init)?;
     crate::reg::run_module("nodes/accessors/UniformArrayNode.js", super::nodes::accessors::uniform_array_node::init)?;
@@ -306,6 +305,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/utils/EventNode.js", super::nodes::utils::event_node::init)?;
     crate::reg::run_module("nodes/utils/StorageArrayElementNode.js", super::nodes::utils::storage_array_element_node::init)?;
     crate::reg::run_module("nodes/accessors/StorageBufferNode.js", super::nodes::accessors::storage_buffer_node::init)?;
+    crate::reg::run_module("nodes/accessors/ReferenceAttributeNode.js", super::nodes::accessors::reference_attribute_node::init)?;
     crate::reg::run_module("nodes/accessors/Instance.js", super::nodes::accessors::instance::init)?;
     crate::reg::run_module("nodes/accessors/Batch.js", super::nodes::accessors::batch::init)?;
     crate::reg::run_module("nodes/accessors/Skinning.js", super::nodes::accessors::skinning::init)?;
@@ -322,6 +322,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/functions/material/getAlphaHashThreshold.js", super::nodes::functions::material::get_alpha_hash_threshold::init)?;
     crate::reg::run_module("nodes/accessors/VertexColorNode.js", super::nodes::accessors::vertex_color_node::init)?;
     crate::reg::run_module("materials/nodes/NodeMaterial.js", super::materials::nodes::node_material::init)?;
+    crate::reg::run_module("materials/nodes/NodeMaterialInstance.js", super::materials::nodes::node_material_instance::init)?;
     crate::reg::run_module("materials/nodes/LineBasicNodeMaterial.js", super::materials::nodes::line_basic_node_material::init)?;
     crate::reg::run_module("materials/nodes/LineDashedNodeMaterial.js", super::materials::nodes::line_dashed_node_material::init)?;
     crate::reg::run_module("materials/nodes/Line2NodeMaterial.js", super::materials::nodes::line2_node_material::init)?;
@@ -341,6 +342,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("materials/nodes/MeshPhongNodeMaterial.js", super::materials::nodes::mesh_phong_node_material::init)?;
     crate::reg::run_module("nodes/functions/material/getGeometryRoughness.js", super::nodes::functions::material::get_geometry_roughness::init)?;
     crate::reg::run_module("nodes/functions/material/getRoughness.js", super::nodes::functions::material::get_roughness::init)?;
+    crate::reg::run_module("nodes/functions/BSDF/BRDF_EON.js", super::nodes::functions::bsdf::brdf_eon::init)?;
     crate::reg::run_module("nodes/functions/BSDF/V_GGX_SmithCorrelated.js", super::nodes::functions::bsdf::v_ggx_smith_correlated::init)?;
     crate::reg::run_module("nodes/functions/BSDF/V_GGX_SmithCorrelated_Anisotropic.js", super::nodes::functions::bsdf::v_ggx_smith_correlated_anisotropic::init)?;
     crate::reg::run_module("nodes/functions/BSDF/D_GGX.js", super::nodes::functions::bsdf::d_ggx::init)?;
@@ -482,6 +484,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("nodes/core/NodeBuilder.js", super::nodes::core_::node_builder::init)?;
     crate::reg::run_module("nodes/core/NodeFrame.js", super::nodes::core_::node_frame::init)?;
     crate::reg::run_module("nodes/core/NodeFunctionInput.js", super::nodes::core_::node_function_input::init)?;
+    crate::reg::run_module("nodes/core/TempNode.js", super::nodes::core_::temp_node::init)?;
     crate::reg::run_module("nodes/lighting/AmbientLightNode.js", super::nodes::lighting::ambient_light_node::init)?;
     crate::reg::run_module("nodes/lighting/DirectionalLightNode.js", super::nodes::lighting::directional_light_node::init)?;
     crate::reg::run_module("nodes/lighting/HemisphereLightNode.js", super::nodes::lighting::hemisphere_light_node::init)?;
@@ -504,6 +507,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/common/XRRenderTarget.js", super::renderers::common::xr_render_target::init)?;
     crate::reg::run_module("renderers/common/XRManager.js", super::renderers::common::xr_manager::init)?;
     crate::reg::run_module("renderers/common/CanvasTarget.js", super::renderers::common::canvas_target::init)?;
+    crate::reg::run_module("renderers/common/StandardDrawingPipeline.js", super::renderers::common::standard_drawing_pipeline::init)?;
     crate::reg::run_module("renderers/common/Renderer.js", super::renderers::common::renderer::init)?;
     crate::reg::run_module("renderers/common/Binding.js", super::renderers::common::binding::init)?;
     crate::reg::run_module("renderers/common/BufferUtils.js", super::renderers::common::buffer_utils::init)?;
@@ -518,6 +522,7 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("renderers/webgl-fallback/nodes/GLSLNodeBuilder.js", super::renderers::webgl_fallback::nodes::glsl_node_builder::init)?;
     crate::reg::run_module("renderers/common/Backend.js", super::renderers::common::backend::init)?;
     crate::reg::run_module("renderers/webgl-fallback/utils/WebGLAttributeUtils.js", super::renderers::webgl_fallback::utils::web_gl_attribute_utils::init)?;
+    crate::reg::run_module("renderers/webgl-fallback/utils/WebGLVertexArrayUtils.js", super::renderers::webgl_fallback::utils::web_gl_vertex_array_utils::init)?;
     crate::reg::run_module("renderers/webgl-fallback/utils/WebGLState.js", super::renderers::webgl_fallback::utils::web_gl_state::init)?;
     crate::reg::run_module("renderers/webgl-fallback/utils/WebGLUtils.js", super::renderers::webgl_fallback::utils::web_gl_utils::init)?;
     crate::reg::run_module("renderers/webgl-fallback/utils/WebGLTextureUtils.js", super::renderers::webgl_fallback::utils::web_gl_texture_utils::init)?;
@@ -588,8 +593,8 @@ pub fn init_all() -> crate::rt::R<()> {
     crate::reg::run_module("loaders/nodes/NodeObjectLoader.js", super::loaders::nodes::node_object_loader::init)?;
     crate::reg::run_module("renderers/webgpu/nodes/BasicNodeLibrary.js", super::renderers::webgpu::nodes::basic_node_library::init)?;
     crate::reg::run_module("objects/ClippingGroup.js", super::objects::clipping_group::init)?;
-    crate::reg::run_module("Three.WebGPU.js", super::three_web_gpu::init)?;
     crate::reg::run_module("Three.TSL.js", super::three_tsl::init)?;
+    crate::reg::run_module("Three.WebGPU.js", super::three_web_gpu::init)?;
     Ok(())
 }
 
@@ -602,12 +607,13 @@ pub fn init_addons() -> crate::rt::R<()> {
     crate::reg::run_module("../examples/jsm/loaders/materialx/parse/MaterialXParser.js", super::addons::loaders::materialx::parse::material_x_parser::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXSurfaceMappings.js", super::addons::loaders::materialx::material_x_surface_mappings::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeLibrary.js", super::addons::loaders::materialx::material_x_node_library::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeInterfaceRegistry.js", super::addons::loaders::materialx::material_x_node_interface_registry::init)?;
+    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeDefs.js", super::addons::loaders::materialx::material_x_node_defs::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXHextile.js", super::addons::loaders::materialx::material_x_hextile::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXDocument.js", super::addons::loaders::materialx::material_x_document::init)?;
     crate::reg::run_module("../examples/jsm/libs/fflate.module.js", super::addons::libs::fflate_module::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXArchive.js", super::addons::loaders::materialx::material_x_archive::init)?;
     crate::reg::run_module("../examples/jsm/loaders/MaterialXLoader.js", super::addons::loaders::material_x_loader::init)?;
-    crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXNodeInterfaceRegistry.js", super::addons::loaders::materialx::material_x_node_interface_registry::init)?;
     crate::reg::run_module("../examples/jsm/loaders/materialx/MaterialXInterfaceValidation.js", super::addons::loaders::materialx::material_x_interface_validation::init)?;
     Ok(())
 }
