@@ -6,8 +6,9 @@
 //! 128³ ImprovedNoise smoke texture, dithered by the Bayer texture and
 //! stopped at the scene depth. A two-pass Gaussian blur denoises it and the
 //! output adds it to the scene with NeutralToneMapping (exposure 2). Every
-//! stage runs the WGSL three.js r186 generates for the page (in
-//! `volume_lighting/`).
+//! stage runs the WGSL three.js r187 generates for the page (in
+//! `volume_lighting/`; `teapot_fs`/`teapot_vs` keep r186's teapot for
+//! volume_traa, the page's r187 teapot is `teapot_scene_*`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::lights_projector::{m3, m4, pack};
@@ -28,7 +29,9 @@ macro_rules! wgsl {
         include_str!(concat!("volume_lighting/", $name, ".wgsl"))
     };
 }
-/// PointShadowNode's WebGPU cube faces: directions and ups.
+/// r186 PointShadowNode's WebGPU cube faces: directions and ups ( the
+/// shaders sample the cube with ( x, -y, z ) ); `Shadows::new` keeps them for
+/// volume_traa's r186 shaders.
 pub(super) const FACES: [([f64; 3], [f64; 3]); 6] = [
     ([1., 0., 0.], [0., -1., 0.]),
     ([-1., 0., 0.], [0., -1., 0.]),
@@ -36,6 +39,16 @@ pub(super) const FACES: [([f64; 3], [f64; 3]); 6] = [
     ([0., 1., 0.], [0., 0., 1.]),
     ([0., 0., 1.], [0., -1., 0.]),
     ([0., 0., -1.], [0., -1., 0.]),
+];
+/// r187 PointShadowNode's WebGPU cube faces, CubeCamera's orientation ( the
+/// shaders sample the cube with ( -x, y, z ) ).
+pub(super) const CUBE_CAMERA_FACES: [([f64; 3], [f64; 3]); 6] = [
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
 ];
 pub(super) fn uniform(r: &Renderer, label: &str, size: u64) -> wgpu::Buffer {
     r.device.create_buffer(&wgpu::BufferDescriptor {
@@ -285,9 +298,17 @@ pub(super) struct Shadows {
         wgpu::BindGroup,
     ),
     object: (wgpu::Buffer, wgpu::BindGroup),
+    /// The point light's cube face directions and ups.
+    faces: &'static [([f64; 3], [f64; 3]); 6],
 }
 impl Shadows {
+    /// The shadows with r186's cube faces.
     pub(super) fn new(r: &Renderer) -> Self {
+        Self::with_faces(r, &FACES)
+    }
+    /// The shadows with the given cube faces ( `FACES` for r186's shaders,
+    /// `CUBE_CAMERA_FACES` for r187's ).
+    pub(super) fn with_faces(r: &Renderer, faces: &'static [([f64; 3], [f64; 3]); 6]) -> Self {
         let shadow_pipeline = shadow_pipeline(r);
         let shadow_render = |label| {
             let buffer = uniform(r, label, 128);
@@ -355,6 +376,7 @@ impl Shadows {
             point_cube,
             spot: spot_shadow,
             object: (shadow_object.1, shadow_object.0),
+            faces,
         }
     }
     /// Renders both shadow maps, each pass culling the teapot against its
@@ -424,7 +446,7 @@ impl Shadows {
         };
         // The point light's six cube faces, each culled against its camera.
         for (i, (color, depth, buffer, group)) in self.point_faces.iter().enumerate() {
-            let (direction, up) = FACES[i];
+            let (direction, up) = self.faces[i];
             let face_view = Matrix4::look_at_rh(
                 point,
                 point + Vector3::from_array(direction),
@@ -582,7 +604,7 @@ impl Demo {
         let noise = noise_texture(r);
         let bayer = bayer_texture(r)?;
         let colors = spot_map(r).await?;
-        let shadows = Shadows::new(r);
+        let shadows = Shadows::with_faces(r, &CUBE_CAMERA_FACES);
         let sampler = |address, mipmap| {
             r.device.create_sampler(&wgpu::SamplerDescriptor {
                 address_mode_u: address,
@@ -601,8 +623,8 @@ impl Demo {
             floor,
             volume,
             shadows,
-            teapot_render: sized(r, "teapot render", wgsl!("teapot_fs"), "renderStruct")?,
-            teapot_object: sized(r, "teapot object", wgsl!("teapot_fs"), "objectStruct")?,
+            teapot_render: sized(r, "teapot render", wgsl!("teapot_scene_fs"), "renderStruct")?,
+            teapot_object: sized(r, "teapot object", wgsl!("teapot_scene_fs"), "objectStruct")?,
             floor_render: sized(r, "floor render", wgsl!("floor_fs"), "renderStruct")?,
             floor_object: sized(r, "floor object", wgsl!("floor_fs"), "objectStruct")?,
             volume_render: sized(r, "volume render", wgsl!("volume_fs"), "renderStruct")?,
@@ -733,8 +755,8 @@ impl Demo {
         let sampler = wgpu::BindingResource::Sampler;
         let teapot = pipeline(
             "teapot",
-            wgsl!("teapot_vs"),
-            wgsl!("teapot_fs"),
+            wgsl!("teapot_scene_vs"),
+            wgsl!("teapot_scene_fs"),
             &[layout(0, 12), layout(1, 12)],
             HALF,
             (true, None, false, false),
@@ -1019,7 +1041,7 @@ impl Demo {
         ]);
         write(
             &self.teapot_render,
-            wgsl!("teapot_fs"),
+            wgsl!("teapot_scene_fs"),
             "renderStruct",
             &teapot_values,
         )?;
@@ -1036,7 +1058,7 @@ impl Demo {
         };
         write(
             &self.teapot_object,
-            wgsl!("teapot_fs"),
+            wgsl!("teapot_scene_fs"),
             "objectStruct",
             &standard(teapot_model),
         )?;
@@ -1047,33 +1069,42 @@ impl Demo {
             &standard(floor_model),
         )?;
         let mut floor_values = camera_values.clone();
+        // The point light: color, distance, decay, view position, shadow
+        // matrix, near / far / bias / normal bias, filter radius, map size,
+        // the filter's far / near / bias ( PointShadowFilter's render group
+        // references ) and shadow intensity; the spot light: color, cone and
+        // penumbra cosines, distance, decay, positions, shadow matrix, normal
+        // bias, bias, radius, map size and shadow intensity.
         floor_values.extend([
             ("nodeUniform11", point_color.clone()),
-            ("nodeUniform22", vec![100.]),
-            ("nodeUniform23", vec![2.]),
-            ("nodeUniform33", vec![cone]),
-            ("nodeUniform34", vec![1.]),
-            ("nodeUniform37", vec![0.]),
-            ("nodeUniform38", vec![2.]),
-            ("nodeUniform26", spot_color.clone()),
+            ("nodeUniform25", vec![100.]),
+            ("nodeUniform26", vec![2.]),
+            ("nodeUniform36", vec![cone]),
+            ("nodeUniform37", vec![1.]),
+            ("nodeUniform40", vec![0.]),
+            ("nodeUniform41", vec![2.]),
+            ("nodeUniform29", spot_color.clone()),
             ("nodeUniform10", point_view.clone()),
-            ("nodeUniform24", spot_view_position.clone()),
-            ("nodeUniform35", spot.to_array().to_vec()),
-            ("nodeUniform36", vec![0.; 3]),
-            ("nodeUniform25", m4(spot_matrix)),
+            ("nodeUniform27", spot_view_position.clone()),
+            ("nodeUniform38", spot.to_array().to_vec()),
+            ("nodeUniform39", vec![0.; 3]),
+            ("nodeUniform28", m4(spot_matrix)),
             ("nodeUniform12", m4(point_matrix)),
             ("nodeUniform16", vec![0.5]),
             ("nodeUniform15", vec![100.]),
             ("nodeUniform14", vec![0.]),
             ("nodeUniform17", vec![0.]),
-            ("nodeUniform19", vec![1.]),
-            ("nodeUniform20", vec![POINT_SIZE as f64; 2]),
-            ("nodeUniform21", vec![1.]),
-            ("nodeUniform27", vec![0.]),
-            ("nodeUniform28", vec![0.]),
-            ("nodeUniform30", vec![1.]),
-            ("nodeUniform31", vec![SPOT_SIZE as f64; 2]),
-            ("nodeUniform32", vec![0.98]),
+            ("nodeUniform18", vec![1.]),
+            ("nodeUniform19", vec![POINT_SIZE as f64; 2]),
+            ("nodeUniform20", vec![100.]),
+            ("nodeUniform21", vec![0.5]),
+            ("nodeUniform22", vec![0.]),
+            ("nodeUniform24", vec![1.]),
+            ("nodeUniform30", vec![0.]),
+            ("nodeUniform31", vec![0.]),
+            ("nodeUniform33", vec![1.]),
+            ("nodeUniform34", vec![SPOT_SIZE as f64; 2]),
+            ("nodeUniform35", vec![0.98]),
         ]);
         write(
             &self.floor_render,
@@ -1089,33 +1120,36 @@ impl Demo {
         volume_values.extend([
             ("cameraNear", vec![0.1]),
             ("cameraFar", vec![100.]),
-            ("nodeUniform43", vec![time]),
+            ("nodeUniform46", vec![time]),
             ("nodeUniform11", point_color),
-            ("nodeUniform23", vec![100.]),
-            ("nodeUniform25", vec![2.]),
-            ("nodeUniform34", vec![cone]),
-            ("nodeUniform35", vec![1.]),
-            ("nodeUniform39", vec![0.]),
-            ("nodeUniform40", vec![2.]),
-            ("nodeUniform27", spot_color),
-            ("nodeUniform24", point_view),
-            ("nodeUniform36", spot_view_position),
-            ("nodeUniform37", spot.to_array().to_vec()),
-            ("nodeUniform38", vec![0.; 3]),
-            ("nodeUniform26", m4(spot_matrix)),
+            ("nodeUniform27", vec![100.]),
+            ("nodeUniform28", vec![2.]),
+            ("nodeUniform37", vec![cone]),
+            ("nodeUniform38", vec![1.]),
+            ("nodeUniform42", vec![0.]),
+            ("nodeUniform43", vec![2.]),
+            ("nodeUniform30", spot_color),
+            ("nodeUniform26", point_view),
+            ("nodeUniform39", spot_view_position),
+            ("nodeUniform40", spot.to_array().to_vec()),
+            ("nodeUniform41", vec![0.; 3]),
+            ("nodeUniform29", m4(spot_matrix)),
             ("nodeUniform12", m4(point_matrix)),
             ("nodeUniform15", vec![0.]),
             ("nodeUniform16", vec![100.]),
             ("nodeUniform17", vec![0.5]),
             ("nodeUniform18", vec![0.]),
-            ("nodeUniform20", vec![1.]),
-            ("nodeUniform21", vec![POINT_SIZE as f64; 2]),
-            ("nodeUniform22", vec![1.]),
-            ("nodeUniform28", vec![0.]),
-            ("nodeUniform29", vec![0.]),
-            ("nodeUniform31", vec![1.]),
-            ("nodeUniform32", vec![SPOT_SIZE as f64; 2]),
-            ("nodeUniform33", vec![0.98]),
+            ("nodeUniform19", vec![1.]),
+            ("nodeUniform20", vec![POINT_SIZE as f64; 2]),
+            ("nodeUniform21", vec![100.]),
+            ("nodeUniform22", vec![0.5]),
+            ("nodeUniform23", vec![0.]),
+            ("nodeUniform25", vec![1.]),
+            ("nodeUniform31", vec![0.]),
+            ("nodeUniform32", vec![0.]),
+            ("nodeUniform34", vec![1.]),
+            ("nodeUniform35", vec![SPOT_SIZE as f64; 2]),
+            ("nodeUniform36", vec![0.98]),
             ("cameraPosition", camera_position.to_array().to_vec()),
             (
                 "nodeUniform10",
@@ -1138,7 +1172,7 @@ impl Demo {
                 ("nodeUniform3", vec![self.volume.radius]),
                 ("nodeUniform4", vec![steps.trunc()]),
                 ("nodeUniform14", m3(volume_model.inverse().transpose())),
-                ("nodeUniform44", vec![smoke]),
+                ("nodeUniform47", vec![smoke]),
             ],
         )?;
         let texel = [1. / volume_size.0 as f32, 1. / volume_size.1 as f32];
