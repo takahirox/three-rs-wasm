@@ -1,4 +1,4 @@
-// Records the r186 node system's output for the TSL corpus ( tests/tsl/corpus.json ):
+// Records the pinned release's node system's output for the TSL corpus ( tests/tsl/corpus.json ):
 // runs reference/three-js/tsl-corpus.html in Chrome, chunk by chunk ( each chunk one editor
 // session, as the port replays it ), and writes tests/tsl/golden.json.gz with deduplicated text.
 // Usage: node tools/tsl/golden.mjs [--probe] ( --probe regenerates the corpus' probe programs ).
@@ -21,13 +21,19 @@ let browser = await launch();
 // A fresh browser when a page fails to come up ( a GPU process lost to an earlier program ).
 const open = async () => {
 	for ( let attempt = 0; ; attempt ++ ) {
+		const log = [];
 		try {
 			const page = await browser.newPage();
+			page.on( 'console', m => log.push( m.text() ) );
+			page.on( 'pageerror', e => log.push( String( e ) ) );
 			await page.goto( `http://127.0.0.1:${ port }/reference/three-js/tsl-corpus.html` );
 			await page.waitForFunction( () => window.ready === true, null, { timeout: 60000 } );
 			return page;
 		} catch ( e ) {
-			if ( attempt === 2 ) throw e;
+			if ( attempt === 2 ) {
+				console.error( log.slice( - 20 ).join( '\n' ) );
+				throw e;
+			}
 			await browser.close().catch( () => {} );
 			browser = await launch();
 		}

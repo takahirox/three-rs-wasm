@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# The three-tsl crate ( three r186's node system transpiled to Rust ) against the
-# r186 goldens: every corpus program's WGSL, GLSL, errors and console.
+# The three-tsl crate ( the pinned release's node system transpiled to Rust ) against the
+# goldens: every corpus program's WGSL, GLSL, errors and console.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 if command -v rustup >/dev/null 2>&1; then

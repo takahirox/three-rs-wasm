@@ -66,11 +66,12 @@ fn element(name: &str) -> Val {
     o
 }
 
-/// The page's host objects inside the port: a document whose canvases have
-/// no context ( the renderer runs headless ), and loaders whose requests
-/// never settle.
+/// The page's host objects inside the port: a hidden document whose canvases
+/// have no context ( the renderer runs headless and renders no frames, so an
+/// async compilation yields with `scheduler.yield()` ), and loaders whose
+/// requests never settle.
 fn install_host() {
-    let doc = object(&[]);
+    let doc = object(&[("hidden", Val::Bool(true))]);
     let _ = set(&doc, "createElementNS", func("createElementNS", 2, |_t, a| Ok(element(&display(&arg(a, 1))))));
     let _ = set(&doc, "createElement", func("createElement", 1, |_t, a| Ok(element(&display(&arg(a, 0))))));
     define_global("document", doc);
