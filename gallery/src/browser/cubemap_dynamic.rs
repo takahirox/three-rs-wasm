@@ -1025,7 +1025,9 @@ pub async fn webgpu_cubemap_dynamic(
         canvas,
         animate,
         super::PageOptions {
-            samples: 1,
+            // WebGPURenderer( { antialias: true } ): the scene's 4× MSAA
+            // targets follow the main target's samples.
+            samples: 4,
             encode_srgb: true,
             format: super::TargetFormat::Canvas,
             raw_output: true,

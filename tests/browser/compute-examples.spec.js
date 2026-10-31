@@ -169,7 +169,7 @@ const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args
 // MSAA-only bounds: the scenes match exactly without MSAA (docs/probe-retro-examples.md).
 // At device pixel ratio 2 the 1,024 instanced horses' 4× MSAA edges reach 0.51% of the
 // pixels ( the same with the previous commit's build ).
-const msaaLimits={webgpu_lightprobes_sponza:[.035,1.2],webgpu_instancing_morph:[.006,.6],webgpu_postprocessing_retro:[.08,2.5],webgpu_cubemap_dynamic:[.01,.2],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_lightprobes:[.03,.7],webgpu_lightprobes_complex:[.04,.9],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
+const msaaLimits={webgpu_lightprobes_sponza:[.035,1.2],webgpu_instancing_morph:[.006,.6],webgpu_compute_cloth:[.13,7],webgpu_compute_particles_fluid:[.15,3.5],webgpu_tsl_graph:[.02,.5],webgpu_compute_water:[.31,6.2]};
 const frames=(page,runtime,t,n)=>page.evaluate(async({runtime,t,n})=>{for(let i=0;i<n;i++){const c=document.querySelector('canvas'),previous=c.dataset.frames;if(runtime!=='rust')await renderFixture(t);else{app.gallery_time(t);while(c.dataset.frames===previous)await new Promise(r=>requestAnimationFrame(r));}}},{runtime,t,n});
 for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antialias?[1,4]:[1])test(`Compute examples official rendering: ${kind} samples=${samples}`,async({page},info)=>{
  test.setTimeout(300000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
@@ -263,7 +263,10 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  });
 }
 
-test('Compute examples resident geometry and official draw workload',async({page},info)=>{
+// One test per example: the examples' pages load in turn on both runtimes, and their
+// sum exceeds any single test's timeout; each example's draws and uploads are checked
+// as before, with its own report.
+for(const [kind,spec] of Object.entries(cases))test(`Compute examples resident geometry and official draw workload: ${kind}`,async({page},info)=>{
  test.setTimeout(180000);
  await page.addInitScript(()=>{
   window.resetWork=()=>window.work={draws:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
@@ -287,7 +290,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const texture=GPUQueue.prototype.writeTexture;GPUQueue.prototype.writeTexture=function(dest,data,...args){work.textureBytes+=data.byteLength;return texture.call(this,dest,data,...args);};
  });
  const report=[];
- for(const [kind,spec] of Object.entries(cases)){
+ {
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
