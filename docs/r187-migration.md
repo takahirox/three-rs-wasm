@@ -103,14 +103,13 @@ until every ported example matches r187 again; it is removed when done.
    byte-identical fixtures named after r186, contrasts between the releases
    and historical records.
 7. **Found while moving the text.**
-   - Still on r186 captures: linked_particles' 18 shaders,
-     `src/shaders/light_probe_grid/`, the 3D tiles GLSL; leftover r186
-     files no port loads ( pmrem_cube_uv, volume_caustics' and
-     volume_lighting's `blur*_fs` and `teapot_*` ).
-   - TAAU: r187's VelocityNode fills `currentProjectionMatrix` each frame
-     and TAAU overrides before the pipeline, so its current clip is
-     unjittered; `tsl_procedural/taau.rs` and
-     `tools/tsl/check-taau-velocity.mjs` keep r186's jittered velocity.
+   - Done: linked_particles, the engine LightProbeGrid ( r187's rewrite )
+     and the 3D tiles GLSL run r187's shaders; unused r186 shaders are gone;
+     TAAU's velocity is unjittered and rebuild frames skip the jitter as
+     r187's do; the sun cascades' PCF radius is in texels on both axes.
+   - Hand ports that cite r186 sources ( `tsl_crt.wgsl`,
+     `tsl_procedural/{blurred_reflection,noise_hex,retro}.wgsl`,
+     `tsl_surface/*.wgsl`, `src/tsl/*.wgsl` ) need checking against r187.
    - Done: webgl_raycaster_bvh draws r187's BVHHelper; the XR camera takes
      the left view's matrix and projection; the gallery serves r187's
      Inspector, lil-gui and stats.js ( `three@0.187.0` ); webgpu_water and
