@@ -270,7 +270,7 @@ fn main( @location( 0 ) positionLocal : vec3<f32> ) -> OutputStruct {
 	// flow
 	// code
 
-	DiffuseColor = vec4<f32>( vec3<f32>( 0.0, 0.0, 0.0 ), ( 1.0 * vec4<f32>( ( vec3<f32>( 0.6038273388475408, 0.09084171117479915, 0.057805430183792694 ) * vec3<f32>( ( ( ( ( fn74( ( positionLocal * vec3<f32>( 3.0 ) ) ) * 1.0 ) + 0.0 ) * 0.12 ) + 0.94 ) ) ), 1.0 ).w ) );
+	DiffuseColor = vec4<f32>( vec3<f32>( 0.0, 0.0, 0.0 ), ( 1.0 * vec4<f32>( mix( vec3<f32>( 0.02732089163382382, 0.158960835050774, 0.34191442489801843 ), vec3<f32>( 0.22322795730611386, 0.4793201830913402, 0.6866853124288864 ), ( ( ( ( fn74( ( positionLocal * vec3<f32>( 1.2 ) ) ) * 1.0 ) + 0.0 ) * 0.5 ) + 0.5 ) ), 1.0 ).w ) );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform0 );
 	let nodeConst0 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
 	Output = nodeConst0;
