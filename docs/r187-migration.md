@@ -107,9 +107,8 @@ until every ported example matches r187 again; it is removed when done.
      and the 3D tiles GLSL run r187's shaders; unused r186 shaders are gone;
      TAAU's velocity is unjittered and rebuild frames skip the jitter as
      r187's do; the sun cascades' PCF radius is in texels on both axes.
-   - Hand ports that cite r186 sources ( `tsl_crt.wgsl`,
-     `tsl_procedural/{blurred_reflection,noise_hex,retro}.wgsl`,
-     `tsl_surface/*.wgsl`, `src/tsl/*.wgsl` ) need checking against r187.
+   - The hand-written WGSL that cited r186 sources ( 18 files ) was checked
+     against r187: no shader math changed, so only their citations moved.
    - Done: webgl_raycaster_bvh draws r187's BVHHelper; the XR camera takes
      the left view's matrix and projection; the gallery serves r187's
      Inspector, lil-gui and stats.js ( `three@0.187.0` ); webgpu_water and
