@@ -98,6 +98,9 @@ const cases={
  webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,gpuWork:true,frames:250,warmup:250,times:[0],parameters:[[0,'Default',1],[0,'Meshlet',0],[1,false,0],[1,true,1],[10,true,1],[11,.5,.5],[10,false,0],[2,0,0],[9,0,0],[6,4,4]],at:0,script:[['key','KeyW',true,null],['run',60,0,1/60,null],['key','KeyW',false,1]],residency:[]},
  // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
  webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
+ // GLTFLoader's KHR_materials_diffuse_roughness spheres under the RoomEnvironment PMREM; the
+ // orbit is damped.
+ webgpu_loader_gltf_diffuse_roughness:{antialias:true,times:[0],parameters:[],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,40,40],[1,6,6],[2,3,3],[3,20,20]],restore:[[1,6,6],[2,3,3],[3,20,20]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,60,60],[1,6,6],[2,3,3],[3,30,30]],restore:[[1,6,6],[2,3,3],[3,30,30]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The original compiles its pipelines asynchronously and presents stale frames until they are ready.

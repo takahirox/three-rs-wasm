@@ -153,6 +153,8 @@ mod geometry_materials;
 mod glitch;
 #[cfg(feature = "gltf_avif")]
 mod gltf_avif;
+#[cfg(feature = "gltf_diffuse_roughness")]
+mod gltf_diffuse_roughness;
 #[cfg(feature = "gltf_examples")]
 mod gltf_examples;
 #[cfg(feature = "gltf_instancing")]

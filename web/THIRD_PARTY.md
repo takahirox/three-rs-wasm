@@ -1092,6 +1092,17 @@ Needle, as the official pages do.
   Computer Graphics Laboratory; conversion by Morgan McGuire's Computer
   Graphics Archive ); the cloth backdrop is by Adobe ( CC0 ).
 
+The glTF diffuse roughness port ports MIT-licensed three.js r187 page code and
+GLTFLoader's KHR_materials_diffuse_roughness extension, and runs the WGSL
+three.js r187 generates for the page ( `src/browser/gltf_diffuse_roughness/` ).
+It adds this unmodified r187 example asset:
+
+- `gallery/assets/gltf/DiffuseRoughnessParameterSweep.glb`: r187
+  `models/gltf/DiffuseRoughnessParameterSweep.glb`, the parameter sweep the
+  page credits to KhronosGroup/glTF-Sample-Assets pull request 288 ( generated
+  by DisplayXR's `make_khronos_conformance_assets.py` ); SHA-256
+  `4ed203205aa3e17fdaaf0aa4efa70e0c585ac372fb745fa788df9835f7eece4b`.
+
 # The examples' UI ( gallery/ui )
 
 `gallery/ui/css/main.css` and `gallery/ui/css/example.css` ( the example

@@ -2,9 +2,9 @@
   "revision": "7e89746a687bb88271253698fa108b1dd59825d0",
   "method": "Historical baseline before Core expansion; missing-feature labels below are not current capability claims. See core-expansion.md. All upstream example sources checked against explicit Rust constructor/addon translations; 49 real upstream glTF assets exercised by the native importer. Only runtime_test entries have browser ports. Review is not execution.",
   "counts": {
-    "runnable-partial": 492,
+    "runnable-partial": 493,
     "excluded": 43,
-    "blocked-at-port-review": 86
+    "blocked-at-port-review": 85
   },
   "examples": [
     {
@@ -26307,10 +26307,10 @@
     },
     {
       "id": "webgpu_loader_gltf_diffuse_roughness",
-      "state": "blocked-at-port-review",
+      "state": "runnable-partial",
       "source": "https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/examples/webgpu_loader_gltf_diffuse_roughness.html",
       "source_sha256": "a57441eb8bdd6a770d06582231c97b3b94ce7eadb10e72e00b7515920e09dbf3",
-      "runtime_test": null,
+      "runtime_test": "tests/browser/compute-examples.spec.js",
       "blockers": [
         {
           "kind": "core-api",
