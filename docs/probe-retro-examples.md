@@ -49,8 +49,11 @@ per animate(); a separate test follows it frame by frame over 120 frames.
   the pass resolution, affine texturing, level-0 reads), as RetroPassNode
   does.
 - **Helmet.** Selecting Damaged Helmet loads it and venice_sunset_1k.hdr: a
-  512² CubeMapNode cube in retro mode, a PMREM (cubeUV 768 × 1024, ten GGX
-  levels) otherwise.
+  512² CubeMapNode cube in retro mode, r187's cube PMREM ( 256², shared
+  `pmrem.rs` ) otherwise. fromEquirectangularTexture gives the cube target
+  generateMipmaps: its mip chain is generated after the six faces, and the
+  filtered retro helmet's implicit-LOD reads pick the nearest level, as the
+  cube's LinearFilter sampler does.
 - **Known differences.** The port keeps both models' buffers after a switch
   (the original disposes and reloads the geometry), and does not draw the
   helmet until its environment has loaded (the original draws it first
@@ -126,24 +129,24 @@ element.
 
 ### Light probes (392, 393)
 
-- **Bake.** For each probe, LightProbeGrid renders a 32² HalfFloat CubeCamera
-  capture (near 0.05, far 20). The 512-direction equal-area Fibonacci SH
-  projection then writes one row of the 9 × N float batch target, and the
-  seven repack passes write each Z slice and its padding into the RGBA16F 3D
-  atlas. Each probe's faces and SH row are one submit, as the face cameras'
-  uniforms change between probes. 393 bakes its two grids in turn, both out
-  of the scene, as the page adds them only after both bakes.
+- **Bake.** As r187's LightProbeGrid bakes: probes at the cells' centers,
+  per batch of 8 probes one render of ArrayCamera's 48 sub-cameras ( 32²,
+  near 0.05, far 20 ) into a 192 × 256 HalfFloat face atlas, the
+  solid-angle-weighted SH projection per face and row block into the batch
+  rows, and the seven repack passes summing the columns into each Z slice
+  and its padding of the RGBA16F 3D atlas. Each batch is one submit. The
+  direct pass and each bounce pass ( `bounces`, default 3 ) bake the whole
+  grid; the volume's bounce grid, unlit in the direct pass and later a copy
+  of the previous pass's atlas, lights the captures. 393 bakes its two
+  volumes in turn per pass, and after the direct pass each lights the
+  other's captures. The shadow maps render once for the bake.
 - **Shadows.** The point shadows are re-rendered every frame, as
-  `shadow.autoUpdate` does. The bake reads the current ones.
-- **Rebake.** A resolution change rebakes into new grids, as the page does.
-  With the probes shown, the page disposes the old grids first, so their
-  still-attached helpers sample atlases recreated empty. Each cube capture
-  then contains black helper spheres at the old probe positions, and the
-  port draws them too.
-- **Helper instances.** InstanceNode stores the helper's matrices in a
-  uniform array of the probe count, as the generated WGSL declares. For more
-  than 1,000 probes (11³ and 12³) the port binds the same array as a storage
-  buffer.
+  `shadow.autoUpdate` does.
+- **Rebake.** A resolution, bounce count or light intensity change rebakes
+  into new grids before the next frame, as the page's pendingBake does. The
+  probe helpers are hidden during the bake.
+- **Helper instances.** The helper's matrices are an instanced attribute, as
+  r187's LightProbeGridHelper builds it.
 
 ## Comparison
 
