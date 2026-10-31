@@ -3,12 +3,14 @@
 
 /// Tone mapping and the sRGB transfer of the output pass.
 pub const OUTPUT_WGSL: &str = include_str!("shaders/output.wgsl");
-/// LightProbeGrid's spherical-harmonics projection.
-pub const PROBE_SH_VS: &str = include_str!("shaders/light_probe_grid/sh_vs.wgsl");
+/// LightProbeGrid's spherical-harmonics projection ( r187's QuadMesh vertex
+/// stage and the projection for 8-texel faces, the default cubemapSize;
+/// `light_probe_grid::sh_source` gives other sizes ).
+pub const PROBE_SH_VS: &str = include_str!("shaders/light_probe_grid/quad_vs.wgsl");
 pub const PROBE_SH_FS: &str = include_str!("shaders/light_probe_grid/sh_fs.wgsl");
-/// LightProbeGrid's repacking passes ( a fullscreen vertex stage and one
+/// LightProbeGrid's repacking passes ( the fullscreen vertex stage and one
 /// fragment stage per coefficient band texture ).
-pub const PROBE_REPACK_VS: &str = include_str!("shaders/light_probe_grid/repack_vs.wgsl");
+pub const PROBE_REPACK_VS: &str = include_str!("shaders/light_probe_grid/quad_vs.wgsl");
 pub const PROBE_REPACK_FS: [&str; 7] = [
     include_str!("shaders/light_probe_grid/repack_0_fs.wgsl"),
     include_str!("shaders/light_probe_grid/repack_1_fs.wgsl"),

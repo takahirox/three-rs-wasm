@@ -130,7 +130,7 @@ struct Uniforms {
     output: [f32; 4],
     /// Per light, its shadow map's extent in the atlas layer ( x, y ).
     shadow_scales: [[f32; 4]; 8],
-    /// The LightProbeGrid: its box min and intensity, max and falloff, and
+    /// The LightProbeGrid: its box min and intensity, max, and
     /// probe counts with w 1 when a baked grid applies.
     probe_grid: [[f32; 4]; 3],
 }
@@ -1293,8 +1293,9 @@ impl Renderer {
         for root in scene.roots() {
             visible.extend(scene.traverse(root, true)?);
         }
-        // The first visible baked LightProbeGrid ( LightProbeGridNode ), else
-        // the first baked one, whose atlas helpers show without its light.
+        // The visible baked LightProbeGrid of the highest priority ( on ties
+        // the later one: LightProbeGridNode ), else the first baked one, whose
+        // atlas helpers show without its light. One grid applies per render.
         let mut probe_grid = [[0f32; 4]; 3];
         let mut grid_atlas = None;
         let mut grids = vec![];
@@ -1303,12 +1304,17 @@ impl Renderer {
                 if let NodeKind::LightProbeGrid(g) = &scene.get(h)?.kind
                     && g.atlas.is_some()
                 {
-                    grids.push(h);
+                    grids.push((h, g.priority));
                 }
             }
         }
-        grids.sort_by_key(|h| !visible.contains(h));
-        for &h in grids.iter().take(1) {
+        let chosen = grids
+            .iter()
+            .filter(|(h, _)| visible.contains(h))
+            .max_by(|a, b| a.1.total_cmp(&b.1))
+            .or(grids.first())
+            .map(|(h, _)| *h);
+        if let Some(h) = chosen {
             let n = scene.get(h)?;
             let applies = visible.contains(&h);
             if let NodeKind::LightProbeGrid(g) = &n.kind
@@ -1318,7 +1324,7 @@ impl Renderer {
                 let f = |v: f64| v as f32;
                 probe_grid = [
                     [f(min.x), f(min.y), f(min.z), f(g.intensity)],
-                    [f(max.x), f(max.y), f(max.z), f(g.falloff)],
+                    [f(max.x), f(max.y), f(max.z), 0.],
                     [
                         g.resolution[0] as f32,
                         g.resolution[1] as f32,
