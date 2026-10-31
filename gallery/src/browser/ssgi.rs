@@ -166,8 +166,9 @@ struct Targets {
     draws: Vec<Draw>,
     ssgi: Draw,
     composite_draw: Draw,
-    /// Resolve with the placeholder, or the history, previous depth.
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// TRAA reads the history depth texture as its previous depth from the
+    /// start ( zero until the first resolve copies the depth ).
+    traa: Draw,
     /// The output of the resolved composite, the AO, the GI, the scene color
     /// and the composite without temporal filtering.
     outputs: [Draw; 5],
@@ -201,7 +202,6 @@ pub(super) struct Demo {
     ssgi_object: wgpu::Buffer,
     traa_object: wgpu::Buffer,
     quad_uv: wgpu::Buffer,
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     /// The depth texture's ( nearest ) sampler SSGINode gathers with.
     nearest: wgpu::Sampler,
@@ -435,15 +435,6 @@ impl Demo {
             dimension: Some(wgpu::TextureViewDimension::Cube),
             ..Default::default()
         });
-        // TRAANode's DepthTexture( 1, 1 ) placeholder, cleared to the far plane.
-        let placeholder = view(&texture(r, (1, 1, 1), DEPTH));
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("ssgi placeholder"),
-            depth_stencil_attachment: depth(&placeholder),
-            ..Default::default()
-        });
-        r.queue.submit([encoder.finish()]);
         Ok(Self {
             controls,
             params: [0., 2., 8., 12., 2., 1., 0., 1., 10., 0., 1., 1.],
@@ -476,7 +467,6 @@ impl Demo {
                 bytemuck::cast_slice(&[0f32, -1., 0., 1., 2., 1.]),
                 wgpu::BufferUsages::VERTEX,
             ),
-            placeholder,
             linear: r.device.create_sampler(&wgpu::SamplerDescriptor {
                 mag_filter: wgpu::FilterMode::Linear,
                 min_filter: wgpu::FilterMode::Linear,
@@ -663,23 +653,21 @@ impl Demo {
         let traa_pipeline = screen_pass("ssgi traa", TRAA_VS, TRAA_FS, &[HALF]);
         let history_view = view(&history);
         let history_depth_view = view(&history_depth);
-        let traa_groups = [&self.placeholder, &history_depth_view].map(|previous| {
-            bind(
-                r,
-                traa_pipeline.get_bind_group_layout(0),
-                &[
-                    // Velocity is read with textureLoad: the layout drops its sampler.
-                    (1, tex(&scene[3].1)),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&composite.1)),
-                    (4, tex(&depth_target.1)),
-                    (5, self.traa_object.as_entire_binding()),
-                    (6, tex(previous)),
-                    (7, sampler(&self.linear)),
-                    (8, tex(&history_view)),
-                ],
-            )
-        });
+        let traa_group = bind(
+            r,
+            traa_pipeline.get_bind_group_layout(0),
+            &[
+                // Velocity is read with textureLoad: the layout drops its sampler.
+                (1, tex(&scene[3].1)),
+                (2, sampler(&self.linear)),
+                (3, tex(&composite.1)),
+                (4, tex(&depth_target.1)),
+                (5, self.traa_object.as_entire_binding()),
+                (6, tex(&history_depth_view)),
+                (7, sampler(&self.linear)),
+                (8, tex(&history_view)),
+            ],
+        );
         let format = out.options.format;
         let single = |fs, source: &wgpu::TextureView| {
             let p = screen_pass("ssgi output", OUTPUT_VS, fs, &[format]);
@@ -732,7 +720,7 @@ impl Demo {
             draws,
             ssgi,
             composite_draw,
-            traa: (traa_pipeline, traa_groups),
+            traa: (traa_pipeline, vec![traa_group]),
             outputs,
         });
         Ok(())
@@ -916,10 +904,13 @@ impl Demo {
             screen_space,
             temporal,
         ] = self.params;
+        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
+        // update ), then the fixture's restarted count from 1.
+        let frame_id = self.frame_id.max(1);
         let (direction, offset) = if temporal > 0.5 {
             (
-                TEMPORAL_ROTATIONS[self.frame_id % 6] / 360.,
-                SPATIAL_OFFSETS[self.frame_id % 4],
+                TEMPORAL_ROTATIONS[frame_id % 6] / 360.,
+                SPATIAL_OFFSETS[frame_id % 4],
             )
         } else {
             (1., 1.)
@@ -1087,17 +1078,13 @@ impl Demo {
                     full,
                 );
             }
-            // The first two resolves read TRAANode's 1 × 1 placeholder depth
-            // ( the far plane ); later ones the previous frame's.
-            let (pipeline, groups) = &t.traa;
-            let draw = (
-                pipeline.clone(),
-                vec![groups[usize::from(self.resolves >= 2)].clone()],
-            );
+            // The previous depth is the history's depth texture: the restart's
+            // resolve reads it freshly sized ( zero ), later ones the previous
+            // frame's depth.
             quad(
                 &mut encoder,
                 &[color(&t.resolve.1, wgpu::Color::BLACK)],
-                &draw,
+                &t.traa,
             );
             encoder.copy_texture_to_texture(
                 t.resolve.0.as_image_copy(),

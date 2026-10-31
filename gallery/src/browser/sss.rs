@@ -746,6 +746,13 @@ impl Demo {
         if !loading {
             self.frame_id += 1;
         }
+        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
+        // update ), then the fixture's restarted count.
+        let frame_id = if loading {
+            1
+        } else {
+            FRAME_ID_START + self.frame_id
+        };
         let output = self.output_index();
         let mode = self.params[0].round() as usize;
         let traa_on = output == 0;
@@ -754,11 +761,7 @@ impl Demo {
         let temporal = self.params[5] > 0.5;
         // The SSS node's (re)build bakes this frame's frameId.
         if sss_on && (self.sss_pipeline.is_none() || (self.rebuild && !loading)) {
-            let seed = if temporal {
-                (FRAME_ID_START + self.frame_id) as f64
-            } else {
-                0.
-            };
+            let seed = if temporal { frame_id as f64 } else { 0. };
             self.sss_pipeline = Some((seed, Self::sss_pipeline(r, seed)));
             self.sss_draw = None;
             if !loading {
@@ -1092,7 +1095,7 @@ impl Demo {
             &ground_object(false),
         )?;
         let offset = if temporal {
-            SPATIAL_OFFSETS[(FRAME_ID_START + self.frame_id) % 4]
+            SPATIAL_OFFSETS[frame_id % 4]
         } else {
             0.
         };

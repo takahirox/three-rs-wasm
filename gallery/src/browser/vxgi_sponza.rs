@@ -2046,7 +2046,9 @@ impl Demo {
             ..,
         ] = self.params;
         let frame_value = if temporal > 0.5 {
-            (self.frame_id % TEMPORAL_CYCLE) as f64
+            // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
+            // update ), then the fixture's restarted count.
+            (self.frame_id.max(1) % TEMPORAL_CYCLE) as f64
         } else {
             0.
         };

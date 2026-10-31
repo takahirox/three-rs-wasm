@@ -54,6 +54,9 @@ ripple and the orbit follow the page's pointer handling.
   renderer's own loop once ready and restarts frameId at 12000, a multiple of
   12 past every frame the loading loop rendered. Both sides then advance it
   per requested frame. The first frame after loading does not advance it.
+  The loading frame itself renders at frameId 1 ( r187's first node-frame
+  update ), and SSGI's TRAA reads the history's ( zero ) depth texture as its
+  previous depth from that frame on.
 - **SSS seed.** SSSNode assigns frame.frameId over its uniform, so each build
   of the node inlines that frame's ID into the shader. The port rebuilds the
   SSS pipeline with that seed when the output or temporal filtering changes.
