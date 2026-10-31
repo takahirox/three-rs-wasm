@@ -6,9 +6,11 @@
 //! level-0 texture reads); barrelUV reads it back nearest-neighbour; the
 //! output applies color bleeding, the Bayer dither, posterize, the vignette
 //! and the scanlines before the sRGB output. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `retro/`). The helmet loads when
-//! selected, with venice_sunset_1k.hdr: the retro helmet reads it through
-//! CubeMapNode's 512² cube, the plain one through scene.environment's PMREM.
+//! three.js r187 generates for the page (in `retro/`), except the plain
+//! (non-retro) helmet and its PMREM ( `plain_helmet_*`, `pmrem_*` ), which
+//! still run r186's CubeUV-atlas PMREM. The helmet loads when selected, with
+//! venice_sunset_1k.hdr: the retro helmet reads it through CubeMapNode's 512²
+//! cube, the plain one through scene.environment's PMREM.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
@@ -940,17 +942,17 @@ impl Demo {
             let identity = m3(Matrix4::IDENTITY);
             let mut values = camera_values.clone();
             values.extend([
-                ("nodeUniform29", ambient.clone()),
-                ("nodeUniform33", vec![3.; 3]),
-                ("nodeUniform35", point.clone()),
-                ("nodeUniform36", vec![20.]),
-                ("nodeUniform37", vec![2.]),
-                ("nodeUniform31", vec![5., 10., 5.]),
-                ("nodeUniform32", vec![0.; 3]),
-                ("nodeUniform34", point_view.clone()),
+                ("nodeUniform28", ambient.clone()),
+                ("nodeUniform32", vec![3.; 3]),
+                ("nodeUniform34", point.clone()),
+                ("nodeUniform35", vec![20.]),
+                ("nodeUniform36", vec![2.]),
+                ("nodeUniform30", vec![5., 10., 5.]),
+                ("nodeUniform31", vec![0.; 3]),
+                ("nodeUniform33", point_view.clone()),
                 ("cameraProjectionMatrixInverse", m4(projection.inverse())),
                 (
-                    "nodeUniform11",
+                    "nodeUniform10",
                     vec![t.retro_size.0 as f64, t.retro_size.1 as f64],
                 ),
                 ("cameraWorldMatrix", m4(world)),
@@ -970,24 +972,23 @@ impl Demo {
                     ("nodeUniform0", vec![1.; 3]),
                     ("nodeUniform2", identity.clone()),
                     ("nodeUniform3", vec![affine]),
-                    ("nodeUniform5", m4(Matrix4::IDENTITY)),
-                    ("nodeUniform8", m4(h.model)),
-                    ("nodeUniform12", normal.clone()),
-                    ("nodeUniform14", identity.clone()),
-                    ("nodeUniform15", vec![1., -1.]),
-                    ("nodeUniform16", vec![1.]),
-                    ("nodeUniform18", identity.clone()),
-                    ("nodeUniform19", vec![1.]),
-                    ("nodeUniform21", identity.clone()),
-                    ("nodeUniform22", vec![1.]),
-                    ("nodeUniform23", vec![30.]),
+                    ("nodeUniform7", m4(h.model)),
+                    ("nodeUniform11", normal.clone()),
+                    ("nodeUniform13", identity.clone()),
+                    ("nodeUniform14", vec![1., -1.]),
+                    ("nodeUniform15", vec![1.]),
+                    ("nodeUniform17", identity.clone()),
+                    ("nodeUniform18", vec![1.]),
+                    ("nodeUniform20", identity.clone()),
+                    ("nodeUniform21", vec![1.]),
+                    ("nodeUniform22", vec![30.]),
                     (
-                        "nodeUniform24",
+                        "nodeUniform23",
                         Color::from_hex(0x111111).0.to_array().to_vec(),
                     ),
-                    ("nodeUniform25", vec![1.; 3]),
-                    ("nodeUniform26", vec![1.]),
-                    ("nodeUniform28", identity.clone()),
+                    ("nodeUniform24", vec![1.; 3]),
+                    ("nodeUniform25", vec![1.]),
+                    ("nodeUniform27", identity.clone()),
                 ],
             )?;
             let mut values = camera_values.clone();

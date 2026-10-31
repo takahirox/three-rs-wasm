@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -34,7 +37,6 @@ var<private> Shininess : f32;
 var<private> SpecularColor : vec3<f32>;
 var<private> EmissiveColor : vec3<f32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar1 : vec4<f32>;
 
 // codes
 
@@ -52,12 +54,12 @@ fn main( @location( 0 ) v_positionWorldDirection : vec3<f32> ) -> OutputStruct {
 	Shininess = max( object.nodeUniform3, 0.0001 );
 	SpecularColor = object.nodeUniform4;
 	EmissiveColor = ( object.nodeUniform5 * vec3<f32>( object.nodeUniform6 ) );
-	nodeVar1 = max( vec4<f32>( ( DiffuseColor.xyz + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar1;
+	let nodeConst0 = max( vec4<f32>( ( DiffuseColor.xyz + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar1;
+	output.color = nodeConst0;
 
 	return output;
 
