@@ -265,7 +265,10 @@ for(const [kind,spec] of Object.entries(cases)){const id=official(kind);
  });
 }
 
-test('Compute examples resident geometry and official draw workload',async({page},info)=>{
+// One test per example: the examples' pages load in turn on both runtimes, and their
+// sum exceeds any single test's timeout; each example's draws and uploads are checked
+// as before, with its own report.
+for(const [kind,spec] of Object.entries(cases))test(`Compute examples resident geometry and official draw workload: ${kind}`,async({page},info)=>{
  test.setTimeout(180000);
  await page.addInitScript(()=>{
   window.resetWork=()=>window.work={draws:[],attributeBytes:0,transformBytes:0,textureBytes:0};resetWork();
@@ -289,7 +292,7 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
   const texture=GPUQueue.prototype.writeTexture;GPUQueue.prototype.writeTexture=function(dest,data,...args){work.textureBytes+=data.byteLength;return texture.call(this,dest,data,...args);};
  });
  const report=[];
- for(const [kind,spec] of Object.entries(cases)){
+ {
   const pair={kind};
   for(const runtime of ['reference','rust']){
    await page.mouse.move(511,0);
