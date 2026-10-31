@@ -1,5 +1,5 @@
-// webgl_loader_3dtiles against the original page ( texture-volumes.html with upstream's
-// WebGLOutput depth texture and EffectPassAdapter, which r186 lacks ): the same tiles are
+// webgl_loader_3dtiles against the original page ( texture-volumes.html; r187's
+// EffectPassAdapter hands the effects WebGLOutput's scene depth ): the same tiles are
 // used, visible and active by their place in the tree; the frames match at the page's
 // camera and at an evening hour ( with the cloud drift stopped on both sides, so the
 // temporal passes converge on the same clouds ); GlobeControls' drag and wheel move the
@@ -62,7 +62,6 @@ const open = async (page, runtime) => {
     await page.waitForFunction(() => window.app, null, {timeout: 120000});
   } else {
     await page.addInitScript(key => { window.fixtureIonKey = key; window.fixtureStaticWeather = true; }, ionKey);
-    await page.route('**/.cache/three-r187/src/renderers/webgl/WebGLOutput.js', route => route.fulfill({contentType: 'text/javascript', body: readFileSync('reference/three-js/patches/WebGLOutput.js', 'utf8')}));
     await page.goto(`/reference/three-js/texture-volumes.html?id=${id}`);
     await page.waitForFunction(() => window.fixtureCallback, null, {timeout: 300000});
   }
