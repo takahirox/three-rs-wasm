@@ -1,9 +1,11 @@
 //! webgpu_lights_ies_spotlight: four IESSpotLights (red, green, blue, white)
 //! with shadows, their targets swinging toward the center, over a Phong
-//! floor and box. IESLoader's profiles are 180-texel half-float rows; as
+//! floor and box. IESLoader's profiles are half-float textures of 180
+//! vertical angles by 360 horizontal ones ( one for a symmetric profile ); as
 //! IESSpotLightNode does, each light's cone falloff is replaced by its
-//! profile sampled at acos( L · D ) / π, here in the Phong material's
-//! per-light color hook with the core's cone disabled for these lights.
+//! profile sampled at the tilt and twist angles of the fragment's light
+//! direction, here in the Phong material's per-light color hook with the
+//! core's cone disabled for these lights.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::fetch;
 use crate::tsl::surface::SurfaceNodes;
@@ -28,7 +30,8 @@ const LIGHTS: [(u32, [f64; 3]); 4] = [
     (0x0000ff, [-6.5, 3., -6.5]),
     (0xffffff, [6.5, 3., -6.5]),
 ];
-/// IESLamp: the angles and the squared, normalized candela values.
+/// IESLamp: the angles ( the horizontal ones shifted to start at 0 ) and the
+/// scaled, normalized candela values.
 struct Lamp {
     ver: Vec<f64>,
     hor: Vec<f64>,
@@ -77,21 +80,36 @@ fn parse_lamp(text: &str) -> Result<Lamp> {
     let values = read(10, &mut line)?;
     let multiplier = values[2];
     let (num_ver, num_hor) = (values[3] as usize, values[4] as usize);
-    read(3, &mut line)?;
+    let factors = read(3, &mut line)?;
+    let (ball, blp) = (factors[0], factors[1]);
     let ver = read(num_ver, &mut line)?;
-    let hor = read(num_hor, &mut line)?;
+    let mut hor = read(num_hor, &mut line)?;
     let mut candela = vec![];
     for _ in 0..num_hor {
         candela.push(read(num_ver, &mut line)?);
     }
-    // candelaValues[ i ][ j ] *= candelaValues[ i ][ j ] × multiplier.
-    let mut max = -1f64;
+    // candelaValues[ i ][ j ] *= multiplier × ballFactor × blpFactor.
     for row in &mut candela {
         for v in row.iter_mut() {
-            let value = *v;
-            *v = value * (value * multiplier);
-            max = if max < *v { *v } else { max };
+            *v *= multiplier * ball * blp;
         }
+    }
+    // The measured range shifted to start at 0, mirrored across the full
+    // cycle when sampling.
+    let base = hor.first().copied().unwrap_or(f64::NAN);
+    let mut max = -1f64;
+    for (angle, row) in hor.iter_mut().zip(&candela) {
+        *angle -= base;
+        for &v in row {
+            max = if max < v { v } else { max };
+        }
+    }
+    // A range wider than a half cycle is asymmetric: it wraps back around to
+    // the first angle ( files that skip the final 360 entry ).
+    let end = hor.last().copied().unwrap_or(f64::NAN);
+    if end > 180. && end < 360. {
+        hor.push(360.);
+        candela.push(candela[0].clone());
     }
     if max > 0. {
         for row in &mut candela {
@@ -102,9 +120,13 @@ fn parse_lamp(text: &str) -> Result<Lamp> {
     }
     Ok(Lamp { ver, hor, candela })
 }
-/// _getIESValues' first 180 entries (horizontal angle 0), the texture's row.
-fn profile(lamp: &Lamp) -> Vec<f64> {
+/// _getIESValues' vertical angles: a row's 180 texels.
+const HEIGHT: usize = 180;
+/// _getIESValues: the texture's rows ( 360 horizontal angles, or one for a
+/// symmetric profile ) of 180 vertical angles from 0 to 180 degrees.
+fn profile(lamp: &Lamp) -> (usize, Vec<f64>) {
     let (nh, nv) = (lamp.hor.len(), lamp.ver.len());
+    let width = if nh == 1 { 1 } else { 360 };
     let interpolate = |phi: f64, theta: f64| -> f64 {
         let (mut ti, mut t0, mut t1) = (0, 0., 0.);
         for i in 0..nh.saturating_sub(1) {
@@ -127,25 +149,31 @@ fn profile(lamp: &Lamp) -> Vec<f64> {
         let a = if dt == 0. { 0. } else { (theta - t0) / dt };
         let b = (phi - p0) / dp;
         let next = if dt == 0. { ti } else { ti + 1 };
-        let lerp = |x: f64, y: f64, t: f64| x + (y - x) * t;
+        // MathUtils.lerp.
+        let lerp = |x: f64, y: f64, t: f64| (1. - t) * x + t * y;
         let c = &lamp.candela;
         let v1 = lerp(c[ti][pi], c[next][pi], a);
         let v2 = lerp(c[ti][pi + 1], c[next][pi + 1], a);
         lerp(v1, v2, b)
     };
-    let (start, end) = (lamp.hor[0], lamp.hor[nh - 1]);
-    (0..180)
-        .map(|phi| {
-            let mut theta = 0f64;
-            if end - start != 0. && (theta < start || theta >= end) {
-                theta %= end * 2.;
-                if theta > end {
-                    theta = end * 2. - theta;
-                }
+    let end = lamp.hor[nh - 1];
+    let mut data = vec![0.; width * HEIGHT];
+    for (i, d) in data.iter_mut().enumerate() {
+        // The texel at ( phi, theta ) is data[ phi + theta × 180 ].
+        let (phi, theta) = (i % HEIGHT, i / HEIGHT);
+        // The measured range mirrored around the cycle.
+        let mut sample_theta = theta as f64;
+        if end != 0. && sample_theta > end {
+            sample_theta %= end * 2.;
+            if sample_theta > end {
+                sample_theta = end * 2. - sample_theta;
             }
-            interpolate(phi as f64, theta)
-        })
-        .collect()
+        }
+        // The vertical angles span [ 0, 180 ].
+        let sample_phi = phi as f64 * 180. / (HEIGHT - 1) as f64;
+        *d = interpolate(sample_phi, sample_theta);
+    }
+    (width, data)
 }
 /// DataUtils.toHalfFloat: the base and shift tables, truncating the mantissa.
 fn to_half(value: f64) -> u16 {
@@ -166,9 +194,13 @@ fn to_half(value: f64) -> u16 {
     };
     ((base | sign) + ((f & 0x007f_ffff) >> shift)) as u16
 }
-/// IESSpotLightNode.getSpotAttenuation: the profile of light i at the angle
-/// between the fragment's light direction and the spot direction.
-const IES: &str = "fn ies_color(index:u32,color:vec3<f32>,p:vec3<f32>)->vec3<f32>{let l=normalize(u.light_position[index].xyz-p);let c=dot(l,u.light_direction[index].xyz);let v=(f32(index)+0.5)/4.0;return color*textureSampleLevel(tsl_texture_0,tsl_sampler_0,vec2(acos(c)*(1.0/3.141592653589793),v),0.0).r;}";
+/// IESSpotLightNode.getSpotAttenuation: light i's profile ( texture i ) at
+/// the tilt angle off the spot direction, inset by half a texel on each side,
+/// and the twist angle around it, offset by half a texel. The twist is
+/// atan( y, x ) of the light's projected coordinate ( lightProjectionUV
+/// − 0.5 ): its shadow camera's lookAt( target ) basis ( up +Y ) divided by
+/// w, the positive projection and bias scales of its square map cancelling.
+const IES: &str = "fn ies_color(index:u32,color:vec3<f32>,p:vec3<f32>)->vec3<f32>{let position=u.light_position[index].xyz;let l=normalize(position-p);var z=u.light_direction[index].xyz;let c=dot(l,z);let up=vec3(0.0,1.0,0.0);var x=cross(up,z);if dot(x,x)==0.0{z=normalize(z+vec3(0.0,0.0,0.0001));x=cross(up,z);}x=normalize(x);let y=cross(z,x);let d=p-position;let w=-dot(d,z);let coord=vec2(dot(d,x),dot(d,y))/w;var size=vec2<u32>(1u);switch index{case 0u:{size=textureDimensions(tsl_texture_0);}case 1u:{size=textureDimensions(tsl_texture_1);}case 2u:{size=textureDimensions(tsl_texture_2);}default:{size=textureDimensions(tsl_texture_3);}}let inset=vec2(0.5)/vec2<f32>(size);let twist=(atan2(coord.y,coord.x)+3.141592653589793)/(2.0*3.141592653589793)+inset.y;let tilt=acos(c)/3.141592653589793*((1.0-inset.x)-inset.x)+inset.x;let uv=vec2(tilt,twist);var a=0.0;switch index{case 0u:{a=textureSampleLevel(tsl_texture_0,tsl_sampler_0,uv,0.0).r;}case 1u:{a=textureSampleLevel(tsl_texture_1,tsl_sampler_1,uv,0.0).r;}case 2u:{a=textureSampleLevel(tsl_texture_2,tsl_sampler_2,uv,0.0).r;}default:{a=textureSampleLevel(tsl_texture_3,tsl_sampler_3,uv,0.0).r;}}return color*a;}";
 pub(super) struct Demo {
     controls: Controls,
     lights: Vec<Object3D>,
@@ -176,48 +208,53 @@ pub(super) struct Demo {
     cones: Vec<Object3D>,
     helpers: bool,
     time: f64,
-    _texture: wgpu::Texture,
+    _textures: Vec<(wgpu::Texture, wgpu::TextureView)>,
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, _id: u32, r: &Renderer) -> Result<Self> {
-        let mut texels = vec![];
-        for file in FILES {
-            let text = String::from_utf8(fetch(&format!("{ASSETS}/{file}")).await?)
-                .map_err(|_| Error::Asset("IES text".into()))?;
-            texels.extend(profile(&parse_lamp(&text)?).into_iter().map(to_half));
-        }
-        let size = wgpu::Extent3d {
-            width: 180,
-            height: 4,
-            depth_or_array_layers: 1,
-        };
-        let texture = r.device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("IES profiles"),
-            size,
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: wgpu::TextureFormat::R16Float,
-            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
-            view_formats: &[],
-        });
-        r.queue.write_texture(
-            texture.as_image_copy(),
-            bytemuck::cast_slice(&texels),
-            wgpu::TexelCopyBufferLayout {
-                offset: 0,
-                bytes_per_row: Some(360),
-                rows_per_image: Some(4),
-            },
-            size,
-        );
-        let view = texture.create_view(&Default::default());
-        // IESLoader: LinearFilter, clamped.
+        // IESLoader: each light's 180 × ( 360 or 1 ) HalfFloat DataTexture,
+        // LinearFilter, clamped in the vertical angle and repeating in the
+        // horizontal one.
         let sampler = r.device.create_sampler(&wgpu::SamplerDescriptor {
+            address_mode_v: wgpu::AddressMode::Repeat,
             mag_filter: wgpu::FilterMode::Linear,
             min_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
+        let mut textures = vec![];
+        for file in FILES {
+            let text = String::from_utf8(fetch(&format!("{ASSETS}/{file}")).await?)
+                .map_err(|_| Error::Asset("IES text".into()))?;
+            let (rows, data) = profile(&parse_lamp(&text)?);
+            let texels: Vec<u16> = data.into_iter().map(to_half).collect();
+            let size = wgpu::Extent3d {
+                width: HEIGHT as u32,
+                height: rows as u32,
+                depth_or_array_layers: 1,
+            };
+            let texture = r.device.create_texture(&wgpu::TextureDescriptor {
+                label: Some("IES profile"),
+                size,
+                mip_level_count: 1,
+                sample_count: 1,
+                dimension: wgpu::TextureDimension::D2,
+                format: wgpu::TextureFormat::R16Float,
+                usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+                view_formats: &[],
+            });
+            r.queue.write_texture(
+                texture.as_image_copy(),
+                bytemuck::cast_slice(&texels),
+                wgpu::TexelCopyBufferLayout {
+                    offset: 0,
+                    bytes_per_row: Some(HEIGHT as u32 * 2),
+                    rows_per_image: Some(rows as u32),
+                },
+                size,
+            );
+            let view = texture.create_view(&Default::default());
+            textures.push((texture, view));
+        }
         let aspect = match s.camera(c)?.0 {
             Camera::Perspective(p) => p.aspect,
             _ => 1.,
@@ -295,7 +332,14 @@ impl Demo {
             light_color: Some(hook),
             ..Default::default()
         }
-        .build_with_texture_types(r, &[], &[(&view, &sampler, Type::Texture)])
+        .build_with_texture_types(
+            r,
+            &[],
+            &textures
+                .iter()
+                .map(|(_, view)| (view, &sampler, Type::Texture))
+                .collect::<Vec<_>>(),
+        )
         .await?;
         let mut phong = MeshPhongMaterial::default();
         phong.properties.color = Color::from_hex(0x999999);
@@ -328,7 +372,7 @@ impl Demo {
             cones,
             helpers: false,
             time: 0.,
-            _texture: texture,
+            _textures: textures,
         };
         demo.frame(s)?;
         Ok(demo)
