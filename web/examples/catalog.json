@@ -157,7 +157,7 @@
         "source": "gallery/src/browser/spot_skinning.rs",
         "test": "tests/browser/spot-skinning.spec.js",
         "limitations": [
-          "three.jsのAnimationMixerの意味論（重みと時間スケールの補間、warp付きクロスフェード、loopイベントでの同期、一時停止と1ステップ、停止と元の姿勢への復帰）、SkeletonHelper、SunLightの影、全17項目の操作をRustで再現。性能の完全な同等性は未保証。"
+          "three.jsのAnimationMixerの意味論（重みと時間スケールの補間、warp付きクロスフェード、loopイベントでの同期、一時停止と1ステップ、停止と元の姿勢への復帰）、SkeletonHelper、平行光源の影、全17項目の操作をRustで再現。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -248,7 +248,7 @@
         "source": "gallery/src/browser/spot_skinning.rs",
         "test": "tests/browser/spot-skinning.spec.js",
         "limitations": [
-          "Xbotのベース動作のクロスフェードと加算アニメーション（makeClipAdditive、subclip、PropertyMixerの加算合成）、SkeletonHelper、SunLightの影、ズームとパンなしのOrbitControls、全9項目の操作をRustで再現。性能の完全な同等性は未保証。"
+          "Xbotのベース動作のクロスフェードと加算アニメーション（makeClipAdditive、subclip、PropertyMixerの加算合成）、SkeletonHelper、平行光源の影、ズームとパンなしのOrbitControls、全9項目の操作をRustで再現。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -477,7 +477,7 @@
         "source": "gallery/src/browser/spot_skinning.rs",
         "test": "tests/browser/spot-skinning.spec.js",
         "limitations": [
-          "SkeletonUtilsの3体の兵士（idle・run・walk）、SunLightの影、共有スケルトン（DetachedBindModeのvanguard_Mesh 3体）、切り替えで時間が0から始まるミキサーをRustで再現。共有スケルトンは同じクリップと時間で動く骨格の複製で描画（原本は1つの骨格）。性能の完全な同等性は未保証。"
+          "SkeletonUtilsの3体の兵士（idle・run・walk）、平行光源の影、共有スケルトン（DetachedBindModeのvanguard_Mesh 3体）、切り替えで時間が0から始まるミキサーをRustで再現。共有スケルトンは同じクリップと時間で動く骨格の複製で描画（原本は1つの骨格）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -561,7 +561,7 @@
         "source": "gallery/src/browser/spot_skinning.rs",
         "test": "tests/browser/spot-skinning.spec.js",
         "limitations": [
-          "キー操作での歩行と走行（fixe_transitionのフェード、方位角に沿った移動と回転、床のずらし）、HDR環境、ACES、SunLightと点光源の影、異方性の床テクスチャ、metalnessMap、半透明のバイザー、SkeletonHelper、減衰付きOrbitControlsをRustで再現。性能の完全な同等性は未保証。"
+          "キー操作での歩行と走行（fixe_transitionのフェード、方位角に沿った移動と回転、床のずらし）、HDR環境、ACES、キャラクターに追従する平行光源と点光源の影、異方性の床テクスチャ、metalnessMap、半透明のバイザー、SkeletonHelper、減衰付きOrbitControlsをRustで再現。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -1627,7 +1627,7 @@
         "source": "gallery/src/browser/geometry_csg.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "回転する正二十面体のブラシから、回転しながら太さが変わる円柱ブラシを毎フレーム減算（交差・加算）する構成を、three-bvh-csg 0.0.18（既定のLegacyTriangleSplitter）とthree-mesh-bvh 0.9.10のMeshBVH（CENTER分割、葉3三角形、間接バッファ、単精度の境界）のRust移植（csg_eval.rs）でページ同様CPUで再現。bvhcastで交差する三角形の組を集め、分割三角形は中点からのレイキャストで、分割されない三角形はハーフエッジで塗りつぶして内外を判定し、出力属性は単精度で書く。結果（正二十面体由来はフラットな白、円柱由来は青緑）とオレンジのコアを半球ライトとPCF影の平行光、影のみの平面で描く。結果ジオメトリは毎フレーム同じ常駐バッファに書き直し、ワイヤーフレームはページ同様に結果の変換なしでそれを共有する。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "回転する正二十面体のブラシから、回転しながら太さが変わる円柱ブラシを毎フレーム減算（交差・加算）する構成を、three-bvh-csg 0.0.18（既定のLegacyTriangleSplitter）とthree-mesh-bvh 0.9.10のMeshBVH（CENTER分割、葉3三角形、間接バッファ、単精度の境界）のRust移植（csg_eval.rs）でページ同様CPUで再現。bvhcastで交差する三角形の組を集め、分割三角形は中点からのレイキャストで、分割されない三角形はハーフエッジで塗りつぶして内外を判定し、出力属性は単精度で書く。結果（正二十面体由来はフラットな白、円柱由来は青緑）とオレンジのコアを半球ライトとPCF影の平行光、影のみの平面で描く。結果ジオメトリは毎フレーム同じ常駐バッファに書き直し、ワイヤーフレームはそれを共有し、結果の位置・回転・拡大率をコピーする。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -4077,7 +4077,7 @@
         "source": "gallery/src/browser/threemf.rs",
         "test": "tests/browser/collada-3mf.spec.js",
         "limitations": [
-          "ThreeMFLoaderのトラック（basematerials、ロゴのtexture2dgroup、入れ子のcomponents）、z-upの回転、全メッシュの影、SunLightとPCFの影、半球光、線形フォグ、OrbitControls、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。"
+          "ThreeMFLoaderのトラック（basematerials、ロゴのtexture2dgroup、入れ子のcomponents）、z-upの回転、全メッシュの影、平行光源のPCF影（非対称の影カメラ）、半球光、線形フォグ、OrbitControls、変更時のみの描画をRustで再現。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -4493,7 +4493,7 @@
         "source": "gallery/src/browser/fbx_loader.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "14個の元のFBXモデルを、読み込み時にFBXLoaderのRust移植（fbx::parse、バイナリとASCII）で解析し（ノード木、マテリアルグループ付きメッシュ、モーフターゲット、Phong/Lambertとテクスチャ、スキンメッシュのボーンとバインド行列、モデル内の環境光、キーフレームクリップ。解析結果はブラウザで公式FBXLoaderとビット単位で一致することをtests/browser/fbx-loader.spec.jsで確認）、ページの倍率、AnimationMixerでの先頭クリップ再生、SunLightのカスケード影、Phongの地面と半透明グリッド、線形フォグ、減衰付きOrbitControls（ズーム/パンなし）、半球光で表示。選択時に読み込む点はページと同じ。ページのGUIはモデルごとにクリップ一覧とメッシュ別のモーフスライダーを動的に作るが、ギャラリーの固定コントロールではクリップを番号で、モーフは1つのメッシュとターゲット番号で指定する。性能の完全な同等性は未保証。"
+          "14個の元のFBXモデルを、読み込み時にFBXLoaderのRust移植（fbx::parse、バイナリとASCII）で解析し（ノード木、マテリアルグループ付きメッシュ、モーフターゲット、Phong/Lambertとテクスチャ、スキンメッシュのボーンとバインド行列、モデル内の環境光、キーフレームクリップ。解析結果はブラウザで公式FBXLoaderとビット単位で一致することをtests/browser/fbx-loader.spec.jsで確認）、ページの倍率、AnimationMixerでの先頭クリップ再生、平行光源のPCF影（非対称の影カメラ）、Phongの地面と半透明グリッド、線形フォグ、減衰付きOrbitControls（ズーム/パンなし）、半球光で表示。選択時に読み込む点はページと同じ。ページのGUIはモデルごとにクリップ一覧とメッシュ別のモーフスライダーを動的に作るが、ギャラリーの固定コントロールではクリップを番号で、モーフは1つのメッシュとターゲット番号で指定する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -10335,7 +10335,7 @@
         "source": "gallery/src/browser/shadowmap_performance.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "Horse glTFのモーフアニメーションで走る601頭の馬（25個のAnimationObjectGroup）、押し出しの「THREE.JS」文字、2つのブロックを、環境光とSunLightのPCFカスケード影、線形フォグ、FirstPersonControlsで表示する構成をRustで再現（エンジンのレンダラー）。毎フレーム、タイマーでグループのアクションを進め、馬をx方向に走らせ（シード付き乱数の位置へ折り返す）、コントロールでカメラを動かす。馬はページと同じく個別のメッシュと個別のマテリアル色で、glTFジオメトリを共有し、モーフ重みはAnimationMixerと同じくクリップの線形キーフレームからCPUで求める。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+          "Horse glTFのモーフアニメーションで走る601頭の馬（25個のAnimationObjectGroup）、押し出しの「THREE.JS」文字、2つのブロックを、環境光と平行光源の2048×1024 PCF影、線形フォグ、FirstPersonControlsで表示する構成をRustで再現（エンジンのレンダラー）。毎フレーム、タイマーでグループのアクションを進め、馬をx方向に走らせ（シード付き乱数の位置へ折り返す）、コントロールでカメラを動かす。馬はページと同じく個別のメッシュと個別のマテリアル色で、glTFジオメトリを共有し、モーフ重みはAnimationMixerと同じくクリップの線形キーフレームからCPUで求める。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
