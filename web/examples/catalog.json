@@ -25918,7 +25918,7 @@
         "source": "gallery/src/browser/ballpool.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ボールプール（r187のページと同じくRapierPhysicsの剛体ワールド。ポートはrapier3d 0.26.1（rapier.js 0.17.3相当）で、ページのrapier.js 0.21.0とはバージョンが異なり、ボールの軌跡はオリジナルと一致しない）を、ポインターに追従する影付き点光源で照らし、webgpu_postprocessing_ssgiと同じSSGI（2スライス、8ステップ）、合成、TRAA、ACES Filmicトーンマッピング（露出0.5）で描く構成をRustで再現。壁は白・赤・緑のMeshPhysicalMaterialの箱（手前の壁は剛体のみ）、ボールはページの10色のインスタンスカラーを持つ1つのInstancedMesh。ポインターの移動でレイ付近のボールを押し、光源を手前の面との交点へ動かし、押下（タッチは2本）で毎フレーム5個を再配置し、リサイズでアスペクトからワールド・箱の幅・ボール数を作り直す。物理はページと同じく16msの間隔で1/30秒に制限して進め、シーンパスは現在と前フレームの行列をr187のInstanceNodeと同じくインスタンス属性から読む。各段はページからthree.js r187が生成するWGSL（ballpool/）を実行する。物理を進める前の状態でも影と半影の中のノイズがオリジナルと一致しない（原因未特定）。ページはsetPixelRatioを呼ばないため常に画素比1で描く。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ボールプール（r187のページと同じくRapierPhysicsの剛体ワールド。ポートはページのrapier.js 0.21.0と同じrapier3d 0.36.0で、ボールの軌跡はオリジナルと一致する）を、ポインターに追従する影付き点光源で照らし、webgpu_postprocessing_ssgiと同じSSGI（2スライス、8ステップ）、合成、TRAA、ACES Filmicトーンマッピング（露出0.5）で描く構成をRustで再現。壁は白・赤・緑のMeshPhysicalMaterialの箱（手前の壁は剛体のみ）、ボールはページの10色のインスタンスカラーを持つ1つのInstancedMesh。ポインターの移動でレイ付近のボールを押し、光源を手前の面との交点へ動かし、押下（タッチは2本）で毎フレーム5個を再配置し、リサイズでアスペクトからワールド・箱の幅・ボール数を作り直す。物理はページと同じく16msの間隔で1/30秒に制限して進め、シーンパスは現在と前フレームの行列をr187のInstanceNodeと同じくインスタンス属性から読む。各段はページからthree.js r187が生成するWGSL（ballpool/）を実行する。ページはsetPixelRatioを呼ばないため常に画素比1で描く。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34348,7 +34348,7 @@
         "source": "gallery/src/browser/physics_rapier_basic.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "10×10の床に、1秒ごとにランダムな色の箱・球・角丸の箱を6〜9mの高さから落とすシーンを、rapier.js 0.17.3と同じRust版Rapier（rapier3d 0.26.1）で再現。RapierPhysicsの16ms間隔のステップとTimerの経過時間、RapierHelperのコライダー輪郭線、1024²のPCF影、ダンピング付きOrbitControls、y < −10に落ちたメッシュの削除に対応。Rapierの接触ペアの順序はメモリアドレス由来のハッシュに依存し、rapier.js自身も同じ入力で再現しないため、物体が積み重なると軌道はオリジナルから分かれる。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "10×10の床に、1秒ごとにランダムな色の箱・球・角丸の箱を6〜9mの高さから落とすシーンを、rapier.js 0.21.0と同じRust版Rapier（rapier3d 0.36.0）で再現。RapierPhysicsの16ms間隔のステップとTimerの経過時間、RapierHelperのコライダー輪郭線、1024²のPCF影、ダンピング付きOrbitControls、y < −10に落ちたメッシュの削除に対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34440,7 +34440,7 @@
         "source": "gallery/src/browser/physics_rapier_instancing.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "ランダムな色の箱400個と球400個のInstancedMeshを、インスタンスごとのRapierの剛体（rapier.js 0.17.3と同じrapier3d 0.26.1）で見えない床コライダーとShadowMaterialの平面の上に落とすシーンを再現。16ms間隔で箱と球を1つずつ中央の上へ戻す処理、SHAKEボタンによる全インスタンスへのランダムな撃力、OrbitControlsに対応。インスタンス行列は物理のステップごとに更新する（オリジナルと同じくCPUで剛体の姿勢を書き込む）。Rapierの接触ペアの順序はメモリアドレス由来のハッシュに依存し、rapier.js自身も同じ入力で再現しないため、物体が積み重なると軌道はオリジナルから分かれる。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "ランダムな色の箱400個と球400個のInstancedMeshを、インスタンスごとのRapierの剛体（rapier.js 0.21.0と同じrapier3d 0.36.0）で見えない床コライダーとShadowMaterialの平面の上に落とすシーンを再現。16ms間隔で箱と球を1つずつ中央の上へ戻す処理、SHAKEボタンによる全インスタンスへのランダムな撃力、OrbitControlsに対応。インスタンス行列は物理のステップごとに更新する（オリジナルと同じくCPUで剛体の姿勢を書き込む）。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34514,7 +34514,7 @@
         "source": "gallery/src/browser/physics_rapier_joints.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "y = 6に固定した赤い球から、球面インパルスジョイント（角速度減衰10）でつないだカプセル3本がぶら下がって揺れるシーンを、rapier.js 0.17.3と同じrapier3d 0.26.1で再現。RapierPhysicsの16ms間隔のステップ、RapierHelperのコライダーとジョイントの輪郭線、1024²のPCF影、OrbitControlsに対応。リンク同士の接触の順序がメモリアドレス由来のハッシュに依存し、rapier.js自身も同じページで2回動かすと最初のステップから揺れ方が変わるため、比較は最初の1秒に限る。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "y = 6に固定した赤い球から、球面インパルスジョイント（角速度減衰10）でつないだカプセル3本がぶら下がって揺れるシーンを、rapier.js 0.21.0と同じrapier3d 0.36.0で再現。RapierPhysicsの16ms間隔のステップ、RapierHelperのコライダーとジョイントの輪郭線、1024²のPCF影、OrbitControlsに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34597,7 +34597,7 @@
         "source": "gallery/src/browser/physics_rapier_character_controller.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "20×20の床に10個のランダムな固定の赤い箱か動く緑の球を置き、青いカプセルをWASD／矢印キーでRapierのKinematicCharacterController（offset 0.01、キャラクター質量3で動く剛体を押す）により2.5m/sで動かすシーンを、rapier.js 0.17.3と同じrapier3d 0.26.1で再現。描画後に移動を計算するページの順序、RapierHelperの輪郭線、1024²のPCF影、OrbitControlsに対応。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "20×20の床に10個のランダムな固定の赤い箱か動く緑の球を置き、青いカプセルをWASD／矢印キーでRapierのKinematicCharacterController（offset 0.01、キャラクター質量3で動く剛体を押す）により2.5m/sで動かすシーンを、rapier.js 0.21.0と同じrapier3d 0.36.0で再現。描画後に移動を計算するページの順序、RapierHelperの輪郭線、1024²のPCF影、OrbitControlsに対応。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34680,7 +34680,7 @@
         "source": "gallery/src/browser/physics_rapier_vehicle_controller.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "質量10の赤い箱のシャーシをRapierのDynamicRayCastVehicleControllerの4つのレイキャスト車輪で支え、WASD／矢印キーで加速と操舵、スペースでブレーキ、Rでリセットするシーンを、rapier.js 0.17.3と同じrapier3d 0.26.1で再現。車輪のサスペンション長・操舵・回転によるメッシュの姿勢、車を追うOrbitControls、RapierHelperの輪郭線、2048²のPCF影に対応。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "質量10の赤い箱のシャーシをRapierのDynamicRayCastVehicleControllerの4つのレイキャスト車輪で支え、WASD／矢印キーで加速と操舵、スペースでブレーキ、Rでリセットするシーンを、rapier.js 0.21.0と同じrapier3d 0.36.0で再現。車輪のサスペンション長・操舵・回転によるメッシュの姿勢、車を追うOrbitControls、RapierHelperの輪郭線、2048²のPCF影に対応。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -34771,7 +34771,7 @@
         "source": "gallery/src/browser/physics_rapier_terrain.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "128×128の同心円状の波のハイトフィールド（Rapierのハイトフィールドコライダーと、高さを与えたグリッド付きPhongの平面）に、開始3秒後から0.5秒おきに最大30個のランダムな球・箱・円柱を落とすシーンを、rapier.js 0.17.3と同じrapier3d 0.26.1で再現。ページのTimerによるフレームごとの出現判定、y > 1の剛体の起床と遅い剛体への下向きの撃力、y < −12のメッシュのシーンからの除去（剛体はワールドに残る）、ズームなしのOrbitControlsに対応。物体同士が衝突すると、接触ペアの順序がメモリアドレス由来のハッシュに依存するため軌道はオリジナルから分かれうる。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
+          "128×128の同心円状の波のハイトフィールド（Rapierのハイトフィールドコライダーと、高さを与えたグリッド付きPhongの平面）に、開始3秒後から0.5秒おきに最大30個のランダムな球・箱・円柱を落とすシーンを、rapier.js 0.21.0と同じrapier3d 0.36.0で再現。ページのTimerによるフレームごとの出現判定、y > 1の剛体の起床と遅い剛体への下向きの撃力、y < −12のメッシュのシーンからの除去（剛体はワールドに残る）、ズームなしのOrbitControlsに対応。RapierPhysicsの16ms間隔のステップに対応。WebGL専用の例のため、WebGPUバックエンドとの描画差は許容誤差として記録。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
