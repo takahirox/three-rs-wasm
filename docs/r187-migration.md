@@ -94,4 +94,24 @@ until every ported example matches r187 again; it is removed when done.
    pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
    `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
    until then `report.py --check` fails.
-6. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
+6. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187. The
+   r186 mentions left are the jsDelivr asset pin ( r187's commit is refused ),
+   byte-identical fixtures named after r186, contrasts between the releases
+   and historical records.
+7. **Found while moving the text.**
+   - Still on r186 captures: linked_particles' 18 shaders,
+     `src/shaders/light_probe_grid/`, the 3D tiles GLSL; leftover r186
+     files no port loads ( pmrem_cube_uv, volume_caustics' and
+     volume_lighting's `blur*_fs` and `teapot_*` ).
+   - TAAU: r187's VelocityNode fills `currentProjectionMatrix` each frame
+     and TAAU overrides before the pipeline, so its current clip is
+     unjittered; `tsl_procedural/taau.rs` and
+     `tools/tsl/check-taau-velocity.mjs` keep r186's jittered velocity.
+   - webgl_raycaster_bvh: r187's `intersectsFrustum` returns true, so the
+     page draws BVHHelper; the port does not.
+   - WebXR: r187 removed `setProjectionFromUnion` ( cameraXR copies the left
+     view's projection ); `src/xr.rs` builds r186's union camera.
+   - `web/examples/ui/ui.js` loads `three@0.186.0` ( the Inspector ) and
+     `ui/three/constants.js` is r186's.
+   - Not re-checked on r187: webgpu_water's resize validation error,
+     WebGLNodesHandler's InstancedMesh rebuild.
