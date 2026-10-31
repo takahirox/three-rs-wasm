@@ -19,6 +19,8 @@ until every ported example matches r187 again; it is removed when done.
   webgpu_compute_rasterizer_ibl left the gallery with their code, tests and
   docs; the generated gallery files list r187's examples.
 
+- Core inventory: `make compat-check` passes on r187's members ( 394, all
+  accounted for ).
 - MaterialX: `three_tsl::materialx_page` follows the r187 page and builds its
   shaders with three's modules in the build's order ( `order::init_bundled`,
   `tools/tsl/module_order.py` ), as Fn layouts are named by a counter;
@@ -80,9 +82,8 @@ until every ported example matches r187 again; it is removed when done.
    cube maps ( r187's envmaps_fasthdr loads prefiltered `*.pmrem.ktx2` cubes ),
    the engine's PMREM built for a background-only texture, and
    webgl_loader_usdz's background ( 0.56 / 7.2, the PMREM gradient ).
-5. **Core inventory.** `make compat-check` on r187; classify new members.
-6. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
+5. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
    pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
    `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
    until then `report.py --check` fails.
-7. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
+6. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
