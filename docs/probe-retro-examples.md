@@ -154,14 +154,14 @@ Captures use the page's fixture clock, seeded Math.random, the same controls
 and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
 6/255, mean 0.6/255) except:
 
-- **MSAA.** With `samples=1`, 385, 386, 388, 392 and 393 match exactly in
-  every state. With 4× MSAA 385, 386, 392 and 393 differ along geometric
-  edges only: their pages start with a single-sampled main target, so their
-  scenes render without MSAA until `set_samples( 4 )`. 388 and 391 start
-  4× as `antialias: true` sets, and match exactly in every state but 391's
-  drag and resize. These comparisons use MSAA-only bounds: 385 at
-  8% / 2.5 (the helmet), 386 at 1% / 0.2, 388 at 13% / 7 (wireframe lines),
-  391 at 15% / 3.5, 392 at 3% / 0.7 and 393 at 4% / 0.9.
+- **MSAA.** 385, 386, 388, 391, 392 and 393 start with 4× MSAA, as
+  `antialias: true` sets; the ports' scene targets follow the main target's
+  samples. 385, 386, 392 and 393 use the default bounds with and without
+  MSAA: on r187 386, 392 and 393 match within 0.001% of pixels ( mean
+  0.005 ) in every state, and 385 within 0.01% but the filtered retro helmet
+  ( 0.13% / 0.04, with and without MSAA ). 388 and 391 match exactly in every
+  state but 391's drag and resize; their comparisons keep MSAA-only bounds:
+  388 at 13% / 7 (wireframe lines) and 391 at 15% / 3.5.
 - **Fluid pointer.** During an orbit drag, the original's pointer ray reads a
   camera matrix that OrbitControls has only partly updated; the port reads
   the same matrix ( see Fluid ). 391's drag and resize captures use
