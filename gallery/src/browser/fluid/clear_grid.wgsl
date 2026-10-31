@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -20,11 +20,11 @@ struct StructType0 {
 
 // uniforms
 
-struct NodeBuffer_994Struct {
+struct nodeUniform0Struct {
 	value : array< StructType0 >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read_write> NodeBuffer_994 : NodeBuffer_994Struct;
+var<storage, read_write> nodeUniform0 : nodeUniform0Struct;
 
 struct objectStruct {
 	nodeUniform1 : u32
@@ -59,10 +59,10 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> clearGridKernel
 	if ( instanceIndex >= object.nodeUniform1 ) { return; }
 
-	atomicStore( &NodeBuffer_994.value[ instanceIndex ].x, 0 );
-	atomicStore( &NodeBuffer_994.value[ instanceIndex ].y, 0 );
-	atomicStore( &NodeBuffer_994.value[ instanceIndex ].z, 0 );
-	atomicStore( &NodeBuffer_994.value[ instanceIndex ].mass, 0 );
+	atomicStore( &nodeUniform0.value[ instanceIndex ].x, 0 );
+	atomicStore( &nodeUniform0.value[ instanceIndex ].y, 0 );
+	atomicStore( &nodeUniform0.value[ instanceIndex ].z, 0 );
+	atomicStore( &nodeUniform0.value[ instanceIndex ].mass, 0 );
 
 	
 

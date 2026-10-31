@@ -1,18 +1,20 @@
 //! webgpu_compute_particles_fluid: an MLS-MPM fluid of 32,768 particles in
 //! a 64³ grid, rendered as instanced icosahedra under royal_esplanade's
-//! UltraHDR sky. Each frame runs the page's compute kernels on the resident
-//! storage buffers: the workgroup kernel writes the indirect dispatch sizes,
-//! the grid clears, particle-to-grid scatters mass and momentum as
-//! fixed-point atomics ( two passes ), the grid update divides by mass, and
+//! UltraHDR sky. Each frame runs the page's compute kernels in one compute
+//! pass on the resident storage buffers, each dispatched for its count: the
+//! grid clears, particle-to-grid scatters mass and momentum as fixed-point
+//! atomics ( two passes ), the grid update divides by mass, and
 //! grid-to-particle moves the particles inside the rounded box, pushed by
 //! the pointer ray. The particles read their positions in the vertex stage.
-//! Every stage runs the WGSL three.js r186 generates for the page (in
-//! `fluid/`), without its unused subgroup-size builtin.
+//! The sky's blurred background and the lighting sample r187's cube PMREM
+//! ( `pmrem.rs` ). Every stage runs the WGSL three.js r187 generates for the
+//! page (in `fluid/`), without its unused subgroup-size builtin.
 use super::controls_attributes::{Controls, camera_state};
-use super::deferred::{Draw, color, depth_attachment, esplanade_cube_uv, sampled_pipeline, set};
+use super::deferred::{Draw, color, depth_attachment, esplanade, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
 use super::models_modifiers::merge_vertices;
-use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline};
+use super::pmrem::Pmrem;
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::{target, uniform};
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
@@ -67,9 +69,12 @@ pub(super) struct Demo {
     ray: (Vector3, Vector3),
     mouse: Vector3,
     previous_mouse: Vector3,
+    /// camera.matrixWorld as the page's pointer handler reads it between
+    /// renders: OrbitControls' lookAt composes it from the new position and
+    /// the previous rotation ( updateWorldMatrix before setting the
+    /// quaternion ); None once a render updated it.
+    pointer_world: Option<Matrix4>,
     particles: wgpu::Buffer,
-    indirect: [wgpu::Buffer; 3],
-    workgroups: Kernel,
     clear: Kernel,
     p2g1: Kernel,
     p2g2: Kernel,
@@ -80,6 +85,8 @@ pub(super) struct Demo {
     output_quad: wgpu::Buffer,
     pmrem: Pmrem,
     clamp: wgpu::Sampler,
+    /// The PMREM's trilinear sampler.
+    linear: wgpu::Sampler,
     background_render: wgpu::Buffer,
     background_object: wgpu::Buffer,
     particle_render: wgpu::Buffer,
@@ -116,7 +123,7 @@ impl Demo {
         };
         let linear = sampler(wgpu::FilterMode::Linear);
         let clamp = sampler(wgpu::FilterMode::Nearest);
-        let (_, _, pmrem, _) = esplanade_cube_uv(r, &linear, &clamp).await?;
+        let (_, _, pmrem) = esplanade(r, &linear).await?;
         let init = |label, data: &[u8], usage| {
             r.device
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {
@@ -151,14 +158,6 @@ impl Demo {
             storage,
         );
         let particle_count: u32 = 8192 * 4;
-        let groups = particle_count.div_ceil(64);
-        let indirect = [0; 3].map(|_| {
-            init(
-                "fluid indirect",
-                bytemuck::cast_slice(&[groups, 1, 1]),
-                storage | wgpu::BufferUsages::INDIRECT,
-            )
-        });
         // A kernel over storage buffers by binding, with its object uniforms at `object`.
         let kernel = |label,
                       source: &str,
@@ -191,12 +190,6 @@ impl Demo {
                 object: uniforms,
             })
         };
-        let workgroups = kernel(
-            "fluid workgroups",
-            wgsl!("workgroups"),
-            1,
-            &[(0, &indirect[0]), (2, &indirect[1]), (3, &indirect[2])],
-        )?;
         let clear = kernel("fluid clear grid", wgsl!("clear_grid"), 1, &[(0, &cells)])?;
         let p2g1 = kernel(
             "fluid p2g1",
@@ -251,9 +244,8 @@ impl Demo {
             ray: (Vector3::ZERO, Vector3::ZERO),
             mouse: Vector3::ZERO,
             previous_mouse: Vector3::ZERO,
+            pointer_world: None,
             particles,
-            indirect,
-            workgroups,
             clear,
             p2g1,
             p2g2,
@@ -294,6 +286,7 @@ impl Demo {
             ),
             pmrem,
             clamp,
+            linear,
             background_render: uniform(
                 r,
                 "fluid background",
@@ -346,11 +339,6 @@ impl Demo {
         let count = vec![self.particle_count as f64];
         let grid = vec![GRID as f64; 3];
         write(
-            &self.workgroups.object,
-            wgsl!("workgroups"),
-            &[("nodeUniform1", count.clone()), ("nodeUniform4", vec![1.])],
-        )?;
-        write(
             &self.clear.object,
             wgsl!("clear_grid"),
             &[("nodeUniform1", vec![CELLS as f64])],
@@ -394,30 +382,24 @@ impl Demo {
                 ("nodeUniform8", count),
             ],
         )?;
+        // renderer.compute( [ … ] ): the five kernels in one compute pass,
+        // each over its count ( 64 invocations to a workgroup ).
+        let particle_groups = self.particle_count.div_ceil(64);
         let mut encoder = r.device.create_command_encoder(&Default::default());
-        let dispatch = |encoder: &mut wgpu::CommandEncoder,
-                        k: &Kernel,
-                        groups: Option<u32>,
-                        indirect: Option<&wgpu::Buffer>| {
+        {
             let mut pass = encoder.begin_compute_pass(&Default::default());
-            pass.set_pipeline(&k.pipeline);
-            pass.set_bind_group(0, &k.group, &[]);
-            match indirect {
-                Some(buffer) => pass.dispatch_workgroups_indirect(buffer, 0),
-                None => pass.dispatch_workgroups(groups.unwrap_or(1), 1, 1),
+            for (k, groups) in [
+                (&self.clear, CELLS.div_ceil(64)),
+                (&self.p2g1, particle_groups),
+                (&self.p2g2, particle_groups),
+                (&self.update_grid, CELLS.div_ceil(64)),
+                (&self.g2p, particle_groups),
+            ] {
+                pass.set_pipeline(&k.pipeline);
+                pass.set_bind_group(0, &k.group, &[]);
+                pass.dispatch_workgroups(groups, 1, 1);
             }
-        };
-        dispatch(&mut encoder, &self.workgroups, Some(1), None);
-        dispatch(&mut encoder, &self.clear, Some(CELLS.div_ceil(64)), None);
-        dispatch(&mut encoder, &self.p2g1, None, Some(&self.indirect[0]));
-        dispatch(&mut encoder, &self.p2g2, None, Some(&self.indirect[1]));
-        dispatch(
-            &mut encoder,
-            &self.update_grid,
-            Some(CELLS.div_ceil(64)),
-            None,
-        );
-        dispatch(&mut encoder, &self.g2p, None, Some(&self.indirect[2]));
+        }
         r.queue.submit([encoder.finish()]);
         Ok(())
     }
@@ -465,9 +447,9 @@ impl Demo {
             &background,
             &self.background_render,
             vec![
-                (0, self.background_object.as_entire_binding()),
-                (1, sampler(&self.clamp)),
-                (2, tex(&self.pmrem.view)),
+                (0, sampler(&self.linear)),
+                (1, tex(&self.pmrem.view)),
+                (2, self.background_object.as_entire_binding()),
             ],
         );
         let particles = sampled_pipeline(
@@ -487,7 +469,7 @@ impl Demo {
                 (0, self.particle_object.as_entire_binding()),
                 (1, sampler(&self.clamp)),
                 (2, tex(&r.dfg)),
-                (3, sampler(&self.clamp)),
+                (3, sampler(&self.linear)),
                 (4, tex(&self.pmrem.view)),
                 (5, self.particles.as_entire_binding()),
             ],
@@ -570,6 +552,8 @@ impl Demo {
         }
         self.controls.update(s, c)?;
         s.update()?;
+        // renderer.render updates camera.matrixWorld.
+        self.pointer_world = None;
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
         let t = self
@@ -591,11 +575,13 @@ impl Demo {
             ("cameraViewMatrix", m4(view)),
         ];
         let identity3 = m3(Matrix4::IDENTITY);
+        let max_lod = self.pmrem.max_lod as f64;
+        // backgroundBlurriness 0.5, backgroundIntensity and backgroundRotation.
         let mut values = camera_values.clone();
         values.extend([
-            ("nodeUniform0", vec![0.5]),
-            ("nodeUniform9", vec![1.]),
-            ("nodeUniform3", m4(Matrix4::IDENTITY)),
+            ("nodeUniform6", vec![0.5]),
+            ("nodeUniform7", vec![1.]),
+            ("nodeUniform2", m4(Matrix4::IDENTITY)),
         ]);
         write(
             &self.background_render,
@@ -608,13 +594,11 @@ impl Demo {
             cloth!("background_fs"),
             "objectStruct",
             &[
-                ("nodeUniform1", vec![9.]),
-                ("nodeUniform2", m4(Matrix4::IDENTITY)),
-                ("nodeUniform5", identity3.clone()),
-                ("nodeUniform6", vec![1. / 1536.]),
-                ("nodeUniform7", vec![1. / 2048.]),
-                ("nodeUniform10", vec![1.]),
-                ("nodeUniform12", m4(Matrix4::IDENTITY)),
+                ("nodeUniform1", m4(Matrix4::IDENTITY)),
+                ("nodeUniform4", identity3.clone()),
+                ("nodeUniform5", vec![max_lod]),
+                ("nodeUniform8", vec![1.]),
+                ("nodeUniform10", m4(Matrix4::IDENTITY)),
             ],
         )?;
         let mut values = camera_values;
@@ -644,11 +628,10 @@ impl Demo {
                     "nodeUniform10",
                     m4(Matrix4::from_translation(Vector3::new(-0.5, 0., -0.5))),
                 ),
-                ("nodeUniform11", vec![9.]),
+                // PMREMNode: rotation, maxLod and environmentIntensity.
                 ("nodeUniform12", m4(Matrix4::IDENTITY)),
-                ("nodeUniform14", vec![1. / 1536.]),
-                ("nodeUniform15", vec![1. / 2048.]),
-                ("nodeUniform17", vec![1.]),
+                ("nodeUniform14", vec![max_lod]),
+                ("nodeUniform15", vec![1.]),
             ],
         )?;
         write(
@@ -729,6 +712,7 @@ impl Demo {
     /// and z ( the particles' offset ), and its hit on the y = 0 plane.
     pub fn gpu_pointer(&mut self, s: &Scene, c: Object3D, x: f64, y: f64) -> Result<bool> {
         let (camera, world) = s.camera(c)?;
+        let world = self.pointer_world.unwrap_or(world);
         let projection = camera.projection_matrix()?;
         let origin = world.transform_point3(Vector3::ZERO);
         let point = (world * projection.inverse()).project_point3(Vector3::new(x, y, 0.5));
@@ -757,6 +741,7 @@ impl Demo {
         height: f64,
     ) -> Result<()> {
         let camera = camera_state(s, c)?;
+        let rotation = s.get(c)?.quaternion;
         if wheel != 0. {
             self.controls.dolly(wheel, &camera, Vector2::ZERO);
         } else if pan {
@@ -764,7 +749,10 @@ impl Demo {
         } else {
             self.controls.rotate(dx, dy, height);
         }
-        self.controls.update(s, c)
+        self.controls.update(s, c)?;
+        let position = s.get(c)?.position;
+        self.pointer_world = Some(Matrix4::from_rotation_translation(rotation, position));
+        Ok(())
     }
     /// particleCount: the instances and the kernels' counts.
     pub fn parameter(&mut self, index: usize, value: f32) -> Result<()> {
@@ -866,7 +854,9 @@ pub async fn webgpu_compute_particles_fluid(
         canvas,
         animate,
         super::PageOptions {
-            samples: 1,
+            // WebGPURenderer( { antialias: true } ): the scene's 4× MSAA
+            // targets follow the main target's samples.
+            samples: 4,
             encode_srgb: true,
             format: super::TargetFormat::Canvas,
             raw_output: true,

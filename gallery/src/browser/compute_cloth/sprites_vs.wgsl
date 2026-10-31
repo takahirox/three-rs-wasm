@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,11 +8,11 @@
 
 // uniforms
 
-struct NodeBuffer_991Struct {
+struct nodeUniform0Struct {
 	value : array< vec3<f32> >
 };
 @binding( 1 ) @group( 1 )
-var<storage, read> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
@@ -39,10 +39,6 @@ var<private> varyings : VaryingsStruct;
 
 // vars
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> nodeVar1 : vec4<f32>;
-var<private> nodeVar2 : f32;
-var<private> nodeVar3 : f32;
-var<private> VERTEX_nodeVar4 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec4<f32>;
@@ -59,14 +55,15 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 	// code
 
 	positionLocal = position;
-	positionLocal = NodeBuffer_991.value[ instanceIndex ];
+	positionLocal = nodeUniform0.value[ instanceIndex ];
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform5 );
-	nodeVar1 = ( modelViewMatrix * vec4<f32>( NodeBuffer_991.value[ instanceIndex ], 1.0 ) );
-	nodeVar2 = cos( object.nodeUniform6 );
-	nodeVar3 = sin( object.nodeUniform6 );
-	v_positionView = vec4<f32>( ( nodeVar1.xy + ( mat2x2<f32>( nodeVar2, nodeVar3, ( - nodeVar3 ), nodeVar2 ) * ( position.xy * vec2<f32>( length( object.nodeUniform5[ 0u ].xyz ), length( object.nodeUniform5[ 1u ].xyz ) ) ) ) ), nodeVar1.zw );
-	VERTEX_nodeVar4 = ( render.cameraProjectionMatrix * v_positionView );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar4;
+	let nodeConst1 = ( modelViewMatrix * vec4<f32>( nodeUniform0.value[ instanceIndex ], 1.0 ) );
+	let nodeConst2 = object.nodeUniform6;
+	let nodeConst3 = cos( nodeConst2 );
+	let nodeConst4 = sin( nodeConst2 );
+	v_positionView = vec4<f32>( ( nodeConst1.xy + ( mat2x2<f32>( nodeConst3, nodeConst4, ( - nodeConst4 ), nodeConst3 ) * ( position.xy * vec2<f32>( length( object.nodeUniform5[ 0u ].xyz ), length( object.nodeUniform5[ 1u ].xyz ) ) ) ) ), nodeConst1.zw );
+	let VERTEX_nodeConst5 = ( render.cameraProjectionMatrix * v_positionView );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst5;
 
 	// result
 

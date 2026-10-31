@@ -70,7 +70,9 @@ The deferred mode renders the opaque teapot and spheres unlit into the MRT
 resolves the lights in a full-screen pass over the sky background, then
 draws the transparent panels over the opaque depth. The forward mode lights
 everything in one pass. The sky is a 1024² CubeMapNode cube for the
-background and a lodMax 9 PMREM for the lighting.
+background and r187's cube PMREM ( fromEquirectangular, 512² faces,
+`pmrem.rs` ) for the lighting; every stage runs r187's WGSL, the forward
+mode's included.
 
 ### Cloth (388)
 
@@ -78,7 +80,8 @@ Each requested frame runs fixed 1/360 s steps (at most 1/60 s per frame),
 each submitting the spring-force and vertex-force compute passes over
 resident storage buffers. The cloth mesh reads its positions in the vertex
 stage. The wireframe draws the springs as instanced lines and the vertices
-as instanced sprites.
+as instanced sprites. The blurred sky background and the lighting sample
+r187's cube PMREM ( `pmrem.rs` ), and every stage runs r187's WGSL.
 
 ### Volume caustics (389)
 
@@ -107,12 +110,16 @@ element.
 ### Fluid (391)
 
 - **Simulation.** The page's compute kernels run on resident storage buffers
-  each requested frame: the indirect-dispatch counts, grid clear, the two
-  fixed-point atomic particle-to-grid passes, grid update and grid-to-particle
-  move with the pointer ray's force. The particles' vertex stage reads their
-  positions.
-- **Pointer.** The pointer ray uses the camera and the canvas-relative pointer
-  position, as the page's uniforms do.
+  each requested frame, in one compute pass as r187's
+  `renderer.compute( [ … ] )` does, each dispatched for its count: grid
+  clear, the two fixed-point atomic particle-to-grid passes, grid update and
+  grid-to-particle move with the pointer ray's force. The particles' vertex
+  stage reads their positions. The blurred sky background and the lighting
+  sample r187's cube PMREM ( `pmrem.rs` ), and every stage runs r187's WGSL.
+- **Pointer.** The pointer ray uses the canvas-relative pointer position and
+  camera.matrixWorld as the page's handler reads it: after an orbit step and
+  before the next render, OrbitControls' lookAt has composed it from the new
+  position and the previous rotation.
 - **Start-up.** The original compiles its pipelines asynchronously and
   presents stale frames until they are ready; captures start 1.5 s after
   loading.
@@ -145,13 +152,17 @@ and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
 6/255, mean 0.6/255) except:
 
 - **MSAA.** With `samples=1`, 385, 386, 388, 392 and 393 match exactly in
-  every state. With 4× MSAA they differ along geometric edges only, for a
-  reason not identified. These comparisons use MSAA-only bounds: 385 at
+  every state. With 4× MSAA 385, 386, 392 and 393 differ along geometric
+  edges only: their pages start with a single-sampled main target, so their
+  scenes render without MSAA until `set_samples( 4 )`. 388 and 391 start
+  4× as `antialias: true` sets, and match exactly in every state but 391's
+  drag and resize. These comparisons use MSAA-only bounds: 385 at
   8% / 2.5 (the helmet), 386 at 1% / 0.2, 388 at 13% / 7 (wireframe lines),
   391 at 15% / 3.5, 392 at 3% / 0.7 and 393 at 4% / 0.9.
 - **Fluid pointer.** During an orbit drag, the original's pointer ray reads a
-  camera matrix that OrbitControls has only partly updated. 391's drag and
-  resize captures use 0.8% / 0.5.
+  camera matrix that OrbitControls has only partly updated; the port reads
+  the same matrix ( see Fluid ). 391's drag and resize captures use
+  0.8% / 0.5 ( on r187: 0.06% / 0.04 without MSAA, 0.21% / 0.05 with it ).
 
 ## Performance evidence
 
@@ -161,8 +172,7 @@ and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
   resolution parameter, since each rebake allocates new grids, as
   LightProbeGrid does.
 - **Simulations.** The cloth, fluid and protoplanet state stays on the GPU.
-  Only uniforms (and the fluid's indirect-dispatch counts, written by its own
-  kernel) change per frame.
+  Only uniforms change per frame.
 - **Uploads.** No vertex, index or storage data is written in steady frames.
   Models, images and environment maps are decoded and uploaded once.
 - **Per-frame GPU work kept as in the originals:**

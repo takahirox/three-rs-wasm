@@ -14,9 +14,7 @@ use super::gltf_viewer::fetch;
 use super::lights_projector::{m3, m4, pack};
 use super::models_modifiers::teapot;
 use super::pmrem::Pmrem;
-use super::pmrem_cube_uv::{
-    Pmrem as CubeUvPmrem, bind, flat_camera, raw_pipeline, source_pipeline,
-};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::probes_hdr::ultra_hdr;
 use super::retro::{mipmapped_raw, target, uniform};
 use super::shadowmap_opacity::Mipmaps;
@@ -1318,81 +1316,6 @@ pub(super) async fn esplanade(
     pmrem.encode_from_texture(&mut encoder, &source);
     r.queue.submit([encoder.finish()]);
     Ok((equirect, sky.height, pmrem))
-}
-/// royal_esplanade_2k.hdr.jpg as UltraHDRLoader returns it ( half float,
-/// flipped, mipmapped ) with its height, and scene.environment's PMREM
-/// ( fromEquirectangular at lodMax 9 ) with the source pipeline.
-pub(super) async fn esplanade_cube_uv(
-    r: &Renderer,
-    linear: &wgpu::Sampler,
-    clamp: &wgpu::Sampler,
-) -> Result<(wgpu::TextureView, u32, CubeUvPmrem, wgpu::RenderPipeline)> {
-    ultra_hdr_environment(r, linear, clamp, "environments/royal_esplanade_2k.hdr.jpg").await
-}
-/// A 2k UltraHDR equirect at `url` the same way.
-pub(super) async fn ultra_hdr_environment(
-    r: &Renderer,
-    linear: &wgpu::Sampler,
-    clamp: &wgpu::Sampler,
-    url: &str,
-) -> Result<(wgpu::TextureView, u32, CubeUvPmrem, wgpu::RenderPipeline)> {
-    let sky = ultra_hdr(&fetch(url).await?).await?;
-    let row = sky.width as usize * 4;
-    let texels: Vec<half::f16> = sky.rgba.chunks(row).rev().flatten().copied().collect();
-    let mut mipmaps = Mipmaps::new(r);
-    let equirect = mipmapped_raw(
-        r,
-        &mut mipmaps,
-        bytemuck::cast_slice(&texels),
-        (sky.width, sky.height),
-        8,
-        HALF,
-    );
-    let pmrem = CubeUvPmrem::new(r, clamp, 9, (wgsl!("pmrem_ggx_vs"), wgsl!("pmrem_ggx_fs")))?;
-    let source = source_pipeline(
-        r,
-        "PMREM equirect",
-        wgsl!("pmrem_equirect_vs"),
-        wgsl!("pmrem_equirect_fs"),
-    );
-    let source_object = r
-        .device
-        .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("PMREM equirect"),
-            contents: &pack(
-                wgsl!("pmrem_equirect_vs"),
-                "objectStruct",
-                &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
-            )?,
-            usage: wgpu::BufferUsages::UNIFORM,
-        });
-    let source_groups = [
-        bind(
-            r,
-            source.get_bind_group_layout(0),
-            &[(
-                0,
-                flat_camera(r, wgsl!("pmrem_equirect_vs"))?.as_entire_binding(),
-            )],
-        ),
-        bind(
-            r,
-            source.get_bind_group_layout(1),
-            &[
-                (0, wgpu::BindingResource::Sampler(linear)),
-                (1, wgpu::BindingResource::TextureView(&equirect)),
-                (2, source_object.as_entire_binding()),
-            ],
-        ),
-    ];
-    let mut encoder = r.device.create_command_encoder(&Default::default());
-    pmrem.encode(
-        &mut encoder,
-        &source,
-        [&source_groups[0], &source_groups[1]],
-    );
-    r.queue.submit([encoder.finish()]);
-    Ok((equirect, sky.height, pmrem, source))
 }
 /// CubeMapNode: the equirect texture rendered into a size² cube by a
 /// CubeCamera ( near 1, far 10 ) inside a 5 × 5 × 5 back-faced box.

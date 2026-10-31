@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,29 +13,29 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_991Struct {
+struct nodeUniform0Struct {
 	value : array< vec3<f32> >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read_write> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read_write> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_995Struct {
+struct nodeUniform1Struct {
 	value : array< vec2<u32> >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read_write> NodeBuffer_995 : NodeBuffer_995Struct;
+var<storage, read_write> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_997Struct {
+struct nodeUniform2Struct {
 	value : array< vec3<f32> >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read_write> NodeBuffer_997 : NodeBuffer_997Struct;
+var<storage, read_write> nodeUniform2 : nodeUniform2Struct;
 
-struct NodeBuffer_996Struct {
+struct nodeUniform3Struct {
 	value : array< f32 >
 };
 @binding( 3 ) @group( 0 )
-var<storage, read_write> NodeBuffer_996 : NodeBuffer_996Struct;
+var<storage, read_write> nodeUniform3 : nodeUniform3Struct;
 
 struct objectStruct {
 	nodeUniform4 : f32,
@@ -72,9 +72,9 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> Spring Forces
 	if ( instanceIndex >= object.nodeUniform5 ) { return; }
 
-	nodeVar0 = ( NodeBuffer_991.value[ NodeBuffer_995.value[ instanceIndex ].y ] - NodeBuffer_991.value[ NodeBuffer_995.value[ instanceIndex ].x ] );
+	nodeVar0 = ( nodeUniform0.value[ nodeUniform1.value[ instanceIndex ].y ] - nodeUniform0.value[ nodeUniform1.value[ instanceIndex ].x ] );
 	nodeVar1 = max( length( nodeVar0 ), 0.000001 );
-	NodeBuffer_997.value[ instanceIndex ] = ( ( ( vec3<f32>( ( ( nodeVar1 - NodeBuffer_996.value[ instanceIndex ] ) * object.nodeUniform4 ) ) * nodeVar0 ) * vec3<f32>( 0.5 ) ) / vec3<f32>( nodeVar1 ) );
+	nodeUniform2.value[ instanceIndex ] = ( ( ( vec3<f32>( ( ( nodeVar1 - nodeUniform3.value[ instanceIndex ] ) * object.nodeUniform4 ) ) * nodeVar0 ) * vec3<f32>( 0.5 ) ) / vec3<f32>( nodeVar1 ) );
 
 	
 
