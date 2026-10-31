@@ -5,7 +5,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
 | `misc_exporter_usdz` | 424 | `usdz_exporter.rs` | The Draco / KTX2 CarbonFrameBike and its looping animation under the RoomEnvironment PMREM, ACES and damped OrbitControls |
-| `webgl_shadowmap_performance` | 425 | `shadowmap_performance.rs` | 601 morph-animated horses in 25 AnimationObjectGroups, the extruded text and blocks under the SunLight's PCF cascades, fog and FirstPersonControls |
+| `webgl_shadowmap_performance` | 425 | `shadowmap_performance.rs` | 601 morph-animated horses in 25 AnimationObjectGroups, the extruded text and blocks under a directional light's 2048 × 1024 PCF shadow, fog and FirstPersonControls |
 | `webgl_postprocessing_gtao` | 426 | `gtao_webgl.rs` | Littlest Tokyo through RenderPass, GTAOPass ( normal and depth pass, GTAO, Poisson denoise and the six outputs ) and OutputPass |
 | `webgl_modifier_subdivision` | 427 | `subdivision.rs` | three-subdivide's LoopSubdivision on 15 geometries beside the source, on parameter changes |
 | `webgl_raycaster_bvh` | 428 | `raycaster_bvh.rs` | three-mesh-bvh's MeshBVH on the bunny and up to 3000 rays cast each frame, with the instanced hit spheres and ray lines |
@@ -15,7 +15,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | `webgpu_video_frame` | 432 | `video_frame.rs` | sintel.mp4 demuxed in Rust into a WebCodecs VideoDecoder, each VideoFrame copied into the plane's texture |
 | `misc_exporter_gcode` | 433 | `exporter_gcode.rs` | The Z-up print bed with the selected primitive placed on the XY plane |
 | `webgl_loader_svg` | 434 | `svg_loader.rs` | SVGLoader's walk on the browser's DOMParser for the 35 files, with fills, strokes, gradients and render order |
-| `webgl_loader_fbx` | 435 | `fbx_loader.rs` | The 14 FBX models as FBXLoader leaves them, their clips and morphs, under the SunLight cascades |
+| `webgl_loader_fbx` | 435 | `fbx_loader.rs` | The 14 FBX models as FBXLoader leaves them, their clips and morphs, under the directional light's PCF shadow |
 | `games_fps` | 436 | `games_fps.rs` | The Octree world, the capsule player and a hundred spheres in five physics substeps per frame, with VSM shadows |
 | `webgl_random_uv` | 437 | `random_uv.rs` | The Draco ShaderBall2 with textureNoTile and the dissolve as TSL surface graphs, VSM shadows on a ShadowMaterial ground |
 | `webgl_materials_physical_transmission_alpha` | 438 | `transmission_alpha.rs` | DragonAttenuation's transmissive dragon over its cloth, through an alpha canvas onto the page's table |
@@ -159,14 +159,16 @@ Backend tolerances are scoped in the spec next to each example:
   by a level ( random UV ).
 - **Image-based lighting**: WebGL's PMREM and IBL multiple scattering light
   surfaces a few levels apart:
-  - the transmission alpha cloth and dragon, over most of the frame once the
-    dragon fades;
+  - the transmission alpha dragon's edges ( 0.75 % of the pixels, mean 0.34;
+    3.5 % / 0.66 under 4× MSAA ). The page's envMapIntensity slider changes
+    nothing: WebGLRenderer gives a material without its own envMap
+    scene.environmentIntensity;
   - the watch's gold and silver once the GUI roughens them;
   - the Lottie box's mirror face.
 - **Coplanar faces**: the IFC model's coplanar faces z-fight a few pixels
   apart.
-- **Shadow edges**: the SunLight's PCF edges in the shadow-map performance
-  scene.
+- **Shadow edges**: the directional light's 2048 × 1024 PCF edges in the
+  shadow-map performance scene.
 
 The GTAO, G-code exporter and video frame ports match at the default
 thresholds.

@@ -120,7 +120,9 @@ impl Demo {
             m.attenuation_distance = p[8];
             m.specular_intensity = p[9];
             m.specular_color = Color::from_hex(p[10] as u32);
-            m.base.env_map_intensity = p[11];
+            // material.envMapIntensity: WebGLRenderer sets the uniform to
+            // scene.environmentIntensity ( 1 ) for a material without its own
+            // envMap under scene.environment, so the slider changes nothing.
         }
         Ok(())
     }
