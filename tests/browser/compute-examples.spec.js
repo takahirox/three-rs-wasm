@@ -92,8 +92,10 @@ const cases={
  // renders 250 frames ( the bake's 16 probes per frame, and the meshlets processed one geometry
  // per projection ), and so does the workload check before its frames. The Pipeline control
  // switches to the default drawing pipeline and back. gpuWork: the frame's indirect draws and
- // compute passes ( the meshlet culling ) are compared too.
- webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,gpuWork:true,frames:250,warmup:250,times:[0],parameters:[[0,'Default',1],[0,'Meshlet',0],[1,false,0],[1,true,1],[10,true,1],[11,.5,.5],[10,false,0],[2,0,0],[9,0,0],[6,4,4]],at:0},
+ // compute passes ( the meshlet culling ) are compared too. The script walks a second forward
+ // ( FirstPersonControls' W key ), so the clusters are culled for a moving camera; the residency
+ // cycles stay still.
+ webgpu_lightprobes_sponza:{antialias:true,rebuilds:true,gpuWork:true,frames:250,warmup:250,times:[0],parameters:[[0,'Default',1],[0,'Meshlet',0],[1,false,0],[1,true,1],[10,true,1],[11,.5,.5],[10,false,0],[2,0,0],[9,0,0],[6,4,4]],at:0,script:[['key','KeyW',true,null],['run',60,0,1/60,null],['key','KeyW',false,1]],residency:[]},
  // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
  webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,40,40],[1,6,6],[2,3,3],[3,20,20]],restore:[[1,6,6],[2,3,3],[3,20,20]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},

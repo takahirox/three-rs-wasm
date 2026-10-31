@@ -82,9 +82,13 @@ cubemap_dynamic's, which are the same.
 `tests/browser/compute-examples.spec.js` compares the captures after 250
 frames ( the bake and the meshlets done ) at each state: the initial view,
 Default and Meshlet, GI off and on, the probe helper shown and resized, a new
-light azimuth, no bounce and a 4 × 7 × 7 grid. With and without 4× MSAA,
-every state matches at the default thresholds: at most 2 pixels differ
-( 0.0008 % ), with a mean error of at most 0.0036.
+light azimuth, no bounce, a 4 × 7 × 7 grid and a second's walk forward
+( FirstPersonControls' W key, whose window key events the gallery page
+forwards, as for webgpu_vxgi_sponza ). With and without 4× MSAA, every
+state matches at the default thresholds: at most 2 pixels differ
+( 0.0008 % ), with a mean error of at most 0.0036. Shadows off, a new light
+elevation and intensity, a 10 × 4 × 7 grid and two bounces match as well
+( no pixel over the threshold ).
 
 The frames' GPU work matches the page's frame by frame. Over the first 160
 frames, each frame's compute passes, dispatches, render passes, indirect and
