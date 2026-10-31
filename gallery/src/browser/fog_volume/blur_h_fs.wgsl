@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -26,36 +29,35 @@ var<uniform> object : objectStruct;
 var<private> nodeVar0 : f32;
 var<private> nodeVar1 : vec4<f32>;
 var<private> nodeVar2 : vec2<f32>;
-var<private> nodeVar3 : vec2<f32>;
+var<private> nodeVar3 : f32;
 var<private> nodeVar4 : f32;
-var<private> nodeVar5 : f32;
-var<private> nodeVar6 : vec2<f32>;
+var<private> nodeVar5 : vec2<f32>;
+var<private> nodeVar6 : f32;
 var<private> nodeVar7 : f32;
-var<private> nodeVar8 : f32;
-var<private> nodeVar9 : vec2<f32>;
+var<private> nodeVar8 : vec2<f32>;
+var<private> nodeVar9 : f32;
 var<private> nodeVar10 : f32;
-var<private> nodeVar11 : f32;
-var<private> nodeVar12 : vec2<f32>;
+var<private> nodeVar11 : vec2<f32>;
+var<private> nodeVar12 : f32;
 var<private> nodeVar13 : f32;
-var<private> nodeVar14 : f32;
-var<private> nodeVar15 : vec2<f32>;
+var<private> nodeVar14 : vec2<f32>;
+var<private> nodeVar15 : f32;
 var<private> nodeVar16 : f32;
-var<private> nodeVar17 : f32;
-var<private> nodeVar18 : vec2<f32>;
+var<private> nodeVar17 : vec2<f32>;
+var<private> nodeVar18 : f32;
 var<private> nodeVar19 : f32;
-var<private> nodeVar20 : f32;
-var<private> nodeVar21 : vec2<f32>;
+var<private> nodeVar20 : vec2<f32>;
+var<private> nodeVar21 : f32;
 var<private> nodeVar22 : f32;
-var<private> nodeVar23 : f32;
-var<private> nodeVar24 : vec2<f32>;
+var<private> nodeVar23 : vec2<f32>;
+var<private> nodeVar24 : f32;
 var<private> nodeVar25 : f32;
-var<private> nodeVar26 : f32;
-var<private> nodeVar27 : vec2<f32>;
+var<private> nodeVar26 : vec2<f32>;
+var<private> nodeVar27 : f32;
 var<private> nodeVar28 : f32;
-var<private> nodeVar29 : f32;
-var<private> nodeVar30 : vec2<f32>;
+var<private> nodeVar29 : vec2<f32>;
+var<private> nodeVar30 : f32;
 var<private> nodeVar31 : f32;
-var<private> nodeVar32 : f32;
 
 // codes
 
@@ -68,47 +70,47 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 ).x;
 	nodeVar1 = vec4<f32>( ( nodeVar0 * 0.10924730377444448 ) );
-	nodeVar2 = ( vec2<f32>( object.nodeUniform1 ) * vec2<f32>( 1.0, 0.0 ) );
-	nodeVar3 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 1.0 ) ) );
-	nodeVar4 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar3 ) ).x;
-	nodeVar5 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar3 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar4 + nodeVar5 ) * 0.10525900968602987 ) ) );
-	nodeVar6 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 2.0 ) ) );
-	nodeVar7 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar6 ) ).x;
-	nodeVar8 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar6 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar7 + nodeVar8 ) * 0.09414666419084379 ) ) );
-	nodeVar9 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 3.0 ) ) );
-	nodeVar10 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar9 ) ).x;
-	nodeVar11 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar9 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar10 + nodeVar11 ) * 0.0781713655032425 ) ) );
-	nodeVar12 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 4.0 ) ) );
-	nodeVar13 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar12 ) ).x;
-	nodeVar14 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar12 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar13 + nodeVar14 ) * 0.06025423328818032 ) ) );
-	nodeVar15 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 5.0 ) ) );
-	nodeVar16 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar15 ) ).x;
-	nodeVar17 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar15 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar16 + nodeVar17 ) * 0.04311461730179377 ) ) );
-	nodeVar18 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 6.0 ) ) );
-	nodeVar19 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar18 ) ).x;
-	nodeVar20 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar18 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar19 + nodeVar20 ) * 0.028639050226339946 ) ) );
-	nodeVar21 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 7.0 ) ) );
-	nodeVar22 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar21 ) ).x;
-	nodeVar23 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar21 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar22 + nodeVar23 ) * 0.017659963081781176 ) ) );
-	nodeVar24 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 8.0 ) ) );
-	nodeVar25 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar24 ) ).x;
-	nodeVar26 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar24 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar25 + nodeVar26 ) * 0.010109229970567757 ) ) );
-	nodeVar27 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 9.0 ) ) );
-	nodeVar28 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar27 ) ).x;
-	nodeVar29 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar27 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar28 + nodeVar29 ) * 0.005372092299194051 ) ) );
-	nodeVar30 = ( nodeVar2 * ( object.nodeUniform2 * vec2<f32>( 10.0 ) ) );
-	nodeVar31 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar30 ) ).x;
-	nodeVar32 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar30 ) ).x;
-	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar31 + nodeVar32 ) * 0.0026501225648045356 ) ) );
+	let nodeConst0 = ( vec2<f32>( object.nodeUniform1 ) * vec2<f32>( 1.0, 0.0 ) );
+	nodeVar2 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 1.0 ) ) );
+	nodeVar3 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar2 ) ).x;
+	nodeVar4 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar2 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar3 + nodeVar4 ) * 0.10525900968602987 ) ) );
+	nodeVar5 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 2.0 ) ) );
+	nodeVar6 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar5 ) ).x;
+	nodeVar7 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar5 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar6 + nodeVar7 ) * 0.09414666419084379 ) ) );
+	nodeVar8 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 3.0 ) ) );
+	nodeVar9 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar8 ) ).x;
+	nodeVar10 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar8 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar9 + nodeVar10 ) * 0.0781713655032425 ) ) );
+	nodeVar11 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 4.0 ) ) );
+	nodeVar12 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar11 ) ).x;
+	nodeVar13 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar11 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar12 + nodeVar13 ) * 0.06025423328818032 ) ) );
+	nodeVar14 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 5.0 ) ) );
+	nodeVar15 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar14 ) ).x;
+	nodeVar16 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar14 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar15 + nodeVar16 ) * 0.04311461730179377 ) ) );
+	nodeVar17 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 6.0 ) ) );
+	nodeVar18 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar17 ) ).x;
+	nodeVar19 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar17 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar18 + nodeVar19 ) * 0.028639050226339946 ) ) );
+	nodeVar20 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 7.0 ) ) );
+	nodeVar21 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar20 ) ).x;
+	nodeVar22 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar20 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar21 + nodeVar22 ) * 0.017659963081781176 ) ) );
+	nodeVar23 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 8.0 ) ) );
+	nodeVar24 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar23 ) ).x;
+	nodeVar25 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar23 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar24 + nodeVar25 ) * 0.010109229970567757 ) ) );
+	nodeVar26 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 9.0 ) ) );
+	nodeVar27 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar26 ) ).x;
+	nodeVar28 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar26 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar27 + nodeVar28 ) * 0.005372092299194051 ) ) );
+	nodeVar29 = ( nodeConst0 * ( object.nodeUniform2 * vec2<f32>( 10.0 ) ) );
+	nodeVar30 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 + nodeVar29 ) ).x;
+	nodeVar31 = textureSample( nodeUniform0, nodeUniform0_sampler, ( nodeVarying0 - nodeVar29 ) ).x;
+	nodeVar1 = ( nodeVar1 + vec4<f32>( ( ( nodeVar30 + nodeVar31 ) * 0.0026501225648045356 ) ) );
 
 	// result
 
