@@ -101,7 +101,7 @@ impl Demo {
                 float(env.max_mip()),
             );
             let mut material = NodeMaterial::new(color)
-                .build(r, &[(env.view(), env.sampler())])
+                .build_with_texture_types(r, &[(env.view(), env.sampler(), Type::TextureCube)])
                 .await?;
             material.uniforms[0][0] = 0.5;
             self.objects.push(mesh(

@@ -415,7 +415,7 @@ fixtures and offline path preparation.
   r186's shared derivative/normal-map context for geometry without tangents.
   `blend_overlay` supplies the ice surface's linear-color overlay operation.
 - `EnvironmentMap::from_scene` captures six views and prefilters their HDR
-  CubeUV atlas entirely on the GPU. Capture runs when the environment is created
+  PMREM cube entirely on the GPU. Capture runs when the environment is created
   or explicitly refreshed, never as a CPU readback in the frame loop.
 
 The path example retains 1,000 GPU instances; the smoke uses GPU vertex
@@ -442,8 +442,8 @@ Runtime IDs 103–107 add `webgpu_cubemap_mix`, `webgpu_cubemap_adjustments`,
 radiance/irradiance sampling context. Explicit `environment::reflect_vector()`
 uses the resolved material normal without the default roughness bending;
 `material_normal_world()` includes normal maps. `environment::pmrem` samples
-resident cube-UV atlases, and `parallax_correct` intersects reflected rays with
-the environment box. `EnvironmentMap::prefilter` prepares an atlas once;
+resident PMREM cubes at roughnessToMip, and `parallax_correct` intersects reflected rays with
+the environment box. `EnvironmentMap::prefilter` prepares a PMREM once;
 `from_cube_hdr` accepts six image faces and `from_cube_scene` captures a scene
 through a GPU CubeCamera. Both use GPU padding and convolution.
 

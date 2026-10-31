@@ -81,7 +81,7 @@ fn cube_pmrem_faces_and_custom_pbr_environment() {
                 float(gpu.max_mip()),
             );
             let m = NodeMaterial::new(node)
-                .build(&r, &[(gpu.view(), gpu.sampler())])
+                .build_with_texture_types(&r, &[(gpu.view(), gpu.sampler(), Type::TextureCube)])
                 .await
                 .unwrap();
             material(&mut s, h, Material::Shader(m));
@@ -153,7 +153,7 @@ fn cube_pmrem_faces_and_custom_pbr_environment() {
             h,
             Material::Shader(
                 NodeMaterial::new(color)
-                    .build(&r, &[(gpu.view(), gpu.sampler())])
+                    .build_with_texture_types(&r, &[(gpu.view(), gpu.sampler(), Type::TextureCube)])
                     .await
                     .unwrap(),
             ),

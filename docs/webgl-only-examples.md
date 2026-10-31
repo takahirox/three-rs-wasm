@@ -26,7 +26,7 @@ time, and so do their ports ( see "Assets loaded from Needle" below ).
 | `webgl_postprocessing_3dlut` | 461 | `lut_webgl.rs` | The DamagedHelmet under the UltraHDR environment, OutputPass and LUTPass with the nine tables, the GUI |
 | `webgl_materials_cubemap_dynamic` | 463 | `cubemap_webgl.rs` | The CubeCamera's capture and its PMREM per frame for the mirror sphere's envMap, the circling box and knot, the quarry environment, ACES, auto-rotating OrbitControls, the GUI |
 | `webgl_postprocessing_ssr` | 462 | `ssr_webgl.rs` | SSRPass's beauty, normal, metalness, march, blur and output passes, ReflectorForSSRPass, every GUI control |
-| `webgl_materials_envmaps_fasthdr` | 470 | `envmaps_fasthdr.rs` | The five spheres under a FastHDR cube-UV atlas as environment and background, the eight images, exposure, fov and blurriness, ACES, damped OrbitControls |
+| `webgl_materials_envmaps_fasthdr` | 470 | `envmaps_fasthdr.rs` | The five spheres under a FastHDR prefiltered cubemap as environment and background, the eight images, exposure, fov and blurriness, ACES, damped OrbitControls |
 | `webgl_loader_gltf_animation_pointer` | 471 | `animation_pointer.rs` | DragonAttenuation with its 14 KHR_animation_pointer channels ( material values, the dragon's node, the cloth's texture transform ), RoomEnvironment, damped OrbitControls |
 
 ## Engine additions
@@ -46,10 +46,11 @@ time, and so do their ports ( see "Assets loaded from Needle" below ).
   environment ( a full-screen pass ) no longer drops the filtered
   environment of the scene rendered before it.
 
-- **Cube-UV KTX2 environments** ( `EnvironmentMap::from_cube_uv_ktx2` ): a
-  UASTC HDR KTX2 holding PMREMGenerator's atlas is transcoded as KTX2Loader
-  does ( BC6H, or half floats without BC textures ) and used without
-  filtering again.
+- **PMREM KTX2 environments** ( `EnvironmentMap::from_pmrem_ktx2` ): a
+  UASTC HDR KTX2 cube holding PMREMGenerator's levels ( r187's
+  `textures/pmrem/` ) is transcoded as KTX2Loader does ( BC6H, or half
+  floats without BC textures ) and used without filtering again; as an
+  uploaded cube texture it is sampled with x mirrored.
 - **Basis extension maps**: KHR_texture_basisu maps of the physical
   extensions ( a volume's thickness map ) join the extension map array as
   their RGBA32 transcode.

@@ -6,21 +6,17 @@
 //! MeshPhysicalMaterial ( roughness 1, IOR 1.5, the archive's base color
 //! image ), which the program below is specialized for.
 //!
-//! WebGLRenderer prefilters the equirectangular HDR into a PMREM cubeUV
-//! texture ( PMREMGenerator.fromEquirectangular, GGX VNDF importance
-//! sampling ) for both the environment and the blurred background; the port
-//! runs r186's PMREM generator as the WebGPU renderer generates it ( the same
-//! algorithm and layout, stored with WebGPU's vertical orientation, which its
-//! lookups account for ). The model's program is a WGSL port of the GLSL
-//! WebGLRenderer builds for MeshPhysicalMaterial with a CUBE_UV environment
-//! and no lights: the IBL radiance and irradiance through the r186 DFG LUT's
-//! multiple scattering. The background is the cubeUV lookup along each
-//! pixel's view ray. The canvas is tone mapped and sRGB-encoded in the shader
+//! WebGLRenderer prefilters the equirectangular HDR into a PMREM cube
+//! ( r187's PMREMGenerator.fromEquirectangular, the engine's port of it:
+//! `EnvironmentMap::prefilter` ) for both the environment and the blurred
+//! background. The model's program is a WGSL port of the GLSL WebGLRenderer
+//! builds for MeshPhysicalMaterial with an ENVMAP_TYPE_PMREM environment and
+//! no lights: the IBL radiance and irradiance through the DFG LUT's multiple
+//! scattering. The background is the PMREM's level for the blurriness along
+//! each pixel's view ray. The canvas is tone mapped and sRGB-encoded in the shader
 //! and multisampled when the page's antialias is.
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
-use super::lights_projector::{m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind, flat_camera, source_pipeline};
 use super::retro::mipmapped;
 use super::shadowmap_opacity::Mipmaps;
 use super::trackball_sprites::parse_rgbe;
@@ -41,64 +37,19 @@ struct Frame {
 	params: vec4<f32>,
 };
 @group( 0 ) @binding( 0 ) var<uniform> frame: Frame;
-@group( 0 ) @binding( 1 ) var env_map: texture_2d<f32>;
+@group( 0 ) @binding( 1 ) var env_map: texture_cube<f32>;
 @group( 0 ) @binding( 2 ) var env_sampler: sampler;
 @group( 0 ) @binding( 3 ) var map: texture_2d<f32>;
 @group( 0 ) @binding( 4 ) var map_sampler: sampler;
 @group( 0 ) @binding( 5 ) var dfg_lut: texture_2d<f32>;
-// CUBEUV_MAX_MIP 8, CUBEUV_TEXEL_WIDTH 1 / 768, CUBEUV_TEXEL_HEIGHT 1 / 1024.
-const MAX_MIP: f32 = 8.0;
-const TEXEL: vec2<f32> = vec2( 1.0 / 768.0, 1.0 / 1024.0 );
+// ENVMAP_MAX_LOD: the 256-texel PMREM's levels down to 8 texels.
+const MAX_LOD: f32 = 5.0;
 fn roughness_to_mip( roughness: f32 ) -> f32 {
-	if ( roughness >= 0.8 ) { return ( 1.0 - roughness ) * ( -1.0 - -2.0 ) / ( 1.0 - 0.8 ) + -2.0; }
-	if ( roughness >= 0.4 ) { return ( 0.8 - roughness ) * ( 2.0 - -1.0 ) / ( 0.8 - 0.4 ) + -1.0; }
-	if ( roughness >= 0.305 ) { return ( 0.4 - roughness ) * ( 3.0 - 2.0 ) / ( 0.4 - 0.305 ) + 2.0; }
-	if ( roughness >= 0.21 ) { return ( 0.305 - roughness ) * ( 4.0 - 3.0 ) / ( 0.305 - 0.21 ) + 3.0; }
-	return -2.0 * log2( 1.16 * roughness );
+	let r = clamp( roughness, 0.0, 1.0 );
+	return MAX_LOD * r * ( 2.0 - r );
 }
-fn get_face( direction: vec3<f32> ) -> f32 {
-	let a = abs( direction );
-	if ( a.x > a.z ) {
-		if ( a.x > a.y ) { return select( 3.0, 0.0, direction.x > 0.0 ); }
-		return select( 4.0, 1.0, direction.y > 0.0 );
-	}
-	if ( a.z > a.y ) { return select( 5.0, 2.0, direction.z > 0.0 ); }
-	return select( 4.0, 1.0, direction.y > 0.0 );
-}
-fn get_uv( direction: vec3<f32>, face: f32 ) -> vec2<f32> {
-	var uv: vec2<f32>;
-	if ( face == 0.0 ) { uv = vec2( direction.z, direction.y ) / abs( direction.x ); }
-	else if ( face == 1.0 ) { uv = vec2( -direction.x, -direction.z ) / abs( direction.y ); }
-	else if ( face == 2.0 ) { uv = vec2( -direction.x, direction.y ) / abs( direction.z ); }
-	else if ( face == 3.0 ) { uv = vec2( -direction.z, direction.y ) / abs( direction.x ); }
-	else if ( face == 4.0 ) { uv = vec2( -direction.x, direction.z ) / abs( direction.y ); }
-	else { uv = vec2( direction.x, direction.y ) / abs( direction.z ); }
-	return 0.5 * ( uv + 1.0 );
-}
-fn bilinear_cube_uv( direction: vec3<f32>, mip_in: f32 ) -> vec3<f32> {
-	var face = get_face( direction );
-	let filter_int = max( 4.0 - mip_in, 0.0 );
-	let mip = max( mip_in, 4.0 );
-	let face_size = exp2( mip );
-	var uv = get_uv( direction, face ) * ( face_size - 2.0 ) + 1.0;
-	if ( face > 2.0 ) {
-		uv.y += face_size;
-		face -= 3.0;
-	}
-	uv.x += face * face_size;
-	uv.x += filter_int * 3.0 * 16.0;
-	uv.y += 4.0 * ( exp2( MAX_MIP ) - face_size );
-	return textureSampleLevel( env_map, env_sampler, uv * TEXEL, 0.0 ).rgb;
-}
-// textureCubeUV on the WebGPU-oriented layout ( y flipped ).
-fn texture_cube_uv( world: vec3<f32>, roughness: f32 ) -> vec3<f32> {
-	let direction = vec3( world.x, -world.y, world.z );
-	let mip = clamp( roughness_to_mip( roughness ), -2.0, MAX_MIP );
-	let mip_f = fract( mip );
-	let mip_int = floor( mip );
-	let color0 = bilinear_cube_uv( direction, mip_int );
-	if ( mip_f == 0.0 ) { return color0; }
-	return mix( color0, bilinear_cube_uv( direction, mip_int + 1.0 ), mip_f );
+fn texture_pmrem( world: vec3<f32>, roughness: f32 ) -> vec3<f32> {
+	return textureSampleLevel( env_map, env_sampler, world, roughness_to_mip( roughness ) ).rgb;
 }
 fn output( color: vec3<f32> ) -> vec4<f32> {
 	// ACESFilmicToneMapping.
@@ -139,7 +90,7 @@ fn multiscattering( fab: vec2<f32>, specular: vec3<f32>, f90: f32 ) -> array<vec
 	let diffuse = textureSample( map, map_sampler, vec2( in.uv.x, 1.0 - in.uv.y ) ).rgb;
 	let normal = normalize( in.normal );
 	let dxy = max( abs( dpdx( normal ) ), abs( dpdy( normal ) ) );
-	let roughness = min( max( 1.0, 0.0525 ) + max( max( dxy.x, dxy.y ), dxy.z ), 1.0 );
+	let roughness = min( max( 1.0, 0.045 ) + max( max( dxy.x, dxy.y ), dxy.z ), 1.0 );
 	let view = normalize( in.view_position );
 	let dot_nv = saturate( dot( normal, view ) );
 	let dfg = textureSampleLevel( dfg_lut, env_sampler, vec2( roughness, dot_nv ), 0.0 ).rg;
@@ -147,8 +98,8 @@ fn multiscattering( fab: vec2<f32>, specular: vec3<f32>, f90: f32 ) -> array<vec
 	let specular = vec3( pow( ( 1.5 - 1.0 ) / ( 1.5 + 1.0 ), 2.0 ) );
 	let to_world = transpose( mat3x3<f32>( frame.view[ 0 ].xyz, frame.view[ 1 ].xyz, frame.view[ 2 ].xyz ) );
 	let reflected = normalize( mix( reflect( -view, normal ), normal, roughness * roughness * roughness * roughness ) );
-	let radiance = texture_cube_uv( normalize( to_world * reflected ), roughness ) * frame.params.y;
-	let irradiance = 3.141592653589793 * texture_cube_uv( normalize( to_world * normal ), 1.0 ) * frame.params.y;
+	let radiance = texture_pmrem( normalize( to_world * reflected ), roughness ) * frame.params.y;
+	let irradiance = 3.141592653589793 * texture_pmrem( normalize( to_world * normal ), 1.0 ) * frame.params.y;
 	let scattering = multiscattering( dfg, specular, 1.0 );
 	let diffuse_layer = diffuse * ( 1.0 - scattering[ 0 ] - scattering[ 1 ] );
 	let cosine = irradiance * RECIPROCAL_PI;
@@ -163,7 +114,7 @@ struct Background { @builtin( position ) position: vec4<f32>, @location( 0 ) ndc
 @fragment fn background_fs( in: Background ) -> @location( 0 ) vec4<f32> {
 	let far = frame.inverse_view_projection * vec4( in.ndc, 1.0, 1.0 );
 	let direction = normalize( far.xyz / far.w - frame.camera.xyz );
-	return output( texture_cube_uv( direction, frame.params.z ) * frame.params.w );
+	return output( texture_pmrem( direction, frame.params.z ) * frame.params.w );
 }
 "#;
 struct Targets {
@@ -287,80 +238,16 @@ impl Demo {
         // HDRLoader's DataTexture: flipY, linear, no mipmaps.
         let (width, height, texels) =
             parse_rgbe(&fetch(&format!("{ASSETS}/venice_sunset_1k.hdr")).await?)?;
-        let row = width as usize * 4;
-        let texels: Vec<u16> = texels.chunks(row).rev().flatten().copied().collect();
-        let equirect = r
-            .device
-            .create_texture_with_data(
-                &r.queue,
-                &wgpu::TextureDescriptor {
-                    label: Some("usdz environment"),
-                    size: wgpu::Extent3d {
-                        width,
-                        height,
-                        depth_or_array_layers: 1,
-                    },
-                    mip_level_count: 1,
-                    sample_count: 1,
-                    dimension: wgpu::TextureDimension::D2,
-                    format: wgpu::TextureFormat::Rgba16Float,
-                    usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
-                    view_formats: &[],
-                },
-                wgpu::util::TextureDataOrder::LayerMajor,
-                bytemuck::cast_slice(&texels),
-            )
-            .create_view(&Default::default());
-        let clamp = r.device.create_sampler(&wgpu::SamplerDescriptor {
-            mag_filter: wgpu::FilterMode::Linear,
-            min_filter: wgpu::FilterMode::Linear,
-            ..Default::default()
-        });
         // PMREMGenerator.fromEquirectangular: a 256 cube ( width / 4 ).
-        let pmrem = Pmrem::new(r, &clamp, 8, GGX_8)?;
-        {
-            let source = source_pipeline(
-                r,
-                "usdz PMREM equirect",
-                include_str!("retro/pmrem_equirect_vs.wgsl"),
-                include_str!("retro/pmrem_equirect_fs.wgsl"),
-            );
-            let object = init(
-                "usdz PMREM",
-                &pack(
-                    include_str!("retro/pmrem_equirect_vs.wgsl"),
-                    "objectStruct",
-                    &[("nodeUniform3", &m4(Matrix4::IDENTITY))],
-                )?,
-                wgpu::BufferUsages::UNIFORM,
-            );
-            let source_groups = [
-                bind(
-                    r,
-                    source.get_bind_group_layout(0),
-                    &[(
-                        0,
-                        flat_camera(r, include_str!("retro/pmrem_equirect_vs.wgsl"))?
-                            .as_entire_binding(),
-                    )],
-                ),
-                bind(
-                    r,
-                    source.get_bind_group_layout(1),
-                    &[
-                        (0, wgpu::BindingResource::Sampler(&clamp)),
-                        (1, wgpu::BindingResource::TextureView(&equirect)),
-                        (2, object.as_entire_binding()),
-                    ],
-                ),
-            ];
-            let mut encoder = r.device.create_command_encoder(&Default::default());
-            pmrem.encode(
-                &mut encoder,
-                &source,
-                [&source_groups[0], &source_groups[1]],
-            );
-            r.queue.submit([encoder.finish()]);
+        let mut environment = crate::environment::EnvironmentMap {
+            width,
+            height,
+            rgba: texels.iter().map(|&t| half::f16::from_bits(t)).collect(),
+            gpu: None,
+        };
+        let pmrem = environment.prefilter(r)?;
+        if pmrem.max_mip() != 5. {
+            return Err(Error::Invalid("usdz PMREM levels"));
         }
         let entry = |binding, ty| wgpu::BindGroupLayoutEntry {
             binding,
@@ -371,6 +258,11 @@ impl Demo {
         let texture = wgpu::BindingType::Texture {
             sample_type: wgpu::TextureSampleType::Float { filterable: true },
             view_dimension: wgpu::TextureViewDimension::D2,
+            multisampled: false,
+        };
+        let cube = wgpu::BindingType::Texture {
+            sample_type: wgpu::TextureSampleType::Float { filterable: true },
+            view_dimension: wgpu::TextureViewDimension::Cube,
             multisampled: false,
         };
         let filtering = wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering);
@@ -387,7 +279,7 @@ impl Demo {
                             min_binding_size: None,
                         },
                     ),
-                    entry(1, texture),
+                    entry(1, cube),
                     entry(2, filtering),
                     entry(3, texture),
                     entry(4, filtering),
@@ -410,11 +302,11 @@ impl Demo {
                 },
                 wgpu::BindGroupEntry {
                     binding: 1,
-                    resource: wgpu::BindingResource::TextureView(&pmrem.view),
+                    resource: wgpu::BindingResource::TextureView(pmrem.view()),
                 },
                 wgpu::BindGroupEntry {
                     binding: 2,
-                    resource: wgpu::BindingResource::Sampler(&clamp),
+                    resource: wgpu::BindingResource::Sampler(pmrem.sampler()),
                 },
                 wgpu::BindGroupEntry {
                     binding: 3,

@@ -433,7 +433,7 @@ impl ShaderProgram {
         let device = &renderer.device;
         let mut source = format!(
             "{}\n{}\n{}\n{wgsl}\n{output}\n{projection}\n{surface}",
-            include_str!("shaders/cube_uv.wgsl"),
+            include_str!("shaders/envmap.wgsl"),
             concat!(
                 include_str!("shaders/deformation.wgsl"),
                 "\n",

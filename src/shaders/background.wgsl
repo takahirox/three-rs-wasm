@@ -1,7 +1,7 @@
 struct Background { inverse_projection:mat4x4<f32>, camera:mat4x4<f32>, options:vec4<f32>, intensity:vec4<f32> };
 @group(0) @binding(0) var<uniform> u:Background;
 @group(0) @binding(1) var source:texture_2d<f32>;
-@group(0) @binding(2) var atlas:texture_2d<f32>;
+@group(0) @binding(2) var pmrem:texture_cube<f32>;
 @group(0) @binding(3) var linear_sampler:sampler;
 struct Out { @builtin(position) position:vec4<f32>, @location(0) ndc:vec2<f32> };
 @vertex fn vs(@builtin(vertex_index) i:u32)->Out {
@@ -34,7 +34,8 @@ fn background_color(in:Out)->vec3<f32> {
  let c=cos(u.options.x);let s=sin(u.options.x);let d=vec3(c*direction.x-s*direction.z,direction.y,s*direction.x+c*direction.z);
  if u.options.w>0.5 {return textureSampleLevel(source,linear_sampler,equirect_uv(d),0.0).rgb*u.intensity.x;}
  if u.options.y==0.0 && u.options.w>=0.0 {return sharp_background(d)*u.intensity.x;}
- let filtered=vec3(d.x,-d.y,d.z);
- let mip=clamp(roughness_mip(u.options.y),-2.0,u.options.z);let lo=floor(mip);
- return mix(textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo,u.options.z),0.0).rgb,textureSampleLevel(atlas,linear_sampler,cube_uv(filtered,lo+1.0,u.options.z),0.0).rgb,fract(mip))*u.intensity.x;
+ // backgroundCube ( r187 ): the PMREM's level for backgroundBlurriness;
+ // an uploaded cube texture mirrors x ( WebGLBackground's backgroundRotation ).
+ let mirrored=select(d,vec3(-d.x,d.y,d.z),u.options.w<-1.5);
+ return textureSampleLevel(pmrem,linear_sampler,mirrored,roughness_to_mip(u.options.y,u.options.z)).rgb*u.intensity.x;
 }

@@ -75,8 +75,8 @@ The original UltraHDR file is copied from the pinned Three.js archive:
 The demo decodes it at run time; tests verify the reconstruction against the
 official r186 UltraHDRLoader.
 
-Cube-UV sampling, GGX filtering, DFG lookup data and ACES matrices are ported from
-Three.js r186 under the MIT terms in `../LICENSE-THREE`.
+PMREM generation and sampling ( r187 ), DFG lookup data and ACES matrices are
+ported from Three.js under the MIT terms in `../LICENSE-THREE`.
 
 ## Examples gallery
 
@@ -131,6 +131,12 @@ Additional example assets (Three.js r186, commit
   `examples/models/gltf/AnimatedMorphSphere/glTF/` files. Howard Wolosky,
   CC0/public domain, as stated in the upstream model README.
 - `web/examples/assets/disc.png`: unmodified `examples/textures/sprites/disc.png`.
+- `web/examples/textures/pmrem/*_2k.pmrem.ktx2`: unmodified r187
+  `examples/textures/pmrem/` ( commit `7e89746a` ), used by
+  `webgl_materials_envmaps_fasthdr`: PMREMGenerator's prefiltered cubemaps of
+  the Poly Haven HDRIs ( CC0 ) Ballroom, Brown Photostudio 02, Studio Small 09
+  and Wide Street 01 by Sergej Majboroda; Cape Hill, The Sky Is On Fire,
+  Cannon and Metro Noord by Greg Zaal.
 - Hilbert/Catmull-Rom and procedural scene formulas are ports of the pinned
   Three.js examples/utilities; the Three.js MIT notice is retained in
   `../LICENSE-THREE`.
@@ -1070,10 +1076,6 @@ under MIT ) is in ../LICENSE-RAPIER.
 These files are not part of this repository; the examples fetch them from
 Needle, as the official pages do.
 
-- `webgl_materials_envmaps_fasthdr`: Needle's FastHDR encodings of the Poly
-  Haven HDRIs ( CC0 ) Ballroom, Brown Photostudio 02, Studio Small 09 and
-  Wide Street 01 by Sergej Majboroda; Cape Hill and The Sky Is On Fire by
-  Greg Zaal and Rico Cilliers; Cannon and Metro: Noord by Greg Zaal.
 - `webgl_loader_gltf_animation_pointer`: Needle's encoding of Khronos's
   DragonAttenuation sample with an added KHR_animation_pointer clip. The
   dragon is from the Stanford 3D Scanning Repository ( Stanford University

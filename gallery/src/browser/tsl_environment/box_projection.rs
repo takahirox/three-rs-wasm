@@ -98,8 +98,8 @@ impl Demo {
         roughness.mipmap_filter = Some(Filter::Linear);
         let roughness = r.upload_texture(&Arc::new(roughness))?;
         let bindings = [
-            (env.view(), env.sampler()),
-            (&roughness.view, &roughness.sampler),
+            (env.view(), env.sampler(), Type::TextureCube),
+            (&roughness.view, &roughness.sampler, Type::Texture),
         ];
         for projected in [false, true] {
             let direction = if projected {
@@ -128,7 +128,7 @@ impl Demo {
                     ),
                     ..Default::default()
                 }
-                .build(r, &[], &bindings)
+                .build_with_texture_types(r, &[], &bindings)
                 .await?,
             ));
         }

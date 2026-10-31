@@ -86,7 +86,7 @@ impl Demo {
             .collect::<Vec<_>>();
         let bindings = maps
             .iter()
-            .map(|e| (e.view(), e.sampler()))
+            .map(|e| (e.view(), e.sampler(), Type::TextureCube))
             .collect::<Vec<_>>();
         let graph =
             |direction: tsl::Node, position: tsl::Node, roughness: tsl::Node, normal: tsl::Node| {
@@ -144,7 +144,7 @@ impl Demo {
                 )),
                 ..Default::default()
             }
-            .build(r, &[], &bindings)
+            .build_with_texture_types(r, &[], &bindings)
             .await?,
         );
         let (a, b, images) =
@@ -179,11 +179,19 @@ impl Demo {
             uniform(0, Type::Vec4).y(),
             -normal_world(),
         );
-        let shader = NodeMaterial::new(vec4(color, float(1.0))).wgsl(bindings.len())?;
+        let shader = NodeMaterial::new(vec4(color, float(1.0)))
+            .wgsl_with_texture_types(&vec![Type::TextureCube; bindings.len()], &[])?;
         let projection = "fn project_vertex(surface:VertexOut,position:vec3<f32>)->VertexOut{var out=surface;out.clip.z=out.clip.w;return out;}";
+        let views = bindings.iter().map(|b| (b.0, b.1)).collect::<Vec<_>>();
         let mut material = ShaderMaterial::new(Arc::new(
-            crate::shader::ShaderProgram::with_projection(r, &shader, &[], &bindings, projection)
-                .await?,
+            crate::shader::ShaderProgram::with_projection_and_dimensions(
+                r,
+                &shader,
+                &views,
+                &vec![wgpu::TextureViewDimension::Cube; views.len()],
+                projection,
+            )
+            .await?,
         ));
         material.properties.side = Side::Back;
         material.properties.depth_write = false;
