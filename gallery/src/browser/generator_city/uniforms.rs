@@ -1,25 +1,25 @@
 //! The city materials' uniform values, recognized by how each captured
 //! shader uses its struct fields: the object's matrices, the standard
-//! material's constants, the probe grid, the PMREM environment, the
-//! material's own uniforms ( in field order ), and the sun light with its
-//! shadow.
+//! material's constants, the probe grid, the PMREM environment ( its cube
+//! sampled by maxLod ), the material's own uniforms ( in field order ), and
+//! the sun light with its shadow and the grid's intensity and priority.
 use super::geo::{IDENTITY, M4};
 
 type Values = Vec<(String, Vec<f64>)>;
-/// The cube-UV texel sizes at lodMax 8.
-pub(super) const TEXEL: [f64; 2] = [1. / 768., 1. / 1024.];
 /// scene.environmentIntensity.
 pub(super) const ENVIRONMENT: f64 = 0.05;
-/// A probe grid's bounds ( max, min ), resolution and intensity.
-pub(super) type Grid = ([f64; 3], [f64; 3], [f64; 3], f64);
+/// A probe grid's bounds ( max, min ) and resolution.
+pub(super) type Grid = ([f64; 3], [f64; 3], [f64; 3]);
 /// One object's inputs.
 pub(super) struct Object<'a> {
     pub(super) model: M4,
     pub(super) seed: u32,
     pub(super) roughness: f64,
     pub(super) metalness: f64,
-    /// The probe grid's bounds ( max, min ), resolution and intensity.
+    /// The probe grid's bounds ( max, min ) and resolution.
     pub(super) grid: Option<Grid>,
+    /// The PMREM's maxLod.
+    pub(super) max_lod: f64,
     /// The material's own uniforms, in field order.
     pub(super) custom: &'a [Vec<f64>],
 }
@@ -34,6 +34,8 @@ pub(super) struct Render {
     pub(super) normal_bias: f64,
     pub(super) map_size: f64,
     pub(super) time: f64,
+    /// The probe grid's intensity ( a render group uniform ).
+    pub(super) grid: f64,
 }
 /// A struct's fields ( name, type ) in declaration order.
 pub(crate) fn fields(source: &str, name: &str) -> Vec<(String, String)> {
@@ -72,7 +74,7 @@ pub(crate) fn uses<'a>(sources: &[&'a str], group: &str, name: &str) -> Vec<&'a 
     out
 }
 pub(crate) fn inverse(m: &M4) -> M4 {
-    // Matrix4.invert(), as three.js r186 computes it.
+    // Matrix4.invert(), as three.js r187 computes it.
     let (n11, n21, n31, n41) = (m[0], m[1], m[2], m[3]);
     let (n12, n22, n32, n42) = (m[4], m[5], m[6], m[7]);
     let (n13, n23, n33, n43) = (m[8], m[9], m[10], m[11]);
@@ -133,10 +135,7 @@ pub(super) enum ObjectSlot {
     GridMax,
     GridMin,
     GridResolution,
-    GridIntensity,
     LodMax,
-    TexelX,
-    TexelY,
     Environment,
     /// The material's n-th own uniform.
     Custom(usize),
@@ -157,6 +156,7 @@ pub(super) enum RenderSlot {
     MapSize,
     LightColor,
     Time,
+    GridIntensity,
 }
 /// A shader pair's struct fields and what each holds.
 pub(super) type Layout<T> = Vec<(String, T)>;
@@ -178,10 +178,10 @@ pub(super) fn object_layout(vs: &str, fs: &str) -> Result<Layout<ObjectSlot>, St
         };
         let slot = if grid_next > 0 {
             grid_next -= 1;
-            match grid_next {
-                2 => ObjectSlot::GridMin,
-                1 => ObjectSlot::GridResolution,
-                _ => ObjectSlot::GridIntensity,
+            if grid_next == 1 {
+                ObjectSlot::GridMin
+            } else {
+                ObjectSlot::GridResolution
             }
         } else {
             match ty.as_str() {
@@ -189,7 +189,8 @@ pub(super) fn object_layout(vs: &str, fs: &str) -> Result<Layout<ObjectSlot>, St
                 "mat4x4<f32>" => {
                     if any("( # * vec4<f32>( render.cameraPosition") {
                         ObjectSlot::ModelInverse
-                    } else if any("getFace( ( #") {
+                    } else if any("( # * vec4<f32>( normalWorld") {
+                        // scene.environmentRotation.
                         ObjectSlot::Identity
                     } else {
                         ObjectSlot::Model
@@ -207,17 +208,16 @@ pub(super) fn object_layout(vs: &str, fs: &str) -> Result<Layout<ObjectSlot>, St
                         ObjectSlot::One
                     } else if any("Metalness = #") {
                         ObjectSlot::Metalness
-                    } else if any("max( #, 0.0525 )") || any("Roughness = #") {
+                    } else if any("max( #, 0.045 )") || any("Roughness = #") {
                         ObjectSlot::Roughness
                     } else if any("( # - object.") && ty == "vec3<f32>" {
-                        grid_next = 3;
+                        grid_next = 2;
                         ObjectSlot::GridMax
-                    } else if any("-2.0, # )") {
+                    } else if lines.iter().any(|l| {
+                        l.contains(&format!("( ( object.{name} * ")) && l.contains("( 2.0 - ")
+                    }) {
+                        // PMREMNode's level: maxLod × r × ( 2 - r ).
                         ObjectSlot::LodMax
-                    } else if any(".x * # )") {
-                        ObjectSlot::TexelX
-                    } else if any(".y * # )") {
-                        ObjectSlot::TexelY
                     } else if lines
                         .iter()
                         .any(|l| l.contains("radiance + (") || l.contains("iblIrradiance + ("))
@@ -250,7 +250,13 @@ pub(super) fn render_layout(vs: &str, fs: &str) -> Result<Layout<RenderSlot>, St
             "cameraWorldMatrix" => RenderSlot::World,
             "cameraPosition" => RenderSlot::Position,
             _ => {
-                if any("( # - render.") {
+                if lines.iter().any(|l| l.contains("lightProbePriority")) {
+                    // LightProbeGrid.priority.
+                    RenderSlot::Zero
+                } else if lines.iter().any(|l| l.contains("0.886227")) {
+                    // The grid's irradiance × its intensity.
+                    RenderSlot::GridIntensity
+                } else if any("( # - render.") {
                     RenderSlot::LightPosition
                 } else if any("- #") {
                     RenderSlot::Zero3
@@ -260,9 +266,12 @@ pub(super) fn render_layout(vs: &str, fs: &str) -> Result<Layout<RenderSlot>, St
                     RenderSlot::NormalBias
                 } else if any(".z + # )") {
                     RenderSlot::Zero
-                } else if any("( # * ( vec2<f32>( 1.0, 1.0 ) /") {
+                } else if any("( # * ( vec2<f32>( 1.0, 1.0 ) /")
+                    || any("vec2<f32>( # ) * ( vec2<f32>( 1.0, 1.0 ) /")
+                {
+                    // shadow.radius.
                     RenderSlot::One
-                } else if any("/ # ).x") {
+                } else if any("/ # ).x") || any("1.0, 1.0 ) / # )") {
                     RenderSlot::MapSize
                 } else if lines.iter().any(|l| l.contains("mix( 1.0, nodeVar")) {
                     RenderSlot::One
@@ -284,7 +293,7 @@ pub(super) fn render_layout(vs: &str, fs: &str) -> Result<Layout<RenderSlot>, St
 }
 /// An object struct's values.
 pub(super) fn object_values(layout: &Layout<ObjectSlot>, o: &Object) -> Values {
-    let grid = o.grid.unwrap_or(([0.; 3], [0.; 3], [1.; 3], 0.));
+    let grid = o.grid.unwrap_or(([0.; 3], [0.; 3], [1.; 3]));
     layout
         .iter()
         .map(|(name, slot)| {
@@ -301,10 +310,7 @@ pub(super) fn object_values(layout: &Layout<ObjectSlot>, o: &Object) -> Values {
                 ObjectSlot::GridMax => grid.0.to_vec(),
                 ObjectSlot::GridMin => grid.1.to_vec(),
                 ObjectSlot::GridResolution => grid.2.to_vec(),
-                ObjectSlot::GridIntensity => vec![grid.3],
-                ObjectSlot::LodMax => vec![8.],
-                ObjectSlot::TexelX => vec![TEXEL[0]],
-                ObjectSlot::TexelY => vec![TEXEL[1]],
+                ObjectSlot::LodMax => vec![o.max_lod],
                 ObjectSlot::Environment => vec![ENVIRONMENT],
                 ObjectSlot::Custom(i) => o.custom.get(i).cloned().unwrap_or_default(),
             };
@@ -331,6 +337,7 @@ pub(super) fn render_values(layout: &Layout<RenderSlot>, r: &Render) -> Values {
                 RenderSlot::MapSize => vec![r.map_size; 2],
                 RenderSlot::LightColor => r.light_color.to_vec(),
                 RenderSlot::Time => vec![r.time],
+                RenderSlot::GridIntensity => vec![r.grid],
             };
             (name.clone(), v)
         })

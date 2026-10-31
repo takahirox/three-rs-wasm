@@ -36,46 +36,6 @@ macro_rules! wgsl {
 const BACKGROUND_VS: &str = include_str!("backdrop_water/background_vs.wgsl");
 const OUTPUT_VS: &str = include_str!("cubemap_dynamic/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("cubemap_dynamic/output_fs.wgsl");
-/// The r186 cube camera's six view matrices, in its fromScene's face order.
-pub(super) const FACE_VIEWS: [[f64; 16]; 6] = [
-    [
-        0., 0., -1., 0., 0., 1., 0., 0., 1., 0., 0., 0., 0., 0., 0., 1.,
-    ],
-    [
-        -1., 0., 0., 0., 0., 0., 1., 0., 0., 1., 0., 0., 0., 0., 0., 1.,
-    ],
-    [
-        -1., 0., 0., 0., 0., 1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1.,
-    ],
-    [
-        0., 0., 1., 0., 0., 1., 0., 0., -1., 0., 0., 0., 0., 0., 0., 1.,
-    ],
-    [
-        -1., 0., 0., 0., 0., 0., -1., 0., 0., -1., 0., 0., 0., 0., 0., 1.,
-    ],
-    [
-        1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
-    ],
-];
-/// The r186 cube camera's projection ( fov 90, near 0.1, far 100 ).
-pub(super) const FACE_PROJECTION: [f64; 16] = [
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    -1.001001001001001,
-    -1.,
-    0.,
-    0.,
-    -0.1001001001001001,
-    0.,
-];
 pub(super) struct Buffers {
     vertex: Vec<wgpu::Buffer>,
     index: wgpu::Buffer,

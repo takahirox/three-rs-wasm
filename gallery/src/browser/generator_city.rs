@@ -5,29 +5,30 @@
 //! standing pedestrians ) instanced along every curb, on the wet-asphalt
 //! road with its lane and crosswalk paint. The SkyMesh sky drives the sun's
 //! colour, its 4096² shadow fitted around the city and the PMREM
-//! environment ( scene.environmentIntensity 0.05 ). A 10 × 7 × 8
-//! LightProbeGrid bakes the box proxy of the towers, the ground and the sky
-//! ten probes per frame, then a second pass for the bounce from a snapshot
-//! of the first; every lit material samples the grid. The scene renders
-//! with 4× MSAA, then quarter-resolution BloomNode ( 0.05 ) and ACES
-//! ( exposure 0.13 ), under FirstPersonControls. The generators run on the
-//! CPU when the seed changes, as the page's do; the towers are one draw
-//! each and the furniture one instanced draw per generator. Every stage
-//! runs the WGSL three.js r186 generates for the page ( `generator_city/`;
-//! the sky, PMREM, probe SH and repack, bloom and output modules are the
-//! custom_fog, retro, lightprobes, ssr, volume_caustics and water ones,
+//! environment ( r187's cube PMREM from fromScene, pmrem.rs;
+//! scene.environmentIntensity 0.05 ). A 10 × 7 × 8 LightProbeGrid bakes the
+//! box proxy of the towers, the ground and the sky ten probes per frame,
+//! then a second pass for the bounce from a snapshot of the first: batches
+//! of eight probes render their 48 faces in one ArrayCamera pass into a face
+//! atlas, whose texels project to SH by their solid angles. Every lit
+//! material samples the grid. The scene renders with 4× MSAA, then
+//! quarter-resolution BloomNode ( 0.05 ) and ACES ( exposure 0.13 ), under
+//! FirstPersonControls. The generators run on the CPU when the seed changes,
+//! as the page's do; the towers are one draw each and the furniture one
+//! instanced draw per generator. Every stage runs the WGSL three.js r187
+//! generates for the page ( `generator_city/`; the sky vertex stage, the
+//! PMREM, bloom and output modules are the custom_fog, pmrem and water ones,
 //! byte-identical ).
 mod city;
 mod furniture;
 pub(super) mod geo;
 mod prims;
 pub(super) mod uniforms;
-use super::custom_fog::{
-    Buffers, FACE_PROJECTION, FACE_VIEWS, layouts, pipeline, two_groups, upload,
-};
+use super::custom_fog::{Buffers, layouts, pipeline, two_groups, upload};
 use super::deferred::{Draw, culled_pipeline, set};
 use super::lights_projector::pack;
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind, raw_pipeline};
+use super::pmrem::{Pmrem, face_cameras};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::uniform;
 use super::trackball_sprites::FirstPerson;
 use crate::{Error, Result, camera::*, math::*, render_target::*, renderer::*, scene::*};
@@ -48,6 +49,28 @@ const NORMAL_BIAS: f64 = 0.05;
 const CUBE: u32 = 16;
 const CUBE_NEAR: f64 = 0.1;
 const CUBE_FAR: f64 = 20000.;
+/// LightProbeGrid's probes per capture pass ( six sub-cameras each ) and
+/// row blocks per face.
+const PROBES_PER_BATCH: u32 = 8;
+const FACE_BLOCKS: u32 = 4;
+const CAMERAS: usize = PROBES_PER_BATCH as usize * 6;
+/// The capture cameras' forward and up vectors per face.
+const FACE_FORWARD: [V3; 6] = [
+    [1., 0., 0.],
+    [-1., 0., 0.],
+    [0., 1., 0.],
+    [0., -1., 0.],
+    [0., 0., 1.],
+    [0., 0., -1.],
+];
+const FACE_UP: [V3; 6] = [
+    [0., 1., 0.],
+    [0., 1., 0.],
+    [0., 0., -1.],
+    [0., 0., 1.],
+    [0., 1., 0.],
+    [0., 1., 0.],
+];
 /// The probe grid: resolution, size and centre ( GRID_SIZE.y / 2 + 1 ).
 const GRID_RES: [u32; 3] = [10, 7, 8];
 const GRID_SIZE: [f64; 3] = [240., 120., 170.];
@@ -60,44 +83,42 @@ macro_rules! wgsl {
         include_str!(concat!("generator_city/", $name, ".wgsl"))
     };
 }
-const BOX_VS: &str = include_str!("custom_fog/box_vs.wgsl");
-const BOX_FS: &str = include_str!("custom_fog/box_fs.wgsl");
 const SKY_VS: &str = include_str!("custom_fog/sky_vs.wgsl");
-const SKY_FS: &str = include_str!("custom_fog/sky_fs.wgsl");
-const SH_VS: &str = crate::sources::PROBE_SH_VS;
-const SH_FS: &str = crate::sources::PROBE_SH_FS;
-const REPACK_VS: &str = crate::sources::PROBE_REPACK_VS;
-const SEED_VS: &str = include_str!("ssr_denoise/seed_vs.wgsl");
+const SKY_FS: &str = wgsl!("sky_fs");
+const PROBE_SKY: (&str, &str) = (wgsl!("probe_sky_vs"), wgsl!("probe_sky_fs"));
+const PROBE_GROUND: (&str, &str) = (wgsl!("probe_ground_vs"), wgsl!("probe_ground_fs"));
+const PROBE_PROXY: (&str, &str) = (wgsl!("probe_proxy_vs"), wgsl!("probe_proxy_fs"));
+const QUAD_VS: &str = wgsl!("quad_vs");
+const SH_FS: &str = wgsl!("sh_fs");
+/// The repack materials in texture order.
 const REPACK_FS: [&str; 7] = [
-    crate::sources::PROBE_REPACK_FS[0],
-    crate::sources::PROBE_REPACK_FS[1],
-    crate::sources::PROBE_REPACK_FS[2],
-    crate::sources::PROBE_REPACK_FS[3],
-    crate::sources::PROBE_REPACK_FS[4],
-    crate::sources::PROBE_REPACK_FS[5],
-    crate::sources::PROBE_REPACK_FS[6],
+    wgsl!("repack0_fs"),
+    wgsl!("repack1_fs"),
+    wgsl!("repack2_fs"),
+    wgsl!("repack3_fs"),
+    wgsl!("repack4_fs"),
+    wgsl!("repack5_fs"),
+    wgsl!("repack6_fs"),
 ];
-const HIGH_VS: &str = include_str!("ssr/blur_vs.wgsl");
+const UV_VS: &str = wgsl!("uv_quad_vs");
 const HIGH_FS: &str = include_str!("water/high_fs.wgsl");
-const BLUR_VS: &str = include_str!("volume_caustics/blur_vs.wgsl");
 const BLUR_FS: [&str; LEVELS] = [
-    include_str!("volume_caustics/blur0_fs.wgsl"),
-    include_str!("volume_caustics/blur1_fs.wgsl"),
-    include_str!("volume_caustics/blur2_fs.wgsl"),
-    include_str!("volume_caustics/blur3_fs.wgsl"),
-    include_str!("volume_caustics/blur4_fs.wgsl"),
+    include_str!("water/blur0_fs.wgsl"),
+    include_str!("water/blur1_fs.wgsl"),
+    include_str!("water/blur2_fs.wgsl"),
+    include_str!("water/blur3_fs.wgsl"),
+    include_str!("water/blur4_fs.wgsl"),
 ];
-const QUAD_VS: &str = include_str!("volume_caustics/composite_vs.wgsl");
 const COMPOSITE_FS: &str = include_str!("water/composite_fs.wgsl");
 const OUTPUT_FS: &str = include_str!("water/output_fs.wgsl");
-
-/// What a group 1 binding holds.
+/// What a binding of the object's group holds.
 #[derive(Clone, Copy, PartialEq)]
 enum Slot {
     Object,
-    Instances,
     Pillars,
     Linear,
+    /// The PMREM's LinearMipmapLinearFilter.
+    Trilinear,
     Compare,
     Dfg,
     Depth,
@@ -112,15 +133,20 @@ struct Attr {
     format: wgpu::VertexFormat,
     instance: bool,
 }
-/// One material stage pair: its sources, attributes, group 1 bindings and
-/// struct layouts.
+/// One material stage pair: its sources, attributes, object group bindings
+/// and struct layouts.
 struct Shader {
-    vs: String,
+    vs: &'static str,
     fs: &'static str,
     attrs: Vec<Attr>,
     slots: Vec<(u32, Slot)>,
     object: Layout<ObjectSlot>,
     render: Layout<RenderSlot>,
+}
+/// The instance matrix's columns ( InstanceNode's instanceMatrix, an
+/// instanced attribute of four vec4 ): the column of an attribute.
+fn matrix_column(name: &str) -> Option<u64> {
+    name.strip_prefix("nodeAttribute")?.parse().ok()
 }
 /// The vertex stage's attributes from its main().
 fn attributes(vs: &str) -> Vec<Attr> {
@@ -139,23 +165,33 @@ fn attributes(vs: &str) -> Vec<Attr> {
                 wgpu::VertexFormat::Float32x2
             } else if ty.starts_with("vec3") {
                 wgpu::VertexFormat::Float32x3
+            } else if ty.starts_with("vec4") {
+                wgpu::VertexFormat::Float32x4
             } else {
                 wgpu::VertexFormat::Float32
             };
             let name = name.trim().to_string();
             Some(Attr {
                 location: location.trim().parse().ok()?,
-                instance: name == "paintColor" || name == "personSeed",
+                instance: name == "paintColor"
+                    || name == "personSeed"
+                    || matrix_column(&name).is_some(),
                 name,
                 format,
             })
         })
         .collect()
 }
-/// The group 1 bindings of both stages.
+/// The bindings of both stages in the object struct's group ( 1, or 2
+/// under an ArrayCamera ).
 fn slots(vs: &str, fs: &str) -> Vec<(u32, Slot)> {
+    let group = if vs.contains("@binding( 0 ) @group( 2 )") {
+        2
+    } else {
+        1
+    };
+    let tag = format!(") @group( {group} )");
     let mut out: Vec<(u32, Slot)> = vec![];
-    let mut textures = 0;
     for source in [vs, fs] {
         let mut rest = source;
         while let Some(i) = rest.find("@binding( ") {
@@ -166,42 +202,38 @@ fn slots(vs: &str, fs: &str) -> Vec<(u32, Slot)> {
             let Ok(binding) = n.parse::<u32>() else {
                 continue;
             };
-            if !after.starts_with(") @group( 1 )") {
+            if !after.starts_with(&tag) {
                 continue;
             }
             let decl = &after[..after.find(';').unwrap_or(after.len())];
             let slot = if decl.contains("objectStruct") {
                 Slot::Object
-            } else if decl.contains("NodeBuffer_") {
-                let name = decl
-                    .split(':')
-                    .nth(1)
-                    .map(str::trim)
-                    .unwrap_or_default()
-                    .to_string();
-                let def = source
-                    .find(&format!("struct {name} {{"))
-                    .map(|j| &source[j..])
-                    .unwrap_or("");
-                if def[..def.find('}').unwrap_or(0)].contains("mat4x4") {
-                    Slot::Instances
-                } else {
-                    Slot::Pillars
-                }
+            } else if decl.contains("var<uniform>") {
+                // A uniformArray ( the car's pillars ).
+                Slot::Pillars
             } else if decl.contains("sampler_comparison") {
                 Slot::Compare
             } else if decl.contains(": sampler") {
-                Slot::Linear
+                // A texture's sampler: `<name>_sampler`.
+                let name = decl
+                    .split("var ")
+                    .nth(1)
+                    .and_then(|v| v.split(" :").next())
+                    .and_then(|v| v.strip_suffix("_sampler"))
+                    .unwrap_or_default();
+                if source.contains(&format!("var {name} : texture_cube")) {
+                    Slot::Trilinear
+                } else {
+                    Slot::Linear
+                }
             } else if decl.contains("texture_depth_2d") {
                 Slot::Depth
             } else if decl.contains("texture_3d") {
                 Slot::Atlas
+            } else if decl.contains("texture_cube") {
+                Slot::Env
             } else if decl.contains("texture_2d") {
-                if out.iter().any(|(b, _)| *b == binding) {
-                    continue;
-                }
-                textures += 1;
-                if textures == 1 { Slot::Dfg } else { Slot::Env }
+                Slot::Dfg
             } else {
                 continue;
             };
@@ -212,24 +244,14 @@ fn slots(vs: &str, fs: &str) -> Vec<(u32, Slot)> {
     }
     out
 }
-/// A material's stages with its instance array sized to `capacity`.
-fn shader(vs: &'static str, fs: &'static str, capacity: Option<usize>) -> Result<Shader> {
-    let mut vs = vs.to_string();
-    if let Some(capacity) = capacity {
-        // createInstances: the instance matrices' uniform array holds the
-        // capacity ( a power of two ).
-        if let Some(i) = vs.find("array< mat4x4<f32>, ") {
-            let start = i + "array< mat4x4<f32>, ".len();
-            let end = start + vs[start..].find(' ').unwrap_or(0);
-            vs.replace_range(start..end, &capacity.to_string());
-        }
-    }
+/// A material's stages.
+fn shader(vs: &'static str, fs: &'static str) -> Result<Shader> {
     let bad = |e: String| Error::Asset(format!("city uniforms: {e}"));
     Ok(Shader {
-        attrs: attributes(&vs),
-        slots: slots(&vs, fs),
-        object: object_layout(&vs, fs).map_err(bad)?,
-        render: render_layout(&vs, fs).map_err(bad)?,
+        attrs: attributes(vs),
+        slots: slots(vs, fs),
+        object: object_layout(vs, fs).map_err(bad)?,
+        render: render_layout(vs, fs).map_err(bad)?,
         vs,
         fs,
     })
@@ -297,6 +319,7 @@ impl Mesh {
 }
 /// An instanced generator's per-instance data.
 struct Instances {
+    /// instanceMatrix: an instanced attribute, one mat4 per instance.
     matrices: wgpu::Buffer,
     count: u32,
     /// Instance-step attributes ( paintColor, personSeed ).
@@ -323,7 +346,7 @@ impl Instances {
             .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                 label: Some("city instances"),
                 contents: bytemuck::cast_slice(&data),
-                usage: wgpu::BufferUsages::UNIFORM,
+                usage: wgpu::BufferUsages::VERTEX,
             });
         // Sphere.union over each instance's sphere ( applyMatrix4: the
         // centre transformed, the radius by the largest scale ).
@@ -428,9 +451,8 @@ enum K {
     Suv,
     Sedan,
     Taxi,
-    GroundBake,
-    ProxyBake,
-    ProxyGi,
+    /// The tower proxy ( buildProxy ), drawn only by the bake.
+    Proxy,
 }
 /// A material: its scene and shadow stages and its own values.
 struct Kind {
@@ -469,65 +491,44 @@ struct Item {
     instances: Option<usize>,
     cast: bool,
 }
-/// The probe grid's bounds ( max, min ), resolution and intensity.
+/// The probe grid's bounds ( max, min ) and resolution: one cell per
+/// probe.
 fn grid_uniforms() -> Grid {
     let max = [0, 1, 2].map(|k| GRID_CENTER[k] + GRID_SIZE[k] / 2.);
     let min = [0, 1, 2].map(|k| GRID_CENTER[k] - GRID_SIZE[k] / 2.);
-    (max, min, GRID_RES.map(f64::from), 1.)
+    (max, min, GRID_RES.map(f64::from))
 }
-/// LightProbeGrid.getProbePosition( ix, iy, iz ).
+/// LightProbeGrid.getProbePosition( ix, iy, iz ): each probe at the centre
+/// of its cell.
 fn probe_position(i: [u32; 3]) -> V3 {
     [0, 1, 2].map(|k| {
         let (c, s, n) = (GRID_CENTER[k], GRID_SIZE[k], GRID_RES[k]);
-        if n > 1 {
-            c - s / 2. + i[k] as f64 * s / (n - 1) as f64
-        } else {
-            c
-        }
+        c - s / 2. + (i[k] as f64 + 0.5) * s / n as f64
     })
 }
-/// CubeCamera's WebGPU faces: the projection and the six face rotations.
-fn cube_cameras() -> (M4, [M4; 6]) {
-    let m = CUBE_FAR / (CUBE_NEAR - CUBE_FAR);
-    let projection = [
-        -1.,
-        0.,
-        0.,
-        0.,
-        0.,
-        -1.,
-        0.,
-        0.,
-        0.,
-        0.,
-        m,
-        -1.,
-        0.,
-        0.,
-        m * CUBE_NEAR,
-        0.,
-    ];
-    let views = [
-        [
-            0., 0., 1., 0., 0., -1., 0., 0., 1., 0., 0., 0., 0., 0., 0., 1.,
-        ],
-        [
-            0., 0., -1., 0., 0., -1., 0., 0., -1., 0., 0., 0., 0., 0., 0., 1.,
-        ],
-        [
-            1., 0., 0., 0., 0., 0., -1., 0., 0., 1., 0., 0., 0., 0., 0., 1.,
-        ],
-        [
-            1., 0., 0., 0., 0., 0., 1., 0., 0., -1., 0., 0., 0., 0., 0., 1.,
-        ],
-        [
-            1., 0., 0., 0., 0., -1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1.,
-        ],
-        [
-            -1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
-        ],
-    ];
-    (projection, views)
+/// The capture sub-cameras' PerspectiveCamera( 90, 1, near, far ) in the
+/// WebGPU coordinate system.
+fn capture_projection() -> M4 {
+    // updateProjectionMatrix: top = near × tan( 45° ), as f64 computes it.
+    let top = CUBE_NEAR * (PI / 180. * 0.5 * 90.).tan();
+    let x = 2. * CUBE_NEAR / (2. * top);
+    let (c, d) = (
+        -CUBE_FAR / (CUBE_FAR - CUBE_NEAR),
+        -CUBE_FAR * CUBE_NEAR / (CUBE_FAR - CUBE_NEAR),
+    );
+    [
+        x, 0., 0., 0., 0., x, 0., 0., 0., 0., c, -1., 0., 0., d, 0.,
+    ]
+}
+/// A capture sub-camera at `p` looking along a face: camera.up = FACE_UP,
+/// lookAt( p + FACE_FORWARD ), its world matrix ( Matrix4.lookAt's basis,
+/// through the quaternion as Object3D.lookAt sets it ).
+fn capture_world(p: V3, face: usize) -> M4 {
+    let z = normalize(FACE_FORWARD[face].map(|v| -v));
+    let x = normalize(cross(FACE_UP[face], z));
+    let y = cross(z, x);
+    let q = rotation_quaternion(&basis(x, y, z));
+    compose(p, q, [1.; 3])
 }
 fn mat(m: Matrix4) -> M4 {
     m.to_cols_array()
@@ -748,6 +749,30 @@ fn sky_values(direction: V3, disc: bool) -> Vec<(&'static str, Vec<f64>)> {
         ("nodeUniform14", vec![0.008]),
     ]
 }
+/// The same uniforms in the capture's sky ( its fields one later, the time
+/// in the render group's nodeUniform8 ).
+fn probe_sky_values(direction: V3) -> Vec<(&'static str, Vec<f64>)> {
+    const NAMES: [&str; 13] = [
+        "nodeUniform0",
+        "nodeUniform3",
+        "nodeUniform4",
+        "nodeUniform5",
+        "nodeUniform6",
+        "nodeUniform7",
+        "nodeUniform9",
+        "nodeUniform10",
+        "nodeUniform11",
+        "nodeUniform12",
+        "nodeUniform13",
+        "nodeUniform14",
+        "nodeUniform15",
+    ];
+    NAMES
+        .into_iter()
+        .zip(sky_values(direction, false))
+        .map(|(name, (_, v))| (name, v))
+        .collect()
+}
 fn write(
     r: &Renderer,
     buffer: &wgpu::Buffer,
@@ -846,8 +871,32 @@ struct Built {
     /// The car materials' pillars.
     pillars: HashMap<K, wgpu::Buffer>,
     shadow: PassDraws,
-    /// Per face, the bake's draws for pass 0 and pass 1 ( sky, ground, proxy ).
-    bake: [Vec<[Draw; 3]>; 2],
+}
+/// A material under the bake's ArrayCamera: its pipeline, its render and
+/// object structs, the camera arrays' group, one cameraIndex group per
+/// sub-camera and its object group.
+struct CaptureDraw {
+    pipeline: wgpu::RenderPipeline,
+    render: wgpu::Buffer,
+    object: wgpu::Buffer,
+    cameras: wgpu::BindGroup,
+    indices: Vec<wgpu::BindGroup>,
+    group: wgpu::BindGroup,
+}
+/// LightProbeGrid's capture: the face atlas ( one row of six faces per
+/// batch slot ) with its depth, the ArrayCamera's arrays and the sky, ground
+/// and proxy materials.
+struct Capture {
+    faces: wgpu::TextureView,
+    depth: wgpu::TextureView,
+    /// cameraPositions, cameraViewMatrices, cameraProjectionMatrices and
+    /// cameraWorldMatrices.
+    arrays: [wgpu::Buffer; 4],
+    sky: CaptureDraw,
+    ground: CaptureDraw,
+    proxy: CaptureDraw,
+    /// The ground's capture material ( the proxy's is K::Proxy's ).
+    ground_shader: Shader,
 }
 pub(super) struct Demo {
     walker: FirstPerson,
@@ -857,16 +906,12 @@ pub(super) struct Demo {
     /// seed, timeOfDay, exposure, gi and showProbes.
     params: [f64; 5],
     rebuild: bool,
-    /// probes.visible changed: the scene materials' grid intensity.
-    gi_pending: bool,
     /// The node time updateSun() bakes the sky at.
     pmrem_pending: Option<f64>,
     bake_index: u32,
     bake_pass: u32,
     layout: city::Layout,
     kinds: HashMap<K, Kind>,
-    /// The instance capacities the materials' arrays are sized for.
-    capacities: Vec<usize>,
     pipelines: HashMap<(K, u8, u32), wgpu::RenderPipeline>,
     built: Option<Built>,
     /// Per material and camera, the render buffer.
@@ -874,11 +919,8 @@ pub(super) struct Demo {
     sky_box: Buffers,
     sky_render: wgpu::Buffer,
     sky_object: wgpu::Buffer,
-    sky_bake_object: wgpu::Buffer,
-    sky_face_renders: Vec<wgpu::Buffer>,
     pmrem: Pmrem,
     pmrem_depth: wgpu::TextureView,
-    box_draw: Draw,
     pmrem_draws: Vec<Draw>,
     pmrem_renders: Vec<wgpu::Buffer>,
     pmrem_object: wgpu::Buffer,
@@ -887,11 +929,10 @@ pub(super) struct Demo {
     atlas: wgpu::Texture,
     atlas_view: wgpu::TextureView,
     bounce: wgpu::Texture,
-    bounce_view: wgpu::TextureView,
-    cube_faces: Vec<wgpu::TextureView>,
-    cube_depth: wgpu::TextureView,
+    capture: Capture,
     batch: wgpu::TextureView,
     sh: Draw,
+    sh_object: wgpu::Buffer,
     repack: Vec<(wgpu::RenderPipeline, Vec<wgpu::BindGroup>)>,
     high_object: wgpu::Buffer,
     composite_object: wgpu::Buffer,
@@ -899,13 +940,13 @@ pub(super) struct Demo {
     output_render: wgpu::Buffer,
     quad: wgpu::Buffer,
     linear: wgpu::Sampler,
+    trilinear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
 /// The cameras a material's render buffer serves.
 const MAIN: u8 = 0;
 const SHADOW: u8 = 1;
-const FACE: u8 = 2;
 fn kind(main: Shader, shadow: Option<Shader>) -> Kind {
     Kind {
         main,
@@ -915,48 +956,44 @@ fn kind(main: Shader, shadow: Option<Shader>) -> Kind {
         custom: vec![],
     }
 }
-/// The page's materials, with the instance arrays sized for this city.
-fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<HashMap<K, Kind>> {
-    let n = |len: usize| Some(capacity(len));
-    let car_cap = n(f.cars.len());
-    let person_cap = n(f.people.len());
+/// The page's materials ( the instanced ones read instanceMatrix as an
+/// instanced attribute ).
+fn kinds() -> Result<HashMap<K, Kind>> {
     let mut k = HashMap::new();
-    let _ = (cars, people);
     k.insert(
         K::Tower,
         kind(
-            shader(wgsl!("building_vs"), wgsl!("building_fs"), None)?,
+            shader(wgsl!("building_vs"), wgsl!("building_fs"))?,
             Some(shader(
                 wgsl!("building_shadow_vs"),
                 wgsl!("building_shadow_fs"),
-                None,
             )?),
         ),
     );
     k.insert(
         K::Ground,
-        kind(shader(wgsl!("ground_vs"), wgsl!("ground_fs"), None)?, None),
+        kind(shader(wgsl!("ground_vs"), wgsl!("ground_fs"))?, None),
     );
-    let blocks = n(4);
     k.insert(
         K::Slab,
-        kind(shader(wgsl!("slab_vs"), wgsl!("slab_fs"), blocks)?, None),
+        kind(shader(wgsl!("slab_vs"), wgsl!("slab_fs"))?, None),
     );
     k.insert(
         K::Curb,
-        kind(shader(wgsl!("curb_vs"), wgsl!("curb_fs"), blocks)?, None),
+        kind(shader(wgsl!("curb_vs"), wgsl!("curb_fs"))?, None),
     );
-    let pair = |vs, fs, svs, sfs, cap| -> Result<Kind> {
-        Ok(kind(shader(vs, fs, cap)?, Some(shader(svs, sfs, cap)?)))
+    let pair = |vs, fs, svs, sfs| -> Result<Kind> {
+        Ok(kind(shader(vs, fs)?, Some(shader(svs, sfs)?)))
     };
+    // The streetlight's and the signal's shadow vertex stages are the same
+    // module.
     k.insert(
         K::Light,
         pair(
             wgsl!("streetlight_vs"),
             wgsl!("streetlight_fs"),
-            wgsl!("streetlight_shadow_vs"),
+            wgsl!("pole_shadow_vs"),
             wgsl!("streetlight_shadow_fs"),
-            n(f.lights.len()),
         )?,
     );
     k.insert(
@@ -964,9 +1001,8 @@ fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<Ha
         pair(
             wgsl!("signal_vs"),
             wgsl!("signal_fs"),
-            wgsl!("signal_shadow_vs"),
+            wgsl!("pole_shadow_vs"),
             wgsl!("signal_shadow_fs"),
-            n(f.signals.len()),
         )?,
     );
     k.insert(
@@ -976,7 +1012,6 @@ fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<Ha
             wgsl!("trashcan_fs"),
             wgsl!("trashcan_shadow_vs"),
             wgsl!("trashcan_shadow_fs"),
-            n(f.cans.len()),
         )?,
     );
     k.insert(
@@ -986,7 +1021,6 @@ fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<Ha
             wgsl!("bench_fs"),
             wgsl!("bench_shadow_vs"),
             wgsl!("bench_shadow_fs"),
-            n(f.benches.len()),
         )?,
     );
     k.insert(
@@ -996,7 +1030,6 @@ fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<Ha
             wgsl!("hydrant_fs"),
             wgsl!("hydrant_shadow_vs"),
             wgsl!("hydrant_shadow_fs"),
-            n(f.hydrants.len()),
         )?,
     );
     k.insert(
@@ -1006,82 +1039,93 @@ fn kinds(f: &city::Furniture, cars: [usize; 3], people: [usize; 2]) -> Result<Ha
             wgsl!("tree_fs"),
             wgsl!("tree_shadow_vs"),
             wgsl!("tree_shadow_fs"),
-            n(f.trees.len()),
         )?,
     );
-    for (key, vs, svs) in [
-        (K::Walk, wgsl!("walk_vs"), wgsl!("walk_shadow_vs")),
-        (K::Stand, wgsl!("stand_vs"), wgsl!("stand_shadow_vs")),
-    ] {
+    // The walking and the standing people share their material.
+    for key in [K::Walk, K::Stand] {
         let mut m = pair(
-            vs,
+            wgsl!("people_vs"),
             wgsl!("people_fs"),
-            svs,
+            wgsl!("people_shadow_vs"),
             wgsl!("people_shadow_fs"),
-            person_cap,
         )?;
         // uniform( 1.75 / height ).
         m.custom = vec![vec![1.]];
         k.insert(key, m);
     }
-    for (key, spec, vs, fs, svs, sfs) in [
-        (
-            K::Suv,
-            &furniture::SUV,
-            wgsl!("suv_vs"),
-            wgsl!("suv_fs"),
-            wgsl!("suv_shadow_vs"),
-            wgsl!("suv_shadow_fs"),
-        ),
-        (
-            K::Sedan,
-            &furniture::SEDAN,
-            wgsl!("sedan_vs"),
-            wgsl!("sedan_fs"),
-            wgsl!("sedan_shadow_vs"),
-            wgsl!("sedan_shadow_fs"),
-        ),
-        (
-            K::Taxi,
-            &furniture::TAXI,
-            wgsl!("taxi_vs"),
-            wgsl!("taxi_fs"),
-            wgsl!("taxi_shadow_vs"),
-            wgsl!("taxi_shadow_fs"),
-        ),
+    // The car types share their shaders; their uniforms differ.
+    for (key, spec) in [
+        (K::Suv, &furniture::SUV),
+        (K::Sedan, &furniture::SEDAN),
+        (K::Taxi, &furniture::TAXI),
     ] {
-        let mut m = pair(vs, fs, svs, sfs, car_cap)?;
+        let mut m = pair(
+            wgsl!("car_vs"),
+            wgsl!("car_fs"),
+            wgsl!("car_shadow_vs"),
+            wgsl!("car_shadow_fs"),
+        )?;
         m.custom = car_uniforms(spec).0;
         k.insert(key, m);
     }
-    k.insert(
-        K::GroundBake,
-        kind(
-            shader(wgsl!("ground_bake_vs"), wgsl!("ground_bake_fs"), None)?,
-            None,
-        ),
-    );
-    // The proxy: roughness 0.4, metalness 0.4, one box per tower.
-    let towers = Some(24);
+    // The proxy: roughness 0.4, metalness 0.4, one box per tower. Its scene
+    // stage is the ArrayCamera capture's.
     let mut proxy = kind(
-        shader(wgsl!("proxy_bake_vs"), wgsl!("proxy_bake_fs"), towers)?,
-        Some(shader(
-            wgsl!("proxy_shadow_vs"),
-            wgsl!("proxy_shadow_fs"),
-            towers,
-        )?),
+        shader(PROBE_PROXY.0, PROBE_PROXY.1)?,
+        Some(shader(wgsl!("proxy_shadow_vs"), wgsl!("proxy_shadow_fs"))?),
     );
     proxy.roughness = 0.4;
     proxy.metalness = 0.4;
-    k.insert(K::ProxyBake, proxy);
-    let mut gi = kind(
-        shader(wgsl!("proxy_gi_vs"), wgsl!("proxy_gi_fs"), towers)?,
-        None,
-    );
-    gi.roughness = 0.4;
-    gi.metalness = 0.4;
-    k.insert(K::ProxyGi, gi);
+    k.insert(K::Proxy, proxy);
     Ok(k)
+}
+/// A material's vertex buffers: one per attribute, the instance matrix's
+/// four columns in one ( an instanced mat4 ).
+fn vertex_buffers(attrs: &[Attr]) -> Vec<Vec<&Attr>> {
+    let mut out: Vec<Vec<&Attr>> = vec![];
+    for a in attrs {
+        match matrix_column(&a.name) {
+            Some(column) if column > 0 => {
+                if let Some(matrix) = out
+                    .iter_mut()
+                    .find(|b| matrix_column(&b[0].name).is_some())
+                {
+                    matrix.push(a);
+                }
+            }
+            _ => out.push(vec![a]),
+        }
+    }
+    out
+}
+/// The layouts of [`vertex_buffers`]: the attributes and ( stride,
+/// per instance ) of each.
+fn vertex_layouts(attrs: &[Attr]) -> (Vec<Vec<wgpu::VertexAttribute>>, Vec<(u64, bool)>) {
+    let buffers = vertex_buffers(attrs);
+    let lists = buffers
+        .iter()
+        .map(|b| {
+            b.iter()
+                .map(|a| wgpu::VertexAttribute {
+                    format: a.format,
+                    offset: matrix_column(&a.name).map_or(0, |c| c * 16),
+                    shader_location: a.location,
+                })
+                .collect()
+        })
+        .collect();
+    let strides = buffers
+        .iter()
+        .map(|b| {
+            let stride = if matrix_column(&b[0].name).is_some() {
+                64
+            } else {
+                b[0].format.size()
+            };
+            (stride, b[0].instance)
+        })
+        .collect();
+    (lists, strides)
 }
 /// A material pipeline: separate buffers per attribute, back faces culled.
 fn material_pipeline(
@@ -1091,35 +1135,12 @@ fn material_pipeline(
     samples: u32,
     cw: bool,
 ) -> wgpu::RenderPipeline {
-    let lists: Vec<[wgpu::VertexAttribute; 1]> = s
-        .attrs
-        .iter()
-        .map(|a| {
-            [wgpu::VertexAttribute {
-                format: a.format,
-                offset: 0,
-                shader_location: a.location,
-            }]
-        })
-        .collect();
-    let buffers: Vec<wgpu::VertexBufferLayout> = s
-        .attrs
-        .iter()
-        .zip(&lists)
-        .map(|(a, list)| wgpu::VertexBufferLayout {
-            array_stride: a.format.size(),
-            step_mode: if a.instance {
-                wgpu::VertexStepMode::Instance
-            } else {
-                wgpu::VertexStepMode::Vertex
-            },
-            attributes: list,
-        })
-        .collect();
+    let (lists, strides) = vertex_layouts(&s.attrs);
+    let buffers = layouts(&lists, &strides);
     culled_pipeline(
         r,
         "generator city",
-        (&s.vs, s.fs),
+        (s.vs, s.fs),
         &buffers,
         &[format],
         Some((wgpu::CompareFunction::LessEqual, true)),
@@ -1131,35 +1152,29 @@ fn material_pipeline(
 /// The scene textures a material binds.
 struct Resources<'a> {
     linear: &'a wgpu::Sampler,
+    trilinear: &'a wgpu::Sampler,
     compare: &'a wgpu::Sampler,
     dfg: &'a wgpu::TextureView,
     depth: &'a wgpu::TextureView,
     atlas: &'a wgpu::TextureView,
     env: &'a wgpu::TextureView,
 }
-#[allow(clippy::too_many_arguments)]
-fn material_draw(
-    r: &Renderer,
-    pipeline: &wgpu::RenderPipeline,
+/// The object group's entries of a material.
+fn object_entries<'a>(
     s: &Shader,
-    render: &wgpu::Buffer,
-    object: &wgpu::Buffer,
-    instances: Option<&Instances>,
-    pillars: Option<&wgpu::Buffer>,
-    res: &Resources,
-) -> Result<Draw> {
+    object: &'a wgpu::Buffer,
+    pillars: Option<&'a wgpu::Buffer>,
+    res: &Resources<'a>,
+) -> Result<Vec<(u32, wgpu::BindingResource<'a>)>> {
     let mut entries = vec![];
     for &(binding, slot) in &s.slots {
         let resource = match slot {
             Slot::Object => object.as_entire_binding(),
-            Slot::Instances => instances
-                .ok_or(Error::Invalid("city instances"))?
-                .matrices
-                .as_entire_binding(),
             Slot::Pillars => pillars
                 .ok_or(Error::Invalid("city pillars"))?
                 .as_entire_binding(),
             Slot::Linear => wgpu::BindingResource::Sampler(res.linear),
+            Slot::Trilinear => wgpu::BindingResource::Sampler(res.trilinear),
             Slot::Compare => wgpu::BindingResource::Sampler(res.compare),
             Slot::Dfg => wgpu::BindingResource::TextureView(res.dfg),
             Slot::Depth => wgpu::BindingResource::TextureView(res.depth),
@@ -1168,6 +1183,18 @@ fn material_draw(
         };
         entries.push((binding, resource));
     }
+    Ok(entries)
+}
+fn material_draw(
+    r: &Renderer,
+    pipeline: &wgpu::RenderPipeline,
+    s: &Shader,
+    render: &wgpu::Buffer,
+    object: &wgpu::Buffer,
+    pillars: Option<&wgpu::Buffer>,
+    res: &Resources,
+) -> Result<Draw> {
+    let entries = object_entries(s, object, pillars, res)?;
     Ok((
         pipeline.clone(),
         vec![
@@ -1182,19 +1209,22 @@ fn material_draw(
 }
 /// Binds a mesh's attributes in the shader's order and draws it.
 fn draw_mesh(pass: &mut wgpu::RenderPass, s: &Shader, mesh: &Mesh, instances: Option<&Instances>) {
-    for (slot, a) in s.attrs.iter().enumerate() {
-        let buffer = if a.instance {
+    for (slot, b) in vertex_buffers(&s.attrs).iter().enumerate() {
+        let a = b[0];
+        let buffer = if matrix_column(&a.name).is_some() {
+            instances.map(|i| i.matrices.slice(..))
+        } else if a.instance {
             instances
                 .and_then(|i| i.extra.iter().find(|(n, _)| *n == a.name))
-                .map(|(_, b)| b)
+                .map(|(_, b)| b.slice(..))
         } else {
             mesh.buffers
                 .iter()
                 .find(|(n, _)| *n == a.name)
-                .map(|(_, b)| b)
+                .map(|(_, b)| b.slice(..))
         };
         if let Some(b) = buffer {
-            pass.set_vertex_buffer(slot as u32, b.slice(..));
+            pass.set_vertex_buffer(slot as u32, b);
         }
     }
     let count = instances.map_or(1, |i| i.count);
@@ -1237,13 +1267,26 @@ impl Demo {
         };
         let linear = sampler(None);
         let compare = sampler(Some(wgpu::CompareFunction::LessEqual));
+        let trilinear = r.device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
         let d2 = wgpu::TextureDimension::D2;
         let shadow_color = view2d(&texture(r, (MAP, MAP, 1), d2, BYTE, 1, false));
         let shadow_depth = view2d(&texture(r, (MAP, MAP, 1), d2, DEPTH, 1, false));
-        // The PMREM ( fromScene of the sky without its disc ), as the
-        // building page bakes it.
-        let pmrem = Pmrem::new(r, &linear, 8, GGX_8)?;
-        let pmrem_depth = view2d(&texture(r, (768, 1024, 1), d2, DEPTH, 1, false));
+        // PMREMGenerator.fromScene( envScene ) of the sky without its disc:
+        // the CubeCamera's faces into the source target, then the levels.
+        let pmrem = Pmrem::new(r, 256)?;
+        let pmrem_depth = view2d(&texture(
+            r,
+            (pmrem.size, pmrem.size, 1),
+            d2,
+            DEPTH,
+            1,
+            false,
+        ));
         let unit = crate::geometry::BoxGeometry::build(1., 1., 1.)?;
         let positions: Vec<f32> = {
             let a = unit
@@ -1259,44 +1302,6 @@ impl Demo {
         let sky_box = upload(r, &[bytemuck::cast_slice(&positions)], &index);
         let position_only = [wgpu::vertex_attr_array![0 => Float32x3].to_vec()];
         let box_layouts = layouts(&position_only, &[(12, false)]);
-        let box_render = uniform(r, "PMREM box", BOX_VS, "renderStruct")?;
-        let box_object = uniform(r, "PMREM box", BOX_FS, "objectStruct")?;
-        let box_draw = two_groups(
-            r,
-            pipeline(
-                r,
-                "PMREM box",
-                (BOX_VS, BOX_FS),
-                &box_layouts,
-                HALF,
-                1,
-                (wgpu::CompareFunction::Always, false),
-                true,
-            ),
-            &box_render,
-            &[(0, box_object.as_entire_binding())],
-        );
-        write_static(
-            r,
-            &box_render,
-            BOX_VS,
-            "renderStruct",
-            &[
-                ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                ("cameraViewMatrix", IDENTITY.to_vec()),
-            ],
-        )?;
-        write_static(
-            r,
-            &box_object,
-            BOX_FS,
-            "objectStruct",
-            &[
-                ("nodeUniform0", vec![0.; 3]),
-                ("nodeUniform1", vec![1.]),
-                ("nodeUniform4", IDENTITY.to_vec()),
-            ],
-        )?;
         let pmrem_object = uniform(r, "sky bake", SKY_FS, "objectStruct")?;
         let bake_pipeline = pipeline(
             r,
@@ -1329,23 +1334,6 @@ impl Demo {
         let bounce = texture(r, atlas_size, d3, HALF, 1, true);
         let atlas_view = view2d(&atlas);
         let bounce_view = view2d(&bounce);
-        let cube = texture(r, (CUBE, CUBE, 6), d2, HALF, 1, false);
-        let cube_faces = (0..6)
-            .map(|i| {
-                cube.create_view(&wgpu::TextureViewDescriptor {
-                    dimension: Some(wgpu::TextureViewDimension::D2),
-                    base_array_layer: i,
-                    array_layer_count: Some(1),
-                    ..Default::default()
-                })
-            })
-            .collect();
-        let cube_view = cube.create_view(&wgpu::TextureViewDescriptor {
-            dimension: Some(wgpu::TextureViewDimension::Cube),
-            ..Default::default()
-        });
-        let cube_depth = view2d(&texture(r, (CUBE, CUBE, 1), d2, DEPTH, 1, false));
-        let batch = view2d(&texture(r, (9, PROBES, 1), d2, FLOAT, 1, false));
         let init = |label, data: &[u8], usage| {
             r.device
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {
@@ -1354,55 +1342,214 @@ impl Demo {
                     usage,
                 })
         };
-        let sh_pipeline =
-            raw_pipeline(r, "city probe SH", SH_VS, SH_FS, &[], FLOAT, 1, None, false);
-        let sh_render = init(
-            "city SH render",
-            &pack(
-                SH_FS,
-                "renderStruct",
-                &[
-                    ("cameraWorldMatrix", &IDENTITY),
-                    (
-                        "cameraProjectionMatrixInverse",
-                        &[
-                            1., 0., 0., 0., 0., 1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1.,
-                        ],
-                    ),
-                ],
-            )?,
-            wgpu::BufferUsages::UNIFORM,
+        let kinds = kinds()?;
+        // The capture: the face atlas, the ArrayCamera's arrays and one
+        // cameraIndex per sub-camera.
+        let faces = view2d(&texture(
+            r,
+            (6 * CUBE, PROBES_PER_BATCH * CUBE, 1),
+            d2,
+            HALF,
+            1,
+            false,
+        ));
+        let capture_depth = view2d(&texture(
+            r,
+            (6 * CUBE, PROBES_PER_BATCH * CUBE, 1),
+            d2,
+            DEPTH,
+            1,
+            false,
+        ));
+        let array = |label, stride: usize| {
+            r.device.create_buffer(&wgpu::BufferDescriptor {
+                label: Some(label),
+                size: (CAMERAS * stride) as u64,
+                usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+                mapped_at_creation: false,
+            })
+        };
+        let arrays = [
+            array("cameraPositions", 16),
+            array("cameraViewMatrices", 64),
+            array("cameraProjectionMatrices", 64),
+            array("cameraWorldMatrices", 64),
+        ];
+        let projection: Vec<f32> = capture_projection().map(|v| v as f32).to_vec();
+        let projections: Vec<f32> = (0..CAMERAS).flat_map(|_| projection.clone()).collect();
+        r.queue
+            .write_buffer(&arrays[2], 0, bytemuck::cast_slice(&projections));
+        let index_source = PROBE_SKY.0;
+        let indices: Vec<wgpu::Buffer> = (0..CAMERAS)
+            .map(|i| -> Result<wgpu::Buffer> {
+                Ok(init(
+                    "cameraIndex",
+                    &pack(
+                        index_source,
+                        "cameraIndexStruct",
+                        &[("u_cameraIndex", &[i as f64])],
+                    )?,
+                    wgpu::BufferUsages::UNIFORM,
+                ))
+            })
+            .collect::<Result<_>>()?;
+        let ground_shader = shader(PROBE_GROUND.0, PROBE_GROUND.1)?;
+        let res = Resources {
+            linear: &linear,
+            trilinear: &trilinear,
+            compare: &compare,
+            dfg: &r.dfg,
+            depth: &shadow_depth,
+            atlas: &bounce_view,
+            env: &pmrem.view,
+        };
+        let structs = |(vs, fs): (&str, &str)| -> Result<(wgpu::Buffer, wgpu::Buffer)> {
+            let object_source = if fs.contains("struct objectStruct {") {
+                fs
+            } else {
+                vs
+            };
+            Ok((
+                uniform(r, "city probe render", fs, "renderStruct")?,
+                uniform(r, "city probe object", object_source, "objectStruct")?,
+            ))
+        };
+        let capture_draw = |(vs, fs): (&'static str, &'static str),
+                            attrs: &[Attr],
+                            (render, object): (wgpu::Buffer, wgpu::Buffer),
+                            entries: &[(u32, wgpu::BindingResource)],
+                            sky: bool|
+         -> CaptureDraw {
+            let (lists, strides) = vertex_layouts(attrs);
+            let buffers = layouts(&lists, &strides);
+            // The sky ( BackSide, no depth write ) and the materials.
+            let p = culled_pipeline(
+                r,
+                "city probe capture",
+                (vs, fs),
+                &buffers,
+                &[HALF],
+                Some((wgpu::CompareFunction::LessEqual, !sky)),
+                (sky, false),
+                (1, wgpu::PrimitiveTopology::TriangleList),
+                Some(wgpu::Face::Back),
+            );
+            let cameras = bind(
+                r,
+                p.get_bind_group_layout(0),
+                &camera_entries(vs, fs, &arrays, &render),
+            );
+            let index_groups = indices
+                .iter()
+                .map(|b| {
+                    bind(
+                        r,
+                        p.get_bind_group_layout(1),
+                        &[(0, b.as_entire_binding())],
+                    )
+                })
+                .collect();
+            let group = bind(r, p.get_bind_group_layout(2), entries);
+            CaptureDraw {
+                pipeline: p,
+                render,
+                object,
+                cameras,
+                indices: index_groups,
+                group,
+            }
+        };
+        let buffers = structs(PROBE_SKY)?;
+        let entries: Vec<(u32, wgpu::BindingResource)> = slots(PROBE_SKY.0, PROBE_SKY.1)
+            .iter()
+            .map(|&(b, _)| (b, buffers.1.as_entire_binding()))
+            .collect();
+        let sky = capture_draw(
+            PROBE_SKY,
+            &attributes(PROBE_SKY.0),
+            buffers.clone(),
+            &entries,
+            true,
         );
-        let sh_object = init(
-            "city SH object",
-            &pack(
-                SH_FS,
-                "objectStruct",
-                &[("nodeUniform0", &[1.]), ("nodeUniform4", &IDENTITY)],
-            )?,
-            wgpu::BufferUsages::UNIFORM,
+        let buffers = structs(PROBE_GROUND)?;
+        let entries = object_entries(&ground_shader, &buffers.1, None, &res)?;
+        let ground = capture_draw(
+            PROBE_GROUND,
+            &ground_shader.attrs,
+            buffers.clone(),
+            &entries,
+            false,
         );
+        let proxy_shader = &kinds.get(&K::Proxy).ok_or(Error::Invalid("city proxy"))?.main;
+        let buffers = structs(PROBE_PROXY)?;
+        let entries = object_entries(proxy_shader, &buffers.1, None, &res)?;
+        let proxy = capture_draw(
+            PROBE_PROXY,
+            &proxy_shader.attrs,
+            buffers.clone(),
+            &entries,
+            false,
+        );
+        // The ground's capture object struct is the seed's too.
+        write(
+            r,
+            &ground.object,
+            PROBE_GROUND.1,
+            "objectStruct",
+            &object_values(
+                &ground_shader.object,
+                &Object {
+                    model: IDENTITY,
+                    seed: 0,
+                    roughness: 1.,
+                    metalness: 0.,
+                    grid: Some(grid_uniforms()),
+                    max_lod: pmrem.max_lod as f64,
+                    custom: &[],
+                },
+            ),
+        )?;
+        let capture = Capture {
+            faces,
+            depth: capture_depth,
+            arrays,
+            sky,
+            ground,
+            proxy,
+            ground_shader,
+        };
+        // One row per probe in bake order: 9 coefficients × 6 faces × the
+        // face blocks.
+        let batch = view2d(&texture(
+            r,
+            (9 * 6 * FACE_BLOCKS, PROBES, 1),
+            d2,
+            FLOAT,
+            1,
+            false,
+        ));
+        let identity3 = vec![1., 0., 0., 0., 1., 0., 0., 0., 1.];
+        let sh_pipeline = raw_pipeline(r, "city probe SH", QUAD_VS, SH_FS, &[], FLOAT, 1, None, false);
+        let sh_object = uniform(r, "city SH object", SH_FS, "objectStruct")?;
+        write_static(
+            r,
+            &sh_object,
+            SH_FS,
+            "objectStruct",
+            &[("nodeUniform0", vec![1.]), ("nodeUniform3", identity3.clone())],
+        )?;
         let sh = (
             sh_pipeline.clone(),
-            vec![
-                bind(
-                    r,
-                    sh_pipeline.get_bind_group_layout(0),
-                    &[(0, sh_render.as_entire_binding())],
-                ),
-                bind(
-                    r,
-                    sh_pipeline.get_bind_group_layout(1),
-                    &[
-                        (0, sh_object.as_entire_binding()),
-                        (1, wgpu::BindingResource::Sampler(&linear)),
-                        (2, wgpu::BindingResource::TextureView(&cube_view)),
-                    ],
-                ),
-            ],
+            vec![bind(
+                r,
+                sh_pipeline.get_bind_group_layout(0),
+                &[
+                    (0, sh_object.as_entire_binding()),
+                    (1, wgpu::BindingResource::TextureView(&capture.faces)),
+                ],
+            )],
         );
-        // The seven repack materials ( the last one's quad stage is the
-        // seed module ), per Z slice with its object struct.
+        // The seven repack materials, per Z slice with its object struct.
         let repack_objects: Vec<wgpu::Buffer> = (0..nz)
             .map(|_| uniform(r, "city repack object", REPACK_FS[0], "objectStruct"))
             .collect::<Result<_>>()?;
@@ -1414,28 +1561,16 @@ impl Demo {
                 "objectStruct",
                 &[
                     ("nodeUniform0", vec![1.]),
-                    ("nodeUniform2", vec![1., 0., 0., 0., 1., 0., 0., 0., 1.]),
-                    ("nodeUniform3", GRID_RES.map(f64::from).to_vec()),
-                    ("nodeUniform4", vec![iz as f64]),
-                    ("nodeUniform5", vec![1., 0., 0., 0., 1., 0., 0., 0., 1.]),
+                    ("nodeUniform1", vec![iz as f64]),
+                    ("nodeUniform2", GRID_RES.map(f64::from).to_vec()),
+                    ("nodeUniform4", identity3.clone()),
                 ],
             )?;
         }
         let repack = REPACK_FS
             .iter()
-            .enumerate()
-            .map(|(t, fs)| {
-                let p = raw_pipeline(
-                    r,
-                    "city repack",
-                    if t == 6 { SEED_VS } else { REPACK_VS },
-                    fs,
-                    &[],
-                    HALF,
-                    1,
-                    None,
-                    false,
-                );
+            .map(|fs| {
+                let p = raw_pipeline(r, "city repack", QUAD_VS, fs, &[], HALF, 1, None, false);
                 let groups = repack_objects
                     .iter()
                     .map(|object| {
@@ -1462,26 +1597,19 @@ impl Demo {
             last: 0.,
             params: [94., 6.4, 0.13, 1., 0.],
             rebuild: true,
-            gi_pending: false,
             pmrem_pending: Some(0.),
             bake_index: 0,
             bake_pass: 0,
             layout: city::layout(),
-            kinds: HashMap::new(),
-            capacities: vec![],
+            kinds,
             pipelines: HashMap::new(),
             built: None,
             renders: HashMap::new(),
             sky_box,
             sky_render: uniform(r, "sky", SKY_FS, "renderStruct")?,
             sky_object: uniform(r, "sky", SKY_FS, "objectStruct")?,
-            sky_bake_object: uniform(r, "sky probe bake", SKY_FS, "objectStruct")?,
-            sky_face_renders: (0..6)
-                .map(|_| uniform(r, "sky probe face", SKY_FS, "renderStruct"))
-                .collect::<Result<_>>()?,
             pmrem,
             pmrem_depth,
-            box_draw,
             pmrem_draws,
             pmrem_renders,
             pmrem_object,
@@ -1490,11 +1618,10 @@ impl Demo {
             atlas,
             atlas_view,
             bounce,
-            bounce_view,
-            cube_faces,
-            cube_depth,
+            capture,
             batch,
             sh,
+            sh_object,
             repack,
             high_object: uniform(r, "bloom high pass", HIGH_FS, "objectStruct")?,
             composite_object: uniform(r, "bloom composite", COMPOSITE_FS, "objectStruct")?,
@@ -1510,12 +1637,55 @@ impl Demo {
                 wgpu::BufferUsages::VERTEX,
             ),
             linear,
+            trilinear,
             compare,
             targets: None,
         };
         demo.build(r)?;
         Ok(demo)
     }
+}
+/// The camera arrays' group of a material under the ArrayCamera: each
+/// group 0 uniform by its name.
+fn camera_entries<'a>(
+    vs: &str,
+    fs: &str,
+    arrays: &'a [wgpu::Buffer; 4],
+    render: &'a wgpu::Buffer,
+) -> Vec<(u32, wgpu::BindingResource<'a>)> {
+    let mut out: Vec<(u32, wgpu::BindingResource)> = vec![];
+    for source in [vs, fs] {
+        let mut rest = source;
+        while let Some(i) = rest.find("@binding( ") {
+            rest = &rest[i + 10..];
+            let Some((n, after)) = rest.split_once(' ') else {
+                break;
+            };
+            let Ok(binding) = n.parse::<u32>() else {
+                continue;
+            };
+            if !after.starts_with(") @group( 0 )") || out.iter().any(|(b, _)| *b == binding) {
+                continue;
+            }
+            let decl = &after[..after.find(';').unwrap_or(after.len())];
+            let Some(name) = decl
+                .split("var<uniform> ")
+                .nth(1)
+                .and_then(|v| v.split(" :").next())
+            else {
+                continue;
+            };
+            let buffer = match name {
+                "cameraPositions" => &arrays[0],
+                "cameraViewMatrices" => &arrays[1],
+                "cameraProjectionMatrices" => &arrays[2],
+                "cameraWorldMatrices" => &arrays[3],
+                _ => render,
+            };
+            out.push((binding, buffer.as_entire_binding()));
+        }
+    }
+    out
 }
 /// PlaneGeometry( width, height ).
 fn plane(width: f64, height: f64) -> G {
@@ -1534,22 +1704,6 @@ fn plane(width: f64, height: f64) -> G {
         attributes: vec![("position", 3, p), ("normal", 3, n), ("uv", 2, uv)],
         index: Some(vec![0, 2, 1, 2, 3, 1]),
     }
-}
-/// Which instance buffer an instanced generator's capacity follows.
-fn capacities(c: &city::City) -> Vec<usize> {
-    let f = &c.furniture;
-    [
-        f.lights.len(),
-        f.signals.len(),
-        f.cans.len(),
-        f.benches.len(),
-        f.hydrants.len(),
-        f.trees.len(),
-        f.people.len(),
-        f.cars.len(),
-    ]
-    .map(capacity)
-    .to_vec()
 }
 impl Demo {
     fn kind(&self, k: K) -> Result<&Kind> {
@@ -1574,7 +1728,7 @@ impl Demo {
         let source = if s.fs.contains("struct renderStruct {") {
             s.fs
         } else {
-            s.vs.as_str()
+            s.vs
         };
         let b = uniform(r, "city render", source, "renderStruct")?;
         self.renders.insert((k, camera), b.clone());
@@ -1587,43 +1741,51 @@ impl Demo {
         item: &Item,
         k: K,
         stage: u8,
-        gi: f64,
     ) -> Result<wgpu::Buffer> {
+        let s = self.stage(k, stage)?;
+        let source = if s.fs.contains("struct objectStruct {") {
+            s.fs
+        } else {
+            s.vs
+        };
+        let buffer = uniform(r, "city object", source, "objectStruct")?;
+        self.write_object(r, &buffer, item.model, k, stage)?;
+        Ok(buffer)
+    }
+    /// A material stage's object struct for a transform.
+    fn write_object(
+        &self,
+        r: &Renderer,
+        buffer: &wgpu::Buffer,
+        model: M4,
+        k: K,
+        stage: u8,
+    ) -> Result<()> {
         let kind = self.kind(k)?;
         let s = self.stage(k, stage)?;
         let source = if s.fs.contains("struct objectStruct {") {
             s.fs
         } else {
-            s.vs.as_str()
+            s.vs
         };
-        let buffer = uniform(r, "city object", source, "objectStruct")?;
-        let mut grid = grid_uniforms();
-        grid.3 = gi;
         let values = object_values(
             &s.object,
             &Object {
-                model: item.model,
+                model,
                 seed: self.params[0] as u32,
                 roughness: kind.roughness,
                 metalness: kind.metalness,
-                grid: Some(grid),
+                grid: Some(grid_uniforms()),
+                max_lod: self.pmrem.max_lod as f64,
                 custom: &kind.custom,
             },
         );
-        write(r, &buffer, source, "objectStruct", &values)?;
-        Ok(buffer)
+        write(r, buffer, source, "objectStruct", &values)
     }
     /// generateCity(): the generators for the seed and their resident
     /// buffers, the shadow and probe-capture draws.
     fn build(&mut self, r: &Renderer) -> Result<()> {
         let c = city::build(self.params[0]);
-        let caps = capacities(&c);
-        if self.kinds.is_empty() || self.capacities != caps {
-            self.kinds = kinds(&c.furniture, [0; 3], [0; 2])?;
-            self.capacities = caps;
-            self.renders.clear();
-            self.pipelines.clear();
-        }
         let (mut meshes, mut instances, mut items) = (vec![], vec![], vec![]);
         let l = self.layout;
         let ground_mesh =
@@ -1834,25 +1996,30 @@ impl Demo {
                     }),
             );
         }
-        let gi = if self.params[3] > 0.5 { 1. } else { 0. };
         let mut objects = HashMap::new();
         for (i, item) in items.iter().enumerate() {
-            objects.insert((i, MAIN), self.object_buffer(r, item, item.kind, MAIN, gi)?);
+            objects.insert((i, MAIN), self.object_buffer(r, item, item.kind, MAIN)?);
             if item.cast {
                 objects.insert(
                     (i, SHADOW),
-                    self.object_buffer(r, item, item.kind, SHADOW, 1.)?,
+                    self.object_buffer(r, item, item.kind, SHADOW)?,
                 );
             }
         }
         let proxy_item = Item {
-            kind: K::ProxyBake,
+            kind: K::Proxy,
             mesh: proxy.0,
             model: IDENTITY,
             instances: Some(proxy.1),
             cast: true,
         };
-        let mut built = Built {
+        // The proxy's shadow object struct ( usize::MAX ) and its capture's.
+        objects.insert(
+            (usize::MAX, SHADOW),
+            self.object_buffer(r, &proxy_item, K::Proxy, SHADOW)?,
+        );
+        self.write_object(r, &self.capture.proxy.object, IDENTITY, K::Proxy, MAIN)?;
+        self.built = Some(Built {
             meshes,
             instances,
             items,
@@ -1860,68 +2027,12 @@ impl Demo {
             objects,
             pillars,
             shadow: PassDraws { draws: vec![] },
-            bake: [vec![], vec![]],
-        };
-        // The proxy's and the bake's object structs: the bounce grid keeps
-        // its intensity of 1.
-        let ground = Item {
-            kind: K::Ground,
-            mesh: 0,
-            model: IDENTITY,
-            instances: None,
-            cast: false,
-        };
-        let extra = [
-            (usize::MAX, K::ProxyBake, MAIN, &proxy_item),
-            (usize::MAX - 1, K::ProxyBake, SHADOW, &proxy_item),
-            (usize::MAX - 2, K::ProxyGi, MAIN, &proxy_item),
-            (usize::MAX - 3, K::GroundBake, MAIN, &ground),
-            (usize::MAX - 4, K::Ground, MAIN, &ground),
-        ];
-        for (key, k, stage, item) in extra {
-            let b = self.object_buffer(r, item, k, stage, 1.)?;
-            built.objects.insert((key, stage), b);
-        }
-        self.built = Some(built);
+        });
         self.build_draws(r)?;
         self.targets = None;
         // resetProbeBake().
         self.bake_index = 0;
         self.bake_pass = 0;
-        Ok(())
-    }
-    /// The scene materials' object structs with the grid's intensity for
-    /// probes.visible ( the bake's bounce grid keeps 1 ).
-    fn write_gi(&self, r: &Renderer) -> Result<()> {
-        let b = self.built.as_ref().ok_or(Error::Invalid("city scene"))?;
-        let gi = if self.params[3] > 0.5 { 1. } else { 0. };
-        for (i, item) in b.items.iter().enumerate() {
-            let kind = self.kind(item.kind)?;
-            let s = &kind.main;
-            let source = if s.fs.contains("struct objectStruct {") {
-                s.fs
-            } else {
-                s.vs.as_str()
-            };
-            let mut grid = grid_uniforms();
-            grid.3 = gi;
-            let values = object_values(
-                &s.object,
-                &Object {
-                    model: item.model,
-                    seed: self.params[0] as u32,
-                    roughness: kind.roughness,
-                    metalness: kind.metalness,
-                    grid: Some(grid),
-                    custom: &kind.custom,
-                },
-            );
-            let buffer = b
-                .objects
-                .get(&(i, MAIN))
-                .ok_or(Error::Invalid("city object"))?;
-            write(r, buffer, source, "objectStruct", &values)?;
-        }
         Ok(())
     }
     fn pipeline(
@@ -1943,44 +2054,28 @@ impl Demo {
         Ok(p)
     }
     /// One item's draw for a material stage and camera.
-    #[allow(clippy::too_many_arguments)]
     fn item_draw(
         &mut self,
         r: &Renderer,
-        item: usize,
         object_key: (usize, u8),
         k: K,
         stage: u8,
-        camera: u8,
         samples: u32,
-        bounce: bool,
     ) -> Result<Draw> {
         let pipeline = self.pipeline(r, k, stage, samples)?;
-        let render = self.render_buffer(r, k, camera)?;
+        let render = self.render_buffer(r, k, stage)?;
         let b = self.built.as_ref().ok_or(Error::Invalid("city scene"))?;
-        let instances = b
-            .items
-            .get(item)
-            .and_then(|i| i.instances)
-            .or(if item == usize::MAX {
-                Some(b.proxy.1)
-            } else {
-                None
-            });
         let object = b
             .objects
             .get(&object_key)
             .ok_or(Error::Invalid("city object"))?;
         let res = Resources {
             linear: &self.linear,
+            trilinear: &self.trilinear,
             compare: &self.compare,
             dfg: &r.dfg,
             depth: &self.shadow_depth,
-            atlas: if bounce {
-                &self.bounce_view
-            } else {
-                &self.atlas_view
-            },
+            atlas: &self.atlas_view,
             env: &self.pmrem.view,
         };
         material_draw(
@@ -1989,12 +2084,11 @@ impl Demo {
             self.stage(k, stage)?,
             &render,
             object,
-            instances.map(|i| &b.instances[i]),
             b.pillars.get(&k),
             &res,
         )
     }
-    /// The shadow pass's and the probe captures' draws.
+    /// The shadow pass's draws.
     fn build_draws(&mut self, r: &Renderer) -> Result<()> {
         let items: Vec<(usize, K, bool)> = self
             .built
@@ -2010,108 +2104,21 @@ impl Demo {
         let mut shadow = vec![];
         for (i, k, cast) in items {
             if cast {
-                shadow.push((
-                    i,
-                    self.item_draw(r, i, (i, SHADOW), k, SHADOW, SHADOW, 1, false)?,
-                ));
+                shadow.push((i, self.item_draw(r, (i, SHADOW), k, SHADOW, 1)?));
             }
         }
         // The bake's proxy shadow is the last draw ( usize::MAX ).
         shadow.push((
             usize::MAX,
-            self.item_draw(
-                r,
-                usize::MAX,
-                (usize::MAX - 1, SHADOW),
-                K::ProxyBake,
-                SHADOW,
-                SHADOW,
-                1,
-                false,
-            )?,
+            self.item_draw(r, (usize::MAX, SHADOW), K::Proxy, SHADOW, 1)?,
         ));
-        let sky_pipeline = pipeline(
-            r,
-            "sky probe face",
-            (SKY_VS, SKY_FS),
-            &layouts(
-                &[wgpu::vertex_attr_array![0 => Float32x3].to_vec()],
-                &[(12, false)],
-            ),
-            HALF,
-            1,
-            (wgpu::CompareFunction::LessEqual, false),
-            true,
-        );
-        let mut bake: [Vec<[Draw; 3]>; 2] = [vec![], vec![]];
-        let (sky_renders, sky_object) =
-            (self.sky_face_renders.clone(), self.sky_bake_object.clone());
-        for f in 0..6u8 {
-            let sky = || {
-                two_groups(
-                    r,
-                    sky_pipeline.clone(),
-                    &sky_renders[f as usize],
-                    &[(0, sky_object.as_entire_binding())],
-                )
-            };
-            let pass0 = [
-                sky(),
-                self.item_draw(
-                    r,
-                    0,
-                    (usize::MAX - 3, MAIN),
-                    K::GroundBake,
-                    MAIN,
-                    FACE + f,
-                    1,
-                    false,
-                )?,
-                self.item_draw(
-                    r,
-                    usize::MAX,
-                    (usize::MAX, MAIN),
-                    K::ProxyBake,
-                    MAIN,
-                    FACE + f,
-                    1,
-                    false,
-                )?,
-            ];
-            let pass1 = [
-                sky(),
-                self.item_draw(
-                    r,
-                    0,
-                    (usize::MAX - 4, MAIN),
-                    K::Ground,
-                    MAIN,
-                    FACE + f,
-                    1,
-                    true,
-                )?,
-                self.item_draw(
-                    r,
-                    usize::MAX,
-                    (usize::MAX - 2, MAIN),
-                    K::ProxyGi,
-                    MAIN,
-                    FACE + f,
-                    1,
-                    true,
-                )?,
-            ];
-            bake[0].push(pass0);
-            bake[1].push(pass1);
-        }
         let b = self.built.as_mut().ok_or(Error::Invalid("city scene"))?;
         b.shadow = PassDraws { draws: shadow };
-        b.bake = bake;
         Ok(())
     }
 }
-/// One frame's camera.
-fn render_for(view: &View, sun: &Sun, time: f64) -> Render {
+/// One frame's camera, with the probe grid's intensity.
+fn render_for(view: &View, sun: &Sun, time: f64, grid: f64) -> Render {
     Render {
         projection: view.projection,
         view: view.view,
@@ -2122,6 +2129,7 @@ fn render_for(view: &View, sun: &Sun, time: f64) -> Render {
         normal_bias: NORMAL_BIAS,
         map_size: MAP as f64,
         time,
+        grid,
     }
 }
 fn color_pass<'a>(
@@ -2207,7 +2215,7 @@ impl Demo {
         let tex = wgpu::BindingResource::TextureView;
         let sampler = wgpu::BindingResource::Sampler;
         let bright = target(quarter);
-        let high = quad("bloom high pass", HIGH_VS, HIGH_FS);
+        let high = quad("bloom high pass", UV_VS, HIGH_FS);
         let high_group = bind(
             r,
             high.get_bind_group_layout(0),
@@ -2225,7 +2233,7 @@ impl Demo {
         }
         let mut blurs = vec![];
         for (i, fs) in BLUR_FS.iter().enumerate() {
-            let p = quad("bloom blur", BLUR_VS, fs);
+            let p = quad("bloom blur", UV_VS, fs);
             let input = if i == 0 { &bright } else { &levels[i - 1].1 };
             let pass = |input: &wgpu::TextureView| -> Result<_> {
                 let object = uniform(r, "bloom blur", fs, "objectStruct")?;
@@ -2242,7 +2250,7 @@ impl Demo {
             };
             blurs.push([pass(input)?, pass(&levels[i].0)?]);
         }
-        let composite = quad("bloom composite", QUAD_VS, COMPOSITE_FS);
+        let composite = quad("bloom composite", UV_VS, COMPOSITE_FS);
         let mut entries = vec![
             (0, self.composite_object.as_entire_binding()),
             (1, self.tints.as_entire_binding()),
@@ -2283,7 +2291,7 @@ impl Demo {
         for (i, k) in items {
             draws.push((
                 i,
-                self.item_draw(r, i, (i, MAIN), k, MAIN, MAIN, samples, false)?,
+                self.item_draw(r, (i, MAIN), k, MAIN, samples)?,
             ));
         }
         let sky = two_groups(
@@ -2314,7 +2322,7 @@ impl Demo {
         let output_pipeline = culled_pipeline(
             r,
             "city output",
-            (QUAD_VS, OUTPUT_FS),
+            (UV_VS, OUTPUT_FS),
             &uv,
             &[out.options.format],
             None,
@@ -2377,7 +2385,8 @@ impl Demo {
     pub fn prepare(&mut self, _s: &mut Scene, _c: Object3D, _r: &Renderer) -> Result<()> {
         Ok(())
     }
-    /// updateSun()'s bake: the sky without its disc into the PMREM.
+    /// updateSun()'s bake: the sky without its disc into the PMREM
+    /// ( fromScene( envScene, 0, 0.1, 100 ) ).
     fn bake_pmrem(
         &self,
         r: &Renderer,
@@ -2392,7 +2401,10 @@ impl Demo {
             "objectStruct",
             &sky_values(sun.direction, false),
         )?;
-        for (render, view) in self.pmrem_renders.iter().zip(FACE_VIEWS) {
+        // CubeCamera( 0.1, 100 ) at the origin; the cleared faces take the
+        // renderer's clear color ( black ) as the scene's background.
+        let cameras = face_cameras(0.1, 100., Vector3::ZERO);
+        for (render, (projection, view, _)) in self.pmrem_renders.iter().zip(&cameras) {
             write_static(
                 r,
                 render,
@@ -2400,66 +2412,38 @@ impl Demo {
                 "renderStruct",
                 &[
                     ("nodeUniform7", vec![time]),
-                    ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                    ("cameraViewMatrix", view.to_vec()),
+                    ("cameraProjectionMatrix", mat(*projection).to_vec()),
+                    ("cameraViewMatrix", mat(*view).to_vec()),
                     ("cameraPosition", vec![0.; 3]),
                 ],
             )?;
         }
-        let pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
-            encoder
-                .begin_render_pass(&wgpu::RenderPassDescriptor {
-                    label: Some("PMREM fromScene"),
-                    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                        view: &self.pmrem.view,
-                        depth_slice: None,
-                        resolve_target: None,
-                        ops: wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        },
-                    })],
-                    depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
-                        view: &self.pmrem_depth,
-                        depth_ops: Some(wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(1.)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        }),
-                        stencil_ops: None,
+        for (face, draw) in self.pmrem.source_faces().iter().zip(&self.pmrem_draws) {
+            let mut p = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("PMREM fromScene"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: face,
+                    depth_slice: None,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
+                    view: &self.pmrem_depth,
+                    depth_ops: Some(wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(1.),
+                        store: wgpu::StoreOp::Discard,
                     }),
-                    ..Default::default()
-                })
-                .forget_lifetime()
-        };
-        drop(pass(encoder, true));
-        {
-            let mut p = pass(encoder, false);
-            p.set_viewport(0., 0., 768., 1024., 0., 1.);
-            set(&mut p, &self.box_draw);
-            self.sky_box.draw(&mut p, 1);
-        }
-        for (i, draw) in self.pmrem_draws.iter().enumerate() {
-            let mut p = pass(encoder, false);
-            p.set_viewport(
-                (i % 3) as f32 * 256.,
-                (i / 3) as f32 * 256.,
-                256.,
-                256.,
-                0.,
-                1.,
-            );
+                    stencil_ops: None,
+                }),
+                ..Default::default()
+            });
             set(&mut p, draw);
             self.sky_box.draw(&mut p, 1);
         }
-        self.pmrem.encode_levels(encoder);
+        self.pmrem.encode_from_scene(encoder);
         Ok(())
     }
     /// The shadow map: the given draws ( front to back by the shadow
@@ -2512,7 +2496,7 @@ impl Demo {
     /// An item's material, mesh and instances ( usize::MAX: the proxy ).
     fn item_parts(&self, b: &Built, i: usize) -> (K, usize, Option<usize>) {
         if i == usize::MAX {
-            (K::ProxyBake, b.proxy.0, Some(b.proxy.1))
+            (K::Proxy, b.proxy.0, Some(b.proxy.1))
         } else {
             let it = &b.items[i];
             (it.kind, it.mesh, it.instances)
@@ -2546,7 +2530,7 @@ impl Demo {
         if self.bake_index >= PROBES {
             return Ok(());
         }
-        let (start, pass) = (self.bake_index, self.bake_pass as usize);
+        let (start, pass) = (self.bake_index, self.bake_pass);
         let end = start + GRID_RES[0];
         let [nx, ny, nz] = GRID_RES;
         let mut encoder = r.device.create_command_encoder(&Default::default());
@@ -2561,76 +2545,140 @@ impl Demo {
         }
         // The shadow map renders once for the bake, with the proxy standing
         // in for the city.
-        let shadow = render_for(&sun.shadow, sun, self.time);
-        self.write_render(r, K::ProxyBake, SHADOW, &shadow)?;
+        let shadow = render_for(&sun.shadow, sun, self.time, 1.);
+        self.write_render(r, K::Proxy, SHADOW, &shadow)?;
         self.encode_shadow(&mut encoder, sun, true)?;
         r.queue.submit([encoder.finish()]);
-        let (projection, rotations) = cube_cameras();
-        let (ground, proxy) = if pass == 0 {
-            (K::GroundBake, K::ProxyBake)
-        } else {
-            (K::Ground, K::ProxyGi)
-        };
-        for probe in start..end {
-            let (ix, iy, iz) = (probe % nx, probe / (nx * nz), (probe / nx) % nz);
-            let p = probe_position([ix, iy, iz]);
+        // The capture materials' render structs: the bounce grid adds
+        // nothing to the direct pass ( intensity 0 ), as it shares its
+        // lights and shaders with the bounce pass.
+        let values = render_for(&sun.shadow, sun, self.time, pass as f64);
+        let c = &self.capture;
+        write(
+            r,
+            &c.ground.render,
+            PROBE_GROUND.1,
+            "renderStruct",
+            &render_values(&c.ground_shader.render, &values),
+        )?;
+        write(
+            r,
+            &c.proxy.render,
+            PROBE_PROXY.1,
+            "renderStruct",
+            &render_values(&self.stage(K::Proxy, MAIN)?.render, &values),
+        )?;
+        write_static(
+            r,
+            &c.sky.render,
+            PROBE_SKY.1,
+            "renderStruct",
+            &[("nodeUniform8", vec![self.time])],
+        )?;
+        let b = self.built.as_ref().ok_or(Error::Invalid("city scene"))?;
+        let projection = capture_projection();
+        let identity3 = vec![1., 0., 0., 0., 1., 0., 0., 0., 1.];
+        // _captureProbes: per batch, its slots' 48 faces in one ArrayCamera
+        // render into the face atlas, then their SH projection into the
+        // batch rows ( one per probe, in bake order ).
+        for batch_start in (start..end).step_by(PROBES_PER_BATCH as usize) {
+            let count = (end - batch_start).min(PROBES_PER_BATCH);
+            let mut positions = vec![0f32; CAMERAS * 4];
+            let mut views = vec![0f32; CAMERAS * 16];
+            let mut worlds = vec![0f32; CAMERAS * 16];
+            // Unused slots' cameras draw nothing ( their layers disabled ).
+            let mut cameras = vec![];
+            for slot in 0..count {
+                let probe = batch_start + slot;
+                let (ix, iy, iz) = (probe % nx, probe / (nx * nz), (probe / nx) % nz);
+                let p = probe_position([ix, iy, iz]);
+                for face in 0..6 {
+                    let i = slot as usize * 6 + face;
+                    let world = capture_world(p, face);
+                    let view = inverse(&world);
+                    for k in 0..3 {
+                        positions[i * 4 + k] = p[k] as f32;
+                    }
+                    for k in 0..16 {
+                        views[i * 16 + k] = view[k] as f32;
+                        worlds[i * 16 + k] = world[k] as f32;
+                    }
+                    cameras.push((i, frustum(&multiply(&projection, &view))));
+                }
+            }
+            r.queue
+                .write_buffer(&c.arrays[0], 0, bytemuck::cast_slice(&positions));
+            r.queue
+                .write_buffer(&c.arrays[1], 0, bytemuck::cast_slice(&views));
+            r.queue
+                .write_buffer(&c.arrays[3], 0, bytemuck::cast_slice(&worlds));
+            write_static(
+                r,
+                &self.sh_object,
+                SH_FS,
+                "objectStruct",
+                &[
+                    ("nodeUniform0", vec![1.]),
+                    ("nodeUniform1", vec![batch_start as f64]),
+                    ("nodeUniform3", identity3.clone()),
+                ],
+            )?;
             let mut encoder = r.device.create_command_encoder(&Default::default());
-            for (f, rotation) in rotations.iter().enumerate() {
-                let view = multiply(rotation, &translation(p.map(|v| -v)));
-                let world = inverse(&view);
-                let face = View {
-                    projection,
-                    view,
-                    world,
-                };
-                let values = render_for(&face, sun, self.time);
-                self.write_render(r, ground, FACE + f as u8, &values)?;
-                self.write_render(r, proxy, FACE + f as u8, &values)?;
-                write_static(
-                    r,
-                    &self.sky_face_renders[f],
-                    SKY_FS,
-                    "renderStruct",
-                    &[
-                        ("nodeUniform7", vec![self.time]),
-                        ("cameraProjectionMatrix", projection.to_vec()),
-                        ("cameraViewMatrix", view.to_vec()),
-                        ("cameraPosition", p.to_vec()),
-                    ],
-                )?;
-                let b = self.built.as_ref().ok_or(Error::Invalid("city scene"))?;
-                let planes = frustum(&multiply(&projection, &view));
-                let mut pass_ = color_pass(
+            {
+                let mut p = color_pass(
                     &mut encoder,
-                    "city probe face",
-                    &self.cube_faces[f],
+                    "city probe faces",
+                    &c.faces,
                     None,
-                    Some(&self.cube_depth),
+                    Some(&c.depth),
                     false,
                 );
-                let [sky, g, x] = &b.bake[pass][f];
-                set(&mut pass_, sky);
-                self.sky_box.draw(&mut pass_, 1);
-                if visible(&planes, self.item_sphere(b, 0, &IDENTITY).1) {
-                    set(&mut pass_, g);
-                    draw_mesh(&mut pass_, self.stage(ground, MAIN)?, &b.meshes[0], None);
-                }
-                if visible(&planes, b.instances[b.proxy.1].sphere) {
-                    set(&mut pass_, x);
-                    draw_mesh(
-                        &mut pass_,
-                        self.stage(proxy, MAIN)?,
-                        &b.meshes[b.proxy.0],
-                        Some(&b.instances[b.proxy.1]),
-                    );
+                let ground = self.item_sphere(b, 0, &IDENTITY).1;
+                let proxy = b.instances[b.proxy.1].sphere;
+                let proxy_shader = self.stage(K::Proxy, MAIN)?;
+                for (draw, sphere) in [
+                    (&c.sky, None),
+                    (&c.ground, Some(ground)),
+                    (&c.proxy, Some(proxy)),
+                ] {
+                    p.set_pipeline(&draw.pipeline);
+                    p.set_bind_group(0, &draw.cameras, &[]);
+                    p.set_bind_group(2, &draw.group, &[]);
+                    // perCameraFrustumCulled: each sub-camera tests the
+                    // object against its own frustum.
+                    for (i, planes) in &cameras {
+                        if sphere.is_some_and(|s| !visible(planes, s)) {
+                            continue;
+                        }
+                        let (x, y) = ((*i % 6) as u32 * CUBE, (*i / 6) as u32 * CUBE);
+                        p.set_viewport(x as f32, y as f32, CUBE as f32, CUBE as f32, 0., 1.);
+                        p.set_bind_group(1, &draw.indices[*i], &[]);
+                        match sphere {
+                            None => self.sky_box.draw(&mut p, 1),
+                            Some(_) if std::ptr::eq(draw, &c.ground) => {
+                                draw_mesh(&mut p, &c.ground_shader, &b.meshes[0], None)
+                            }
+                            Some(_) => draw_mesh(
+                                &mut p,
+                                proxy_shader,
+                                &b.meshes[b.proxy.0],
+                                Some(&b.instances[b.proxy.1]),
+                            ),
+                        }
+                    }
                 }
             }
             {
-                // Batch rows in texture order ( X, Y, Z ).
-                let row = ix + iy * nx + iz * nx * ny;
                 let mut sh =
                     color_pass(&mut encoder, "city probe SH", &self.batch, None, None, true);
-                sh.set_viewport(0., row as f32, 9., 1., 0., 1.);
+                sh.set_viewport(
+                    0.,
+                    batch_start as f32,
+                    (9 * 6 * FACE_BLOCKS) as f32,
+                    count as f32,
+                    0.,
+                    1.,
+                );
                 set(&mut sh, &self.sh);
                 sh.draw(0..3, 0..1);
             }
@@ -2708,7 +2756,7 @@ impl Demo {
         let source = if s.fs.contains("struct renderStruct {") {
             s.fs
         } else {
-            s.vs.as_str()
+            s.vs
         };
         write(
             r,
@@ -2757,18 +2805,15 @@ impl Demo {
             self.build(r)?;
             self.resize(r, out)?;
         }
-        if std::mem::take(&mut self.gi_pending) {
-            self.write_gi(r)?;
-        }
         let sun = self.sun();
         if let Some(time) = self.pmrem_pending.take() {
             let mut encoder = r.device.create_command_encoder(&Default::default());
             write_static(
                 r,
-                &self.sky_bake_object,
-                SKY_FS,
+                &self.capture.sky.object,
+                PROBE_SKY.1,
                 "objectStruct",
-                &sky_values(sun.direction, false),
+                &probe_sky_values(sun.direction),
             )?;
             write_static(
                 r,
@@ -2798,8 +2843,10 @@ impl Demo {
         if advance {
             self.bake_probes(r, &sun)?;
         }
-        let shadow = render_for(&sun.shadow, &sun, self.time);
-        let frame = render_for(&main, &sun, self.time);
+        // probes.visible: the grid's intensity in the scene's materials.
+        let gi = if self.params[3] > 0.5 { 1. } else { 0. };
+        let shadow = render_for(&sun.shadow, &sun, self.time, gi);
+        let frame = render_for(&main, &sun, self.time, gi);
         let kinds: Vec<K> = self
             .built
             .as_ref()
@@ -2852,13 +2899,11 @@ impl Demo {
                     "objectStruct",
                     &[
                         ("nodeUniform1", identity3.clone()),
-                        ("nodeUniform2", identity3.clone()),
-                        ("nodeUniform3", direction.to_vec()),
+                        ("nodeUniform2", direction.to_vec()),
                         (
-                            "nodeUniform4",
+                            "nodeUniform3",
                             vec![1. / level.0 as f64, 1. / level.1 as f64],
                         ),
-                        ("nodeUniform5", identity3.clone()),
                     ],
                 )?;
             }
@@ -3023,7 +3068,6 @@ impl Demo {
                 self.bake_index = 0;
                 self.bake_pass = 0;
             }
-            3 if old != value => self.gi_pending = true,
             _ => {}
         }
         self.pending = true;

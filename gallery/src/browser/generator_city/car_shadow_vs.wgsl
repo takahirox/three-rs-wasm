@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,12 +8,6 @@
 
 // uniforms
 
-struct NodeBuffer_42537Struct {
-	value : array< mat4x4<f32>, 128 >
-};
-@binding( 1 ) @group( 1 )
-var<uniform> NodeBuffer_42537 : NodeBuffer_42537Struct;
-
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
 	cameraViewMatrix : mat4x4<f32>
@@ -22,9 +16,14 @@ struct renderStruct {
 var<uniform> render : renderStruct;
 
 struct objectStruct {
-	nodeUniform1 : f32,
-	nodeUniform2 : f32,
-	nodeUniform5 : mat4x4<f32>
+	nodeUniform4 : f32,
+	nodeUniform5 : f32,
+	nodeUniform7 : vec3<f32>,
+	nodeUniform8 : vec2<f32>,
+	nodeUniform9 : f32,
+	nodeUniform10 : vec2<f32>,
+	nodeUniform11 : f32,
+	nodeUniform14 : mat4x4<f32>
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -33,9 +32,9 @@ var<uniform> object : objectStruct;
 
 struct VaryingsStruct {
 	@location( 0 ) @interpolate( flat, either ) nodeVarying3 : f32,
-	@location( 1 ) nodeVarying5 : f32,
-	@location( 2 ) nodeVarying6 : vec2<f32>,
-	@location( 3 ) nodeVarying7 : vec3<f32>,
+	@location( 1 ) nodeVarying5 : vec3<f32>,
+	@location( 2 ) nodeVarying6 : vec3<f32>,
+	@location( 3 ) nodeVarying7 : vec2<f32>,
 	@location( 4 ) nodeVarying8 : vec3<f32>,
 	@builtin( position ) builtinClipSpace : vec4<f32>
 };
@@ -44,7 +43,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar27 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -75,29 +73,33 @@ fn tsl_inverse_mat3( m : mat3x3<f32> ) -> mat3x3<f32> {
 
 
 @vertex
-fn main( @builtin( instance_index ) instanceIndex : u32,
-	@location( 0 ) position : vec3<f32>,
+fn main( @location( 0 ) position : vec3<f32>,
 	@location( 1 ) normal : vec3<f32>,
 	@location( 2 ) partId : f32,
-	@location( 3 ) personSeed : f32,
-	@location( 4 ) uv : vec2<f32> ) -> VaryingsStruct {
+	@location( 3 ) paintColor : vec3<f32>,
+	@location( 4 ) uv : vec2<f32>,
+	@location( 5 ) nodeAttribute0 : vec4<f32>,
+	@location( 6 ) nodeAttribute1 : vec4<f32>,
+	@location( 7 ) nodeAttribute2 : vec4<f32>,
+	@location( 8 ) nodeAttribute3 : vec4<f32> ) -> VaryingsStruct {
 
 	// flow
 	// code
 
 	positionLocal = position;
-	positionLocal = ( NodeBuffer_42537.value[ instanceIndex ] * vec4<f32>( positionLocal, 1.0 ) ).xyz;
+	let nodeConst0 = mat4x4<f32>( nodeAttribute0, nodeAttribute1, nodeAttribute2, nodeAttribute3 );
+	positionLocal = ( nodeConst0 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	normalLocal = normal;
-	normalLocal = normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( NodeBuffer_42537.value[ instanceIndex ][ 0 ].xyz, NodeBuffer_42537.value[ instanceIndex ][ 1 ].xyz, NodeBuffer_42537.value[ instanceIndex ][ 2 ].xyz ) ) ) * normalLocal ) );
+	normalLocal = normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( nodeConst0[ 0 ].xyz, nodeConst0[ 1 ].xyz, nodeConst0[ 2 ].xyz ) ) ) * normalLocal ) );
 	varyings.nodeVarying3 = partId;
-	varyings.nodeVarying5 = personSeed;
-	varyings.nodeVarying6 = uv;
-	varyings.nodeVarying7 = position;
+	varyings.nodeVarying5 = position;
+	varyings.nodeVarying6 = paintColor;
+	varyings.nodeVarying7 = uv;
 	varyings.nodeVarying8 = normal;
-	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform5 );
+	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform14 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar27 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar27;
+	let VERTEX_nodeConst35 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst35;
 
 	// result
 

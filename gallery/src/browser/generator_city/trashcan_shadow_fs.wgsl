@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -14,8 +17,8 @@ var<private> output : OutputStruct;
 // uniforms
 
 struct objectStruct {
-	nodeUniform1 : f32,
-	nodeUniform4 : mat4x4<f32>
+	nodeUniform4 : f32,
+	nodeUniform7 : mat4x4<f32>
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -24,13 +27,10 @@ var<uniform> object : objectStruct;
 var<private> DiffuseColor : vec4<f32>;
 var<private> nodeVar0 : vec3<f32>;
 var<private> nodeVar1 : vec3<f32>;
-var<private> nodeVar2 : f32;
-var<private> nodeVar3 : f32;
 var<private> Output : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
 
 // codes
-fn mx_floor ( x : f32 ) -> i32 {
+fn fn48 ( x : f32 ) -> i32 {
 
 	var nodeVar0 : f32;
 
@@ -41,7 +41,7 @@ fn mx_floor ( x : f32 ) -> i32 {
 }
 
 
-fn mx_fade ( t : f32 ) -> f32 {
+fn fn65 ( t : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 
@@ -52,7 +52,7 @@ fn mx_fade ( t : f32 ) -> f32 {
 }
 
 
-fn mx_rotl32 ( x : u32, k : i32 ) -> u32 {
+fn fn61 ( x : u32, k : i32 ) -> u32 {
 
 	var nodeVar0 : i32;
 	var nodeVar1 : u32;
@@ -65,7 +65,7 @@ fn mx_rotl32 ( x : u32, k : i32 ) -> u32 {
 }
 
 
-fn mx_bjfinal ( a : u32, b : u32, c : u32 ) -> u32 {
+fn fn63 ( a : u32, b : u32, c : u32 ) -> u32 {
 
 	var nodeVar0 : u32;
 	var nodeVar1 : u32;
@@ -75,26 +75,26 @@ fn mx_bjfinal ( a : u32, b : u32, c : u32 ) -> u32 {
 	nodeVar1 = b;
 	nodeVar2 = a;
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 14 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 14 ) );
 	nodeVar2 = ( nodeVar2 ^ nodeVar0 );
-	nodeVar2 = ( nodeVar2 - mx_rotl32( nodeVar0, 11 ) );
+	nodeVar2 = ( nodeVar2 - fn61( nodeVar0, 11 ) );
 	nodeVar1 = ( nodeVar1 ^ nodeVar2 );
-	nodeVar1 = ( nodeVar1 - mx_rotl32( nodeVar2, 25 ) );
+	nodeVar1 = ( nodeVar1 - fn61( nodeVar2, 25 ) );
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 16 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 16 ) );
 	nodeVar2 = ( nodeVar2 ^ nodeVar0 );
-	nodeVar2 = ( nodeVar2 - mx_rotl32( nodeVar0, 4 ) );
+	nodeVar2 = ( nodeVar2 - fn61( nodeVar0, 4 ) );
 	nodeVar1 = ( nodeVar1 ^ nodeVar2 );
-	nodeVar1 = ( nodeVar1 - mx_rotl32( nodeVar2, 14 ) );
+	nodeVar1 = ( nodeVar1 - fn61( nodeVar2, 14 ) );
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 24 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 24 ) );
 
 	return nodeVar0;
 
 }
 
 
-fn mx_hash_int_2 ( x : i32, y : i32, z : i32 ) -> u32 {
+fn fn68 ( x : i32, y : i32, z : i32 ) -> u32 {
 
 	var nodeVar0 : i32;
 	var nodeVar1 : i32;
@@ -118,12 +118,12 @@ fn mx_hash_int_2 ( x : i32, y : i32, z : i32 ) -> u32 {
 	nodeVar5 = ( nodeVar5 + u32( nodeVar1 ) );
 	nodeVar6 = ( nodeVar6 + u32( nodeVar0 ) );
 
-	return mx_bjfinal( nodeVar4, nodeVar5, nodeVar6 );
+	return fn63( nodeVar4, nodeVar5, nodeVar6 );
 
 }
 
 
-fn mx_select ( b : bool, t : f32, f : f32 ) -> f32 {
+fn fn46 ( b : bool, t : f32, f : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -139,7 +139,7 @@ fn mx_select ( b : bool, t : f32, f : f32 ) -> f32 {
 }
 
 
-fn mx_negate_if ( val : f32, b : bool ) -> f32 {
+fn fn47 ( val : f32, b : bool ) -> f32 {
 
 	var nodeVar0 : bool;
 	var nodeVar1 : f32;
@@ -153,7 +153,7 @@ fn mx_negate_if ( val : f32, b : bool ) -> f32 {
 }
 
 
-fn mx_gradient_float_1 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
+fn fn54 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -168,15 +168,15 @@ fn mx_gradient_float_1 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
 	nodeVar2 = x;
 	nodeVar3 = hash;
 	nodeVar4 = ( nodeVar3 & 15u );
-	nodeVar5 = mx_select( ( nodeVar4 < 8u ), nodeVar2, nodeVar1 );
-	nodeVar6 = mx_select( ( nodeVar4 < 4u ), nodeVar1, mx_select( ( ( nodeVar4 == 12u ) || ( nodeVar4 == 14u ) ), nodeVar2, nodeVar0 ) );
+	nodeVar5 = fn46( ( nodeVar4 < 8u ), nodeVar2, nodeVar1 );
+	nodeVar6 = fn46( ( nodeVar4 < 4u ), nodeVar1, fn46( ( ( nodeVar4 == 12u ) || ( nodeVar4 == 14u ) ), nodeVar2, nodeVar0 ) );
 
-	return ( mx_negate_if( nodeVar5, bool( ( nodeVar4 & 1u ) ) ) + mx_negate_if( nodeVar6, bool( ( nodeVar4 & 2u ) ) ) );
+	return ( fn47( nodeVar5, bool( ( nodeVar4 & 1u ) ) ) + fn47( nodeVar6, bool( ( nodeVar4 & 2u ) ) ) );
 
 }
 
 
-fn mx_trilerp_0 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6 : f32, v7 : f32, s : f32, t : f32, r : f32 ) -> f32 {
+fn fn51 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6 : f32, v7 : f32, s : f32, t : f32, r : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -213,7 +213,7 @@ fn mx_trilerp_0 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6
 }
 
 
-fn mx_gradient_scale3d_0 ( v : f32 ) -> f32 {
+fn fn58 ( v : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 
@@ -224,7 +224,7 @@ fn mx_gradient_scale3d_0 ( v : f32 ) -> f32 {
 }
 
 
-fn mx_perlin_noise_float_1 ( p : vec3<f32> ) -> f32 {
+fn fn74 ( p : vec3<f32> ) -> f32 {
 
 	var nodeVar0 : vec3<f32>;
 	var nodeVar1 : i32;
@@ -246,25 +246,25 @@ fn mx_perlin_noise_float_1 ( p : vec3<f32> ) -> f32 {
 	nodeVar2 = 0;
 	nodeVar3 = 0;
 	nodeVar4 = nodeVar0.x;
-	nodeVar1 = mx_floor( nodeVar4 );
+	nodeVar1 = fn48( nodeVar4 );
 	nodeVar5 = ( nodeVar4 - f32( nodeVar1 ) );
 	nodeVar6 = nodeVar0.y;
-	nodeVar2 = mx_floor( nodeVar6 );
+	nodeVar2 = fn48( nodeVar6 );
 	nodeVar7 = ( nodeVar6 - f32( nodeVar2 ) );
 	nodeVar8 = nodeVar0.z;
-	nodeVar3 = mx_floor( nodeVar8 );
+	nodeVar3 = fn48( nodeVar8 );
 	nodeVar9 = ( nodeVar8 - f32( nodeVar3 ) );
-	nodeVar10 = mx_fade( nodeVar5 );
-	nodeVar11 = mx_fade( nodeVar7 );
-	nodeVar12 = mx_fade( nodeVar9 );
-	nodeVar13 = mx_trilerp_0( mx_gradient_float_1( mx_hash_int_2( nodeVar1, nodeVar2, nodeVar3 ), nodeVar5, nodeVar7, nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), nodeVar2, nodeVar3 ), ( nodeVar5 - 1.0 ), nodeVar7, nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, ( nodeVar2 + 1 ), nodeVar3 ), nodeVar5, ( nodeVar7 - 1.0 ), nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), nodeVar3 ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, nodeVar2, ( nodeVar3 + 1 ) ), nodeVar5, nodeVar7, ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), nodeVar2, ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), nodeVar7, ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), nodeVar5, ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), nodeVar10, nodeVar11, nodeVar12 );
+	nodeVar10 = fn65( nodeVar5 );
+	nodeVar11 = fn65( nodeVar7 );
+	nodeVar12 = fn65( nodeVar9 );
+	nodeVar13 = fn51( fn54( fn68( nodeVar1, nodeVar2, nodeVar3 ), nodeVar5, nodeVar7, nodeVar9 ), fn54( fn68( ( nodeVar1 + 1 ), nodeVar2, nodeVar3 ), ( nodeVar5 - 1.0 ), nodeVar7, nodeVar9 ), fn54( fn68( nodeVar1, ( nodeVar2 + 1 ), nodeVar3 ), nodeVar5, ( nodeVar7 - 1.0 ), nodeVar9 ), fn54( fn68( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), nodeVar3 ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), nodeVar9 ), fn54( fn68( nodeVar1, nodeVar2, ( nodeVar3 + 1 ) ), nodeVar5, nodeVar7, ( nodeVar9 - 1.0 ) ), fn54( fn68( ( nodeVar1 + 1 ), nodeVar2, ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), nodeVar7, ( nodeVar9 - 1.0 ) ), fn54( fn68( nodeVar1, ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), nodeVar5, ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), fn54( fn68( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), nodeVar10, nodeVar11, nodeVar12 );
 
-	return mx_gradient_scale3d_0( nodeVar13 );
+	return fn58( nodeVar13 );
 
 }
 
 
-fn mx_fractal_noise_float ( p : vec3<f32>, octaves : i32, lacunarity : f32, diminish : f32 ) -> f32 {
+fn fn87 ( p : vec3<f32>, octaves : i32, lacunarity : f32, diminish : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -282,7 +282,7 @@ fn mx_fractal_noise_float ( p : vec3<f32>, octaves : i32, lacunarity : f32, dimi
 
 	for ( var i : i32 = 0; i < nodeVar5; i ++ ) {
 
-		nodeVar3 = ( nodeVar3 + ( nodeVar4 * mx_perlin_noise_float_1( nodeVar2 ) ) );
+		nodeVar3 = ( nodeVar3 + ( nodeVar4 * fn74( nodeVar2 ) ) );
 		nodeVar4 = ( nodeVar4 * nodeVar0 );
 		nodeVar2 = ( nodeVar2 * vec3<f32>( nodeVar1 ) );
 
@@ -307,20 +307,22 @@ fn main( @location( 0 ) @interpolate( flat, either ) nodeVarying3 : f32,
 
 	if ( ( nodeVarying3 == 2.0 ) ) {
 
-		nodeVar0 = mix( vec3<f32>( 0.01764195448412081, 0.015996293361446288, 0.012286488353353374 ), vec3<f32>( 0.3915724777393922, 0.34191442489801843, 0.24620132669705552 ), ( step( 0.82, ( ( ( mx_fractal_noise_float( ( nodeVarying5 * vec3<f32>( 34.0 ) ), 2, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * smoothstep( 0.6, 0.75, nodeVarying5.y ) ) );
+		nodeVar0 = mix( vec3<f32>( 0.01764195448412081, 0.015996293361446288, 0.012286488353353374 ), vec3<f32>( 0.3915724777393922, 0.34191442489801843, 0.24620132669705552 ), ( step( 0.82, ( ( ( fn87( ( nodeVarying5 * vec3<f32>( 34.0 ) ), 2, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * smoothstep( 0.6, 0.75, nodeVarying5.y ) ) );
 
 	} else {
 
 
 		if ( ( nodeVarying3 == 1.0 ) ) {
 
-			nodeVar1 = ( ( vec3<f32>( 0.040915196900556984, 0.08865558627723595, 0.04231141061442144 ) * vec3<f32>( ( 1.0 - ( smoothstep( 0.45, 0.05, nodeVarying5.y ) * 0.5 ) ) ) ) * vec3<f32>( 1.15 ) );
+			let nodeConst1 = ( vec3<f32>( 0.040915196900556984, 0.08865558627723595, 0.04231141061442144 ) * vec3<f32>( ( 1.0 - ( smoothstep( 0.45, 0.05, nodeVarying5.y ) * 0.5 ) ) ) );
+			nodeVar1 = ( nodeConst1 * vec3<f32>( 1.15 ) );
 
 		} else {
 
-			nodeVar2 = ( nodeVarying6.x * 26.0 );
-			nodeVar3 = ( nodeVarying6.y * 9.0 );
-			nodeVar1 = mix( vec3<f32>( 0.005181516700061659, 0.006048833020386069, 0.005181516700061659 ), ( vec3<f32>( 0.040915196900556984, 0.08865558627723595, 0.04231141061442144 ) * vec3<f32>( ( 1.0 - ( smoothstep( 0.45, 0.05, nodeVarying5.y ) * 0.5 ) ) ) ), smoothstep( 0.3, 0.2, min( abs( ( fract( ( nodeVar2 + nodeVar3 ) ) - 0.5 ) ), abs( ( fract( ( nodeVar2 - nodeVar3 ) ) - 0.5 ) ) ) ) );
+			let nodeConst1 = ( vec3<f32>( 0.040915196900556984, 0.08865558627723595, 0.04231141061442144 ) * vec3<f32>( ( 1.0 - ( smoothstep( 0.45, 0.05, nodeVarying5.y ) * 0.5 ) ) ) );
+			let nodeConst2 = ( nodeVarying6.x * 26.0 );
+			let nodeConst3 = ( nodeVarying6.y * 9.0 );
+			nodeVar1 = mix( vec3<f32>( 0.005181516700061659, 0.006048833020386069, 0.005181516700061659 ), nodeConst1, smoothstep( 0.3, 0.2, min( abs( ( fract( ( nodeConst2 + nodeConst3 ) ) - 0.5 ) ), abs( ( fract( ( nodeConst2 - nodeConst3 ) ) - 0.5 ) ) ) ) );
 
 		}
 
@@ -329,13 +331,13 @@ fn main( @location( 0 ) @interpolate( flat, either ) nodeVarying3 : f32,
 	}
 
 	DiffuseColor = vec4<f32>( vec3<f32>( 0.0, 0.0, 0.0 ), ( 1.0 * vec4<f32>( nodeVar0, 1.0 ).w ) );
-	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform1 );
-	nodeVar4 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar4;
+	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform4 );
+	let nodeConst4 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst4;
 
 	// result
 
-	output.color = nodeVar4;
+	output.color = nodeConst4;
 
 	return output;
 

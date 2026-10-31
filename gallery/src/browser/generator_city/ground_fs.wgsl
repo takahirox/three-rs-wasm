@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -16,25 +19,27 @@ var<private> output : OutputStruct;
 @binding( 2 ) @group( 1 ) var nodeUniform8 : texture_2d<f32>;
 @binding( 3 ) @group( 1 ) var nodeUniform16_sampler : sampler_comparison;
 @binding( 4 ) @group( 1 ) var nodeUniform16 : texture_depth_2d;
-@binding( 5 ) @group( 1 ) var nodeUniform20_sampler : sampler;
-@binding( 6 ) @group( 1 ) var nodeUniform20 : texture_3d<f32>;
-@binding( 7 ) @group( 1 ) var nodeUniform30_sampler : sampler;
-@binding( 8 ) @group( 1 ) var nodeUniform30 : texture_2d<f32>;
+@binding( 5 ) @group( 1 ) var nodeUniform24_sampler : sampler;
+@binding( 6 ) @group( 1 ) var nodeUniform24 : texture_3d<f32>;
+@binding( 7 ) @group( 1 ) var nodeUniform26_sampler : sampler;
+@binding( 8 ) @group( 1 ) var nodeUniform26 : texture_cube<f32>;
 
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
 	cameraViewMatrix : mat4x4<f32>,
 	cameraPosition : vec3<f32>,
+	cameraWorldMatrix : mat4x4<f32>,
 	nodeUniform12 : vec3<f32>,
 	nodeUniform10 : vec3<f32>,
 	nodeUniform11 : vec3<f32>,
 	nodeUniform13 : mat4x4<f32>,
 	nodeUniform14 : f32,
 	nodeUniform15 : f32,
-	nodeUniform19 : f32,
-	cameraWorldMatrix : mat4x4<f32>,
 	nodeUniform17 : f32,
-	nodeUniform18 : vec2<f32>
+	nodeUniform18 : vec2<f32>,
+	nodeUniform19 : f32,
+	nodeUniform25 : f32,
+	nodeUniform23 : f32
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -46,15 +51,12 @@ struct objectStruct {
 	nodeUniform5 : mat3x3<f32>,
 	nodeUniform6 : vec3<f32>,
 	nodeUniform7 : f32,
+	nodeUniform20 : vec3<f32>,
 	nodeUniform21 : vec3<f32>,
 	nodeUniform22 : vec3<f32>,
-	nodeUniform23 : vec3<f32>,
-	nodeUniform24 : f32,
-	nodeUniform25 : f32,
-	nodeUniform26 : mat4x4<f32>,
-	nodeUniform28 : f32,
+	nodeUniform27 : mat4x4<f32>,
 	nodeUniform29 : f32,
-	nodeUniform31 : f32
+	nodeUniform30 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -65,321 +67,61 @@ var<private> nodeVar0 : f32;
 var<private> nodeVar1 : f32;
 var<private> nodeVar2 : f32;
 var<private> nodeVar3 : f32;
-var<private> nodeVar4 : f32;
-var<private> nodeVar5 : f32;
-var<private> nodeVar6 : f32;
-var<private> nodeVar7 : vec4<f32>;
-var<private> nodeVar8 : vec3<f32>;
-var<private> nodeVar9 : vec3<f32>;
-var<private> nodeVar10 : f32;
-var<private> nodeVar11 : f32;
-var<private> nodeVar12 : f32;
-var<private> nodeVar13 : f32;
-var<private> nodeVar14 : f32;
-var<private> nodeVar15 : f32;
-var<private> nodeVar16 : f32;
-var<private> nodeVar17 : f32;
-var<private> nodeVar18 : f32;
-var<private> nodeVar19 : f32;
-var<private> nodeVar20 : f32;
-var<private> nodeVar21 : f32;
-var<private> nodeVar22 : f32;
-var<private> nodeVar23 : f32;
-var<private> nodeVar24 : f32;
-var<private> nodeVar25 : f32;
-var<private> nodeVar26 : f32;
-var<private> nodeVar27 : f32;
-var<private> nodeVar28 : f32;
-var<private> nodeVar29 : f32;
-var<private> nodeVar30 : f32;
-var<private> nodeVar31 : f32;
-var<private> nodeVar32 : f32;
-var<private> nodeVar33 : f32;
 var<private> Metalness : f32;
 var<private> Roughness : f32;
 var<private> normalViewGeometry : vec3<f32>;
-var<private> nodeVar34 : vec3<f32>;
 var<private> SpecularColor : vec3<f32>;
 var<private> SpecularColorBlended : vec3<f32>;
 var<private> SpecularF90 : f32;
 var<private> DiffuseContribution : vec3<f32>;
 var<private> EmissiveColor : vec3<f32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar35 : vec3<f32>;
-var<private> nodeVar36 : vec3<f32>;
 var<private> NORMAL_normalView : vec3<f32>;
-var<private> NORMAL_nodeVar37 : vec3<f32>;
-var<private> NORMAL_nodeVar38 : f32;
-var<private> nodeVar39 : f32;
-var<private> nodeVar40 : vec3<f32>;
 var<private> normalView : vec3<f32>;
 var<private> positionViewDirection : vec3<f32>;
-var<private> nodeVar41 : f32;
-var<private> nodeVar42 : vec2<f32>;
-var<private> nodeVar43 : f32;
-var<private> nodeVar44 : f32;
-var<private> nodeVar45 : f32;
-var<private> nodeVar46 : f32;
-var<private> nodeVar47 : vec3<f32>;
-var<private> nodeVar48 : vec3<f32>;
-var<private> nodeVar49 : vec3<f32>;
-var<private> nodeVar50 : vec4<f32>;
-var<private> nodeVar51 : vec4<f32>;
-var<private> nodeVar52 : vec3<f32>;
-var<private> nodeVar53 : vec3<f32>;
-var<private> nodeVar54 : f32;
-var<private> shadowPositionWorld : vec3<f32>;
-var<private> nodeVar55 : f32;
-var<private> normalWorld : vec3<f32>;
-var<private> nodeVar56 : vec4<f32>;
-var<private> nodeVar57 : vec3<f32>;
-var<private> nodeVar58 : vec3<f32>;
-var<private> nodeVar59 : f32;
-var<private> nodeVar60 : f32;
-var<private> nodeVar61 : vec2<f32>;
-var<private> nodeVar62 : f32;
-var<private> nodeVar63 : vec2<f32>;
-var<private> nodeVar64 : f32;
-var<private> nodeVar65 : vec2<f32>;
-var<private> nodeVar66 : f32;
-var<private> nodeVar67 : vec2<f32>;
-var<private> nodeVar68 : f32;
-var<private> nodeVar69 : vec2<f32>;
-var<private> nodeVar70 : f32;
-var<private> nodeVar71 : f32;
-var<private> nodeVar72 : vec3<f32>;
-var<private> nodeVar73 : vec3<f32>;
-var<private> directDiffuse : vec3<f32>;
-var<private> nodeVar74 : vec3<f32>;
-var<private> nodeVar75 : vec3<f32>;
-var<private> nodeVar76 : vec3<f32>;
-var<private> nodeVar77 : vec3<f32>;
-var<private> nodeVar78 : f32;
-var<private> nodeVar79 : f32;
-var<private> nodeVar80 : f32;
-var<private> nodeVar81 : vec3<f32>;
-var<private> nodeVar82 : vec3<f32>;
-var<private> nodeVar83 : vec3<f32>;
-var<private> nodeVar84 : vec3<f32>;
-var<private> nodeVar85 : vec3<f32>;
-var<private> directSpecular : vec3<f32>;
-var<private> nodeVar86 : vec3<f32>;
-var<private> nodeVar87 : f32;
-var<private> nodeVar88 : f32;
-var<private> nodeVar89 : f32;
-var<private> nodeVar90 : vec3<f32>;
-var<private> nodeVar91 : vec3<f32>;
-var<private> nodeVar92 : vec3<f32>;
-var<private> nodeVar93 : vec3<f32>;
-var<private> irradiance : vec3<f32>;
-var<private> nodeVar94 : vec3<f32>;
-var<private> nodeVar95 : vec3<f32>;
-var<private> nodeVar96 : vec3<f32>;
-var<private> nodeVar97 : vec3<f32>;
-var<private> nodeVar98 : vec3<f32>;
-var<private> nodeVar99 : vec3<f32>;
-var<private> nodeVar100 : vec3<f32>;
-var<private> nodeVar101 : vec3<f32>;
-var<private> nodeVar102 : vec3<f32>;
-var<private> nodeVar103 : vec3<f32>;
-var<private> nodeVar104 : vec3<f32>;
-var<private> nodeVar105 : vec3<f32>;
-var<private> nodeVar106 : f32;
-var<private> nodeVar107 : f32;
-var<private> nodeVar108 : f32;
-var<private> nodeVar109 : f32;
-var<private> nodeVar110 : f32;
-var<private> nodeVar111 : f32;
-var<private> nodeVar112 : f32;
-var<private> nodeVar113 : vec3<f32>;
-var<private> nodeVar114 : vec4<f32>;
-var<private> nodeVar115 : f32;
-var<private> nodeVar116 : f32;
-var<private> nodeVar117 : f32;
-var<private> nodeVar118 : vec3<f32>;
-var<private> nodeVar119 : vec4<f32>;
-var<private> nodeVar120 : vec3<f32>;
-var<private> nodeVar121 : f32;
-var<private> nodeVar122 : f32;
-var<private> nodeVar123 : f32;
-var<private> nodeVar124 : vec3<f32>;
-var<private> nodeVar125 : vec4<f32>;
-var<private> nodeVar126 : vec3<f32>;
-var<private> nodeVar127 : f32;
-var<private> nodeVar128 : f32;
-var<private> nodeVar129 : f32;
-var<private> nodeVar130 : vec3<f32>;
-var<private> nodeVar131 : vec4<f32>;
-var<private> nodeVar132 : f32;
-var<private> nodeVar133 : f32;
-var<private> nodeVar134 : f32;
-var<private> nodeVar135 : vec3<f32>;
-var<private> nodeVar136 : vec4<f32>;
-var<private> nodeVar137 : vec3<f32>;
-var<private> nodeVar138 : f32;
-var<private> nodeVar139 : f32;
-var<private> nodeVar140 : f32;
-var<private> nodeVar141 : vec3<f32>;
-var<private> nodeVar142 : vec4<f32>;
-var<private> nodeVar143 : vec3<f32>;
-var<private> nodeVar144 : f32;
-var<private> nodeVar145 : f32;
-var<private> nodeVar146 : f32;
-var<private> nodeVar147 : vec3<f32>;
-var<private> nodeVar148 : vec4<f32>;
-var<private> nodeVar149 : array< vec3<f32>, 9 >;
-var<private> nodeVar150 : vec3<f32>;
-var<private> nodeVar151 : vec3<f32>;
-var<private> nodeVar152 : vec3<f32>;
-var<private> nodeVar153 : vec3<f32>;
-var<private> radiance : vec3<f32>;
-var<private> nodeVar154 : f32;
-var<private> nodeVar155 : f32;
-var<private> nodeVar156 : f32;
-var<private> nodeVar157 : vec3<f32>;
-var<private> nodeVar158 : f32;
-var<private> nodeVar159 : f32;
-var<private> nodeVar160 : f32;
-var<private> nodeVar161 : vec2<f32>;
-var<private> nodeVar162 : vec4<f32>;
-var<private> nodeVar163 : vec3<f32>;
-var<private> nodeVar164 : f32;
-var<private> nodeVar165 : f32;
-var<private> nodeVar166 : f32;
-var<private> nodeVar167 : f32;
-var<private> nodeVar168 : f32;
-var<private> nodeVar169 : vec2<f32>;
-var<private> nodeVar170 : vec4<f32>;
-var<private> nodeVar171 : vec3<f32>;
-var<private> nodeVar172 : vec3<f32>;
-var<private> iblIrradiance : vec3<f32>;
-var<private> nodeVar173 : f32;
-var<private> nodeVar174 : f32;
-var<private> nodeVar175 : f32;
-var<private> nodeVar176 : f32;
-var<private> nodeVar177 : f32;
-var<private> nodeVar178 : f32;
-var<private> nodeVar179 : vec2<f32>;
-var<private> nodeVar180 : vec4<f32>;
-var<private> nodeVar181 : vec3<f32>;
-var<private> nodeVar182 : f32;
-var<private> nodeVar183 : f32;
-var<private> nodeVar184 : f32;
-var<private> nodeVar185 : f32;
-var<private> nodeVar186 : f32;
-var<private> nodeVar187 : vec2<f32>;
-var<private> nodeVar188 : vec4<f32>;
-var<private> nodeVar189 : vec3<f32>;
-var<private> nodeVar190 : vec3<f32>;
-var<private> nodeVar191 : vec3<f32>;
-var<private> nodeVar192 : vec3<f32>;
-var<private> nodeVar193 : vec3<f32>;
-var<private> nodeVar194 : f32;
-var<private> nodeVar195 : vec3<f32>;
-var<private> nodeVar196 : vec3<f32>;
-var<private> nodeVar197 : vec3<f32>;
-var<private> nodeVar198 : vec3<f32>;
-var<private> nodeVar199 : vec3<f32>;
-var<private> nodeVar200 : vec3<f32>;
-var<private> nodeVar201 : vec3<f32>;
-var<private> nodeVar202 : f32;
-var<private> nodeVar203 : f32;
-var<private> nodeVar204 : f32;
-var<private> nodeVar205 : vec3<f32>;
-var<private> nodeVar206 : vec3<f32>;
-var<private> nodeVar207 : vec3<f32>;
-var<private> nodeVar208 : vec3<f32>;
-var<private> nodeVar209 : vec3<f32>;
-var<private> nodeVar210 : vec3<f32>;
-var<private> nodeVar211 : vec3<f32>;
-var<private> nodeVar212 : vec3<f32>;
-var<private> nodeVar213 : vec3<f32>;
-var<private> nodeVar214 : vec3<f32>;
-var<private> nodeVar215 : vec3<f32>;
-var<private> nodeVar216 : vec3<f32>;
-var<private> nodeVar217 : vec3<f32>;
-var<private> indirectDiffuse : vec3<f32>;
-var<private> nodeVar218 : vec3<f32>;
+var<private> nodeVar4 : vec2<f32>;
 var<private> singleScatteringDielectric : vec3<f32>;
 var<private> multiScatteringDielectric : vec3<f32>;
+var<private> shadowPositionWorld : vec3<f32>;
+var<private> nodeVar5 : f32;
+var<private> normalWorld : vec3<f32>;
+var<private> nodeVar6 : f32;
+var<private> nodeVar7 : f32;
+var<private> nodeVar8 : f32;
+var<private> nodeVar9 : f32;
+var<private> nodeVar10 : f32;
+var<private> nodeVar11 : f32;
+var<private> nodeVar12 : vec3<f32>;
+var<private> directDiffuse : vec3<f32>;
+var<private> directSpecular : vec3<f32>;
+var<private> lightProbeIrradiance : vec3<f32>;
+var<private> lightProbePriority : f32;
+var<private> nodeVar13 : vec4<f32>;
+var<private> nodeVar14 : vec4<f32>;
+var<private> nodeVar15 : vec4<f32>;
+var<private> nodeVar16 : vec4<f32>;
+var<private> nodeVar17 : vec4<f32>;
+var<private> nodeVar18 : vec4<f32>;
+var<private> nodeVar19 : vec4<f32>;
+var<private> radiance : vec3<f32>;
+var<private> nodeVar20 : vec4<f32>;
+var<private> iblIrradiance : vec3<f32>;
+var<private> nodeVar21 : vec4<f32>;
+var<private> irradiance : vec3<f32>;
+var<private> nodeVar22 : vec3<f32>;
+var<private> indirectDiffuse : vec3<f32>;
 var<private> singleScatteringMetallic : vec3<f32>;
 var<private> multiScatteringMetallic : vec3<f32>;
-var<private> nodeVar219 : vec3<f32>;
-var<private> nodeVar220 : f32;
-var<private> nodeVar221 : vec3<f32>;
-var<private> nodeVar222 : vec3<f32>;
-var<private> nodeVar223 : vec3<f32>;
-var<private> nodeVar224 : vec3<f32>;
-var<private> nodeVar225 : vec3<f32>;
-var<private> nodeVar226 : vec3<f32>;
-var<private> nodeVar227 : vec3<f32>;
-var<private> nodeVar228 : f32;
-var<private> nodeVar229 : f32;
-var<private> nodeVar230 : f32;
-var<private> nodeVar231 : vec3<f32>;
-var<private> nodeVar232 : vec3<f32>;
-var<private> nodeVar233 : vec3<f32>;
-var<private> nodeVar234 : vec3<f32>;
-var<private> nodeVar235 : vec3<f32>;
-var<private> nodeVar236 : vec3<f32>;
-var<private> nodeVar237 : vec3<f32>;
-var<private> nodeVar238 : f32;
-var<private> nodeVar239 : vec3<f32>;
-var<private> nodeVar240 : vec3<f32>;
-var<private> nodeVar241 : vec3<f32>;
-var<private> nodeVar242 : vec3<f32>;
-var<private> nodeVar243 : vec3<f32>;
-var<private> nodeVar244 : vec3<f32>;
-var<private> nodeVar245 : vec3<f32>;
-var<private> nodeVar246 : f32;
-var<private> nodeVar247 : f32;
-var<private> nodeVar248 : f32;
-var<private> nodeVar249 : vec3<f32>;
-var<private> nodeVar250 : vec3<f32>;
-var<private> nodeVar251 : vec3<f32>;
-var<private> nodeVar252 : vec3<f32>;
-var<private> nodeVar253 : vec3<f32>;
-var<private> nodeVar254 : vec3<f32>;
-var<private> nodeVar255 : vec3<f32>;
-var<private> nodeVar256 : vec3<f32>;
-var<private> nodeVar257 : vec3<f32>;
-var<private> nodeVar258 : vec3<f32>;
-var<private> nodeVar259 : vec3<f32>;
-var<private> nodeVar260 : vec3<f32>;
-var<private> nodeVar261 : vec3<f32>;
-var<private> nodeVar262 : vec3<f32>;
-var<private> nodeVar263 : vec3<f32>;
-var<private> nodeVar264 : vec3<f32>;
-var<private> nodeVar265 : vec3<f32>;
-var<private> nodeVar266 : vec3<f32>;
-var<private> nodeVar267 : vec3<f32>;
+var<private> nodeVar23 : vec3<f32>;
+var<private> nodeVar24 : vec3<f32>;
 var<private> indirectSpecular : vec3<f32>;
-var<private> nodeVar268 : vec3<f32>;
-var<private> nodeVar269 : vec3<f32>;
 var<private> ambientOcclusion : f32;
-var<private> nodeVar270 : vec3<f32>;
-var<private> nodeVar271 : f32;
-var<private> nodeVar272 : f32;
-var<private> nodeVar273 : f32;
-var<private> nodeVar274 : f32;
-var<private> nodeVar275 : f32;
-var<private> nodeVar276 : f32;
-var<private> nodeVar277 : f32;
-var<private> nodeVar278 : f32;
-var<private> nodeVar279 : f32;
-var<private> nodeVar280 : f32;
-var<private> nodeVar281 : f32;
-var<private> nodeVar282 : vec3<f32>;
 var<private> totalDiffuse : vec3<f32>;
-var<private> nodeVar283 : vec3<f32>;
 var<private> totalSpecular : vec3<f32>;
-var<private> nodeVar284 : vec3<f32>;
 var<private> outgoingLight : vec3<f32>;
-var<private> nodeVar285 : vec3<f32>;
-var<private> nodeVar286 : vec4<f32>;
 
 // codes
-fn mx_floor ( x : f32 ) -> i32 {
+fn fn48 ( x : f32 ) -> i32 {
 
 	var nodeVar0 : f32;
 
@@ -390,7 +132,7 @@ fn mx_floor ( x : f32 ) -> i32 {
 }
 
 
-fn mx_fade ( t : f32 ) -> f32 {
+fn fn65 ( t : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 
@@ -401,7 +143,7 @@ fn mx_fade ( t : f32 ) -> f32 {
 }
 
 
-fn mx_rotl32 ( x : u32, k : i32 ) -> u32 {
+fn fn61 ( x : u32, k : i32 ) -> u32 {
 
 	var nodeVar0 : i32;
 	var nodeVar1 : u32;
@@ -414,7 +156,7 @@ fn mx_rotl32 ( x : u32, k : i32 ) -> u32 {
 }
 
 
-fn mx_bjfinal ( a : u32, b : u32, c : u32 ) -> u32 {
+fn fn63 ( a : u32, b : u32, c : u32 ) -> u32 {
 
 	var nodeVar0 : u32;
 	var nodeVar1 : u32;
@@ -424,26 +166,26 @@ fn mx_bjfinal ( a : u32, b : u32, c : u32 ) -> u32 {
 	nodeVar1 = b;
 	nodeVar2 = a;
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 14 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 14 ) );
 	nodeVar2 = ( nodeVar2 ^ nodeVar0 );
-	nodeVar2 = ( nodeVar2 - mx_rotl32( nodeVar0, 11 ) );
+	nodeVar2 = ( nodeVar2 - fn61( nodeVar0, 11 ) );
 	nodeVar1 = ( nodeVar1 ^ nodeVar2 );
-	nodeVar1 = ( nodeVar1 - mx_rotl32( nodeVar2, 25 ) );
+	nodeVar1 = ( nodeVar1 - fn61( nodeVar2, 25 ) );
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 16 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 16 ) );
 	nodeVar2 = ( nodeVar2 ^ nodeVar0 );
-	nodeVar2 = ( nodeVar2 - mx_rotl32( nodeVar0, 4 ) );
+	nodeVar2 = ( nodeVar2 - fn61( nodeVar0, 4 ) );
 	nodeVar1 = ( nodeVar1 ^ nodeVar2 );
-	nodeVar1 = ( nodeVar1 - mx_rotl32( nodeVar2, 14 ) );
+	nodeVar1 = ( nodeVar1 - fn61( nodeVar2, 14 ) );
 	nodeVar0 = ( nodeVar0 ^ nodeVar1 );
-	nodeVar0 = ( nodeVar0 - mx_rotl32( nodeVar1, 24 ) );
+	nodeVar0 = ( nodeVar0 - fn61( nodeVar1, 24 ) );
 
 	return nodeVar0;
 
 }
 
 
-fn mx_hash_int_2 ( x : i32, y : i32, z : i32 ) -> u32 {
+fn fn68 ( x : i32, y : i32, z : i32 ) -> u32 {
 
 	var nodeVar0 : i32;
 	var nodeVar1 : i32;
@@ -467,12 +209,12 @@ fn mx_hash_int_2 ( x : i32, y : i32, z : i32 ) -> u32 {
 	nodeVar5 = ( nodeVar5 + u32( nodeVar1 ) );
 	nodeVar6 = ( nodeVar6 + u32( nodeVar0 ) );
 
-	return mx_bjfinal( nodeVar4, nodeVar5, nodeVar6 );
+	return fn63( nodeVar4, nodeVar5, nodeVar6 );
 
 }
 
 
-fn mx_select ( b : bool, t : f32, f : f32 ) -> f32 {
+fn fn46 ( b : bool, t : f32, f : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -488,7 +230,7 @@ fn mx_select ( b : bool, t : f32, f : f32 ) -> f32 {
 }
 
 
-fn mx_negate_if ( val : f32, b : bool ) -> f32 {
+fn fn47 ( val : f32, b : bool ) -> f32 {
 
 	var nodeVar0 : bool;
 	var nodeVar1 : f32;
@@ -502,7 +244,7 @@ fn mx_negate_if ( val : f32, b : bool ) -> f32 {
 }
 
 
-fn mx_gradient_float_1 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
+fn fn54 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -517,15 +259,15 @@ fn mx_gradient_float_1 ( hash : u32, x : f32, y : f32, z : f32 ) -> f32 {
 	nodeVar2 = x;
 	nodeVar3 = hash;
 	nodeVar4 = ( nodeVar3 & 15u );
-	nodeVar5 = mx_select( ( nodeVar4 < 8u ), nodeVar2, nodeVar1 );
-	nodeVar6 = mx_select( ( nodeVar4 < 4u ), nodeVar1, mx_select( ( ( nodeVar4 == 12u ) || ( nodeVar4 == 14u ) ), nodeVar2, nodeVar0 ) );
+	nodeVar5 = fn46( ( nodeVar4 < 8u ), nodeVar2, nodeVar1 );
+	nodeVar6 = fn46( ( nodeVar4 < 4u ), nodeVar1, fn46( ( ( nodeVar4 == 12u ) || ( nodeVar4 == 14u ) ), nodeVar2, nodeVar0 ) );
 
-	return ( mx_negate_if( nodeVar5, bool( ( nodeVar4 & 1u ) ) ) + mx_negate_if( nodeVar6, bool( ( nodeVar4 & 2u ) ) ) );
+	return ( fn47( nodeVar5, bool( ( nodeVar4 & 1u ) ) ) + fn47( nodeVar6, bool( ( nodeVar4 & 2u ) ) ) );
 
 }
 
 
-fn mx_trilerp_0 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6 : f32, v7 : f32, s : f32, t : f32, r : f32 ) -> f32 {
+fn fn51 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6 : f32, v7 : f32, s : f32, t : f32, r : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -562,7 +304,7 @@ fn mx_trilerp_0 ( v0 : f32, v1 : f32, v2 : f32, v3 : f32, v4 : f32, v5 : f32, v6
 }
 
 
-fn mx_gradient_scale3d_0 ( v : f32 ) -> f32 {
+fn fn58 ( v : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 
@@ -573,7 +315,7 @@ fn mx_gradient_scale3d_0 ( v : f32 ) -> f32 {
 }
 
 
-fn mx_perlin_noise_float_1 ( p : vec3<f32> ) -> f32 {
+fn fn74 ( p : vec3<f32> ) -> f32 {
 
 	var nodeVar0 : vec3<f32>;
 	var nodeVar1 : i32;
@@ -595,25 +337,25 @@ fn mx_perlin_noise_float_1 ( p : vec3<f32> ) -> f32 {
 	nodeVar2 = 0;
 	nodeVar3 = 0;
 	nodeVar4 = nodeVar0.x;
-	nodeVar1 = mx_floor( nodeVar4 );
+	nodeVar1 = fn48( nodeVar4 );
 	nodeVar5 = ( nodeVar4 - f32( nodeVar1 ) );
 	nodeVar6 = nodeVar0.y;
-	nodeVar2 = mx_floor( nodeVar6 );
+	nodeVar2 = fn48( nodeVar6 );
 	nodeVar7 = ( nodeVar6 - f32( nodeVar2 ) );
 	nodeVar8 = nodeVar0.z;
-	nodeVar3 = mx_floor( nodeVar8 );
+	nodeVar3 = fn48( nodeVar8 );
 	nodeVar9 = ( nodeVar8 - f32( nodeVar3 ) );
-	nodeVar10 = mx_fade( nodeVar5 );
-	nodeVar11 = mx_fade( nodeVar7 );
-	nodeVar12 = mx_fade( nodeVar9 );
-	nodeVar13 = mx_trilerp_0( mx_gradient_float_1( mx_hash_int_2( nodeVar1, nodeVar2, nodeVar3 ), nodeVar5, nodeVar7, nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), nodeVar2, nodeVar3 ), ( nodeVar5 - 1.0 ), nodeVar7, nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, ( nodeVar2 + 1 ), nodeVar3 ), nodeVar5, ( nodeVar7 - 1.0 ), nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), nodeVar3 ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), nodeVar9 ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, nodeVar2, ( nodeVar3 + 1 ) ), nodeVar5, nodeVar7, ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), nodeVar2, ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), nodeVar7, ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( nodeVar1, ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), nodeVar5, ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), mx_gradient_float_1( mx_hash_int_2( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), nodeVar10, nodeVar11, nodeVar12 );
+	nodeVar10 = fn65( nodeVar5 );
+	nodeVar11 = fn65( nodeVar7 );
+	nodeVar12 = fn65( nodeVar9 );
+	nodeVar13 = fn51( fn54( fn68( nodeVar1, nodeVar2, nodeVar3 ), nodeVar5, nodeVar7, nodeVar9 ), fn54( fn68( ( nodeVar1 + 1 ), nodeVar2, nodeVar3 ), ( nodeVar5 - 1.0 ), nodeVar7, nodeVar9 ), fn54( fn68( nodeVar1, ( nodeVar2 + 1 ), nodeVar3 ), nodeVar5, ( nodeVar7 - 1.0 ), nodeVar9 ), fn54( fn68( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), nodeVar3 ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), nodeVar9 ), fn54( fn68( nodeVar1, nodeVar2, ( nodeVar3 + 1 ) ), nodeVar5, nodeVar7, ( nodeVar9 - 1.0 ) ), fn54( fn68( ( nodeVar1 + 1 ), nodeVar2, ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), nodeVar7, ( nodeVar9 - 1.0 ) ), fn54( fn68( nodeVar1, ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), nodeVar5, ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), fn54( fn68( ( nodeVar1 + 1 ), ( nodeVar2 + 1 ), ( nodeVar3 + 1 ) ), ( nodeVar5 - 1.0 ), ( nodeVar7 - 1.0 ), ( nodeVar9 - 1.0 ) ), nodeVar10, nodeVar11, nodeVar12 );
 
-	return mx_gradient_scale3d_0( nodeVar13 );
+	return fn58( nodeVar13 );
 
 }
 
 
-fn mx_fractal_noise_float ( p : vec3<f32>, octaves : i32, lacunarity : f32, diminish : f32 ) -> f32 {
+fn fn87 ( p : vec3<f32>, octaves : i32, lacunarity : f32, diminish : f32 ) -> f32 {
 
 	var nodeVar0 : f32;
 	var nodeVar1 : f32;
@@ -631,7 +373,7 @@ fn mx_fractal_noise_float ( p : vec3<f32>, octaves : i32, lacunarity : f32, dimi
 
 	for ( var i : i32 = 0; i < nodeVar5; i ++ ) {
 
-		nodeVar3 = ( nodeVar3 + ( nodeVar4 * mx_perlin_noise_float_1( nodeVar2 ) ) );
+		nodeVar3 = ( nodeVar3 + ( nodeVar4 * fn74( nodeVar2 ) ) );
 		nodeVar4 = ( nodeVar4 * nodeVar0 );
 		nodeVar2 = ( nodeVar2 * vec3<f32>( nodeVar1 ) );
 
@@ -644,7 +386,7 @@ fn mx_fractal_noise_float ( p : vec3<f32>, octaves : i32, lacunarity : f32, dimi
 
 
 fn tsl_mod_float( x : f32, y : f32 ) -> f32 { return x - y * floor( x / y ); }
-fn interleavedGradientNoise ( position : vec2<f32> ) -> f32 {
+fn fn24 ( position : vec2<f32> ) -> f32 {
 
 	
 
@@ -654,267 +396,36 @@ fn interleavedGradientNoise ( position : vec2<f32> ) -> f32 {
 }
 
 
-fn vogelDiskSample ( sampleIndex : i32, samplesCount : i32, phi : f32 ) -> vec2<f32> {
+fn fn25 ( sampleIndex : i32, samplesCount : i32, phi : f32 ) -> vec2<f32> {
 
-	var nodeVar0 : f32;
+	
 
-	nodeVar0 = ( ( f32( sampleIndex ) * 2.399963229728653 ) + phi );
+	let nodeConst0 = ( ( f32( sampleIndex ) * 2.399963229728653 ) + phi );
 
-	return ( vec2<f32>( cos( nodeVar0 ), sin( nodeVar0 ) ) * vec2<f32>( sqrt( ( ( f32( sampleIndex ) + 0.5 ) / f32( samplesCount ) ) ) ) );
-
-}
-
-
-fn V_GGX_SmithCorrelated ( alpha : f32, dotNL : f32, dotNV : f32 ) -> f32 {
-
-	var nodeVar0 : f32;
-
-	nodeVar0 = ( alpha * alpha );
-
-	return ( 0.5 / max( ( ( dotNL * sqrt( ( nodeVar0 + ( ( 1.0 - nodeVar0 ) * ( dotNV * dotNV ) ) ) ) ) + ( dotNV * sqrt( ( nodeVar0 + ( ( 1.0 - nodeVar0 ) * ( dotNL * dotNL ) ) ) ) ) ), 0.000001 ) );
+	return ( vec2<f32>( cos( nodeConst0 ), sin( nodeConst0 ) ) * vec2<f32>( sqrt( ( ( f32( sampleIndex ) + 0.5 ) / f32( samplesCount ) ) ) ) );
 
 }
 
 
-fn D_GGX ( alpha : f32, dotNH : f32 ) -> f32 {
+fn fn110 ( alpha : f32, dotNL : f32, dotNV : f32 ) -> f32 {
 
-	var nodeVar0 : f32;
-	var nodeVar1 : f32;
+	
 
-	nodeVar0 = ( alpha * alpha );
-	nodeVar1 = ( 1.0 - ( ( dotNH * dotNH ) * ( 1.0 - nodeVar0 ) ) );
+	let nodeConst0 = ( alpha * alpha );
 
-	return ( ( nodeVar0 / ( nodeVar1 * nodeVar1 ) ) * 0.3183098861837907 );
+	return ( 0.5 / max( ( ( dotNL * sqrt( ( nodeConst0 + ( ( 1.0 - nodeConst0 ) * ( dotNV * dotNV ) ) ) ) ) + ( dotNV * sqrt( ( nodeConst0 + ( ( 1.0 - nodeConst0 ) * ( dotNL * dotNL ) ) ) ) ) ), 0.000001 ) );
 
 }
 
 
-fn roughnessToMip ( roughness : f32 ) -> f32 {
+fn fn112 ( alpha : f32, dotNH : f32 ) -> f32 {
 
-	var nodeVar0 : f32;
+	
 
-	nodeVar0 = 0.0;
+	let nodeConst0 = ( alpha * alpha );
+	let nodeConst1 = ( 1.0 - ( ( dotNH * dotNH ) * ( 1.0 - nodeConst0 ) ) );
 
-	if ( ( roughness >= 0.8 ) ) {
-
-		nodeVar0 = ( ( ( ( 1.0 - roughness ) * ( -1.0 - -2.0 ) ) / ( 1.0 - 0.8 ) ) + -2.0 );
-		
-
-	} else {
-
-
-		if ( ( roughness >= 0.4 ) ) {
-
-			nodeVar0 = ( ( ( ( 0.8 - roughness ) * ( 2.0 - -1.0 ) ) / ( 0.8 - 0.4 ) ) + -1.0 );
-			
-
-		} else {
-
-
-			if ( ( roughness >= 0.305 ) ) {
-
-				nodeVar0 = ( ( ( ( 0.4 - roughness ) * ( 3.0 - 2.0 ) ) / ( 0.4 - 0.305 ) ) + 2.0 );
-				
-
-			} else {
-
-
-				if ( ( roughness >= 0.21 ) ) {
-
-					nodeVar0 = ( ( ( ( 0.305 - roughness ) * ( 4.0 - 3.0 ) ) / ( 0.305 - 0.21 ) ) + 3.0 );
-					
-
-				} else {
-
-					nodeVar0 = ( -2.0 * log2( ( 1.16 * roughness ) ) );
-					
-
-				}
-
-				
-
-			}
-
-			
-
-		}
-
-		
-
-	}
-
-
-	return nodeVar0;
-
-}
-
-
-fn getFace ( direction : vec3<f32> ) -> f32 {
-
-	var nodeVar0 : vec3<f32>;
-	var nodeVar1 : f32;
-	var nodeVar2 : f32;
-	var nodeVar3 : f32;
-	var nodeVar4 : f32;
-	var nodeVar5 : f32;
-
-	nodeVar0 = abs( direction );
-	nodeVar1 = -1.0;
-
-	if ( ( nodeVar0.x > nodeVar0.z ) ) {
-
-
-		if ( ( nodeVar0.x > nodeVar0.y ) ) {
-
-
-			if ( ( direction.x > 0.0 ) ) {
-
-				nodeVar2 = 0.0;
-
-			} else {
-
-				nodeVar2 = 3.0;
-
-			}
-
-			nodeVar1 = nodeVar2;
-			
-
-		} else {
-
-
-			if ( ( direction.y > 0.0 ) ) {
-
-				nodeVar3 = 1.0;
-
-			} else {
-
-				nodeVar3 = 4.0;
-
-			}
-
-			nodeVar1 = nodeVar3;
-			
-
-		}
-
-		
-
-	} else {
-
-
-		if ( ( nodeVar0.z > nodeVar0.y ) ) {
-
-
-			if ( ( direction.z > 0.0 ) ) {
-
-				nodeVar4 = 2.0;
-
-			} else {
-
-				nodeVar4 = 5.0;
-
-			}
-
-			nodeVar1 = nodeVar4;
-			
-
-		} else {
-
-
-			if ( ( direction.y > 0.0 ) ) {
-
-				nodeVar5 = 1.0;
-
-			} else {
-
-				nodeVar5 = 4.0;
-
-			}
-
-			nodeVar1 = nodeVar5;
-			
-
-		}
-
-		
-
-	}
-
-
-	return nodeVar1;
-
-}
-
-
-fn getUV ( direction : vec3<f32>, face : f32 ) -> vec2<f32> {
-
-	var nodeVar0 : vec2<f32>;
-
-	nodeVar0 = vec2<f32>( 0.0, 0.0 );
-
-	if ( ( face == 0.0 ) ) {
-
-		nodeVar0 = ( vec2<f32>( direction.z, direction.y ) / vec2<f32>( abs( direction.x ) ) );
-		
-
-	} else {
-
-
-		if ( ( face == 1.0 ) ) {
-
-			nodeVar0 = ( vec2<f32>( ( - direction.x ), ( - direction.z ) ) / vec2<f32>( abs( direction.y ) ) );
-			
-
-		} else {
-
-
-			if ( ( face == 2.0 ) ) {
-
-				nodeVar0 = ( vec2<f32>( ( - direction.x ), direction.y ) / vec2<f32>( abs( direction.z ) ) );
-				
-
-			} else {
-
-
-				if ( ( face == 3.0 ) ) {
-
-					nodeVar0 = ( vec2<f32>( ( - direction.z ), direction.y ) / vec2<f32>( abs( direction.x ) ) );
-					
-
-				} else {
-
-
-					if ( ( face == 4.0 ) ) {
-
-						nodeVar0 = ( vec2<f32>( ( - direction.x ), direction.z ) / vec2<f32>( abs( direction.y ) ) );
-						
-
-					} else {
-
-						nodeVar0 = ( vec2<f32>( direction.x, direction.y ) / vec2<f32>( abs( direction.z ) ) );
-						
-
-					}
-
-					
-
-				}
-
-				
-
-			}
-
-			
-
-		}
-
-		
-
-	}
-
-
-	return ( vec2<f32>( 0.5 ) * ( nodeVar0 + vec2<f32>( 1.0 ) ) );
+	return ( ( nodeConst0 / ( nodeConst1 * nodeConst1 ) ) * 0.3183098861837907 );
 
 }
 
@@ -935,447 +446,197 @@ fn main( @location( 0 ) v_positionView : vec3<f32>,
 	nodeVar1 = 0.0;
 	nodeVar2 = 1.0;
 	nodeVar3 = 0.0;
-	nodeVar4 = distance( v_positionWorld, render.cameraPosition );
-	nodeVar5 = smoothstep( 240.0, 25.0, nodeVar4 );
+	let nodeConst0 = distance( v_positionWorld, render.cameraPosition );
+	let nodeConst1 = smoothstep( 240.0, 25.0, nodeConst0 );
 
-	if ( ( nodeVar5 > 0.0 ) ) {
+	if ( ( nodeConst1 > 0.0 ) ) {
 
-		nodeVar0 = ( ( ( ( mx_perlin_noise_float_1( ( v_positionWorld * vec3<f32>( 7.0 ) ) ) * 1.0 ) + 0.0 ) + ( ( mx_perlin_noise_float_1( ( v_positionWorld * vec3<f32>( 23.0 ) ) ) * 1.0 ) + 0.0 ) ) * 0.5 );
-		nodeVar1 = smoothstep( 0.5, 0.85, ( ( ( mx_fractal_noise_float( ( v_positionWorld * vec3<f32>( 0.45 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) );
-		nodeVar2 = ( ( smoothstep( 0.25, 0.7, ( ( ( mx_fractal_noise_float( ( v_positionWorld * vec3<f32>( 0.7 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * 0.55 ) + 0.35 );
+		nodeVar0 = ( ( ( ( fn74( ( v_positionWorld * vec3<f32>( 7.0 ) ) ) * 1.0 ) + 0.0 ) + ( ( fn74( ( v_positionWorld * vec3<f32>( 23.0 ) ) ) * 1.0 ) + 0.0 ) ) * 0.5 );
+		nodeVar1 = smoothstep( 0.5, 0.85, ( ( ( fn87( ( v_positionWorld * vec3<f32>( 0.45 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) );
+		nodeVar2 = ( ( smoothstep( 0.25, 0.7, ( ( ( fn87( ( v_positionWorld * vec3<f32>( 0.7 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * 0.55 ) + 0.35 );
 		
 
 	}
 
-	nodeVar6 = smoothstep( 22.0, 4.0, nodeVar4 );
+	let nodeConst2 = smoothstep( 22.0, 4.0, nodeConst0 );
 
-	if ( ( nodeVar6 > 0.0 ) ) {
+	if ( ( nodeConst2 > 0.0 ) ) {
 
-		nodeVar3 = ( ( ( ( mx_perlin_noise_float_1( ( v_positionWorld * vec3<f32>( 45.0 ) ) ) * 1.0 ) + 0.0 ) * 0.6 ) + ( ( ( mx_perlin_noise_float_1( ( v_positionWorld * vec3<f32>( 80.0 ) ) ) * 1.0 ) + 0.0 ) * 0.4 ) );
+		nodeVar3 = ( ( ( ( fn74( ( v_positionWorld * vec3<f32>( 45.0 ) ) ) * 1.0 ) + 0.0 ) * 0.6 ) + ( ( ( fn74( ( v_positionWorld * vec3<f32>( 80.0 ) ) ) * 1.0 ) + 0.0 ) * 0.4 ) );
 		
 
 	}
 
-	nodeVar7 = vec4<f32>( nodeVar0, nodeVar1, nodeVar2, nodeVar3 );
-	nodeVar8 = ( mix( vec3<f32>( 0.01764195448412081, 0.019382360952473074, 0.024157632443547246 ), vec3<f32>( 0.04373502925049377, 0.04970656597728775, 0.061246054224174035 ), ( ( ( mx_fractal_noise_float( ( v_positionWorld * vec3<f32>( 0.2 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * vec3<f32>( ( ( ( nodeVar7.x * 0.22 ) * nodeVar5 ) + 1.0 ) ) );
-	nodeVar9 = mix( nodeVar8, ( nodeVar8 * vec3<f32>( 0.5 ) ), ( ( nodeVar7.y * 0.5 ) * nodeVar5 ) );
-	nodeVar10 = smoothstep( 0.6, 0.85, ( ( ( mx_fractal_noise_float( ( v_positionWorld * vec3<f32>( 0.14 ) ), 2, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) );
-	nodeVar11 = tsl_mod_float( ( v_positionWorld.x + 101.0 ), 112.0 );
-	nodeVar12 = ( nodeVar11 - 90.0 );
-	nodeVar13 = ( nodeVar12 - 11.0 );
-	nodeVar14 = max( fwidth( nodeVar13 ), 0.0001 );
-	nodeVar15 = ( nodeVar12 - 5.5 );
-	nodeVar16 = max( fwidth( nodeVar15 ), 0.0001 );
-	nodeVar17 = ( nodeVar12 - 16.5 );
-	nodeVar18 = max( fwidth( nodeVar17 ), 0.0001 );
-	nodeVar19 = step( 90.0, nodeVar11 );
-	nodeVar20 = tsl_mod_float( ( v_positionWorld.z + 71.0 ), 82.0 );
-	nodeVar21 = step( 60.0, nodeVar20 );
-	nodeVar22 = ( nodeVar20 - 60.0 );
-	nodeVar23 = ( nodeVar22 - 11.0 );
-	nodeVar24 = max( fwidth( nodeVar23 ), 0.0001 );
-	nodeVar25 = ( nodeVar22 - 5.5 );
-	nodeVar26 = max( fwidth( nodeVar25 ), 0.0001 );
-	nodeVar27 = ( nodeVar22 - 16.5 );
-	nodeVar28 = max( fwidth( nodeVar27 ), 0.0001 );
-	nodeVar29 = ( nodeVar12 / 1.2 );
-	nodeVar30 = max( fwidth( nodeVar29 ), 0.0001 );
-	nodeVar31 = ( nodeVar22 / 1.2 );
-	nodeVar32 = max( fwidth( nodeVar31 ), 0.0001 );
-	nodeVar33 = ( ( max( max( max( ( ( max( smoothstep( ( 0.12 + nodeVar14 ), ( 0.12 - nodeVar14 ), abs( nodeVar13 ) ), ( max( smoothstep( ( 0.1 + nodeVar16 ), ( 0.1 - nodeVar16 ), abs( nodeVar15 ) ), smoothstep( ( 0.1 + nodeVar18 ), ( 0.1 - nodeVar18 ), abs( nodeVar17 ) ) ) * step( fract( ( v_positionWorld.z / 7.0 ) ), 0.5 ) ) ) * nodeVar19 ) * ( 1.0 - nodeVar21 ) ), ( ( max( smoothstep( ( 0.12 + nodeVar24 ), ( 0.12 - nodeVar24 ), abs( nodeVar23 ) ), ( max( smoothstep( ( 0.1 + nodeVar26 ), ( 0.1 - nodeVar26 ), abs( nodeVar25 ) ), smoothstep( ( 0.1 + nodeVar28 ), ( 0.1 - nodeVar28 ), abs( nodeVar27 ) ) ) * step( fract( ( v_positionWorld.x / 7.0 ) ), 0.5 ) ) ) * nodeVar21 ) * ( 1.0 - nodeVar19 ) ) ), ( ( ( smoothstep( ( 0.3166666666666667 + nodeVar30 ), ( 0.3166666666666667 - nodeVar30 ), ( 0.5 - abs( ( fract( nodeVar29 ) - 0.5 ) ) ) ) * nodeVar19 ) * ( 1.0 - nodeVar21 ) ) * max( step( nodeVar20, 5.0 ), step( 55.0, nodeVar20 ) ) ) ), ( ( ( smoothstep( ( 0.3166666666666667 + nodeVar32 ), ( 0.3166666666666667 - nodeVar32 ), ( 0.5 - abs( ( fract( nodeVar31 ) - 0.5 ) ) ) ) * nodeVar21 ) * ( 1.0 - nodeVar19 ) ) * max( step( nodeVar11, 5.0 ), step( 85.0, nodeVar11 ) ) ) ) * nodeVar5 ) * nodeVar7.z );
-	DiffuseColor = vec4<f32>( mix( mix( nodeVar9, ( nodeVar9 * vec3<f32>( 0.6 ) ), nodeVar10 ), vec3<f32>( 0.6307571363387763, 0.6038273388475408, 0.5271151256969157 ), nodeVar33 ), 1.0 );
+	let nodeConst3 = vec4<f32>( nodeVar0, nodeVar1, nodeVar2, nodeVar3 );
+	let nodeConst4 = ( mix( vec3<f32>( 0.01764195448412081, 0.019382360952473074, 0.024157632443547246 ), vec3<f32>( 0.04373502925049377, 0.04970656597728775, 0.061246054224174035 ), ( ( ( fn87( ( v_positionWorld * vec3<f32>( 0.2 ) ), 3, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) ) * vec3<f32>( ( ( ( nodeConst3.x * 0.22 ) * nodeConst1 ) + 1.0 ) ) );
+	let nodeConst5 = mix( nodeConst4, ( nodeConst4 * vec3<f32>( 0.5 ) ), ( ( nodeConst3.y * 0.5 ) * nodeConst1 ) );
+	let nodeConst6 = smoothstep( 0.6, 0.85, ( ( ( fn87( ( v_positionWorld * vec3<f32>( 0.14 ) ), 2, 2.0, 0.5 ) * 1.0 ) * 0.5 ) + 0.5 ) );
+	let nodeConst7 = tsl_mod_float( ( v_positionWorld.x + 101.0 ), 112.0 );
+	let nodeConst8 = ( nodeConst7 - 90.0 );
+	let nodeConst9 = ( nodeConst8 - 11.0 );
+	let nodeConst10 = max( fwidth( nodeConst9 ), 0.0001 );
+	let nodeConst11 = ( nodeConst8 - 5.5 );
+	let nodeConst12 = max( fwidth( nodeConst11 ), 0.0001 );
+	let nodeConst13 = ( nodeConst8 - 16.5 );
+	let nodeConst14 = max( fwidth( nodeConst13 ), 0.0001 );
+	let nodeConst15 = step( 90.0, nodeConst7 );
+	let nodeConst16 = tsl_mod_float( ( v_positionWorld.z + 71.0 ), 82.0 );
+	let nodeConst17 = step( 60.0, nodeConst16 );
+	let nodeConst18 = ( nodeConst16 - 60.0 );
+	let nodeConst19 = ( nodeConst18 - 11.0 );
+	let nodeConst20 = max( fwidth( nodeConst19 ), 0.0001 );
+	let nodeConst21 = ( nodeConst18 - 5.5 );
+	let nodeConst22 = max( fwidth( nodeConst21 ), 0.0001 );
+	let nodeConst23 = ( nodeConst18 - 16.5 );
+	let nodeConst24 = max( fwidth( nodeConst23 ), 0.0001 );
+	let nodeConst25 = ( nodeConst8 / 1.2 );
+	let nodeConst26 = max( fwidth( nodeConst25 ), 0.0001 );
+	let nodeConst27 = ( nodeConst18 / 1.2 );
+	let nodeConst28 = max( fwidth( nodeConst27 ), 0.0001 );
+	let nodeConst29 = ( ( max( max( max( ( ( max( smoothstep( ( 0.12 + nodeConst10 ), ( 0.12 - nodeConst10 ), abs( nodeConst9 ) ), ( max( smoothstep( ( 0.1 + nodeConst12 ), ( 0.1 - nodeConst12 ), abs( nodeConst11 ) ), smoothstep( ( 0.1 + nodeConst14 ), ( 0.1 - nodeConst14 ), abs( nodeConst13 ) ) ) * step( fract( ( v_positionWorld.z / 7.0 ) ), 0.5 ) ) ) * nodeConst15 ) * ( 1.0 - nodeConst17 ) ), ( ( max( smoothstep( ( 0.12 + nodeConst20 ), ( 0.12 - nodeConst20 ), abs( nodeConst19 ) ), ( max( smoothstep( ( 0.1 + nodeConst22 ), ( 0.1 - nodeConst22 ), abs( nodeConst21 ) ), smoothstep( ( 0.1 + nodeConst24 ), ( 0.1 - nodeConst24 ), abs( nodeConst23 ) ) ) * step( fract( ( v_positionWorld.x / 7.0 ) ), 0.5 ) ) ) * nodeConst17 ) * ( 1.0 - nodeConst15 ) ) ), ( ( ( smoothstep( ( 0.3166666666666667 + nodeConst26 ), ( 0.3166666666666667 - nodeConst26 ), ( 0.5 - abs( ( fract( nodeConst25 ) - 0.5 ) ) ) ) * nodeConst15 ) * ( 1.0 - nodeConst17 ) ) * max( step( nodeConst16, 5.0 ), step( 55.0, nodeConst16 ) ) ) ), ( ( ( smoothstep( ( 0.3166666666666667 + nodeConst28 ), ( 0.3166666666666667 - nodeConst28 ), ( 0.5 - abs( ( fract( nodeConst27 ) - 0.5 ) ) ) ) * nodeConst17 ) * ( 1.0 - nodeConst15 ) ) * max( step( nodeConst7, 5.0 ), step( 85.0, nodeConst7 ) ) ) ) * nodeConst1 ) * nodeConst3.z );
+	DiffuseColor = vec4<f32>( mix( mix( nodeConst5, ( nodeConst5 * vec3<f32>( 0.6 ) ), nodeConst6 ), vec3<f32>( 0.6307571363387763, 0.6038273388475408, 0.5271151256969157 ), nodeConst29 ), 1.0 );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform2 );
 	DiffuseColor.w = 1.0;
 	Metalness = object.nodeUniform3;
 	normalViewGeometry = normalize( v_normalViewGeometry );
-	nodeVar34 = max( abs( dpdx( normalViewGeometry ) ), abs( - dpdy( normalViewGeometry ) ) );
-	Roughness = min( ( max( mix( ( 0.95 - ( nodeVar33 * 0.2 ) ), 0.32, nodeVar10 ), 0.0525 ) + max( max( nodeVar34.x, nodeVar34.y ), nodeVar34.z ) ), 1.0 );
+	let nodeConst30 = max( abs( dpdx( normalViewGeometry ) ), abs( - dpdy( normalViewGeometry ) ) );
+	Roughness = min( ( max( mix( ( 0.95 - ( nodeConst29 * 0.2 ) ), 0.32, nodeConst6 ), 0.045 ) + max( max( nodeConst30.x, nodeConst30.y ), nodeConst30.z ) ), 1.0 );
 	SpecularColor = vec3<f32>( 0.04, 0.04, 0.04 );
 	SpecularColorBlended = mix( vec3<f32>( 0.04, 0.04, 0.04 ), DiffuseColor.xyz, Metalness );
 	SpecularF90 = 1.0;
 	DiffuseContribution = ( DiffuseColor.xyz * vec3<f32>( ( 1.0 - object.nodeUniform3 ) ) );
 	EmissiveColor = ( object.nodeUniform6 * vec3<f32>( object.nodeUniform7 ) );
-	nodeVar35 = dpdx( v_positionView );
-	nodeVar36 = - dpdy( v_positionView );
+	let nodeConst31 = dpdx( v_positionView );
+	let nodeConst32 = - dpdy( v_positionView );
 	NORMAL_normalView = normalViewGeometry;
-	NORMAL_nodeVar37 = cross( nodeVar36, NORMAL_normalView );
-	NORMAL_nodeVar38 = dot( nodeVar35, NORMAL_nodeVar37 );
-	nodeVar39 = ( ( ( nodeVar7.x * 0.003 ) * nodeVar5 ) + ( ( nodeVar7.w * 0.0016 ) * nodeVar6 ) );
-	nodeVar40 = ( vec3<f32>( sign( NORMAL_nodeVar38 ) ) * ( ( vec3<f32>( dpdx( nodeVar39 ) ) * NORMAL_nodeVar37 ) + ( vec3<f32>( - dpdy( nodeVar39 ) ) * cross( NORMAL_normalView, nodeVar35 ) ) ) );
-	normalView = normalize( ( ( vec3<f32>( abs( NORMAL_nodeVar38 ) ) * NORMAL_normalView ) - nodeVar40 ) );
+	let NORMAL_nodeConst33 = cross( nodeConst32, NORMAL_normalView );
+	let NORMAL_nodeConst34 = dot( nodeConst31, NORMAL_nodeConst33 );
+	let nodeConst35 = ( ( ( nodeConst3.x * 0.003 ) * nodeConst1 ) + ( ( nodeConst3.w * 0.0016 ) * nodeConst2 ) );
+	let nodeConst36 = ( vec3<f32>( sign( NORMAL_nodeConst34 ) ) * ( ( vec3<f32>( dpdx( nodeConst35 ) ) * NORMAL_nodeConst33 ) + ( vec3<f32>( - dpdy( nodeConst35 ) ) * cross( NORMAL_normalView, nodeConst31 ) ) ) );
+	normalView = normalize( ( ( vec3<f32>( abs( NORMAL_nodeConst34 ) ) * NORMAL_normalView ) - nodeConst36 ) );
 	positionViewDirection = normalize( v_positionViewDirection );
-	nodeVar41 = dot( normalView, positionViewDirection );
-	nodeVar42 = textureSample( nodeUniform8, nodeUniform8_sampler, vec2<f32>( Roughness, clamp( nodeVar41, 0.0, 1.0 ) ) ).xy;
-	let dfg = nodeVar42;
-	nodeVar43 = ( dfg.x + dfg.y );
-	nodeVar44 = ( 1.0 / nodeVar43 );
-	nodeVar45 = nodeVar44;
-	nodeVar46 = ( nodeVar45 - 1.0 );
-	nodeVar47 = ( SpecularColorBlended * vec3<f32>( nodeVar46 ) );
-	nodeVar48 = ( nodeVar47 + vec3<f32>( 1.0 ) );
-	let multiScatteringCompensation = nodeVar48;
-	nodeVar49 = ( render.nodeUniform10 - render.nodeUniform11 );
-	nodeVar50 = vec4<f32>( nodeVar49, 0.0 );
-	nodeVar51 = ( render.cameraViewMatrix * nodeVar50 );
-	nodeVar52 = normalize( nodeVar51.xyz );
-	nodeVar53 = nodeVar52;
-	nodeVar54 = dot( normalView, nodeVar53 );
+	nodeVar4 = textureSample( nodeUniform8, nodeUniform8_sampler, vec2<f32>( Roughness, clamp( dot( normalView, positionViewDirection ), 0.0, 1.0 ) ) ).xy;
+	let dfg = nodeVar4;
+	let multiScatteringCompensation = ( ( SpecularColorBlended * vec3<f32>( ( ( 1.0 / ( dfg.x + dfg.y ) ) - 1.0 ) ) ) + vec3<f32>( 1.0 ) );
+	singleScatteringDielectric = vec3<f32>( 0.0, 0.0, 0.0 );
+	multiScatteringDielectric = vec3<f32>( 0.0, 0.0, 0.0 );
+	let nodeConst37 = ( ( SpecularColor * vec3<f32>( dfg.x ) ) + vec3<f32>( ( SpecularF90 * dfg.y ) ) );
+	singleScatteringDielectric = ( singleScatteringDielectric + nodeConst37 );
+	let nodeConst38 = ( SpecularColor + ( ( vec3<f32>( 1.0 ) - SpecularColor ) * vec3<f32>( 0.047619 ) ) );
+	let nodeConst39 = ( 1.0 - ( dfg.x + dfg.y ) );
+	multiScatteringDielectric = ( multiScatteringDielectric + ( ( ( nodeConst37 * nodeConst38 ) / ( vec3<f32>( 1.0 ) - ( vec3<f32>( nodeConst39 ) * nodeConst38 ) ) ) * vec3<f32>( nodeConst39 ) ) );
+	let nodeConst40 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( render.nodeUniform10 - render.nodeUniform11 ), 0.0 ) ).xyz );
 	shadowPositionWorld = v_positionWorld;
 	normalWorld = normalize( ( vec4<f32>( normalView, 0.0 ) * render.cameraViewMatrix ).xyz );
-	nodeVar56 = ( render.nodeUniform13 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform14 ) ) ), 1.0 ) );
-	nodeVar57 = ( nodeVar56.xyz / vec3<f32>( nodeVar56.w ) );
-	nodeVar58 = vec3<f32>( nodeVar57.x, ( 1.0 - nodeVar57.y ), ( nodeVar57.z + render.nodeUniform15 ) );
+	let nodeConst41 = ( render.nodeUniform13 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform14 ) ) ), 1.0 ) );
+	let nodeConst42 = ( nodeConst41.xyz / vec3<f32>( nodeConst41.w ) );
+	let nodeConst43 = vec3<f32>( nodeConst42.x, ( 1.0 - nodeConst42.y ), ( nodeConst42.z + render.nodeUniform15 ) );
 
-	if ( ( ( ( ( ( nodeVar58.x >= 0.0 ) && ( nodeVar58.x <= 1.0 ) ) && ( nodeVar58.y >= 0.0 ) ) && ( nodeVar58.y <= 1.0 ) ) && ( nodeVar58.z <= 1.0 ) ) ) {
+	if ( ( ( ( ( ( nodeConst43.x >= 0.0 ) && ( nodeConst43.x <= 1.0 ) ) && ( nodeConst43.y >= 0.0 ) ) && ( nodeConst43.y <= 1.0 ) ) && ( nodeConst43.z <= 1.0 ) ) ) {
 
-		nodeVar59 = ( interleavedGradientNoise( fragCoord.xy ) * 6.28318530718 );
-		nodeVar60 = ( render.nodeUniform17 * ( vec2<f32>( 1.0, 1.0 ) / render.nodeUniform18 ).x );
-		nodeVar61 = ( nodeVar58.xy + ( vogelDiskSample( 0, 5, nodeVar59 ) * vec2<f32>( nodeVar60 ) ) );
-		nodeVar62 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeVar61, nodeVar58.z );
-		nodeVar63 = ( nodeVar58.xy + ( vogelDiskSample( 1, 5, nodeVar59 ) * vec2<f32>( nodeVar60 ) ) );
-		nodeVar64 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeVar63, nodeVar58.z );
-		nodeVar65 = ( nodeVar58.xy + ( vogelDiskSample( 2, 5, nodeVar59 ) * vec2<f32>( nodeVar60 ) ) );
-		nodeVar66 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeVar65, nodeVar58.z );
-		nodeVar67 = ( nodeVar58.xy + ( vogelDiskSample( 3, 5, nodeVar59 ) * vec2<f32>( nodeVar60 ) ) );
-		nodeVar68 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeVar67, nodeVar58.z );
-		nodeVar69 = ( nodeVar58.xy + ( vogelDiskSample( 4, 5, nodeVar59 ) * vec2<f32>( nodeVar60 ) ) );
-		nodeVar70 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeVar69, nodeVar58.z );
-		nodeVar55 = ( ( ( ( ( nodeVar62 + nodeVar64 ) + nodeVar66 ) + nodeVar68 ) + nodeVar70 ) * 0.2 );
+		let nodeConst44 = ( fn24( fragCoord.xy ) * 6.28318530718 );
+		let nodeConst45 = ( vec2<f32>( render.nodeUniform17 ) * ( vec2<f32>( 1.0, 1.0 ) / render.nodeUniform18 ) );
+		let nodeConst46 = ( nodeConst43.xy + ( fn25( 0, 5, nodeConst44 ) * nodeConst45 ) );
+		nodeVar6 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeConst46, nodeConst43.z );
+		let nodeConst47 = ( nodeConst43.xy + ( fn25( 1, 5, nodeConst44 ) * nodeConst45 ) );
+		nodeVar7 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeConst47, nodeConst43.z );
+		let nodeConst48 = ( nodeConst43.xy + ( fn25( 2, 5, nodeConst44 ) * nodeConst45 ) );
+		nodeVar8 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeConst48, nodeConst43.z );
+		let nodeConst49 = ( nodeConst43.xy + ( fn25( 3, 5, nodeConst44 ) * nodeConst45 ) );
+		nodeVar9 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeConst49, nodeConst43.z );
+		let nodeConst50 = ( nodeConst43.xy + ( fn25( 4, 5, nodeConst44 ) * nodeConst45 ) );
+		nodeVar10 = textureSampleCompare( nodeUniform16, nodeUniform16_sampler, nodeConst50, nodeConst43.z );
+		nodeVar5 = ( ( ( ( ( nodeVar6 + nodeVar7 ) + nodeVar8 ) + nodeVar9 ) + nodeVar10 ) * 0.2 );
 
 	} else {
 
-		nodeVar55 = 1.0;
+		nodeVar5 = 1.0;
 
 	}
 
-	nodeVar71 = mix( 1.0, nodeVar55, render.nodeUniform19 );
-	nodeVar72 = ( vec3<f32>( clamp( nodeVar54, 0.0, 1.0 ) ) * ( render.nodeUniform12 * vec3<f32>( nodeVar71 ) ) );
-	nodeVar73 = nodeVar72;
+	nodeVar11 = mix( 1.0, nodeVar5, render.nodeUniform19 );
+	nodeVar12 = ( vec3<f32>( clamp( dot( normalView, nodeConst40 ), 0.0, 1.0 ) ) * ( render.nodeUniform12 * vec3<f32>( nodeVar11 ) ) );
 	directDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar74 = ( DiffuseContribution * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar75 = ( nodeVar73 * nodeVar74 );
-	nodeVar76 = ( nodeVar53 + positionViewDirection );
-	nodeVar77 = normalize( nodeVar76 );
-	nodeVar78 = dot( positionViewDirection, nodeVar77 );
-	nodeVar79 = clamp( nodeVar78, 0.0, 1.0 );
-	nodeVar80 = exp2( ( ( ( nodeVar79 * -5.55473 ) - 6.98316 ) * nodeVar79 ) );
-	nodeVar81 = ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeVar80 ) ) ) + vec3<f32>( ( SpecularF90 * nodeVar80 ) ) );
-	nodeVar82 = ( vec3<f32>( 1.0 ) - nodeVar81 );
-	nodeVar83 = nodeVar82;
-	nodeVar84 = ( nodeVar75 * nodeVar83 );
-	nodeVar85 = ( directDiffuse + nodeVar84 );
-	directDiffuse = nodeVar85;
+	let nodeConst51 = clamp( dot( positionViewDirection, normalize( ( nodeConst40 + positionViewDirection ) ) ), 0.0, 1.0 );
+	let nodeConst52 = exp2( ( ( ( nodeConst51 * -5.55473 ) - 6.98316 ) * nodeConst51 ) );
+	directDiffuse = ( directDiffuse + ( ( nodeVar12 * ( DiffuseContribution * vec3<f32>( 0.3183098861837907 ) ) ) * ( vec3<f32>( 1.0 ) - ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeConst52 ) ) ) + vec3<f32>( ( SpecularF90 * nodeConst52 ) ) ) ) ) );
 	directSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar86 = normalize( ( nodeVar53 + positionViewDirection ) );
-	nodeVar87 = clamp( dot( positionViewDirection, nodeVar86 ), 0.0, 1.0 );
-	nodeVar88 = exp2( ( ( ( nodeVar87 * -5.55473 ) - 6.98316 ) * nodeVar87 ) );
-	nodeVar89 = ( Roughness * Roughness );
-	nodeVar90 = ( ( ( ( SpecularColorBlended * vec3<f32>( ( 1.0 - nodeVar88 ) ) ) + vec3<f32>( ( 1.0 * nodeVar88 ) ) ) * vec3<f32>( V_GGX_SmithCorrelated( nodeVar89, clamp( dot( normalView, nodeVar53 ), 0.0, 1.0 ), clamp( dot( normalView, positionViewDirection ), 0.0, 1.0 ) ) ) ) * vec3<f32>( D_GGX( nodeVar89, clamp( dot( normalView, nodeVar86 ), 0.0, 1.0 ) ) ) );
-	nodeVar91 = ( nodeVar73 * nodeVar90 );
-	nodeVar92 = ( nodeVar91 * multiScatteringCompensation );
-	nodeVar93 = ( directSpecular + nodeVar92 );
-	directSpecular = nodeVar93;
-	irradiance = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar94 = ( object.nodeUniform21 - object.nodeUniform22 );
-	nodeVar95 = ( object.nodeUniform23 - vec3<f32>( 1.0 ) );
-	nodeVar96 = ( nodeVar94 / nodeVar95 );
-	nodeVar97 = ( normalWorld * nodeVar96 );
-	nodeVar98 = ( nodeVar97 * vec3<f32>( 0.5 ) );
-	nodeVar99 = ( v_positionWorld + nodeVar98 );
-	nodeVar100 = ( nodeVar99 - object.nodeUniform22 );
-	nodeVar101 = ( nodeVar100 / nodeVar94 );
-	nodeVar102 = ( clamp( nodeVar101, vec3<f32>( 0.0 ), vec3<f32>( 1.0 ) ) * nodeVar95 );
-	nodeVar103 = ( nodeVar102 / object.nodeUniform23 );
-	nodeVar104 = ( vec3<f32>( 0.5, 0.5, 0.5 ) / object.nodeUniform23 );
-	nodeVar105 = ( nodeVar103 + nodeVar104 );
-	nodeVar106 = ( nodeVar105.z * object.nodeUniform23.z );
-	nodeVar107 = ( nodeVar106 + 1.0 );
-	nodeVar108 = ( object.nodeUniform23.z + 2.0 );
-	nodeVar109 = ( nodeVar108 * 0.0 );
-	nodeVar110 = ( nodeVar107 + nodeVar109 );
-	nodeVar111 = ( nodeVar108 * 7.0 );
-	nodeVar112 = ( nodeVar110 / nodeVar111 );
-	nodeVar113 = vec3<f32>( nodeVar105.xy, nodeVar112 );
-	nodeVar114 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar113 );
-	nodeVar115 = ( nodeVar108 * 1.0 );
-	nodeVar116 = ( nodeVar107 + nodeVar115 );
-	nodeVar117 = ( nodeVar116 / nodeVar111 );
-	nodeVar118 = vec3<f32>( nodeVar105.xy, nodeVar117 );
-	nodeVar119 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar118 );
-	nodeVar120 = vec3<f32>( nodeVar114.w, nodeVar119.xy );
-	nodeVar121 = ( nodeVar108 * 2.0 );
-	nodeVar122 = ( nodeVar107 + nodeVar121 );
-	nodeVar123 = ( nodeVar122 / nodeVar111 );
-	nodeVar124 = vec3<f32>( nodeVar105.xy, nodeVar123 );
-	nodeVar125 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar124 );
-	nodeVar126 = vec3<f32>( nodeVar119.zw, nodeVar125.x );
-	nodeVar127 = ( nodeVar108 * 3.0 );
-	nodeVar128 = ( nodeVar107 + nodeVar127 );
-	nodeVar129 = ( nodeVar128 / nodeVar111 );
-	nodeVar130 = vec3<f32>( nodeVar105.xy, nodeVar129 );
-	nodeVar131 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar130 );
-	nodeVar132 = ( nodeVar108 * 4.0 );
-	nodeVar133 = ( nodeVar107 + nodeVar132 );
-	nodeVar134 = ( nodeVar133 / nodeVar111 );
-	nodeVar135 = vec3<f32>( nodeVar105.xy, nodeVar134 );
-	nodeVar136 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar135 );
-	nodeVar137 = vec3<f32>( nodeVar131.w, nodeVar136.xy );
-	nodeVar138 = ( nodeVar108 * 5.0 );
-	nodeVar139 = ( nodeVar107 + nodeVar138 );
-	nodeVar140 = ( nodeVar139 / nodeVar111 );
-	nodeVar141 = vec3<f32>( nodeVar105.xy, nodeVar140 );
-	nodeVar142 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar141 );
-	nodeVar143 = vec3<f32>( nodeVar136.zw, nodeVar142.x );
-	nodeVar144 = ( nodeVar108 * 6.0 );
-	nodeVar145 = ( nodeVar107 + nodeVar144 );
-	nodeVar146 = ( nodeVar145 / nodeVar111 );
-	nodeVar147 = vec3<f32>( nodeVar105.xy, nodeVar146 );
-	nodeVar148 = textureSample( nodeUniform20, nodeUniform20_sampler, nodeVar147 );
-	nodeVar149 = array< vec3<f32>, 9 >( nodeVar114.xyz, nodeVar120, nodeVar126, nodeVar125.yzw, nodeVar131.xyz, nodeVar137, nodeVar143, nodeVar142.yzw, nodeVar148.xyz );
-	nodeVar150 = ( ( ( ( ( ( ( ( ( nodeVar149[ 0u ] * vec3<f32>( 0.886227 ) ) + ( ( nodeVar149[ 1u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.y ) ) ) + ( ( nodeVar149[ 2u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.z ) ) ) + ( ( nodeVar149[ 3u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.x ) ) ) + ( ( ( nodeVar149[ 4u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.x ) ) * vec3<f32>( normalWorld.y ) ) ) + ( ( ( nodeVar149[ 5u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.y ) ) * vec3<f32>( normalWorld.z ) ) ) + ( nodeVar149[ 6u ] * vec3<f32>( ( ( ( normalWorld.z * normalWorld.z ) * 0.743125 ) - 0.247708 ) ) ) ) + ( ( ( nodeVar149[ 7u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.x ) ) * vec3<f32>( normalWorld.z ) ) ) + ( ( nodeVar149[ 8u ] * vec3<f32>( 0.429043 ) ) * vec3<f32>( ( ( normalWorld.x * normalWorld.x ) - ( normalWorld.y * normalWorld.y ) ) ) ) );
-	nodeVar151 = max( nodeVar150, vec3<f32>( 0.0, 0.0, 0.0 ) );
-	nodeVar152 = ( nodeVar151 * vec3<f32>( object.nodeUniform24 ) );
-	nodeVar153 = ( irradiance + nodeVar152 );
-	irradiance = nodeVar153;
+	let nodeConst53 = normalize( ( nodeConst40 + positionViewDirection ) );
+	let nodeConst54 = clamp( dot( positionViewDirection, nodeConst53 ), 0.0, 1.0 );
+	let nodeConst55 = exp2( ( ( ( nodeConst54 * -5.55473 ) - 6.98316 ) * nodeConst54 ) );
+	let nodeConst56 = max( Roughness, 0.045 );
+	let nodeConst57 = ( nodeConst56 * nodeConst56 );
+	directSpecular = ( directSpecular + ( ( nodeVar12 * ( ( ( ( SpecularColorBlended * vec3<f32>( ( 1.0 - nodeConst55 ) ) ) + vec3<f32>( ( SpecularF90 * nodeConst55 ) ) ) * vec3<f32>( fn110( nodeConst57, clamp( dot( normalView, nodeConst40 ), 0.0, 1.0 ), clamp( dot( normalView, positionViewDirection ), 0.0, 1.0 ) ) ) ) * vec3<f32>( fn112( nodeConst57, clamp( dot( normalView, nodeConst53 ), 0.0, 1.0 ) ) ) ) ) * multiScatteringCompensation ) );
+	lightProbeIrradiance = vec3<f32>( 0.0, 0.0, 0.0 );
+	lightProbePriority = ( - 1000000.0 );
+	let nodeConst58 = ( ( object.nodeUniform20 - object.nodeUniform21 ) / object.nodeUniform22 );
+	let nodeConst59 = ( v_positionWorld + ( ( normalWorld * nodeConst58 ) * vec3<f32>( 0.5 ) ) );
+	let nodeConst60 = ( nodeConst58 * vec3<f32>( 0.01 ) );
+
+	if ( ( ( all( ( nodeConst59 >= ( object.nodeUniform21 - nodeConst60 ) ) ) && all( ( nodeConst59 <= ( object.nodeUniform20 + nodeConst60 ) ) ) ) && ( render.nodeUniform23 >= lightProbePriority ) ) ) {
+
+		let nodeConst61 = ( object.nodeUniform20 - object.nodeUniform21 );
+		let nodeConst62 = ( vec3<f32>( 0.5, 0.5, 0.5 ) / object.nodeUniform22 );
+		let nodeConst63 = clamp( ( ( ( v_positionWorld + ( ( normalWorld * ( nodeConst61 / object.nodeUniform22 ) ) * vec3<f32>( 0.5 ) ) ) - object.nodeUniform21 ) / nodeConst61 ), nodeConst62, ( vec3<f32>( 1.0 ) - nodeConst62 ) );
+		let nodeConst64 = ( ( nodeConst63.z * object.nodeUniform22.z ) + 1.0 );
+		let nodeConst65 = ( object.nodeUniform22.z + 2.0 );
+		let nodeConst66 = ( nodeConst65 * 7.0 );
+		nodeVar13 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 0.0 ) ) / nodeConst66 ) ) );
+		nodeVar14 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 1.0 ) ) / nodeConst66 ) ) );
+		nodeVar15 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 2.0 ) ) / nodeConst66 ) ) );
+		nodeVar16 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 3.0 ) ) / nodeConst66 ) ) );
+		nodeVar17 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 4.0 ) ) / nodeConst66 ) ) );
+		nodeVar18 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 5.0 ) ) / nodeConst66 ) ) );
+		nodeVar19 = textureSample( nodeUniform24, nodeUniform24_sampler, vec3<f32>( nodeConst63.xy, ( ( nodeConst64 + ( nodeConst65 * 6.0 ) ) / nodeConst66 ) ) );
+		let nodeConst67 = array< vec3<f32>, 9 >( nodeVar13.xyz, vec3<f32>( nodeVar13.w, nodeVar14.xy ), vec3<f32>( nodeVar14.zw, nodeVar15.x ), nodeVar15.yzw, nodeVar16.xyz, vec3<f32>( nodeVar16.w, nodeVar17.xy ), vec3<f32>( nodeVar17.zw, nodeVar18.x ), nodeVar18.yzw, nodeVar19.xyz );
+		let nodeConst68 = ( max( ( ( ( ( ( ( ( ( ( nodeConst67[ 0u ] * vec3<f32>( 0.886227 ) ) + ( ( nodeConst67[ 1u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.y ) ) ) + ( ( nodeConst67[ 2u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.z ) ) ) + ( ( nodeConst67[ 3u ] * vec3<f32>( 1.023328 ) ) * vec3<f32>( normalWorld.x ) ) ) + ( ( ( nodeConst67[ 4u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.x ) ) * vec3<f32>( normalWorld.y ) ) ) + ( ( ( nodeConst67[ 5u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.y ) ) * vec3<f32>( normalWorld.z ) ) ) + ( nodeConst67[ 6u ] * vec3<f32>( ( ( ( normalWorld.z * normalWorld.z ) * 0.743125 ) - 0.247708 ) ) ) ) + ( ( ( nodeConst67[ 7u ] * vec3<f32>( 0.858086 ) ) * vec3<f32>( normalWorld.x ) ) * vec3<f32>( normalWorld.z ) ) ) + ( ( nodeConst67[ 8u ] * vec3<f32>( 0.429043 ) ) * vec3<f32>( ( ( normalWorld.x * normalWorld.x ) - ( normalWorld.y * normalWorld.y ) ) ) ) ), vec3<f32>( 0.0, 0.0, 0.0 ) ) * vec3<f32>( render.nodeUniform25 ) );
+		lightProbeIrradiance = nodeConst68;
+		lightProbePriority = render.nodeUniform23;
+		
+
+	}
+
 	radiance = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar154 = clamp( roughnessToMip( Roughness ), -2.0, object.nodeUniform25 );
-	nodeVar155 = floor( nodeVar154 );
-	nodeVar156 = nodeVar155;
-	nodeVar157 = normalize( ( render.cameraWorldMatrix * vec4<f32>( normalize( mix( reflect( ( - positionViewDirection ), normalView ), normalView, ( ( ( Roughness * Roughness ) * Roughness ) * Roughness ) ) ), 0.0 ) ).xyz );
-	nodeVar158 = getFace( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( nodeVar157.x, ( - nodeVar157.y ), nodeVar157.z ), 1.0 ) ).xyz );
-	nodeVar159 = max( ( 4.0 - nodeVar156 ), 0.0 );
-	nodeVar156 = max( nodeVar156, 4.0 );
-	nodeVar160 = exp2( nodeVar156 );
-	nodeVar161 = ( ( getUV( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( nodeVar157.x, ( - nodeVar157.y ), nodeVar157.z ), 1.0 ) ).xyz, nodeVar158 ) * vec2<f32>( ( nodeVar160 - 2.0 ) ) ) + vec2<f32>( 1.0 ) );
-
-	if ( ( nodeVar158 > 2.0 ) ) {
-
-		nodeVar161.y = ( nodeVar161.y + nodeVar160 );
-		nodeVar158 = ( nodeVar158 - 3.0 );
-		
-
-	}
-
-	nodeVar161.x = ( nodeVar161.x + ( nodeVar158 * nodeVar160 ) );
-	nodeVar161.x = ( nodeVar161.x + ( nodeVar159 * ( 3.0 * 16.0 ) ) );
-	nodeVar161.y = ( nodeVar161.y + ( 4.0 * ( exp2( object.nodeUniform25 ) - nodeVar160 ) ) );
-	nodeVar161.x = ( nodeVar161.x * object.nodeUniform28 );
-	nodeVar161.y = ( nodeVar161.y * object.nodeUniform29 );
-	nodeVar162 = textureSampleGrad( nodeUniform30, nodeUniform30_sampler, nodeVar161, vec2<f32>( 0.0, 0.0 ), vec2<f32>( 0.0, 0.0 ) );
-	nodeVar163 = nodeVar162.xyz;
-	nodeVar164 = fract( nodeVar154 );
-
-	if ( ( nodeVar164 != 0.0 ) ) {
-
-		nodeVar165 = ( nodeVar155 + 1.0 );
-		nodeVar166 = getFace( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( nodeVar157.x, ( - nodeVar157.y ), nodeVar157.z ), 1.0 ) ).xyz );
-		nodeVar167 = max( ( 4.0 - nodeVar165 ), 0.0 );
-		nodeVar165 = max( nodeVar165, 4.0 );
-		nodeVar168 = exp2( nodeVar165 );
-		nodeVar169 = ( ( getUV( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( nodeVar157.x, ( - nodeVar157.y ), nodeVar157.z ), 1.0 ) ).xyz, nodeVar166 ) * vec2<f32>( ( nodeVar168 - 2.0 ) ) ) + vec2<f32>( 1.0 ) );
-
-		if ( ( nodeVar166 > 2.0 ) ) {
-
-			nodeVar169.y = ( nodeVar169.y + nodeVar168 );
-			nodeVar166 = ( nodeVar166 - 3.0 );
-			
-
-		}
-
-		nodeVar169.x = ( nodeVar169.x + ( nodeVar166 * nodeVar168 ) );
-		nodeVar169.x = ( nodeVar169.x + ( nodeVar167 * ( 3.0 * 16.0 ) ) );
-		nodeVar169.y = ( nodeVar169.y + ( 4.0 * ( exp2( object.nodeUniform25 ) - nodeVar168 ) ) );
-		nodeVar169.x = ( nodeVar169.x * object.nodeUniform28 );
-		nodeVar169.y = ( nodeVar169.y * object.nodeUniform29 );
-		nodeVar170 = textureSampleGrad( nodeUniform30, nodeUniform30_sampler, nodeVar169, vec2<f32>( 0.0, 0.0 ), vec2<f32>( 0.0, 0.0 ) );
-		nodeVar171 = nodeVar170.xyz;
-		nodeVar163 = mix( nodeVar163, nodeVar171, nodeVar164 );
-		
-
-	}
-
-	nodeVar172 = ( radiance + ( nodeVar163 * vec3<f32>( object.nodeUniform31 ) ) );
-	radiance = nodeVar172;
+	let nodeConst69 = normalize( ( render.cameraWorldMatrix * vec4<f32>( normalize( mix( reflect( ( - positionViewDirection ), normalView ), normalView, ( ( ( Roughness * Roughness ) * Roughness ) * Roughness ) ) ), 0.0 ) ).xyz );
+	let nodeConst70 = ( object.nodeUniform27 * vec4<f32>( nodeConst69, 1.0 ) );
+	let nodeConst71 = clamp( Roughness, 0.0, 1.0 );
+	nodeVar20 = textureSampleLevel( nodeUniform26, nodeUniform26_sampler, vec3<f32>( ( - nodeConst70.x ), nodeConst70.yz ), ( ( object.nodeUniform29 * nodeConst71 ) * ( 2.0 - nodeConst71 ) ) );
+	radiance = ( radiance + ( nodeVar20.xyz * vec3<f32>( object.nodeUniform30 ) ) );
 	iblIrradiance = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar173 = clamp( roughnessToMip( 1.0 ), -2.0, object.nodeUniform25 );
-	nodeVar174 = floor( nodeVar173 );
-	nodeVar175 = nodeVar174;
-	nodeVar176 = getFace( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( normalWorld.x, ( - normalWorld.y ), normalWorld.z ), 1.0 ) ).xyz );
-	nodeVar177 = max( ( 4.0 - nodeVar175 ), 0.0 );
-	nodeVar175 = max( nodeVar175, 4.0 );
-	nodeVar178 = exp2( nodeVar175 );
-	nodeVar179 = ( ( getUV( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( normalWorld.x, ( - normalWorld.y ), normalWorld.z ), 1.0 ) ).xyz, nodeVar176 ) * vec2<f32>( ( nodeVar178 - 2.0 ) ) ) + vec2<f32>( 1.0 ) );
-
-	if ( ( nodeVar176 > 2.0 ) ) {
-
-		nodeVar179.y = ( nodeVar179.y + nodeVar178 );
-		nodeVar176 = ( nodeVar176 - 3.0 );
-		
-
-	}
-
-	nodeVar179.x = ( nodeVar179.x + ( nodeVar176 * nodeVar178 ) );
-	nodeVar179.x = ( nodeVar179.x + ( nodeVar177 * ( 3.0 * 16.0 ) ) );
-	nodeVar179.y = ( nodeVar179.y + ( 4.0 * ( exp2( object.nodeUniform25 ) - nodeVar178 ) ) );
-	nodeVar179.x = ( nodeVar179.x * object.nodeUniform28 );
-	nodeVar179.y = ( nodeVar179.y * object.nodeUniform29 );
-	nodeVar180 = textureSampleGrad( nodeUniform30, nodeUniform30_sampler, nodeVar179, vec2<f32>( 0.0, 0.0 ), vec2<f32>( 0.0, 0.0 ) );
-	nodeVar181 = nodeVar180.xyz;
-	nodeVar182 = fract( nodeVar173 );
-
-	if ( ( nodeVar182 != 0.0 ) ) {
-
-		nodeVar183 = ( nodeVar174 + 1.0 );
-		nodeVar184 = getFace( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( normalWorld.x, ( - normalWorld.y ), normalWorld.z ), 1.0 ) ).xyz );
-		nodeVar185 = max( ( 4.0 - nodeVar183 ), 0.0 );
-		nodeVar183 = max( nodeVar183, 4.0 );
-		nodeVar186 = exp2( nodeVar183 );
-		nodeVar187 = ( ( getUV( ( object.nodeUniform26 * vec4<f32>( vec3<f32>( normalWorld.x, ( - normalWorld.y ), normalWorld.z ), 1.0 ) ).xyz, nodeVar184 ) * vec2<f32>( ( nodeVar186 - 2.0 ) ) ) + vec2<f32>( 1.0 ) );
-
-		if ( ( nodeVar184 > 2.0 ) ) {
-
-			nodeVar187.y = ( nodeVar187.y + nodeVar186 );
-			nodeVar184 = ( nodeVar184 - 3.0 );
-			
-
-		}
-
-		nodeVar187.x = ( nodeVar187.x + ( nodeVar184 * nodeVar186 ) );
-		nodeVar187.x = ( nodeVar187.x + ( nodeVar185 * ( 3.0 * 16.0 ) ) );
-		nodeVar187.y = ( nodeVar187.y + ( 4.0 * ( exp2( object.nodeUniform25 ) - nodeVar186 ) ) );
-		nodeVar187.x = ( nodeVar187.x * object.nodeUniform28 );
-		nodeVar187.y = ( nodeVar187.y * object.nodeUniform29 );
-		nodeVar188 = textureSampleGrad( nodeUniform30, nodeUniform30_sampler, nodeVar187, vec2<f32>( 0.0, 0.0 ), vec2<f32>( 0.0, 0.0 ) );
-		nodeVar189 = nodeVar188.xyz;
-		nodeVar181 = mix( nodeVar181, nodeVar189, nodeVar182 );
-		
-
-	}
-
-	nodeVar190 = ( iblIrradiance + ( ( nodeVar181 * vec3<f32>( 3.141592653589793 ) ) * vec3<f32>( object.nodeUniform31 ) ) );
-	iblIrradiance = nodeVar190;
-	nodeVar191 = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar192 = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar193 = ( SpecularColor * vec3<f32>( dfg.x ) );
-	nodeVar194 = ( SpecularF90 * dfg.y );
-	nodeVar195 = ( nodeVar193 + vec3<f32>( nodeVar194 ) );
-	nodeVar196 = ( nodeVar191 + nodeVar195 );
-	nodeVar191 = nodeVar196;
-	nodeVar197 = ( vec3<f32>( 1.0 ) - SpecularColor );
-	nodeVar198 = nodeVar197;
-	nodeVar199 = ( nodeVar198 * vec3<f32>( 0.047619 ) );
-	nodeVar200 = ( SpecularColor + nodeVar199 );
-	nodeVar201 = ( nodeVar195 * nodeVar200 );
-	nodeVar202 = ( dfg.x + dfg.y );
-	nodeVar203 = ( 1.0 - nodeVar202 );
-	nodeVar204 = nodeVar203;
-	nodeVar205 = ( vec3<f32>( nodeVar204 ) * nodeVar200 );
-	nodeVar206 = ( vec3<f32>( 1.0 ) - nodeVar205 );
-	nodeVar207 = nodeVar206;
-	nodeVar208 = ( nodeVar201 / nodeVar207 );
-	nodeVar209 = ( nodeVar208 * vec3<f32>( nodeVar204 ) );
-	nodeVar210 = ( nodeVar192 + nodeVar209 );
-	nodeVar192 = nodeVar210;
-	nodeVar211 = ( DiffuseContribution * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar212 = ( irradiance * nodeVar211 );
-	nodeVar213 = ( nodeVar191 + nodeVar192 );
-	nodeVar214 = ( vec3<f32>( 1.0 ) - nodeVar213 );
-	nodeVar215 = nodeVar214;
-	nodeVar216 = ( nodeVar212 * nodeVar215 );
-	nodeVar217 = nodeVar216;
+	let nodeConst72 = ( object.nodeUniform27 * vec4<f32>( normalWorld, 1.0 ) );
+	let nodeConst73 = clamp( 1.0, 0.0, 1.0 );
+	nodeVar21 = textureSampleLevel( nodeUniform26, nodeUniform26_sampler, vec3<f32>( ( - nodeConst72.x ), nodeConst72.yz ), ( ( object.nodeUniform29 * nodeConst73 ) * ( 2.0 - nodeConst73 ) ) );
+	iblIrradiance = ( iblIrradiance + ( ( nodeVar21.xyz * vec3<f32>( 3.141592653589793 ) ) * vec3<f32>( object.nodeUniform30 ) ) );
+	irradiance = vec3<f32>( 0.0, 0.0, 0.0 );
+	irradiance = ( irradiance + lightProbeIrradiance );
+	nodeVar22 = ( ( irradiance * ( DiffuseContribution * vec3<f32>( 0.3183098861837907 ) ) ) * ( vec3<f32>( 1.0 ) - ( singleScatteringDielectric + multiScatteringDielectric ) ) );
 	indirectDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar218 = ( indirectDiffuse + nodeVar217 );
-	indirectDiffuse = nodeVar218;
-	singleScatteringDielectric = vec3<f32>( 0.0, 0.0, 0.0 );
-	multiScatteringDielectric = vec3<f32>( 0.0, 0.0, 0.0 );
+	indirectDiffuse = ( indirectDiffuse + nodeVar22 );
 	singleScatteringMetallic = vec3<f32>( 0.0, 0.0, 0.0 );
 	multiScatteringMetallic = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar219 = ( SpecularColor * vec3<f32>( dfg.x ) );
-	nodeVar220 = ( SpecularF90 * dfg.y );
-	nodeVar221 = ( nodeVar219 + vec3<f32>( nodeVar220 ) );
-	nodeVar222 = ( singleScatteringDielectric + nodeVar221 );
-	singleScatteringDielectric = nodeVar222;
-	nodeVar223 = ( vec3<f32>( 1.0 ) - SpecularColor );
-	nodeVar224 = nodeVar223;
-	nodeVar225 = ( nodeVar224 * vec3<f32>( 0.047619 ) );
-	nodeVar226 = ( SpecularColor + nodeVar225 );
-	nodeVar227 = ( nodeVar221 * nodeVar226 );
-	nodeVar228 = ( dfg.x + dfg.y );
-	nodeVar229 = ( 1.0 - nodeVar228 );
-	nodeVar230 = nodeVar229;
-	nodeVar231 = ( vec3<f32>( nodeVar230 ) * nodeVar226 );
-	nodeVar232 = ( vec3<f32>( 1.0 ) - nodeVar231 );
-	nodeVar233 = nodeVar232;
-	nodeVar234 = ( nodeVar227 / nodeVar233 );
-	nodeVar235 = ( nodeVar234 * vec3<f32>( nodeVar230 ) );
-	nodeVar236 = ( multiScatteringDielectric + nodeVar235 );
-	multiScatteringDielectric = nodeVar236;
-	nodeVar237 = ( DiffuseColor.xyz * vec3<f32>( dfg.x ) );
-	nodeVar238 = ( SpecularF90 * dfg.y );
-	nodeVar239 = ( nodeVar237 + vec3<f32>( nodeVar238 ) );
-	nodeVar240 = ( singleScatteringMetallic + nodeVar239 );
-	singleScatteringMetallic = nodeVar240;
-	nodeVar241 = ( vec3<f32>( 1.0 ) - DiffuseColor.xyz );
-	nodeVar242 = nodeVar241;
-	nodeVar243 = ( nodeVar242 * vec3<f32>( 0.047619 ) );
-	nodeVar244 = ( DiffuseColor.xyz + nodeVar243 );
-	nodeVar245 = ( nodeVar239 * nodeVar244 );
-	nodeVar246 = ( dfg.x + dfg.y );
-	nodeVar247 = ( 1.0 - nodeVar246 );
-	nodeVar248 = nodeVar247;
-	nodeVar249 = ( vec3<f32>( nodeVar248 ) * nodeVar244 );
-	nodeVar250 = ( vec3<f32>( 1.0 ) - nodeVar249 );
-	nodeVar251 = nodeVar250;
-	nodeVar252 = ( nodeVar245 / nodeVar251 );
-	nodeVar253 = ( nodeVar252 * vec3<f32>( nodeVar248 ) );
-	nodeVar254 = ( multiScatteringMetallic + nodeVar253 );
-	multiScatteringMetallic = nodeVar254;
-	nodeVar255 = mix( singleScatteringDielectric, singleScatteringMetallic, Metalness );
-	nodeVar256 = ( radiance * nodeVar255 );
-	nodeVar257 = mix( multiScatteringDielectric, multiScatteringMetallic, Metalness );
-	nodeVar258 = ( iblIrradiance * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar259 = ( nodeVar257 * nodeVar258 );
-	nodeVar260 = ( nodeVar256 + nodeVar259 );
-	nodeVar261 = nodeVar260;
-	nodeVar262 = ( singleScatteringDielectric + multiScatteringDielectric );
-	nodeVar263 = ( vec3<f32>( 1.0 ) - nodeVar262 );
-	nodeVar264 = nodeVar263;
-	nodeVar265 = ( DiffuseContribution * nodeVar264 );
-	nodeVar266 = ( nodeVar265 * nodeVar258 );
-	nodeVar267 = nodeVar266;
+	let nodeConst74 = ( ( DiffuseColor.xyz * vec3<f32>( dfg.x ) ) + vec3<f32>( ( SpecularF90 * dfg.y ) ) );
+	singleScatteringMetallic = ( singleScatteringMetallic + nodeConst74 );
+	let nodeConst75 = ( DiffuseColor.xyz + ( ( vec3<f32>( 1.0 ) - DiffuseColor.xyz ) * vec3<f32>( 0.047619 ) ) );
+	let nodeConst76 = ( 1.0 - ( dfg.x + dfg.y ) );
+	multiScatteringMetallic = ( multiScatteringMetallic + ( ( ( nodeConst74 * nodeConst75 ) / ( vec3<f32>( 1.0 ) - ( vec3<f32>( nodeConst76 ) * nodeConst75 ) ) ) * vec3<f32>( nodeConst76 ) ) );
+	let nodeConst77 = ( iblIrradiance * vec3<f32>( 0.3183098861837907 ) );
+	nodeVar23 = ( ( radiance * mix( singleScatteringDielectric, singleScatteringMetallic, Metalness ) ) + ( mix( multiScatteringDielectric, multiScatteringMetallic, Metalness ) * nodeConst77 ) );
+	nodeVar24 = ( ( DiffuseContribution * ( vec3<f32>( 1.0 ) - ( singleScatteringDielectric + multiScatteringDielectric ) ) ) * nodeConst77 );
 	indirectSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar268 = ( indirectSpecular + nodeVar261 );
-	indirectSpecular = nodeVar268;
-	nodeVar269 = ( indirectDiffuse + nodeVar267 );
-	indirectDiffuse = nodeVar269;
+	indirectSpecular = ( indirectSpecular + nodeVar23 );
+	indirectDiffuse = ( indirectDiffuse + nodeVar24 );
 	ambientOcclusion = 1.0;
-	nodeVar270 = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
-	indirectDiffuse = nodeVar270;
-	nodeVar271 = dot( normalView, positionViewDirection );
-	nodeVar272 = ( clamp( nodeVar271, 0.0, 1.0 ) + ambientOcclusion );
-	nodeVar273 = ( Roughness * -16.0 );
-	nodeVar274 = ( 1.0 - nodeVar273 );
-	nodeVar275 = nodeVar274;
-	nodeVar276 = ( - nodeVar275 );
-	nodeVar277 = exp2( nodeVar276 );
-	nodeVar278 = pow( nodeVar272, nodeVar277 );
-	nodeVar279 = ( 1.0 - nodeVar278 );
-	nodeVar280 = nodeVar279;
-	nodeVar281 = ( ambientOcclusion - nodeVar280 );
-	nodeVar282 = ( indirectSpecular * vec3<f32>( clamp( nodeVar281, 0.0, 1.0 ) ) );
-	indirectSpecular = nodeVar282;
-	nodeVar283 = ( directDiffuse + indirectDiffuse );
-	totalDiffuse = nodeVar283;
-	nodeVar284 = ( directSpecular + indirectSpecular );
-	totalSpecular = nodeVar284;
-	nodeVar285 = ( totalDiffuse + totalSpecular );
-	outgoingLight = nodeVar285;
-	nodeVar286 = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar286;
+	indirectDiffuse = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
+	indirectSpecular = ( indirectSpecular * vec3<f32>( clamp( ( ambientOcclusion - ( 1.0 - pow( ( clamp( dot( normalView, positionViewDirection ), 0.0, 1.0 ) + ambientOcclusion ), exp2( ( - ( 1.0 - ( Roughness * -16.0 ) ) ) ) ) ) ), 0.0, 1.0 ) ) );
+	totalDiffuse = ( directDiffuse + indirectDiffuse );
+	totalSpecular = ( directSpecular + indirectSpecular );
+	outgoingLight = ( totalDiffuse + totalSpecular );
+	let nodeConst78 = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst78;
 
 	// result
 
-	output.color = nodeVar286;
+	output.color = nodeConst78;
 
 	return output;
 

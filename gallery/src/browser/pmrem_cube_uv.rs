@@ -360,9 +360,8 @@ impl Pmrem {
         );
         self.encode_levels(encoder);
     }
-    /// Encodes the GGX levels over a level 0 already written ( as
-    /// fromScene's cube camera does ).
-    pub(super) fn encode_levels(&self, encoder: &mut wgpu::CommandEncoder) {
+    /// Encodes the GGX levels over level 0.
+    fn encode_levels(&self, encoder: &mut wgpu::CommandEncoder) {
         let pass = |encoder: &mut wgpu::CommandEncoder,
                     view: &wgpu::TextureView,
                     [x, y, w, h]: [f32; 4],

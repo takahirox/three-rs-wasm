@@ -1,4 +1,4 @@
-//! The street furniture generators' geometry ( three.js r186 city addons ):
+//! The street furniture generators' geometry ( three.js r187 city addons ):
 //! streetlight, traffic signal, litter basket, bench, hydrant, street tree,
 //! the three car bodies and the walking and standing pedestrians, each
 //! merged from its parts with a per-vertex partId.

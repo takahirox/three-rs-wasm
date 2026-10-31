@@ -1,4 +1,4 @@
-//! The three.js r186 primitives the city's parts start from, with their
+//! The three.js r187 primitives the city's parts start from, with their
 //! constructors' arithmetic, vertex order and Float32Array stores.
 use super::geo::{G, V3, normalize};
 use std::f64::consts::PI;

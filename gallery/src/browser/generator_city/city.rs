@@ -1,4 +1,4 @@
-//! CityGenerator ( three.js r186 addon ): the block and lot layout, each
+//! CityGenerator ( three.js r187 addon ): the block and lot layout, each
 //! lot's seeded SkyscraperGenerator tower, the rounded sidewalk slabs and
 //! curbs, the street furniture's placements along every curb, and the
 //! tower boxes of the GI proxy.
