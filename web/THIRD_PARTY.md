@@ -300,10 +300,16 @@ those scene contents.
 ### Additional TSL texture and volume examples
 
 - `gallery/assets/blossom.png`: Three.js r186 example asset, Three.js MIT distribution.
-- `gallery/assets/head256x256x109.zip`: scanned head data by Divine Augustine,
-  distributed with the official `webgpu_textures_2d-array` example under
-  [CPOL](https://www.codeproject.com/info/cpol10.aspx). The original
-  `textures/3d/head256x256x109.zip`, unzipped at load as the pages do.
+- `gallery/assets/head256x256x109.zip`: the MNI ICBM 2009c Nonlinear
+  Symmetric T1-weighted template
+  ( https://www.bic.mni.mcgill.ca/ServicesAtlases/ICBM152NLin2009 ), resampled
+  to 109 sagittal slices of 256 × 256 voxels, as distributed with the official
+  texture-array examples since r187. Copyright (C) 1993-2004 Louis Collins,
+  McConnell Brain Imaging Centre, Montreal Neurological Institute, McGill
+  University; permission to use, copy, modify, and distribute without fee
+  provided the copyright notice appears in all copies, provided "as is"
+  without warranty ( the full notice is r187's `textures/3d/Readme.txt` ). The
+  original `textures/3d/head256x256x109.zip`, unzipped at load as the pages do.
 - The Perlin and cloud volumes are generated at load, as the pages do, by the
   Rust port of the MIT ImprovedNoise. Volume raymarchers follow the MIT Three.js
   `Raymarching.js`, `Texture3DNode.js` and volume examples.
