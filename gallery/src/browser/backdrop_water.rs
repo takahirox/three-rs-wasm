@@ -7,7 +7,7 @@
 //! depth are then copied for the transparent water's backdrop ( Voronoi
 //! ripples, depth-based refraction ). A depth-driven Gaussian blur, tinted
 //! and vignetted under water, makes the output. The orbit auto-rotates.
-//! Every stage runs the WGSL three.js r186 generates for the page (in
+//! Every stage runs the WGSL three.js r187 generates for the page (in
 //! `backdrop_water/`; the output vertex module is the volume_caustics one,
 //! byte-identical); the animation is sampled on the CPU as AnimationMixer does.
 use super::controls_attributes::{Controls, camera_state};
@@ -36,7 +36,8 @@ macro_rules! wgsl {
 }
 const OUTPUT_VS: &str = include_str!("volume_caustics/composite_vs.wgsl");
 /// The ice spheres' first Object3D id: their y follows sin( elapsed + id ).
-const FIRST_ICE_ID: f64 = 19.;
+/// r187 creates three fewer objects before them than r186 ( 19 ).
+const FIRST_ICE_ID: f64 = 16.;
 /// The fixture's seeded Math.random ( a 32-bit LCG from 186 ).
 struct FixtureRandom(u32);
 impl FixtureRandom {
