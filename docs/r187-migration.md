@@ -15,6 +15,9 @@ until every ported example matches r187 again; it is removed when done.
   `FinalizationRegistry`, `trimStart` and `trimEnd`.
 - The TSL corpus: r187's goldens, its `three/tsl` exports; 4217 / 4217
   programs match ( `scripts/check-tsl` but the MaterialX test, step 2 ).
+- Removed examples: webgl_renderer_pathtracer, webgpu_compute_rasterizer and
+  webgpu_compute_rasterizer_ibl left the gallery with their code, tests and
+  docs; the generated gallery files list r187's examples.
 
 ## To do
 
@@ -51,8 +54,5 @@ until every ported example matches r187 again; it is removed when done.
    BufferGeometryUtils, the exporters, the TSL display nodes. Regenerate the
    oracle fixtures ( `tools/core/*-oracle.mjs`, `*-fixtures.mjs` ) on r187 and
    fix what no longer matches.
-6. **Removed examples.** webgl_renderer_pathtracer ( r187 has
-   webgpu_renderer_pathtracer ), webgpu_compute_rasterizer and
-   webgpu_compute_rasterizer_ibl leave the gallery.
-7. **Core inventory.** `make compat-check` on r187; classify new members.
-8. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
+6. **Core inventory.** `make compat-check` on r187; classify new members.
+7. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187.
