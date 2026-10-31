@@ -775,11 +775,10 @@ impl Demo {
         if self.hovered == batch {
             return;
         }
-        // The page tests the ids for truthiness: instance 0 is never recolored.
-        if let Some(previous) = self.hovered.filter(|&i| i != 0) {
+        if let Some(previous) = self.hovered {
             self.instances[previous as usize].color = self.hovered_color;
         }
-        if let Some(i) = batch.filter(|&i| i != 0) {
+        if let Some(i) = batch {
             self.hovered_color = self.instances[i as usize].color;
             self.instances[i as usize].color = Color::from_hex(0xff0000);
         }
