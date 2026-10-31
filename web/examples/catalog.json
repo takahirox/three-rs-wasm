@@ -35918,7 +35918,7 @@
         "source": "gallery/src/browser/exporters_video.rs",
         "test": "tests/browser/exporters-video.spec.js",
         "limitations": [
-          "EXRExporter（ZIP・ZIPS・無圧縮、Half/Float）、PMREMの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。PMREMの書き出しはGPUからの読み戻し。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。性能の完全な同等性は未保証。"
+          "EXRExporter（ZIP・ZIPS・RLE・PIZ・無圧縮、Half/Float）、エクイレクタングラーHDRの背景とデータテクスチャ、減衰付きOrbitControls（rotateSpeed −0.25）をRustで再現。render-targetの書き出しは、カメラの複製（アスペクト2）で1024×512のHalfFloatレンダーターゲットにシーンを描き、GPUから読み戻す。データテクスチャの無圧縮・RLE・PIZのファイルは原本とバイト単位で一致。zlib圧縮後のバイト列は実装の違いで異なり、展開後の画素で比較。背景のHDRテクスチャはエンジンの都合で読み込み時にPMREMアトラスも生成する（原本は生成しない）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -35953,7 +35953,7 @@
         "source": "gallery/src/browser/exporters_video.rs",
         "test": "tests/browser/exporters-video.spec.js",
         "limitations": [
-          "KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、PMREMの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。PMREMの書き出しはGPUからの読み戻し。性能の完全な同等性は未保証。"
+          "KTX2Exporter（ktx-parseのwrite、無圧縮のRGBA Float/Half）、エクイレクタングラーHDRの背景（AgX）とデータテクスチャ、減衰付きOrbitControlsをRustで再現。render-targetの書き出しは、カメラの複製（アスペクト2）で1024×512のHalfFloatレンダーターゲットにシーンを描き、GPUから読み戻す。背景のHDRテクスチャはエンジンの都合で読み込み時にPMREMアトラスも生成する（原本は生成しない）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
