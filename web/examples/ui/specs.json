@@ -1344,7 +1344,7 @@
 				},
 				"classes": "lil-gui allow-touch-styles root autoPlace",
 				"extras": [],
-				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"lil-gui allow-touch-styles\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Input</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-2\">target</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-2\"><option>pmrem</option><option>data-texture</option></select><div class=\"display\">pmrem</div></div></div></div></div><div class=\"lil-gui allow-touch-styles\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Output Options</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-4\">type</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-4\"><option>FloatType</option><option>HalfFloatType</option></select><div class=\"display\">HalfFloatType</div></div></div><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-6\">compression</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-6\"><option>ZIP</option><option>ZIPS</option><option>NONE</option></select><div class=\"display\">ZIP</div></div></div></div></div><div class=\"controller function\"><div class=\"widget\"><button><div class=\"name\" id=\"lil-gui-name-7\">Export EXR</div></button></div></div></div></div>",
+				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"lil-gui allow-touch-styles\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Input</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-2\">target</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-2\"><option>render-target</option><option>data-texture</option></select><div class=\"display\">render-target</div></div></div></div></div><div class=\"lil-gui allow-touch-styles\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Output Options</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-4\">type</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-4\"><option>FloatType</option><option>HalfFloatType</option></select><div class=\"display\">HalfFloatType</div></div></div><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-6\">compression</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-6\"><option>ZIP</option><option>ZIPS</option><option>RLE</option><option>PIZ</option><option>NONE</option></select><div class=\"display\">ZIP</div></div></div></div></div><div class=\"controller function\"><div class=\"widget\"><button><div class=\"name\" id=\"lil-gui-name-7\">Export EXR</div></button></div></div></div></div>",
 				"children": [
 					{
 						"kind": "folder",
@@ -1361,18 +1361,18 @@
 								"object": 0,
 								"property": "target",
 								"name": "target",
-								"value": "pmrem",
-								"initial": "pmrem",
+								"value": "render-target",
+								"initial": "render-target",
 								"hidden": false,
 								"disabled": false,
 								"classes": "controller option",
 								"style": null,
 								"values": [
-									"pmrem",
+									"render-target",
 									"data-texture"
 								],
 								"names": [
-									"pmrem",
+									"render-target",
 									"data-texture"
 								]
 							}
@@ -1423,11 +1423,15 @@
 								"values": [
 									"ZIP",
 									"ZIPS",
+									"RLE",
+									"PIZ",
 									"NONE"
 								],
 								"names": [
 									"ZIP",
 									"ZIPS",
+									"RLE",
+									"PIZ",
 									"NONE"
 								]
 							}
@@ -2011,7 +2015,7 @@
 				},
 				"classes": "lil-gui allow-touch-styles root autoPlace",
 				"extras": [],
-				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-2\">target</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-2\"><option>pmrem</option><option>data-texture</option></select><div class=\"display\">pmrem</div></div></div><div class=\"controller function\"><div class=\"widget\"><button><div class=\"name\" id=\"lil-gui-name-3\">Export KTX2</div></button></div></div></div></div>",
+				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-2\">target</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-2\"><option>render-target</option><option>data-texture</option></select><div class=\"display\">render-target</div></div></div><div class=\"controller function\"><div class=\"widget\"><button><div class=\"name\" id=\"lil-gui-name-3\">Export KTX2</div></button></div></div></div></div>",
 				"children": [
 					{
 						"kind": "controller",
@@ -2019,18 +2023,18 @@
 						"object": 0,
 						"property": "target",
 						"name": "target",
-						"value": "pmrem",
-						"initial": "pmrem",
+						"value": "render-target",
+						"initial": "render-target",
 						"hidden": false,
 						"disabled": false,
 						"classes": "controller option",
 						"style": null,
 						"values": [
-							"pmrem",
+							"render-target",
 							"data-texture"
 						],
 						"names": [
-							"pmrem",
+							"render-target",
 							"data-texture"
 						]
 					},
