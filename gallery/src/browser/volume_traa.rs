@@ -71,8 +71,9 @@ struct Targets {
     teapot: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
     floor: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
     volume: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
-    /// Resolve with the placeholder, or the history, previous depth.
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// TRAA reads the history depth texture as its previous depth from the
+    /// start ( zero until the first resolve copies the pre-pass depth ).
+    traa: (wgpu::RenderPipeline, wgpu::BindGroup),
     /// Output of the resolved, or the raw scene, color.
     output: (wgpu::RenderPipeline, wgpu::BindGroup, [wgpu::BindGroup; 2]),
 }
@@ -116,8 +117,6 @@ pub(super) struct Demo {
     quad_uv: wgpu::Buffer,
     colors: wgpu::TextureView,
     noise: wgpu::TextureView,
-    /// TRAANode's 1 × 1 DepthTexture, bound until the history depth is.
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     mipmapped: wgpu::Sampler,
     noise_sampler: wgpu::Sampler,
@@ -233,7 +232,6 @@ impl Demo {
             ),
             colors: spot_map(r).await?,
             noise: noise_texture(r),
-            placeholder: placeholder(r),
             linear: sampler(wgpu::FilterMode::Nearest),
             mipmapped: sampler(wgpu::FilterMode::Linear),
             // RepeatWrapping in s and t; r keeps the default clamp.
@@ -529,23 +527,21 @@ impl Demo {
         );
         let (color_view, history_view, history_depth_view) =
             (view(&color), view(&history), view(&history_depth));
-        let traa_binds = [&self.placeholder, &history_depth_view].map(|previous| {
-            bind(
-                r,
-                traa.get_bind_group_layout(0),
-                &[
-                    // Velocity is read with textureLoad: the layout drops its sampler.
-                    (1, tex(&velocity)),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&color_view)),
-                    (4, tex(&pre_depth_view)),
-                    (5, self.traa_object.as_entire_binding()),
-                    (6, tex(previous)),
-                    (7, sampler(&self.linear)),
-                    (8, tex(&history_view)),
-                ],
-            )
-        });
+        let traa_binds = bind(
+            r,
+            traa.get_bind_group_layout(0),
+            &[
+                // Velocity is read with textureLoad: the layout drops its sampler.
+                (1, tex(&velocity)),
+                (2, sampler(&self.linear)),
+                (3, tex(&color_view)),
+                (4, tex(&pre_depth_view)),
+                (5, self.traa_object.as_entire_binding()),
+                (6, tex(&history_depth_view)),
+                (7, sampler(&self.linear)),
+                (8, tex(&history_view)),
+            ],
+        );
         let output = pipeline(
             "render output",
             wgsl!("output_vs"),
@@ -1043,10 +1039,10 @@ impl Demo {
                     full,
                 );
             }
-            // The first two resolves read TRAANode's 1 × 1 placeholder depth
-            // (the far plane); later ones the previous frame's.
-            let group = &t.traa.1[usize::from(self.resolves >= 2)];
-            quad(&mut encoder, &t.resolve.1, &t.traa.0, &[group]);
+            // The previous depth is the history's depth texture: the restart's
+            // resolve reads it freshly sized ( zero ), later ones the previous
+            // frame's depth.
+            quad(&mut encoder, &t.resolve.1, &t.traa.0, &[&t.traa.1]);
             encoder.copy_texture_to_texture(
                 t.resolve.0.as_image_copy(),
                 t.history.as_image_copy(),
@@ -1149,18 +1145,6 @@ fn depth_attachment(
         }),
         stencil_ops: None,
     })
-}
-/// TRAANode's DepthTexture( 1, 1 ) placeholder, cleared to the far plane.
-fn placeholder(r: &Renderer) -> wgpu::TextureView {
-    let depth = view(&texture(r, (1, 1, 1), DEPTH, true));
-    let mut encoder = r.device.create_command_encoder(&Default::default());
-    encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-        label: Some("traa placeholder"),
-        depth_stencil_attachment: depth_attachment(&depth),
-        ..Default::default()
-    });
-    r.queue.submit([encoder.finish()]);
-    depth
 }
 
 #[allow(unused_variables)]

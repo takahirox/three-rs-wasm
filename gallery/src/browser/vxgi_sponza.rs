@@ -1424,10 +1424,12 @@ impl Demo {
                     wgpu::BufferUsages::INDEX,
                 ),
                 count: index.len() as u32,
-                sphere: Sphere {
+                // GLTFLoader's computeBounds sphere ( the accessor box's
+                // center and half diagonal ), which the culling tests.
+                sphere: g.bounding_sphere.unwrap_or(Sphere {
                     center,
                     radius: points.iter().map(|p| p.distance(center)).fold(0., f64::max),
-                },
+                }),
                 model,
                 kind,
                 color,
@@ -2044,7 +2046,9 @@ impl Demo {
             ..,
         ] = self.params;
         let frame_value = if temporal > 0.5 {
-            (self.frame_id % TEMPORAL_CYCLE) as f64
+            // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
+            // update ), then the fixture's restarted count.
+            (self.frame_id.max(1) % TEMPORAL_CYCLE) as f64
         } else {
             0.
         };

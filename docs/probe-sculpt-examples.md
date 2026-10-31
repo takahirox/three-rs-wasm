@@ -67,7 +67,8 @@ longest edge until no edge exceeds the voxel limit, as VXGIVolume does. The
 volume is voxelized once. The radiance volume is re-injected only when the
 light or the injection settings change. VXGINode turns its cones by
 `frameId % 64`, so the fixture stops the loading loop and restarts frameId at
-12800. Both sides then advance it per requested frame. The page renders at a
+12800. Both sides then advance it per requested frame; the loading frame
+renders at frameId 1, r187's first node-frame update. The page renders at a
 pixel ratio of 1. The voxel view and the directional radiance are not
 reproduced.
 

@@ -66,9 +66,10 @@ modules by 379.
 - **Velocity.** VelocityNode's previous projection, view and model matrices
   are the last frame's (the current ones on the first frame); the current
   projection is the unjittered one.
-- **History.** A new history starts from the beauty buffer. The resolve
-  reads TRAANode's 1 × 1 placeholder depth for its first two resolves and the
-  previous frame's pre-pass depth afterwards.
+- **History.** A new history starts from the beauty buffer. As in r187, the
+  previous depth is the history's depth texture from the first resolve: the
+  restart's resolve reads it freshly sized ( zero ), later ones the previous
+  frame's pre-pass depth.
 - **Start-up frames.** In r186 the first resolve renders into TRAANode's
   targets before they take the drawing-buffer size: the original shows one
   flat 1 × 1 frame and starts from a different history. The port starts from
