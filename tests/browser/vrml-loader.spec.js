@@ -13,7 +13,7 @@ test('VRMLLoader port matches the original bit for bit',async({page})=>{
   const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(pkg);
   const results=[];
   for(const asset of assets){
-   const text=await (await fetch(`/.cache/three-r186/examples/models/vrml/${asset}.wrl`)).text();
+   const text=await (await fetch(`/.cache/three-r187/examples/models/vrml/${asset}.wrl`)).text();
    const expected=window.vrmlCanonical(text,'models/vrml/');
    const actual=rust.vrml_canonical(text,'models/vrml/',innerWidth,innerHeight);
    let at=-1;for(let i=0;i<Math.max(expected.length,actual.length);i++)if(expected[i]!==actual[i]){at=i;break;}

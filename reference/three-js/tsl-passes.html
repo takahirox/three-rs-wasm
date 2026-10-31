@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
-<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body><canvas id="c"></canvas>
+<script type="importmap">{"imports":{"three":"/.cache/three-r187/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r187/src/Three.WebGPU.js","three/tsl":"/.cache/three-r187/src/Three.TSL.js","three/addons/":"/.cache/three-r187/examples/jsm/"}}</script></head><body><canvas id="c"></canvas>
 <script type="module">
 // Run the pinned official source with a deterministic clock, seeded scene
 // randomness and captured GUI parameters. Shader expressions remain upstream.
@@ -11,7 +11,7 @@ let loading=Promise.resolve();
 const originalStart=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManager);
 THREE.DefaultLoadingManager.itemStart=(...args)=>{loading=new Promise(resolve=>{THREE.DefaultLoadingManager.onLoad=resolve;});originalStart(...args);};
 THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};};
-const source=await (await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+const source=await (await fetch(`/.cache/three-r187/examples/${id}.html`)).text();
 let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
 module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){return {add(object,key){fixtureControls.push({object,key});return {name(){return this;}};}};}}`)
  .replace('renderer.inspector = new Inspector();','const fixtureInspector = new Inspector();')
@@ -20,8 +20,8 @@ module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createPar
  .replace('timer.getDelta()', '0')
  .replace('performance.now() * 0.001 + 6000','window.fixtureSeconds + 6000')
  .replaceAll('Math.random()', 'fixtureRandom()')
- .replaceAll("'./textures/","'/.cache/three-r186/examples/textures/")
- .replaceAll("'textures/","'/.cache/three-r186/examples/textures/")
+ .replaceAll("'./textures/","'/.cache/three-r187/examples/textures/")
+ .replaceAll("'textures/","'/.cache/three-r187/examples/textures/")
 ;
 window.fixtureSeconds=0;
 module='let fixtureSeed=186;function fixtureRandom(){fixtureSeed=(Math.imul(fixtureSeed,1664525)+1013904223)>>>0;return fixtureSeed/4294967296;}\n'+module;

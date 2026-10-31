@@ -1562,12 +1562,12 @@
   "RenderTarget.resolveDepthBuffer": {
     "rust": "src/render_target.rs",
     "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
-    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r186 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
+    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r187 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
   },
   "RenderTarget.resolveStencilBuffer": {
     "rust": "src/render_target.rs",
     "test": "tests/gpu.rs#webgpu_renders_basic_mesh_and_recreates_targets",
-    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r186 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
+    "mapping": "RenderTargetOptions retains resolve flags. Like the pinned r187 WebGPU backend, depth/stencil use WebGPU attachment store semantics; these WebGL-oriented resolve flags do not trigger an unsupported hardware depth resolve."
   },
   "RenderTarget.samples": {
     "rust": "src/render_target.rs",

@@ -2,7 +2,7 @@
 import json, tarfile, hashlib, shutil
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-rev=json.loads((ROOT/'compat/three-r186/api.json').read_text())['baseline']['upstream_commit']
+rev=json.loads((ROOT/'compat/three-r187/api.json').read_text())['baseline']['upstream_commit']
 cache=ROOT/'.cache/gltf-examples'
 assets=json.loads((ROOT/'tools/gltf_examples/assets.json').read_text())
 asset_sources={e['source'] for e in assets} | {'examples/textures/equirectangular/royal_esplanade_2k.hdr.jpg'}
@@ -17,7 +17,7 @@ with tarfile.open(ROOT/'.cache'/f'three-{rev}.tar.gz') as archive:
   rel=entry.name.split('/',1)[-1]
   if not entry.isfile():continue
   if rel in reference_sources:
-   target=ROOT/'.cache/three-r186'/rel;target.parent.mkdir(parents=True,exist_ok=True)
+   target=ROOT/'.cache/three-r187'/rel;target.parent.mkdir(parents=True,exist_ok=True)
    target.write_bytes(archive.extractfile(entry).read())
   if rel in asset_sources:
    target=cache/rel.removeprefix('examples/');target.parent.mkdir(parents=True,exist_ok=True)

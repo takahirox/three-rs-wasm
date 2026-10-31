@@ -7,9 +7,9 @@ import urllib.request
 from pathlib import Path, PurePosixPath
 
 ROOT=Path(__file__).resolve().parents[2]
-baseline=json.loads((ROOT/'compat/three-r186/api.json').read_text())['baseline']
+baseline=json.loads((ROOT/'compat/three-r187/api.json').read_text())['baseline']
 commit=baseline['upstream_commit']
-destination=ROOT/'.cache/three-r186'
+destination=ROOT/'.cache/three-r187'
 stamp=destination/'.revision'
 extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js')
 # The addons and the example assets the loader and geometry oracles

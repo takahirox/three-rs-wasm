@@ -1,10 +1,10 @@
 // Generate independent oracle data from pinned Three.js; never loaded by the app.
-import * as T from '../../.cache/three-r186/src/Three.Core.js';
+import * as T from '../../.cache/three-r187/src/Three.Core.js';
 
 import {writeFileSync,readFileSync} from 'node:fs';
-const parametricSource=readFileSync('.cache/three-r186/examples/jsm/geometries/ParametricGeometry.js','utf8').replace(/from 'three'/g,`from '${new URL('../../.cache/three-r186/src/Three.Core.js',import.meta.url).href}'`);
+const parametricSource=readFileSync('.cache/three-r187/examples/jsm/geometries/ParametricGeometry.js','utf8').replace(/from 'three'/g,`from '${new URL('../../.cache/three-r187/src/Three.Core.js',import.meta.url).href}'`);
 const {ParametricGeometry}=await import('data:text/javascript;base64,'+Buffer.from(parametricSource).toString('base64'));
-const teapotSource=readFileSync('.cache/three-r186/examples/jsm/geometries/TeapotGeometry.js','utf8').replace(/from 'three'/g,`from '${new URL('../../.cache/three-r186/src/Three.Core.js',import.meta.url).href}'`);
+const teapotSource=readFileSync('.cache/three-r187/examples/jsm/geometries/TeapotGeometry.js','utf8').replace(/from 'three'/g,`from '${new URL('../../.cache/three-r187/src/Three.Core.js',import.meta.url).href}'`);
 const {TeapotGeometry}=await import('data:text/javascript;base64,'+Buffer.from(teapotSource).toString('base64'));
 const points=Array.from({length:8},(_,i)=>new T.Vector2(Math.sin(i*.2)*Math.sin(i*.1)*15+50,(i-5)*2));
 const geometries={

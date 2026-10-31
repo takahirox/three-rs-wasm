@@ -13,7 +13,7 @@ test('USDLoader port matches the original bit for bit',async({page})=>{
  const inputs=fixtures().map(f=>({name:f.name,path:f.path,bytes:Array.from(f.bytes)}));
  const results=await page.evaluate(async ([inputs,pkg])=>{
   const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(pkg);
-  inputs.push({name:'saeukkang.usdz',path:'',bytes:new Uint8Array(await (await fetch('/.cache/three-r186/examples/models/usdz/saeukkang.usdz')).arrayBuffer())});
+  inputs.push({name:'saeukkang.usdz',path:'',bytes:new Uint8Array(await (await fetch('/.cache/three-r187/examples/models/usdz/saeukkang.usdz')).arrayBuffer())});
   const results=[];
   for(const input of inputs){
    const bytes=new Uint8Array(input.bytes);

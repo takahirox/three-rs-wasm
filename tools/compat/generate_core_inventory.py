@@ -2,7 +2,7 @@
 """Generate the frozen Three.js r186 Core API member inventory.
 
 No third-party dependencies. By default this reads the exact upstream commit
-recorded in compat/three-r186/api.json. For offline/reproducible use, pass
+recorded in compat/three-r187/api.json. For offline/reproducible use, pass
 --source-root /path/to/three.js.
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[2]
-BASELINE_DIR = ROOT / "compat" / "three-r186"
+BASELINE_DIR = ROOT / "compat" / "three-r187"
 API_PATH = BASELINE_DIR / "api.json"
 CAPABILITIES_PATH = BASELINE_DIR / "capabilities.json"
 DEFAULT_OUTPUT = BASELINE_DIR / "members.json"

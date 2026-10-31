@@ -1,7 +1,7 @@
 import {registerHooks} from 'node:module';
 import {writeFile} from 'node:fs/promises';
 // Camera-only oracle from pinned Three.js r186 (148ef33e). No rasterization.
-const root=new URL('../../.cache/three-r186/',import.meta.url).href;
+const root=new URL('../../.cache/three-r187/',import.meta.url).href;
 registerHooks({resolve(s,c,next){if(s==='three')return {url:root+'src/Three.Core.js',shortCircuit:true};return next(s,c);}});
 const T=await import(root+'src/Three.Core.js');const {SunLight}=await import(root+'examples/jsm/lights/SunLight.js');
 const rows=[];

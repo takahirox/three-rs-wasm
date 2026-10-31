@@ -4,7 +4,7 @@ import json
 import tarfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-REV='148ef33ecb6d2502ff796d4554abd1549c95d519'
+REV='7e89746a687bb88271253698fa108b1dd59825d0'
 OUT=ROOT/'web/examples/assets/material-textures'
 OUT.mkdir(parents=True,exist_ok=True)
 manifest=[]
@@ -12,7 +12,7 @@ with tarfile.open(ROOT/f'.cache/three-{REV}.tar.gz') as tar:
     for name in ['textures/carbon/Carbon.png','textures/crate.gif','textures/758px-Canestra_di_frutta_(Caravaggio).jpg']:
         member=next(m for m in tar.getmembers() if m.name.endswith('/examples/'+name))
         data=tar.extractfile(member).read()
-        path=ROOT/'.cache/three-r186/examples'/name
+        path=ROOT/'.cache/three-r187/examples'/name
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_bytes(data)
         (OUT/Path(name).name).write_bytes(data)

@@ -1,9 +1,9 @@
 <!doctype html><meta charset="utf-8"><title>Pinned glTF example comparison</title>
 <style>html,body{margin:0;overflow:hidden}canvas{display:block}</style>
-<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"/.cache/three-r187/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r187/src/Three.WebGPU.js","three/addons/":"/.cache/three-r187/examples/jsm/"}}</script>
 <script type="module">
 import * as GPU from 'three';
-import * as GL from '/.cache/three-r186/src/Three.js';
+import * as GL from '/.cache/three-r187/src/Three.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader,DRACO_GLTF_CONFIG} from 'three/addons/loaders/DRACOLoader.js';
 import {HDRLoader} from 'three/addons/loaders/HDRLoader.js';
@@ -26,7 +26,7 @@ try {
  if(renderer.init)await renderer.init();renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=["dispersion","compressed"].includes(kind)?T.ReinhardToneMapping:T.ACESFilmicToneMapping;renderer.toneMappingExposure=exposure;document.body.append(renderer.domElement);
  const scene=new T.Scene(),camera=new T.PerspectiveCamera(fov,innerWidth/innerHeight,near,far);camera.position.fromArray(pos);
  const controls=new OrbitControls(camera,renderer.domElement);controls.target.fromArray(target);controls.minDistance=min;controls.maxDistance=max;controls.update();controls.enableDamping=['sheen','transmission'].includes(kind);
- const draco=new DRACOLoader().setDecoderPath('/.cache/three-r186/examples/jsm/libs/draco/gltf/').setDecoderConfig(DRACO_GLTF_CONFIG);
+ const draco=new DRACOLoader().setDecoderPath('/.cache/three-r187/examples/jsm/libs/draco/gltf/').setDecoderConfig(DRACO_GLTF_CONFIG);
  const loader=new GLTFLoader().setDRACOLoader(draco);
  const ktx=await new KTX2Loader().detectSupport(renderer);loader.setKTX2Loader(ktx).setMeshoptDecoder(MeshoptDecoder);
  const [gltf,texture]=await Promise.all([loader.loadAsync('/.cache/gltf-examples/models/gltf/'+model),env?new (env.endsWith('.jpg')?UltraHDRLoader:HDRLoader)().loadAsync('/.cache/gltf-examples/textures/equirectangular/'+env):null]);draco.dispose();ktx.dispose();

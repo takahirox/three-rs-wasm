@@ -9,7 +9,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--members',type=Path,required=True)
 args=parser.parse_args()
 items=json.loads(args.members.read_text())['items']
-path=ROOT/'compat/three-r186/implementation.json'
+path=ROOT/'compat/three-r187/implementation.json'
 evidence=json.loads(path.read_text()) if path.is_file() else {}
 required={item['api'] for item in items if item['status'].startswith('implemented-')}
 missing=sorted(required-evidence.keys())

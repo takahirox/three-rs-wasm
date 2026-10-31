@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!-- webgpu_tsl_editor on the pinned r186 sources: the original page's styles, markup and
      script, with its import map pointed at src/ ( the checkout has no build/ ). -->
-<html><head><meta charset="utf-8"><base href="/.cache/three-r186/examples/"><link type="text/css" rel="stylesheet" href="main.css"></head>
+<html><head><meta charset="utf-8"><base href="/.cache/three-r187/examples/"><link type="text/css" rel="stylesheet" href="main.css"></head>
 <body>
-<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"/.cache/three-r187/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r187/src/Three.WebGPU.js","three/tsl":"/.cache/three-r187/src/Three.TSL.js","three/addons/":"/.cache/three-r187/examples/jsm/"}}</script>
 <script>
 // The original page's body, minus its import map; its module script runs as a module.
 ( async () => {
-	const html = await ( await fetch( '/.cache/three-r186/examples/webgpu_tsl_editor.html' ) ).text();
+	const html = await ( await fetch( '/.cache/three-r187/examples/webgpu_tsl_editor.html' ) ).text();
 	const body = html.match( /<body>([\s\S]*)<\/body>/ )[ 1 ];
 	const style = body.match( /<style>([\s\S]*?)<\/style>/ )[ 1 ];
 	const s = document.createElement( 'style' );

@@ -4,7 +4,7 @@ import {writeFileSync} from 'node:fs';
 test('Rust UltraHDR decoding matches the official UltraHDRLoader reconstruction',async({page},info)=>{
  await page.goto('/reference/three-js/gltf-pbr.html');await expect(page.locator('canvas')).toHaveAttribute('data-ready','true',{timeout:120000});
  const result=await page.evaluate(async()=>{
-  const {DataUtils}=await import('/.cache/three-r186/src/Three.WebGPU.js');const a=window.reference.environment.image.data;
+  const {DataUtils}=await import('/.cache/three-r187/src/Three.WebGPU.js');const a=window.reference.environment.image.data;
   const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime('core');
   const bytes=new Uint8Array(await (await fetch('/web/examples/environments/royal_esplanade_2k.hdr.jpg')).arrayBuffer());
   const b=await rust.decode_environment(bytes);

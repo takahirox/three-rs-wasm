@@ -27,7 +27,7 @@ run() {
 }
 run "Pinned Three.js reference" python3 tools/compat/prepare_reference.py
 run "Inventory regression tests" python3 -m unittest discover -s tools/compat -p 'test_*.py'
-run "Generate Core inventory" python3 tools/compat/generate_core_inventory.py --source-root .cache/three-r186 --output "$CHECK_DIR/members.json"
+run "Generate Core inventory" python3 tools/compat/generate_core_inventory.py --source-root .cache/three-r187 --output "$CHECK_DIR/members.json"
 run "Core capability accounting" python3 tools/compat/check_manifest.py --members "$CHECK_DIR/members.json"
 run "Implementation evidence" python3 tools/compat/check_implementation.py --members "$CHECK_DIR/members.json"
 run "cargo fmt --check" cargo fmt --all -- --check

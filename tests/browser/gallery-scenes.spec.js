@@ -5,7 +5,7 @@ const examples=['webgl_buffergeometry_lines_indexed','webgl_interactive_lines','
 for(const id of examples)test(`original scene comparison: ${id}`,async({page},info)=>{
  test.setTimeout(120000);
  await page.setViewportSize({width:512,height:512});
- let source=readFileSync(`.cache/three-r186/examples/${id}.html`,'utf8');
+ let source=readFileSync(`.cache/three-r187/examples/${id}.html`,'utf8');
  source=source.replace('../build/three.module.js','../src/Three.js').replaceAll('../build/three.webgpu.js','../src/Three.WebGPU.js').replace('../build/three.tsl.js','../src/Three.TSL.js').replace("import Stats from 'three/addons/libs/stats.module.js';", "class Stats {dom=document.createElement('div');update(){}}");
  source=source.replace("import { GUI } from 'three/addons/libs/lil-gui.module.min.js';","class GUI {add(){return this}name(){return this}onChange(){return this}open(){}}");
  source=source.replace("import { Inspector } from 'three/addons/inspector/Inspector.js';","class GUI {add(){return this}name(){return this}onChange(){return this}open(){}}");
@@ -16,12 +16,12 @@ for(const id of examples)test(`original scene comparison: ${id}`,async({page},in
  source=source.replace('lon += 0.1;', 'lon += 0;').replace('theta += 0.1;', 'theta = 0;');
  source=source.replace('camera.applyMatrix4( rotateY );','').replace('sphere.scale.multiplyScalar( 0.98 );','').replace('toggle += timer.getDelta();','');
  source=source.replace('renderer.render( scene, camera );','window.reference={scene,camera,renderer}; renderer.render( scene, camera );');
- await page.route(`**/.cache/three-r186/examples/${id}.html`,r=>r.fulfill({contentType:'text/html',body:source}));
+ await page.route(`**/.cache/three-r187/examples/${id}.html`,r=>r.fulfill({contentType:'text/html',body:source}));
  await page.route('**/textures/2294472375_24a3b8ef46_o.jpg',r=>r.fulfill({path:'web/examples/assets/panorama.jpg'}));
  await page.route('**/textures/uv_grid_opengl.jpg',r=>r.fulfill({path:'web/examples/assets/uv-grid.jpg'}));
  await page.route('**/textures/equirectangular/royal_esplanade_2k.hdr.jpg',r=>r.fulfill({path:'web/examples/environments/royal_esplanade_2k.hdr.jpg'}));
  await page.route('**/textures/equirectangular/spot1Lux.hdr',r=>r.fulfill({path:'web/examples/assets/spot1Lux.hdr'}));
- await page.goto(`/.cache/three-r186/examples/${id}.html`);
+ await page.goto(`/.cache/three-r187/examples/${id}.html`);
  await page.waitForFunction(()=>window.reference);
  if(id.includes('pmrem'))await page.waitForFunction(n=>window.reference.scene.children.length===n,id==='webgpu_pmrem_test'?34:30);
  await page.addStyleTag({content:'#info{display:none!important}'});

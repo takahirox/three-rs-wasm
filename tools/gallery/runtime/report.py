@@ -68,7 +68,7 @@ for entry in catalog['examples']:
         row['probe_limit'] = any(b.startswith('Probe resource limit:') for b in browser.get('blockers', []))
     rows.append(row)
 report = {
-    'revision': catalog.get('revision', '148ef33ecb6d2502ff796d4554abd1549c95d519'),
+    'revision': catalog.get('revision', '7e89746a687bb88271253698fa108b1dd59825d0'),
     'method': 'Baseline recorded before Core expansion. Instrumented pinned upstream HTML executed in isolated Chrome contexts. Actual main render calls and unsupported dispatches were intercepted. Eligible observed scene data was rendered separately by the native Rust/WebGPU renderer. This does not execute the example behavior in Rust or establish pixel parity.',
     'limits': ['A sampled frame cannot validate every GUI branch, animation, interaction, or late asset load.', 'Upstream JavaScript constructs geometry and decodes assets for the probe; this does not prove native loader support.', '2000 objects, 1M vertices, and 8M total texture pixels are diagnostic transfer limits, not engine limits.', 'Only independently implemented and tested product ports appear in the gallery.', 'The runtime bridge predates Core expansion: its missing-feature labels are historical, not current Core capability claims. See core-expansion.md.'],
     'counts': dict(collections.Counter(r['outcome'] for r in rows)),

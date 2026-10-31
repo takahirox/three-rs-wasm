@@ -5,13 +5,13 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {registerHooks} from 'node:module';
 import {resolveObjectURL} from 'node:buffer';
 const root=new URL('../../',import.meta.url);
-const three=new URL('.cache/three-r186/src/Three.Core.js',root).href;
+const three=new URL('.cache/three-r187/src/Three.Core.js',root).href;
 registerHooks({resolve(specifier,context,next){if(specifier==='three')return {url:three,shortCircuit:true};return next(specifier,context);}});
 // TextureLoader builds an image element; the stub keeps the requested URL.
 globalThis.document={createElementNS:()=>({addEventListener(){},removeEventListener(){},style:{}})};
 globalThis.self=globalThis;
 globalThis.window={innerWidth:1,innerHeight:1};
-const {FBXLoader}=await import(new URL('.cache/three-r186/examples/jsm/loaders/FBXLoader.js',root).href);
+const {FBXLoader}=await import(new URL('.cache/three-r187/examples/jsm/loaders/FBXLoader.js',root).href);
 const {TextureLoader,Texture}=await import(three);
 TextureLoader.prototype.load=function(url){const t=new Texture();t.userData.oracleUrl=url.startsWith('blob:')||url.startsWith('data:')?url:(this.path??'')+url;return t;};
 const assets=['Samba Dancing','morph_test','monkey','monkey_embedded_texture','vCube','archer/ArcherRi01','warrior/Warrior','stanford-bunny','mixamo','RotationTest','exampleWindow','Head_69','morph-translation','ball_anims_asc_2018','nurbs'];
@@ -20,7 +20,7 @@ await mkdir(out,{recursive:true});
 const num=v=>typeof v==='number'?v:(v===undefined||v===null?null:Number(v));
 for(const asset of assets){
  const dir=asset.includes('/')?asset.slice(0,asset.lastIndexOf('/')+1):'';
- const source=await readFile(new URL(`.cache/three-r186/examples/models/fbx/${asset}.fbx`,root));
+ const source=await readFile(new URL(`.cache/three-r187/examples/models/fbx/${asset}.fbx`,root));
  const loader=new FBXLoader();
  loader.trimAnimationClips=asset==='ball_anims_asc_2018';
  const model=loader.parse(source.buffer.slice(source.byteOffset,source.byteOffset+source.length),dir);

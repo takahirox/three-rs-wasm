@@ -5,10 +5,10 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {registerHooks} from 'node:module';
 const root=new URL('../../',import.meta.url);
-const three=new URL('.cache/three-r186/src/Three.Core.js',root).href;
+const three=new URL('.cache/three-r187/src/Three.Core.js',root).href;
 registerHooks({resolve(specifier,context,next){if(specifier==='three')return {url:three,shortCircuit:true};return next(specifier,context);}});
 globalThis.window={innerWidth:1,innerHeight:1};
-const {VRMLLoader}=await import(new URL('.cache/three-r186/examples/jsm/loaders/VRMLLoader.js',root).href);
+const {VRMLLoader}=await import(new URL('.cache/three-r187/examples/jsm/loaders/VRMLLoader.js',root).href);
 const {TextureLoader,Texture,Object3D,MeshBasicMaterial}=await import(three);
 const {canonical}=await import(new URL('tools/core/vrml-canonical.mjs',root).href);
 // TextureLoader builds an image element; the stub keeps the requested URL.
@@ -17,7 +17,7 @@ const assets=['creaseAngle','crystal','house','elevationGrid1','elevationGrid2',
 const out=new URL('.cache/vrml-oracle/',root);
 await mkdir(out,{recursive:true});
 for(const asset of assets){
- const text=await readFile(new URL(`.cache/three-r186/examples/models/vrml/${asset}.wrl`,root),'utf8');
+ const text=await readFile(new URL(`.cache/three-r187/examples/models/vrml/${asset}.wrl`,root),'utf8');
  const bases={object:new Object3D().id+1,material:new MeshBasicMaterial().id+1};
  const scene=new VRMLLoader().parse(text,'models/vrml/');
  scene.updateMatrixWorld(true);

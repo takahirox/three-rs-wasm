@@ -5,9 +5,9 @@ const pkg=JSON.parse(readFileSync('web/examples/modules.json','utf8')).examples.
 // webgpu_tsl_transpiler: the Rust transpiler ( src/transpiler/ ) against the r186 one
 // ( examples/jsm/transpiler/ ), both run in the same page. The output text and the
 // error messages must match character for character, for both encoders.
-const html=readFileSync('.cache/three-r186/examples/webgpu_tsl_transpiler.html','utf8');
+const html=readFileSync('.cache/three-r187/examples/webgpu_tsl_transpiler.html','utf8');
 const pageGlsl=html.match(/const glslCode = `([\s\S]*?)`;/)[1];
-const shaders=readdirSync('.cache/three-r186/examples/jsm/shaders').filter(f=>f.endsWith('.js'));
+const shaders=readdirSync('.cache/three-r187/examples/jsm/shaders').filter(f=>f.endsWith('.js'));
 // Statements, qualifiers, textures, preprocessor directives and malformed input.
 const written=JSON.parse(readFileSync('tests/browser/transpiler-cases.json','utf8'));
 
@@ -15,17 +15,17 @@ test('Transpiler output matches the original for every GLSL input',async({page},
  test.setTimeout(600000);
  await page.goto('/reference/three-js/compute-examples.html?id=none');
  const report=await page.evaluate(async({pageGlsl,shaders,written,pkg})=>{
-  const Transpiler=(await import('/.cache/three-r186/examples/jsm/transpiler/Transpiler.js')).default;
-  const GLSLDecoder=(await import('/.cache/three-r186/examples/jsm/transpiler/GLSLDecoder.js')).default;
-  const TSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/TSLEncoder.js')).default;
-  const WGSLEncoder=(await import('/.cache/three-r186/examples/jsm/transpiler/WGSLEncoder.js')).default;
+  const Transpiler=(await import('/.cache/three-r187/examples/jsm/transpiler/Transpiler.js')).default;
+  const GLSLDecoder=(await import('/.cache/three-r187/examples/jsm/transpiler/GLSLDecoder.js')).default;
+  const TSLEncoder=(await import('/.cache/three-r187/examples/jsm/transpiler/TSLEncoder.js')).default;
+  const WGSLEncoder=(await import('/.cache/three-r187/examples/jsm/transpiler/WGSLEncoder.js')).default;
   const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(pkg);
   // The page's GLSL, every three.js shader chunk and every examples shader.
   const base=[['page',pageGlsl]];
-  const {ShaderChunk}=await import('/.cache/three-r186/src/renderers/shaders/ShaderChunk.js');
+  const {ShaderChunk}=await import('/.cache/three-r187/src/renderers/shaders/ShaderChunk.js');
   for(const [name,glsl] of Object.entries(ShaderChunk))if(typeof glsl==='string')base.push(['chunk/'+name,glsl]);
   for(const file of shaders){
-   const module=await import('/.cache/three-r186/examples/jsm/shaders/'+file);
+   const module=await import('/.cache/three-r187/examples/jsm/shaders/'+file);
    for(const [name,shader] of Object.entries(module))if(shader&&typeof shader==='object')for(const key of ['vertexShader','fragmentShader'])if(typeof shader[key]==='string')base.push([`shaders/${file}/${name}.${key}`,shader[key]]);
   }
   written.forEach((glsl,i)=>base.push(['written/'+i,glsl]));
@@ -75,9 +75,9 @@ test('Gallery page transpiles with the page editors and encoder selection',async
  // The original runs in the fixture page, whose import map resolves three/webgpu.
  const fixture=await page.context().newPage();await fixture.goto('/reference/three-js/compute-examples.html?id=none');
  const original=(glsl,encoder)=>fixture.evaluate(async({glsl,encoder})=>{
-  const Transpiler=(await import('/.cache/three-r186/examples/jsm/transpiler/Transpiler.js')).default;
-  const GLSLDecoder=(await import('/.cache/three-r186/examples/jsm/transpiler/GLSLDecoder.js')).default;
-  const Encoder=(await import(`/.cache/three-r186/examples/jsm/transpiler/${encoder}Encoder.js`)).default;
+  const Transpiler=(await import('/.cache/three-r187/examples/jsm/transpiler/Transpiler.js')).default;
+  const GLSLDecoder=(await import('/.cache/three-r187/examples/jsm/transpiler/GLSLDecoder.js')).default;
+  const Encoder=(await import(`/.cache/three-r187/examples/jsm/transpiler/${encoder}Encoder.js`)).default;
   try{return new Transpiler(new GLSLDecoder(),new Encoder()).parse(glsl);}catch(e){return 'Error: '+e.message;}
  },{glsl,encoder});
  const shown=()=>page.evaluate(()=>window.transpilerEditors.result.getValue());

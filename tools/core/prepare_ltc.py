@@ -4,7 +4,7 @@ import struct
 import sys
 from pathlib import Path
 root=Path(__file__).resolve().parents[2]
-source=(root/'.cache/three-r186/examples/jsm/lights/RectAreaLightTexturesLib.js').read_text()
+source=(root/'.cache/three-r187/examples/jsm/lights/RectAreaLightTexturesLib.js').read_text()
 data=bytearray()
 for table in (1,2):
     text=re.search(r'const LTC_MAT_'+str(table)+r' = \[([^\]]+)\]',source)[1]

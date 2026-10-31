@@ -5,7 +5,7 @@
 // with its animation and transform animation; and references between layers.
 // `node tools/core/usd-fixtures.mjs` writes them to .cache/usd-fixtures/ as the
 // bytes tests/usd.rs, tools/core/usd-oracle.mjs and the browser test parse.
-import {deflateSync,zipSync,strToU8} from '../../.cache/three-r186/examples/jsm/libs/fflate.module.js';
+import {deflateSync,zipSync,strToU8} from '../../.cache/three-r187/examples/jsm/libs/fflate.module.js';
 
 // A w × h RGBA PNG ( stored filter rows, one IDAT ).
 function png(w,h,pixel){

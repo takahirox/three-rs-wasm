@@ -20,7 +20,7 @@ test('RobotExpressive parses, animates and switches clips entirely in Rust/Wasm'
  const names=await page.evaluate(()=>JSON.parse(window.app.animation_names()));
  await page.selectOption('#animation',String(names.indexOf('Dance')));await page.waitForTimeout(300);
  const dancing=await page.locator('canvas').screenshot();expect(dancing.equals(first)).toBe(false);
- expect(scripts.filter(url=>url.includes('/three-r186/')||url.includes('three.module')||url.includes('GLTFLoader'))).toEqual([]);
+ expect(scripts.filter(url=>url.includes('/three-r187/')||url.includes('three.module')||url.includes('GLTFLoader'))).toEqual([]);
  const after=await page.evaluate(()=>JSON.parse(window.app.transfer_counts()));expect(after.slice(0,3)).toEqual(uploads.slice(0,3));expect(after[3]).toBeGreaterThan(uploads[3]);
  expect(await page.evaluate(()=>window.gpuAllocations)).toEqual(allocations);
  // Resizing invalidates attachment bindings, then reaches a new steady state.

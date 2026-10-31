@@ -102,7 +102,7 @@ function instrumentRust({ mode, hdr, background, fixedLight, variant }) {
 }
 
 async function configureGL({ mode, flip, hdr, background, fixedLight }) {
-  const T = await import('/.cache/three-r186/src/Three.js');
+  const T = await import('/.cache/three-r187/src/Three.js');
   const { scene, renderer, camera } = reference;
   if (hdr === false) scene.environment = null;
   if (background === false) scene.background = new T.Color(0);

@@ -94,7 +94,7 @@ fn vrml_loader_matches_the_original() {
     let mut failures = vec![];
     for asset in ASSETS {
         let text = std::fs::read_to_string(format!(
-            ".cache/three-r186/examples/models/vrml/{asset}.wrl"
+            ".cache/three-r187/examples/models/vrml/{asset}.wrl"
         ))
         .unwrap();
         let scene = vrml::parse(

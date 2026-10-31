@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / "compat" / "three-r186"
+BASE = ROOT / "compat" / "three-r187"
 ALLOWED = {
     "implemented-equivalent",
     "implemented-adapted",

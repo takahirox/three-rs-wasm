@@ -27,11 +27,11 @@ test('equivalent WebGL scenes are excluded and point to the preferred WebGPU sce
 for(const mode of [{name:'desktop-light',width:1280,height:900,colorScheme:'light'},{name:'mobile-dark',width:390,height:844,colorScheme:'dark'}]){
  test(`official gallery layout: ${mode.name}`,async({page},info)=>{
   await page.setViewportSize(mode);await page.emulateMedia({colorScheme:mode.colorScheme});
-  await page.route('**/.cache/three-r186/examples/files.json',route=>route.fulfill({contentType:'application/json',body:files}));
-  await page.route('**/.cache/three-r186/examples/screenshots/*.jpg',route=>route.fulfill({path:`web/examples/screenshots/${route.request().url().split('/').at(-1)}`}));
-  await page.route('**/.cache/three-r186/examples/files/thumbnails.svg',route=>route.fulfill({path:'web/examples/files/thumbnails.svg'}));
+  await page.route('**/.cache/three-r187/examples/files.json',route=>route.fulfill({contentType:'application/json',body:files}));
+  await page.route('**/.cache/three-r187/examples/screenshots/*.jpg',route=>route.fulfill({path:`web/examples/screenshots/${route.request().url().split('/').at(-1)}`}));
+  await page.route('**/.cache/three-r187/examples/files/thumbnails.svg',route=>route.fulfill({path:'web/examples/files/thumbnails.svg'}));
   const ready=async()=>{await expect(page.locator('.card')).toHaveCount(catalog.examples.filter(e=>e.port&&e.status!=='excluded').length);await page.evaluate(()=>document.fonts.ready);await page.waitForFunction(()=>[...document.querySelectorAll('.card img')].filter(i=>i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0).every(i=>i.complete&&i.naturalWidth));};
-  await page.goto('/.cache/three-r186/examples/');await ready();const reference=await page.screenshot({animations:"disabled"});
+  await page.goto('/.cache/three-r187/examples/');await ready();const reference=await page.screenshot({animations:"disabled"});
   await page.goto('/web/examples/');await ready();const actual=await page.screenshot({animations:"disabled"});
   const a=PNG.sync.read(actual),b=PNG.sync.read(reference);let different=0;const diff=new PNG({width:a.width,height:a.height});
   for(let i=0;i<a.data.length;i+=4){let d=0;for(let c=0;c<3;c++){d=Math.max(d,Math.abs(a.data[i+c]-b.data[i+c]));diff.data[i+c]=Math.min(255,Math.abs(a.data[i+c]-b.data[i+c])*8);}diff.data[i+3]=255;if(d>6)different++;}

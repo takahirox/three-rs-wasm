@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
-<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body>
+<script type="importmap">{"imports":{"three":"/.cache/three-r187/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r187/src/Three.WebGPU.js","three/tsl":"/.cache/three-r187/src/Three.TSL.js","three/addons/":"/.cache/three-r187/examples/jsm/"}}</script></head><body>
 <script type="module">
 // Original scripts and shaders. Only seeded initial data, time, GUI capture and layout are adapted.
 import * as THREE from 'three/webgpu';
@@ -14,14 +14,14 @@ const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManag
 THREE.DefaultLoadingManager.itemStart=(...args)=>{pending++;start(...args);};
 THREE.DefaultLoadingManager.itemEnd=(...args)=>{end(...args);pending--;};
 THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};};
-const source=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+const source=await(await fetch(`/.cache/three-r187/examples/${id}.html`)).text();
 for(const script of new DOMParser().parseFromString(source,'text/html').querySelectorAll('script[type="x-shader/x-fragment"]')) document.body.append(script);
 let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
 module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){const gui={add(object,key){const item={object,key,callback:null,name(){return this;},step(){return this;},listen(){return this;},onChange(fn){this.callback=fn;return this;},setValue(value){if(this.object[this.key]?.isColor)this.object[this.key].set(value);else this.object[this.key]=value;this.callback?.(value);return this;}};fixtureControls.push(item);return item;},addFolder(){return this;},addColor(object,key){return this.add(object,key);}};return gui;}}`)
 .replace('renderer.inspector = new Inspector();','const fixtureInspector=new Inspector();').replace('renderer.inspector.createParameters','fixtureInspector.createParameters')
 .replace(/import \{([^}]*)\} from 'three\/tsl';/g,(_,names)=>`import {${names.split(',').filter(x=>!['time','range'].includes(x.trim())).join(',')}} from 'three/tsl';`)
 .replace('timer.getElapsed()', 'window.fixtureSeconds').replace('timer.getDelta()', '(window.fixtureSeconds - (window.fixturePrevious ?? 0))').replaceAll('Math.random()','fixtureRandom()').replaceAll('.random()', '.set(fixtureRandom(),fixtureRandom(),fixtureRandom())').replaceAll('Date.now()','(window.fixtureSeconds*1000)').replaceAll('performance.now()','(window.fixtureSeconds*1000)')
-.replaceAll("'./textures/","'/.cache/three-r186/examples/textures/").replaceAll("'./models/","'/.cache/three-r186/examples/models/").replaceAll("'textures/","'/.cache/three-r186/examples/textures/").replaceAll("'models/","'/.cache/three-r186/examples/models/");
+.replaceAll("'./textures/","'/.cache/three-r187/examples/textures/").replaceAll("'./models/","'/.cache/three-r187/examples/models/").replaceAll("'textures/","'/.cache/three-r187/examples/textures/").replaceAll("'models/","'/.cache/three-r187/examples/models/");
 module=module.replaceAll('TSL.time','window.fixtureTime').replace('eval( jsCode )( TSL )','eval( jsCode )( {...TSL,time:window.fixtureTime} )');
 if(id==='webgpu_storage_buffer'){
  for(const id of ['timestamps','timestamps_webgl']){const div=document.createElement('div');div.id=id;div.style.display='none';document.body.append(div);}

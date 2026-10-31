@@ -68,18 +68,18 @@ for record in json.loads((ROOT/"web/examples/assets/material-textures/manifest.j
 for record in json.loads((ROOT/"web/examples/assets/shapes/manifest.json").read_text()):
  assert hashlib.sha256((ROOT/"web/examples/assets/shapes"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
  if "source_sha256" in record:
-  assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["source_sha256"]
+  assert hashlib.sha256((ROOT/".cache/three-r187"/record["source"]).read_bytes()).hexdigest()==record["source_sha256"]
 
 for record in json.loads((ROOT/"web/examples/assets/buffer-particles-manifest.json").read_text()):
  assert hashlib.sha256((ROOT/"web/examples/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
- assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]
+ assert hashlib.sha256((ROOT/".cache/three-r187"/record["source"]).read_bytes()).hexdigest()==record["sha256"]
 
 for folder in ['point-clouds','shader-geometry','geometry-materials','environment-materials','css3d','svg-renderer']:
  for record in json.loads((ROOT/'web/examples/assets'/folder/'manifest.json').read_text()):
   assert hashlib.sha256((ROOT/'web/examples/assets'/folder/record['file']).read_bytes()).hexdigest()==record['sha256']
   expected=record.get('source_sha256',record['sha256'])
-  assert hashlib.sha256((ROOT/'.cache/three-r186'/record['source']).read_bytes()).hexdigest()==expected
+  assert hashlib.sha256((ROOT/'.cache/three-r187'/record['source']).read_bytes()).hexdigest()==expected
 
 for record in json.loads((ROOT/"web/examples/assets/interactive-objects-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/interactive-scenes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/views-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/stereo-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/controls-attributes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/trackball-sprites-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/terrain-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/models-modifiers-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/picking-buffers-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/helpers-formats-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/refraction-loaders-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/shapes-lights-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/text-clipping-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/exporters-matcap-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/sky-water-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/lights-probes-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/exporters-video-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/shadow-rtt-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/probes-hdr-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/passes-decals-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/draco-variants-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/texture-flares-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/spot-skinning-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/transform-curves-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/gltf-normals-manifest.json").read_text())+json.loads((ROOT/"web/examples/assets/loaders-audio-manifest.json").read_text()):
  assert hashlib.sha256((ROOT/"web/examples/assets"/record["file"]).read_bytes()).hexdigest()==record["sha256"]
- assert hashlib.sha256((ROOT/".cache/three-r186"/record["source"]).read_bytes()).hexdigest()==record["sha256"]
+ assert hashlib.sha256((ROOT/".cache/three-r187"/record["source"]).read_bytes()).hexdigest()==record["sha256"]

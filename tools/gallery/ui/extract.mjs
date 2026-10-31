@@ -1,6 +1,6 @@
 // Records the UI the pinned r186 examples build: their lil-gui panels, the
 // WebGPU Inspector's parameter groups and profiler state, and stats.js. Each
-// example runs as published ( .cache/three-r186/examples/<id>.html ) with
+// example runs as published ( .cache/three-r187/examples/<id>.html ) with
 // three's build entries served from src/, while its UI libraries are wrapped
 // to record what the page creates. After the page settles, the UI's final
 // structure is read through the libraries' own objects and written to
@@ -31,7 +31,7 @@ if ( ids.length === 0 ) {
 
 	ids = catalog.examples.filter( e => e.port ).map( e => e.id ).filter( id => {
 
-		const path = `${ ROOT }.cache/three-r186/examples/${ id }.html`;
+		const path = `${ ROOT }.cache/three-r187/examples/${ id }.html`;
 		if ( ! fs.existsSync( path ) ) return false;
 		const src = fs.readFileSync( path, 'utf8' );
 		return /lil-gui|inspector\/Inspector|libs\/stats\.module/.test( src );
@@ -313,7 +313,7 @@ const browser = await chromium.launch( {
 		: [ '--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-angle=default' ]
 } );
 const specs = merge && fs.existsSync( OUT ) ? JSON.parse( fs.readFileSync( OUT, 'utf8' ) ) : {};
-const base = `http://127.0.0.1:${ PORT }/.cache/three-r186/`;
+const base = `http://127.0.0.1:${ PORT }/.cache/three-r187/`;
 
 const WORKERS = Number( option( '--workers', 3 ) );
 let cursor = 0;
@@ -340,18 +340,18 @@ async function extract( id ) {
 	await page.route( `${ base }examples/jsm/inspector/Inspector.js`, route => route.fulfill( { contentType: 'text/javascript', body: INSPECTOR_WRAPPER } ) );
 	await page.route( `${ base }examples/jsm/inspector/tabs/Parameters.js`, async route => {
 
-		const body = fs.readFileSync( `${ ROOT }.cache/three-r186/examples/jsm/inspector/tabs/Parameters.js`, 'utf8' ).replace( 'export { Parameters };', PARAMETERS_PATCH + '\nexport { Parameters };' );
+		const body = fs.readFileSync( `${ ROOT }.cache/three-r187/examples/jsm/inspector/tabs/Parameters.js`, 'utf8' ).replace( 'export { Parameters };', PARAMETERS_PATCH + '\nexport { Parameters };' );
 		return route.fulfill( { contentType: 'text/javascript', body } );
 
 	} );
 	await page.route( `${ base }examples/jsm/libs/stats.module.js`, async route => {
 
-		const body = fs.readFileSync( `${ ROOT }.cache/three-r186/examples/jsm/libs/stats.module.js`, 'utf8' ).replace( 'export default Stats;', STATS_PATCH );
+		const body = fs.readFileSync( `${ ROOT }.cache/three-r187/examples/jsm/libs/stats.module.js`, 'utf8' ).replace( 'export default Stats;', STATS_PATCH );
 		return route.fulfill( { contentType: 'text/javascript', body } );
 
 	} );
-	await page.route( /lil-gui\.module\.min\.js\?orig$/, route => route.fulfill( { contentType: 'text/javascript', body: fs.readFileSync( `${ ROOT }.cache/three-r186/examples/jsm/libs/lil-gui.module.min.js` ) } ) );
-	await page.route( /inspector\/Inspector\.js\?orig$/, route => route.fulfill( { contentType: 'text/javascript', body: fs.readFileSync( `${ ROOT }.cache/three-r186/examples/jsm/inspector/Inspector.js` ) } ) );
+	await page.route( /lil-gui\.module\.min\.js\?orig$/, route => route.fulfill( { contentType: 'text/javascript', body: fs.readFileSync( `${ ROOT }.cache/three-r187/examples/jsm/libs/lil-gui.module.min.js` ) } ) );
+	await page.route( /inspector\/Inspector\.js\?orig$/, route => route.fulfill( { contentType: 'text/javascript', body: fs.readFileSync( `${ ROOT }.cache/three-r187/examples/jsm/inspector/Inspector.js` ) } ) );
 	let spec;
 	try {
 

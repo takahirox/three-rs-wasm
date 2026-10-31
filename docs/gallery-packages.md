@@ -195,7 +195,7 @@ of 750 MB.
 - `tools/gallery/upstream_assets.py` lists them in
   `web/examples/upstream-assets.json`: each file under `web/examples/assets`,
   `web/examples/textures`, `web/models` and `web/environments` whose bytes equal
-  an r186 file's ( `.cache/three-r186` ). Its base is null: locally the pages
+  an r186 file's ( `.cache/three-r187` ). Its base is null: locally the pages
   load the repository's files.
 - `tools/build_site.py` leaves the listed files out and writes the CDN base
   into the published listing.

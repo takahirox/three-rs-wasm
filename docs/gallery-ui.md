@@ -8,7 +8,7 @@ original's own library and from what the pinned r186 page itself builds.
 
 **`tools/gallery/ui/extract.mjs`** runs each ported example that uses
 lil-gui, the Inspector or stats.js, as published
-(`.cache/three-r186/examples/<id>.html`, three's build served from `src/`),
+(`.cache/three-r187/examples/<id>.html`, three's build served from `src/`),
 at 1280×720. The libraries are wrapped to record what the page creates. When
 the UI stops changing, it writes `web/examples/ui/specs.json`, which holds:
 

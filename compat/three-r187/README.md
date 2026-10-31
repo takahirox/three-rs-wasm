@@ -1,4 +1,4 @@
-# Three.js r186 compatibility baseline
+# Three.js r187 compatibility baseline
 
 This directory defines the frozen MVP compatibility reference for `three-rs-wasm`.
 

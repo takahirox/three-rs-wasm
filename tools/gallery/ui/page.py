@@ -12,7 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-EXAMPLES = ROOT / '.cache/three-r186/examples'
+EXAMPLES = ROOT / '.cache/three-r187/examples'
 OUT = ROOT / 'web/examples/ui/pages.json'
 
 

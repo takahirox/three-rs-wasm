@@ -270,7 +270,7 @@ fn shapes_match_pinned_three() {
             "text" => {
                 let font = Font::parse(
                     &std::fs::read(format!(
-                        ".cache/three-r186/examples/fonts/{}.typeface.json",
+                        ".cache/three-r187/examples/fonts/{}.typeface.json",
                         case["font"].as_str().unwrap()
                     ))
                     .unwrap(),
@@ -373,7 +373,7 @@ fn shapes_match_pinned_three() {
             "textShapes" => {
                 let font = Font::parse(
                     &std::fs::read(format!(
-                        ".cache/three-r186/examples/fonts/{}.typeface.json",
+                        ".cache/three-r187/examples/fonts/{}.typeface.json",
                         case["font"].as_str().unwrap()
                     ))
                     .unwrap(),

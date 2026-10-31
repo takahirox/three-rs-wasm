@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#000}canvas{display:block}#info{display:none}</style>
-<script type="importmap">{"imports":{"three":"/.cache/three-r186/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r186/src/Three.WebGPU.js","three/tsl":"/.cache/three-r186/src/Three.TSL.js","three/addons/":"/.cache/three-r186/examples/jsm/"}}</script></head><body>
+<script type="importmap">{"imports":{"three":"/.cache/three-r187/src/Three.WebGPU.js","three/webgpu":"/.cache/three-r187/src/Three.WebGPU.js","three/tsl":"/.cache/three-r187/src/Three.TSL.js","three/addons/":"/.cache/three-r187/examples/jsm/"}}</script></head><body>
 <script type="module">
 // Original scripts/shaders with deterministic time/data, GUI capture and layout.
 // The dash-offset callback also invalidates the shader: see docs/tsl.md.
@@ -14,7 +14,7 @@ const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManag
 THREE.DefaultLoadingManager.itemStart=(...args)=>{pending++;start(...args);};
 THREE.DefaultLoadingManager.itemEnd=(...args)=>{end(...args);pending--;};
 THREE.WebGPURenderer.prototype.setAnimationLoop=function(callback){window.reference={renderer:this,callback};(window.references??=[]).push(window.reference);};
-const source=await(await fetch(`/.cache/three-r186/examples/${id}.html`)).text();
+const source=await(await fetch(`/.cache/three-r187/examples/${id}.html`)).text();
 let module=source.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
 module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createParameters(){const gui={add(object,key){object.setGroup?.(window.fixtureRenderGroup);const item={object,key,callback:null,name(){return this;},step(){return this;},listen(){return this;},onChange(fn){this.callback=fn;return this;},setValue(value){if(this.object[this.key]?.isColor)this.object[this.key].set(value);else this.object[this.key]=value;this.callback?.(value);return this;}};fixtureControls.push(item);return item;},addFolder(){return this;},addColor(object,key){return this.add(object,key);}};return gui;}}`)
 .replace(/\w+\.inspector = new Inspector\(\);/g,'window.fixtureInspector=new Inspector();').replace(/\w+\.inspector.createParameters/g,'fixtureInspector.createParameters')
@@ -22,11 +22,11 @@ module=module.replace(/import \{ Inspector \}[^;]*;/,`class Inspector {createPar
 .replace(/import \{([^}]*)\} from 'three\/tsl';/g,(_,names)=>`import {${names.split(',').filter(x=>!['time','range'].includes(x.trim())).join(',')}} from 'three/tsl';`)
 .replace('timer.getDelta()', '(window.fixtureSeconds - (window.fixturePrevious ?? 0))')
 .replaceAll('Date.now()', '(window.fixtureSeconds*1000)').replaceAll('performance.now()', '(window.fixtureSeconds*1000)')
-.replaceAll("'./textures/", "'/.cache/three-r186/examples/textures/")
-.replaceAll("'./models/", "'/.cache/three-r186/examples/models/")
-.replaceAll("'textures/", "'/.cache/three-r186/examples/textures/")
-.replaceAll("'fonts/", "'/.cache/three-r186/examples/fonts/")
-.replaceAll("'models/", "'/.cache/three-r186/examples/models/");
+.replaceAll("'./textures/", "'/.cache/three-r187/examples/textures/")
+.replaceAll("'./models/", "'/.cache/three-r187/examples/models/")
+.replaceAll("'textures/", "'/.cache/three-r187/examples/textures/")
+.replaceAll("'fonts/", "'/.cache/three-r187/examples/fonts/")
+.replaceAll("'models/", "'/.cache/three-r187/examples/models/");
 module=module.replaceAll('oscSine()', 'oscSine(time)');
 module=module.replace(/import \{ GUI \}[^;]*;/,`class GUI {constructor(){return new Inspector().createParameters();}}`)
 .replace(/import Stats[^;]*;/,`class Stats {constructor(){this.dom=document.createElement('div');}update(){}}`)

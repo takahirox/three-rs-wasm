@@ -62,7 +62,7 @@ const open = async (page, runtime) => {
     await page.waitForFunction(() => window.app, null, {timeout: 120000});
   } else {
     await page.addInitScript(key => { window.fixtureIonKey = key; window.fixtureStaticWeather = true; }, ionKey);
-    await page.route('**/.cache/three-r186/src/renderers/webgl/WebGLOutput.js', route => route.fulfill({contentType: 'text/javascript', body: readFileSync('reference/three-js/patches/WebGLOutput.js', 'utf8')}));
+    await page.route('**/.cache/three-r187/src/renderers/webgl/WebGLOutput.js', route => route.fulfill({contentType: 'text/javascript', body: readFileSync('reference/three-js/patches/WebGLOutput.js', 'utf8')}));
     await page.goto(`/reference/three-js/texture-volumes.html?id=${id}`);
     await page.waitForFunction(() => window.fixtureCallback, null, {timeout: 300000});
   }

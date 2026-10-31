@@ -6,7 +6,7 @@ They stay in the repository, for the tests and tools that read them, but the
 published site leaves them out and loads them from the three.js repository at
 the pinned commit on jsDelivr ( tools/build_site.py, web/examples/upstream.js ),
 which keeps the site under GitHub Pages' 1 GB. A file is listed only when its
-bytes equal an r186 file's under examples/ ( .cache/three-r186, from
+bytes equal an r186 file's under examples/ ( .cache/three-r187, from
 tools/compat/prepare_reference.py ). JavaScript modules stay on the site, since
 an import() bypasses upstream.js's fetch redirect, and so do files over
 jsDelivr's 20 MB limit for GitHub files.
@@ -18,7 +18,7 @@ import hashlib, json, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-UPSTREAM = ROOT / '.cache/three-r186'
+UPSTREAM = ROOT / '.cache/three-r187'
 OUT = ROOT / 'web/examples/upstream-assets.json'
 # The examples' assets, which the pages load through upstream.js; the gallery's
 # own pages, styles and thumbnails stay on the site.
@@ -31,9 +31,9 @@ def digest(path):
 
 
 def mapping():
-    commit = json.loads((ROOT / 'compat/three-r186/api.json').read_text())['baseline']['upstream_commit']
+    commit = json.loads((ROOT / 'compat/three-r187/api.json').read_text())['baseline']['upstream_commit']
     if (UPSTREAM / '.revision').read_text().strip() != commit:
-        sys.exit('.cache/three-r186 is not the pinned revision; run tools/compat/prepare_reference.py')
+        sys.exit('.cache/three-r187 is not the pinned revision; run tools/compat/prepare_reference.py')
     by_size = {}
     for path in (UPSTREAM / 'examples').rglob('*'):
         if path.is_file():

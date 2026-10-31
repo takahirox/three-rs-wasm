@@ -2,10 +2,10 @@
   "schema_version": 1,
   "frozen": true,
   "baseline": {
-    "release": "r186",
-    "npm": "three@0.186.0",
-    "git_tag": "r186",
-    "upstream_commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+    "release": "r187",
+    "npm": "three@0.187.0",
+    "git_tag": "r187",
+    "upstream_commit": "7e89746a687bb88271253698fa108b1dd59825d0",
     "core_path": "src/core"
   },
   "inventory_scope": {
@@ -58,7 +58,7 @@
       "Uniform",
       "UniformsGroup"
     ],
-    "public_member_rule": "Generate public/protected-like constructors, properties, accessors, methods, and static properties from the pinned r186 source/JSDoc. Private members (including @private and underscore-only implementation details not part of documented behavior) are excluded.",
+    "public_member_rule": "Generate public/protected-like constructors, properties, accessors, methods, and static properties from the pinned r187 source/JSDoc. Private members (including @private and underscore-only implementation details not part of documented behavior) are excluded.",
     "classification_rule": "Each generated member inherits its exported type's default status from capabilities.json unless an exact member override exists. unsupported.json is authoritative for exclusions/deferred items."
   },
   "source_exports": {

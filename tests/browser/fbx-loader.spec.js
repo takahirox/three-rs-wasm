@@ -68,7 +68,7 @@ test('FBXLoader port matches the original bit for bit',async({page})=>{
   }
   const results=[];
   for(const asset of assets){
-   const bytes=new Uint8Array(await (await fetch(`/.cache/three-r186/examples/models/fbx/${encodeURIComponent(asset).replace('%2F','/')}.fbx`)).arrayBuffer());
+   const bytes=new Uint8Array(await (await fetch(`/.cache/three-r187/examples/models/fbx/${encodeURIComponent(asset).replace('%2F','/')}.fbx`)).arrayBuffer());
    const dir=asset.includes('/')?asset.slice(0,asset.lastIndexOf('/')+1):'';
    const loader=new window.FBXLoader();loader.trimAnimationClips=asset==='ball_anims_asc_2018';
    const expected=await canonical(loader.parse(bytes.slice().buffer,dir));

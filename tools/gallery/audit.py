@@ -41,7 +41,7 @@ catalog=json.loads((ROOT/'web/examples/catalog.json').read_text())
 assets=json.loads((ROOT/'docs/gallery-gltf-attempts.json').read_text())
 rows=[]
 for entry in catalog['examples']:
- name=entry['id'];source=(ROOT/'.cache/three-r186/examples'/f'{name}.html').read_text()
+ name=entry['id'];source=(ROOT/'.cache/three-r187/examples'/f'{name}.html').read_text()
  lines=source.splitlines();blockers=[]
  def add(kind,symbol,line,reason,local):
   if any(b['kind']==kind and b['symbol']==symbol for b in blockers):return

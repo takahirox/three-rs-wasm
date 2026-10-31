@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REV = json.loads((ROOT / 'compat/three-r186/api.json').read_text())['baseline']['upstream_commit']
+REV = json.loads((ROOT / 'compat/three-r187/api.json').read_text())['baseline']['upstream_commit']
 ARCHIVE = ROOT / '.cache' / f'three-{REV}.tar.gz'
 OUT = ROOT / 'web/examples'
 FEATURES = {
@@ -543,12 +543,12 @@ def main():
   def read(path): return bundled[path]
   # Original shell for independent visual comparison; runtime never imports it.
   for path in ['examples/index.html', 'examples/files.json', 'examples/tags.json', 'examples/files/thumbnails.svg', *['files/'+name for name in UI_FILES]]:
-   write(ROOT/'.cache/three-r186'/path, read(path))
+   write(ROOT/'.cache/three-r187'/path, read(path))
   write(OUT/'assets/panorama.jpg', read('examples/textures/2294472375_24a3b8ef46_o.jpg'))
   write(OUT/'assets/uv-grid.jpg', read('examples/textures/uv_grid_opengl.jpg'))
-  write(ROOT/'.cache/three-r186/examples/jsm/controls/OrbitControls.js',read('examples/jsm/controls/OrbitControls.js'))
+  write(ROOT/'.cache/three-r187/examples/jsm/controls/OrbitControls.js',read('examples/jsm/controls/OrbitControls.js'))
   write(OUT/'assets/spot1Lux.hdr', read('examples/textures/equirectangular/spot1Lux.hdr'))
-  write(ROOT/'.cache/three-r186/examples/jsm/loaders/HDRLoader.js',read('examples/jsm/loaders/HDRLoader.js'))
+  write(ROOT/'.cache/three-r187/examples/jsm/loaders/HDRLoader.js',read('examples/jsm/loaders/HDRLoader.js'))
   files = json.loads(read('examples/files.json'))
   tags = json.loads(read('examples/tags.json'))
   entries = []
@@ -556,7 +556,7 @@ def main():
   for category, names in files.items():
    for name in names:
     source = read(f'examples/{name}.html').decode()
-    write(ROOT/'.cache/three-r186/examples'/f'{name}.html', source)
+    write(ROOT/'.cache/three-r187/examples'/f'{name}.html', source)
     evidence = {}
     for feature, (_, pattern) in FEATURES.items():
      matches = [{'line': i, 'text': line.strip()[:180]} for i, line in enumerate(source.splitlines(), 1) if re.search(pattern, line)]

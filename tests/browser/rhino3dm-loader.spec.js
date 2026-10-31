@@ -10,7 +10,7 @@ test('Rhino3dmLoader port matches the original bit for bit',async({page})=>{
  await page.goto('/reference/three-js/rhino3dm-loader.html');await expect(page).toHaveTitle('ready');
  const result=await page.evaluate(async name=>{
   const {loadRuntime}=await import('/web/examples/runtime.js');const rust=await loadRuntime(name);
-  const bytes=new Uint8Array(await (await fetch('/.cache/three-r186/examples/models/3dm/Rhino_Logo.3dm')).arrayBuffer());
+  const bytes=new Uint8Array(await (await fetch('/.cache/three-r187/examples/models/3dm/Rhino_Logo.3dm')).arrayBuffer());
   const expected=await window.rhino3dmCanonical(bytes);
   const actual=await rust.rhino3dm_canonical(bytes);
   let at=-1;for(let i=0;i<Math.max(expected.length,actual.length);i++)if(expected[i]!==actual[i]){at=i;break;}

@@ -156,7 +156,7 @@ fn fbx_loader_matches_pinned_three() {
         .unwrap();
         let bin = std::fs::read(format!(".cache/fbx-oracle/{name}.bin")).unwrap();
         let bytes =
-            std::fs::read(format!(".cache/three-r186/examples/models/fbx/{asset}.fbx")).unwrap();
+            std::fs::read(format!(".cache/three-r187/examples/models/fbx/{asset}.fbx")).unwrap();
         let dir = asset.rfind('/').map_or("", |i| &asset[..=i]);
         let scene = match fbx::parse(
             &bytes,

@@ -1,7 +1,7 @@
 // Execute pinned ReflectorNode camera updates without rasterizing a scene.
 import {writeFile} from 'node:fs/promises';
-import * as THREE from '../../.cache/three-r186/src/Three.WebGPU.js';
-import {reflector} from '../../.cache/three-r186/src/nodes/utils/ReflectorNode.js';
+import * as THREE from '../../.cache/three-r187/src/Three.WebGPU.js';
+import {reflector} from '../../.cache/three-r187/src/nodes/utils/ReflectorNode.js';
 const camera=new THREE.PerspectiveCamera(45,1.5,1,500);camera.coordinateSystem=THREE.WebGPUCoordinateSystem;camera.position.set(0,75,160);camera.lookAt(0,40,0);camera.updateMatrixWorld();camera.updateProjectionMatrix();
 const floor=new THREE.Object3D();floor.rotation.x=-Math.PI/2;floor.updateMatrixWorld();const wall=new THREE.Object3D();wall.position.set(0,50,-50);wall.updateMatrixWorld();
 const scene=new THREE.Scene();let output;

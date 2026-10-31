@@ -1,4 +1,4 @@
-import * as T from '../../.cache/three-r186/src/Three.js';
+import * as T from '../../.cache/three-r187/src/Three.js';
 const parent=new T.Object3D(), child=new T.Object3D();
 parent.position.set(2,-1,3);parent.rotation.set(.2,-.4,.3);child.position.set(1,2,-3);child.scale.set(2,1,.5);
 parent.add(child);parent.updateMatrixWorld();const world=child.matrixWorld.toArray();

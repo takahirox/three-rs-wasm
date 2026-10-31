@@ -32,16 +32,16 @@ try{
   page.on('requestfailed',r=>{pending--;if(failed.length<5)failed.push(r.url().replace(/^http:\/\/127.0.0.1:8175/,''));});
   page.on('dialog',d=>d.dismiss());
   await page.addInitScript({content:init});
-  await page.route('**/build/three.module.js',r=>r.fulfill({contentType:'text/javascript',body:shim('/.cache/three-r186/src/Three.js',false)}));
-  await page.route('**/build/three.webgpu.js',r=>r.fulfill({contentType:'text/javascript',body:shim('/.cache/three-r186/src/Three.WebGPU.js',true)}));
-  await page.route('**/build/three.tsl.js',r=>r.fulfill({contentType:'text/javascript',body:"export * from '/.cache/three-r186/src/Three.TSL.js';"}));
+  await page.route('**/build/three.module.js',r=>r.fulfill({contentType:'text/javascript',body:shim('/.cache/three-r187/src/Three.js',false)}));
+  await page.route('**/build/three.webgpu.js',r=>r.fulfill({contentType:'text/javascript',body:shim('/.cache/three-r187/src/Three.WebGPU.js',true)}));
+  await page.route('**/build/three.tsl.js',r=>r.fulfill({contentType:'text/javascript',body:"export * from '/.cache/three-r187/src/Three.TSL.js';"}));
   for(const name of ['CSS2DRenderer','CSS3DRenderer','SVGRenderer'])await page.route(`**/examples/jsm/renderers/${name}.js`,r=>r.fulfill({contentType:'text/javascript',body:`import {${name} as Base} from './${name}.js?original=1';export * from './${name}.js?original=1';export class ${name} extends Base {constructor(...args){super(...args);this.render=()=>globalThis.__galleryProbe.unsupported('${name} scene rendering');}}`}));
   await page.route('**/examples/jsm/postprocessing/EffectComposer.js',r=>r.fulfill({contentType:'text/javascript',body:"import {EffectComposer as Base} from './EffectComposer.js?original=1';export class EffectComposer extends Base {render(){globalThis.__galleryProbe.unsupported('EffectComposer postprocessing pipeline');}}"}));
   await page.route('**/examples/jsm/transpiler/Transpiler.js',r=>r.fulfill({contentType:'text/javascript',body:"import Base from './Transpiler.js?original=1';export default class Transpiler extends Base {parse(){globalThis.__galleryProbe.unsupported('GLSL to TSL/WGSL transpilation');}}"}));
   await page.route('**/examples/jsm/utils/UVsDebug.js',r=>r.fulfill({contentType:'text/javascript',body:"export function UVsDebug(){globalThis.__galleryProbe.unsupported('Canvas 2D UV debug visualization');}"}));
   const started=Date.now();let result;const watchdog=setTimeout(()=>context.close().catch(()=>{}),25000);
   try{
-   await page.goto(`http://127.0.0.1:8175/.cache/three-r186/examples/${entry.id}.html`,{waitUntil:'domcontentloaded',timeout});
+   await page.goto(`http://127.0.0.1:8175/.cache/three-r187/examples/${entry.id}.html`,{waitUntil:'domcontentloaded',timeout});
    if(['webgpu_compute_audio','webgl_postprocessing_glitch','webaudio_sandbox','webaudio_orientation','webaudio_timing','webaudio_visualizer'].includes(entry.id))await page.locator('#startButton').click({timeout:5000});
    while(Date.now()-started<timeout){
     const state=await page.evaluate(()=>{const p=window.__galleryProbe;let geometry=0;p.frame?.scene.traverseVisible(o=>{if(o.geometry)geometry++;});return {frame:!!p.frame,geometry,blocked:p.blocked.length};});
