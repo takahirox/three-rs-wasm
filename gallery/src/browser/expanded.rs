@@ -111,6 +111,11 @@ impl Demo {
     pub fn output_target_mut(&mut self) -> Option<&mut crate::renderer::RenderTarget> {
         self.content.on_output_target_mut().unwrap_or(None)
     }
+    /// Every target the example may make its output target ( see
+    /// Example::on_output_targets_mut ).
+    pub fn output_targets_mut(&mut self) -> Vec<&mut crate::renderer::RenderTarget> {
+        self.content.on_output_targets_mut()
+    }
     pub fn prepare(
         &mut self,
         renderer: &crate::renderer::Renderer,

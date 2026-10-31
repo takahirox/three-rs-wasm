@@ -153,6 +153,8 @@ mod geometry_materials;
 mod glitch;
 #[cfg(feature = "gltf_avif")]
 mod gltf_avif;
+#[cfg(feature = "gltf_diffuse_roughness")]
+mod gltf_diffuse_roughness;
 #[cfg(feature = "gltf_examples")]
 mod gltf_examples;
 #[cfg(feature = "gltf_instancing")]
@@ -717,14 +719,11 @@ impl State {
             None
         };
         // A canvas texture a target cannot render into falls back to the
-        // output pass. A target keeps its own texture while aliased: one the
-        // example replaced during an earlier frame kept that frame's canvas
-        // texture, and gets its own back when it is the output target at a
-        // frame's start or end ( restore_color ). One the example switches
-        // back to during a frame still holds the expired canvas texture for
-        // that frame, so an example keeps one output target across the
-        // switches it makes while rendering ( fog_volume.rs ).
-        if let Some(target) = self.demo.output_target_mut() {
+        // output pass. A target keeps its own texture while aliased
+        // ( restore_color gives it back ); only the current output target is
+        // aliased, and every target the example may make its output target
+        // gets its own texture back after the render ( see below ).
+        for target in self.demo.output_targets_mut() {
             target.restore_color();
         }
         if let Some(frame) = frame.as_ref().filter(|_| main) {
@@ -758,8 +757,14 @@ impl State {
         let direct = frame
             .as_ref()
             .is_some_and(|frame| presentation_texture == frame.texture);
+        // The render may have replaced the aliased output target: every target
+        // the example may make its output target ( the replaced one too ) gets
+        // its own texture back, so none keeps this frame's canvas texture, which
+        // expires with the frame. One a later render switches back to renders
+        // into its own texture, which the output pass then copies into that
+        // frame's canvas texture.
         self.target.restore_color();
-        if let Some(target) = self.demo.output_target_mut() {
+        for target in self.demo.output_targets_mut() {
             target.restore_color();
         }
         rendered?;

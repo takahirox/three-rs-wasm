@@ -483,6 +483,12 @@ lottie-web the animation uses are ported. The exporters' buttons, the
 watch's optional TAA and bloom, the FBX page's dynamic GUI and ArcballControls'
 multi-touch gestures are not ported. Each is listed with the example.
 
+`webgpu_loader_gltf_diffuse_roughness`, new in r187 and without a WebGL
+counterpart, is listed and compared against the WebGPU renderer at the
+default thresholds ([gltf-diffuse-roughness.md](gltf-diffuse-roughness.md)).
+GLTFLoader's KHR_materials_diffuse_roughness and MeshPhysicalMaterial's
+BRDF_EON are ported to the loader and the engine shader.
+
 Each port's limitations are recorded in the gallery catalog
 ( `tools/gallery/build.py`, `web/examples/catalog.json` ) and listed per
 example in [examples coverage](examples-coverage.md). The example pages

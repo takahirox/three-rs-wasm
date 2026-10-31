@@ -342,6 +342,7 @@
   "webgpu_loader_gltf": "loader_gltf",
   "webgpu_loader_gltf_anisotropy": "gltf_examples",
   "webgpu_loader_gltf_compressed": "gltf_examples",
+  "webgpu_loader_gltf_diffuse_roughness": "gltf_diffuse_roughness",
   "webgpu_loader_gltf_dispersion": "gltf_examples",
   "webgpu_loader_gltf_iridescence": "gltf_examples",
   "webgpu_loader_gltf_sheen": "gltf_examples",

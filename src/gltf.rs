@@ -76,6 +76,7 @@ fn import_internal(
                         | "KHR_materials_transmission"
                         | "KHR_materials_volume"
                         | "KHR_materials_dispersion"
+                        | "KHR_materials_diffuse_roughness"
                         | "KHR_materials_iridescence"
                 ))
         })
@@ -476,6 +477,7 @@ fn import_internal(
                             "KHR_materials_transmission",
                             "KHR_materials_volume",
                             "KHR_materials_dispersion",
+                            "KHR_materials_diffuse_roughness",
                             "KHR_materials_iridescence",
                         ]
                         .iter()
@@ -510,6 +512,7 @@ fn import_internal(
                             "KHR_materials_transmission",
                             "KHR_materials_volume",
                             "KHR_materials_dispersion",
+                            "KHR_materials_diffuse_roughness",
                             "KHR_materials_iridescence",
                         ] {
                             if let Some(extension) = source.extension_value(name) {
@@ -619,6 +622,13 @@ fn import_internal(
                                     }
                                     "KHR_materials_dispersion" => {
                                         physical.dispersion = value("dispersion", 0.0);
+                                    }
+                                    // GLTFMaterialsDiffuseRoughnessExtension ( r187 ).
+                                    "KHR_materials_diffuse_roughness" => {
+                                        physical.diffuse_roughness =
+                                            value("diffuseRoughnessFactor", 0.0);
+                                        physical.diffuse_roughness_map =
+                                            map("diffuseRoughnessTexture", false)?;
                                     }
                                     _ => {
                                         physical.anisotropy_map = map("anisotropyTexture", false)?;

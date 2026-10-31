@@ -5,7 +5,7 @@ use std::{
     collections::HashMap,
     sync::{Arc, Weak},
 };
-pub const COUNT: usize = 12;
+pub const COUNT: usize = 13;
 #[repr(C)]
 #[derive(Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
 pub(crate) struct MapUniforms {
@@ -161,7 +161,7 @@ impl Cache {
             view_formats: &[],
         });
         // Reuse the normal GPU mip generator, then release these temporary source
-        // textures. The resident array allocates only occupied layers, not all 12 slots.
+        // textures. The resident array allocates only occupied layers, not every slot.
         let mut sources = crate::texture_gpu::TextureCache::default();
         let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
             label: Some("physical map mip copies"),

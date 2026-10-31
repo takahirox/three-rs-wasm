@@ -20368,7 +20368,7 @@
     {
       "id": "webgpu_loader_gltf_diffuse_roughness",
       "category": "webgpu",
-      "status": "not-ported",
+      "status": "partial",
       "excluded_reason": null,
       "source": "https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/examples/webgpu_loader_gltf_diffuse_roughness.html",
       "source_sha256": "a57441eb8bdd6a770d06582231c97b3b94ce7eadb10e72e00b7515920e09dbf3",
@@ -20394,7 +20394,14 @@
           }
         ]
       },
-      "port": null,
+      "port": {
+        "example": 501,
+        "source": "gallery/src/browser/gltf_diffuse_roughness.rs",
+        "test": "tests/browser/compute-examples.spec.js",
+        "limitations": [
+          "DiffuseRoughnessParameterSweep.glbの24球を、GLTFLoaderのKHR_materials_diffuse_roughness移植（crate::gltf）で読み込み、拡張のない4球はMeshStandardMaterial、他はMeshPhysicalMaterial（diffuseRoughnessが0より大きい球はr187のBRDF_EON、環境光はEONの方向アルベド）として描く。24メッシュはGLTFLoaderがキャッシュする1つのジオメトリを共有し、ページと同じくロード時に一度だけ三角形の向きを反転する。RoomEnvironmentのPMREM（fromScene、sigma 0.04）を環境とぼかし0.5の背景に使い、4× MSAAとNeutralトーンマッピングの出力パスを通す。各段はページからthree.js r187が生成するWGSL（gltf_diffuse_roughness/、compute_cloth/、pmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+        ]
+      },
       "imports": [
         "three/addons/controls/OrbitControls.js",
         "three/addons/environments/RoomEnvironment.js",

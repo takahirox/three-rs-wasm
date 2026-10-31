@@ -1915,6 +1915,11 @@
 		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>glTF + Compression Extensions</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\tglTF model loading with KTX2/Basis and Meshopt compression extensions.\n\t\t\t</small>\n\t\t</div>",
 		"styles": []
 	},
+	"webgpu_loader_gltf_diffuse_roughness": {
+		"css": "example",
+		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>glTF + diffuseRoughness</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\t<a href=\"https://github.com/KhronosGroup/glTF/pull/2481\" target=\"_blank\" rel=\"noopener\">KHR_materials_diffuse_roughness</a> parameter sweep from <a href=\"https://github.com/KhronosGroup/glTF-Sample-Assets/pull/288\" target=\"_blank\" rel=\"noopener\">glTF-Sample-Assets</a>\n\t\t\t</small>\n\t\t</div>",
+		"styles": []
+	},
 	"webgpu_loader_gltf_dispersion": {
 		"css": "example",
 		"info": "<div id=\"info\">\n\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\" class=\"logo-link\"></a>\n\n\t\t\t<div class=\"title-wrapper\">\n\t\t\t\t<a href=\"https://threejs.org/\" target=\"_blank\" rel=\"noopener\">three.js</a><span>glTF + Dispersion</span>\n\t\t\t</div>\n\n\t\t\t<small>\n\t\t\t\t<a href=\"https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_dispersion\" target=\"_blank\" rel=\"noopener\">KHR_materials_dispersion</a> HDR by <a href=\"https://polyhaven.com/a/studio_small_08\" target=\"_blank\" rel=\"noopener\">Poly Haven</a> \n\t\t\t</small>\n\t\t</div>",

@@ -74,8 +74,14 @@ reproduced.
 
 ### GTAO (408)
 
-GTAONode rotates its slices by frameId. The fixture restarts it at 12000, as
-for SSGI and SSS. The spot lights' uniform numbering skips one value in the
+GTAONode rotates its slices by frameId, which r187 advances on each tick of
+the renderer's own animation loop. The loop's start() counts frame 1 at once
+( the PMREM's fromScene renders in it, before the bust loads ) and then one
+per display frame, so in the page the first frame after loading takes as many
+ids as the display ticked while loading. The fixture lets the loop start as
+r187 does and stops it there, then renders the page's frames itself: frame 1
+is the PMREM's, the loading frame is frame 2 and each later frame the next,
+as the port numbers them. The spot lights' uniform numbering skips one value in the
 first light, as the generated shader does. The SSAO mode, the sample count (a
 shader constant) and the transparent mesh are not reproduced.
 

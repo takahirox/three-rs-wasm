@@ -83,7 +83,11 @@ render every frame into its own target and copy it into the canvas.
   for frames that cannot.
 - An example's own output target renders into the canvas the same way when
   it holds display values, as most ports' copies of three's generated
-  output pass do.
+  output pass do. An example whose render may switch its output target
+  ( fog's targets per resolution scale ) lists every target it may present;
+  after each frame each gets its own texture back, so the frame that
+  switches back renders into the target's texture and the output pass
+  copies it into that frame's canvas texture, never into an expired one.
 - The ports of RenderPipeline examples ( `webgpu_postprocessing_*` and the
   upscalers ) encode their output: their last effect applies the scene's
   tone mapping and sRGB transfer as renderOutput does, into the canvas.
