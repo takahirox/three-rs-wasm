@@ -9,7 +9,7 @@
 //! Every stage runs the WGSL three.js r186 generates for the page (in
 //! `fluid/`), without its unused subgroup-size builtin.
 use super::controls_attributes::{Controls, camera_state};
-use super::deferred::{Draw, color, depth_attachment, esplanade, sampled_pipeline, set};
+use super::deferred::{Draw, color, depth_attachment, esplanade_cube_uv, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
 use super::models_modifiers::merge_vertices;
 use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline};
@@ -116,7 +116,7 @@ impl Demo {
         };
         let linear = sampler(wgpu::FilterMode::Linear);
         let clamp = sampler(wgpu::FilterMode::Nearest);
-        let (_, _, pmrem, _) = esplanade(r, &linear, &clamp).await?;
+        let (_, _, pmrem, _) = esplanade_cube_uv(r, &linear, &clamp).await?;
         let init = |label, data: &[u8], usage| {
             r.device
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {

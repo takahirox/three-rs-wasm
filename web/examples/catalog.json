@@ -17481,7 +17481,7 @@
         "source": "gallery/src/browser/deferred.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ティーポット、周回する8個の点光源と球、6枚の半透明両面板をroyal_esplanadeのUltraHDR空の下に置く構成をRustで再現。deferredでは不透明物を照明なしでMRT（拡散色、ビュー位置と金属度、ビュー法線と粗さ）に描き、全画面クアッドで空の背景の上に照明を解決し、不透明深度の上に半透明板を描いて合成する。forwardでは1パスで照明付きに描く。空は背景用にCubeMapNodeの1024²キューブ、照明用にlodMax 9のPMREMとする。各段はページからthree.js r186が生成するWGSL（deferred/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ティーポット、周回する8個の点光源と球、6枚の半透明両面板をroyal_esplanadeのUltraHDR空の下に置く構成をRustで再現。deferredでは不透明物を照明なしでMRT（拡散色、ビュー位置と金属度、ビュー法線と粗さ）に描き、全画面クアッドで空の背景の上に照明を解決し、不透明深度の上に半透明板を描いて合成する。forwardでは1パスで照明付きに描く。空は背景用にCubeMapNodeの1024²キューブ、照明用にr187のキューブPMREM（fromEquirectangular、512²の面、pmrem.rs）とする。各段はページからthree.js r187が生成するWGSL（deferred/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

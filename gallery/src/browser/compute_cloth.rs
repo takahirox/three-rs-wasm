@@ -9,7 +9,7 @@
 //! instanced sprites. Every stage runs the WGSL three.js r186 generates for
 //! the page (in `compute_cloth/`), without its unused subgroup-size builtin.
 use super::controls_attributes::{Controls, camera_state};
-use super::deferred::{Draw, color, depth_attachment, esplanade, sampled_pipeline, set};
+use super::deferred::{Draw, color, depth_attachment, esplanade_cube_uv, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
 use super::pmrem_cube_uv::{Pmrem, bind, raw_pipeline};
 use super::retro::{target, uniform};
@@ -197,7 +197,7 @@ impl Demo {
         };
         let linear = sampler(wgpu::FilterMode::Linear);
         let clamp = sampler(wgpu::FilterMode::Nearest);
-        let (_, _, pmrem, _) = esplanade(r, &linear, &clamp).await?;
+        let (_, _, pmrem, _) = esplanade_cube_uv(r, &linear, &clamp).await?;
         let v = verlet();
         let init = |label, data: &[u8], usage| {
             r.device
