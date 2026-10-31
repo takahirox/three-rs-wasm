@@ -432,7 +432,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_pmrem_scene | `tests/browser/tsl-lighting.spec.js` | Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。 |
 | webgpu_materials_lightmap | `tests/browser/tsl-lighting.spec.js` | Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_dof_basic | `tests/browser/tsl-lighting.spec.js` | Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。 |
-| webgpu_postprocessing_lensflare | `tests/browser/tsl-lighting.spec.js` | Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。 |
+| webgpu_postprocessing_lensflare | `tests/browser/tsl-lighting.spec.js` | r187のレンズエフェクト切替え（flares／dirt）を再現。dirtはブルームを全解像度のRTTに写し、lensdirt.pngを画面のアスペクトに合わせて出力パスで重ねる。 Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。 |
 | webgpu_postprocessing_anamorphic | `tests/browser/tsl-extended.spec.js` | GPUインスタンス変形、HDR高輝度抽出と横方向フィルタ、5段ブルーム。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。 |
 | webgpu_tsl_earth | `tests/browser/tsl-extended.spec.js` | 昼夜テクスチャ、GPUバンプマップ、大気のフレネル表現。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。 |
 | webgpu_occlusion | `tests/browser/tsl-extended.spec.js` | GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。 |

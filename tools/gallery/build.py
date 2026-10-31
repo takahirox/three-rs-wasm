@@ -412,7 +412,7 @@ PORTS = {
  'webgpu_pmrem_scene': {'example':109,'source':'gallery/src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。']},
  'webgpu_materials_lightmap': {'example':110,'source':'gallery/src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。']},
  'webgpu_postprocessing_dof_basic': {'example':111,'source':'gallery/src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。']},
- 'webgpu_postprocessing_lensflare': {'example':112,'source':'gallery/src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。']},
+ 'webgpu_postprocessing_lensflare': {'example':112,'source':'gallery/src/browser/tsl_lighting.rs','test':'tests/browser/tsl-lighting.spec.js','limitations':['r187のレンズエフェクト切替え（flares／dirt）を再現。dirtはブルームを全解像度のRTTに写し、lensdirt.pngを画面のアスペクトに合わせて出力パスで重ねる。','Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。']},
 
  'webgpu_postprocessing_anamorphic': {'example':87,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPUインスタンス変形、HDR高輝度抽出と横方向フィルタ、5段ブルーム。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。']},
  'webgpu_tsl_earth': {'example':88,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['昼夜テクスチャ、GPUバンプマップ、大気のフレネル表現。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。']},

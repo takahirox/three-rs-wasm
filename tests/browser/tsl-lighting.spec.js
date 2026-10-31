@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {PNG} from 'pngjs';
 import {writeFileSync} from 'node:fs';
 test.use({deviceScaleFactor:Number(process.env.TSL_LIGHTING_DPR||1)});
-const controls={pmrem_cubemap:[],pmrem_scene:[[0,0],[0,1],[0,.5]],materials_lightmap:[[0,0],[0,1]],postprocessing_dof_basic:[[0,0],[1,5],[2,1],[3,7]],postprocessing_lensflare:[[0,0],[0,2],[1,0],[2,0],[3,10],[4,.1],[5,2]]};
+const controls={pmrem_cubemap:[],pmrem_scene:[[0,0],[0,1],[0,.5]],materials_lightmap:[[0,0],[0,1]],postprocessing_dof_basic:[[0,0],[1,5],[2,1],[3,7]],postprocessing_lensflare:[[0,0],[0,2],[1,0],[3,0],[4,10],[5,.1],[7,2],[2,'dirt',1],[6,8],[0,1.5],[1,.5],[2,'flares',0]]};
 for(const [kind,parameters] of Object.entries(controls))test(`TSL lighting official rendering: ${kind}`,async({page},info)=>{
  test.setTimeout(240000);const images={};const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.addInitScript(()=>{window.fixtureError=null;window.modules=[];const fn=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){modules.push(d.code);return fn.call(this,d);};const request=GPUAdapter.prototype.requestDevice;GPUAdapter.prototype.requestDevice=async function(...a){const d=await request.apply(this,a);d.addEventListener('uncapturederror',e=>window.fixtureError=e.error.message);return d;};addEventListener('error',e=>window.fixtureError=e.message);addEventListener('unhandledrejection',e=>window.fixtureError=String(e.reason));});
@@ -13,7 +13,7 @@ for(const [kind,parameters] of Object.entries(controls))test(`TSL lighting offic
   const frames=[];
   const capture=async(t,parameter=null,save=true)=>{
    const prev=await page.locator('canvas').getAttribute('data-frames');
-   await page.evaluate(async({runtime,t,parameter})=>{if(parameter){const [i,v]=parameter;if(runtime==='reference')fixtureParameter(i,v);else app.tsl_parameter(i,Number(v));}if(runtime==='reference')await renderFixture(t);else app.gallery_time(t);},{runtime,t,parameter});
+   await page.evaluate(async({runtime,t,parameter})=>{if(parameter){const [i,v,rust=v]=parameter;if(runtime==='reference')fixtureParameter(i,v);else app.tsl_parameter(i,Number(rust));}if(runtime==='reference')await renderFixture(t);else app.gallery_time(t);},{runtime,t,parameter});
    if(runtime==='rust')await page.waitForFunction(p=>document.querySelector('canvas').dataset.frames!==p,prev);
    expect(await page.evaluate(()=>window.fixtureError)).toBeNull();
    if(save)frames.push(PNG.sync.read(await page.locator('canvas').screenshot()));

@@ -24957,6 +24957,7 @@
         "source": "gallery/src/browser/tsl_lighting.rs",
         "test": "tests/browser/tsl-lighting.spec.js",
         "limitations": [
+          "r187のレンズエフェクト切替え（flares／dirt）を再現。dirtはブルームを全解像度のRTTに写し、lensdirt.pngを画面のアスペクトに合わせて出力パスで重ねる。",
           "Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },

@@ -9,6 +9,10 @@ pub(super) struct Post {
     bloom: Option<tsl::bloom::Bloom>,
     gaussian: Option<Effect>,
     flare: Option<(RenderTarget, Effect)>,
+    /// The lens dirt's output ( r187 ): the scene, the bloom and the dirt
+    /// texture revealed by the bloom, which `intermediate` holds at full
+    /// resolution ( convertToTexture's RTT of the bloom ).
+    dirt: Option<(Effect, crate::texture_gpu::GpuTexture)>,
     sampler: wgpu::Sampler,
 }
 /// UltraHDRLoader on the page's equirectangular texture, at load.
@@ -46,7 +50,11 @@ impl Demo {
             s.background_intensity = 2.0;
             s.environment_intensity = 15.0;
             s.tone_mapping = ToneMapping::Aces;
-            self.params[..6].copy_from_slice(&[1.0, 1.0, 0.5, 25.0, 0.25, 1.0]);
+            // The GUI's order: bloom strength and radius, the lens effect
+            // ( flares, dirt ), lensflare threshold, attenuation and spacing,
+            // the dirt's intensity and the exposure.
+            self.params
+                .copy_from_slice(&[1.0, 1.0, 0.0, 0.5, 25.0, 0.25, 3.0, 1.0]);
         }
         s.environment = Some(Arc::new(
             environment(if dof {
@@ -111,7 +119,7 @@ impl Demo {
             mag_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
-        let (filter, finish, bloom, gaussian) = if dof {
+        let (filter, finish, bloom, gaussian, dirt) = if dof {
             let p = uniform(0, Type::Vec4);
             let z = -float(0.1 * 100.0) / (float(100.0) - depth_texture(uv()) * float(99.9));
             let blend = (z - uniform(1, Type::Float)).abs().smoothstep(p.x(), p.y());
@@ -148,7 +156,7 @@ impl Demo {
                 &tsl::display::fxaa(tsl::Texture::Input, uv(), uniform(0, Type::Vec2)),
             )
             .await?;
-            (filter, finish, None, None)
+            (filter, finish, None, None, None)
         } else {
             let program = Arc::new(
                 SurfaceNodes::default()
@@ -207,7 +215,51 @@ impl Demo {
                 )],
             )
             .await?;
-            (filter, finish, Some(bloom), Some(gaussian))
+            // TextureLoader: mipmapped, no color space. Its flipY upload puts
+            // the image's bottom row at v = 0, where the pass's v is the top
+            // of the screen: the dirt reads at 1 - v ( lens_dirt_uv ).
+            let mut image =
+                decode_texture_image(&fetch(&format!("{ASSETS}/textures/lensdirt.png")).await?)
+                    .await?;
+            image.srgb = false;
+            image.mipmap_filter = Some(Filter::Linear);
+            let size = (image.width as f32, image.height as f32);
+            let image = r.upload_texture(&Arc::new(image))?;
+            // lensDirt( bloomPass, texture( lensDirtMap ), intensity ): the dirt
+            // fitted to the screen's aspect, times the bloom.
+            let fit = WgslFn::new(
+                "lens_dirt_uv",
+                "fn lens_dirt_uv(uv:vec2<f32>,p:vec4<f32>,size:vec2<f32>)->vec2<f32>{let aspect=p.y/p.z/(size.x/size.y);let fitted=(uv-0.5)*vec2(min(aspect,1.0),min(1.0/aspect,1.0))+0.5;return vec2(fitted.x,1.0-fitted.y);}",
+                &[Type::Vec2, Type::Vec4, Type::Vec2],
+                Type::Vec2,
+            )?;
+            let p = uniform(0, Type::Vec4);
+            let dirt_uv = fit.call(&[uv(), p.clone(), vec2(float(size.0), float(size.1))]);
+            let dirt = tsl::Texture::External(1).sample(dirt_uv).rgb()
+                * tsl::Texture::External(0).sample(uv()).rgb()
+                * p.x();
+            let dirt_finish = tsl::effect_with_textures(
+                r,
+                HDR,
+                &(tsl::Texture::Input.sample(uv())
+                    + tsl::Texture::History.sample(uv())
+                    + vec4(dirt, float(1.0))),
+                &[
+                    (
+                        &intermediate.texture.create_view(&Default::default()),
+                        &sampler,
+                    ),
+                    (&image.view, &image.sampler),
+                ],
+            )
+            .await?;
+            (
+                filter,
+                finish,
+                Some(bloom),
+                Some(gaussian),
+                Some((dirt_finish, image)),
+            )
         };
         self.post = Some(Post {
             scene,
@@ -218,6 +270,7 @@ impl Demo {
             bloom,
             gaussian,
             flare,
+            dirt,
             sampler,
         });
         Ok(())
@@ -267,6 +320,18 @@ impl Post {
                         &self.sampler,
                     )],
                 )?;
+                if let Some((dirt, image)) = &mut self.dirt {
+                    dirt.set_textures(
+                        r,
+                        &[
+                            (
+                                &self.intermediate.texture.create_view(&Default::default()),
+                                &self.sampler,
+                            ),
+                            (&image.view, &image.sampler),
+                        ],
+                    )?;
+                }
             } else {
                 self.filter.set_depth(
                     r,
@@ -283,8 +348,17 @@ impl Post {
             bloom.strength = p[0];
             bloom.radius = p[1];
             let bloom = bloom.render(r, &self.scene)?;
-            self.filter.parameters[0] = [p[2], 4.0, p[4], p[3]];
             let (flare, copy) = self.flare.as_ref().unwrap();
+            if p[2] > 0.5 {
+                // outputPass + bloomPass + dirtPass: the bloom's RTT, then the
+                // output with the dirt.
+                copy.apply(r, bloom, None, &self.intermediate)?;
+                let (dirt, _) = self.dirt.as_mut().unwrap();
+                dirt.parameters[0] = [p[6], w as f32, h as f32, 0.0];
+                dirt.apply(r, &self.scene, Some(bloom), out)?;
+                return Ok(());
+            }
+            self.filter.parameters[0] = [p[3], 4.0, p[5], p[4]];
             self.filter.apply(r, bloom, None, flare)?;
             copy.apply(r, flare, None, &self.intermediate)?;
             let gaussian = self.gaussian.as_mut().unwrap();
