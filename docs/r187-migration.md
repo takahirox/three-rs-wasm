@@ -44,8 +44,8 @@ until every ported example matches r187 again; it is removed when done.
    fog_scattering, deferred, compute_cloth, fluid, generator_city,
    lightprobes ( its bake shared with lightprobes_complex ), retro. Left:
    - In progress: gtao, ssr, ssr_denoise, skinning_instances.
-   - ballpool: r187's page runs RapierPhysics ( rapier.js 0.21.0 = rapier
-     0.36.0 ), the engine is pinned at 0.26.1; state 0 differs in shadows too.
+   - ssgi's loading frame runs with frameId 0, r187's with 1 ( ballpool
+     follows r187's TRAA start-up now ); check its history blend.
    - fog's residency check ( creates 153 → 157, `src/draw_gpu.rs` ) fails on
      r187's tip already; the workload test fails for ballpool, geometry_loft,
      generator_building, ssr_denoise and skinning_instancing_individual.
@@ -55,8 +55,11 @@ until every ported example matches r187 again; it is removed when done.
      it reaches every example.
    - The WebGL ports' hand-written CubeUV sampling ( WebGL's PMREMGenerator
      moved to cube targets too ).
-2. **Rapier.** r187's RapierPhysics loads rapier.js 0.21.0 ( rapier 0.36.0 )
-   for the physics_rapier_* pages and the ballpool.
+2. **Rapier.** The engine is rapier 0.36.0 ( rapier.js 0.21.0's, which r187's
+   RapierPhysics loads ); the physics_rapier_* pages and ballpool step on it,
+   ballpool matching its page at every state. Open: physics_rapier_basic's
+   MSAA capture of the dragged pile ( state 5 ) at 1.30 % / 0.33 against
+   1.2 % / 0.35, collider outlines and shadow edges.
 3. **Changed pages.** 65 ported pages changed in r187; each port follows its
    page. Largest first: webgpu_postprocessing_ssgi_ballpool,
    webgpu_lightprobes_complex, webgl_materials_envmaps_fasthdr,
