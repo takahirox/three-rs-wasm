@@ -26014,7 +26014,7 @@
         "source": "gallery/src/browser/ssr.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "steampunk_camera.glbのモデルを金属の床の上に置き、RoomEnvironmentのPMREMで照らし、SSRNodeのスクリーンスペース反射をビューティーパスに加算してSMAAをかける構成をRustで再現。シーンパスは色、パックしたビュー法線、金属度・粗さをMRTに書き、SSRパスが深度上で反射レイをマーチし、5段のミップのぼかしを粗さに応じて合成し、SMAAのエッジ、重み、ブレンドの各パスとACESの出力を通す。SSRなしの表示、ぼかし品質とバイナリリファイン（ページの各値のシェーダー）、モデルの粗さを含む各パラメータに対応。各段はページからthree.js r186が生成するWGSL（ssr/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "steampunk_camera.glbのモデルを金属の床の上に置き、RoomEnvironmentのPMREM（fromSceneでページのWGSLが描くキューブをsigma 0.04でぼかす）で照らし、SSRNodeのスクリーンスペース反射をビューティーパスに加算してSMAAをかける構成をRustで再現。シーンパスは色、パックしたビュー法線、金属度・粗さをMRTに書き、SSRパスが深度上で反射レイをマーチし、5段のミップのぼかしを粗さに応じて合成し、SMAAのエッジ、重み、ブレンドの各パスとACESの出力を通す。SSRなしの表示、ぼかし品質とバイナリリファイン（ページの各値のシェーダー）、モデルの粗さを含む各パラメータに対応。各段はページからthree.js r187が生成するWGSL（ssr/、PMREMとRoomEnvironmentはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
