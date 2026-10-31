@@ -178,9 +178,10 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  // spec.serialVoxels: VXGIVolume's voxelize kernel stores each voxel's triangle id
  // from every covering triangle without ordering, so which one wins (its albedo and
  // normal) changes between runs of the original itself. Both runtimes' kernels keep
- // the largest id ( atomicMax ) instead, at their shader-module creation, so the
+ // the largest id ( atomicMax ) instead, at their shader-module creation ( r187 names
+ // the buffer nodeUniformN, r186 NodeBuffer_N ), so the
  // comparison checks everything else exactly (docs/sponza-examples.md).
- if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/(NodeBuffer_\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
+ if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/((?:NodeBuffer_|nodeUniform)\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
   await page.goto(runtime!=='rust'?`/reference/three-js/compute-examples.html?id=${official(kind)}&samples=${samples}`:`/web/examples/${official(kind)}.html?still=1`);
