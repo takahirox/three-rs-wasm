@@ -8,7 +8,7 @@
 //! semantics, including the world matrices the loader left stale. Both
 //! characters are skinned on the GPU from their mixers' bone matrices; the
 //! reflector renders the mirrored view into a target the floor samples.
-//! Every stage runs the WGSL three.js r186 generates for the page (in
+//! Every stage runs the WGSL three.js r187 generates for the page (in
 //! `retargeting/`; the output is the compute_cloth modules, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
