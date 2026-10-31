@@ -1,13 +1,16 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
 
 
+// directives
+
+
 // structs
 
 struct OutputStruct {
-	@location( 0 ) color: f32
+	@location( 0 ) color: vec4<f32>
 };
 var<private> output : OutputStruct;
 
@@ -22,8 +25,7 @@ var<uniform> object : objectStruct;
 
 // vars
 var<private> DiffuseColor : vec4<f32>;
-var<private> Output : f32;
-var<private> nodeVar7 : vec4<f32>;
+var<private> Output : vec4<f32>;
 
 // codes
 
@@ -35,14 +37,14 @@ fn main( @location( 0 ) @interpolate(flat, either) vBatchIndirectId : u32,
 	// flow
 	// code
 
-	DiffuseColor = ( vBatchColor * vec4<f32>( 0.0, 0.0, 0.0, 1.0 ) );
+	DiffuseColor = ( vec4<f32>( 0.0, 0.0, 0.0, 1.0 ) * vBatchColor );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform3 );
-	nodeVar7 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar7.x;
+	let nodeConst14 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst14;
 
 	// result
 
-	output.color = nodeVar7.x;
+	output.color = nodeConst14;
 
 	return output;
 

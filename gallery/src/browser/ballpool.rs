@@ -1,31 +1,34 @@
-//! webgpu_postprocessing_ssgi_ballpool: a box of balls ( the bounce rigid-body
-//! world ported in crate::bounce ) under a shadow-casting point light that
-//! follows the pointer, with webgpu_postprocessing_ssgi's SSGI ( 2 slices, 8
-//! steps ), composite and TRAA, then ACES Filmic tone mapping ( exposure 0.5 ).
-//! The walls are boxes ( white, red and green MeshPhysicalMaterial; the front
-//! wall has a body but no mesh ); the balls are one InstancedMesh with the
-//! page's ten instance colors. Pointer movement pushes the balls near the
-//! pointer ray and moves the light to the ray's hit on the front plane, a held
-//! pointer ( two touches ) respawns five balls per frame and a resize rebuilds
-//! the world, the box width and the ball count from the new aspect.
+//! webgpu_postprocessing_ssgi_ballpool: a box of balls ( RapierPhysics,
+//! crate::physics on the rapier3d crate ) under a shadow-casting point light
+//! that follows the pointer, with webgpu_postprocessing_ssgi's SSGI ( 2
+//! slices, 8 steps ), composite and TRAA, then ACES Filmic tone mapping
+//! ( exposure 0.5 ). The walls are boxes ( white, red and green
+//! MeshPhysicalMaterial; the front wall has a body but no mesh ); the balls
+//! are one InstancedMesh with the page's ten instance colors. Pointer
+//! movement pushes the balls near the pointer ray and moves the light to the
+//! ray's hit on the front plane, a held pointer ( two touches ) respawns five
+//! balls per frame and a resize rebuilds the walls, the box width and the
+//! balls from the new aspect in the same world.
 //!
-//! Every frame steps the world with the page's `advanceTime( 1 / 60, dt )`
-//! and uploads the instance matrices, as the page's `setMatrixAt` does; the
-//! scene pass reads them, and the previous frame's for the velocity, from the
-//! two buffers InstanceNode builds: uniform arrays up to 1,024 balls, else
-//! instanced vertex attributes. Every stage runs the WGSL three.js r186
-//! generates for the page ( `ballpool/`; SSGI, composite and TRAA are the
-//! ssgi and volume_traa modules, which are byte-identical ). The page's camera,
-//! pointer ray and pushes follow the three.js f64 operations, so the bodies
-//! match the original's bit for bit ( tests/browser/bounce-physics.spec.js ).
+//! RapierPhysics steps the world on its 16 ms interval of the example clock
+//! ( its Timer's delta, at most 1 / 30 s ), writing the instance matrices
+//! ( Float32 ) and the bounding sphere; the frame's pushes read the
+//! matrices, as the page's `getMatrixAt` does. The scene pass reads them,
+//! and the previous drawn ones for the velocity, as instanced vertex
+//! attributes ( r187's InstancedMesh binds its instance data per object for
+//! every count ). Every stage runs the WGSL three.js r187 generates for the
+//! page ( `ballpool/`; the composite and TRAA are the ssgi and volume_traa
+//! modules', which are byte-identical ).
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::lights_projector::{m4, pack};
 use super::pmrem_cube_uv::{bind, raw_pipeline};
+use super::rapier_common::{Interval, StepTimer, next_due};
 use super::retro::uniform;
-use crate::bounce::{Quat, Vec3, World};
+use crate::physics::{RapierPhysics, rigid_body_builder};
 use crate::{
     Error, Result, camera::*, geometry::*, math::*, render_target::*, renderer::*, scene::*,
 };
+use rapier3d::prelude::{RigidBodyHandle, RigidBodyType, SharedShape, Vector};
 use std::collections::BTreeSet;
 use std::f64::consts::PI;
 use wgpu::util::DeviceExt;
@@ -42,9 +45,8 @@ const BOX_DEPTH: f64 = 8.;
 const WALL_THICKNESS: f64 = 0.5;
 const CAM_FOV: f64 = 45.;
 const EASE_SPEED: f64 = 8.;
-/// InstanceNode keeps the matrices in a uniform array while it fits the
-/// 64 KiB uniform buffer limit.
-const UNIFORM_MATRICES: usize = 1024;
+/// The balls' modules number the material's uniforms from 9, the walls' from 0.
+const BALL_OFFSET: usize = 9;
 const COLORS: [u32; 10] = [
     0xff4444, 0x44ff44, 0x4488ff, 0xffaa00, 0xff44ff, 0x44ffff, 0xffff44, 0xff8844, 0x8844ff,
     0x44ff88,
@@ -55,19 +57,19 @@ macro_rules! wgsl {
     };
 }
 const SSGI_VS: &str = include_str!("ssgi/ssgi_vs.wgsl");
-const SSGI_FS: &str = include_str!("ssgi/ssgi_fs.wgsl");
+const SSGI_FS: &str = wgsl!("ssgi_fs");
 const COMPOSITE_FS: &str = include_str!("ssgi/composite_fs.wgsl");
 const QUAD_VS: &str = include_str!("deferred/forward_output_vs.wgsl");
 const TRAA_VS: &str = include_str!("volume_traa/traa_vs.wgsl");
 const TRAA_FS: &str = include_str!("volume_traa/traa_fs.wgsl");
-/// PointShadowNode's WebGPU cube faces: directions and ups.
+/// PointShadowNode's WebGPU cube faces ( CubeCamera's ): directions and ups.
 const FACES: [([f64; 3], [f64; 3]); 6] = [
-    ([1., 0., 0.], [0., -1., 0.]),
-    ([-1., 0., 0.], [0., -1., 0.]),
-    ([0., -1., 0.], [0., 0., -1.]),
-    ([0., 1., 0.], [0., 0., 1.]),
-    ([0., 0., 1.], [0., -1., 0.]),
-    ([0., 0., -1.], [0., -1., 0.]),
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
 ];
 /// SSGINode's per-frame slice rotations and step offsets.
 const TEMPORAL_ROTATIONS: [f64; 6] = [60., 300., 180., 240., 120., 0.];
@@ -432,14 +434,16 @@ struct Wall {
     group: wgpu::BindGroup,
 }
 
-/// One rebuildScene: the world, the box and the balls.
+/// One rebuildScene: the box and the balls, and their bodies.
 struct Pool {
     width: f64,
     count: usize,
-    world: World,
-    bodies: Vec<usize>,
+    /// The walls' fixed bodies ( the front wall's included ) and the balls'.
+    wall_bodies: Vec<RigidBodyHandle>,
+    bodies: Vec<RigidBodyHandle>,
     walls: Vec<Wall>,
-    /// The instance matrices: this frame's and the previous frame's.
+    /// The instance matrices ( instanceMatrix.array ) and the ones the last
+    /// scene pass drew.
     matrices: Vec<f32>,
     previous: Option<Vec<f32>>,
     colors: wgpu::Buffer,
@@ -447,7 +451,8 @@ struct Pool {
     previous_buffer: wgpu::Buffer,
     object: wgpu::Buffer,
     constants: Vec<(String, Vec<f64>)>,
-    /// InstancedMesh.boundingSphere, computed on its first frustum test.
+    /// InstancedMesh.boundingSphere: computed on its first frustum test,
+    /// and by RapierPhysics after each step.
     bounds: Option<(V3, f64)>,
     camera: CameraState,
     ball: Draw,
@@ -491,6 +496,10 @@ struct Resolved {
 
 pub(super) struct Demo {
     random: Random,
+    /// RapierPhysics: its world, its 16 ms step interval and its Timer.
+    physics: RapierPhysics,
+    interval: Interval,
+    step_timer: StepTimer,
     pool: Option<Pool>,
     sphere: Geometry,
     wall: Draw,
@@ -648,6 +657,10 @@ impl Demo {
         );
         Ok(Self {
             random: Random(186),
+            // RapierPhysics() runs first in init(): its interval starts at 0.
+            physics: RapierPhysics::new(),
+            interval: Interval::new(0., 1000. / 60., 0),
+            step_timer: StepTimer::default(),
             pool: None,
             sphere: Geometry::new(r, &SphereGeometry::build(BALL_RADIUS, 32, 16)?)?,
             wall,
@@ -699,52 +712,33 @@ impl Demo {
         })
     }
 
-    /// The instance path's modules: uniform arrays sized to the count, or
-    /// instanced attributes, and the offset of their uniform numbering.
-    fn instanced_modules(
-        count: usize,
-    ) -> (String, &'static str, String, &'static str, usize, usize) {
-        if count <= UNIFORM_MATRICES {
-            let array = format!("array< mat4x4<f32>, {count} >");
-            (
-                wgsl!("ball_vs").replace("array< mat4x4<f32>, 257 >", &array),
-                wgsl!("ball_fs"),
-                wgsl!("shadow_vs").replace("array< mat4x4<f32>, 257 >", &array),
-                wgsl!("shadow_fs"),
-                0,
-                0,
-            )
-        } else {
-            (
-                wgsl!("ball_attribute_vs").to_string(),
-                wgsl!("ball_attribute_fs"),
-                wgsl!("shadow_attribute_vs").to_string(),
-                wgsl!("shadow_attribute_fs"),
-                6,
-                3,
-            )
-        }
-    }
-
-    /// rebuildScene: a new world, box and balls for the aspect.
+    /// rebuildScene: the old walls' bodies and the balls out of the world,
+    /// then a new box and balls for the aspect.
     fn rebuild(&mut self, r: &Renderer, aspect: f64) -> Result<()> {
+        if let Some(old) = self.pool.take() {
+            // world.removeRigidBody( wall body ), then removeMesh( ballsMesh ):
+            // each removal takes the body's colliders.
+            for h in old.wall_bodies.into_iter().chain(old.bodies) {
+                let p = &mut self.physics;
+                p.bodies.remove(
+                    h,
+                    &mut p.islands,
+                    &mut p.colliders,
+                    &mut p.impulse_joints,
+                    &mut p.multibody_joints,
+                    true,
+                );
+            }
+        }
         let v_fov = (CAM_FOV / 2.) * (PI / 180.);
         let dist = (BOX_HEIGHT / 2.) / tan(v_fov);
         let width = tan(v_fov) * aspect * dist * 2.;
         let room = width * BOX_HEIGHT * BOX_DEPTH;
         let ball = (4. / 3.) * PI * BALL_RADIUS.powi(3);
         let count = (room * FILL_RATIO * PACKING / ball).floor() as usize;
-        let mut world = World::new(crate::bounce::Options {
-            gravity: Vec3::new(0., -9.81, 0.),
-            solve_velocity_iterations: 6,
-            solve_position_iterations: 2,
-            linear_damping: 0.1,
-            angular_damping: 0.1,
-            restitution: 0.4,
-            friction: 0.5,
-        });
         let camera = CameraState::fit(aspect);
-        // createBox: the walls' bodies, and meshes but for the front wall.
+        // createBox: each wall's mesh and its fixed body ( addMesh( mesh, 0,
+        // 0.4 ) ), the front wall's mesh out of the scene.
         let (hw, hh, hd, t) = (width / 2., BOX_HEIGHT / 2., BOX_DEPTH / 2., WALL_THICKNESS);
         let (white, red, green) = (
             Color::from_hex(0xeeeeee),
@@ -793,9 +787,25 @@ impl Demo {
                 ]
             };
         let mut meshes = vec![];
+        let mut wall_bodies = vec![];
         for (size, position, wall_color) in walls {
-            let shape = world.create_box(size[0], size[1], size[2]);
-            world.create_static_body(shape, Vec3::new(position[0], position[1], position[2]));
+            let shape = SharedShape::cuboid(
+                (size[0] / 2.) as f32,
+                (size[1] / 2.) as f32,
+                (size[2] / 2.) as f32,
+            );
+            wall_bodies.push(
+                self.physics
+                    .create_body(
+                        rigid_body_builder(
+                            RigidBodyType::Fixed,
+                            Vector3::from_array(position),
+                            Quaternion::IDENTITY,
+                        ),
+                        RapierPhysics::collider_desc(shape, 0., 0.4),
+                    )
+                    .0,
+            );
             if let Some(material_color) = wall_color {
                 let geometry = Geometry::new(r, &BoxGeometry::build(size[0], size[1], size[2])?)?;
                 let object = uniform(r, "ballpool wall", wgsl!("wall_fs"), "objectStruct")?;
@@ -820,8 +830,9 @@ impl Demo {
                 });
             }
         }
-        // createBalls: instance colors, then each ball's spawn.
-        let sphere_shape = world.create_sphere(BALL_RADIUS);
+        // createBalls: instance colors and translations ( setMatrixAt into
+        // the Float32 instanceMatrix ), then addMesh( ballsMesh, 1, 0.5 ): a
+        // dynamic body per instance at its matrix's translation.
         let colors: Vec<f32> = (0..count)
             .flat_map(|i| {
                 Color::from_hex(COLORS[i % COLORS.len()])
@@ -834,25 +845,42 @@ impl Demo {
             width / 2. - BALL_RADIUS - 0.1,
             BOX_DEPTH / 2. - BALL_RADIUS - 0.1,
         );
-        let mut bodies = Vec::with_capacity(count);
-        for _ in 0..count {
+        let mut matrices = vec![0f32; count * 16];
+        for m in matrices.chunks_mut(16) {
             let x = (self.random.next() - 0.5) * 2. * hw;
             let y = BALL_RADIUS + self.random.next() * (BOX_HEIGHT - BALL_RADIUS * 2.);
             let z = (self.random.next() - 0.5) * 2. * hd;
-            bodies.push(world.create_dynamic_body(sphere_shape, Vec3::new(x, y, z), 1., 0.5, 0.4));
+            for (k, v) in compose(V3::new(x, y, z), (0., 0., 0., 1.))
+                .iter()
+                .enumerate()
+            {
+                m[k] = *v as f32;
+            }
         }
-        let (ball_vs, ball_fs, shadow_vs, shadow_fs, offset, shadow_offset) =
-            Self::instanced_modules(count);
-        let uniform_path = count <= UNIFORM_MATRICES;
-        let usage = if uniform_path {
-            wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST
-        } else {
-            wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST
-        };
+        let sphere_shape = SharedShape::ball(BALL_RADIUS as f32);
+        let bodies = matrices
+            .chunks(16)
+            .map(|m| {
+                let p = Vector3::new(m[12] as f64, m[13] as f64, m[14] as f64);
+                self.physics
+                    .create_body(
+                        rigid_body_builder(RigidBodyType::Dynamic, p, Quaternion::IDENTITY),
+                        RapierPhysics::collider_desc(sphere_shape.clone(), 1., 0.5),
+                    )
+                    .0
+            })
+            .collect();
+        let (ball_vs, ball_fs, shadow_vs, shadow_fs) = (
+            wgsl!("ball_vs"),
+            wgsl!("ball_fs"),
+            wgsl!("shadow_vs"),
+            wgsl!("shadow_fs"),
+        );
+        let usage = wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST;
         let matrix_buffer = |label| {
             r.device.create_buffer(&wgpu::BufferDescriptor {
                 label: Some(label),
-                size: (count * 64) as u64,
+                size: (count.max(1) * 64) as u64,
                 usage,
                 mapped_at_creation: false,
             })
@@ -887,42 +915,43 @@ impl Demo {
             |first: u32| [0, 1, 2, 3].map(|k| attribute(f4, 16 * k as u64, first + k));
         let (current_attr, previous_attr, shadow_matrix_attr) =
             (matrix_attr(2), matrix_attr(6), matrix_attr(2));
-        let ball_color_attr = [attribute(f3, 0, if uniform_path { 2 } else { 10 })];
-        let shadow_color_attr = [attribute(f3, 0, if uniform_path { 2 } else { 6 })];
-        let mut ball_layouts = vec![
+        let ball_color_attr = [attribute(f3, 0, 10)];
+        let shadow_color_attr = [attribute(f3, 0, 6)];
+        let geometry_layouts = [
             vertex(12, per_vertex, &position_attr[..]),
             vertex(12, per_vertex, &normal_attr[..]),
         ];
-        let mut shadow_layouts = ball_layouts.clone();
-        if !uniform_path {
-            ball_layouts.push(vertex(64, instance, &current_attr[..]));
-            ball_layouts.push(vertex(64, instance, &previous_attr[..]));
-            shadow_layouts.push(vertex(64, instance, &shadow_matrix_attr[..]));
-        }
-        ball_layouts.push(vertex(12, instance, &ball_color_attr[..]));
-        shadow_layouts.push(vertex(12, instance, &shadow_color_attr[..]));
+        let ball_layouts = [
+            geometry_layouts[0].clone(),
+            geometry_layouts[1].clone(),
+            vertex(64, instance, &current_attr[..]),
+            vertex(64, instance, &previous_attr[..]),
+            vertex(12, instance, &ball_color_attr[..]),
+        ];
+        let shadow_layouts = [
+            geometry_layouts[0].clone(),
+            geometry_layouts[1].clone(),
+            vertex(64, instance, &shadow_matrix_attr[..]),
+            vertex(12, instance, &shadow_color_attr[..]),
+        ];
         let mrt = [HALF, BYTE, BYTE, HALF];
         let ball_pipeline = sampled_pipeline(
             r,
             "ballpool balls",
-            (ball_vs.as_str(), ball_fs),
+            (ball_vs, ball_fs),
             &ball_layouts,
             &mrt,
             Some((wgpu::CompareFunction::LessEqual, true)),
             (false, false),
             (1, wgpu::PrimitiveTopology::TriangleList),
         );
-        let mut ball_entries = vec![
+        let ball_entries = [
             (0, object.as_entire_binding()),
             (1, wgpu::BindingResource::Sampler(&self.linear)),
             (2, wgpu::BindingResource::TextureView(&r.dfg)),
             (3, wgpu::BindingResource::Sampler(&self.compare)),
             (4, wgpu::BindingResource::TextureView(&self.shadow_cube)),
         ];
-        if uniform_path {
-            ball_entries.push((5, current_buffer.as_entire_binding()));
-            ball_entries.push((6, previous_buffer.as_entire_binding()));
-        }
         let ball = (
             ball_pipeline.clone(),
             vec![
@@ -934,11 +963,12 @@ impl Demo {
                 bind(r, ball_pipeline.get_bind_group_layout(1), &ball_entries),
             ],
         );
-        // The cube faces flip the winding: the casters' front faces are clockwise.
+        // The shadow pass draws the FrontSide balls' back faces ( BackSide:
+        // clockwise front faces ).
         let shadow_pipeline = raw_pipeline(
             r,
             "ballpool shadow",
-            &shadow_vs,
+            shadow_vs,
             shadow_fs,
             &shadow_layouts,
             BYTE,
@@ -946,10 +976,6 @@ impl Demo {
             Some((wgpu::CompareFunction::LessEqual, true)),
             true,
         );
-        let mut shadow_entries = vec![(0, shadow_object.as_entire_binding())];
-        if uniform_path {
-            shadow_entries.push((1, current_buffer.as_entire_binding()));
-        }
         let faces = self
             .shadow_faces
             .iter()
@@ -961,7 +987,11 @@ impl Demo {
                 )
             })
             .collect();
-        let shadow_group = bind(r, shadow_pipeline.get_bind_group_layout(1), &shadow_entries);
+        let shadow_group = bind(
+            r,
+            shadow_pipeline.get_bind_group_layout(1),
+            &[(0, shadow_object.as_entire_binding())],
+        );
         let write = |buffer: &wgpu::Buffer,
                      source: &str,
                      name: &str,
@@ -974,23 +1004,25 @@ impl Demo {
             Ok(())
         };
         // The balls' InstancedMesh sits at the origin: its matrices are identities.
-        let constants = material([1.; 3], 0.1, 0.3, Matrix4::IDENTITY, 3 + offset);
+        let constants = material([1.; 3], 0.1, 0.3, Matrix4::IDENTITY, BALL_OFFSET);
         write(
             &shadow_object,
             shadow_fs,
             "objectStruct",
             &[
-                (u(2, shadow_offset), vec![1.]),
-                (u(5, shadow_offset), m4(Matrix4::IDENTITY)),
+                ("nodeUniform5".into(), vec![1.]),
+                ("nodeUniform8".into(), m4(Matrix4::IDENTITY)),
             ],
         )?;
+        r.queue
+            .write_buffer(&current_buffer, 0, bytemuck::cast_slice(&matrices));
         self.pool = Some(Pool {
             width,
             count,
-            world,
+            wall_bodies,
             bodies,
             walls: meshes,
-            matrices: vec![0.; count * 16],
+            matrices,
             previous: None,
             colors,
             current_buffer,
@@ -1076,6 +1108,7 @@ impl Demo {
                 (1, wgpu::PrimitiveTopology::TriangleList),
             )
         };
+        let nearest = r.device.create_sampler(&Default::default());
         let ssgi_pipeline = screen_pass(
             "ballpool ssgi",
             SSGI_VS,
@@ -1091,12 +1124,14 @@ impl Demo {
                 r,
                 ssgi_pipeline.get_bind_group_layout(0),
                 &[
-                    (0, tex(&depth_target.1)),
-                    (1, self.ssgi_object.as_entire_binding()),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&scene[2].1)),
-                    (4, sampler(&self.linear)),
-                    (5, tex(&scene[0].1)),
+                    (0, self.ssgi_object.as_entire_binding()),
+                    // The depth's gather sampler: a non-filtering one.
+                    (1, sampler(&nearest)),
+                    (2, tex(&depth_target.1)),
+                    (3, sampler(&self.linear)),
+                    (4, tex(&scene[2].1)),
+                    (5, sampler(&self.linear)),
+                    (6, tex(&scene[0].1)),
                 ],
             )],
         );
@@ -1198,28 +1233,34 @@ impl Demo {
         pass.draw(0..3, 0..1);
     }
 
-    /// respawnBalls: five random balls back to the top, at rest.
+    /// respawnBalls: five random balls back to the top, at rest
+    /// ( setMeshPosition, then wakeUp() ).
     fn respawn(&mut self) {
         let Some(pool) = &mut self.pool else { return };
         let hw = pool.width / 2. - BALL_RADIUS - 0.1;
         let hd = BOX_DEPTH / 2. - BALL_RADIUS - 0.1;
         for _ in 0..5 {
-            let body =
-                pool.bodies[(self.random.next() * pool.bodies.len() as f64).floor() as usize];
             let x = (self.random.next() - 0.5) * 2. * hw;
             let y = BOX_HEIGHT - BALL_RADIUS - self.random.next() * 1.;
             let z = (self.random.next() - 0.5) * 2. * hd;
-            pool.world.respawn(body, Vec3::new(x, y, z));
+            let index = (self.random.next() * pool.count as f64).floor() as usize;
+            if let Some(b) = self.physics.bodies.get_mut(pool.bodies[index]) {
+                b.set_angvel(Vector::new(0., 0., 0.), false);
+                b.set_linvel(Vector::new(0., 0., 0.), false);
+                b.set_translation(Vector::new(x as f32, y as f32, z as f32), false);
+                b.wake_up(true);
+            }
         }
     }
 
-    /// The pointer ray's pushes: balls within 1.5 of the ray move away from it.
+    /// The pointer ray's pushes: balls within 1.5 of the ray, at their
+    /// instance matrices' translations, get an impulse away from it.
     fn push(&mut self) {
         let Some(pool) = &mut self.pool else { return };
         let (push_radius, push_strength) = (1.5, 15.);
-        for &body in &pool.bodies {
-            let p = pool.world.body(body).position;
-            let ball = V3::new(p.x, p.y, p.z);
+        for (i, &body) in pool.bodies.iter().enumerate() {
+            let m = &pool.matrices[i * 16..i * 16 + 16];
+            let ball = V3::new(m[12] as f64, m[13] as f64, m[14] as f64);
             // Ray.closestPointToPoint.
             let t = ball.sub(self.ray_origin).dot(self.ray_direction);
             let closest = if t < 0. {
@@ -1233,22 +1274,53 @@ impl Demo {
                 if direction.length_sq() < 0.001 {
                     direction = V3::new(0., 1., 0.);
                 }
-                let direction = direction.normalize();
                 let strength = push_strength * (1. - dist / push_radius);
-                pool.world.apply_linear_impulse(
-                    body,
-                    Vec3::new(
-                        direction.x * strength,
-                        direction.y * strength,
-                        direction.z * strength,
-                    ),
-                );
+                let impulse = direction.normalize().scale(strength);
+                // applyImpulse( ballsMesh, impulse, i ): waking the body.
+                if let Some(b) = self.physics.bodies.get_mut(body) {
+                    b.apply_impulse(
+                        Vector::new(impulse.x as f32, impulse.y as f32, impulse.z as f32),
+                        true,
+                    );
+                }
             }
         }
     }
 
-    /// The page's animate(): the timer, easing, interaction and the step.
+    /// RapierPhysics's step(): the world step with the Timer's delta ( at
+    /// most 1 / 30 s ), then each body's pose into the Float32 instance
+    /// matrices and InstancedMesh.computeBoundingSphere().
+    fn step(&mut self, at: f64) {
+        let delta = self.step_timer.delta(at).min(1. / 30.);
+        self.physics.world_step(delta);
+        let Some(pool) = &mut self.pool else { return };
+        for (i, &h) in pool.bodies.iter().enumerate() {
+            let Some(b) = self.physics.bodies.get(h) else {
+                continue;
+            };
+            let (t, q) = (b.translation(), b.rotation());
+            let m = compose(
+                V3::new(f64::from(t.x), f64::from(t.y), f64::from(t.z)),
+                (
+                    f64::from(q.i),
+                    f64::from(q.j),
+                    f64::from(q.k),
+                    f64::from(q.w),
+                ),
+            );
+            for (k, v) in m.iter().enumerate() {
+                pool.matrices[i * 16 + k] = *v as f32;
+            }
+        }
+        pool.bounds = bounding_sphere(&pool.matrices, self.sphere.sphere);
+    }
+
+    /// The interval's due steps on the example clock, then the page's
+    /// animate(): the timer, easing and interaction.
     fn animate(&mut self, r: &Renderer) {
+        while let Some((_, at)) = next_due(std::slice::from_mut(&mut self.interval), self.now) {
+            self.step(at);
+        }
         // The pointer's stop timer runs on the example clock before the frame.
         if self.stop_at.is_some_and(|at| at <= self.now) {
             self.stop_at = None;
@@ -1267,26 +1339,13 @@ impl Demo {
             self.push();
         }
         let Some(pool) = &mut self.pool else { return };
-        // performance.now() is the example clock.
-        pool.world.advance_time(1. / 60., dt, self.now / 1000.);
-        for (i, &body) in pool.bodies.iter().enumerate() {
-            let b = pool.world.body(body);
-            let Quat { x, y, z, w } = b.orientation;
-            let m = compose(
-                V3::new(b.position.x, b.position.y, b.position.z),
-                (x, y, z, w),
-            );
-            for (k, v) in m.iter().enumerate() {
-                pool.matrices[i * 16 + k] = *v as f32;
-            }
-        }
         r.queue.write_buffer(
             &pool.current_buffer,
             0,
             bytemuck::cast_slice(&pool.matrices),
         );
-        // InstanceNode's previous matrices: the array the last scene pass drew,
-        // or this frame's for a new mesh.
+        // The previous matrices: the array the last scene pass drew, or
+        // this frame's for a new mesh.
         let previous = pool
             .previous
             .replace(pool.matrices.clone())
@@ -1295,23 +1354,7 @@ impl Demo {
             .write_buffer(&pool.previous_buffer, 0, bytemuck::cast_slice(&previous));
         // InstancedMesh.computeBoundingSphere on the first frustum test.
         if pool.bounds.is_none() {
-            let (local_center, local_radius) = self.sphere.sphere;
-            let mut bounds: Option<(V3, f64)> = None;
-            for m in pool.matrices.chunks(16) {
-                let e: [f64; 16] = std::array::from_fn(|k| m[k] as f64);
-                let center = local_center.apply(&e);
-                let scale = [0, 4, 8]
-                    .map(|c| e[c] * e[c] + e[c + 1] * e[c + 1] + e[c + 2] * e[c + 2])
-                    .into_iter()
-                    .fold(0., f64::max)
-                    .sqrt();
-                let radius = local_radius * scale;
-                bounds = Some(match bounds {
-                    None => (center, radius),
-                    Some(b) => union(b, (center, radius)),
-                });
-            }
-            pool.bounds = bounds;
+            pool.bounds = bounding_sphere(&pool.matrices, self.sphere.sphere);
         }
     }
 
@@ -1362,13 +1405,16 @@ impl Demo {
         // TRAANode.setViewOffset: the Halton offset in pixels.
         // The passes render when TRAA's resolve samples them, after its
         // updateBefore has set the offset, the building frame's included.
-        let jittered = {
+        let jittered = if self.built {
             let [x, y] = halton(self.jitter);
             let mut p = projection;
             p.z_axis.x += 2. * (x - 0.5) / t.width as f64;
             p.z_axis.y -= 2. * (y - 0.5) / t.height as f64;
             p
+        } else {
+            projection
         };
+        // VelocityNode: last frame's projection and view ( this frame's on the first ).
         let motion = self.motion.unwrap_or(Motion { projection, view });
         self.motion = Some(Motion { projection, view });
         let write = |buffer: &wgpu::Buffer,
@@ -1384,10 +1430,15 @@ impl Demo {
         };
         let light = self.light.glam();
         // The point light ( intensity 80, no cutoff, decay 2 ) and its shadow
-        // ( near 0.5, far 500, radius 20, no biases ).
+        // ( near 0.5, far 500, radius 20, no biases ): the filter reads the
+        // camera's near and far and the bias again from the render group.
+        // VelocityNode's projection and previous projection and view are
+        // render uniforms too.
         let lights = |offset: usize| {
             vec![
-                (u(29, offset), m4(motion.projection)),
+                (u(30, offset), m4(projection)),
+                (u(32, offset), m4(motion.projection)),
+                (u(33, offset), m4(motion.view)),
                 ("cameraProjectionMatrix".into(), m4(jittered)),
                 ("cameraViewMatrix".into(), m4(view)),
                 (
@@ -1400,28 +1451,27 @@ impl Demo {
                 (u(18, offset), vec![500.]),
                 (u(19, offset), vec![0.5]),
                 (u(20, offset), vec![0.]),
-                (u(22, offset), vec![20.]),
-                (u(23, offset), vec![SHADOW as f64; 2]),
-                (u(24, offset), vec![1.]),
+                (u(21, offset), vec![20.]),
+                (u(22, offset), vec![SHADOW as f64; 2]),
+                (u(23, offset), vec![500.]),
+                (u(24, offset), vec![0.5]),
                 (u(25, offset), vec![0.]),
-                (u(26, offset), vec![2.]),
+                (u(27, offset), vec![1.]),
+                (u(28, offset), vec![0.]),
+                (u(29, offset), vec![2.]),
             ]
         };
-        let (_, ball_fs, _, _, offset, _) = Self::instanced_modules(pool.count);
+        let ball_fs = wgsl!("ball_fs");
         write(
             &self.wall_render,
             wgsl!("wall_fs"),
             "renderStruct",
             &lights(0),
         )?;
-        write(&self.render, ball_fs, "renderStruct", &lights(3 + offset))?;
+        write(&self.render, ball_fs, "renderStruct", &lights(BALL_OFFSET))?;
+        // The model matrix and the previous one.
         let velocity = |offset: usize, model: Matrix4| {
-            vec![
-                (u(27, offset), m4(projection)),
-                (u(28, offset), m4(model)),
-                (u(30, offset), m4(motion.view)),
-                (u(31, offset), m4(model)),
-            ]
+            vec![(u(31, offset), m4(model)), (u(34, offset), m4(model))]
         };
         for wall in &pool.walls {
             let values = [wall.constants.clone(), velocity(0, wall.model)].concat();
@@ -1429,7 +1479,7 @@ impl Demo {
         }
         let values = [
             pool.constants.clone(),
-            velocity(3 + offset, Matrix4::IDENTITY),
+            velocity(BALL_OFFSET, Matrix4::IDENTITY),
         ]
         .concat();
         write(&pool.object, ball_fs, "objectStruct", &values)?;
@@ -1443,31 +1493,37 @@ impl Demo {
             TEMPORAL_ROTATIONS[self.frame_id % 6] / 360.,
             SPATIAL_OFFSETS[self.frame_id % 4],
         );
+        // SSGINode: resolutionScale 1 ( the depth is loaded, not gathered ),
+        // then its r186 uniforms.
         write(
             &self.ssgi_object,
             SSGI_FS,
             "objectStruct",
             &[
-                ("nodeUniform1".into(), m4(jittered.inverse())),
-                ("nodeUniform3".into(), vec![2.]),
-                ("nodeUniform4".into(), vec![8.]),
-                ("nodeUniform5".into(), vec![1.]),
-                ("nodeUniform6".into(), vec![10.]),
-                ("nodeUniform7".into(), vec![12.]),
-                ("nodeUniform8".into(), vec![1.]),
-                ("nodeUniform9".into(), vec![t.width as f64, t.height as f64]),
+                ("nodeUniform0".into(), vec![1.]),
+                ("nodeUniform2".into(), m4(jittered.inverse())),
+                ("nodeUniform4".into(), vec![2.]),
+                ("nodeUniform5".into(), vec![8.]),
+                ("nodeUniform6".into(), vec![1.]),
+                ("nodeUniform7".into(), vec![10.]),
+                ("nodeUniform8".into(), vec![12.]),
+                ("nodeUniform9".into(), vec![1.]),
                 (
                     "nodeUniform10".into(),
+                    vec![t.width as f64, t.height as f64],
+                ),
+                (
+                    "nodeUniform11".into(),
                     vec![t.height as f64 / (((CAM_FOV * PI / 180.) * 0.5).tan() * 2.) * 0.5],
                 ),
-                ("nodeUniform11".into(), vec![direction]),
-                ("nodeUniform12".into(), vec![2.]),
-                ("nodeUniform13".into(), vec![1.]),
-                ("nodeUniform14".into(), vec![0.]),
-                ("nodeUniform15".into(), vec![step_offset]),
-                ("nodeUniform16".into(), vec![0.]),
-                ("nodeUniform17".into(), vec![100.]),
-                ("nodeUniform19".into(), vec![1.]),
+                ("nodeUniform12".into(), vec![direction]),
+                ("nodeUniform13".into(), vec![2.]),
+                ("nodeUniform14".into(), vec![1.]),
+                ("nodeUniform15".into(), vec![0.]),
+                ("nodeUniform16".into(), vec![step_offset]),
+                ("nodeUniform17".into(), vec![0.]),
+                ("nodeUniform18".into(), vec![100.]),
+                ("nodeUniform20".into(), vec![1.]),
             ],
         )?;
         // TRAANode.updateBefore: the previous camera matrices ( identity
@@ -1720,18 +1776,36 @@ impl Demo {
 fn draw_balls(pass: &mut wgpu::RenderPass, pool: &Pool, sphere: &Geometry, scene: bool) {
     pass.set_vertex_buffer(0, sphere.positions.slice(..));
     pass.set_vertex_buffer(1, sphere.normals.slice(..));
-    let mut slot = 2;
-    if pool.count > UNIFORM_MATRICES {
-        pass.set_vertex_buffer(slot, pool.current_buffer.slice(..));
+    pass.set_vertex_buffer(2, pool.current_buffer.slice(..));
+    let mut slot = 3;
+    if scene {
+        pass.set_vertex_buffer(slot, pool.previous_buffer.slice(..));
         slot += 1;
-        if scene {
-            pass.set_vertex_buffer(slot, pool.previous_buffer.slice(..));
-            slot += 1;
-        }
     }
     pass.set_vertex_buffer(slot, pool.colors.slice(..));
     pass.set_index_buffer(sphere.index.slice(..), wgpu::IndexFormat::Uint32);
     pass.draw_indexed(0..sphere.count, 0, 0..pool.count as u32);
+}
+
+/// InstancedMesh.computeBoundingSphere: the union of the geometry's sphere
+/// under each instance matrix.
+fn bounding_sphere(matrices: &[f32], (local_center, local_radius): (V3, f64)) -> Option<(V3, f64)> {
+    let mut bounds: Option<(V3, f64)> = None;
+    for m in matrices.chunks(16) {
+        let e: [f64; 16] = std::array::from_fn(|k| m[k] as f64);
+        let center = local_center.apply(&e);
+        let scale = [0, 4, 8]
+            .map(|c| e[c] * e[c] + e[c + 1] * e[c + 1] + e[c + 2] * e[c + 2])
+            .into_iter()
+            .fold(0., f64::max)
+            .sqrt();
+        let radius = local_radius * scale;
+        bounds = Some(match bounds {
+            None => (center, radius),
+            Some(b) => union(b, (center, radius)),
+        });
+    }
+    bounds
 }
 
 /// Sphere.union.

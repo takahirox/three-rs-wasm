@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -9,14 +9,18 @@
 // uniforms
 
 struct renderStruct {
-	cameraProjectionMatrix : mat4x4<f32>,
-	cameraViewMatrix : mat4x4<f32>,
 	nodeUniform11 : vec3<f32>,
 	nodeUniform12 : f32,
 	nodeUniform13 : f32,
 	nodeUniform15 : vec3<f32>,
 	nodeUniform16 : f32,
 	nodeUniform17 : f32,
+	cameraProjectionMatrix : mat4x4<f32>,
+	cameraViewMatrix : mat4x4<f32>,
+	nodeUniform30 : f32,
+	nodeUniform28 : f32,
+	nodeUniform24 : f32,
+	nodeUniform22 : f32,
 	nodeUniform10 : vec3<f32>,
 	nodeUniform14 : vec3<f32>
 };
@@ -32,16 +36,12 @@ struct objectStruct {
 	nodeUniform6 : vec3<f32>,
 	nodeUniform7 : f32,
 	nodeUniform9 : mat4x4<f32>,
+	nodeUniform19 : vec3<f32>,
 	nodeUniform20 : vec3<f32>,
 	nodeUniform21 : vec3<f32>,
-	nodeUniform22 : vec3<f32>,
-	nodeUniform23 : f32,
-	nodeUniform24 : f32,
+	nodeUniform25 : vec3<f32>,
 	nodeUniform26 : vec3<f32>,
-	nodeUniform27 : vec3<f32>,
-	nodeUniform28 : vec3<f32>,
-	nodeUniform29 : f32,
-	nodeUniform30 : f32
+	nodeUniform27 : vec3<f32>
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -60,7 +60,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar305 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> VERTEX_v_modelViewProjection : vec4<f32>;
@@ -82,8 +81,8 @@ fn main( @location( 0 ) normal : vec3<f32>,
 	varyings.v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - varyings.v_positionView );
 	varyings.v_positionWorld = ( object.nodeUniform9 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar305 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar305;
+	let VERTEX_nodeConst49 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst49;
 
 	// result
 

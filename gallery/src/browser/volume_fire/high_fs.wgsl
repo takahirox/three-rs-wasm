@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -12,28 +15,40 @@ struct OutputStruct {
 var<private> output : OutputStruct;
 
 // uniforms
-@binding( 0 ) @group( 0 ) var nodeUniform0_sampler : sampler;
-@binding( 1 ) @group( 0 ) var nodeUniform0 : texture_2d<f32>;
-@binding( 2 ) @group( 0 ) var nodeUniform1_sampler : sampler;
-@binding( 3 ) @group( 0 ) var nodeUniform1 : texture_2d<f32>;
+@binding( 0 ) @group( 1 ) var nodeUniform0_sampler : sampler;
+@binding( 1 ) @group( 1 ) var nodeUniform0 : texture_2d<f32>;
+@binding( 2 ) @group( 1 ) var nodeUniform1_sampler : sampler;
+@binding( 3 ) @group( 1 ) var nodeUniform1 : texture_2d<f32>;
+
+struct renderStruct {
+	nodeUniform2 : f32
+};
+@binding( 0 ) @group( 0 )
+var<uniform> render : renderStruct;
 
 struct objectStruct {
-	nodeUniform2 : f32,
 	nodeUniform3 : f32,
 	nodeUniform4 : f32
 };
-@binding( 4 ) @group( 0 )
+@binding( 4 ) @group( 1 )
 var<uniform> object : objectStruct;
 
 // vars
 var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : vec4<f32>;
-var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec4<f32>;
+var<private> workingLuminanceCoefficients : vec3<f32>;
 
 // codes
+fn fn32 ( color : vec3<f32>, adjustment : f32, luminanceCoefficients : vec3<f32> ) -> vec3<f32> {
+
+	
+
+
+	return max( mix( vec3<f32>( dot( color, luminanceCoefficients ) ), color, adjustment ), vec3<f32>( 0.0 ) );
+
+}
+
+
 
 
 @fragment
@@ -43,17 +58,15 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
-	nodeVar1 = nodeVar0;
-	nodeVar1 = nodeVar0;
-	nodeVar2 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
-	nodeVar3 = nodeVar2;
-	nodeVar3 = nodeVar2;
-	nodeVar4 = ( vec4<f32>( max( mix( vec3<f32>( dot( nodeVar3.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ), nodeVar3.xyz, object.nodeUniform2 ), vec3<f32>( 0.0 ) ), nodeVar3.w ) * vec4<f32>( 0.5 ) );
-	nodeVar5 = ( max( nodeVar1, nodeVar4 ) + nodeVar4 );
+	nodeVar1 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar1;
+	workingLuminanceCoefficients = vec3<f32>( 0.2126, 0.7152, 0.0722 );
+	let nodeConst1 = ( vec4<f32>( fn32( nodeConst0.xyz, render.nodeUniform2, workingLuminanceCoefficients ), nodeConst0.w ) * vec4<f32>( 0.5 ) );
+	let nodeConst2 = ( max( nodeVar0, nodeConst1 ) + nodeConst1 );
 
 	// result
 
-	output.color = mix( vec4<f32>( 0.0, 0.0, 0.0, 0.0 ), nodeVar5, smoothstep( object.nodeUniform3, ( object.nodeUniform3 + object.nodeUniform4 ), dot( nodeVar5.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ) );
+	output.color = mix( vec4<f32>( 0.0, 0.0, 0.0, 0.0 ), nodeConst2, smoothstep( object.nodeUniform3, ( object.nodeUniform3 + object.nodeUniform4 ), dot( nodeConst2.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) ) ) );
 
 	return output;
 

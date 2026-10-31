@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,23 +13,23 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_9863Struct {
+struct nodeUniform1Struct {
 	value : array< vec4<f32> >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read> NodeBuffer_9863 : NodeBuffer_9863Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_9871Struct {
+struct nodeUniform6Struct {
 	value : array< atomic<u32> >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read_write> NodeBuffer_9871 : NodeBuffer_9871Struct;
+var<storage, read_write> nodeUniform6 : nodeUniform6Struct;
 
-struct NodeBuffer_9872Struct {
+struct nodeUniform7Struct {
 	value : array< u32 >
 };
 @binding( 3 ) @group( 0 )
-var<storage, read_write> NodeBuffer_9872 : NodeBuffer_9872Struct;
+var<storage, read_write> nodeUniform7 : nodeUniform7Struct;
 
 struct objectStruct {
 	nodeUniform0 : u32,
@@ -43,7 +43,7 @@ struct objectStruct {
 var<uniform> object : objectStruct;
 
 // vars
-var<private> nodeVar0 : f32;
+var<private> nodeVar0 : vec3<f32>;
 var<private> nodeVar1 : vec3<f32>;
 var<private> nodeVar2 : vec3<f32>;
 var<private> nodeVar3 : vec3<f32>;
@@ -53,9 +53,8 @@ var<private> nodeVar6 : vec3<f32>;
 var<private> nodeVar7 : vec3<f32>;
 var<private> nodeVar8 : vec3<f32>;
 var<private> nodeVar9 : vec3<f32>;
-var<private> nodeVar10 : vec3<f32>;
+var<private> nodeVar10 : vec3<i32>;
 var<private> nodeVar11 : vec3<i32>;
-var<private> nodeVar12 : vec3<i32>;
 
 // codes
 
@@ -85,186 +84,186 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	if ( ( instanceIndex < object.nodeUniform0 ) ) {
 
 		let nodeConst0 = ( instanceIndex * 5u );
-		nodeVar0 = ( 2.0 / object.nodeUniform3 );
-		let nodeConst1 = ( ( NodeBuffer_9863.value[ nodeConst0 ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeVar0 ) );
-		let nodeConst2 = ( ( NodeBuffer_9863.value[ ( nodeConst0 + 1u ) ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeVar0 ) );
-		let nodeConst3 = ( ( NodeBuffer_9863.value[ ( nodeConst0 + 2u ) ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeVar0 ) );
-		let nodeConst4 = cross( ( nodeConst2 - nodeConst1 ), ( nodeConst3 - nodeConst1 ) );
-		let nodeConst5 = abs( nodeConst4 );
-		let nodeConst6 = ( ( nodeConst5.z >= nodeConst5.x ) && ( nodeConst5.z >= nodeConst5.y ) );
-		let nodeConst7 = ( ( ! nodeConst6 ) && ( nodeConst5.y >= nodeConst5.x ) );
+		let nodeConst1 = ( 2.0 / object.nodeUniform3 );
+		let nodeConst2 = ( ( nodeUniform1.value[ nodeConst0 ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeConst1 ) );
+		let nodeConst3 = ( ( nodeUniform1.value[ ( nodeConst0 + 1u ) ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeConst1 ) );
+		let nodeConst4 = ( ( nodeUniform1.value[ ( nodeConst0 + 2u ) ].xyz - object.nodeUniform2 ) * vec3<f32>( nodeConst1 ) );
+		let nodeConst5 = cross( ( nodeConst3 - nodeConst2 ), ( nodeConst4 - nodeConst2 ) );
+		let nodeConst6 = abs( nodeConst5 );
+		let nodeConst7 = ( ( nodeConst6.z >= nodeConst6.x ) && ( nodeConst6.z >= nodeConst6.y ) );
+		let nodeConst8 = ( ( ! nodeConst7 ) && ( nodeConst6.y >= nodeConst6.x ) );
 
-		if ( nodeConst6 ) {
+		if ( nodeConst7 ) {
 
-			nodeVar1 = nodeConst1;
-
-		} else {
-
-
-			if ( nodeConst7 ) {
-
-				nodeVar2 = nodeConst1.zxy;
-
-			} else {
-
-				nodeVar2 = nodeConst1.yzx;
-
-			}
-
-			nodeVar1 = nodeVar2;
-
-		}
-
-		let nodeConst8 = nodeVar1;
-
-		if ( nodeConst6 ) {
-
-			nodeVar3 = nodeConst2;
+			nodeVar0 = nodeConst2;
 
 		} else {
 
 
-			if ( nodeConst7 ) {
+			if ( nodeConst8 ) {
 
-				nodeVar4 = nodeConst2.zxy;
+				nodeVar1 = nodeConst2.zxy;
 
 			} else {
 
-				nodeVar4 = nodeConst2.yzx;
+				nodeVar1 = nodeConst2.yzx;
 
 			}
 
-			nodeVar3 = nodeVar4;
+			nodeVar0 = nodeVar1;
 
 		}
 
-		let nodeConst9 = nodeVar3;
+		let nodeConst9 = nodeVar0;
 
-		if ( nodeConst6 ) {
+		if ( nodeConst7 ) {
 
-			nodeVar5 = nodeConst3;
+			nodeVar2 = nodeConst3;
 
 		} else {
 
 
-			if ( nodeConst7 ) {
+			if ( nodeConst8 ) {
 
-				nodeVar6 = nodeConst3.zxy;
+				nodeVar3 = nodeConst3.zxy;
 
 			} else {
 
-				nodeVar6 = nodeConst3.yzx;
+				nodeVar3 = nodeConst3.yzx;
 
 			}
 
-			nodeVar5 = nodeVar6;
+			nodeVar2 = nodeVar3;
 
 		}
 
-		let nodeConst10 = nodeVar5;
+		let nodeConst10 = nodeVar2;
 
-		if ( nodeConst6 ) {
+		if ( nodeConst7 ) {
 
-			nodeVar7 = nodeConst4;
+			nodeVar4 = nodeConst4;
 
 		} else {
 
 
-			if ( nodeConst7 ) {
+			if ( nodeConst8 ) {
 
-				nodeVar8 = nodeConst4.zxy;
+				nodeVar5 = nodeConst4.zxy;
 
 			} else {
 
-				nodeVar8 = nodeConst4.yzx;
+				nodeVar5 = nodeConst4.yzx;
 
 			}
 
-			nodeVar7 = nodeVar8;
+			nodeVar4 = nodeVar5;
 
 		}
 
-		let nodeConst11 = nodeVar7;
+		let nodeConst11 = nodeVar4;
 
-		if ( nodeConst6 ) {
+		if ( nodeConst7 ) {
 
-			nodeVar9 = vec3<f32>( 288.0, 128.0, 192.0 );
+			nodeVar6 = nodeConst5;
 
 		} else {
 
 
-			if ( nodeConst7 ) {
+			if ( nodeConst8 ) {
 
-				nodeVar10 = vec3<f32>( 288.0, 128.0, 192.0 ).zxy;
+				nodeVar7 = nodeConst5.zxy;
 
 			} else {
 
-				nodeVar10 = vec3<f32>( 288.0, 128.0, 192.0 ).yzx;
+				nodeVar7 = nodeConst5.yzx;
 
 			}
 
-			nodeVar9 = nodeVar10;
+			nodeVar6 = nodeVar7;
 
 		}
 
-		let nodeConst12 = nodeVar9;
-		let nodeConst13 = min( nodeConst8, min( nodeConst9, nodeConst10 ) );
-		let nodeConst14 = max( nodeConst8, max( nodeConst9, nodeConst10 ) );
-		let nodeConst15 = max( f32( i32( floor( nodeConst13.x ) ) ), 0.0 );
-		let nodeConst16 = min( i32( floor( nodeConst14.x ) ), ( i32( nodeConst12.x ) - 1 ) );
-		let nodeConst17 = max( f32( i32( floor( nodeConst13.y ) ) ), 0.0 );
-		let nodeConst18 = min( i32( floor( nodeConst14.y ) ), ( i32( nodeConst12.y ) - 1 ) );
-		let nodeConst19 = sign( nodeConst11.z );
-		let nodeConst20 = ( vec2<f32>( ( nodeConst8.xy.y - nodeConst9.xy.y ), ( nodeConst9.xy.x - nodeConst8.xy.x ) ) * vec2<f32>( nodeConst19 ) );
-		let nodeConst21 = ( 0.5 * ( abs( nodeConst20.x ) + abs( nodeConst20.y ) ) );
-		let nodeConst22 = ( vec2<f32>( ( nodeConst9.xy.y - nodeConst10.xy.y ), ( nodeConst10.xy.x - nodeConst9.xy.x ) ) * vec2<f32>( nodeConst19 ) );
-		let nodeConst23 = ( 0.5 * ( abs( nodeConst22.x ) + abs( nodeConst22.y ) ) );
-		let nodeConst24 = ( vec2<f32>( ( nodeConst10.xy.y - nodeConst8.xy.y ), ( nodeConst8.xy.x - nodeConst10.xy.x ) ) * vec2<f32>( nodeConst19 ) );
-		let nodeConst25 = ( 0.5 * ( abs( nodeConst24.x ) + abs( nodeConst24.y ) ) );
-		let nodeConst26 = ( ( 0.5 * ( abs( nodeConst11.x ) + abs( nodeConst11.y ) ) ) / abs( nodeConst11.z ) );
+		let nodeConst12 = nodeVar6;
 
-		for ( var i : i32 = i32( nodeConst15 ); i <= nodeConst16; i ++ ) {
+		if ( nodeConst7 ) {
 
-			for ( var j : i32 = i32( nodeConst17 ); j <= nodeConst18; j ++ ) {
+			nodeVar8 = vec3<f32>( 288.0, 128.0, 192.0 );
 
-				let nodeConst27 = vec2<f32>( ( f32( i ) + 0.5 ), ( f32( j ) + 0.5 ) );
-
-				if ( ( ( ( ( dot( nodeConst20, ( nodeConst27 - nodeConst8.xy ) ) + nodeConst21 ) >= 0.0 ) && ( ( dot( nodeConst22, ( nodeConst27 - nodeConst9.xy ) ) + nodeConst23 ) >= 0.0 ) ) && ( ( dot( nodeConst24, ( nodeConst27 - nodeConst10.xy ) ) + nodeConst25 ) >= 0.0 ) ) ) {
-
-					let nodeConst28 = ( nodeConst8.z - ( ( ( nodeConst11.x * ( nodeConst27.x - nodeConst8.x ) ) + ( nodeConst11.y * ( nodeConst27.y - nodeConst8.y ) ) ) / nodeConst11.z ) );
-					let nodeConst29 = max( f32( i32( floor( max( ( nodeConst28 - nodeConst26 ), nodeConst13.z ) ) ) ), 0.0 );
-					let nodeConst30 = min( i32( floor( min( ( nodeConst28 + nodeConst26 ), nodeConst14.z ) ) ), ( i32( nodeConst12.z ) - 1 ) );
-
-					for ( var k : i32 = i32( nodeConst29 ); k <= nodeConst30; k ++ ) {
+		} else {
 
 
-						if ( nodeConst6 ) {
+			if ( nodeConst8 ) {
 
-							nodeVar11 = vec3<i32>( i, j, k );
+				nodeVar9 = vec3<f32>( 288.0, 128.0, 192.0 ).zxy;
+
+			} else {
+
+				nodeVar9 = vec3<f32>( 288.0, 128.0, 192.0 ).yzx;
+
+			}
+
+			nodeVar8 = nodeVar9;
+
+		}
+
+		let nodeConst13 = nodeVar8;
+		let nodeConst14 = min( nodeConst9, min( nodeConst10, nodeConst11 ) );
+		let nodeConst15 = max( nodeConst9, max( nodeConst10, nodeConst11 ) );
+		let nodeConst16 = max( i32( floor( nodeConst14.x ) ), 0 );
+		let nodeConst17 = min( i32( floor( nodeConst15.x ) ), ( i32( nodeConst13.x ) - 1 ) );
+		let nodeConst18 = max( i32( floor( nodeConst14.y ) ), 0 );
+		let nodeConst19 = min( i32( floor( nodeConst15.y ) ), ( i32( nodeConst13.y ) - 1 ) );
+		let nodeConst20 = sign( nodeConst12.z );
+		let nodeConst21 = ( vec2<f32>( ( nodeConst9.xy.y - nodeConst10.xy.y ), ( nodeConst10.xy.x - nodeConst9.xy.x ) ) * vec2<f32>( nodeConst20 ) );
+		let nodeConst22 = ( 0.5 * ( abs( nodeConst21.x ) + abs( nodeConst21.y ) ) );
+		let nodeConst23 = ( vec2<f32>( ( nodeConst10.xy.y - nodeConst11.xy.y ), ( nodeConst11.xy.x - nodeConst10.xy.x ) ) * vec2<f32>( nodeConst20 ) );
+		let nodeConst24 = ( 0.5 * ( abs( nodeConst23.x ) + abs( nodeConst23.y ) ) );
+		let nodeConst25 = ( vec2<f32>( ( nodeConst11.xy.y - nodeConst9.xy.y ), ( nodeConst9.xy.x - nodeConst11.xy.x ) ) * vec2<f32>( nodeConst20 ) );
+		let nodeConst26 = ( 0.5 * ( abs( nodeConst25.x ) + abs( nodeConst25.y ) ) );
+		let nodeConst27 = ( ( 0.5 * ( abs( nodeConst12.x ) + abs( nodeConst12.y ) ) ) / abs( nodeConst12.z ) );
+
+		for ( var i : i32 = nodeConst16; i <= nodeConst17; i ++ ) {
+
+			for ( var j : i32 = nodeConst18; j <= nodeConst19; j ++ ) {
+
+				let nodeConst28 = vec2<f32>( ( f32( i ) + 0.5 ), ( f32( j ) + 0.5 ) );
+
+				if ( ( ( ( ( dot( nodeConst21, ( nodeConst28 - nodeConst9.xy ) ) + nodeConst22 ) >= 0.0 ) && ( ( dot( nodeConst23, ( nodeConst28 - nodeConst10.xy ) ) + nodeConst24 ) >= 0.0 ) ) && ( ( dot( nodeConst25, ( nodeConst28 - nodeConst11.xy ) ) + nodeConst26 ) >= 0.0 ) ) ) {
+
+					let nodeConst29 = ( nodeConst9.z - ( ( ( nodeConst12.x * ( nodeConst28.x - nodeConst9.x ) ) + ( nodeConst12.y * ( nodeConst28.y - nodeConst9.y ) ) ) / nodeConst12.z ) );
+					let nodeConst30 = max( i32( floor( max( ( nodeConst29 - nodeConst27 ), nodeConst14.z ) ) ), 0 );
+					let nodeConst31 = min( i32( floor( min( ( nodeConst29 + nodeConst27 ), nodeConst15.z ) ) ), ( i32( nodeConst13.z ) - 1 ) );
+
+					for ( var k : i32 = nodeConst30; k <= nodeConst31; k ++ ) {
+
+
+						if ( nodeConst7 ) {
+
+							nodeVar10 = vec3<i32>( i, j, k );
 
 						} else {
 
 
-							if ( nodeConst7 ) {
+							if ( nodeConst8 ) {
 
-								nodeVar12 = vec3<i32>( j, k, i );
+								nodeVar11 = vec3<i32>( j, k, i );
 
 							} else {
 
-								nodeVar12 = vec3<i32>( k, i, j );
+								nodeVar11 = vec3<i32>( k, i, j );
 
 							}
 
-							nodeVar11 = nodeVar12;
+							nodeVar10 = nodeVar11;
 
 						}
 
-						let nodeConst31 = nodeVar11;
-						let nodeConst32 = vec3<u32>( ( nodeConst31 / vec3<i32>( i32( 2.0 ) ) ) );
-						let nodeConst33 = ( ( u32( ( nodeConst31.x & 1 ) ) | ( u32( ( nodeConst31.y & 1 ) ) << 1u ) ) | ( u32( ( nodeConst31.z & 1 ) ) << 2u ) );
-						let nodeConst34 = ( nodeConst32.x + ( object.nodeUniform4 * ( nodeConst32.y + ( object.nodeUniform5 * nodeConst32.z ) ) ) );
-						atomicOr( &NodeBuffer_9871.value[ nodeConst34 ], ( 1u << nodeConst33 ) );
-						NodeBuffer_9872.value[ nodeConst34 ] = ( instanceIndex + 1u );
+						let nodeConst32 = nodeVar10;
+						let nodeConst33 = vec3<u32>( ( nodeConst32 / vec3<i32>( i32( 2.0 ) ) ) );
+						let nodeConst34 = ( ( u32( ( nodeConst32.x & 1 ) ) | ( u32( ( nodeConst32.y & 1 ) ) << 1u ) ) | ( u32( ( nodeConst32.z & 1 ) ) << 2u ) );
+						let nodeConst35 = ( nodeConst33.x + ( object.nodeUniform4 * ( nodeConst33.y + ( object.nodeUniform5 * nodeConst33.z ) ) ) );
+						atomicOr( &nodeUniform6.value[ nodeConst35 ], ( 1u << nodeConst34 ) );
+						nodeUniform7.value[ nodeConst35 ] = ( instanceIndex + 1u );
 
 					}
 

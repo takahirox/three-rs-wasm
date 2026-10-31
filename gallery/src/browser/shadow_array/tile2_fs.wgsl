@@ -60,11 +60,11 @@ fn main( @location( 0 ) v_clipSpace : vec4<f32>,
 	nodeVar0 = vec4<f32>( mix( Output.xyz, render.nodeUniform1, smoothstep( render.nodeUniform2, render.nodeUniform3, ( - positionView.z ) ) ), Output.w );
 	Output = nodeVar0;
 	nodeVar1 = nodeVarying2;
-	nodeVar2 = textureSampleCompare( nodeUniform6, nodeUniform6_sampler, vec2<f32>( nodeVar1.x, 1.0 - nodeVar1.y ), 1, 0.9 );
+	nodeVar2 = textureSampleCompare( nodeUniform6, nodeUniform6_sampler, vec2<f32>( nodeVar1.x, 1.0 - nodeVar1.y ), 2, 0.9 );
 
 	// result
 
-	output.color = vec4<f32>( clamp( ( vec3<f32>( 0.66, 0.75, 0.7749999999999999 ) * vec3<f32>( nodeVar2 ) ), vec3<f32>( 0.0 ), vec3<f32>( 1.0 ) ), 1.0 );
+	output.color = vec4<f32>( clamp( ( vec3<f32>( 0.8200000000000001, 0.5, 0.85 ) * vec3<f32>( nodeVar2 ) ), vec3<f32>( 0.0 ), vec3<f32>( 1.0 ) ), 1.0 );
 
 	return output;
 

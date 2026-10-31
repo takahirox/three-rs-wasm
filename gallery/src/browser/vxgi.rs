@@ -6,15 +6,18 @@
 //! sub-voxel edge, as the addon does ) and voxelizes them on the GPU into a
 //! 72 × 56 × 72 opacity volume with its mips; the point light is injected
 //! through its cube shadow and bounced once into the radiance volume, again
-//! only when the light or the injection settings change. Each frame the
-//! pre-pass writes packed normals and velocity, the cone tracer writes AO
+//! only when the light or the injection settings change. As r187's
+//! computeSolidVoxels does, the interiors of the closed, outward-facing,
+//! opaque single-sided meshes ( the two boxes and the emitter ) are filled on
+//! the CPU once and OR'ed into the opacity by the resolve kernel. Each frame
+//! the pre-pass writes packed normals and velocity, the cone tracer writes AO
 //! and GI ( its cone rotation following frameId ), the scene pass reads them
 //! in the materials' lighting, TRAA jitters, reprojects and blends, and the
-//! output encodes sRGB. Every stage runs the WGSL three.js r186 generates
-//! for the page (in `vxgi/`; the shadow is the fog_volume modules, the
-//! pre-pass vertex stages the ssgi ones, TRAA the volume_traa ones and the
-//! outputs the hdr, ssgi and sss ones, byte-identical; the compute kernels
-//! drop the subgroup built-in they declare but never use).
+//! output encodes sRGB. Every stage runs the WGSL three.js r187 generates
+//! for the page (in `vxgi/`; the shadow is the fog_volume modules, TRAA's
+//! vertex stage the volume_traa one and the outputs the hdr and sss ones,
+//! byte-identical; the compute kernels drop the subgroup built-in they
+//! declare but never use).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
@@ -45,22 +48,60 @@ macro_rules! wgsl {
 }
 const SHADOW_VS: &str = include_str!("fog_volume/shadow_vs.wgsl");
 const SHADOW_FS: &str = include_str!("fog_volume/shadow_fs.wgsl");
-const PHYSICAL_VS: &str = include_str!("ssgi/physical_vs.wgsl");
-const BASIC_VS: &str = include_str!("ssgi/basic_vs.wgsl");
 const TRAA_VS: &str = include_str!("volume_traa/traa_vs.wgsl");
-const TRAA_FS: &str = include_str!("volume_traa/traa_fs.wgsl");
+const TRAA_FS: &str = wgsl!("traa_fs");
 const OUTPUT_VS: &str = include_str!("hdr/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("hdr/output_fs.wgsl");
-const AO_FS: &str = include_str!("ssgi/output_ao_fs.wgsl");
+const AO_FS: &str = wgsl!("ao_output_fs");
 const DIRECT_FS: &str = include_str!("sss/output_scene_fs.wgsl");
-/// PointShadowNode's WebGPU cube faces: directions and ups.
+/// "nodeUniform0" … "nodeUniform35", to name uniforms by number.
+const NAMES: [&str; 36] = [
+    "nodeUniform0",
+    "nodeUniform1",
+    "nodeUniform2",
+    "nodeUniform3",
+    "nodeUniform4",
+    "nodeUniform5",
+    "nodeUniform6",
+    "nodeUniform7",
+    "nodeUniform8",
+    "nodeUniform9",
+    "nodeUniform10",
+    "nodeUniform11",
+    "nodeUniform12",
+    "nodeUniform13",
+    "nodeUniform14",
+    "nodeUniform15",
+    "nodeUniform16",
+    "nodeUniform17",
+    "nodeUniform18",
+    "nodeUniform19",
+    "nodeUniform20",
+    "nodeUniform21",
+    "nodeUniform22",
+    "nodeUniform23",
+    "nodeUniform24",
+    "nodeUniform25",
+    "nodeUniform26",
+    "nodeUniform27",
+    "nodeUniform28",
+    "nodeUniform29",
+    "nodeUniform30",
+    "nodeUniform31",
+    "nodeUniform32",
+    "nodeUniform33",
+    "nodeUniform34",
+    "nodeUniform35",
+];
+/// PointShadowNode's WebGPU cube faces ( r187: CubeCamera's orientation,
+/// sampled at ( -x, y, z ) ): directions and ups.
 const FACES: [([f64; 3], [f64; 3]); 6] = [
-    ([1., 0., 0.], [0., -1., 0.]),
-    ([-1., 0., 0.], [0., -1., 0.]),
-    ([0., -1., 0.], [0., 0., -1.]),
-    ([0., 1., 0.], [0., 0., 1.]),
-    ([0., 0., 1.], [0., -1., 0.]),
-    ([0., 0., -1.], [0., -1., 0.]),
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
 ];
 /// TAAUtils' computeHaltonOffsets( 32 ): bases 2 and 3 from index 1.
 pub(super) fn halton(index: usize) -> [f64; 2] {
@@ -255,8 +296,10 @@ struct Targets {
     /// Per mesh: the pre-pass, scene and direct-view draws.
     draws: Vec<[Draw; 3]>,
     cone: Draw,
-    /// Resolve with the placeholder, or the history, previous depth.
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// The resolve; the previous depth is the history's depth texture, which
+    /// r187's TRAANode reads from the first resolve ( zero until the first
+    /// depth copy ).
+    traa: (wgpu::RenderPipeline, wgpu::BindGroup),
     /// The outputs: the resolve, the scene, the direct scene, AO and GI.
     outputs: [Draw; 5],
 }
@@ -290,22 +333,19 @@ pub(super) struct Demo {
     cone_object: wgpu::Buffer,
     traa_object: wgpu::Buffer,
     quad_uv: wgpu::Buffer,
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
-/// The pre-pass keeps its build with TRAANode's unjittered projection in
-/// the velocity: r186 rebuilds it without that projection only while TRAA
-/// is out of the pipeline ( AO, GI, direct or no temporal filtering ), when
-/// both builds give the same velocity.
+/// The pre-pass, scene and direct-view ( no GI context ) materials. The
+/// velocity's current projection is TRAANode's unjittered one.
 const PHYSICAL: [(&str, &str); 3] = [
-    (PHYSICAL_VS, wgsl!("prepass_physical_fs")),
+    (wgsl!("prepass_physical_vs"), wgsl!("prepass_physical_fs")),
     (wgsl!("scene_physical_vs"), wgsl!("scene_physical_fs")),
     (wgsl!("direct_physical_vs"), wgsl!("direct_physical_fs")),
 ];
 const BASIC: [(&str, &str); 3] = [
-    (BASIC_VS, wgsl!("prepass_basic_fs")),
+    (wgsl!("prepass_basic_vs"), wgsl!("prepass_basic_fs")),
     (wgsl!("scene_basic_vs"), wgsl!("scene_basic_fs")),
     (wgsl!("direct_basic_vs"), wgsl!("direct_basic_fs")),
 ];
@@ -407,6 +447,180 @@ fn collect_triangles(
     }
     out
 }
+/// VXGISceneCollector's isClosed: every edge is shared by an even number of
+/// triangles, vertices with the same quantized position being one vertex.
+pub(super) fn is_closed(positions: &[f32], index: &[u32]) -> bool {
+    let points: Vec<[f64; 3]> = positions
+        .chunks(3)
+        .map(|p| [p[0] as f64, p[1] as f64, p[2] as f64])
+        .collect();
+    if points.is_empty() {
+        return false;
+    }
+    let (mut lo, mut hi) = ([f64::INFINITY; 3], [f64::NEG_INFINITY; 3]);
+    for p in &points {
+        for k in 0..3 {
+            lo[k] = lo[k].min(p[k]);
+            hi[k] = hi[k].max(p[k]);
+        }
+    }
+    // POSITION_QUANTIZATION; Math.round.
+    let scale = [0, 1, 2].map(|k| 131072. / (hi[k] - lo[k]).max(1e-9));
+    let mut keys = std::collections::HashMap::new();
+    let ids: Vec<usize> = points
+        .iter()
+        .map(|p| {
+            let key = [0, 1, 2].map(|k| ((p[k] - lo[k]) * scale[k] + 0.5).floor() as i64);
+            let next = keys.len();
+            *keys.entry(key).or_insert(next)
+        })
+        .collect();
+    let mut parity = std::collections::HashMap::new();
+    let mut open = 0i64;
+    for t in index.as_chunks::<3>().0 {
+        let [a, b, c] = [0, 1, 2].map(|k| ids[t[k] as usize]);
+        if a == b || b == c || c == a {
+            continue;
+        }
+        for (x, y) in [(a, b), (b, c), (c, a)] {
+            let odd = parity.entry((x.min(y), x.max(y))).or_insert(false);
+            *odd = !*odd;
+            open += if *odd { 1 } else { -1 };
+        }
+    }
+    open == 0
+}
+/// VXGISceneCollector's facesOutwards: a positive signed volume.
+pub(super) fn faces_outwards(positions: &[f32], index: &[u32]) -> bool {
+    let o = [0, 1, 2].map(|k| positions[k] as f64);
+    let p = |i: u32| {
+        let i = i as usize * 3;
+        [0, 1, 2].map(|k| positions[i + k] as f64 - o[k])
+    };
+    let volume: f64 = index
+        .as_chunks::<3>()
+        .0
+        .iter()
+        .map(|t| {
+            let (a, b, c) = (p(t[0]), p(t[1]), p(t[2]));
+            let cross = [
+                b[1] * c[2] - b[2] * c[1],
+                b[2] * c[0] - b[0] * c[2],
+                b[0] * c[1] - b[1] * c[0],
+            ];
+            a[0] * cross[0] + a[1] * cross[1] + a[2] * cross[2]
+        })
+        .sum();
+    volume > 0.
+}
+/// computeSolidVoxels' fillInterior: marks the sub-voxels between pairs of
+/// surface crossings along each sub-voxel column in x, one byte of 2 × 2 × 2
+/// sub-voxel bits per voxel.
+#[allow(clippy::too_many_arguments)]
+pub(super) fn fill_interior(
+    positions: &[f32],
+    index: &[u32],
+    model: &Matrix4,
+    bounds_min: Vector3,
+    voxel_size: f64,
+    grid: [u32; 3],
+    target: &mut [u8],
+) {
+    // The edge function at ( y, z ) with the vertices taken relative to it,
+    // and the top-left rule for points on an edge.
+    let edge = |a: [f64; 3], b: [f64; 3], y: f64, z: f64| {
+        (a[1] - y) * (b[2] - z) - (a[2] - z) * (b[1] - y)
+    };
+    let inside = |w: f64, a: [f64; 3], b: [f64; 3]| {
+        if w != 0. {
+            return w > 0.;
+        }
+        let dz = b[2] - a[2];
+        dz < 0. || (dz == 0. && b[1] > a[1])
+    };
+    let inv = 2. / voxel_size;
+    let min = bounds_min.to_array();
+    let (columns_y, columns_z, length) = (
+        grid[1] as i64 * 2,
+        grid[2] as i64 * 2,
+        grid[0] as i64 * 2,
+    );
+    let p = |i: u32| {
+        let i = i as usize * 3;
+        let w = apply(
+            model,
+            [
+                positions[i] as f64,
+                positions[i + 1] as f64,
+                positions[i + 2] as f64,
+            ],
+        );
+        [0, 1, 2].map(|k| (w[k] - min[k]) * inv)
+    };
+    let mut columns: std::collections::HashMap<i64, Vec<f64>> = Default::default();
+    for t in index.as_chunks::<3>().0 {
+        let (a, mut b, mut c) = (p(t[0]), p(t[1]), p(t[2]));
+        let area = edge(a, b, c[1], c[2]);
+        if area == 0. {
+            continue;
+        }
+        if area < 0. {
+            std::mem::swap(&mut b, &mut c);
+        }
+        let j0 = ((a[1].min(b[1]).min(c[1]) - 0.5).ceil() as i64).max(0);
+        let j1 = ((a[1].max(b[1]).max(c[1]) - 0.5).floor() as i64).min(columns_y - 1);
+        let k0 = ((a[2].min(b[2]).min(c[2]) - 0.5).ceil() as i64).max(0);
+        let k1 = ((a[2].max(b[2]).max(c[2]) - 0.5).floor() as i64).min(columns_z - 1);
+        for k in k0..=k1 {
+            for j in j0..=j1 {
+                let (y, z) = (j as f64 + 0.5, k as f64 + 0.5);
+                let wa = edge(b, c, y, z);
+                let wb = edge(c, a, y, z);
+                let wc = edge(a, b, y, z);
+                if inside(wa, b, c) && inside(wb, c, a) && inside(wc, a, b) {
+                    columns
+                        .entry(j + k * columns_y)
+                        .or_default()
+                        .push((wa * a[0] + wb * b[0] + wc * c[0]) / (wa + wb + wc));
+                }
+            }
+        }
+    }
+    for (column, mut crossings) in columns {
+        if crossings.len() % 2 != 0 {
+            continue;
+        }
+        crossings.sort_by(f64::total_cmp);
+        let (j, k) = (column % columns_y, column / columns_y);
+        let offset = grid[0] as i64 * ((j >> 1) + grid[1] as i64 * (k >> 1));
+        let bits_yz = ((j & 1) << 1) | ((k & 1) << 2);
+        for pair in crossings.as_chunks::<2>().0 {
+            let i0 = ((pair[0] - 0.5).ceil() as i64).max(0);
+            let i1 = ((pair[1] - 0.5).ceil() as i64).min(length);
+            for i in i0..i1 {
+                target[(offset + (i >> 1)) as usize] |= 1 << ((i & 1) | bits_yz);
+            }
+        }
+    }
+}
+/// computeSolidVoxels over the given meshes ( positions, index and world
+/// matrix of each opaque, single-sided mesh ): the bytes of the solid
+/// buffer, one per voxel, padded to whole u32 words.
+pub(super) fn solid_voxels(
+    meshes: &[(&[f32], &[u32], Matrix4)],
+    bounds_min: Vector3,
+    voxel_size: f64,
+    grid: [u32; 3],
+) -> Vec<u8> {
+    let voxels = (grid[0] * grid[1] * grid[2]) as usize;
+    let mut target = vec![0u8; voxels.div_ceil(4) * 4];
+    for (positions, index, model) in meshes {
+        if is_closed(positions, index) && faces_outwards(positions, index) {
+            fill_interior(positions, index, model, bounds_min, voxel_size, grid, &mut target);
+        }
+    }
+    target
+}
 pub(super) fn compute_pipeline(r: &Renderer, label: &str, source: &str) -> wgpu::ComputePipeline {
     let module = r.device.create_shader_module(wgpu::ShaderModuleDescriptor {
         label: Some(label),
@@ -429,6 +643,7 @@ impl Volume {
         triangles: &[f32],
         bounds: (Vector3, Vector3),
         shadow_cube: &wgpu::TextureView,
+        solids: &[(&[f32], &[u32], Matrix4)],
     ) -> Result<Self> {
         // _voxelize: the longest axis gets 64 voxels; all axes are padded by
         // a voxel and rounded up to whole mips.
@@ -453,6 +668,13 @@ impl Volume {
         };
         let occupancy = storage("vxgi occupancy", voxels as u64 * 4);
         let triangle_ids = storage("vxgi triangle ids", voxels as u64 * 4);
+        let solid = r
+            .device
+            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("vxgi solid"),
+                contents: &solid_voxels(solids, bounds_min, voxel_size, grid),
+                usage: wgpu::BufferUsages::STORAGE,
+            });
         let triangle_count = (triangles.len() / TRIANGLE_STRIDE) as u32;
         let triangle_buffer = r
             .device
@@ -574,7 +796,7 @@ impl Volume {
         }
         let resolve_object = write(
             wgsl!("resolve_cs"),
-            &[("nodeUniform0", vec![v]), ("nodeUniform3", vec![v])],
+            &[("nodeUniform0", vec![v]), ("nodeUniform4", vec![v])],
         )?;
         let opacity_levels: Vec<wgpu::TextureView> =
             (0..levels).map(|m| level(&opacity_texture, m)).collect();
@@ -583,7 +805,8 @@ impl Volume {
             &resolve_object,
             vec![
                 (1, occupancy.as_entire_binding()),
-                (2, res(&opacity_levels[0])),
+                (2, solid.as_entire_binding()),
+                (3, res(&opacity_levels[0])),
             ],
             groups(voxels),
         ));
@@ -645,10 +868,9 @@ impl Volume {
             .map(|t| (0..levels).map(|m| level(t, m)).collect())
             .collect();
         let radiance_full: Vec<wgpu::TextureView> = radiance_textures.iter().map(view).collect();
-        let inject_sources = [wgsl!("inject0_cs"), wgsl!("inject1_cs")];
-        let inject_objects = [0, 1].map(|i| {
+        let inject_objects = [0, 1].map(|_| {
             write(
-                inject_sources[i],
+                wgsl!("inject_cs"),
                 &[
                     ("nodeUniform0", vec![v]),
                     ("nodeUniform4", min.clone()),
@@ -662,7 +884,7 @@ impl Volume {
         let inject_objects = [o0?, o1?];
         let inject = [0, 1].map(|i| {
             kernel(
-                inject_sources[i],
+                wgsl!("inject_cs"),
                 &inject_objects[i],
                 vec![
                     (1, occupancy.as_entire_binding()),
@@ -695,16 +917,14 @@ impl Volume {
                 objects.push(object);
             }
         }
-        let bounce_sources = [wgsl!("bounce0_cs"), wgsl!("bounce1_cs")];
-        let bounce_objects =
-            [0, 1].map(|i| uniform(r, "vxgi bounce", bounce_sources[i], "objectStruct"));
+        let bounce_objects = [0, 1].map(|_| uniform(r, "vxgi bounce", wgsl!("bounce_cs"), "objectStruct"));
         let [b0, b1] = bounce_objects;
         let bounce_objects = [b0?, b1?];
         let opacity = view(&opacity_texture);
         // bounce[ target ] reads the other index and writes the target.
         let bounce = [0, 1].map(|target| {
             kernel(
-                bounce_sources[target],
+                wgsl!("bounce_cs"),
                 &bounce_objects[target],
                 vec![
                     (1, occupancy.as_entire_binding()),
@@ -760,12 +980,8 @@ impl Volume {
         [bounces, step_scale, max_distance]: [f64; 3],
     ) -> Result<()> {
         let bounces = bounces.round().max(0.) as usize;
-        for (i, object) in self.bounce_objects.iter().enumerate() {
-            let source = if i == 0 {
-                wgsl!("bounce0_cs")
-            } else {
-                wgsl!("bounce1_cs")
-            };
+        for object in &self.bounce_objects {
+            let source = wgsl!("bounce_cs");
             let v = (self.grid[0] * self.grid[1] * self.grid[2]) as f64;
             let values = [
                 ("nodeUniform0", vec![v]),
@@ -1045,16 +1261,12 @@ impl Demo {
             volume_box,
             (MAX_EDGE_SUBVOXELS * probe * 0.5).powi(2),
         );
-        let volume = Volume::new(r, &triangles, (lo, hi), &shadow_cube)?;
-        // TRAANode's DepthTexture( 1, 1 ) placeholder, cleared to the far plane.
-        let placeholder = view(&texture(r, (1, 1, 1), DEPTH));
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("vxgi placeholder"),
-            depth_stencil_attachment: depth(&placeholder),
-            ..Default::default()
-        });
-        r.queue.submit([encoder.finish()]);
+        // computeSolidVoxels: every mesh's material is opaque and front-sided.
+        let solids: Vec<(&[f32], &[u32], Matrix4)> = sources
+            .iter()
+            .map(|(positions, index, model, ..)| (&positions[..], &index[..], *model))
+            .collect();
+        let volume = Volume::new(r, &triangles, (lo, hi), &shadow_cube, &solids)?;
         let renders = |sources: &[(&str, &str); 3]| -> Result<[wgpu::Buffer; 3]> {
             let [a, b, c] =
                 [0, 1, 2].map(|i| uniform(r, "vxgi render", sources[i].1, "renderStruct"));
@@ -1088,7 +1300,6 @@ impl Demo {
                 bytemuck::cast_slice(&[0f32, -1., 0., 1., 2., 1.]),
                 wgpu::BufferUsages::VERTEX,
             ),
-            placeholder,
             linear: r.device.create_sampler(&wgpu::SamplerDescriptor {
                 mag_filter: wgpu::FilterMode::Linear,
                 min_filter: wgpu::FilterMode::Linear,
@@ -1271,7 +1482,7 @@ impl Demo {
         let traa_pipeline = screen_pass("vxgi traa", TRAA_VS, TRAA_FS, &[HALF]);
         let history_view = view(&history);
         let history_depth_view = view(&history_depth);
-        let traa_groups = [&self.placeholder, &history_depth_view].map(|previous| {
+        let traa_group = {
             bind(
                 r,
                 traa_pipeline.get_bind_group_layout(0),
@@ -1282,12 +1493,12 @@ impl Demo {
                     (3, tex(&scene.1)),
                     (4, tex(&prepass_depth.1)),
                     (5, self.traa_object.as_entire_binding()),
-                    (6, tex(previous)),
+                    (6, tex(&history_depth_view)),
                     (7, sampler(&self.linear)),
                     (8, tex(&history_view)),
                 ],
             )
-        });
+        };
         let format = out.options.format;
         let single = |fs, source: &wgpu::TextureView| {
             let p = screen_pass("vxgi output", OUTPUT_VS, fs, &[format]);
@@ -1334,7 +1545,7 @@ impl Demo {
             screen,
             draws,
             cone,
-            traa: (traa_pipeline, traa_groups),
+            traa: (traa_pipeline, traa_group),
             outputs,
         });
         Ok(())
@@ -1420,28 +1631,45 @@ impl Demo {
         let size = vec![t.width as f64, t.height as f64];
         let light_view = view.transform_point3(light).to_array().to_vec();
         let shadow_matrix = m4(Matrix4::from_translation(-light));
-        // The pre-pass and the direct view share r186's physical uniform
-        // names; the scene pass renumbers them.
-        for i in [0, 2] {
-            let mut values = vec![
+        // The point light ( colour × 100, distance 100, decay 2 ) and its
+        // cube shadow ( near 0.5, far 100, bias 0, radius 1 ): the pre-pass
+        // and the direct view share r187's physical uniform names, the scene
+        // pass renumbers them. The names are the light position, colour,
+        // shadow matrix, normal bias, far, near, bias, radius, map size, the
+        // filter's far, near and bias, shadow intensity, distance and decay.
+        let light_values = |n: [&'static str; 15]| {
+            vec![
                 ("cameraProjectionMatrix", m4(jittered)),
                 ("cameraViewMatrix", m4(view)),
-                ("nodeUniform14", vec![100.; 3]),
-                ("nodeUniform25", vec![100.]),
-                ("nodeUniform26", vec![2.]),
-                ("nodeUniform27", ambient.clone()),
-                ("nodeUniform13", light_view.clone()),
-                ("nodeUniform15", shadow_matrix.clone()),
-                ("nodeUniform19", vec![0.5]),
-                ("nodeUniform18", vec![100.]),
-                ("nodeUniform17", vec![0.]),
-                ("nodeUniform20", vec![0.]),
-                ("nodeUniform22", vec![1.]),
-                ("nodeUniform23", vec![SHADOW as f64; 2]),
-                ("nodeUniform24", vec![1.]),
-            ];
+                (n[0], light_view.clone()),
+                (n[1], vec![100.; 3]),
+                (n[2], shadow_matrix.clone()),
+                (n[3], vec![0.]),
+                (n[4], vec![100.]),
+                (n[5], vec![0.5]),
+                (n[6], vec![0.]),
+                (n[7], vec![1.]),
+                (n[8], vec![SHADOW as f64; 2]),
+                (n[9], vec![100.]),
+                (n[10], vec![0.5]),
+                (n[11], vec![0.]),
+                (n[12], vec![1.]),
+                (n[13], vec![100.]),
+                (n[14], vec![2.]),
+            ]
+        };
+        let physical = [13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29];
+        let scene = [15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31];
+        let names = |numbers: [usize; 15]| numbers.map(|n| NAMES[n]);
+        for i in [0, 2] {
+            let mut values = light_values(names(physical));
+            values.push(("nodeUniform30", ambient.clone()));
             if i == 0 {
-                values.push(("nodeUniform30", m4(motion.projection)));
+                // VelocityNode: TRAANode's unjittered projection and the
+                // previous frame's matrices.
+                values.push(("nodeUniform31", m4(projection)));
+                values.push(("nodeUniform33", m4(motion.projection)));
+                values.push(("nodeUniform34", m4(motion.view)));
             }
             write(
                 &self.physical_renders[i],
@@ -1455,32 +1683,20 @@ impl Demo {
                 ("nodeUniform2", ambient.clone()),
             ];
             if i == 0 {
+                basic.push(("nodeUniform5", m4(projection)));
                 basic.push(("nodeUniform8", m4(motion.projection)));
+                basic.push(("nodeUniform9", m4(motion.view)));
             }
             write(&self.basic_renders[i], BASIC[i].1, "renderStruct", &basic)?;
         }
+        let mut values = light_values(names(scene));
+        values.push(("nodeUniform32", ambient.clone()));
+        values.push(("nodeUniform3", size.clone()));
         write(
             &self.physical_renders[1],
             PHYSICAL[1].1,
             "renderStruct",
-            &[
-                ("cameraProjectionMatrix", m4(jittered)),
-                ("cameraViewMatrix", m4(view)),
-                ("nodeUniform16", vec![100.; 3]),
-                ("nodeUniform27", vec![100.]),
-                ("nodeUniform28", vec![2.]),
-                ("nodeUniform29", ambient.clone()),
-                ("nodeUniform15", light_view),
-                ("nodeUniform17", shadow_matrix),
-                ("nodeUniform19", vec![0.]),
-                ("nodeUniform26", vec![1.]),
-                ("nodeUniform3", size.clone()),
-                ("nodeUniform21", vec![0.5]),
-                ("nodeUniform20", vec![100.]),
-                ("nodeUniform22", vec![0.]),
-                ("nodeUniform24", vec![1.]),
-                ("nodeUniform25", vec![SHADOW as f64; 2]),
-            ],
+            &values,
         )?;
         write(
             &self.basic_renders[1],
@@ -1496,24 +1712,19 @@ impl Demo {
         for m in &self.meshes {
             let normal = m3(m.model.inverse().transpose());
             if m.basic {
-                {
-                    let i = 0;
-                    write(
-                        &m.objects[i],
-                        BASIC[i].1,
-                        "objectStruct",
-                        &[
-                            ("nodeUniform0", m.color.to_vec()),
-                            ("nodeUniform1", vec![1.]),
-                            ("nodeUniform4", normal.clone()),
-                            ("nodeUniform5", m4(projection)),
-                            ("nodeUniform7", m4(m.model)),
-                            ("nodeUniform9", m4(motion.view)),
-                            ("nodeUniform10", m4(m.model)),
-                            ("nodeUniform12", m4(m.model)),
-                        ],
-                    )?;
-                }
+                write(
+                    &m.objects[0],
+                    BASIC[0].1,
+                    "objectStruct",
+                    &[
+                        ("nodeUniform0", m.color.to_vec()),
+                        ("nodeUniform1", vec![1.]),
+                        ("nodeUniform4", normal.clone()),
+                        ("nodeUniform7", m4(m.model)),
+                        ("nodeUniform10", m4(m.model)),
+                        ("nodeUniform12", m4(m.model)),
+                    ],
+                )?;
                 write(
                     &m.objects[1],
                     BASIC[1].1,
@@ -1552,10 +1763,8 @@ impl Demo {
                             ("nodeUniform9", vec![0.; 3]),
                             ("nodeUniform10", vec![1.]),
                             ("nodeUniform12", m4(m.model)),
-                            ("nodeUniform28", m4(projection)),
-                            ("nodeUniform29", m4(m.model)),
-                            ("nodeUniform31", m4(motion.view)),
                             ("nodeUniform32", m4(m.model)),
+                            ("nodeUniform35", m4(m.model)),
                         ],
                     )?;
                 }
@@ -1755,7 +1964,7 @@ impl Demo {
                     full,
                 );
             }
-            let (pipeline, groups) = &t.traa;
+            let (pipeline, group) = &t.traa;
             {
                 let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                     label: Some("vxgi traa"),
@@ -1763,7 +1972,7 @@ impl Demo {
                     ..Default::default()
                 });
                 pass.set_pipeline(pipeline);
-                pass.set_bind_group(0, &groups[usize::from(self.resolves >= 2)], &[]);
+                pass.set_bind_group(0, group, &[]);
                 pass.set_vertex_buffer(0, self.quad_uv.slice(..));
                 pass.draw(0..3, 0..1);
             }

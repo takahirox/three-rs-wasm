@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -18,9 +22,7 @@ var<private> output : OutputStruct;
 
 struct objectStruct {
 	nodeUniform2 : mat3x3<f32>,
-	nodeUniform3 : vec2<f32>,
-	nodeUniform4 : mat3x3<f32>,
-	nodeUniform5 : mat3x3<f32>
+	nodeUniform3 : vec2<f32>
 };
 @binding( 4 ) @group( 0 )
 var<uniform> object : objectStruct;
@@ -35,10 +37,9 @@ var<private> nodeVar5 : vec2<f32>;
 var<private> nodeVar6 : vec2<f32>;
 var<private> nodeVar7 : vec4<f32>;
 var<private> nodeVar8 : vec4<f32>;
-var<private> nodeVar9 : f32;
-var<private> nodeVar10 : f32;
 
 // codes
+
 
 @fragment
 fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
@@ -56,15 +57,16 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 
 	for ( var i : i32 = 1; i <= 4; i ++ ) {
 
-		nodeVar7 = textureSample( nodeUniform1, nodeUniform1_sampler, ( object.nodeUniform4 * vec3<f32>( ( nodeVarying0 + nodeVar6 ), 1.0 ) ).xy );
-		nodeVar8 = textureSample( nodeUniform1, nodeUniform1_sampler, ( object.nodeUniform5 * vec3<f32>( ( nodeVarying0 - nodeVar6 ), 1.0 ) ).xy );
-		nodeVar9 = ( ( 1.0 * f32( i ) ) / 4.0 );
-		nodeVar10 = ( 0.39894 * ( exp( ( ( ( -0.5 * nodeVar9 ) * nodeVar9 ) / ( nodeVar1 * nodeVar1 ) ) ) / nodeVar1 ) );
-		nodeVar4 = ( nodeVar4 + ( ( nodeVar7 + nodeVar8 ) * vec4<f32>( nodeVar10 ) ) );
-		nodeVar2 = ( nodeVar2 + ( nodeVar10 * 2.0 ) );
+		nodeVar7 = textureSample( nodeUniform1, nodeUniform1_sampler, ( object.nodeUniform2 * vec3<f32>( ( nodeVarying0 + nodeVar6 ), 1.0 ) ).xy );
+		nodeVar8 = textureSample( nodeUniform1, nodeUniform1_sampler, ( object.nodeUniform2 * vec3<f32>( ( nodeVarying0 - nodeVar6 ), 1.0 ) ).xy );
+		let nodeConst0 = ( ( 1.0 * f32( i ) ) / 4.0 );
+		let nodeConst1 = ( 0.39894 * ( exp( ( ( ( -0.5 * nodeConst0 ) * nodeConst0 ) / ( nodeVar1 * nodeVar1 ) ) ) / nodeVar1 ) );
+		nodeVar4 = ( nodeVar4 + ( ( nodeVar7 + nodeVar8 ) * vec4<f32>( nodeConst1 ) ) );
+		nodeVar2 = ( nodeVar2 + ( nodeConst1 * 2.0 ) );
 		nodeVar6 = ( nodeVar6 + nodeVar5 );
 
 	}
+
 
 	// result
 

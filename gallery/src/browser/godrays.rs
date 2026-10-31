@@ -4,7 +4,7 @@
 //! ray-marches from the camera through the light's shadow box at half
 //! resolution, a two-pass bilateral blur smooths it, and depthAwareBlend
 //! mixes the blend color into the scene along depth-consistent offsets. Every
-//! stage runs the WGSL three.js r186 generates for the page (in `godrays/`).
+//! stage runs the WGSL three.js r187 generates for the page (in `godrays/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};
@@ -20,19 +20,21 @@ const CUBE: u32 = 2048;
 const LIGHT: [f64; 3] = [0., 50., 0.];
 const SHADOW_NEAR: f64 = 0.5;
 const SHADOW_FAR: f64 = 500.;
+const SHADOW_BIAS: f64 = -0.00001;
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("godrays/", $name, ".wgsl"))
     };
 }
-/// PointShadowNode's WebGPU cube faces: directions and ups.
+/// PointShadowNode's WebGPU cube faces ( CubeCamera's orientations ):
+/// directions and ups.
 const FACES: [([f64; 3], [f64; 3]); 6] = [
-    ([1., 0., 0.], [0., -1., 0.]),
-    ([-1., 0., 0.], [0., -1., 0.]),
-    ([0., -1., 0.], [0., 0., -1.]),
-    ([0., 1., 0.], [0., 0., 1.]),
-    ([0., 0., 1.], [0., -1., 0.]),
-    ([0., 0., -1.], [0., -1., 0.]),
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
 ];
 fn uniform(r: &Renderer, label: &str, size: u64) -> wgpu::Buffer {
     r.device.create_buffer(&wgpu::BufferDescriptor {
@@ -152,7 +154,10 @@ pub(super) struct Demo {
     )>,
     shadow_objects: Vec<[wgpu::BindGroup; 2]>,
     cube: wgpu::TextureView,
+    /// The pillars' and the base's render groups: their materials order the
+    /// shadow uniforms differently.
     standard_render: wgpu::Buffer,
+    base_render: wgpu::Buffer,
     basic_render: wgpu::Buffer,
     godrays_render: wgpu::Buffer,
     godrays_object: wgpu::Buffer,
@@ -394,6 +399,7 @@ impl Demo {
             shadow_objects,
             cube,
             standard_render: sized(r, "standard render", wgsl!("concrete_fs"), "renderStruct")?,
+            base_render: sized(r, "base render", wgsl!("base_fs"), "renderStruct")?,
             basic_render: sized(r, "basic render", wgsl!("backdrop_fs"), "renderStruct")?,
             godrays_render: uniform(r, "godrays render", 16),
             godrays_object: sized(r, "godrays object", wgsl!("godrays_fs"), "objectStruct")?,
@@ -517,14 +523,14 @@ impl Demo {
             ),
             (
                 Kind::Base,
-                wgsl!("standard_vs"),
+                wgsl!("base_vs"),
                 wgsl!("base_fs"),
                 true,
                 None,
             ),
             (
                 Kind::Sphere,
-                wgsl!("sphere_vs"),
+                wgsl!("backdrop_vs"),
                 wgsl!("backdrop_fs"),
                 false,
                 back,
@@ -537,11 +543,6 @@ impl Demo {
             } else {
                 vec![layout(0, 12)]
             };
-            let fs = if kind == Kind::Sphere {
-                wgsl!("sphere_fs")
-            } else {
-                fs
-            };
             let p = pipeline("godrays scene", vs, fs, &buffers, HALF, true, cull);
             let basic = matches!(kind, Kind::Backdrop | Kind::Sphere);
             let render = bind(
@@ -549,10 +550,10 @@ impl Demo {
                 p.get_bind_group_layout(0),
                 &[(
                     0,
-                    if basic {
-                        self.basic_render.as_entire_binding()
-                    } else {
-                        self.standard_render.as_entire_binding()
+                    match kind {
+                        Kind::Backdrop | Kind::Sphere => self.basic_render.as_entire_binding(),
+                        Kind::Base => self.base_render.as_entire_binding(),
+                        Kind::Pillars => self.standard_render.as_entire_binding(),
                     },
                 )],
             );
@@ -648,10 +649,10 @@ impl Demo {
                 r,
                 output.get_bind_group_layout(0),
                 &[
-                    (0, sampler(&self.linear)),
-                    (1, tex(&color)),
-                    (2, self.output_object.as_entire_binding()),
-                    (3, tex(&depth)),
+                    (0, self.output_object.as_entire_binding()),
+                    (1, tex(&depth)),
+                    (2, sampler(&self.linear)),
+                    (3, tex(&color)),
                     (4, sampler(&self.linear)),
                     (5, tex(rays)),
                 ],
@@ -723,31 +724,39 @@ impl Demo {
                 .write_buffer(buffer, 0, &pack(source, name, &values)?);
             Ok(())
         };
+        // The light, its shadow ( normal bias, far, near and bias for the
+        // range test, radius and map size, then PointShadowFilter's far,
+        // near and bias ), shadow intensity, cutoff distance and decay.
+        let standard = [
+            ("cameraProjectionMatrix", m4(projection)),
+            ("cameraViewMatrix", m4(view)),
+            ("nodeUniform10", ambient.clone()),
+            (
+                "nodeUniform11",
+                view.transform_point3(light).to_array().to_vec(),
+            ),
+            ("nodeUniform12", light_color),
+            ("nodeUniform13", m4(Matrix4::from_translation(-light))),
+            ("nodeUniform15", vec![0.]),
+            ("nodeUniform16", vec![SHADOW_FAR]),
+            ("nodeUniform17", vec![SHADOW_NEAR]),
+            ("nodeUniform18", vec![SHADOW_BIAS]),
+            ("nodeUniform19", vec![1.]),
+            ("nodeUniform20", vec![CUBE as f64; 2]),
+            ("nodeUniform21", vec![SHADOW_FAR]),
+            ("nodeUniform22", vec![SHADOW_NEAR]),
+            ("nodeUniform23", vec![SHADOW_BIAS]),
+            ("nodeUniform25", vec![1.]),
+            ("nodeUniform26", vec![0.]),
+            ("nodeUniform27", vec![2.]),
+        ];
         write(
             &self.standard_render,
             wgsl!("concrete_fs"),
             "renderStruct",
-            &[
-                ("cameraProjectionMatrix", m4(projection)),
-                ("cameraViewMatrix", m4(view)),
-                ("nodeUniform10", ambient.clone()),
-                (
-                    "nodeUniform11",
-                    view.transform_point3(light).to_array().to_vec(),
-                ),
-                ("nodeUniform12", light_color),
-                ("nodeUniform13", m4(Matrix4::from_translation(-light))),
-                ("nodeUniform15", vec![0.]),
-                ("nodeUniform16", vec![SHADOW_FAR]),
-                ("nodeUniform17", vec![SHADOW_NEAR]),
-                ("nodeUniform18", vec![-0.00001]),
-                ("nodeUniform20", vec![1.]),
-                ("nodeUniform21", vec![CUBE as f64; 2]),
-                ("nodeUniform22", vec![1.]),
-                ("nodeUniform23", vec![0.]),
-                ("nodeUniform24", vec![2.]),
-            ],
+            &standard,
         )?;
+        write(&self.base_render, wgsl!("base_fs"), "renderStruct", &standard)?;
         write(
             &self.basic_render,
             wgsl!("backdrop_fs"),
@@ -865,8 +874,8 @@ impl Demo {
             wgsl!("output_fs"),
             "objectStruct",
             &[
-                ("nodeUniform1", vec![near]),
-                ("nodeUniform2", vec![far]),
+                ("nodeUniform0", vec![near]),
+                ("nodeUniform1", vec![far]),
                 ("nodeUniform4", vec![edge_radius.round()]),
                 (
                     "nodeUniform5",

@@ -1,4 +1,4 @@
-//! The uniforms and bindings of the material shaders r186 generates for
+//! The uniforms and bindings of the material shaders r187 generates for
 //! webgpu_vxgi_sponza, per struct member: what each holds, as the
 //! reference page's draws show ( tools/vxgi_sponza tables, regenerated with
 //! the captured WGSL ).
@@ -72,9 +72,9 @@ pub(super) const PREPASS_TEXTURED: &[(&str, &str, V)] = &[
         V::Const(&[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]),
     ),
     ("objectStruct", "nodeUniform17", V::NormalScale),
-    ("objectStruct", "nodeUniform30", V::Unjittered),
+    ("renderStruct", "nodeUniform30", V::Unjittered),
     ("objectStruct", "nodeUniform31", V::Model),
-    ("objectStruct", "nodeUniform33", V::PreviousView),
+    ("renderStruct", "nodeUniform33", V::PreviousView),
     ("objectStruct", "nodeUniform34", V::Model),
 ];
 pub(super) const PREPASS_TEXTURED_TEXTURES: &[(&str, Role)] = &[
@@ -128,9 +128,9 @@ pub(super) const PREPASS_MASKED: &[(&str, &str, V)] = &[
         V::Const(&[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]),
     ),
     ("objectStruct", "nodeUniform18", V::NormalScale),
-    ("objectStruct", "nodeUniform31", V::Unjittered),
+    ("renderStruct", "nodeUniform31", V::Unjittered),
     ("objectStruct", "nodeUniform32", V::Model),
-    ("objectStruct", "nodeUniform34", V::PreviousView),
+    ("renderStruct", "nodeUniform34", V::PreviousView),
     ("objectStruct", "nodeUniform35", V::Model),
 ];
 pub(super) const PREPASS_MASKED_TEXTURES: &[(&str, Role)] = &[
@@ -167,9 +167,9 @@ pub(super) const PREPASS_BASE: &[(&str, &str, V)] = &[
     ("objectStruct", "nodeUniform8", V::Const(&[0.0, 0.0, 0.0])),
     ("objectStruct", "nodeUniform9", V::Const(&[1.0])),
     ("objectStruct", "nodeUniform11", V::Model),
-    ("objectStruct", "nodeUniform24", V::Unjittered),
+    ("renderStruct", "nodeUniform24", V::Unjittered),
     ("objectStruct", "nodeUniform25", V::Model),
-    ("objectStruct", "nodeUniform27", V::PreviousView),
+    ("renderStruct", "nodeUniform27", V::PreviousView),
     ("objectStruct", "nodeUniform28", V::Model),
 ];
 pub(super) const PREPASS_BASE_TEXTURES: &[(&str, Role)] = &[
@@ -193,9 +193,9 @@ pub(super) const PREPASS_SKY: &[(&str, &str, V)] = &[
     ("objectStruct", "nodeUniform9", V::Const(&[0.4])),
     ("objectStruct", "nodeUniform10", V::Const(&[1.0])),
     ("objectStruct", "nodeUniform12", V::NormalMatrix),
-    ("objectStruct", "nodeUniform13", V::Unjittered),
+    ("renderStruct", "nodeUniform13", V::Unjittered),
     ("objectStruct", "nodeUniform15", V::Model),
-    ("objectStruct", "nodeUniform17", V::PreviousView),
+    ("renderStruct", "nodeUniform17", V::PreviousView),
     ("objectStruct", "nodeUniform18", V::Model),
     ("objectStruct", "nodeUniform19", V::SunDirection),
     ("objectStruct", "nodeUniform20", V::Const(&[2.0])),

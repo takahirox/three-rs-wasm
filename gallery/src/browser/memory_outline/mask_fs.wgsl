@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -37,7 +41,6 @@ var<private> nodeVar0 : f32;
 var<private> nodeVar1 : f32;
 var<private> nodeVar2 : vec2<u32>;
 var<private> Output : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
 
 // codes
 fn tsl_clampWrapping_float( coord: f32 ) -> f32 { return clamp( coord, 0.0, 1.0 ); }
@@ -49,6 +52,8 @@ fn tsl_coord_clampS_clampT_2d( coord : vec2f ) -> vec2f {
 	);
 
 }
+
+
 
 @fragment
 fn main( @location( 0 ) v_positionView : vec3<f32>,
@@ -73,12 +78,12 @@ fn main( @location( 0 ) v_positionView : vec3<f32>,
 	DiffuseColor = vec4<f32>( vec3<f32>( 0.0, nodeVar0, 1.0 ), 1.0 );
 	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform7 );
 	DiffuseColor.w = 1.0;
-	nodeVar3 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	Output = nodeVar3;
+	let nodeConst0 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst0;
 
 	// result
 
-	output.color = nodeVar3;
+	output.color = nodeConst0;
 
 	return output;
 

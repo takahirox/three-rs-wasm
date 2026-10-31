@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 enable subgroups;
@@ -7,7 +7,7 @@ enable subgroups;
 var<private> instanceIndex : u32;
 
 // locals
-var<workgroup> WorkgroupArray_4108: array< u32, 8 >;
+var<workgroup> WorkgroupArray_1566: array< u32, 8 >;
 
 // structs
 
@@ -47,12 +47,10 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 	var block : u32;
 	var nodeVar0 : u32;
 	var nodeVar1 : u32;
-	var nodeVar2 : u32;
-	var nodeVar3 : u32;
 	var blockLimiter : u32;
 	var localThreadOffset : u32;
 	var delta : u32;
-	var nodeVar4 : u32;
+	var nodeVar2 : u32;
 
 
 	// system
@@ -65,17 +63,17 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 
 	total = 0u;
 	block = 0u;
-	nodeVar1 = ( workgroupId.x * 2048u );
-	nodeVar3 = ( 32u * 4u );
-	blockLimiter = ( select( 2048u, select( 0u, ( 128u - nodeVar1 ), ( 128u > nodeVar1 ) ), ( ( nodeVar1 + 2048u ) > 128u ) ) / nodeVar3 );
+	let nodeConst0 = ( workgroupId.x * 2048u );
+	let nodeConst1 = ( 32u * 4u );
+	blockLimiter = ( select( 2048u, select( 0u, ( 128u - nodeConst0 ), ( 128u > nodeConst0 ) ), ( ( nodeConst0 + 2048u ) > 128u ) ) / nodeConst1 );
 
 	while ( ( block < blockLimiter ) ) {
 
 		localThreadOffset = 0u;
 
-		while ( ( f32( localThreadOffset ) < 4.0 ) ) {
+		while ( ( localThreadOffset < 4u ) ) {
 
-			total = ( total + WorkgroupSums_Left.value[ ( ( nodeVar1 + ( ( block * nodeVar3 ) + ( invocationLocalIndex * 4u ) ) ) + localThreadOffset ) ] );
+			total = ( total + WorkgroupSums_Left.value[ ( ( nodeConst0 + ( ( block * nodeConst1 ) + ( invocationLocalIndex * 4u ) ) ) + localThreadOffset ) ] );
 			localThreadOffset = ( localThreadOffset + 1u );
 
 		}
@@ -90,22 +88,22 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 	while ( ( f32( delta ) > 1.0 ) ) {
 
 
-		if ( ( f32( invocationSubgroupIndex ) == 0.0 ) ) {
+		if ( ( invocationSubgroupIndex == 0u ) ) {
 
-			WorkgroupArray_4108[ ( invocationLocalIndex / subgroupSize ) ] = total;
+			WorkgroupArray_1566[ ( invocationLocalIndex / subgroupSize ) ] = total;
 			
 
 		}
 
 		workgroupBarrier();
-		total = select( 0u, WorkgroupArray_4108[ invocationLocalIndex ], ( invocationLocalIndex < delta ) );
+		total = select( 0u, WorkgroupArray_1566[ invocationLocalIndex ], ( invocationLocalIndex < delta ) );
 		total = subgroupAdd( total );
 		delta = ( delta / subgroupSize );
 
 	}
 
 
-	if ( ( f32( invocationLocalIndex ) == 0.0 ) ) {
+	if ( ( invocationLocalIndex == 0u ) ) {
 
 		Current_Left.value[ workgroupId.x ] = total;
 		

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -17,29 +17,29 @@ var<private> instanceIndex : u32;
 @binding( 7 ) @group( 0 ) var nodeUniform10 : texture_storage_3d<rgba16float, write>;
 @binding( 8 ) @group( 0 ) var nodeUniform11 : texture_storage_3d<rgba16float, write>;
 
-struct NodeBuffer_15215Struct {
+struct nodeUniform1Struct {
 	value : array< u32 >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read> NodeBuffer_15215 : NodeBuffer_15215Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_15216Struct {
+struct nodeUniform2Struct {
 	value : array< u32 >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read> NodeBuffer_15216 : NodeBuffer_15216Struct;
+var<storage, read> nodeUniform2 : nodeUniform2Struct;
 
-struct NodeBuffer_9863Struct {
+struct nodeUniform3Struct {
 	value : array< vec4<f32> >
 };
 @binding( 3 ) @group( 0 )
-var<storage, read> NodeBuffer_9863 : NodeBuffer_9863Struct;
+var<storage, read> nodeUniform3 : nodeUniform3Struct;
 
-struct NodeBuffer_1063Struct {
+struct nodeUniform6Struct {
 	value : array< vec4<f32>, 32 >
 };
 @binding( 4 ) @group( 0 )
-var<uniform> NodeBuffer_1063 : NodeBuffer_1063Struct;
+var<uniform> nodeUniform6 : nodeUniform6Struct;
 
 struct objectStruct {
 	nodeUniform0 : u32,
@@ -65,7 +65,6 @@ var<private> nodeVar8 : f32;
 var<private> nodeVar9 : f32;
 var<private> nodeVar10 : f32;
 var<private> nodeVar11 : f32;
-var<private> nodeVar12 : f32;
 
 // codes
 
@@ -95,17 +94,17 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	if ( ( instanceIndex < object.nodeUniform0 ) ) {
 
 		let nodeConst0 = vec3<u32>( ( instanceIndex % 144u ), ( ( instanceIndex / 144u ) % 64u ), ( instanceIndex / 9216u ) );
-		let nodeConst1 = NodeBuffer_15215.value[ instanceIndex ];
+		let nodeConst1 = nodeUniform1.value[ instanceIndex ];
 		nodeVar0 = vec4<f32>( 0.0, 0.0, 0.0, 0.0 );
 
 		if ( ( nodeConst1 != 0u ) ) {
 
-			let nodeConst2 = ( ( NodeBuffer_15216.value[ instanceIndex ] - 1u ) * 5u );
-			let nodeConst3 = NodeBuffer_9863.value[ nodeConst2 ].xyz;
-			let nodeConst4 = NodeBuffer_9863.value[ ( nodeConst2 + 1u ) ].xyz;
-			let nodeConst5 = NodeBuffer_9863.value[ ( nodeConst2 + 2u ) ].xyz;
-			let nodeConst6 = NodeBuffer_9863.value[ ( nodeConst2 + 3u ) ];
-			let nodeConst7 = NodeBuffer_9863.value[ ( nodeConst2 + 4u ) ].xyz;
+			let nodeConst2 = ( ( nodeUniform2.value[ instanceIndex ] - 1u ) * 5u );
+			let nodeConst3 = nodeUniform3.value[ nodeConst2 ].xyz;
+			let nodeConst4 = nodeUniform3.value[ ( nodeConst2 + 1u ) ].xyz;
+			let nodeConst5 = nodeUniform3.value[ ( nodeConst2 + 2u ) ].xyz;
+			let nodeConst6 = nodeUniform3.value[ ( nodeConst2 + 3u ) ];
+			let nodeConst7 = nodeUniform3.value[ ( nodeConst2 + 4u ) ].xyz;
 			nodeVar1 = normalize( cross( ( nodeConst4 - nodeConst3 ), ( nodeConst5 - nodeConst3 ) ) );
 
 			if ( ( nodeConst6.w == 1.0 ) ) {
@@ -121,10 +120,10 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 			nodeVar1 = nodeVar2;
 			let nodeConst8 = ( object.nodeUniform4 + ( ( vec3<f32>( nodeConst0 ) + vec3<f32>( 0.5 ) ) * vec3<f32>( object.nodeUniform5 ) ) );
 			nodeVar3 = vec3<f32>( 0.0, 0.0, 0.0 );
-			let nodeConst9 = NodeBuffer_1063.value[ 0u ];
-			let nodeConst10 = NodeBuffer_1063.value[ 1u ];
-			let nodeConst11 = NodeBuffer_1063.value[ 2u ];
-			let nodeConst12 = NodeBuffer_1063.value[ 3u ];
+			let nodeConst9 = nodeUniform6.value[ 0u ];
+			let nodeConst10 = nodeUniform6.value[ 1u ];
+			let nodeConst11 = nodeUniform6.value[ 2u ];
+			let nodeConst12 = nodeUniform6.value[ 3u ];
 			nodeVar4 = vec3<f32>( 0.0, 0.0, 0.0 );
 			nodeVar5 = 10000000000.0;
 			nodeVar6 = 1.0;
@@ -176,8 +175,8 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 			}
 
-			nodeVar12 = ( f32( countOneBits( nodeConst1 ) ) / 8.0 );
-			nodeVar0 = vec4<f32>( ( ( ( ( nodeConst6.xyz * nodeVar3 ) / vec3<f32>( 3.141592653589793 ) ) + nodeConst7 ) * vec3<f32>( nodeVar12 ) ), nodeVar12 );
+			let nodeConst18 = ( f32( countOneBits( nodeConst1 ) ) / 8.0 );
+			nodeVar0 = vec4<f32>( ( ( ( ( nodeConst6.xyz * nodeVar3 ) / vec3<f32>( 3.141592653589793 ) ) + nodeConst7 ) * vec3<f32>( nodeConst18 ) ), nodeConst18 );
 			
 
 		}

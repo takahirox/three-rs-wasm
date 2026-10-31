@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -12,17 +12,23 @@ var<private> instanceIndex : u32;
 
 
 // uniforms
-@binding( 2 ) @group( 0 ) var nodeUniform2 : texture_storage_3d<rgba8unorm, write>;
+@binding( 3 ) @group( 0 ) var nodeUniform3 : texture_storage_3d<rgba8unorm, write>;
 
-struct NodeBuffer_9884Struct {
+struct nodeUniform1Struct {
 	value : array< u32 >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read> NodeBuffer_9884 : NodeBuffer_9884Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
+
+struct nodeUniform2Struct {
+	value : array< u32 >
+};
+@binding( 2 ) @group( 0 )
+var<storage, read> nodeUniform2 : nodeUniform2Struct;
 
 struct objectStruct {
 	nodeUniform0 : u32,
-	nodeUniform3 : u32
+	nodeUniform4 : u32
 };
 @binding( 0 ) @group( 0 )
 var<uniform> object : objectStruct;
@@ -63,13 +69,13 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 
 	// flow -> VXGI.Resolve
-	if ( instanceIndex >= object.nodeUniform3 ) { return; }
+	if ( instanceIndex >= object.nodeUniform4 ) { return; }
 
 
 	if ( ( instanceIndex < object.nodeUniform0 ) ) {
 
 		let nodeConst0 = vec3<u32>( ( instanceIndex % 144u ), ( ( instanceIndex / 144u ) % 64u ), ( instanceIndex / 9216u ) );
-		let nodeConst1 = NodeBuffer_9884.value[ instanceIndex ];
+		let nodeConst1 = ( nodeUniform1.value[ instanceIndex ] | ( ( nodeUniform2.value[ ( instanceIndex >> 2u ) ] >> ( ( instanceIndex & 3u ) * 8u ) ) & 255u ) );
 
 		if ( ( ( nodeConst1 & 3u ) != 0u ) ) {
 
@@ -202,7 +208,7 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 		}
 
-		textureStore( nodeUniform2, nodeConst0, vec4<f32>( ( ( ( nodeVar0 + nodeVar1 ) + nodeVar2 ) + nodeVar3 ), ( ( ( nodeVar4 + nodeVar5 ) + nodeVar6 ) + nodeVar7 ), ( ( ( nodeVar8 + nodeVar9 ) + nodeVar10 ) + nodeVar11 ), ( f32( countOneBits( nodeConst1 ) ) / 8.0 ) ) );
+		textureStore( nodeUniform3, nodeConst0, vec4<f32>( ( ( ( nodeVar0 + nodeVar1 ) + nodeVar2 ) + nodeVar3 ), ( ( ( nodeVar4 + nodeVar5 ) + nodeVar6 ) + nodeVar7 ), ( ( ( nodeVar8 + nodeVar9 ) + nodeVar10 ) + nodeVar11 ), ( f32( countOneBits( nodeConst1 ) ) / 8.0 ) ) );
 		
 
 	}

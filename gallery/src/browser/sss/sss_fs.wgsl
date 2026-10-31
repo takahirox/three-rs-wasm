@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -43,19 +46,16 @@ var<private> nodeVar1 : vec2<u32>;
 var<private> nodeVar2 : f32;
 var<private> rayStartPosition : vec3<f32>;
 var<private> nodeVar3 : vec2<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec2<f32>;
-var<private> nodeVar6 : vec2<f32>;
+var<private> nodeVar4 : vec2<f32>;
+var<private> nodeVar5 : f32;
+var<private> nodeVar6 : f32;
 var<private> nodeVar7 : f32;
 var<private> nodeVar8 : f32;
 var<private> nodeVar9 : f32;
 var<private> nodeVar10 : f32;
-var<private> nodeVar11 : f32;
+var<private> nodeVar11 : vec2<f32>;
 var<private> nodeVar12 : f32;
-var<private> nodeVar13 : vec2<f32>;
-var<private> nodeVar14 : f32;
-var<private> nodeVar15 : f32;
-var<private> nodeVar16 : f32;
+var<private> nodeVar13 : f32;
 
 // codes
 fn tsl_clampWrapping_float( coord: f32 ) -> f32 { return clamp( coord, 0.0, 1.0 ); }
@@ -68,7 +68,19 @@ fn tsl_coord_clampS_clampT_2d( coord : vec2f ) -> vec2f {
 
 }
 
-fn interleavedGradientNoise ( position : vec2<f32> ) -> f32 {
+fn fn22 ( viewPosition : vec3<f32>, projectionMatrix : mat4x4<f32> ) -> vec2<f32> {
+
+	var nodeVar0 : vec2<f32>;
+
+	let nodeConst0 = ( projectionMatrix * vec4<f32>( viewPosition, 1.0 ) );
+	nodeVar0 = ( ( ( nodeConst0.xy / vec2<f32>( nodeConst0.w ) ) * vec2<f32>( 0.5 ) ) + vec2<f32>( 0.5 ) );
+
+	return vec2<f32>( nodeVar0.x, ( 1.0 - nodeVar0.y ) );
+
+}
+
+
+fn fn24 ( position : vec2<f32> ) -> f32 {
 
 	
 
@@ -79,6 +91,16 @@ fn interleavedGradientNoise ( position : vec2<f32> ) -> f32 {
 
 
 fn tsl_mod_float( x : f32, y : f32 ) -> f32 { return x - y * floor( x / y ); }
+fn fn0 ( uv : vec2<f32> ) -> f32 {
+
+	
+
+
+	return fract( ( sin( tsl_mod_float( dot( uv, vec2<f32>( 12.9898, 78.233 ) ), 3.141592653589793 ) ) * 43758.5453 ) );
+
+}
+
+
 
 
 @fragment
@@ -99,42 +121,41 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32>,
 
 	}
 
-	rayStartPosition = ( ( object.nodeUniform1 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( nodeVarying0.x, ( 1.0 - nodeVarying0.y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar2 ), 1.0 ) ).xyz / vec3<f32>( ( object.nodeUniform1 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( nodeVarying0.x, ( 1.0 - nodeVarying0.y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar2 ), 1.0 ) ).w ) );
+	let nodeConst0 = ( object.nodeUniform1 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( nodeVarying0.x, ( 1.0 - nodeVarying0.y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar2 ), 1.0 ) );
+	rayStartPosition = ( nodeConst0.xyz / vec3<f32>( nodeConst0.w ) );
 	let rayDirection = normalize( ( object.nodeUniform2 * vec4<f32>( ( render.nodeUniform3 - render.nodeUniform4 ), 0.0 ) ).xyz );
 	let rayEndPosition = ( rayStartPosition + ( rayDirection * vec3<f32>( object.nodeUniform5 ) ) );
 	nodeVar3 = fragCoord.xy;
-	nodeVar4 = ( object.nodeUniform6 * vec4<f32>( rayEndPosition, 1.0 ) );
-	nodeVar5 = ( ( ( nodeVar4.xy / vec2<f32>( nodeVar4.w ) ) * vec2<f32>( 0.5 ) ) + vec2<f32>( 0.5 ) );
-	nodeVar6 = ( vec2<f32>( nodeVar5.x, ( 1.0 - nodeVar5.y ) ) * object.nodeUniform7 );
-	nodeVar7 = length( ( nodeVar6 - nodeVar3 ) );
-	nodeVar8 = ( nodeVar6.x - nodeVar3.x );
-	nodeVar9 = ( nodeVar6.y - nodeVar3.y );
-	let nodeConst0 = i32( ( max( abs( nodeVar8 ), abs( nodeVar9 ) ) * clamp( object.nodeUniform8, 0.0, 1.0 ) ) );
-	nodeVar10 = ( nodeVar8 / f32( nodeConst0 ) );
-	nodeVar11 = ( nodeVar9 / f32( nodeConst0 ) );
-	let offset = ( fract( ( interleavedGradientNoise( fragCoord.xy ) + object.nodeUniform9 ) ) + fract( ( sin( tsl_mod_float( dot( ( nodeVarying0 + vec2<f32>( 12001.0 ) ), vec2<f32>( 12.9898, 78.233 ) ), 3.141592653589793 ) ) * 43758.5453 ) ) );
-	nodeVar12 = 0.0;
+	nodeVar4 = ( fn22( rayEndPosition, object.nodeUniform6 ) * object.nodeUniform7 );
+	nodeVar5 = length( ( nodeVar4 - nodeVar3 ) );
+	nodeVar6 = ( nodeVar4.x - nodeVar3.x );
+	nodeVar7 = ( nodeVar4.y - nodeVar3.y );
+	let nodeConst1 = i32( ( max( abs( nodeVar6 ), abs( nodeVar7 ) ) * clamp( object.nodeUniform8, 0.0, 1.0 ) ) );
+	nodeVar8 = ( nodeVar6 / f32( nodeConst1 ) );
+	nodeVar9 = ( nodeVar7 / f32( nodeConst1 ) );
+	let offset = ( fract( ( fn24( fragCoord.xy ) + object.nodeUniform9 ) ) + fn0( ( nodeVarying0 + vec2<f32>( 12001.0 ) ) ) );
+	nodeVar10 = 0.0;
 
-	for ( var i : i32 = 0; i < nodeConst0; i ++ ) {
+	for ( var i : i32 = 0; i < nodeConst1; i ++ ) {
 
-		nodeVar13 = vec2<f32>( ( nodeVar3.x + ( nodeVar10 * ( f32( i ) + offset ) ) ), ( nodeVar3.y + ( nodeVar11 * ( f32( i ) + offset ) ) ) );
+		nodeVar11 = vec2<f32>( ( nodeVar3.x + ( nodeVar8 * ( f32( i ) + offset ) ) ), ( nodeVar3.y + ( nodeVar9 * ( f32( i ) + offset ) ) ) );
 
-		if ( ( ( ( ( nodeVar13.x < 0.0 ) || ( nodeVar13.x > object.nodeUniform7.x ) ) || ( nodeVar13.y < 0.0 ) ) || ( nodeVar13.y > object.nodeUniform7.y ) ) ) {
+		if ( ( ( ( ( nodeVar11.x < 0.0 ) || ( nodeVar11.x > object.nodeUniform7.x ) ) || ( nodeVar11.y < 0.0 ) ) || ( nodeVar11.y > object.nodeUniform7.y ) ) ) {
 
 			break;
 			
 
 		}
 
-		nodeVar14 = textureLoad( nodeUniform0, vec2<u32>( clamp( floor( tsl_coord_clampS_clampT_2d( ( nodeVar13 / object.nodeUniform7 ) ) * vec2<f32>( nodeVar1 ) ), vec2<f32>( 0 ), vec2<f32>( nodeVar1 - vec2<u32>( 1, 1 ) ) ) ), u32( 0 ) );
-		let nodeConst1 = nodeVar14;
-		let fragmentViewZ = ( ( object.nodeUniform10 * object.nodeUniform11 ) / ( ( ( object.nodeUniform11 - object.nodeUniform10 ) * nodeConst1 ) - object.nodeUniform11 ) );
-		nodeVar15 = ( length( ( nodeVar13 - nodeVar3 ) ) / nodeVar7 );
-		nodeVar16 = ( - ( mix( rayStartPosition, rayEndPosition, nodeVar15 ).z - fragmentViewZ ) );
+		nodeVar12 = textureLoad( nodeUniform0, vec2<u32>( clamp( floor( tsl_coord_clampS_clampT_2d( ( nodeVar11 / object.nodeUniform7 ) ) * vec2<f32>( nodeVar1 ) ), vec2<f32>( 0 ), vec2<f32>( nodeVar1 - vec2<u32>( 1, 1 ) ) ) ), u32( 0 ) );
+		let nodeConst2 = nodeVar12;
+		let fragmentViewZ = ( ( object.nodeUniform10 * object.nodeUniform11 ) / ( ( ( object.nodeUniform11 - object.nodeUniform10 ) * nodeConst2 ) - object.nodeUniform11 ) );
+		nodeVar13 = ( length( ( nodeVar11 - nodeVar3 ) ) / nodeVar5 );
+		let nodeConst3 = ( - ( mix( rayStartPosition, rayEndPosition, nodeVar13 ).z - fragmentViewZ ) );
 
-		if ( ( ( nodeVar16 > 0.0 ) && ( nodeVar16 < object.nodeUniform12 ) ) ) {
+		if ( ( ( nodeConst3 > 0.0 ) && ( nodeConst3 < object.nodeUniform12 ) ) ) {
 
-			nodeVar12 = object.nodeUniform13;
+			nodeVar10 = object.nodeUniform13;
 			break;
 			
 
@@ -146,7 +167,7 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32>,
 
 	// result
 
-	output.color = ( 1.0 - nodeVar12 );
+	output.color = ( 1.0 - nodeVar10 );
 
 	return output;
 

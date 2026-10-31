@@ -35,9 +35,12 @@ if(id==='webgpu_lightprobes_sponza')source='window.fixtureAwait=new Promise(r=>w
 const steps='for(let k=0;k<Math.max(0,Math.round(window.fixtureStep));k++)';
 source=source.replace('scene = new THREE.Scene();','scene = window.fixtureScene = new THREE.Scene();');
 const patchAddon=async(file,edit)=>{const base=location.origin+'/.cache/three-r187/examples/jsm/postprocessing/';let code=await(await fetch(base+file)).text();code=edit(code.replace(/from '(\.\.?\/[^']+)'/g,(m,p)=>"from '"+new URL(p,base).href+"'").replaceAll('Math.random()','globalThis.fixtureRandom()'));return URL.createObjectURL(new Blob([code],{type:'text/javascript'}));};
-// bounce's advanceTime simulates performance.now()'s advance when a frame's delta is 0 ( the
-// loading frame, and every capture of a frame time again ): the ballpool's clock is the example's.
-if(id==='webgpu_postprocessing_ssgi_ballpool')performance.now=()=>window.fixtureSeconds*1000;
+// The ballpool's RapierPhysics: its setInterval on the example clock ( an integer delay, as
+// WebIDL's long ) with its Timer on the interval's time, and the first capture waiting for init().
+if(id==='webgpu_postprocessing_ssgi_ballpool'){window.fixtureInterval=(fn,ms)=>{ms=Math.max(0,Math.trunc(ms));const timer={at:(window.fixtureNow??0)+ms,fn:()=>{timer.at=window.fixtureNow+ms;fixtureTimers.push(timer);fn();}};fixtureTimers.push(timer);return timer;};
+const base=location.origin+'/.cache/three-r187/examples/jsm/physics/';let code=await(await fetch(base+'RapierPhysics.js')).text();
+code=code.replace('setInterval( step, 1000 / frameRate );','window.fixtureInterval( step, 1000 / frameRate );').replace('const timer = new Timer();','const timer = new Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureNow );');
+source='window.fixtureAwait=new Promise(r=>window.fixturePhysics=r);\n'+source.replace("'three/addons/physics/RapierPhysics.js'","'data:text/javascript,"+encodeURIComponent(code).replaceAll("'","%27")+"'").replace("renderer.domElement.addEventListener( 'pointerdown', onPointerDown );","renderer.domElement.addEventListener( 'pointerdown', onPointerDown );setTimeout(window.fixturePhysics);");}
 // The ballpool's pointer stops moving 50 ms after its last move: on the example clock.
 if(id==='webgpu_postprocessing_ssgi_ballpool')source=source.replace('clearTimeout( mouseStopTimer );','window.fixtureClearTimeout( mouseStopTimer );').replace('mouseStopTimer = setTimeout(','mouseStopTimer = window.fixtureTimeout(');
 // The plane leaves the scene once the decoder has flushed: the end state captures after it.
@@ -77,14 +80,17 @@ window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixtur
 // TSL frameId advances on every animation frame of the renderer's own loop, so it depends on the
 // display's frame cadence: the fixture stops that loop (its frames are rendered on the example clock)
 // and restarts the count when the page is ready.
-if(id==='webgpu_volume_caustics'){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=0;}
+if(id==='webgpu_volume_caustics'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
 // The fire's volume offsets its ray march by frameId: the count restarts when the page is ready.
-if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=0;}
+if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
 // SSGINode rotates its slices by frameId % 6 and offsets its steps by frameId % 4 (SSSNode its rays by frameId % 4): the count restarts at a
 // multiple of 12 past every frame the loading loop rendered (a restart at 0 would repeat the loading frame's id).
 if(['webgpu_postprocessing_ssgi','webgpu_postprocessing_ssgi_ballpool','webgpu_postprocessing_sss','webgpu_postprocessing_ao'].includes(id)){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=12000;}
+// r187's renderer.render() restarts the animation loop: keep it stopped so that frameId counts the fixture's frames only.
+if(id==='webgpu_postprocessing_sss'||id==='webgpu_postprocessing_ssgi_ballpool')reference.renderer._animation.start=()=>{};
 // VXGINode rotates its cones by frameId % 64: the count restarts at a multiple of 64 past the loading frames.
-if(id==='webgpu_vxgi'||id==='webgpu_vxgi_sponza'){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=12800;}
+// r187's render() and compute() restart the stopped loop, whose ticks would advance frameId between fixture frames: it stays stopped.
+if(id==='webgpu_vxgi'||id==='webgpu_vxgi_sponza'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=12800;}
 // The SSR denoise chain counts its noise and jitter from the first loading frame and keeps
 // the loading frames' histories: the fixture stops that loop, restarts the counts, resizes the
 // histories so that the next frame reseeds them, as the page's first frame does, and renders

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 enable subgroups;
@@ -7,7 +7,7 @@ enable subgroups;
 var<private> instanceIndex : u32;
 
 // locals
-var<workgroup> WorkgroupArray_2797: array< u32, 256 >;
+var<workgroup> WorkgroupArray_1610: array< u32, 256 >;
 
 // structs
 
@@ -24,7 +24,7 @@ var<storage, read_write> Current_Right : Current_RightStruct;
 
 
 // codes
-fn pow2Ceil ( x : u32 ) -> u32 {
+fn fn130 ( x : u32 ) -> u32 {
 
 	var val : u32;
 
@@ -71,24 +71,24 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 	// code
 
 	k = instanceIndex;
-	WorkgroupArray_2797[ invocationLocalIndex ] = 0u;
+	WorkgroupArray_1610[ invocationLocalIndex ] = 0u;
 
 	while ( ( k < 262144u ) ) {
 
-		WorkgroupArray_2797[ invocationLocalIndex ] = ( WorkgroupArray_2797[ invocationLocalIndex ] + Current_Right.value[ k ] );
+		WorkgroupArray_1610[ invocationLocalIndex ] = ( WorkgroupArray_1610[ invocationLocalIndex ] + Current_Right.value[ k ] );
 		k = ( k + 65536u );
 
 	}
 
 	workgroupBarrier();
-	k = ( pow2Ceil( 256u ) / 2u );
+	k = ( fn130( 256u ) / 2u );
 
-	while ( ( f32( k ) > 0.0 ) ) {
+	while ( ( k > 0u ) ) {
 
 
-		if ( ( ( invocationLocalIndex < k ) && ( f32( ( invocationLocalIndex + k ) ) < 256.0 ) ) ) {
+		if ( ( ( invocationLocalIndex < k ) && ( ( invocationLocalIndex + k ) < 256u ) ) ) {
 
-			WorkgroupArray_2797[ invocationLocalIndex ] = ( WorkgroupArray_2797[ invocationLocalIndex ] + WorkgroupArray_2797[ ( invocationLocalIndex + k ) ] );
+			WorkgroupArray_1610[ invocationLocalIndex ] = ( WorkgroupArray_1610[ invocationLocalIndex ] + WorkgroupArray_1610[ ( invocationLocalIndex + k ) ] );
 			
 
 		}
@@ -101,7 +101,7 @@ fn main( @builtin( local_invocation_index ) invocationLocalIndex : u32,
 
 	if ( ( invocationLocalIndex == 0u ) ) {
 
-		Current_Right.value[ workgroupId.x ] = WorkgroupArray_2797[ 0u ];
+		Current_Right.value[ workgroupId.x ] = WorkgroupArray_1610[ 0u ];
 		
 
 	}

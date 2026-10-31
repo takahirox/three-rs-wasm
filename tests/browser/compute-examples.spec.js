@@ -97,7 +97,7 @@ const cases={
  // VXGI over Sponza: each capture renders 64 frames, a full cycle of the cones' frameId rotation.
  webgpu_vxgi_sponza:{serialVoxels:true,frames:64,times:[0],parameters:[[0,'AO',2],[0,'GI',3],[0,'Direct',1],[0,'Combined',0],[14,false,0],[14,true,1],[11,0,0],[11,1.5,1.5],[3,6,6],[3,3,3],[12,0,0],[12,2,2],[12,1,1],[15,45,45]],restore:[[15,135,135]],at:0},
  webgpu_lightprobes:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
- webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[2,true,1],[1,4,4],[2,false,0],[1,6,6]],restore:[[1,6,6]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
+ webgpu_lightprobes_complex:{antialias:true,rebuilds:true,times:[0],parameters:[[0,false,0],[0,true,1],[4,true,1],[1,4,4],[4,false,0],[2,1,1],[3,60,60],[1,6,6],[2,3,3],[3,30,30]],restore:[[1,6,6],[2,3,3],[3,30,30]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // The original compiles its pipelines asynchronously and presents stale frames until they are ready.
  // During an orbit drag the original's pointer ray reads the camera matrix OrbitControls has
  // partly updated; the drag and resize captures differ by up to 0.7% of pixels.
@@ -142,8 +142,9 @@ const cases={
 const official=kind=>kind;
 // The original streams the 10,000 instance matrices and colors each frame.
 // The skinning instances write each frame's bone and instance matrices to storage buffers,
-// as the original's needsUpdate storage attributes are.
-const streams=['webgpu_skinning_instancing_individual'];
+// as the original's needsUpdate storage attributes are. The ballpool's RapierPhysics writes the
+// instance matrices each step, bound as instanced attributes with the previous frame's ( r187 ).
+const streams=['webgpu_skinning_instancing_individual','webgpu_postprocessing_ssgi_ballpool'];
 // Perform one scripted input step; returns its capture time (or null).
 const act=async(page,runtime,step)=>{const [action,...args]=step;const time=args.pop();const button=i=>['left','middle','right'][i];
  if(action==='drag'){const [x0,y0,x1,y1,b]=args;await page.mouse.move(x0,y0);await page.mouse.down({button:button(b)});await page.mouse.move(x1,y1,{steps:5});await page.mouse.up({button:button(b)});}
@@ -178,9 +179,10 @@ for(const [kind,spec] of Object.entries(cases))for(const samples of spec.antiali
  // spec.serialVoxels: VXGIVolume's voxelize kernel stores each voxel's triangle id
  // from every covering triangle without ordering, so which one wins (its albedo and
  // normal) changes between runs of the original itself. Both runtimes' kernels keep
- // the largest id ( atomicMax ) instead, at their shader-module creation, so the
+ // the largest id ( atomicMax ) instead, at their shader-module creation ( r187 names
+ // the buffer nodeUniformN, r186 NodeBuffer_N ), so the
  // comparison checks everything else exactly (docs/sponza-examples.md).
- if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/(NodeBuffer_\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
+ if(spec.serialVoxels)await page.addInitScript(()=>{const create=GPUDevice.prototype.createShaderModule;GPUDevice.prototype.createShaderModule=function(d){let c=d.code;const m=c.match(/((?:NodeBuffer_|nodeUniform)\d+)\.value\[ (\w+) \] = \( instanceIndex \+ 1u \);/);if(m&&c.includes('atomicOr(')){c=c.replace(m[0],`atomicMax( &${m[1]}.value[ ${m[2]} ], instanceIndex + 1u );`).replace(`struct ${m[1]}Struct {\n\tvalue : array< u32 >`,`struct ${m[1]}Struct {\n\tvalue : array< atomic<u32> >`);}return create.call(this,{...d,code:c});};});
  for(const runtime of ['reference','rust']){
   await page.setViewportSize({width:512,height:512});await page.mouse.move(511,0);
   await page.goto(runtime!=='rust'?`/reference/three-js/compute-examples.html?id=${official(kind)}&samples=${samples}`:`/web/examples/${official(kind)}.html?still=1`);

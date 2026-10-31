@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -19,15 +23,12 @@ var<private> output : OutputStruct;
 // vars
 var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : vec4<f32>;
-var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec4<f32>;
 
 // codes
-fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn4 ( color : vec4<f32> ) -> vec4<f32> {
 
 	var nodeVar0 : vec4<f32>;
+
 
 	if ( ( color.w == 0.0 ) ) {
 
@@ -39,25 +40,33 @@ fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
 
 	}
 
+
 	return nodeVar0;
 
 }
 
-fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
+
+fn fn2 ( color : vec3<f32> ) -> vec3<f32> {
 
 	
+
 
 	return mix( ( ( pow( color, vec3<f32>( 0.41666 ) ) * vec3<f32>( 1.055 ) ) - vec3<f32>( 0.055 ) ), ( color * vec3<f32>( 12.92 ) ), vec3<f32>( ( color <= vec3<f32>( 0.0031308 ) ) ) );
 
 }
 
-fn fn0 ( color : vec4<f32> ) -> vec4<f32> {
+
+fn fn3 ( color : vec4<f32> ) -> vec4<f32> {
 
 	
+
 
 	return vec4<f32>( ( color.xyz * vec3<f32>( color.w ) ), color.w );
 
 }
+
+
+
 
 @fragment
 fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
@@ -66,15 +75,14 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
-	nodeVar1 = nodeVar0;
-	nodeVar2 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
-	nodeVar3 = nodeVar2;
-	nodeVar4 = ( nodeVar1 + nodeVar3 );
-	nodeVar5 = fn1( vec4<f32>( nodeVar4.xyz, clamp( nodeVar4.w, 0.0, 1.0 ) ) );
+	nodeVar1 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar1;
+	let nodeConst1 = ( nodeVar0 + nodeConst0 );
+	let nodeConst2 = fn4( vec4<f32>( nodeConst1.xyz, clamp( nodeConst1.w, 0.0, 1.0 ) ) );
 
 	// result
 
-	output.color = fn0( vec4<f32>( sRGBTransferOETF( nodeVar5.xyz ), nodeVar5.w ) );
+	output.color = fn3( vec4<f32>( fn2( nodeConst2.xyz ), nodeConst2.w ) );
 
 	return output;
 

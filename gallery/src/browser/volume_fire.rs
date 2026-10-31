@@ -10,8 +10,11 @@
 //! the fire's point light, and the caster's colorless pass ), the half
 //! resolution ray-marched volume, its Gaussian denoise, BloomNode ( a high
 //! pass, five H / V levels and the composite ) and the output with ACES Filmic
-//! tone mapping. Every stage runs the WGSL three.js r186 generates for the page
+//! tone mapping. Every stage runs the WGSL three.js r187 generates for the page
 //! ( in `volume_fire/`, with the bloom levels shared with `volume_caustics/` ).
+//! The page's TSL uniforms are in the render group ( r187's page ): the fire
+//! light's inputs, the time, the emission and the saturation are written for
+//! every draw and dispatch.
 //! DragControls move the teapot with a CPU raycast against its triangles, as
 //! the original's does.
 use super::controls_attributes::{Controls, camera_state, viewport_css};
@@ -293,9 +296,12 @@ impl Temporal {
         }
     }
 }
-/// Per dye parity: the kernels' bind groups.
+/// Per dye parity: the kernels' bind groups ( the advection's and the
+/// emission's render group first ).
 struct Kernels {
     advect_velocity: (wgpu::ComputePipeline, [wgpu::BindGroup; 2]),
+    advect_velocity_render: wgpu::BindGroup,
+    emit_render: wgpu::BindGroup,
     divergence: (wgpu::ComputePipeline, wgpu::BindGroup),
     jacobi: [(wgpu::ComputePipeline, wgpu::BindGroup); 2],
     project: (wgpu::ComputePipeline, wgpu::BindGroup),
@@ -317,8 +323,8 @@ struct Targets {
     bright: wgpu::TextureView,
     /// Per level: the horizontal and vertical targets.
     levels: Vec<(wgpu::TextureView, wgpu::TextureView, (u32, u32))>,
-    /// Denoised and raw volume inputs.
-    high: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// The render group, then denoised and raw volume inputs.
+    high: (wgpu::RenderPipeline, wgpu::BindGroup, [wgpu::BindGroup; 2]),
     /// Per level: the horizontal and vertical draws with their uniforms.
     bloom_blurs: Vec<[(wgpu::RenderPipeline, wgpu::BindGroup, wgpu::Buffer); 2]>,
     composite: (wgpu::RenderPipeline, wgpu::BindGroup),
@@ -352,7 +358,8 @@ pub(super) struct Demo {
     teapot_velocity: Vector3,
     point_distance: f64,
     /// The teapot's object uniforms are written when its matrix changes, as
-    /// three refreshes a static material's object group.
+    /// three refreshes a static material's object group ( the fire light's
+    /// inputs are in the render group, written every frame ).
     teapot_written: Option<Matrix4>,
     /// Pointer events, the DragControls selection ( plane and offset ) and the pointer.
     queue: Vec<(u32, f64, f64)>,
@@ -374,8 +381,10 @@ pub(super) struct Demo {
     caster: Draw,
     volume: (wgpu::RenderPipeline, [[wgpu::BindGroup; 2]; 2]),
     advect_velocity_object: wgpu::Buffer,
+    advect_velocity_render: wgpu::Buffer,
     advect_dye_object: wgpu::Buffer,
     emit_object: wgpu::Buffer,
+    emit_render: wgpu::Buffer,
     shadow_render: wgpu::Buffer,
     shadow_object: wgpu::Buffer,
     teapot_render: wgpu::Buffer,
@@ -387,10 +396,10 @@ pub(super) struct Demo {
     volume_object: wgpu::Buffer,
     blur_objects: [wgpu::Buffer; 2],
     high_object: wgpu::Buffer,
+    high_render: wgpu::Buffer,
     composite_object: wgpu::Buffer,
     tints: wgpu::Buffer,
     output_render: wgpu::Buffer,
-    output_object: wgpu::Buffer,
     black: wgpu::TextureView,
     quad_uv: wgpu::Buffer,
     linear: wgpu::Sampler,
@@ -601,14 +610,26 @@ impl Demo {
             wgsl!("advect_velocity_cs"),
             "objectStruct",
         )?;
+        let advect_velocity_render = sized(
+            r,
+            "advect velocity render",
+            wgsl!("advect_velocity_cs"),
+            "renderStruct",
+        )?;
         let advect_dye_object = sized(r, "advect dye", wgsl!("advect_dye_cs"), "objectStruct")?;
         let emit_object = sized(r, "emit teapot", wgsl!("emit_cs"), "objectStruct")?;
+        let emit_render = sized(r, "emit teapot render", wgsl!("emit_cs"), "renderStruct")?;
         let kernels = {
             let advect_velocity = compute(r, "advect velocity", wgsl!("advect_velocity_cs"));
+            let advect_velocity_render_group = bind(
+                r,
+                advect_velocity.get_bind_group_layout(0),
+                &[(0, advect_velocity_render.as_entire_binding())],
+            );
             let advect_velocity_groups = [0, 1].map(|k| {
                 bind(
                     r,
-                    advect_velocity.get_bind_group_layout(0),
+                    advect_velocity.get_bind_group_layout(1),
                     &[
                         (0, sampler_res(&linear)),
                         (1, tex(&velocity[0])),
@@ -688,10 +709,15 @@ impl Demo {
                 )
             });
             let emit = compute(r, "emit teapot", wgsl!("emit_cs"));
+            let emit_render_group = bind(
+                r,
+                emit.get_bind_group_layout(0),
+                &[(0, emit_render.as_entire_binding())],
+            );
             let emit_groups = [0, 1].map(|k| {
                 bind(
                     r,
-                    emit.get_bind_group_layout(0),
+                    emit.get_bind_group_layout(1),
                     &[
                         (0, emit_object.as_entire_binding()),
                         (1, teapot_storage.as_entire_binding()),
@@ -703,6 +729,8 @@ impl Demo {
             });
             Kernels {
                 advect_velocity: (advect_velocity, advect_velocity_groups),
+                advect_velocity_render: advect_velocity_render_group,
+                emit_render: emit_render_group,
                 divergence: (divergence_pipeline, divergence_group),
                 jacobi: [ab?, ba?],
                 project: (project, project_group),
@@ -733,7 +761,8 @@ impl Demo {
             None,
             all,
         );
-        // Per dye parity: the groups with the dye read by the next step.
+        // Per dye parity: the groups with the dye read by the next step ( the
+        // volume's self shadow reads dye A, as the page's texture3D( dyeTexA ) ).
         let volume_groups = |p: &wgpu::RenderPipeline,
                              render: &wgpu::Buffer,
                              object: &wgpu::Buffer,
@@ -758,6 +787,9 @@ impl Demo {
                     (base + 2, sampler_res(&linear)),
                     (base + 3, tex(&dye[k])),
                 ]);
+                if shadowed {
+                    entries.extend([(base + 4, sampler_res(&linear)), (base + 5, tex(&dye[0]))]);
+                }
                 [
                     bind(
                         r,
@@ -940,8 +972,10 @@ impl Demo {
             caster: (caster_pipeline, caster_groups),
             volume: (volume_pipeline, volume),
             advect_velocity_object,
+            advect_velocity_render,
             advect_dye_object,
             emit_object,
+            emit_render,
             shadow_render,
             shadow_object,
             teapot_render,
@@ -956,6 +990,7 @@ impl Demo {
                 sized(r, "denoise", wgsl!("blur_v_fs"), "objectStruct")?,
             ],
             high_object: sized(r, "bloom high pass", wgsl!("high_fs"), "objectStruct")?,
+            high_render: sized(r, "bloom high pass render", wgsl!("high_fs"), "renderStruct")?,
             composite_object: sized(r, "bloom composite", wgsl!("composite_fs"), "objectStruct")?,
             tints: init(
                 "bloom tints",
@@ -963,7 +998,6 @@ impl Demo {
                 wgpu::BufferUsages::UNIFORM,
             ),
             output_render: sized(r, "volume fire output", wgsl!("output_fs"), "renderStruct")?,
-            output_object: sized(r, "volume fire output", wgsl!("output_fs"), "objectStruct")?,
             black: view(&black),
             quad_uv: init(
                 "quad uv",
@@ -973,11 +1007,12 @@ impl Demo {
             linear,
             targets: None,
         };
-        // The floor's material is static: three writes its object uniforms
-        // ( the fire light's inputs ) at its first render only.
+        // The floor's material is static: three writes its object uniforms at
+        // its first render only ( the fire light's inputs are in the render
+        // group, written every frame ).
         let floor_model = Matrix4::from_translation(Vector3::new(0., FLOOR_Y, 0.))
             * Matrix4::from_rotation_x(-PI / 2.);
-        let mut floor_values = vec![
+        let floor_values = [
             (
                 "nodeUniform0",
                 Color::from_hex(0x111115).0.to_array().to_vec(),
@@ -990,34 +1025,6 @@ impl Demo {
             ("nodeUniform7", vec![1.]),
             ("nodeUniform9", m4(floor_model)),
         ];
-        floor_values.extend(demo.light_object(
-            [
-                "nodeUniform11",
-                "nodeUniform12",
-                "nodeUniform13",
-                "nodeUniform14",
-                "nodeUniform15",
-                "nodeUniform16",
-                "nodeUniform17",
-                "nodeUniform18",
-                "nodeUniform19",
-                "nodeUniform20",
-                "nodeUniform21",
-                "nodeUniform22",
-                "nodeUniform23",
-                "nodeUniform24",
-                "nodeUniform25",
-                "nodeUniform26",
-                "nodeUniform27",
-                "nodeUniform28",
-                "nodeUniform29",
-                "nodeUniform30",
-                "nodeUniform31",
-                "nodeUniform32",
-                "nodeUniform33",
-            ],
-            &demo.temporal,
-        ));
         let values: Vec<(&str, &[f64])> = floor_values.iter().map(|(n, v)| (*n, &v[..])).collect();
         r.queue.write_buffer(
             &floor_object,
@@ -1165,10 +1172,15 @@ impl Demo {
             wgsl!("high_fs"),
             HALF,
         );
+        let high_render = bind(
+            r,
+            high.get_bind_group_layout(0),
+            &[(0, self.high_render.as_entire_binding())],
+        );
         let high_groups = [&blur_targets[1], &volume_target].map(|volume| {
             bind(
                 r,
-                high.get_bind_group_layout(0),
+                high.get_bind_group_layout(1),
                 &[
                     (0, sampler(&self.linear)),
                     (1, tex(&scene)),
@@ -1190,11 +1202,11 @@ impl Demo {
             level_size = half_size(level_size);
         }
         let blur_shaders = [
-            shared!("blur0_fs"),
-            shared!("blur1_fs"),
-            shared!("blur2_fs"),
-            shared!("blur3_fs"),
-            shared!("blur4_fs"),
+            shared!("bloom_blur0_fs"),
+            shared!("bloom_blur1_fs"),
+            shared!("bloom_blur2_fs"),
+            shared!("bloom_blur3_fs"),
+            shared!("bloom_blur4_fs"),
         ];
         let mut bloom_blurs = vec![];
         for (i, fs) in blur_shaders.iter().enumerate() {
@@ -1251,9 +1263,8 @@ impl Demo {
                         (1, tex(&scene)),
                         (2, sampler(&self.linear)),
                         (3, tex(volume)),
-                        (4, self.output_object.as_entire_binding()),
-                        (5, sampler(&self.linear)),
-                        (6, tex(bloom)),
+                        (4, sampler(&self.linear)),
+                        (5, tex(bloom)),
                     ],
                 )
             })
@@ -1271,7 +1282,7 @@ impl Demo {
             blurs,
             bright,
             levels,
-            high: (high, high_groups),
+            high: (high, high_render, high_groups),
             bloom_blurs,
             composite: (composite, composite_group),
             screen: RenderTarget::with_options(
@@ -1304,16 +1315,24 @@ impl Demo {
             1. / p.smoke_lifespan
         };
         let volume = VOLUME.to_vec();
-        let write =
-            |buffer: &wgpu::Buffer, source: &str, values: &[(&str, Vec<f64>)]| -> Result<()> {
-                let values: Vec<(&str, &[f64])> =
-                    values.iter().map(|(n, v)| (*n, &v[..])).collect();
+        // Each kernel's object and render groups ( the page's render-group
+        // uniforms ), by name.
+        let write = |buffers: &[(&wgpu::Buffer, &str)],
+                     source: &str,
+                     values: &[(&str, Vec<f64>)]|
+         -> Result<()> {
+            let values: Vec<(&str, &[f64])> = values.iter().map(|(n, v)| (*n, &v[..])).collect();
+            for (buffer, name) in buffers {
                 r.queue
-                    .write_buffer(buffer, 0, &pack(source, "objectStruct", &values)?);
-                Ok(())
-            };
+                    .write_buffer(buffer, 0, &pack(source, name, &values)?);
+            }
+            Ok(())
+        };
         write(
-            &self.advect_velocity_object,
+            &[
+                (&self.advect_velocity_object, "objectStruct"),
+                (&self.advect_velocity_render, "renderStruct"),
+            ],
             wgsl!("advect_velocity_cs"),
             &[
                 ("nodeUniform1", volume.clone()),
@@ -1333,7 +1352,7 @@ impl Demo {
             ],
         )?;
         write(
-            &self.advect_dye_object,
+            &[(&self.advect_dye_object, "objectStruct")],
             wgsl!("advect_dye_cs"),
             &[
                 ("nodeUniform2", volume.clone()),
@@ -1344,7 +1363,10 @@ impl Demo {
             ],
         )?;
         write(
-            &self.emit_object,
+            &[
+                (&self.emit_object, "objectStruct"),
+                (&self.emit_render, "renderStruct"),
+            ],
             wgsl!("emit_cs"),
             &[
                 ("nodeUniform0", m4(self.teapot_model(t.rotation))),
@@ -1364,23 +1386,29 @@ impl Demo {
         let cur = self.parity;
         let mut encoder = r.device.create_command_encoder(&Default::default());
         let groups = cells_groups(CELLS);
-        let passes: [(&wgpu::ComputePipeline, &wgpu::BindGroup, u32); 7] = [
-            (&k.advect_velocity.0, &k.advect_velocity.1[cur], groups),
-            (&k.divergence.0, &k.divergence.1, groups),
-            (&k.jacobi[0].0, &k.jacobi[0].1, groups),
-            (&k.jacobi[1].0, &k.jacobi[1].1, groups),
-            (&k.project.0, &k.project.1, groups),
-            (&k.advect_dye.0, &k.advect_dye.1[cur], groups),
+        let passes: [(&wgpu::ComputePipeline, &[&wgpu::BindGroup], u32); 7] = [
+            (
+                &k.advect_velocity.0,
+                &[&k.advect_velocity_render, &k.advect_velocity.1[cur]],
+                groups,
+            ),
+            (&k.divergence.0, &[&k.divergence.1], groups),
+            (&k.jacobi[0].0, &[&k.jacobi[0].1], groups),
+            (&k.jacobi[1].0, &[&k.jacobi[1].1], groups),
+            (&k.project.0, &[&k.project.1], groups),
+            (&k.advect_dye.0, &[&k.advect_dye.1[cur]], groups),
             (
                 &k.emit.0,
-                &k.emit.1[cur],
+                &[&k.emit_render, &k.emit.1[cur]],
                 (self.teapot_triangles_vertex_count() as u32).div_ceil(64),
             ),
         ];
-        for (pipeline, group, count) in passes {
+        for (pipeline, bind_groups, count) in passes {
             let mut pass = encoder.begin_compute_pass(&Default::default());
             pass.set_pipeline(pipeline);
-            pass.set_bind_group(0, group, &[]);
+            for (i, group) in bind_groups.iter().enumerate() {
+                pass.set_bind_group(i as u32, *group, &[]);
+            }
             pass.dispatch_workgroups(count, 1, 1);
         }
         r.queue.submit([encoder.finish()]);
@@ -1467,27 +1495,53 @@ impl Demo {
         };
         let n = |i: u32| -> &'static str { NAMES[i as usize] };
         let names = |ids: [u32; 17]| ids.map(n);
+        let light_names = |ids: [u32; 23]| ids.map(n);
+        // The fire light's inputs: the page's render-group uniforms.
+        let mut teapot_render = light_render(names([
+            33, 34, 46, 47, 50, 51, 36, 19, 35, 48, 49, 38, 40, 41, 43, 44, 45,
+        ]));
+        teapot_render.extend(self.light_object(
+            light_names([
+                6, 12, 11, 8, 9, 10, 20, 21, 22, 23, 24, 25, 7, 26, 27, 13, 14, 28, 29, 15, 30, 31,
+                32,
+            ]),
+            &temporal,
+        ));
         write(
             &self.teapot_render,
             wgsl!("teapot_fs"),
             "renderStruct",
-            &light_render(names([
-                33, 34, 46, 47, 50, 51, 36, 19, 35, 48, 49, 38, 40, 41, 43, 44, 45,
-            ])),
+            &teapot_render,
         )?;
+        let mut floor_render = light_render(names([
+            34, 35, 47, 48, 51, 52, 37, 10, 36, 49, 50, 39, 41, 42, 44, 45, 46,
+        ]));
+        floor_render.extend(self.light_object(
+            light_names([
+                11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+                32, 33,
+            ]),
+            &temporal,
+        ));
         write(
             &self.floor_render,
             wgsl!("floor_fs"),
             "renderStruct",
-            &light_render(names([
-                34, 35, 47, 48, 51, 52, 37, 10, 36, 49, 50, 39, 41, 42, 44, 45, 46,
-            ])),
+            &floor_render,
         )?;
         let frame = ("nodeUniform5", vec![self.frame_id as f64]);
+        let volume_light = self.light_object(
+            light_names([
+                6, 7, 12, 9, 10, 11, 8, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                28,
+            ]),
+            &temporal,
+        );
         let mut caster_render = light_render(names([
-            29, 32, 34, 35, 39, 40, 33, 30, 36, 37, 38, 42, 45, 46, 48, 49, 50,
+            31, 32, 34, 35, 39, 40, 33, 29, 36, 37, 38, 42, 45, 46, 48, 49, 50,
         ]));
         caster_render.push(frame.clone());
+        caster_render.extend(volume_light.clone());
         write(
             &self.caster_render,
             wgsl!("caster_fs"),
@@ -1495,9 +1549,10 @@ impl Demo {
             &caster_render,
         )?;
         let mut volume_render = light_render(names([
-            29, 32, 44, 45, 49, 50, 33, 30, 46, 47, 48, 35, 38, 39, 41, 42, 43,
+            31, 32, 44, 45, 49, 50, 33, 29, 46, 47, 48, 35, 38, 39, 41, 42, 43,
         ]));
         volume_render.push(frame);
+        volume_render.extend(volume_light);
         write(
             &self.volume_render,
             wgsl!("volume_fs"),
@@ -1529,23 +1584,14 @@ impl Demo {
             ],
         )?;
         let radius = (VOLUME.iter().map(|v| (v / 2.) * (v / 2.)).sum::<f64>()).sqrt();
-        let light_names = |ids: [u32; 23]| ids.map(n);
         let volume_object = |steps: f64, mat3: &'static str| {
-            let mut v = vec![
+            vec![
                 ("nodeUniform0", vec![1.]),
                 ("nodeUniform2", m4(volume_model)),
                 ("nodeUniform3", vec![radius]),
                 ("nodeUniform4", vec![steps]),
                 (mat3, m3(Matrix4::IDENTITY)),
-            ];
-            v.extend(self.light_object(
-                light_names([
-                    6, 7, 12, 9, 10, 11, 8, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-                    27, 28,
-                ]),
-                &temporal,
-            ));
-            v
+            ]
         };
         write(
             &self.caster_object,
@@ -1556,13 +1602,13 @@ impl Demo {
         let mut volume_values = volume_object(p.steps, "nodeUniform37");
         volume_values.extend([
             ("nodeUniform51", volume),
-            ("nodeUniform54", spot_position.to_array().to_vec()),
-            ("nodeUniform55", vec![p.shadow_absorption]),
-            ("nodeUniform56", vec![p.multi_scattering]),
-            ("nodeUniform57", vec![p.powder]),
-            ("nodeUniform58", vec![p.shadow_ambient]),
-            ("nodeUniform59", vec![p.asymmetry]),
-            ("nodeUniform60", vec![p.glow_spread]),
+            ("nodeUniform55", spot_position.to_array().to_vec()),
+            ("nodeUniform56", vec![p.shadow_absorption]),
+            ("nodeUniform57", vec![p.multi_scattering]),
+            ("nodeUniform58", vec![p.powder]),
+            ("nodeUniform59", vec![p.shadow_ambient]),
+            ("nodeUniform60", vec![p.asymmetry]),
+            ("nodeUniform61", vec![p.glow_spread]),
         ]);
         write(
             &self.volume_object,
@@ -1573,7 +1619,7 @@ impl Demo {
         let teapot_model = self.teapot_model(temporal.rotation);
         if self.teapot_written != Some(teapot_model) {
             self.teapot_written = Some(teapot_model);
-            let mut v = vec![
+            let v = [
                 ("nodeUniform0", vec![0.; 3]),
                 ("nodeUniform1", vec![1.]),
                 ("nodeUniform2", vec![1.]),
@@ -1582,13 +1628,6 @@ impl Demo {
                 ("nodeUniform16", vec![p.teapot_emissive]),
                 ("nodeUniform18", m4(teapot_model)),
             ];
-            v.extend(self.light_object(
-                light_names([
-                    6, 12, 11, 8, 9, 10, 20, 21, 22, 23, 24, 25, 7, 26, 27, 13, 14, 28, 29, 15, 30,
-                    31, 32,
-                ]),
-                &temporal,
-            ));
             write(&self.teapot_object, wgsl!("teapot_fs"), "objectStruct", &v)?;
         }
         let t = self
@@ -1614,11 +1653,16 @@ impl Demo {
             )?;
         }
         write(
+            &self.high_render,
+            wgsl!("high_fs"),
+            "renderStruct",
+            &[("nodeUniform2", vec![p.saturation])],
+        )?;
+        write(
             &self.high_object,
             wgsl!("high_fs"),
             "objectStruct",
             &[
-                ("nodeUniform2", vec![p.saturation]),
                 ("nodeUniform3", vec![p.bloom_threshold]),
                 ("nodeUniform4", vec![0.01]),
             ],
@@ -1628,17 +1672,15 @@ impl Demo {
             for ((_, _, object), direction) in blur.iter().zip([[1., 0.], [0., 1.]]) {
                 write(
                     object,
-                    shared!("blur0_fs"),
+                    shared!("bloom_blur0_fs"),
                     "objectStruct",
                     &[
                         ("nodeUniform1", identity.clone()),
-                        ("nodeUniform2", identity.clone()),
-                        ("nodeUniform3", direction.to_vec()),
+                        ("nodeUniform2", direction.to_vec()),
                         (
-                            "nodeUniform4",
+                            "nodeUniform3",
                             vec![1. / level.0 as f64, 1. / level.1 as f64],
                         ),
-                        ("nodeUniform5", identity.clone()),
                     ],
                 )?;
             }
@@ -1661,13 +1703,7 @@ impl Demo {
             &self.output_render,
             wgsl!("output_fs"),
             "renderStruct",
-            &[("nodeUniform4", vec![2.])],
-        )?;
-        write(
-            &self.output_object,
-            wgsl!("output_fs"),
-            "objectStruct",
-            &[("nodeUniform2", vec![p.saturation])],
+            &[("nodeUniform2", vec![p.saturation]), ("nodeUniform4", vec![2.])],
         )?;
         let dye = self.parity;
         let mut encoder = r.device.create_command_encoder(&Default::default());
@@ -1780,7 +1816,12 @@ impl Demo {
         }
         let raw = usize::from(!p.denoise);
         if p.bloom {
-            quad_pass(&mut encoder, &t.bright, &t.high.0, &[&t.high.1[raw]]);
+            quad_pass(
+                &mut encoder,
+                &t.bright,
+                &t.high.0,
+                &[&t.high.1, &t.high.2[raw]],
+            );
             for (blur, (horizontal, vertical, _)) in t.bloom_blurs.iter().zip(&t.levels) {
                 for ((pipeline, group, _), target) in blur.iter().zip([horizontal, vertical]) {
                     quad_pass(&mut encoder, target, pipeline, &[group]);

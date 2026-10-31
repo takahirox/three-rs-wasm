@@ -24040,6 +24040,36 @@
 							},
 							{
 								"kind": "controller",
+								"type": "slider",
+								"object": 0,
+								"property": "bounces",
+								"name": "Bounces",
+								"value": 3,
+								"params": [
+									0,
+									10,
+									1
+								],
+								"listen": false,
+								"hidden": false
+							},
+							{
+								"kind": "controller",
+								"type": "slider",
+								"object": 0,
+								"property": "lightIntensity",
+								"name": "Light Intensity",
+								"value": 30,
+								"params": [
+									1,
+									100,
+									1
+								],
+								"listen": false,
+								"hidden": false
+							},
+							{
+								"kind": "controller",
 								"type": "boolean",
 								"object": 0,
 								"property": "showProbes",

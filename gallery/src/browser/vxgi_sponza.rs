@@ -9,11 +9,14 @@
 //! centroid, as the addon samples it ) and voxelizes them on the GPU into a
 //! 144 × 64 × 96 opacity volume with its mips; the directional light is
 //! injected through its shadow map and bounced once into the radiance
-//! volume, again when the light or the injection settings change. Each frame
+//! volume, again when the light or the injection settings change. As r187's
+//! computeSolidVoxels does, the interiors of the closed, outward-facing
+//! meshes with opaque front-sided materials are filled on the CPU once and
+//! OR'ed into the opacity by the resolve kernel. Each frame
 //! the shadow pass, the pre-pass ( packed normals and velocity ), the cone
 //! tracer ( AO and GI, its cones rotating with frameId ), the scene pass
 //! reading them in the materials' lighting, TRAA and the output run the WGSL
-//! three.js r186 generates for the page ( in `vxgi_sponza/`, the cone tracer
+//! three.js r187 generates for the page ( in `vxgi_sponza/`, the cone tracer
 //! byte-identical to webgpu_vxgi's; the compute kernels drop the subgroup
 //! built-in they declare but never use ). `vxgi_sponza/tables.rs` lists what
 //! each material uniform holds, as the reference page's draws show. The
@@ -29,7 +32,7 @@ use super::lights_projector::{m3, m4, pack};
 use super::pmrem_cube_uv::bind;
 use super::retro::uniform;
 use super::trackball_sprites::FirstPerson;
-use super::vxgi::{apply, color, compute_pipeline, depth, halton, texture, view};
+use super::vxgi::{apply, color, compute_pipeline, depth, halton, solid_voxels, texture, view};
 use crate::{
     Error, Result, camera::*, geometry::*, material::*, math::*, render_target::*, renderer::*,
     scene::*,
@@ -421,6 +424,9 @@ struct Source {
     map: Option<(Arc<Vec<u8>>, bool)>,
     alpha_test: f64,
     side: f64,
+    /// computeSolidVoxels' hasSolidMaterials: visible, opaque, front-sided
+    /// and not alpha-tested.
+    solid: bool,
 }
 /// collectSceneTriangles(): each primitive's world triangles inside the
 /// volume, albedo from the map at the centroid ( alpha-tested and below
@@ -571,6 +577,7 @@ impl Volume {
         triangles: &[f32],
         bounds: (Vector3, Vector3),
         shadow: &wgpu::TextureView,
+        solids: &[(&[f32], &[u32], Matrix4)],
     ) -> Result<Self> {
         // _voxelize: the longest axis gets `resolution` voxels; all axes are
         // padded by a voxel and rounded up to whole mips.
@@ -594,6 +601,13 @@ impl Volume {
         };
         let occupancy = storage("vxgi occupancy", voxels as u64 * 4);
         let triangle_ids = storage("vxgi triangle ids", voxels as u64 * 4);
+        let solid = r
+            .device
+            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("vxgi solid"),
+                contents: &solid_voxels(solids, bounds_min, voxel_size, grid),
+                usage: wgpu::BufferUsages::STORAGE,
+            });
         let triangle_count = (triangles.len() / TRIANGLE_STRIDE) as u32;
         let triangle_buffer = r
             .device
@@ -701,7 +715,7 @@ impl Volume {
         }
         let resolve_object = write(
             wgsl!("resolve_cs"),
-            &[("nodeUniform0", vec![v]), ("nodeUniform3", vec![v])],
+            &[("nodeUniform0", vec![v]), ("nodeUniform4", vec![v])],
         )?;
         let opacity_levels: Vec<wgpu::TextureView> =
             (0..levels).map(|m| level(&opacity_texture, m)).collect();
@@ -710,7 +724,8 @@ impl Volume {
             &resolve_object,
             vec![
                 (1, occupancy.as_entire_binding()),
-                (2, res(&opacity_levels[0])),
+                (2, solid.as_entire_binding()),
+                (3, res(&opacity_levels[0])),
             ],
             groups(voxels),
         ));
@@ -1081,8 +1096,10 @@ struct Targets {
     draws: Vec<[Draw; 3]>,
     sky: [Draw; 3],
     cone: Draw,
-    /// Resolve with the placeholder, or the history, previous depth.
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// The resolve; the previous depth is the history's depth texture, which
+    /// r187's TRAANode reads from the first resolve ( zero until the first
+    /// depth copy ).
+    traa: (wgpu::RenderPipeline, wgpu::BindGroup),
     /// The outputs: the resolve, the scene ( Direct or without temporal
     /// filtering ), AO and GI.
     outputs: [Draw; 4],
@@ -1128,7 +1145,6 @@ pub(super) struct Demo {
     traa_object: wgpu::Buffer,
     output_render: wgpu::Buffer,
     quad_uv: wgpu::Buffer,
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
@@ -1376,6 +1392,10 @@ impl Demo {
                     Side::Double => 2.,
                     Side::Front => 0.,
                 },
+                solid: m.properties.visible
+                    && m.properties.side == Side::Front
+                    && !m.properties.transparent
+                    && m.properties.alpha_test <= 0.,
             });
             meshes.push(Mesh {
                 positions: init(
@@ -1444,7 +1464,12 @@ impl Demo {
         // The directional shadow: a 2048² map and its color target.
         let shadow_color = view(&texture(r, (SHADOW, SHADOW, 1), BYTE));
         let shadow_depth = view(&texture(r, (SHADOW, SHADOW, 1), DEPTH));
-        let volume = Volume::new(r, &triangles, (lo, hi), &shadow_depth)?;
+        let solids: Vec<(&[f32], &[u32], Matrix4)> = sources
+            .iter()
+            .filter(|s| s.solid)
+            .map(|s| (&s.positions[..], &s.index[..], s.model))
+            .collect();
+        let volume = Volume::new(r, &triangles, (lo, hi), &shadow_depth, &solids)?;
         let shadow_pipelines = [0, 1].map(|i| {
             material_pipeline(
                 r,
@@ -1533,15 +1558,6 @@ impl Demo {
                 [0, 1, 2, 3].map(|i| uniform(r, label, variants[i].fs, "renderStruct"));
             Ok([a?, b?, c?, d?])
         };
-        // TRAANode's DepthTexture( 1, 1 ) placeholder, cleared to the far plane.
-        let placeholder = view(&texture(r, (1, 1, 1), DEPTH));
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("vxgi placeholder"),
-            depth_stencil_attachment: depth(&placeholder),
-            ..Default::default()
-        });
-        r.queue.submit([encoder.finish()]);
         Ok(Self {
             controls,
             params: [
@@ -1583,7 +1599,6 @@ impl Demo {
                 bytemuck::cast_slice(&[0f32, -1., 0., 1., 2., 1.]),
                 wgpu::BufferUsages::VERTEX,
             ),
-            placeholder,
             linear,
             compare,
             targets: None,
@@ -1754,14 +1769,14 @@ impl Demo {
         let history_view = view(&history);
         let history_depth_view = view(&history_depth);
         let traa_source = wgsl!("traa_fs");
-        let traa_groups = [&self.placeholder, &history_depth_view].map(|previous| {
+        let traa_group = {
             let mut entries = vec![
                 (1, tex(&prepass[1].1)),
                 (2, sampler(&self.linear)),
                 (3, tex(&scene.1)),
                 (4, tex(&prepass_depth.1)),
                 (5, self.traa_object.as_entire_binding()),
-                (6, tex(previous)),
+                (6, tex(&history_depth_view)),
                 (7, sampler(&self.linear)),
                 (8, tex(&history_view)),
             ];
@@ -1769,7 +1784,7 @@ impl Demo {
                 entries.push((0, sampler(&self.linear)));
             }
             bind(r, traa_pipeline.get_bind_group_layout(0), &entries)
-        });
+        };
         let format = out.options.format;
         let single = |fs, source: &wgpu::TextureView| -> Draw {
             let p = screen_pass("vxgi output", wgsl!("output_vs"), fs, &[format]);
@@ -1823,7 +1838,7 @@ impl Demo {
             draws,
             sky,
             cone,
-            traa: (traa_pipeline, traa_groups),
+            traa: (traa_pipeline, traa_group),
             outputs,
         });
         Ok(())
@@ -2216,7 +2231,7 @@ impl Demo {
                     full,
                 );
             }
-            let (pipeline, groups) = &t.traa;
+            let (pipeline, group) = &t.traa;
             {
                 let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                     label: Some("vxgi traa"),
@@ -2224,7 +2239,7 @@ impl Demo {
                     ..Default::default()
                 });
                 pass.set_pipeline(pipeline);
-                pass.set_bind_group(0, &groups[usize::from(self.resolves >= 2)], &[]);
+                pass.set_bind_group(0, group, &[]);
                 pass.set_vertex_buffer(0, self.quad_uv.slice(..));
                 pass.draw(0..3, 0..1);
             }

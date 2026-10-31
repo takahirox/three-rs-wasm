@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -39,21 +42,9 @@ struct renderStruct {
 	nodeUniform15 : f32,
 	nodeUniform16 : f32,
 	nodeUniform18 : f32,
-	nodeUniform19 : mat4x4<f32>,
+	nodeUniform19 : vec3<f32>,
 	nodeUniform20 : f32,
-	nodeUniform21 : f32,
-	nodeUniform22 : f32,
-	nodeUniform23 : mat4x4<f32>,
-	nodeUniform24 : f32,
-	nodeUniform25 : f32,
-	nodeUniform26 : f32,
-	nodeUniform27 : mat4x4<f32>,
-	nodeUniform28 : f32,
-	nodeUniform29 : f32,
-	nodeUniform30 : f32,
-	nodeUniform31 : vec3<f32>,
-	nodeUniform32 : f32,
-	nodeUniform33 : f32
+	nodeUniform21 : f32
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -65,72 +56,24 @@ var<private> SpecularColor : vec3<f32>;
 var<private> EmissiveColor : vec3<f32>;
 var<private> Output : vec4<f32>;
 var<private> irradiance : vec3<f32>;
-var<private> nodeVar0 : vec3<f32>;
 var<private> directDiffuse : vec3<f32>;
 var<private> normalViewGeometry : vec3<f32>;
 var<private> NORMAL_normalView : vec3<f32>;
 var<private> normalView : vec3<f32>;
-var<private> nodeVar1 : vec3<f32>;
-var<private> nodeVar2 : vec4<f32>;
-var<private> nodeVar3 : vec4<f32>;
-var<private> nodeVar4 : vec3<f32>;
-var<private> nodeVar5 : vec3<f32>;
-var<private> nodeVar6 : f32;
 var<private> shadowPositionWorld : vec3<f32>;
-var<private> nodeVar7 : f32;
+var<private> nodeVar0 : f32;
 var<private> normalWorld : vec3<f32>;
-var<private> nodeVar8 : vec4<f32>;
-var<private> nodeVar9 : vec3<f32>;
-var<private> nodeVar10 : vec3<f32>;
-var<private> nodeVar11 : f32;
-var<private> nodeVar12 : f32;
-var<private> nodeVar13 : f32;
-var<private> nodeVar14 : vec4<f32>;
-var<private> nodeVar15 : vec3<f32>;
-var<private> nodeVar16 : vec3<f32>;
-var<private> nodeVar17 : f32;
-var<private> nodeVar18 : f32;
-var<private> nodeVar19 : f32;
-var<private> nodeVar20 : vec4<f32>;
-var<private> nodeVar21 : vec3<f32>;
-var<private> nodeVar22 : vec3<f32>;
-var<private> nodeVar23 : f32;
-var<private> nodeVar24 : f32;
-var<private> nodeVar25 : f32;
-var<private> nodeVar26 : vec4<f32>;
-var<private> nodeVar27 : vec3<f32>;
-var<private> nodeVar28 : vec3<f32>;
-var<private> nodeVar29 : f32;
-var<private> nodeVar30 : f32;
+var<private> nodeVar1 : f32;
 var<private> shadowValue : f32;
-var<private> nodeVar31 : vec3<f32>;
-var<private> nodeVar32 : vec3<f32>;
-var<private> nodeVar33 : vec3<f32>;
-var<private> nodeVar34 : vec3<f32>;
-var<private> nodeVar35 : vec3<f32>;
 var<private> directSpecular : vec3<f32>;
 var<private> positionViewDirection : vec3<f32>;
-var<private> nodeVar36 : vec3<f32>;
-var<private> nodeVar37 : f32;
-var<private> nodeVar38 : f32;
-var<private> nodeVar39 : vec3<f32>;
-var<private> nodeVar40 : vec3<f32>;
-var<private> nodeVar41 : vec3<f32>;
-var<private> nodeVar42 : vec3<f32>;
 var<private> indirectDiffuse : vec3<f32>;
-var<private> nodeVar43 : vec4<f32>;
-var<private> nodeVar44 : vec4<f32>;
-var<private> nodeVar45 : vec4<f32>;
 var<private> ambientOcclusion : f32;
-var<private> nodeVar46 : vec3<f32>;
 var<private> totalDiffuse : vec3<f32>;
-var<private> nodeVar47 : vec3<f32>;
 var<private> totalSpecular : vec3<f32>;
 var<private> indirectSpecular : vec3<f32>;
-var<private> nodeVar48 : vec3<f32>;
 var<private> outgoingLight : vec3<f32>;
-var<private> nodeVar49 : vec3<f32>;
-var<private> nodeVar50 : vec4<f32>;
+var<private> nodeVar2 : vec4<f32>;
 
 // codes
 
@@ -151,127 +94,57 @@ fn main( @location( 0 ) v_positionView : vec3<f32>,
 	SpecularColor = object.nodeUniform3;
 	EmissiveColor = ( object.nodeUniform4 * vec3<f32>( object.nodeUniform5 ) );
 	irradiance = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar0 = ( irradiance + render.nodeUniform6 );
-	irradiance = nodeVar0;
+	irradiance = ( irradiance + render.nodeUniform6 );
 	directDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
 	normalViewGeometry = normalize( v_normalViewGeometry );
 	NORMAL_normalView = normalViewGeometry;
 	normalView = NORMAL_normalView;
-	nodeVar1 = ( render.nodeUniform10 - render.nodeUniform11 );
-	nodeVar2 = vec4<f32>( nodeVar1, 0.0 );
-	nodeVar3 = ( render.cameraViewMatrix * nodeVar2 );
-	nodeVar4 = normalize( nodeVar3.xyz );
-	nodeVar5 = nodeVar4;
-	nodeVar6 = dot( normalView, nodeVar5 );
-	shadowPositionWorld = v_positionWorld;
+	let nodeConst0 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( render.nodeUniform10 - render.nodeUniform11 ), 0.0 ) ).xyz );
 	shadowPositionWorld = v_positionWorld;
 	normalWorld = normalize( ( vec4<f32>( normalView, 0.0 ) * render.cameraViewMatrix ).xyz );
-	nodeVar8 = ( render.nodeUniform14 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform15 ) ) ), 1.0 ) );
-	nodeVar9 = ( nodeVar8.xyz / vec3<f32>( nodeVar8.w ) );
-	nodeVar10 = vec3<f32>( nodeVar9.x, ( 1.0 - nodeVar9.y ), ( nodeVar9.z + render.nodeUniform16 ) );
+	let nodeConst1 = ( render.nodeUniform14 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform15 ) ) ), 1.0 ) );
+	let nodeConst2 = ( nodeConst1.xyz / vec3<f32>( nodeConst1.w ) );
+	let nodeConst3 = vec3<f32>( nodeConst2.x, ( 1.0 - nodeConst2.y ), ( nodeConst2.z + render.nodeUniform16 ) );
+	let nodeConst4 = ( nodeConst3.xy * vec2<f32>( 2.0, 2.0 ) );
+	let nodeConst5 = clamp( floor( nodeConst4 ), vec2<f32>( 0.0, 0.0 ), vec2<f32>( 1.0, 1.0 ) );
+	let nodeConst6 = vec3<f32>( ( nodeConst4 - nodeConst5 ), nodeConst3.z );
 
-	if ( ( ( ( ( ( nodeVar10.x >= 0.0 ) && ( nodeVar10.x <= 1.0 ) ) && ( nodeVar10.y >= 0.0 ) ) && ( nodeVar10.y <= 1.0 ) ) && ( nodeVar10.z <= 1.0 ) ) ) {
+	if ( ( ( ( ( ( nodeConst6.x >= 0.0 ) && ( nodeConst6.x <= 1.0 ) ) && ( nodeConst6.y >= 0.0 ) ) && ( nodeConst6.y <= 1.0 ) ) && ( nodeConst6.z <= 1.0 ) ) ) {
 
-		nodeVar11 = textureSampleCompare( nodeUniform17, nodeUniform17_sampler, nodeVar10.xy, 0, nodeVar10.z );
-		nodeVar7 = nodeVar11;
-
-	} else {
-
-		nodeVar7 = 1.0;
-
-	}
-
-	nodeVar12 = mix( 1.0, nodeVar7, render.nodeUniform18 );
-	shadowPositionWorld = v_positionWorld;
-	nodeVar14 = ( render.nodeUniform19 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform20 ) ) ), 1.0 ) );
-	nodeVar15 = ( nodeVar14.xyz / vec3<f32>( nodeVar14.w ) );
-	nodeVar16 = vec3<f32>( nodeVar15.x, ( 1.0 - nodeVar15.y ), ( nodeVar15.z + render.nodeUniform21 ) );
-
-	if ( ( ( ( ( ( nodeVar16.x >= 0.0 ) && ( nodeVar16.x <= 1.0 ) ) && ( nodeVar16.y >= 0.0 ) ) && ( nodeVar16.y <= 1.0 ) ) && ( nodeVar16.z <= 1.0 ) ) ) {
-
-		nodeVar17 = textureSampleCompare( nodeUniform17, nodeUniform17_sampler, nodeVar16.xy, 1, nodeVar16.z );
-		nodeVar13 = nodeVar17;
+		nodeVar1 = textureSampleCompare( nodeUniform17, nodeUniform17_sampler, nodeConst6.xy, i32( ( ( nodeConst5.y * 2.0 ) + nodeConst5.x ) ), nodeConst6.z );
+		nodeVar0 = nodeVar1;
 
 	} else {
 
-		nodeVar13 = 1.0;
+		nodeVar0 = 1.0;
 
 	}
 
-	nodeVar18 = mix( 1.0, nodeVar13, render.nodeUniform22 );
-	shadowPositionWorld = v_positionWorld;
-	nodeVar20 = ( render.nodeUniform23 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform24 ) ) ), 1.0 ) );
-	nodeVar21 = ( nodeVar20.xyz / vec3<f32>( nodeVar20.w ) );
-	nodeVar22 = vec3<f32>( nodeVar21.x, ( 1.0 - nodeVar21.y ), ( nodeVar21.z + render.nodeUniform25 ) );
-
-	if ( ( ( ( ( ( nodeVar22.x >= 0.0 ) && ( nodeVar22.x <= 1.0 ) ) && ( nodeVar22.y >= 0.0 ) ) && ( nodeVar22.y <= 1.0 ) ) && ( nodeVar22.z <= 1.0 ) ) ) {
-
-		nodeVar23 = textureSampleCompare( nodeUniform17, nodeUniform17_sampler, nodeVar22.xy, 2, nodeVar22.z );
-		nodeVar19 = nodeVar23;
-
-	} else {
-
-		nodeVar19 = 1.0;
-
-	}
-
-	nodeVar24 = mix( 1.0, nodeVar19, render.nodeUniform26 );
-	shadowPositionWorld = v_positionWorld;
-	nodeVar26 = ( render.nodeUniform27 * vec4<f32>( ( shadowPositionWorld + ( normalWorld * vec3<f32>( render.nodeUniform28 ) ) ), 1.0 ) );
-	nodeVar27 = ( nodeVar26.xyz / vec3<f32>( nodeVar26.w ) );
-	nodeVar28 = vec3<f32>( nodeVar27.x, ( 1.0 - nodeVar27.y ), ( nodeVar27.z + render.nodeUniform29 ) );
-
-	if ( ( ( ( ( ( nodeVar28.x >= 0.0 ) && ( nodeVar28.x <= 1.0 ) ) && ( nodeVar28.y >= 0.0 ) ) && ( nodeVar28.y <= 1.0 ) ) && ( nodeVar28.z <= 1.0 ) ) ) {
-
-		nodeVar29 = textureSampleCompare( nodeUniform17, nodeUniform17_sampler, nodeVar28.xy, 3, nodeVar28.z );
-		nodeVar25 = nodeVar29;
-
-	} else {
-
-		nodeVar25 = 1.0;
-
-	}
-
-	nodeVar30 = mix( 1.0, nodeVar25, render.nodeUniform30 );
-	shadowValue = min( min( min( nodeVar12, nodeVar18 ), nodeVar24 ), nodeVar30 );
-	nodeVar31 = ( render.nodeUniform12 * vec3<f32>( shadowValue ) );
-	nodeVar32 = ( vec3<f32>( clamp( nodeVar6, 0.0, 1.0 ) ) * nodeVar31 );
-	nodeVar33 = ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) );
-	nodeVar34 = ( nodeVar32 * nodeVar33 );
-	nodeVar35 = ( directDiffuse + nodeVar34 );
-	directDiffuse = nodeVar35;
+	shadowValue = mix( 1.0, nodeVar0, render.nodeUniform18 );
+	let nodeConst7 = ( vec3<f32>( clamp( dot( normalView, nodeConst0 ), 0.0, 1.0 ) ) * ( render.nodeUniform12 * vec3<f32>( shadowValue ) ) );
+	directDiffuse = ( directDiffuse + ( nodeConst7 * ( DiffuseColor.xyz * vec3<f32>( 0.3183098861837907 ) ) ) );
 	directSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
 	positionViewDirection = normalize( v_positionViewDirection );
-	nodeVar36 = normalize( ( nodeVar5 + positionViewDirection ) );
-	nodeVar37 = clamp( dot( positionViewDirection, nodeVar36 ), 0.0, 1.0 );
-	nodeVar38 = exp2( ( ( ( nodeVar37 * -5.55473 ) - 6.98316 ) * nodeVar37 ) );
-	nodeVar39 = ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeVar38 ) ) ) + vec3<f32>( ( 1.0 * nodeVar38 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeVar36 ), 0.0, 1.0 ), Shininess ) ) ) );
-	nodeVar40 = ( nodeVar32 * nodeVar39 );
-	nodeVar41 = ( nodeVar40 * vec3<f32>( 1.0 ) );
-	nodeVar42 = ( directSpecular + nodeVar41 );
-	directSpecular = nodeVar42;
+	let nodeConst8 = normalize( ( nodeConst0 + positionViewDirection ) );
+	let nodeConst9 = clamp( dot( positionViewDirection, nodeConst8 ), 0.0, 1.0 );
+	let nodeConst10 = exp2( ( ( ( nodeConst9 * -5.55473 ) - 6.98316 ) * nodeConst9 ) );
+	directSpecular = ( directSpecular + ( ( nodeConst7 * ( ( ( ( SpecularColor * vec3<f32>( ( 1.0 - nodeConst10 ) ) ) + vec3<f32>( ( 1.0 * nodeConst10 ) ) ) * vec3<f32>( 0.25 ) ) * vec3<f32>( ( ( ( ( Shininess * 0.5 ) + 1.0 ) * 0.3183098861837907 ) * pow( clamp( dot( normalView, nodeConst8 ), 0.0, 1.0 ), Shininess ) ) ) ) ) * vec3<f32>( 1.0 ) ) );
 	indirectDiffuse = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar43 = ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) );
-	nodeVar44 = ( vec4<f32>( irradiance, 1.0 ) * nodeVar43 );
-	nodeVar45 = ( vec4<f32>( indirectDiffuse, 1.0 ) + nodeVar44 );
-	indirectDiffuse = nodeVar45.xyz;
+	indirectDiffuse = ( vec4<f32>( indirectDiffuse, 1.0 ) + ( vec4<f32>( irradiance, 1.0 ) * ( DiffuseColor * vec4<f32>( 0.3183098861837907 ) ) ) ).xyz;
 	ambientOcclusion = 1.0;
-	nodeVar46 = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
-	indirectDiffuse = nodeVar46;
-	nodeVar47 = ( directDiffuse + indirectDiffuse );
-	totalDiffuse = nodeVar47;
+	indirectDiffuse = ( indirectDiffuse * vec3<f32>( ambientOcclusion ) );
+	totalDiffuse = ( directDiffuse + indirectDiffuse );
 	indirectSpecular = vec3<f32>( 0.0, 0.0, 0.0 );
-	nodeVar48 = ( directSpecular + indirectSpecular );
-	totalSpecular = nodeVar48;
-	nodeVar49 = ( totalDiffuse + totalSpecular );
-	outgoingLight = nodeVar49;
+	totalSpecular = ( directSpecular + indirectSpecular );
+	outgoingLight = ( totalDiffuse + totalSpecular );
 	Output = max( vec4<f32>( ( outgoingLight + EmissiveColor ), DiffuseColor.w ), vec4<f32>( 0.0 ) );
-	nodeVar50 = vec4<f32>( mix( Output.xyz, render.nodeUniform31, smoothstep( render.nodeUniform32, render.nodeUniform33, ( - v_positionView.z ) ) ), Output.w );
-	Output = nodeVar50;
+	nodeVar2 = vec4<f32>( mix( Output.xyz, render.nodeUniform19, smoothstep( render.nodeUniform20, render.nodeUniform21, ( - v_positionView.z ) ) ), Output.w );
+	let nodeConst11 = nodeVar2;
+	Output = nodeConst11;
 
 	// result
 
-	output.color = nodeVar50;
+	output.color = nodeConst11;
 
 	return output;
 

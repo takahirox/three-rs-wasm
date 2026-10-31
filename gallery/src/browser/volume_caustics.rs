@@ -8,7 +8,8 @@
 //! bayer16 offset by the frame id, against the scene depth. BloomNode blurs
 //! it ( a high pass and five H / V Gaussian levels, then the composite ) and
 //! the output adds 0.7 of the bloom to the scene. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `volume_caustics/`).
+//! three.js r187 generates for the page (in `volume_caustics/`; the bloom
+//! blurs are `bloom_blur*_fs`, `blur*_fs` keep r186's for other ports).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
@@ -637,11 +638,11 @@ impl Demo {
             );
         }
         let blur_shaders = [
-            wgsl!("blur0_fs"),
-            wgsl!("blur1_fs"),
-            wgsl!("blur2_fs"),
-            wgsl!("blur3_fs"),
-            wgsl!("blur4_fs"),
+            wgsl!("bloom_blur0_fs"),
+            wgsl!("bloom_blur1_fs"),
+            wgsl!("bloom_blur2_fs"),
+            wgsl!("bloom_blur3_fs"),
+            wgsl!("bloom_blur4_fs"),
         ];
         let mut blurs = vec![];
         for (i, fs) in blur_shaders.iter().enumerate() {
@@ -984,17 +985,15 @@ impl Demo {
             for ((_, _, object), direction) in blur.iter().zip([[1., 0.], [0., 1.]]) {
                 write(
                     object,
-                    wgsl!("blur0_fs"),
+                    wgsl!("bloom_blur0_fs"),
                     "objectStruct",
                     &[
                         ("nodeUniform1", identity.clone()),
-                        ("nodeUniform2", identity.clone()),
-                        ("nodeUniform3", direction.to_vec()),
+                        ("nodeUniform2", direction.to_vec()),
                         (
-                            "nodeUniform4",
+                            "nodeUniform3",
                             vec![1. / level.0 as f64, 1. / level.1 as f64],
                         ),
-                        ("nodeUniform5", identity.clone()),
                     ],
                 )?;
             }

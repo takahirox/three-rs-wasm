@@ -1,13 +1,11 @@
 //! webgpu_postprocessing_fog: the Lucy statue ( PLYLoader, computeVertexNormals )
-//! over a ground plane, lit by a hemisphere light and the SunLight addon's two
-//! fitted shadow cascades, with volumetric cloud fog ray-marched at reduced
-//! resolution through a precomputed 96³ tri-noise texture and upsampled by a
-//! joint bilateral filter ( or a Gaussian blur, or none ). The cascades are
-//! fitted to the view frustum on the CPU each frame as SunLightShadow does;
-//! the noise texture is generated once, as the page does. Every stage runs
-//! the WGSL three.js r186 generates for the page (in `fog_volume/`; the blur
-//! and plain output vertex modules are the fog_scattering and volume_caustics
-//! ones, byte-identical).
+//! over a ground plane, lit by a hemisphere light and a shadowed directional
+//! light ( a 1024² map over a ±3 orthographic camera ), with volumetric cloud
+//! fog ray-marched at reduced resolution through a precomputed 96³ tri-noise
+//! texture and upsampled by a joint bilateral filter ( or a Gaussian blur, or
+//! none ). The noise texture is generated once, as the page does. Every stage
+//! runs the WGSL three.js r187 generates for the page (in `fog_volume/`; the blur
+//! vertex module is fog_scattering's, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::fetch;
@@ -22,9 +20,14 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const RED: wgpu::TextureFormat = wgpu::TextureFormat::R8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-/// The shadow map size and the cascade count ( a 2 × 1 atlas ).
+/// The SunLight addon's shadow map size and cascade count ( a 2 × 1 atlas ),
+/// for the ports that fit its cascades ( `cascades` ).
 const MAP: u32 = 2048;
 const CASCADES: usize = 2;
+/// The page's directional light shadow: mapSize 1024, an orthographic camera
+/// of ±3 from near 1 to far 25.
+const SHADOW_MAP: u32 = 1024;
+const SHADOW_CAMERA: [f64; 3] = [3., 1., 25.];
 const NOISE: u32 = 96;
 const SUN: [f64; 3] = [5., 10., 5.];
 macro_rules! wgsl {
@@ -33,8 +36,6 @@ macro_rules! wgsl {
     };
 }
 const BLUR_VS: &str = include_str!("fog_scattering/blur_vs.wgsl");
-const GAUSS_VS: &str = include_str!("volume_caustics/composite_vs.wgsl");
-const RAW_VS: &str = include_str!("volume_caustics/blur_vs.wgsl");
 /// Math.round: halves round up.
 fn js_round(x: f64) -> f64 {
     (x + 0.5).floor()
@@ -69,6 +70,38 @@ pub(super) struct Cascade {
     pub matrix: Matrix4,
     pub data: [f64; 4],
     pub viewport: [f32; 4],
+}
+/// DirectionalLightShadow.updateMatrices for the page's light ( aimed at the
+/// origin ): the shadow camera's view and projection ( WebGPU depth ) and the
+/// shadow matrix ( x and y biased into [ 0, 1 ], z kept ).
+fn light_shadow() -> (Matrix4, Matrix4, Matrix4) {
+    let eye = Vector3::from_array(SUN);
+    let world = Matrix4::from_translation(eye) * look_at(eye, Vector3::ZERO, Vector3::Y);
+    let view = world.inverse();
+    let [size, near, far] = SHADOW_CAMERA;
+    let p = 1. / (far - near);
+    let projection = Matrix4::from_cols_array(&[
+        1. / size,
+        0.,
+        0.,
+        0.,
+        0.,
+        1. / size,
+        0.,
+        0.,
+        0.,
+        0.,
+        -p,
+        0.,
+        0.,
+        0.,
+        -near * p,
+        1.,
+    ]);
+    let bias = Matrix4::from_cols_array(&[
+        0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
+    ]);
+    (view, projection, bias * projection * view)
 }
 /// SunLightShadow.updateMatrices: practical split cascades fitted to the view
 /// frustum, as bounding spheres snapped to the texel grid.
@@ -329,8 +362,8 @@ pub(super) struct Demo {
     lucy: (wgpu::Buffer, wgpu::Buffer, wgpu::Buffer, u32, Sphere),
     ground: (wgpu::Buffer, wgpu::Buffer, wgpu::Buffer, u32),
     shadow: (wgpu::TextureView, wgpu::TextureView),
-    shadow_draws: [Draw; CASCADES],
-    shadow_renders: [wgpu::Buffer; CASCADES],
+    shadow_draw: Draw,
+    shadow_render: wgpu::Buffer,
     shadow_object: wgpu::Buffer,
     lucy_render: wgpu::Buffer,
     lucy_object: wgpu::Buffer,
@@ -454,8 +487,8 @@ impl Demo {
                 .create_view(&Default::default())
         };
         let shadow = (
-            texture((MAP * CASCADES as u32, MAP), BYTE),
-            texture((MAP * CASCADES as u32, MAP), DEPTH),
+            texture((SHADOW_MAP, SHADOW_MAP), BYTE),
+            texture((SHADOW_MAP, SHADOW_MAP), DEPTH),
         );
         let attrs = [
             wgpu::vertex_attr_array![0 => Float32x3],
@@ -477,28 +510,23 @@ impl Demo {
             (true, false),
             (1, wgpu::PrimitiveTopology::TriangleList),
         );
-        let shadow_renders =
-            [0, 1].map(|_| uniform(r, "fog shadow", wgsl!("shadow_vs"), "renderStruct"));
-        let [s0, s1] = shadow_renders;
-        let shadow_renders = [s0?, s1?];
+        let shadow_render = uniform(r, "fog shadow", wgsl!("shadow_vs"), "renderStruct")?;
         let shadow_object = uniform(r, "fog shadow", wgsl!("shadow_vs"), "objectStruct")?;
-        let shadow_draws = shadow_renders.each_ref().map(|render| {
-            (
-                shadow_pipeline.clone(),
-                vec![
-                    bind(
-                        r,
-                        shadow_pipeline.get_bind_group_layout(0),
-                        &[(0, render.as_entire_binding())],
-                    ),
-                    bind(
-                        r,
-                        shadow_pipeline.get_bind_group_layout(1),
-                        &[(0, shadow_object.as_entire_binding())],
-                    ),
-                ],
-            )
-        });
+        let shadow_draw = (
+            shadow_pipeline.clone(),
+            vec![
+                bind(
+                    r,
+                    shadow_pipeline.get_bind_group_layout(0),
+                    &[(0, shadow_render.as_entire_binding())],
+                ),
+                bind(
+                    r,
+                    shadow_pipeline.get_bind_group_layout(1),
+                    &[(0, shadow_object.as_entire_binding())],
+                ),
+            ],
+        );
         let noise = r
             .device
             .create_texture_with_data(
@@ -544,8 +572,8 @@ impl Demo {
             lucy,
             ground,
             shadow,
-            shadow_draws,
-            shadow_renders,
+            shadow_draw,
+            shadow_render,
             shadow_object,
             lucy_render: uniform(r, "fog Lucy", wgsl!("lucy_fs"), "renderStruct")?,
             lucy_object: uniform(r, "fog Lucy", wgsl!("lucy_fs"), "objectStruct")?,
@@ -782,8 +810,8 @@ impl Demo {
             format,
             None,
         );
-        let gauss = screen("fog output", (GAUSS_VS, wgsl!("gauss_fs")), format, None);
-        let raw = screen("fog output", (RAW_VS, wgsl!("raw_fs")), format, None);
+        let gauss = screen("fog output", (wgsl!("gauss_vs"), wgsl!("gauss_fs")), format, None);
+        let raw = screen("fog output", (wgsl!("raw_vs"), wgsl!("raw_fs")), format, None);
         let outputs = [
             two(
                 &jbu,
@@ -944,7 +972,7 @@ impl Demo {
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
         let camera_position = world.w_axis.truncate();
-        let cascades = cascades(Vector3::from_array(SUN), world, projection, 0.1, 100., 25.);
+        let (shadow_view, shadow_projection, shadow_matrix) = light_shadow();
         let write = |buffer: &wgpu::Buffer,
                      source: &str,
                      name: &str,
@@ -957,26 +985,23 @@ impl Demo {
         };
         let lucy_model = Matrix4::from_translation(Vector3::new(0., 0.8, 0.))
             * Matrix4::from_rotation_y(-PI / 2.);
-        for (i, cascade) in cascades.iter().enumerate() {
-            write(
-                &self.shadow_renders[i],
-                wgsl!("shadow_vs"),
-                "renderStruct",
-                &[
-                    ("cameraProjectionMatrix", m4(cascade.projection)),
-                    ("cameraViewMatrix", m4(cascade.view)),
-                ],
-            )?;
-        }
+        write(
+            &self.shadow_render,
+            wgsl!("shadow_vs"),
+            "renderStruct",
+            &[
+                ("cameraProjectionMatrix", m4(shadow_projection)),
+                ("cameraViewMatrix", m4(shadow_view)),
+            ],
+        )?;
         write(
             &self.shadow_object,
             wgsl!("shadow_vs"),
             "objectStruct",
             &[("nodeUniform0", vec![1.]), ("nodeUniform3", m4(lucy_model))],
         )?;
-        let size = vec![(MAP * CASCADES as u32) as f64, MAP as f64];
-        // The hemisphere and sun lights and the two cascades, by the names
-        // the statue's shader gives them ( the ground's are one less ).
+        // The hemisphere light and the directional light with its shadow, by
+        // the names the statue's shader gives them ( the ground's are one less ).
         let lights = |offset: u32| -> Vec<(String, Vec<f64>)> {
             let n = |k: u32| format!("nodeUniform{}", k - offset);
             vec![
@@ -985,20 +1010,17 @@ impl Demo {
                 (n(11), vec![0.5; 3]),
                 (n(13), vec![0., 1., 0.]),
                 (n(10), vec![0.13318315973474043; 3]),
-                (n(15), vec![2.5; 3]),
+                // Color × intensity, position, target position.
+                (n(16), vec![2.5; 3]),
                 (n(14), SUN.to_vec()),
-                (n(18), m4(cascades[1].matrix)),
-                (n(17), cascades[1].data.to_vec()),
-                (n(24), m4(cascades[0].matrix)),
-                (n(23), cascades[0].data.to_vec()),
-                (n(16), vec![0.]),
+                (n(15), vec![0.; 3]),
+                // Shadow matrix, normal bias, bias, radius, map size, intensity.
+                (n(17), m4(shadow_matrix)),
+                (n(18), vec![0.]),
                 (n(19), vec![0.]),
                 (n(21), vec![1.]),
-                (n(22), size.clone()),
-                (n(25), vec![0.]),
-                (n(26), vec![1.]),
-                (n(27), size.clone()),
-                (n(28), vec![1.]),
+                (n(22), vec![SHADOW_MAP as f64; 2]),
+                (n(23), vec![1.]),
             ]
         };
         fn named(values: &[(String, Vec<f64>)]) -> Vec<(&str, Vec<f64>)> {
@@ -1146,8 +1168,7 @@ impl Demo {
             &[("nodeUniform3", vec![1.]), ("nodeUniform2", full)],
         )?;
         let mut encoder = r.device.create_command_encoder(&Default::default());
-        for (i, cascade) in cascades.iter().enumerate() {
-            let clear = i == 0;
+        {
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("fog shadow"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
@@ -1155,31 +1176,21 @@ impl Demo {
                     depth_slice: None,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: if clear {
-                            wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
                         store: wgpu::StoreOp::Store,
                     },
                 })],
                 depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
                     view: &self.shadow.1,
                     depth_ops: Some(wgpu::Operations {
-                        load: if clear {
-                            wgpu::LoadOp::Clear(1.)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(1.),
                         store: wgpu::StoreOp::Store,
                     }),
                     stencil_ops: None,
                 }),
                 ..Default::default()
             });
-            let [x, y, w, h] = cascade.viewport;
-            pass.set_viewport(x, y, w, h, 0., 1.);
-            set(&mut pass, &self.shadow_draws[i]);
+            set(&mut pass, &self.shadow_draw);
             pass.set_vertex_buffer(0, self.lucy.0.slice(..));
             pass.set_index_buffer(self.lucy.2.slice(..), wgpu::IndexFormat::Uint32);
             pass.draw_indexed(0..self.lucy.3, 0, 0..1);
