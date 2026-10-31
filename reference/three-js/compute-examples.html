@@ -83,6 +83,8 @@ if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.ren
 // SSGINode rotates its slices by frameId % 6 and offsets its steps by frameId % 4 (SSSNode its rays by frameId % 4): the count restarts at a
 // multiple of 12 past every frame the loading loop rendered (a restart at 0 would repeat the loading frame's id).
 if(['webgpu_postprocessing_ssgi','webgpu_postprocessing_ssgi_ballpool','webgpu_postprocessing_sss','webgpu_postprocessing_ao'].includes(id)){reference.renderer._animation.stop();reference.renderer._nodes.nodeFrame.frameId=12000;}
+// r187's renderer.render() restarts the animation loop: keep it stopped so that frameId counts the fixture's frames only.
+if(id==='webgpu_postprocessing_sss')reference.renderer._animation.start=()=>{};
 // VXGINode rotates its cones by frameId % 64: the count restarts at a multiple of 64 past the loading frames.
 // r187's render() and compute() restart the stopped loop, whose ticks would advance frameId between fixture frames: it stays stopped.
 if(id==='webgpu_vxgi'||id==='webgpu_vxgi_sponza'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=12800;}

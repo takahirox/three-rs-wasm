@@ -7,9 +7,10 @@
 //! the SSS term in the light's shadow context; TRAA jitters, reprojects and
 //! blends; the output encodes sRGB. The shadow-maps-only and SSS views and
 //! the scene without temporal filtering replace the output node. Every
-//! stage runs the WGSL three.js r186 generates for the page (in `sss/`; the
-//! shadow pass is the memory_outline modules, TRAA the volume_traa ones and
-//! the output the memory_outline, deferred and hdr ones, byte-identical).
+//! stage runs the WGSL three.js r187 generates for the page (in `sss/`; the
+//! shadow pass is the memory_outline modules and the output the
+//! memory_outline, deferred and hdr ones, byte-identical; TRAA the
+//! volume_traa ones, the same code up to the numbering of its temporaries).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::load_asset;
@@ -42,7 +43,7 @@ const TRAA_FS: &str = include_str!("volume_traa/traa_fs.wgsl");
 const OUTPUT_VS: &str = include_str!("memory_outline/composite_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("hdr/output_fs.wgsl");
 const SSS_OUTPUT_VS: &str = include_str!("deferred/forward_output_vs.wgsl");
-/// The SSS shader's rand( uv + frameId ) seed as r186 bakes it: SSSNode
+/// The SSS shader's rand( uv + frameId ) seed as r187 bakes it: SSSNode
 /// assigns frame.frameId over its uniform, so each (re)build of the node
 /// inlines the frameId of that frame ( 0 without temporal filtering ).
 const SSS_SEED: &str = "vec2<f32>( 12001.0 )";
@@ -164,7 +165,9 @@ struct Targets {
     pre: [Draw; 2],
     lit: [Draw; 2],
     plain: [Draw; 2],
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    /// TRAA reads the history depth texture as its previous depth from the
+    /// start ( zeroed until the first resolve copies the pre-pass depth ).
+    traa: (wgpu::RenderPipeline, wgpu::BindGroup),
     /// The output of the resolve, the scene color and the SSS term.
     outputs: [Draw; 3],
 }
@@ -179,15 +182,13 @@ pub(super) struct Demo {
     jitter: usize,
     built: bool,
     resolves: usize,
-    /// The history restarted after a resize: its depth is read from the start.
-    reread: bool,
     /// The SSS node is rebuilt on the next frame that uses it, and the seed
     /// and pipeline of its last build.
     rebuild: bool,
     sss_pipeline: Option<(f64, wgpu::RenderPipeline)>,
     /// The SSS draw for the current pipeline and targets.
     sss_draw: Option<Draw>,
-    /// The first frame's unjittered projection and view the velocity keeps.
+    /// The last frame's unjittered projection and view, the velocity's previous ones.
     motion: Option<(Matrix4, Matrix4)>,
     resolved: Option<Resolved>,
     model: Mesh,
@@ -203,7 +204,6 @@ pub(super) struct Demo {
     sss_object: wgpu::Buffer,
     traa_object: wgpu::Buffer,
     quad_uv: wgpu::Buffer,
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     repeat: wgpu::Sampler,
     compare: wgpu::Sampler,
@@ -427,15 +427,6 @@ impl Demo {
         let objects = MATERIALS.map(|(_, fs)| uniform(r, "sss object", fs, "objectStruct"));
         let [r0, r1, r2, r3, r4, r5] = renders;
         let [o0, o1, o2, o3, o4, o5] = objects;
-        // TRAANode's DepthTexture( 1, 1 ) placeholder, cleared to the far plane.
-        let placeholder = view(&texture(r, (1, 1), DEPTH));
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("sss placeholder"),
-            depth_stencil_attachment: depth(&placeholder),
-            ..Default::default()
-        });
-        r.queue.submit([encoder.finish()]);
         Ok(Self {
             controls,
             params: [0., 1., 0.2, 0.5, 0.01, 1.],
@@ -446,7 +437,6 @@ impl Demo {
             jitter: 0,
             built: false,
             resolves: 0,
-            reread: false,
             rebuild: true,
             sss_pipeline: None,
             sss_draw: None,
@@ -469,7 +459,6 @@ impl Demo {
                 bytemuck::cast_slice(&[0f32, -1., 0., 1., 2., 1.]),
                 vertex,
             ),
-            placeholder,
             linear,
             repeat,
             compare: r.device.create_sampler(&wgpu::SamplerDescriptor {
@@ -646,23 +635,21 @@ impl Demo {
         let traa_pipeline = screen_pass("sss traa", TRAA_VS, TRAA_FS, &[HALF]);
         let history_view = view(&history);
         let history_depth_view = view(&history_depth);
-        let traa_groups = [&self.placeholder, &history_depth_view].map(|previous| {
-            bind(
-                r,
-                traa_pipeline.get_bind_group_layout(0),
-                &[
-                    // Velocity is read with textureLoad: the layout drops its sampler.
-                    (1, tex(&velocity)),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&scene.1)),
-                    (4, tex(&pre_depth.1)),
-                    (5, self.traa_object.as_entire_binding()),
-                    (6, tex(previous)),
-                    (7, sampler(&self.linear)),
-                    (8, tex(&history_view)),
-                ],
-            )
-        });
+        let traa_group = bind(
+            r,
+            traa_pipeline.get_bind_group_layout(0),
+            &[
+                // Velocity is read with textureLoad: the layout drops its sampler.
+                (1, tex(&velocity)),
+                (2, sampler(&self.linear)),
+                (3, tex(&scene.1)),
+                (4, tex(&pre_depth.1)),
+                (5, self.traa_object.as_entire_binding()),
+                (6, tex(&history_depth_view)),
+                (7, sampler(&self.linear)),
+                (8, tex(&history_view)),
+            ],
+        );
         let format = out.options.format;
         let single = |vs, fs, source: &wgpu::TextureView| {
             let p = screen_pass("sss output", vs, fs, &[format]);
@@ -707,7 +694,7 @@ impl Demo {
             pre,
             lit,
             plain,
-            traa: (traa_pipeline, traa_groups),
+            traa: (traa_pipeline, traa_group),
             outputs,
         });
         Ok(())
@@ -743,10 +730,8 @@ impl Demo {
             t.width != out.width || t.height != out.height || t.format != out.options.format
         }) {
             self.resize(r, out)?;
-            // New history targets: TRAA restarts from the beauty buffer. After
-            // the first resolves its previous depth is the history depth
-            // texture, now new and zeroed, no longer the placeholder.
-            self.reread = self.resolves >= 2;
+            // New history targets: TRAA restarts from the beauty buffer, its
+            // previous depth the new, zeroed history depth texture.
             self.resolves = 0;
             self.sss_draw = None;
         }
@@ -821,11 +806,13 @@ impl Demo {
         } else {
             projection
         };
-        // The pre-pass velocity as r186 renders it here (read back from the
-        // original): its previous camera view and its current projection keep
-        // the first frame's unjittered values, while the previous projection
-        // follows the camera. A camera move or resize leaves a velocity.
-        let (first_projection, previous_view) = *self.motion.get_or_insert((projection, view));
+        // The pre-pass velocity as r187's VelocityNode renders it: the
+        // unjittered projection TRAA hands it, and the previous frame's
+        // unjittered projection and camera view (this frame's on the first).
+        let (previous_projection, previous_view) = self
+            .motion
+            .replace((projection, view))
+            .unwrap_or((projection, view));
         let write = |buffer: &wgpu::Buffer,
                      source: &str,
                      name: &str,
@@ -909,12 +896,14 @@ impl Demo {
                 ("nodeUniform31", vec![1.]),
             ];
             if previous {
-                // The pre-pass: fog at 32-34, the previous projection.
+                // The pre-pass: fog at 32-34, the velocity's camera matrices.
                 values.extend([
                     ("nodeUniform32", fog.clone()),
                     ("nodeUniform33", vec![10.]),
                     ("nodeUniform34", vec![50.]),
-                    ("nodeUniform37", m4(projection)),
+                    ("nodeUniform35", m4(projection)),
+                    ("nodeUniform37", m4(previous_projection)),
+                    ("nodeUniform38", m4(previous_view)),
                 ]);
             } else {
                 values.extend([
@@ -973,7 +962,11 @@ impl Demo {
                 ]);
             }
             if pre {
-                values.push(("nodeUniform28", m4(projection)));
+                values.extend([
+                    ("nodeUniform26", m4(projection)),
+                    ("nodeUniform28", m4(previous_projection)),
+                    ("nodeUniform29", m4(previous_view)),
+                ]);
             }
             values
         };
@@ -1032,12 +1025,7 @@ impl Demo {
                 ("nodeUniform17", vec![1., 1.]),
             ];
             if velocity {
-                values.extend([
-                    ("nodeUniform35", m4(first_projection)),
-                    ("nodeUniform36", m4(model)),
-                    ("nodeUniform38", m4(previous_view)),
-                    ("nodeUniform39", m4(model)),
-                ]);
+                values.extend([("nodeUniform36", m4(model)), ("nodeUniform39", m4(model))]);
             }
             values
         };
@@ -1061,9 +1049,7 @@ impl Demo {
             ];
             if velocity {
                 values.extend([
-                    ("nodeUniform26", m4(first_projection)),
                     ("nodeUniform27", m4(ground_model)),
-                    ("nodeUniform29", m4(previous_view)),
                     ("nodeUniform30", m4(ground_model)),
                 ]);
             }
@@ -1242,11 +1228,8 @@ impl Demo {
                     full,
                 );
             }
-            let (pipeline, groups) = &t.traa;
-            let draw = (
-                pipeline.clone(),
-                vec![groups[usize::from(self.resolves >= 2 || self.reread)].clone()],
-            );
+            let (pipeline, group) = &t.traa;
+            let draw = (pipeline.clone(), vec![group.clone()]);
             quad(&mut encoder, &t.resolve.1, wgpu::Color::BLACK, &draw);
             encoder.copy_texture_to_texture(
                 t.resolve.0.as_image_copy(),
