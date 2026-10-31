@@ -1,3 +1,4 @@
+BRDF_EON
 BRDF_GGX
 BRDF_Lambert
 BRDF_Sheen
@@ -10,6 +11,7 @@ DFGLUT
 D_GGX
 D_GGX_Anisotropic
 Discard
+EON_DirectionalAlbedo
 EPSILON
 EnvironmentBRDF
 F_Schlick
@@ -49,7 +51,6 @@ VSMShadowFilter
 V_GGX_SmithCorrelated
 V_GGX_SmithCorrelated_Anisotropic
 Var
-VarIntent
 abs
 acesFilmicToneMapping
 acos
@@ -182,6 +183,7 @@ determinant
 difference
 diffuseColor
 diffuseContribution
+diffuseRoughness
 directPointLight
 directionToColor
 directionToFaceDirection
@@ -262,6 +264,7 @@ ior
 iridescence
 iridescenceIOR
 iridescenceThickness
+isBackgroundDepth
 isolate
 ivec2
 ivec3
@@ -301,6 +304,7 @@ materialClearcoat
 materialClearcoatNormal
 materialClearcoatRoughness
 materialColor
+materialDiffuseRoughness
 materialDispersion
 materialEmissive
 materialEnvIntensity
@@ -352,6 +356,7 @@ modelViewPosition
 modelViewProjection
 modelWorldMatrix
 modelWorldMatrixInverse
+morphColor
 morphReference
 mrt
 mul
@@ -410,11 +415,11 @@ neutralToneMapping
 nodeArray
 nodeImmutable
 nodeObject
-nodeObjectIntent
+nodeObjectAssignable
 nodeObjects
 nodeProxy
+nodeProxyAssignable
 nodeProxyConstructor
-nodeProxyIntent
 normalFlat
 normalGeometry
 normalLocal
@@ -481,6 +486,7 @@ pow2
 pow3
 pow4
 premultiplyAlpha
+projectionDepth
 property
 quadBroadcast
 quadSwapDiagonal
@@ -492,6 +498,7 @@ range
 rangeFogFactor
 reciprocal
 reference
+referenceAttribute
 referenceBuffer
 reflect
 reflectVector
@@ -613,9 +620,6 @@ transformNormal
 transformNormalByInverseViewMatrix
 transformNormalByViewMatrix
 transformNormalToView
-transformedClearcoatNormalView
-transformedNormalView
-transformedNormalWorld
 transmission
 transpose
 triNoise3D
@@ -678,5 +682,6 @@ wgslFn
 workgroupArray
 workgroupBarrier
 workgroupId
+workingLuminanceCoefficients
 workingToColorSpace
 xor

@@ -610,7 +610,7 @@ impl WgslEncoder {
 
     /// `emit( ast )`.
     pub fn emit(&mut self, ast: &mut Ast, program: Id) -> Result<String> {
-        let header = "// Three.js Transpiler r186\n\n";
+        let header = "// Three.js Transpiler r187\n\n";
         let mut globals = String::new();
         let mut functions = String::new();
         let mut dependencies = String::new();

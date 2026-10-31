@@ -1102,6 +1102,7 @@
  ],
  "webgpu_loader_materialx": [
   "examples/assets/gltf/ShaderBall.glb",
+  "examples/assets/materialx/textures/brick_roughness.jpg",
   "examples/assets/materialx/three/gltf_pbr_glass_dispersion.mtlx",
   "examples/assets/materialx/three/open_pbr_surface_honey.mtlx",
   "examples/assets/materialx/three/open_pbr_surface_pearl.mtlx",
@@ -1127,6 +1128,11 @@
   "examples/assets/materialx/three/standard_surface_transmission_only_test.mtlx",
   "examples/assets/materialx/three/standard_surface_transmission_rough.mtlx",
   "examples/assets/materialx/three/standard_surface_transmission_test.mtlx",
+  "examples/assets/memorial.exr",
+  "examples/assets/memorial.hdr",
+  "examples/assets/tiff/crate_uncompressed.tif",
+  "examples/assets/tsl-environment/textures/brick_bump.jpg",
+  "examples/assets/tsl-next/textures/brick_diffuse.jpg",
   "examples/assets/tsl-procedural/san_giuseppe_bridge_2k.hdr"
  ],
  "webgpu_loader_texture_ktx2": [

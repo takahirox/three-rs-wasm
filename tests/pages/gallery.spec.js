@@ -80,7 +80,7 @@ for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
     // The transpiler page draws nothing: it transpiles its editor's GLSL in Rust.
     if (entry.port.example === 483) {
       await expect.poll(async () => Number(await viewer.locator('body').getAttribute('data-builds')), {timeout: 90000}).toBeGreaterThan(0);
-      await expect(viewer.locator('#result')).toContainText('Three.js Transpiler r186');
+      await expect(viewer.locator('#result')).toContainText('Three.js Transpiler r187');
       expect(errors).toEqual([]);
       expect(badResponses).toEqual([]);
       expect(escapedAssets).toEqual([]);
@@ -90,7 +90,7 @@ for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
     // its preview canvas renders through the port's WebGPURenderer.
     if (entry.port.example === 497) {
       await expect.poll(async () => Number(await viewer.locator('body').getAttribute('data-builds')), {timeout: 110000}).toBeGreaterThan(0);
-      await expect(viewer.locator('#result')).toContainText('Three.js r186 - Node System');
+      await expect(viewer.locator('#result')).toContainText('Three.js r187 - Node System');
       await expect.poll(async () => Number(await viewer.locator('#renderer canvas').getAttribute('data-frames')), {timeout: 60000}).toBeGreaterThan(2);
       expect(errors).toEqual([]);
       expect(badResponses).toEqual([]);

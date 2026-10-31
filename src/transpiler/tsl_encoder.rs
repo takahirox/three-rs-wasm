@@ -2,7 +2,7 @@
 use super::ast::*;
 use super::js::*;
 
-/// The r186 `three/tsl` exports `addImport()` tests ( `TSL[ name ] !==
+/// The pinned release's `three/tsl` exports `addImport()` tests ( `TSL[ name ] !==
 /// undefined` ), sorted.
 const TSL_NAMES: &str = include_str!("tsl_names.txt");
 
@@ -786,7 +786,7 @@ impl TslEncoder {
                 code += ";\n";
             }
         }
-        let mut header = "// Three.js Transpiler r186\n\n".to_string();
+        let mut header = "// Three.js Transpiler r187\n\n".to_string();
         if !self.imports.0.is_empty() {
             header += &format!(
                 "import {{ {} }} from 'three/tsl';\n",
