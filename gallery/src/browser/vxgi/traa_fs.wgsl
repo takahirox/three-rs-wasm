@@ -1,0 +1,424 @@
+// Three.js r187 - Node System
+
+// global
+diagnostic( off, derivative_uniformity );
+
+
+// directives
+
+
+// structs
+
+struct StructType0 {
+	closestDepth : f32,
+	closestPositionTexel : vec2<f32>,
+	farthestDepth : f32
+};
+
+struct OutputStruct {
+	@location( 0 ) color: vec4<f32>
+};
+var<private> output : OutputStruct;
+
+// uniforms
+@binding( 0 ) @group( 0 ) var nodeUniform0_sampler : sampler;
+@binding( 1 ) @group( 0 ) var nodeUniform0 : texture_2d<f32>;
+@binding( 2 ) @group( 0 ) var nodeUniform1_sampler : sampler;
+@binding( 3 ) @group( 0 ) var nodeUniform1 : texture_2d<f32>;
+@binding( 4 ) @group( 0 ) var nodeUniform2 : texture_depth_2d;
+@binding( 6 ) @group( 0 ) var nodeUniform7 : texture_depth_2d;
+@binding( 7 ) @group( 0 ) var nodeUniform9_sampler : sampler;
+@binding( 8 ) @group( 0 ) var nodeUniform9 : texture_2d<f32>;
+
+struct objectStruct {
+	nodeUniform3 : vec2<f32>,
+	nodeUniform4 : mat4x4<f32>,
+	nodeUniform5 : mat4x4<f32>,
+	nodeUniform6 : mat4x4<f32>,
+	nodeUniform8 : mat3x3<f32>,
+	nodeUniform10 : mat3x3<f32>,
+	nodeUniform11 : f32
+};
+@binding( 5 ) @group( 0 )
+var<uniform> object : objectStruct;
+
+// vars
+var<private> DiffuseColor : vec4<f32>;
+var<private> nodeVar0 : f32;
+var<private> nodeVar1 : f32;
+var<private> nodeVar2 : vec2<f32>;
+var<private> nodeVar3 : f32;
+var<private> nodeVar4 : vec2<f32>;
+var<private> nodeVar5 : f32;
+var<private> nodeVar6 : f32;
+var<private> nodeVar7 : vec2<f32>;
+var<private> nodeVar8 : f32;
+var<private> nodeVar9 : f32;
+var<private> nodeVar10 : vec2<f32>;
+var<private> nodeVar11 : f32;
+var<private> nodeVar12 : f32;
+var<private> nodeVar13 : vec2<f32>;
+var<private> nodeVar14 : f32;
+var<private> nodeVar15 : f32;
+var<private> nodeVar16 : vec2<f32>;
+var<private> nodeVar17 : f32;
+var<private> nodeVar18 : f32;
+var<private> nodeVar19 : vec2<f32>;
+var<private> nodeVar20 : f32;
+var<private> nodeVar21 : f32;
+var<private> nodeVar22 : vec2<f32>;
+var<private> nodeVar23 : f32;
+var<private> nodeVar24 : f32;
+var<private> nodeVar25 : vec2<f32>;
+var<private> nodeVar26 : f32;
+var<private> nodeVar27 : f32;
+var<private> nodeVar28 : vec2<f32>;
+var<private> nodeVar29 : f32;
+var<private> nodeVar30 : f32;
+var<private> nodeVar31 : StructType0;
+var<private> nodeVar32 : vec4<f32>;
+var<private> nodeVar33 : f32;
+var<private> nodeVar34 : f32;
+var<private> nodeVar35 : vec2<u32>;
+var<private> nodeVar36 : vec4<f32>;
+var<private> nodeVar37 : vec4<f32>;
+var<private> nodeVar38 : vec4<f32>;
+var<private> nodeVar39 : vec4<f32>;
+var<private> nodeVar40 : vec4<f32>;
+var<private> nodeVar41 : vec4<f32>;
+var<private> nodeVar42 : vec4<f32>;
+var<private> nodeVar43 : vec4<f32>;
+var<private> nodeVar44 : vec4<f32>;
+var<private> nodeVar45 : vec4<f32>;
+var<private> nodeVar46 : vec4<f32>;
+var<private> nodeVar47 : vec4<f32>;
+var<private> Output : vec4<f32>;
+
+// codes
+fn fn131 ( velocityUV : vec2<f32>, textureSize : vec2<i32> ) -> f32 {
+
+	
+
+	let nodeConst0 = abs( fract( ( velocityUV * vec2<f32>( textureSize ) ) ) );
+	let nodeConst1 = max( nodeConst0, ( vec2<f32>( 1.0 ) - nodeConst0 ) );
+
+	return ( ( 1.0 - ( nodeConst1.x * nodeConst1.y ) ) / 0.75 );
+
+}
+
+
+fn tsl_clampWrapping_float( coord: f32 ) -> f32 { return clamp( coord, 0.0, 1.0 ); }
+fn tsl_coord_clampS_clampT_2d( coord : vec2f ) -> vec2f {
+
+	return vec2f(
+		tsl_clampWrapping_float( coord.x ),
+		tsl_clampWrapping_float( coord.y )
+	);
+
+}
+
+fn fn130 ( currentColor : vec4<f32>, historyColor : vec4<f32>, minColor : vec4<f32>, maxColor : vec4<f32> ) -> vec4<f32> {
+
+	var nodeVar0 : vec4<f32>;
+
+	let nodeConst0 = ( ( maxColor.xyz + minColor.xyz ) * vec3<f32>( 0.5 ) );
+	let nodeConst1 = ( ( ( maxColor.xyz - minColor.xyz ) * vec3<f32>( 0.5 ) ) + vec3<f32>( 1e-7 ) );
+	let nodeConst2 = ( historyColor - vec4<f32>( nodeConst0, currentColor.w ) );
+	let nodeConst3 = ( nodeConst2.xyz / nodeConst1 );
+	let nodeConst4 = abs( nodeConst3 );
+	let nodeConst5 = max( max( nodeConst4.x, nodeConst4.y ), nodeConst4.z );
+
+	if ( ( nodeConst5 > 1.0 ) ) {
+
+		nodeVar0 = ( vec4<f32>( nodeConst0, currentColor.w ) + ( nodeConst2 / vec4<f32>( nodeConst5 ) ) );
+
+	} else {
+
+		nodeVar0 = historyColor;
+
+	}
+
+
+	return nodeVar0;
+
+}
+
+
+
+
+@fragment
+fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
+
+	// flow
+	// code
+
+	nodeVar0 = 0.05;
+	nodeVar1 = 2.0;
+	nodeVar2 = vec2<f32>( 0.0, 0.0 );
+	nodeVar3 = -1.0;
+	let nodeConst0 = ( nodeVarying0 * vec2<f32>( textureDimensions( nodeUniform1, 0 ) ) );
+	nodeVar4 = ( nodeConst0 + vec2<f32>( -1.0, -1.0 ) );
+	nodeVar5 = textureLoad( nodeUniform2, vec2<i32>( nodeVar4 ), u32( 0u ) );
+	nodeVar6 = nodeVar5;
+
+	if ( ( nodeVar6 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar6;
+		nodeVar2 = nodeVar4;
+		
+
+	}
+
+
+	if ( ( nodeVar6 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar6;
+		
+
+	}
+
+	nodeVar7 = ( nodeConst0 + vec2<f32>( -1.0, 0.0 ) );
+	nodeVar8 = textureLoad( nodeUniform2, vec2<i32>( nodeVar7 ), u32( 0u ) );
+	nodeVar9 = nodeVar8;
+
+	if ( ( nodeVar9 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar9;
+		nodeVar2 = nodeVar7;
+		
+
+	}
+
+
+	if ( ( nodeVar9 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar9;
+		
+
+	}
+
+	nodeVar10 = ( nodeConst0 + vec2<f32>( -1.0, 1.0 ) );
+	nodeVar11 = textureLoad( nodeUniform2, vec2<i32>( nodeVar10 ), u32( 0u ) );
+	nodeVar12 = nodeVar11;
+
+	if ( ( nodeVar12 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar12;
+		nodeVar2 = nodeVar10;
+		
+
+	}
+
+
+	if ( ( nodeVar12 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar12;
+		
+
+	}
+
+	nodeVar13 = ( nodeConst0 + vec2<f32>( 0.0, -1.0 ) );
+	nodeVar14 = textureLoad( nodeUniform2, vec2<i32>( nodeVar13 ), u32( 0u ) );
+	nodeVar15 = nodeVar14;
+
+	if ( ( nodeVar15 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar15;
+		nodeVar2 = nodeVar13;
+		
+
+	}
+
+
+	if ( ( nodeVar15 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar15;
+		
+
+	}
+
+	nodeVar16 = ( nodeConst0 + vec2<f32>( 0.0, 0.0 ) );
+	nodeVar17 = textureLoad( nodeUniform2, vec2<i32>( nodeVar16 ), u32( 0u ) );
+	nodeVar18 = nodeVar17;
+
+	if ( ( nodeVar18 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar18;
+		nodeVar2 = nodeVar16;
+		
+
+	}
+
+
+	if ( ( nodeVar18 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar18;
+		
+
+	}
+
+	nodeVar19 = ( nodeConst0 + vec2<f32>( 0.0, 1.0 ) );
+	nodeVar20 = textureLoad( nodeUniform2, vec2<i32>( nodeVar19 ), u32( 0u ) );
+	nodeVar21 = nodeVar20;
+
+	if ( ( nodeVar21 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar21;
+		nodeVar2 = nodeVar19;
+		
+
+	}
+
+
+	if ( ( nodeVar21 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar21;
+		
+
+	}
+
+	nodeVar22 = ( nodeConst0 + vec2<f32>( 1.0, -1.0 ) );
+	nodeVar23 = textureLoad( nodeUniform2, vec2<i32>( nodeVar22 ), u32( 0u ) );
+	nodeVar24 = nodeVar23;
+
+	if ( ( nodeVar24 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar24;
+		nodeVar2 = nodeVar22;
+		
+
+	}
+
+
+	if ( ( nodeVar24 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar24;
+		
+
+	}
+
+	nodeVar25 = ( nodeConst0 + vec2<f32>( 1.0, 0.0 ) );
+	nodeVar26 = textureLoad( nodeUniform2, vec2<i32>( nodeVar25 ), u32( 0u ) );
+	nodeVar27 = nodeVar26;
+
+	if ( ( nodeVar27 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar27;
+		nodeVar2 = nodeVar25;
+		
+
+	}
+
+
+	if ( ( nodeVar27 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar27;
+		
+
+	}
+
+	nodeVar28 = ( nodeConst0 + vec2<f32>( 1.0, 1.0 ) );
+	nodeVar29 = textureLoad( nodeUniform2, vec2<i32>( nodeVar28 ), u32( 0u ) );
+	nodeVar30 = nodeVar29;
+
+	if ( ( nodeVar30 < nodeVar1 ) ) {
+
+		nodeVar1 = nodeVar30;
+		nodeVar2 = nodeVar28;
+		
+
+	}
+
+
+	if ( ( nodeVar30 > nodeVar3 ) ) {
+
+		nodeVar3 = nodeVar30;
+		
+
+	}
+
+	nodeVar31 = StructType0( nodeVar1, nodeVar2, nodeVar3 );
+	nodeVar32 = textureLoad( nodeUniform0, vec2<i32>( nodeVar31.closestPositionTexel ), u32( 0u ) );
+	let nodeConst1 = ( nodeVar32.xy * vec2<f32>( 0.5, -0.5 ) );
+	let nodeConst2 = fn131( nodeConst1, vec2<i32>( textureDimensions( nodeUniform1, 0 ) ) );
+	nodeVar0 = ( nodeVar0 + ( nodeConst2 * 0.25 ) );
+	let nodeConst3 = ( nodeVarying0 - nodeConst1 );
+	nodeVar35 = textureDimensions( nodeUniform7, u32( 0 ) );
+	nodeVar34 = textureLoad( nodeUniform7, vec2<u32>( clamp( floor( tsl_coord_clampS_clampT_2d( ( object.nodeUniform8 * vec3<f32>( nodeConst3, 1.0 ) ).xy ) * vec2<f32>( nodeVar35 ) ), vec2<f32>( 0 ), vec2<f32>( nodeVar35 - vec2<u32>( 1, 1 ) ) ) ), u32( 0 ) );
+	let nodeConst4 = ( object.nodeUniform6 * vec4<f32>( vec3<f32>( ( ( vec2<f32>( nodeConst3.x, ( 1.0 - nodeConst3.y ) ) * vec2<f32>( 2.0 ) ) - vec2<f32>( 1.0 ) ), nodeVar34 ), 1.0 ) );
+
+	if ( ( ( all( ( nodeConst3 >= vec2<f32>( 0.0 ) ) ) && all( ( nodeConst3 <= vec2<f32>( 1.0 ) ) ) ) && ( ( ( nodeVar31.farthestDepth - nodeVar31.closestDepth ) > 0.001 ) || ( ! ( ( nodeVar31.closestDepth - ( ( ( object.nodeUniform3.x + ( object.nodeUniform4 * vec4<f32>( ( object.nodeUniform5 * vec4<f32>( ( nodeConst4.xyz / vec3<f32>( nodeConst4.w ) ), 1.0 ) ).xyz, 1.0 ) ).z ) * object.nodeUniform3.y ) / ( ( object.nodeUniform3.y - object.nodeUniform3.x ) * ( object.nodeUniform4 * vec4<f32>( ( object.nodeUniform5 * vec4<f32>( ( nodeConst4.xyz / vec3<f32>( nodeConst4.w ) ), 1.0 ) ).xyz, 1.0 ) ).z ) ) ) > 0.0005 ) ) ) ) ) {
+
+		let nodeConst5 = clamp( ( length( ( ( nodeVarying0 - nodeConst3 ) * vec2<f32>( textureDimensions( nodeUniform1, 0 ) ) ) ) / 128.0 ), 0.0, 1.0 );
+		nodeVar33 = clamp( ( nodeVar0 + nodeConst5 ), 0.0, 1.0 );
+
+	} else {
+
+		nodeVar33 = 1.0;
+
+	}
+
+	nodeVar0 = nodeVar33;
+	nodeVar36 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 );
+	let nodeConst6 = nodeVar36;
+	let nodeConst7 = ( nodeConst6 * vec4<f32>( ( 1.0 / ( max( max( nodeConst6.x, nodeConst6.y ), nodeConst6.z ) + 1.0 ) ) ) );
+	nodeVar37 = nodeConst6;
+	nodeVar38 = ( nodeConst6 * nodeConst6 );
+	nodeVar39 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( -1, -1 ), u32( 0u ) );
+	let nodeConst8 = max( nodeVar39, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst8 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst8 * nodeConst8 ) );
+	nodeVar40 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( -1, 1 ), u32( 0u ) );
+	let nodeConst9 = max( nodeVar40, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst9 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst9 * nodeConst9 ) );
+	nodeVar41 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( 1, -1 ), u32( 0u ) );
+	let nodeConst10 = max( nodeVar41, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst10 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst10 * nodeConst10 ) );
+	nodeVar42 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( 1, 1 ), u32( 0u ) );
+	let nodeConst11 = max( nodeVar42, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst11 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst11 * nodeConst11 ) );
+	nodeVar43 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( 1, 0 ), u32( 0u ) );
+	let nodeConst12 = max( nodeVar43, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst12 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst12 * nodeConst12 ) );
+	nodeVar44 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( 0, -1 ), u32( 0u ) );
+	let nodeConst13 = max( nodeVar44, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst13 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst13 * nodeConst13 ) );
+	nodeVar45 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( 0, 1 ), u32( 0u ) );
+	let nodeConst14 = max( nodeVar45, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst14 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst14 * nodeConst14 ) );
+	nodeVar46 = textureLoad( nodeUniform1, vec2<i32>( nodeConst0 ) + vec2<i32>( -1, 0 ), u32( 0u ) );
+	let nodeConst15 = max( nodeVar46, vec4<f32>( 0.0 ) );
+	nodeVar37 = ( nodeVar37 + nodeConst15 );
+	nodeVar38 = ( nodeVar38 + ( nodeConst15 * nodeConst15 ) );
+	let nodeConst16 = ( nodeVar37 / vec4<f32>( 9.0 ) );
+	let nodeConst5 = clamp( ( length( ( ( nodeVarying0 - nodeConst3 ) * vec2<f32>( textureDimensions( nodeUniform1, 0 ) ) ) ) / 128.0 ), 0.0, 1.0 );
+	let nodeConst17 = ( 1.0 - nodeConst5 );
+	let nodeConst18 = ( sqrt( max( ( ( nodeVar38 / vec4<f32>( 9.0 ) ) - ( nodeConst16 * nodeConst16 ) ), vec4<f32>( 0.0 ) ) ) * vec4<f32>( mix( 0.5, 1.0, ( nodeConst17 * nodeConst17 ) ) ) );
+	let nodeConst19 = ( nodeConst16 - nodeConst18 );
+	let nodeConst20 = ( nodeConst16 + nodeConst18 );
+	nodeVar47 = textureSample( nodeUniform9, nodeUniform9_sampler, ( object.nodeUniform10 * vec3<f32>( nodeConst3, 1.0 ) ).xy );
+	let nodeConst21 = fn130( clamp( nodeConst16, nodeConst19, nodeConst20 ), nodeVar47, nodeConst19, nodeConst20 );
+	let nodeConst22 = ( nodeConst21 * vec4<f32>( ( 1.0 / ( max( max( nodeConst21.x, nodeConst21.y ), nodeConst21.z ) + 1.0 ) ) ) );
+	let nodeConst23 = dot( nodeConst7.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) );
+	let nodeConst24 = dot( nodeConst22.xyz, vec3<f32>( 0.2126, 0.7152, 0.0722 ) );
+	let nodeConst25 = ( nodeVar0 / ( nodeConst23 + 1.0 ) );
+	let nodeConst26 = ( ( 1.0 - nodeVar0 ) / ( nodeConst24 + 1.0 ) );
+	DiffuseColor = ( ( ( nodeConst6 * vec4<f32>( nodeConst25 ) ) + ( nodeConst21 * vec4<f32>( nodeConst26 ) ) ) / vec4<f32>( max( ( nodeConst25 + nodeConst26 ), 0.00001 ) ) );
+	DiffuseColor.w = ( DiffuseColor.w * object.nodeUniform11 );
+	DiffuseColor.w = 1.0;
+	let nodeConst27 = max( vec4<f32>( DiffuseColor.xyz, DiffuseColor.w ), vec4<f32>( 0.0 ) );
+	Output = nodeConst27;
+
+	// result
+
+	output.color = nodeConst27;
+
+	return output;
+
+}
