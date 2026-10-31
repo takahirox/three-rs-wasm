@@ -6,8 +6,8 @@ const view='canvas';
 // Per example: capture times, [control index, reference value, Rust value] at its time, input script.
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
- misc_exporter_exr:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'pmrem',0]],script:[['param',0,'pmrem',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
- misc_exporter_ktx2:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'pmrem',0]],script:[['param',0,'pmrem',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_exr:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'render-target',0]],script:[['param',0,'render-target',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
+ misc_exporter_ktx2:{times:[0],parameters:[[0,'data-texture',1,0]],restore:[[0,'render-target',0]],script:[['param',0,'render-target',0,0]],at:0,antialias:true,settle:true,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
  webgpu_materials_video:{times:[],parameters:[],at:8,antialias:true,script:[['video',3.5,0],['wait',2],['wait',4],['move',400,300,null],['wait',5],['wait',6],['move',100,100,null],['wait',8]]},
  webgpu_compile_async:{times:[0,0.5,1,1.5,2.25],parameters:[],at:2.25,antialias:true},
  webgl_materials_normalmap_object_space:{times:[0],parameters:[],at:0,drag:[[256,256],[330,300]],wheel:[256,256,-300]},
@@ -151,10 +151,10 @@ const exportCases={
  misc_exporter_exr:{button:3,files:[
   [[0,'data-texture',1],[1,'HalfFloatType',1],[2,'ZIP',0]],
   [[1,'FloatType',0],[2,'ZIPS',1]],
-  [[1,'HalfFloatType',1],[2,'NONE',2]],
-  [[0,'pmrem',0],[1,'HalfFloatType',1],[2,'ZIP',0]],
+  [[1,'HalfFloatType',1],[2,'NONE',4]],
+  [[0,'render-target',0],[1,'HalfFloatType',1],[2,'ZIP',0]],
  ]},
- misc_exporter_ktx2:{button:1,files:[[[0,'data-texture',1]],[[0,'pmrem',0]]]},
+ misc_exporter_ktx2:{button:1,files:[[[0,'data-texture',1]],[[0,'render-target',0]]]},
 };
 // Split a file into its exact container bytes and its pixel payload. EXR blocks are
 // inflated and their byte predictor and interleave undone: zlib output itself differs
@@ -198,9 +198,9 @@ for(const [kind,spec] of Object.entries(exportCases))test(`Exporters and video e
   const [a,b]=[files.rust[k],files.reference[k]];
   expect(a.container,`${kind} ${k} container`).toBe(b.container);expect(a.ys).toEqual(b.ys);
   const [da,db]=[Buffer.from(a.data,'base64'),Buffer.from(b.data,'base64')];expect(da.length,`${kind} ${k} data size`).toBe(db.length);
-  // Data textures are exact; the PMREM atlases are compared as half floats.
-  const pmrem=spec.files[k].some(([i,v])=>i===0&&v==='pmrem')||(k>0&&!spec.files[k].some(([i])=>i===0)&&spec.files.slice(0,k).reverse().find(s=>s.some(([i])=>i===0))?.find(([i])=>i===0)[1]==='pmrem');
-  if(!pmrem){report.push({k,exact:da.equals(db)});expect(da.equals(db),`${kind} ${k} data`).toBe(true);continue;}
+  // Data textures are exact; the render targets are compared as half floats.
+  const rendered=spec.files[k].some(([i,v])=>i===0&&v==='render-target')||(k>0&&!spec.files[k].some(([i])=>i===0)&&spec.files.slice(0,k).reverse().find(s=>s.some(([i])=>i===0))?.find(([i])=>i===0)[1]==='render-target');
+  if(!rendered){report.push({k,exact:da.equals(db)});expect(da.equals(db),`${kind} ${k} data`).toBe(true);continue;}
   if(process.env.EXPORT_DUMP){writeFileSync(info.outputPath(`${k}-rust.bin`),da);writeFileSync(info.outputPath(`${k}-reference.bin`),db);}
   const [ha,hb]=[new Uint16Array(da.buffer,da.byteOffset,da.length/2),new Uint16Array(db.buffer,db.byteOffset,db.length/2)];
   let bad=0,sum=0,max=0;for(let i=0;i<ha.length;i++){const x=half(ha[i]),y=half(hb[i]);const d=Math.abs(x-y)/Math.max(1,Math.abs(y));sum+=d;max=Math.max(max,d);if(d>0.02)bad++;}

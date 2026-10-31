@@ -164,6 +164,14 @@ pub struct Renderer {
             crate::environment_gpu::GpuEnvironment,
         )>,
     >,
+    /// Sharp backgrounds' equirectangular maps, uploaded without a PMREM
+    /// ( WebGLBackground converts them to a cube, not a PMREM ).
+    background_sources: RefCell<
+        Vec<(
+            Weak<crate::environment::EnvironmentMap>,
+            crate::environment_gpu::GpuEnvironment,
+        )>,
+    >,
     /// The DFG lookup table that physical materials sample.
     pub dfg: wgpu::TextureView,
     ltc: wgpu::TextureView,
@@ -332,6 +340,30 @@ impl Renderer {
         self.material_environments
             .borrow_mut()
             .retain(|(owner, _)| owner.strong_count() > 0);
+        self.background_sources
+            .borrow_mut()
+            .retain(|(owner, _)| owner.strong_count() > 0);
+    }
+    /// `scene.background = texture`: a sharp background needs only its
+    /// equirectangular map; a blurred one, or a map already prefiltered,
+    /// samples the PMREM ( WebGLBackground's usePMREM ).
+    fn background_environment(
+        &self,
+        image: &Arc<crate::environment::EnvironmentMap>,
+        blurred: bool,
+    ) -> Result<crate::environment_gpu::GpuEnvironment> {
+        if blurred || image.gpu.is_some() {
+            return self.material_environment(image);
+        }
+        let mut cache = self.background_sources.borrow_mut();
+        let weak = Arc::downgrade(image);
+        if let Some((_, env)) = cache.iter().find(|(owner, _)| owner.ptr_eq(&weak)) {
+            return Ok(env.clone());
+        }
+        cache.retain(|(owner, _)| owner.strong_count() > 0);
+        let env = crate::environment_gpu::source_only(&self.device, &self.queue, image)?;
+        cache.push((weak, env.clone()));
+        Ok(env)
     }
     /// A material's own environment, filtered on first use.
     fn material_environment(
@@ -664,6 +696,7 @@ impl Renderer {
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false)?),
             environment: RefCell::new(None),
             material_environments: RefCell::new(Vec::new()),
+            background_sources: RefCell::new(Vec::new()),
             dfg,
             ltc,
             ltc_sampler,
@@ -1207,7 +1240,7 @@ impl Renderer {
         let background_map = scene
             .background_map
             .as_ref()
-            .map(|map| self.material_environment(map))
+            .map(|map| self.background_environment(map, scene.background_blur > 0.))
             .transpose()?;
         let prepare_background = |env: &crate::environment_gpu::GpuEnvironment| {
             crate::background::prepare(

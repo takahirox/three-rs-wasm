@@ -395,15 +395,12 @@ fn environment(
     }
 }
 
-/// fromEquirectangular: the PMREM of a linear HDR equirectangular map.
-pub(crate) fn build(
+/// The linear HDR equirectangular map, uploaded once.
+fn upload_equirect(
     device: &wgpu::Device,
     queue: &wgpu::Queue,
     image: &EnvironmentMap,
-) -> Result<GpuEnvironment> {
-    if let Some(gpu) = &image.gpu {
-        return Ok(gpu.clone());
-    }
+) -> Result<wgpu::TextureView> {
     if image.width < 64
         || image.height == 0
         || image.rgba.len() != image.width as usize * image.height as usize * 4
@@ -436,7 +433,19 @@ pub(crate) fn build(
         },
         texture.size(),
     );
-    let source = texture.create_view(&Default::default());
+    Ok(texture.create_view(&Default::default()))
+}
+
+/// fromEquirectangular: the PMREM of a linear HDR equirectangular map.
+pub(crate) fn build(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    image: &EnvironmentMap,
+) -> Result<GpuEnvironment> {
+    if let Some(gpu) = &image.gpu {
+        return Ok(gpu.clone());
+    }
+    let source = upload_equirect(device, queue, image)?;
     generate(
         device,
         queue,
@@ -445,6 +454,32 @@ pub(crate) fn build(
         0.,
         Some(source.clone()),
     )
+}
+
+/// A sharp background's equirectangular map without a PMREM: WebGLBackground
+/// only converts it to a cube ( the background shader evaluates that cube's
+/// texels from the map ). The PMREM binding is an empty 1-texel cube.
+pub(crate) fn source_only(
+    device: &wgpu::Device,
+    queue: &wgpu::Queue,
+    image: &EnvironmentMap,
+) -> Result<GpuEnvironment> {
+    let source = upload_equirect(device, queue, image)?;
+    let empty = device.create_texture(&wgpu::TextureDescriptor {
+        label: Some("background without PMREM"),
+        size: wgpu::Extent3d {
+            width: 1,
+            height: 1,
+            depth_or_array_layers: 6,
+        },
+        mip_level_count: 1,
+        sample_count: 1,
+        dimension: wgpu::TextureDimension::D2,
+        format: FORMAT,
+        usage: wgpu::TextureUsages::TEXTURE_BINDING,
+        view_formats: &[],
+    });
+    Ok(environment(device, empty, Some(source), false))
 }
 
 /// CubeCamera's six faces, in the engine's cube orientation ( the cube
