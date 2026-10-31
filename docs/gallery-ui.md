@@ -43,9 +43,8 @@ page as JSON (`#gallery-ui`).
 
 ## The gallery side (`web/examples/ui/`)
 
-Each library is still the r186 package's ( `three@0.186.0`, loaded from
-jsDelivr ). stats.js and lil-gui are identical to r187's copies; r187 changed
-the Inspector ( `examples/jsm/inspector/` ), so the pages show r186's.
+Each library is the r187 package's ( `three@0.187.0`, loaded from jsDelivr;
+its `examples/jsm/` and `src/` are identical to the pinned r187 sources ).
 
 **stats.js**
 - It is created as the original created it, with the original's style
@@ -71,8 +70,8 @@ the Inspector ( `examples/jsm/inspector/` ), so the pages show r186's.
 - The original `Inspector` class runs unchanged. Its parameter groups are
   rebuilt with the recorded calls. The page's import map points `three`,
   `three/webgpu` and `three/tsl` at `ui/three/shim.js`, so no three.js
-  renderer loads. The shim provides r186's `constants.js` and
-  `EventDispatcher.js`, unchanged, and InspectorBase, matching the r186
+  renderer loads. The shim provides r187's `constants.js` and
+  `EventDispatcher.js`, unchanged, and InspectorBase, matching the r187
   Inspector it serves; the Inspector's
   rendering features get inert stand-ins.
 - The Inspector reads a renderer facade:

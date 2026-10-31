@@ -6,7 +6,7 @@
 // the port. The preview renders through the browser's GPUDevice, requested
 // as WebGPUBackend requests it.
 const MONACO = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min';
-const GUI_URL = 'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/libs/lil-gui.module.min.js';
+const GUI_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/lil-gui.module.min.js';
 // WebGPUBackend's GPUFeatureName values.
 const FEATURES = [ 'core-features-and-limits', 'depth-clip-control', 'depth32float-stencil8', 'texture-compression-bc', 'texture-compression-bc-sliced-3d', 'texture-compression-etc2', 'texture-compression-astc', 'texture-compression-astc-sliced-3d', 'timestamp-query', 'indirect-first-instance', 'shader-f16', 'rg11b10ufloat-renderable', 'bgra8unorm-storage', 'float32-filterable', 'float32-blendable', 'clip-distances', 'dual-source-blending', 'subgroups', 'texture-formats-tier1', 'texture-formats-tier2' ];
 

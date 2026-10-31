@@ -6,11 +6,15 @@
 //! the CPU, as the page casts them ( through the BVH, or every triangle when
 //! useBVH is off; firstHitOnly only changes how the nearest hit is found ),
 //! the origin and hit spheres of a dynamic InstancedMesh, the translucent ray
-//! LineSegments with their draw range. Under r186 BVHHelper never drew: its
-//! BVHRootHelper extends Object3D, whose intersectsFrustum returned undefined,
-//! so the renderer culled it while frustumCulled was set. r187's
-//! Object3D.intersectsFrustum returns true, so the page draws the helper when
-//! displayHelper is on ( to helperDepth ); the port does not draw it yet. The bunny is parsed at load by the FBXLoader port.
+//! LineSegments with their draw range. BVHHelper: r187's
+//! Object3D.intersectsFrustum returns true, so the renderer never culls its
+//! BVHRootHelper ( an Object3D drawn as LineSegments ), and the page draws the
+//! boxes down to helperDepth when displayHelper is on ( under r186 it was
+//! always culled ). The port builds the same indexed box edges
+//! ( getBVHBoundPositions, getBVHBoundIndices ) once per helper.update(), into
+//! one resident geometry whose buffers are rewritten in place, and moves the
+//! node with the bunny's matrix as BVHHelper.updateMatrixWorld does. The
+//! bunny is parsed at load by the FBXLoader port.
 //! The page advances its rays and the bunny's turn once per animation frame;
 //! the port steps the same per-frame updates at 60 Hz of the example clock.
 use super::controls_attributes::{Controls, camera_state};
@@ -173,6 +177,41 @@ impl Bvh {
         }
         hits.into_iter().min_by(|a, b| a.0.total_cmp(&b.0))
     }
+}
+
+/// BVHRootHelper.getBVHBoundPositions ( displayParents off ) and
+/// getBVHBoundIndices ( displayEdges ): the corners of the boxes at
+/// `depth - 1` or of shallower leaves, depth first, and their twelve edges.
+fn helper_geometry(root: &Node, depth: usize) -> (Vec<f32>, Vec<u32>) {
+    fn visit(node: &Node, depth: usize, target: usize, positions: &mut Vec<f32>) {
+        match node {
+            Node::Inner { left, right, .. } if depth < target => {
+                visit(left, depth + 1, target, positions);
+                visit(right, depth + 1, target, positions);
+            }
+            _ => {
+                let b = node.bounds();
+                for x in [b[0], b[3]] {
+                    for y in [b[1], b[4]] {
+                        for z in [b[2], b[5]] {
+                            positions.extend([x, y, z]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    const EDGES: [u32; 24] = [
+        0, 4, 1, 5, 2, 6, 3, 7, 0, 2, 1, 3, 4, 6, 5, 7, 0, 1, 2, 3, 4, 5, 6, 7,
+    ];
+    let mut positions = vec![];
+    // targetDepth = depth - 1; the GUI's helperDepth is at least 1.
+    visit(root, 0, depth.saturating_sub(1), &mut positions);
+    let boxes = positions.len() / 24;
+    let index = (0..boxes as u32)
+        .flat_map(|b| EDGES.map(|e| b * 8 + e))
+        .collect();
+    (positions, index)
 }
 
 fn split(
@@ -340,6 +379,20 @@ pub(super) struct Demo {
     bunny: Object3D,
     spheres: Object3D,
     lines: Object3D,
+    /// BVHHelper's one BVHRootHelper ( the bunny's BVH has one root ).
+    helper: Object3D,
+    helper_depth: usize,
+    display_helper: bool,
+    /// helper.update() found a boundsTree: an update while useBVH is off
+    /// removes the root, and it stays removed until the next update.
+    helper_root: bool,
+    /// The depth changed since the geometry was built.
+    helper_dirty: bool,
+    /// The helper geometry's bounding sphere center ( its box's center ).
+    helper_center: Vector3,
+    /// The ray lines' bounding sphere center, computed at their first
+    /// render from the whole position array ( unused rays at the origin ).
+    lines_center: Option<Vector3>,
     positions: Arc<Vec<f32>>,
     index: Vec<u32>,
     bvh: Bvh,
@@ -475,6 +528,22 @@ impl Demo {
             materials: vec![Arc::new(Material::Phong(material))],
         }));
         s.get_mut(bunny)?.scale = Vector3::splat(0.0075);
+        // helper = new BVHHelper( mesh ); helper.color.set( 0xE91E63 ).
+        let mut helper_material = LineBasicMaterial::default();
+        helper_material.properties.color = Color::from_hex(0xe91e63);
+        helper_material.properties.transparent = true;
+        helper_material.properties.opacity = 0.3;
+        helper_material.properties.depth_write = false;
+        let helper = s.insert(NodeKind::Line(Line {
+            geometry: Arc::new(BufferGeometry::default()),
+            material: Arc::new(Material::Line(helper_material)),
+            segments: true,
+        }));
+        {
+            let n = s.get_mut(helper)?;
+            n.frustum_culled = false;
+            n.visible = false;
+        }
         let mut controls = Controls::new(None, (5., 75.), PI, true);
         controls.update(s, c)?;
         Ok(Self {
@@ -482,6 +551,13 @@ impl Demo {
             bunny,
             spheres,
             lines,
+            helper,
+            helper_depth: 10,
+            display_helper: false,
+            helper_root: true,
+            helper_dirty: true,
+            helper_center: Vector3::ZERO,
+            lines_center: None,
             positions: Arc::new(positions),
             index,
             bvh,
@@ -493,6 +569,46 @@ impl Demo {
             first_hit_only: true,
             use_bvh: true,
         })
+    }
+    /// BVHHelper.update(): the boxes of the BVH found when it ran
+    /// ( `helper_root` ) to the helper's depth.
+    fn update_helper(&mut self, s: &mut Scene) -> Result<()> {
+        if !std::mem::take(&mut self.helper_dirty) || !self.helper_root {
+            return Ok(());
+        }
+        let (positions, index) = helper_geometry(&self.bvh.root, self.helper_depth);
+        let mut bounds = Box3::default();
+        for p in positions.chunks(3) {
+            bounds.expand_by_point(Vector3::new(
+                f64::from(p[0]),
+                f64::from(p[1]),
+                f64::from(p[2]),
+            ));
+        }
+        self.helper_center = bounds.center();
+        if let NodeKind::Line(l) = &mut s.get_mut(self.helper)?.kind {
+            let g = Arc::make_mut(&mut l.geometry);
+            g.set_attribute(
+                "position",
+                Attribute::F32(BufferAttribute::new(positions, 3, false)?),
+            );
+            g.set_index(Some(index));
+            g.bounding_box = None;
+            g.bounding_sphere = None;
+        }
+        Ok(())
+    }
+    /// The helper's place among the transparent draws: WebGLRenderer sorts
+    /// them back to front by the clip-space z of each geometry's bounding
+    /// sphere center, ties by id ( the lines were added first ).
+    fn sort_helper(&self, s: &mut Scene, c: Object3D, world: Matrix4) -> Result<()> {
+        let center = world.transform_point3(self.helper_center);
+        let camera = s.get(c)?;
+        let forward = camera.quaternion * Vector3::NEG_Z;
+        let depth = |p: Vector3| (p - camera.position).dot(forward);
+        let farther = depth(center) > depth(self.lines_center.unwrap_or_default());
+        s.get_mut(self.helper)?.render_order = if farther { -1 } else { 1 };
+        Ok(())
     }
     /// render(): the bunny's turn, then updateRays().
     fn frame(&mut self, s: &mut Scene) -> Result<()> {
@@ -577,8 +693,41 @@ impl Demo {
         while self.frames < target {
             self.frame(s)?;
         }
-        s.get_mut(self.bunny)?.quaternion = Quaternion::from_rotation_y(self.rotation);
-        self.controls.update(s, c)
+        if self.lines_center.is_none()
+            && let NodeKind::Line(l) = &s.get(self.lines)?.kind
+            && let Some(Attribute::F32(a)) = l.geometry.attributes.get("position")
+        {
+            let mut bounds = Box3::default();
+            for p in a.array().chunks(3) {
+                bounds.expand_by_point(Vector3::new(
+                    f64::from(p[0]),
+                    f64::from(p[1]),
+                    f64::from(p[2]),
+                ));
+            }
+            self.lines_center = Some(bounds.center());
+        }
+        let quaternion = Quaternion::from_rotation_y(self.rotation);
+        s.get_mut(self.bunny)?.quaternion = quaternion;
+        self.controls.update(s, c)?;
+        // BVHHelper.updateMatrixWorld: the helper takes the mesh's matrix.
+        let n = s.get_mut(self.helper)?;
+        n.quaternion = quaternion;
+        n.scale = Vector3::splat(0.0075);
+        n.visible = self.display_helper && self.helper_root;
+        if n.visible {
+            // The boxes are built when next drawn: the geometry moves to a new
+            // allocation as it changes, which its resident buffers follow only
+            // while it is drawn.
+            self.update_helper(s)?;
+            let world = Matrix4::from_scale_rotation_translation(
+                Vector3::splat(0.0075),
+                quaternion,
+                Vector3::ZERO,
+            );
+            self.sort_helper(s, c, world)?;
+        }
+        Ok(())
     }
     pub fn draw(&mut self, _kind: u32, _x: f64, _y: f64) {}
     pub fn key(&mut self, _code: u32, _down: bool) {}
@@ -608,8 +757,14 @@ impl Demo {
             0 => self.count = (value as usize).clamp(1, MAX_RAYS),
             1 => self.first_hit_only = value != 0.,
             2 => self.use_bvh = value != 0.,
-            // displayHelper and helperDepth: the culled helper.
-            3 | 4 => {}
+            3 => self.display_helper = value != 0.,
+            // helper.depth = v; helper.update(): the boundsTree of the
+            // moment ( null while useBVH is off removes the root ).
+            4 => {
+                self.helper_depth = (value as usize).clamp(1, 20);
+                self.helper_root = self.use_bvh;
+                self.helper_dirty = true;
+            }
             _ => return Err(Error::Invalid("raycaster bvh parameter")),
         }
         Ok(())

@@ -1,16 +1,15 @@
 //! WebXR presentation through the WebXR/WebGPU binding, as three r187's
 //! XRManager drives it for a WebGPU backend ( `renderers/common/XRManager.js` ):
 //! an `XRGPUBinding` projection layer with one array layer per view, the
-//! views' cameras ( an ArrayCamera with the union camera of two views: r186's
-//! setProjectionFromUnion, which r187 removed, copying the first view's
-//! projection instead; the port still builds the union ), and
+//! views' cameras ( an ArrayCamera whose transform and projection are the
+//! first view's, as r187 sets them ), and
 //! WebXRController's target-ray and grip spaces. The browser's XR session
 //! itself stays in the page's JavaScript ( `web/examples/xr.js` ), which hands
 //! each frame's views, layer texture and input poses to this module.
 //!
 //! Rendering keeps three's WebGPU structure: each view is drawn into its own
 //! layer of the session's texture, multisampled and resolved there, sorted
-//! with the union camera, with one shadow update per frame. Each view culls
+//! with the XR camera ( the first view's ), with one shadow update per frame. Each view culls
 //! with its own frustum; three draws what either view's frustum holds into
 //! both layers, and the draws outside a view's frustum leave no pixels.
 //! There is no WebGL fallback: a session without the 'webgpu' feature is an
@@ -155,9 +154,9 @@ pub struct XrManager {
     /// The left and right view cameras ( unparented; their world matrices are
     /// set from the user camera's parent each frame ).
     pub cameras: Vec<Object3D>,
-    /// The ArrayCamera's union view-projection.
-    union_projection: Matrix4,
-    union_world: Matrix4,
+    /// The ArrayCamera's projection and world matrix: the first view's.
+    xr_projection: Matrix4,
+    xr_world: Matrix4,
     pub controllers: Vec<XrController>,
     /// The render state's depthNear/depthFar the session was last given.
     depth_range: Option<(f64, f64)>,
@@ -173,8 +172,8 @@ impl XrManager {
         XrManager {
             presenting: false,
             cameras: Vec::new(),
-            union_projection: Matrix4::IDENTITY,
-            union_world: Matrix4::IDENTITY,
+            xr_projection: Matrix4::IDENTITY,
+            xr_world: Matrix4::IDENTITY,
             controllers: Vec::new(),
             depth_range: None,
             saved_camera: None,
@@ -277,7 +276,8 @@ impl XrManager {
         Ok(())
     }
     /// XRManager.updateCamera: the views' world matrices under the user
-    /// camera's parent, the union camera, and the user camera following it.
+    /// camera's parent, the XR camera copying the first view's projection,
+    /// and the user camera following it.
     pub fn update_camera(&mut self, scene: &mut Scene, camera: Object3D) -> Result<()> {
         scene.update()?;
         let (near, far, parent, mask) = {
@@ -314,11 +314,11 @@ impl XrManager {
                 projections[i] = p.projection_override.unwrap_or(Matrix4::IDENTITY);
             }
         }
-        // cameraXR.matrix is the first view's; its world, before the union
-        // offset, is the first view's world.
-        let (world, projection) = union_camera(worlds, projections);
-        self.union_world = world;
-        self.union_projection = projection;
+        // cameraXR.matrix is the first view's, so its world is the first
+        // view's world; cameraXR.projectionMatrix.copy( cameraL.projectionMatrix ).
+        let (world, projection) = (worlds[0], projections[0]);
+        self.xr_world = world;
+        self.xr_projection = projection;
         // updateUserCamera.
         if self.saved_camera.is_none()
             && let NodeKind::Camera(Camera::Perspective(p)) = &scene.get(camera)?.kind
@@ -339,7 +339,7 @@ impl XrManager {
         Ok(())
     }
     /// Draws the frame's views into the layer texture: one pass per view,
-    /// sorted with the union camera, shadows updated once. `draw`
+    /// sorted with the XR camera, shadows updated once. `draw`
     /// renders the scene for a view into the given target ( a direct render,
     /// or a scene render and an output pass ).
     pub fn render(
@@ -356,7 +356,7 @@ impl XrManager {
         target.set_texture(0, color)?;
         renderer
             .array_camera_view_projection
-            .set(Some(self.union_projection * self.union_world.inverse()));
+            .set(Some(self.xr_projection * self.xr_world.inverse()));
         let shadow = scene.shadow_auto_update;
         let mut result = Ok(());
         for (i, &camera) in self.cameras.iter().enumerate() {
@@ -384,56 +384,6 @@ impl Default for XrManager {
     fn default() -> Self {
         Self::new()
     }
-}
-
-/// setProjectionFromUnion: a camera behind both views whose frustum covers
-/// them. Like three, it reads near/far and the field of view from the left
-/// projection with OpenGL's clip conventions.
-pub fn union_camera(worlds: [Matrix4; 2], projections: [Matrix4; 2]) -> (Matrix4, Matrix4) {
-    let left_pos = worlds[0].w_axis.truncate();
-    let right_pos = worlds[1].w_axis.truncate();
-    let ipd = left_pos.distance(right_pos);
-    let l = projections[0].to_cols_array();
-    let r = projections[1].to_cols_array();
-    let near = l[14] / (l[10] - 1.);
-    let far = l[14] / (l[10] + 1.);
-    let top_fov = (l[9] + 1.) / l[5];
-    let bottom_fov = (l[9] - 1.) / l[5];
-    let left_fov = (l[8] - 1.) / l[0];
-    let right_fov = (r[8] + 1.) / r[0];
-    let left = near * left_fov;
-    let right = near * right_fov;
-    let z_offset = ipd / (-left_fov + right_fov);
-    let x_offset = z_offset * -left_fov;
-    let (scale, rotation, position) = worlds[0].to_scale_rotation_translation();
-    // camera.translateX( xOffset ); camera.translateZ( zOffset ).
-    let position = position + rotation * Vector3::new(x_offset, 0., z_offset);
-    let world = Matrix4::from_scale_rotation_translation(scale, rotation, position);
-    if l[10] == -1.0 {
-        return (world, projections[0]);
-    }
-    let near2 = near + z_offset;
-    let far2 = far + z_offset;
-    let left2 = left - x_offset;
-    let right2 = right + (ipd - x_offset);
-    let top2 = top_fov * far / far2 * near2;
-    let bottom2 = bottom_fov * far / far2 * near2;
-    (
-        world,
-        make_perspective(left2, right2, top2, bottom2, near2, far2),
-    )
-}
-
-/// Matrix4.makePerspective in its default WebGL coordinate system, as
-/// setProjectionFromUnion calls it. The union camera only orders the draws.
-fn make_perspective(left: f64, right: f64, top: f64, bottom: f64, near: f64, far: f64) -> Matrix4 {
-    let x = 2. * near / (right - left);
-    let y = 2. * near / (top - bottom);
-    let a = (right + left) / (right - left);
-    let b = (top + bottom) / (top - bottom);
-    let c = -(far + near) / (far - near);
-    let d = -2. * far * near / (far - near);
-    Matrix4::from_cols_array(&[x, 0., 0., 0., 0., y, 0., 0., a, b, c, -1., 0., 0., d, 0.])
 }
 
 /// `raycaster.setFromXRController( controller )`: the target ray's world
@@ -469,25 +419,55 @@ mod tests {
     }
 
     #[test]
-    fn union_camera_matches_three() {
-        // Values from three r186's setProjectionFromUnion ( r187 removed it ) for the fake device's
-        // views ( tests/browser/fake-xr.js ), near 0.1 and far 10.
-        let worlds = [
-            Matrix4::from_translation(Vector3::new(-0.032, 1.6, 0.)),
-            Matrix4::from_translation(Vector3::new(0.032, 1.6, 0.)),
+    fn xr_camera_is_the_first_view() -> Result<()> {
+        // r187's XRManager.updateCamera: cameraXR takes the left view's
+        // matrix and projection ( setProjectionFromUnion is gone ), and the
+        // user camera follows it under its parent. The fake device's views
+        // ( tests/browser/fake-xr.js ), near 0.1 and far 10.
+        let mut scene = Scene::new();
+        let parent = scene.insert(NodeKind::Group);
+        scene.get_mut(parent)?.position = Vector3::new(0., 0., 2.);
+        let user = scene.insert(NodeKind::Camera(Camera::Perspective(PerspectiveCamera {
+            near: 0.1,
+            far: 10.,
+            ..Default::default()
+        })));
+        scene.add(parent, user)?;
+        let mut xr = XrManager::new();
+        for _ in 0..2 {
+            let h = scene.insert(NodeKind::Camera(Camera::Perspective(
+                PerspectiveCamera::default(),
+            )));
+            scene.get_mut(h)?.matrix_auto_update = false;
+            xr.cameras.push(h);
+        }
+        let views = [
+            XrView {
+                transform: Matrix4::from_translation(Vector3::new(-0.032, 1.6, 0.)),
+                projection: projection(-1., 0.9, 0.95, -1.05, 0.1, 10.),
+                viewport: [0, 0, 1, 1],
+            },
+            XrView {
+                transform: Matrix4::from_translation(Vector3::new(0.032, 1.6, 0.)),
+                projection: projection(-0.9, 1., 0.95, -1.05, 0.1, 10.),
+                viewport: [1, 0, 1, 1],
+            },
         ];
-        let p = [
-            projection(-1., 0.9, 0.95, -1.05, 0.1, 10.),
-            projection(-0.9, 1., 0.95, -1.05, 0.1, 10.),
-        ];
-        let (world, proj) = union_camera(worlds, p);
-        let l = p[0].to_cols_array();
-        let near = l[14] / (l[10] - 1.);
-        let left_fov = (l[8] - 1.) / l[0];
-        let right_fov = (p[1].to_cols_array()[8] + 1.) / p[1].to_cols_array()[0];
-        let z = 0.064 / (-left_fov + right_fov);
-        assert!((world.w_axis.z - z).abs() < 1e-12);
-        assert!((world.w_axis.x - (-0.032 + z * -left_fov)).abs() < 1e-12);
-        assert!(near.is_finite() && proj.is_finite());
+        xr.set_views(&mut scene, &views)?;
+        xr.update_camera(&mut scene, user)?;
+        let left_world = Matrix4::from_translation(Vector3::new(0., 0., 2.)) * views[0].transform;
+        assert!(xr.xr_world.abs_diff_eq(left_world, 1e-12));
+        assert_eq!(xr.xr_projection, views[0].projection);
+        let n = scene.get(user)?;
+        assert!(n.matrix_world.abs_diff_eq(left_world, 1e-12));
+        assert!((n.position - Vector3::new(-0.032, 1.6, 0.)).length() < 1e-12);
+        let Camera::Perspective(p) = scene.camera(user)?.0 else {
+            panic!("perspective user camera");
+        };
+        assert_eq!(p.projection_override, Some(views[0].projection));
+        assert!(
+            (p.fov - (2. * (1. / views[0].projection.y_axis.y).atan()).to_degrees()).abs() < 1e-12
+        );
+        Ok(())
     }
 }

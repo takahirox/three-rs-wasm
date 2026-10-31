@@ -1,7 +1,7 @@
 // What the WebGPU Inspector's modules import from 'three', 'three/webgpu'
 // and 'three/tsl', for the gallery's ports: no three.js renderer runs here.
-// constants.js and EventDispatcher.js are three r186's own ( unchanged, MIT );
-// InspectorBase follows r186's renderers/common/InspectorBase.js. The
+// constants.js and EventDispatcher.js are three r187's own ( unchanged, MIT );
+// InspectorBase follows r187's renderers/common/InspectorBase.js. The
 // rendering classes and TSL functions the Inspector's viewer and overdraw
 // features use are inert stand-ins: those features are not ported.
 export * from './constants.js';
@@ -150,4 +150,4 @@ export class Color {
 }
 
 // three/tsl.
-export const vec2 = inert(), vec3 = inert(), vec4 = inert(), float = inert(), uniform = inert(), Fn = inert(), renderOutput = inert(), screenUV = inert(), step = inert(), OnMaterialUpdate = inert();
+export const vec2 = inert(), vec3 = inert(), vec4 = inert(), float = inert(), uniform = inert(), Fn = inert(), renderOutput = inert(), rtt = inert(), screenUV = inert(), step = inert(), OnMaterialUpdate = inert();

@@ -9658,7 +9658,7 @@
         "source": "gallery/src/browser/raycaster_bvh.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されなかった。r187ではObject3D.intersectsFrustumがtrueを返すため、displayHelperを有効にするとBVHHelperがhelperDepthまで描画されるが、移植は未対応（描画しない）。性能の完全な同等性は未保証。"
+          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。BVHHelperはr187と同様に描画する（r187ではObject3D.intersectsFrustumがtrueを返すため、Object3Dを継承するBVHRootHelperはカリングされない）。displayHelperを有効にするとhelperDepthまでのBVHの箱をインデックス付きLineSegments（getBVHBoundPositions/getBVHBoundIndices）として描き、helper.update()のたびに一つのGPU常駐ジオメトリへ書き込み直し、毎フレームはバニーの行列に追従するだけで再アップロードしない。半透明描画の順序はWebGLRendererと同じく各ジオメトリのバウンディングスフィア中心の深度で決める。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -14643,7 +14643,7 @@
         "source": "gallery/src/browser/picking_buffers.rs",
         "test": "tests/browser/picking-buffers.spec.js",
         "limitations": [
-          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれなかった（原作の不具合。r187では未再確認）が、本移植は描画する。性能の完全な同等性は未保証。"
+          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれなかったが、r187では描画され、本移植も同様に描画する（作り直したINSTANCEDも比較）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31210,7 +31210,7 @@
         "source": "gallery/src/browser/water.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。r186の原本はリサイズ後に透過のコピーで検証エラーになったため、比較はリサイズを除く（r187では未再確認）。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。r186の原本はリサイズ後に透過のコピーで検証エラーになったが、r187では起きないため、リサイズ後も比較する。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31292,7 +31292,7 @@
         "source": "gallery/src/browser/xr_app.rs",
         "test": "tests/browser/webxr-gpu.spec.js",
         "limitations": [
-          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、localの基準空間、列車に載せたカメラ（親の変換の下のXRカメラ）、RollerCoaster.jsの線路・支柱・影・空・木のジオメトリ、回転する遊具をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはXRカメラ（r187と同じく左目のビューの行列と射影）、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、localの基準空間、列車に載せたカメラ（親の変換の下のXRカメラ）、RollerCoaster.jsの線路・支柱・影・空・木のジオメトリ、回転する遊具をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31358,7 +31358,7 @@
         "source": "gallery/src/browser/xr_app.rs",
         "test": "tests/browser/webxr-gpu.spec.js",
         "limitations": [
-          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。XRButton（immersive-arが使えればalpha-blendの透明背景）、コントローラーのレイ、選択による立方体の射出、レイが当たった立方体のハイライト、XRControllerModelFactoryとmotion-controllersによるコントローラーモデル（WebXR入力プロファイルのCDNから取得し、トリガーなどの入力で部品が動く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはXRカメラ（r187と同じく左目のビューの行列と射影）、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。XRButton（immersive-arが使えればalpha-blendの透明背景）、コントローラーのレイ、選択による立方体の射出、レイが当たった立方体のハイライト、XRControllerModelFactoryとmotion-controllersによるコントローラーモデル（WebXR入力プロファイルのCDNから取得し、トリガーなどの入力で部品が動く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31559,7 +31559,7 @@
         "source": "gallery/src/browser/xr_app.rs",
         "test": "tests/browser/webxr-gpu.spec.js",
         "limitations": [
-          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはユニオンカメラ、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、PCFの影、霧、ACESトーンマッピング（オリジナルと同じく8ビットのフレームバッファから出力パスで書き出し）、両面の透過ガラス（WebGPURendererと同じく裏面を描き、新しいコピーの上に表面を描く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
+          "WebXR/WebGPUバインディング（XRGPUBinding）のWebGPU経路のみを移植し、WebGLへのフォールバックはなし。投影レイヤーの配列テクスチャの各層へビューごとにMSAAで描画し、並べ替えはXRカメラ（r187と同じく左目のビューの行列と射影）、影の更新は1フレームに1回（three.jsのArrayCameraと同じ）。VRButton、PCFの影、霧、ACESトーンマッピング（オリジナルと同じく8ビットのフレームバッファから出力パスで書き出し）、両面の透過ガラス（WebGPURendererと同じく裏面を描き、新しいコピーの上に表面を描く）をRustで再現。偽のWebXRデバイス（XRGPUBindingと固定の両目・コントローラー、tests/browser/fake-xr.js）上でオリジナルと両目の画像・操作・キャンバスを比較し一致。実機のヘッドセットでは未検証。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

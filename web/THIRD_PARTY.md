@@ -1122,14 +1122,11 @@ It adds this unmodified r187 example asset:
 
 `gallery/ui/css/main.css` and `gallery/ui/css/example.css` ( the example
 pages' stylesheets ), `gallery/ui/three/constants.js` and
-`gallery/ui/three/EventDispatcher.js` are copied unchanged from Three.js:
-the stylesheets and EventDispatcher.js are r187's; constants.js is r186's,
-which r187's differs from only in REVISION and in dropping
-CubeUVReflectionMapping. `gallery/ui/specs.json` and `gallery/ui/pages.json`
+`gallery/ui/three/EventDispatcher.js` are copied unchanged from Three.js
+r187. `gallery/ui/specs.json` and `gallery/ui/pages.json`
 record the UI and page markup of the pinned examples ( text, labels and
 links ). The pages load stats.js, lil-gui and the WebGPU Inspector from the
-Three.js 0.186.0 package on jsDelivr, as the TSL editor loads lil-gui;
-stats.js and lil-gui are identical to r187's copies, the Inspector is r186's
-( r187 changed `examples/jsm/inspector/` ). Three.js attribution and MIT terms are in
+Three.js 0.187.0 package on jsDelivr, as the TSL editor loads lil-gui.
+Three.js attribution and MIT terms are in
 ../LICENSE-THREE ( lil-gui is MIT, by George Michael Brower; stats.js is MIT,
 by mrdoob ).

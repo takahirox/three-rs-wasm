@@ -1,5 +1,5 @@
 // The original examples' UI on the gallery's ports: their stats.js, lil-gui
-// panels and WebGPU Inspector, built with the same libraries ( three r186's
+// panels and WebGPU Inspector, built with the same libraries ( three r187's
 // examples/jsm, from the CDN the TSL editor already uses ) from the structure
 // each pinned page builds ( specs.json, tools/gallery/ui/extract.mjs ). An
 // example's page carries its own part of the records ( #gallery-ui:
@@ -7,7 +7,7 @@
 // Controllers write to proxy objects whose properties forward to the port's
 // parameters ( `app.tsl_parameter` ), matched to the gallery's control list
 // by name.
-export const LIBS = 'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/';
+export const LIBS = 'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/';
 
 // The page's records: { spec ( specs.json ), page ( pages.json ), aliases
 // ( aliases.json: the gallery's names for controllers whose original names
@@ -372,6 +372,8 @@ function rendererFacade( canvas, timing ) {
 			hasTimestampQuery: uid => timing !== null && timing.results.has( frameOf( uid ) ),
 			getTimestamp: uid => timing?.results.get( frameOf( uid ) ) ?? 0
 		},
+		// No render target: the port's frame draws to the canvas.
+		getRenderTarget: () => null,
 		hasInitialized: () => true,
 		init: async () => {},
 		hasFeature: name => name === 'timestamp-query' && timing !== null,
@@ -390,7 +392,7 @@ function rendererFacade( canvas, timing ) {
 
 }
 
-// The WebGPU Inspector ( three r186's own ), its parameter groups as the
+// The WebGPU Inspector ( three r187's own ), its parameter groups as the
 // original made them, and one render per frame: the port's frame.
 export async function installInspector( spec, binder, canvas ) {
 
