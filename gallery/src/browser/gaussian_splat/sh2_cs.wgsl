@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,29 +13,29 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_991Struct {
+struct nodeUniform0Struct {
 	value : array< vec4<f32> >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_995Struct {
+struct nodeUniform2Struct {
 	value : array< u32 >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read> NodeBuffer_995 : NodeBuffer_995Struct;
+var<storage, read> nodeUniform2 : nodeUniform2Struct;
 
-struct NodeBuffer_996Struct {
+struct nodeUniform3Struct {
 	value : array< u32 >
 };
 @binding( 3 ) @group( 0 )
-var<storage, read> NodeBuffer_996 : NodeBuffer_996Struct;
+var<storage, read> nodeUniform3 : nodeUniform3Struct;
 
-struct NodeBuffer_1145Struct {
+struct nodeUniform4Struct {
 	value : array< vec4<f32> >
 };
 @binding( 4 ) @group( 0 )
-var<storage, read_write> NodeBuffer_1145 : NodeBuffer_1145Struct;
+var<storage, read_write> nodeUniform4 : nodeUniform4Struct;
 
 struct objectStruct {
 	nodeUniform1 : vec3<f32>,
@@ -91,12 +91,12 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> GaussianSplatSphericalHarmonics
 	if ( instanceIndex >= object.nodeUniform5 ) { return; }
 
-	center = NodeBuffer_991.value[ instanceIndex ].xyz;
+	center = nodeUniform0.value[ instanceIndex ].xyz;
 	sphericalHarmonicsContribution = vec3<f32>( 0.0, 0.0, 0.0 );
 	sphericalHarmonicsViewDirection = normalize( ( center - object.nodeUniform1 ) );
-	nodeVar0 = NodeBuffer_995.value[ ( ( instanceIndex * 3u ) + 0u ) ];
-	nodeVar1 = NodeBuffer_995.value[ ( ( instanceIndex * 3u ) + 1u ) ];
-	nodeVar2 = NodeBuffer_995.value[ ( ( instanceIndex * 3u ) + 2u ) ];
+	nodeVar0 = nodeUniform2.value[ ( ( instanceIndex * 3u ) + 0u ) ];
+	nodeVar1 = nodeUniform2.value[ ( ( instanceIndex * 3u ) + 1u ) ];
+	nodeVar2 = nodeUniform2.value[ ( ( instanceIndex * 3u ) + 2u ) ];
 	sh1_0 = vec3<f32>( ( ( f32( ( ( nodeVar0 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar0 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar0 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh1_1 = vec3<f32>( ( ( f32( ( ( nodeVar0 >> 24u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar1 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar1 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh1_2 = vec3<f32>( ( ( f32( ( ( nodeVar1 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar1 >> 24u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar2 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ) );
@@ -104,17 +104,17 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	shXX = ( sphericalHarmonicsViewDirection.x * sphericalHarmonicsViewDirection.x );
 	shYY = ( sphericalHarmonicsViewDirection.y * sphericalHarmonicsViewDirection.y );
 	shZZ = ( sphericalHarmonicsViewDirection.z * sphericalHarmonicsViewDirection.z );
-	nodeVar3 = NodeBuffer_996.value[ ( ( instanceIndex * 4u ) + 0u ) ];
-	nodeVar4 = NodeBuffer_996.value[ ( ( instanceIndex * 4u ) + 1u ) ];
-	nodeVar5 = NodeBuffer_996.value[ ( ( instanceIndex * 4u ) + 2u ) ];
-	nodeVar6 = NodeBuffer_996.value[ ( ( instanceIndex * 4u ) + 3u ) ];
+	nodeVar3 = nodeUniform3.value[ ( ( instanceIndex * 4u ) + 0u ) ];
+	nodeVar4 = nodeUniform3.value[ ( ( instanceIndex * 4u ) + 1u ) ];
+	nodeVar5 = nodeUniform3.value[ ( ( instanceIndex * 4u ) + 2u ) ];
+	nodeVar6 = nodeUniform3.value[ ( ( instanceIndex * 4u ) + 3u ) ];
 	sh2_0 = vec3<f32>( ( ( f32( ( ( nodeVar3 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar3 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar3 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh2_1 = vec3<f32>( ( ( f32( ( ( nodeVar3 >> 24u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar4 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar4 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh2_2 = vec3<f32>( ( ( f32( ( ( nodeVar4 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar4 >> 24u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar5 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh2_3 = vec3<f32>( ( ( f32( ( ( nodeVar5 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar5 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar5 >> 24u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sh2_4 = vec3<f32>( ( ( f32( ( ( nodeVar6 >> 0u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar6 >> 8u ) & 255u ) ) - 128.0 ) / 128.0 ), ( ( f32( ( ( nodeVar6 >> 16u ) & 255u ) ) - 128.0 ) / 128.0 ) );
 	sphericalHarmonicsContribution = ( sphericalHarmonicsContribution + ( ( ( ( ( sh2_0 * vec3<f32>( ( ( sphericalHarmonicsViewDirection.x * sphericalHarmonicsViewDirection.y ) * 1.0925484 ) ) ) + ( sh2_1 * vec3<f32>( ( ( sphericalHarmonicsViewDirection.y * sphericalHarmonicsViewDirection.z ) * -1.0925484 ) ) ) ) + ( sh2_2 * vec3<f32>( ( ( ( ( shZZ * 2.0 ) - shXX ) - shYY ) * 0.3153915 ) ) ) ) + ( sh2_3 * vec3<f32>( ( ( sphericalHarmonicsViewDirection.x * sphericalHarmonicsViewDirection.z ) * -1.0925484 ) ) ) ) + ( sh2_4 * vec3<f32>( ( ( shXX - shYY ) * 0.5462742 ) ) ) ) );
-	NodeBuffer_1145.value[ instanceIndex ] = vec4<f32>( sphericalHarmonicsContribution, 0.0 );
+	nodeUniform4.value[ instanceIndex ] = vec4<f32>( sphericalHarmonicsContribution, 0.0 );
 
 	
 

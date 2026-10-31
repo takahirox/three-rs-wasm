@@ -6,7 +6,7 @@
 //! prefix and scatter) whenever the view direction turns past the page's
 //! threshold, the spherical-harmonics colors whenever the camera moves, and
 //! the instanced quads reading the sorted order. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `gaussian_splat/`, the kernels
+//! three.js r187 generates for the page (in `gaussian_splat/`, the kernels
 //! without their unused subgroup built-ins).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};

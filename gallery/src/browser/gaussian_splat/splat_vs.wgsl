@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,41 +8,41 @@
 
 // uniforms
 
-struct NodeBuffer_1003Struct {
+struct nodeUniform1Struct {
 	value : array< u32 >
 };
 @binding( 1 ) @group( 1 )
-var<storage, read> NodeBuffer_1003 : NodeBuffer_1003Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_991Struct {
+struct nodeUniform2Struct {
 	value : array< vec4<f32> >
 };
 @binding( 2 ) @group( 1 )
-var<storage, read> NodeBuffer_991 : NodeBuffer_991Struct;
+var<storage, read> nodeUniform2 : nodeUniform2Struct;
 
-struct NodeBuffer_992Struct {
+struct nodeUniform3Struct {
 	value : array< vec4<f32> >
 };
 @binding( 3 ) @group( 1 )
-var<storage, read> NodeBuffer_992 : NodeBuffer_992Struct;
+var<storage, read> nodeUniform3 : nodeUniform3Struct;
 
-struct NodeBuffer_993Struct {
+struct nodeUniform4Struct {
 	value : array< vec4<f32> >
 };
 @binding( 4 ) @group( 1 )
-var<storage, read> NodeBuffer_993 : NodeBuffer_993Struct;
+var<storage, read> nodeUniform4 : nodeUniform4Struct;
 
-struct NodeBuffer_994Struct {
+struct nodeUniform5Struct {
 	value : array< u32 >
 };
 @binding( 5 ) @group( 1 )
-var<storage, read> NodeBuffer_994 : NodeBuffer_994Struct;
+var<storage, read> nodeUniform5 : nodeUniform5Struct;
 
-struct NodeBuffer_1144Struct {
+struct nodeUniform6Struct {
 	value : array< vec4<f32> >
 };
 @binding( 6 ) @group( 1 )
-var<storage, read> NodeBuffer_1144 : NodeBuffer_1144Struct;
+var<storage, read> nodeUniform6 : nodeUniform6Struct;
 
 struct objectStruct {
 	nodeUniform0 : f32,
@@ -110,7 +110,6 @@ var<private> detBase : f32;
 var<private> det : f32;
 var<private> alphaScale : f32;
 var<private> halfTrace : f32;
-var<private> nodeVar1 : f32;
 var<private> radius : f32;
 var<private> lambda1 : f32;
 var<private> lambda2 : f32;
@@ -134,13 +133,13 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 	// flow
 	// code
 
-	splatIndex = NodeBuffer_1003.value[ instanceIndex ];
-	center = NodeBuffer_991.value[ splatIndex ].xyz;
-	covA = NodeBuffer_992.value[ splatIndex ];
-	covB = NodeBuffer_993.value[ splatIndex ];
-	splatColor = unpack4x8unorm(NodeBuffer_994.value[ splatIndex ]);
+	splatIndex = nodeUniform1.value[ instanceIndex ];
+	center = nodeUniform2.value[ splatIndex ].xyz;
+	covA = nodeUniform3.value[ splatIndex ];
+	covB = nodeUniform4.value[ splatIndex ];
+	splatColor = unpack4x8unorm(nodeUniform5.value[ splatIndex ]);
 	splatRgb = splatColor.xyz;
-	splatRgb = ( splatRgb + NodeBuffer_1144.value[ splatIndex ].xyz );
+	splatRgb = ( splatRgb + nodeUniform6.value[ splatIndex ].xyz );
 	varyings.vSplatUv = position.xy;
 	highpModelViewMatrix = object.nodeUniform7;
 	viewCenter4 = ( highpModelViewMatrix * vec4<f32>( center, 1.0 ) );
@@ -180,10 +179,10 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 	alphaScale = sqrt( max( ( detBase / max( det, 0.000001 ) ), 0.0 ) );
 	varyings.vSplatColor = vec4<f32>( clamp( splatRgb, vec3<f32>( 0.0 ), vec3<f32>( 1.0 ) ), ( splatColor.w * alphaScale ) );
 	halfTrace = ( ( cov2dA + cov2dC ) * 0.5 );
-	nodeVar1 = ( ( cov2dA - cov2dC ) * 0.5 );
-	radius = sqrt( max( ( ( nodeVar1 * nodeVar1 ) + ( cov2dB * cov2dB ) ), 1e-7 ) );
-	lambda1 = max( ( halfTrace + radius ), 1e-7 );
-	lambda2 = max( ( halfTrace - radius ), 1e-7 );
+	let nodeConst1 = ( ( cov2dA - cov2dC ) * 0.5 );
+	radius = sqrt( max( ( ( nodeConst1 * nodeConst1 ) + ( cov2dB * cov2dB ) ), 0.000001 ) );
+	lambda1 = max( ( halfTrace + radius ), 0.000001 );
+	lambda2 = max( ( halfTrace - radius ), 0.000001 );
 	axis1 = vec2<f32>( 1.0, 0.0 );
 
 	if ( ( radius > 0.00001 ) ) {

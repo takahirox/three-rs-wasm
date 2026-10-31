@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,23 +13,23 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_1005Struct {
+struct nodeUniform0Struct {
 	value : array< u32 >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read> NodeBuffer_1005 : NodeBuffer_1005Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_1008Struct {
+struct nodeUniform1Struct {
 	value : array< atomic<u32> >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read_write> NodeBuffer_1008 : NodeBuffer_1008Struct;
+var<storage, read_write> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_1004Struct {
+struct nodeUniform2Struct {
 	value : array< u32 >
 };
 @binding( 2 ) @group( 0 )
-var<storage, read_write> NodeBuffer_1004 : NodeBuffer_1004Struct;
+var<storage, read_write> nodeUniform2 : nodeUniform2Struct;
 
 struct objectStruct {
 	nodeUniform3 : u32
@@ -65,10 +65,10 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> CountingSortScatter
 	if ( instanceIndex >= object.nodeUniform3 ) { return; }
 
-	bin = NodeBuffer_1005.value[ instanceIndex ];
-	let nodeConst0 = atomicAdd( &NodeBuffer_1008.value[ bin ], 1u );
+	bin = nodeUniform0.value[ instanceIndex ];
+	let nodeConst0 = atomicAdd( &nodeUniform1.value[ bin ], 1u );
 	targetIndex = nodeConst0;
-	NodeBuffer_1004.value[ targetIndex ] = instanceIndex;
+	nodeUniform2.value[ targetIndex ] = instanceIndex;
 
 	
 
