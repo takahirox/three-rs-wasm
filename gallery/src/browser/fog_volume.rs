@@ -346,7 +346,6 @@ struct Targets {
     blur_draws: [Draw; 2],
     /// The JBU, Gaussian blur and raw outputs.
     outputs: [Draw; 3],
-    screen: RenderTarget,
 }
 pub(super) struct Demo {
     controls: Controls,
@@ -384,6 +383,10 @@ pub(super) struct Demo {
     targets: Option<Targets>,
     /// Targets of other resolution scales at the current size.
     cached: Vec<Targets>,
+    /// The output target, shared by every resolution scale's targets: the
+    /// canvas aliases it ( `output_mut` ) before a render that may switch
+    /// the scale.
+    screen: Option<RenderTarget>,
 }
 impl Demo {
     pub async fn create(s: &mut Scene, c: Object3D, _id: u32, r: &Renderer) -> Result<Self> {
@@ -609,6 +612,7 @@ impl Demo {
             ),
             targets: None,
             cached: vec![],
+            screen: None,
         })
     }
     pub fn update(&mut self, _s: &mut Scene, _c: Object3D, dt: f64, animate: bool) -> Result<()> {
@@ -856,16 +860,6 @@ impl Demo {
                 ],
             ),
         ];
-        let screen_target = RenderTarget::with_options(
-            &r.device,
-            width,
-            height,
-            RenderTargetOptions {
-                samples: 0,
-                depth_buffer: false,
-                ..out.options.clone()
-            },
-        )?;
         self.targets = Some(Targets {
             width,
             height,
@@ -883,15 +877,14 @@ impl Demo {
             fog_draw,
             blur_draws,
             outputs,
-            screen: screen_target,
         });
         Ok(())
     }
-    fn present(&self, encoder: &mut wgpu::CommandEncoder, t: &Targets) {
+    fn present(&self, encoder: &mut wgpu::CommandEncoder, t: &Targets, screen: &RenderTarget) {
         let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("fog output"),
             color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                view: &t.screen.view,
+                view: &screen.view,
                 depth_slice: None,
                 resolve_target: None,
                 ops: wgpu::Operations {
@@ -948,10 +941,25 @@ impl Demo {
                 self.resize(r, out, samples)?;
             }
         }
+        if self.screen.as_ref().is_none_or(|t| {
+            t.width != out.width || t.height != out.height || t.options.format != out.options.format
+        }) {
+            self.screen = Some(RenderTarget::with_options(
+                &r.device,
+                out.width,
+                out.height,
+                RenderTargetOptions {
+                    samples: 0,
+                    depth_buffer: false,
+                    ..out.options.clone()
+                },
+            )?);
+        }
         let t = self.targets.as_ref().ok_or(Error::Invalid("fog targets"))?;
+        let screen = self.screen.as_ref().ok_or(Error::Invalid("fog output"))?;
         if !std::mem::take(&mut self.pending) {
             let mut encoder = r.device.create_command_encoder(&Default::default());
-            self.present(&mut encoder, t);
+            self.present(&mut encoder, t, screen);
             r.queue.submit([encoder.finish()]);
             return Ok(true);
         }
@@ -1315,17 +1323,17 @@ impl Demo {
                 pass.draw(0..3, 0..1);
             }
         }
-        self.present(&mut encoder, t);
+        self.present(&mut encoder, t, screen);
         r.queue.submit([encoder.finish()]);
         Ok(true)
     }
     pub fn output(&self) -> Option<&RenderTarget> {
-        self.targets.as_ref().map(|t| &t.screen)
+        self.screen.as_ref()
     }
     /// The target `output` returns, to render into the canvas ( see
     /// RenderTarget::alias_color ).
     pub fn output_mut(&mut self) -> Option<&mut RenderTarget> {
-        self.targets.as_mut().map(|t| &mut t.screen)
+        self.screen.as_mut()
     }
     pub fn draw(&mut self, _kind: u32, _x: f64, _y: f64) {}
     pub fn key(&mut self, _code: u32, _down: bool) {}
