@@ -50,11 +50,9 @@ until every ported example matches r187 again; it is removed when done.
    fog_scattering, deferred, compute_cloth, fluid, generator_city,
    lightprobes ( its bake shared with lightprobes_complex ), retro, gtao, ssr,
    ssr_denoise, skinning_instances: every WebGPU port runs r187's shaders.
-   Left:
-   - lightprobes_sponza: r187's page draws Sponza through
-     MeshletDrawingPipeline ( GPU culling, indirect draws ) by default; the
-     port draws it directly, so its workload differs. MeshletDrawingPipeline
-     needs porting.
+   lightprobes_sponza draws Sponza through the ported MeshletDrawingPipeline
+   ( `gallery/src/browser/meshlet.rs` ), its draws, indirect draws and compute
+   passes matching the page's frame by frame. Left:
    - gtao's reference starts its loading frame at a timing-dependent frameId
      ( 8 in one probe ), the port at 0.
    - A port that switches back mid-render to an output target it replaced in
@@ -74,16 +72,24 @@ until every ported example matches r187 again; it is removed when done.
    misc_exporter_exr, webgpu_postprocessing_pixel,
    webgpu_compute_particles_fluid, webgpu_compute_reduce, misc_exporter_ktx2,
    webgpu_postprocessing_ssr_denoise and 47 more
-   ( `git diff --numstat 148ef33e r187 -- 'examples/*.html'` ).
+   ( `git diff --numstat 148ef33e r187 -- 'examples/*.html'` ). All follow
+   their pages now; the WebGL pages moved to r187's DirectionalLight shadows
+   ( `Shadow::bounds`, PCF radius in texels, per-face point-shadow depth ).
+   Left:
+   - r187's `range()` hashes the instance index with a seed from the object's
+     id instead of Math.random ( webgpu_skinning_instancing follows it );
+     webgpu_instance_mesh, webgpu_particles, webgpu_particles_soft and
+     webgpu_tsl_galaxy may use it too.
+   - texture-volumes' combined workload test: webgpu_postprocessing_outline
+     draws 22 more than its page ( 2280 ), then the run hangs loading
+     css3d_periodictable.
 4. **Changed addons.** Ported and on r187's oracles: USD, SVGLoader,
    IESLoader ( and IESSpotLightNode ), PLYLoader, CCDIKSolver, Octree,
    BufferGeometryUtils, the PLY / OBJ / EXR exporters, GCode, PCD, PDB, STL and
    TGA loaders, LatheGeometry's last normal. Left: GLTFLoader's
    KHR_materials_diffuse_roughness ( MeshPhysicalMaterial.diffuseRoughness
-   and its BRDF; r187's new webgpu_loader_gltf_diffuse_roughness ), KTX2Loader
-   cube maps ( r187's envmaps_fasthdr loads prefiltered `*.pmrem.ktx2` cubes ),
-   the engine's PMREM built for a background-only texture, and
-   webgl_loader_usdz's background ( 0.56 / 7.2, the PMREM gradient ).
+   and its BRDF; r187's new webgpu_loader_gltf_diffuse_roughness ). KTX2Loader
+   cube maps and the background-only PMREM came with the engine's PMREM.
 5. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
    pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
    `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
