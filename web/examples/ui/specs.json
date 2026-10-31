@@ -24151,6 +24151,22 @@
 						"children": [
 							{
 								"kind": "controller",
+								"type": "select",
+								"object": 0,
+								"property": "pipeline",
+								"name": "Pipeline",
+								"value": "Meshlet",
+								"params": [
+									[
+										"Meshlet",
+										"Default"
+									]
+								],
+								"listen": false,
+								"hidden": false
+							},
+							{
+								"kind": "controller",
 								"type": "boolean",
 								"object": 0,
 								"property": "enabled",

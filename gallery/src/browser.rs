@@ -242,7 +242,9 @@ mod md2_control;
 mod memory_outline;
 #[cfg(feature = "mesh_batch")]
 mod mesh_batch;
-#[cfg(feature = "batch_lod_bvh")]
+#[cfg(feature = "lightprobes_sponza")]
+mod meshlet;
+#[cfg(any(feature = "batch_lod_bvh", feature = "lightprobes_sponza"))]
 mod meshopt;
 #[cfg(feature = "mirror_webgl")]
 mod mirror_webgl;

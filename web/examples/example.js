@@ -159,6 +159,10 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
    // physics_ammo_volume and physics_ammo_break: the page's window pointerdown, at window-relative NDC, shoots a ball.
    addEventListener('pointerdown',event=>app?.gallery_draw(1,event.clientX/innerWidth*2-1,-(event.clientY/innerHeight)*2+1));
   }
+  if ([481,482].includes(PAGE_EXAMPLE)) {
+   // The Sponza pages: FirstPersonControls' window keydown and keyup listeners ( WASD, arrows, R and F ).
+   addEventListener('keydown',event=>app?.gallery_key(event.keyCode,true));addEventListener('keyup',event=>app?.gallery_key(event.keyCode,false));
+  }
   if ([491,492].includes(PAGE_EXAMPLE)) {
    // physics_ammo_rope and physics_ammo_cloth: the page's window keydown ( Q, A ) and keyup listeners.
    addEventListener('keydown',event=>app?.gallery_key(event.keyCode,true));addEventListener('keyup',event=>app?.gallery_key(event.keyCode,false));
