@@ -1,6 +1,6 @@
-// The demo's files that are the pinned three.js r186's own example assets
+// The demo's files that are three.js's own example assets
 // ( upstream-assets.json, tools/gallery/upstream_assets.py ) are left out of the
-// published site, which loads them from the three.js repository at that commit:
+// published site, which loads them from the three.js repository at the listing's commit:
 // fetch(), image, media and Audio URLs are redirected there. Locally, the files are
 // in the repository and nothing changes ( the listing's base is null ).
 //

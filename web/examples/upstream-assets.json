@@ -1,5 +1,5 @@
 {
- "commit": "7e89746a687bb88271253698fa108b1dd59825d0",
+ "commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
  "base": null,
  "files": {
   "examples/assets/3dm-loader/Rhino_Logo.3dm": "examples/models/3dm/Rhino_Logo.3dm",
@@ -222,7 +222,6 @@
   "examples/assets/hardwood2_bump.jpg": "examples/textures/hardwood2_bump.jpg",
   "examples/assets/hardwood2_diffuse.jpg": "examples/textures/hardwood2_diffuse.jpg",
   "examples/assets/hardwood2_roughness.jpg": "examples/textures/hardwood2_roughness.jpg",
-  "examples/assets/head256x256x109.zip": "examples/textures/3d/head256x256x109.zip",
   "examples/assets/helix_201.xyz": "examples/models/xyz/helix_201.xyz",
   "examples/assets/ies/007cfb11e343e2f42e3b476be4ab684e.ies": "examples/ies/007cfb11e343e2f42e3b476be4ab684e.ies",
   "examples/assets/ies/02a7562c650498ebb301153dbbf59207.ies": "examples/ies/02a7562c650498ebb301153dbbf59207.ies",
@@ -296,6 +295,7 @@
   "examples/assets/material-textures/758px-Canestra_di_frutta_(Caravaggio).jpg": "examples/textures/758px-Canestra_di_frutta_(Caravaggio).jpg",
   "examples/assets/material-textures/Carbon.png": "examples/textures/carbon/Carbon.png",
   "examples/assets/material-textures/crate.gif": "examples/textures/crate.gif",
+  "examples/assets/materialx/textures/brick_roughness.jpg": "examples/textures/brick_roughness.jpg",
   "examples/assets/materialx/three/gltf_pbr_glass_dispersion.mtlx": "examples/materialx/gltf_pbr_glass_dispersion.mtlx",
   "examples/assets/materialx/three/open_pbr_surface_honey.mtlx": "examples/materialx/open_pbr_surface_honey.mtlx",
   "examples/assets/materialx/three/open_pbr_surface_pearl.mtlx": "examples/materialx/open_pbr_surface_pearl.mtlx",

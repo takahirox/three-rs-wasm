@@ -30,7 +30,7 @@ def main():
     if SITE.exists():
         shutil.rmtree(SITE)
     files = subprocess.check_output(["git", "ls-files", "-z", "web"], cwd=ROOT).decode().split("\0")
-    # The pinned three.js r186's own example assets load from its repository at that
+    # three.js's own example assets load from its repository at the listing's
     # commit ( tools/gallery/upstream_assets.py, web/examples/upstream.js ).
     upstream = json.loads((WEB / "examples/upstream-assets.json").read_text())
     upstream["base"] = f"https://cdn.jsdelivr.net/gh/mrdoob/three.js@{upstream['commit']}/"

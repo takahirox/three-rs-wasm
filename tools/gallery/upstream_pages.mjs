@@ -1,4 +1,4 @@
-// The pinned three.js r186's own assets each example's page loads
+// three.js's own assets each example's page loads
 // ( web/examples/upstream-assets.json lists them, tools/gallery/upstream_assets.py ),
 // recorded by opening every ported example's page in Chromium:
 // tools/gallery/upstream-pages.json. tools/gallery/pages.mjs writes each page's
