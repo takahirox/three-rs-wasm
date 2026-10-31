@@ -50,13 +50,14 @@ ripple and the orbit follow the page's pointer handling.
 
 ### SSGI and SSS (396, 397)
 
-- **Frame ID.** SSGINode and SSSNode read frameId. The fixture stops the
-  renderer's own loop once ready and restarts frameId at 12000, a multiple of
-  12 past every frame the loading loop rendered. Both sides then advance it
-  per requested frame. The first frame after loading does not advance it.
-  The loading frame itself renders at frameId 1 ( r187's first node-frame
-  update ), and SSGI's TRAA reads the history's ( zero ) depth texture as its
-  previous depth from that frame on.
+- **Frame ID.** SSGINode and SSSNode read frameId, which r187 advances on
+  each tick of the renderer's own animation loop. The page's first render()
+  starts that loop, whose start counts frame 1 at once; the fixture lets it
+  start as r187 does and stops it there ( `fixtureStopLoop` ), so the loading
+  frame renders at frameId 1 and the requested frames after it at 2, 3, …,
+  as the ports number them, whatever the display ticked while the page
+  loaded. SSGI's TRAA reads the history's ( zero ) depth texture as its
+  previous depth from the loading frame on.
 - **SSS seed.** SSSNode assigns frame.frameId over its uniform, so each build
   of the node inlines that frame's ID into the shader. The port rebuilds the
   SSS pipeline with that seed when the output or temporal filtering changes.

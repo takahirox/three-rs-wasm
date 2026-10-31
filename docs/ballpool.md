@@ -69,9 +69,10 @@ and volume_traa's, and are shared with those ports.
   `convertToTexture` ) before itself, so the composite renders first. On the
   loading frame the history's size differs, and TRAA restarts the history
   from that composite; that resolve reads the freshly sized ( zero ) history
-  depth. The loading frame renders unjittered with frameId 1; the fixture
-  then restarts frameId, so the second frame is frameId 1 again, jittered,
-  and blends the loading frame's history. The port follows all of this.
+  depth. The loading frame renders unjittered with frameId 1 ( its render()
+  starts r187's animation loop, whose start counts frame 1; the fixture stops
+  the loop there ), so the second frame is frameId 2, jittered, and blends
+  the loading frame's history. The port follows all of this.
 
 ## Comparison
 

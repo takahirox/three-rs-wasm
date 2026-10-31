@@ -14,8 +14,14 @@ const start=THREE.DefaultLoadingManager.itemStart.bind(THREE.DefaultLoadingManag
 // would take as many ids as the display ticked while loading. The fixture lets the loop start as
 // r187 does and stops it there: frame 1 is the PMREM's and the page's frames, rendered here, are
 // 2, 3, …, as the port numbers them.
+// webgpu_postprocessing_ssgi, _ssgi_ballpool and _sss: SSGINode rotates its slices by
+// frameId % 6 and offsets its steps by frameId % 4 ( SSSNode its rays by frameId % 4, and its
+// build bakes the frameId ). Their first render() is the page's first frame, which the loop's
+// start() counts as frame 1; the fixture stops the loop there, so the page's frames rendered
+// here are 1, 2, 3, …, as the ports number them.
+const stopLoop=['webgpu_postprocessing_ao','webgpu_postprocessing_ssgi','webgpu_postprocessing_ssgi_ballpool','webgpu_postprocessing_sss'];
 window.fixtureStopLoop=r=>{const init=r.init.bind(r);r.init=async(...a)=>{const v=await init(...a);const loop=r._animation,start=loop.start.bind(loop);let started=false;loop.start=()=>{if(started)return;started=true;start();loop.stop();};return v;};};
-window.captureRenderer=r=>{window.fixtureRenderer=r;if(id==='webgpu_postprocessing_ao')fixtureStopLoop(r);const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>{const loops=window.fixtureLoops??=[];loops.push(fn);window.fixtureCallback=async t=>{for(const loop of loops)await loop(t);};};return r;};
+window.captureRenderer=r=>{window.fixtureRenderer=r;if(stopLoop.includes(id))fixtureStopLoop(r);const draw=r.render.bind(r);r.render=(s,c)=>{window.reference={renderer:r,scene:s,camera:c};return draw(s,c);};r.setAnimationLoop=fn=>{const loops=window.fixtureLoops??=[];loops.push(fn);window.fixtureCallback=async t=>{for(const loop of loops)await loop(t);};};return r;};
 const html=await(await fetch(`/.cache/three-r187/examples/${id}.html`)).text();for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('script[id],#container,#info,#stats,#blocker,video'))document.body.appendChild(document.importNode(node,true));
 // The reduction page's explanation panel and its styles.
 if(id==='webgpu_compute_reduce')for(const node of new DOMParser().parseFromString(html,'text/html').querySelectorAll('body > style,#reduction-panel'))document.body.appendChild(document.importNode(node,true));
@@ -92,10 +98,6 @@ window.fixtureParameter=(i,v)=>fixtureControls[i].setValue(v);await renderFixtur
 if(id==='webgpu_volume_caustics'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
 // The fire's volume offsets its ray march by frameId: the count restarts when the page is ready.
 if(id==='webgpu_volume_fire'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=0;}
-// SSGINode rotates its slices by frameId % 6 and offsets its steps by frameId % 4 (SSSNode its rays by frameId % 4): the count restarts at a
-// multiple of 12 past every frame the loading loop rendered (a restart at 0 would repeat the loading frame's id).
-// r187's renderer.render() restarts the animation loop: keep it stopped so that frameId counts the fixture's frames only.
-if(['webgpu_postprocessing_ssgi','webgpu_postprocessing_ssgi_ballpool','webgpu_postprocessing_sss'].includes(id)){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=12000;}
 // VXGINode rotates its cones by frameId % 64: the count restarts at a multiple of 64 past the loading frames.
 // r187's render() and compute() restart the stopped loop, whose ticks would advance frameId between fixture frames: it stays stopped.
 if(id==='webgpu_vxgi'||id==='webgpu_vxgi_sponza'){reference.renderer._animation.stop();reference.renderer._animation.start=()=>{};reference.renderer._nodes.nodeFrame.frameId=12800;}
