@@ -7,7 +7,9 @@ use std::collections::HashMap;
 /// mergeVertices( geometry, tolerance ): vertices whose attributes agree to
 /// the tolerance ( `Math.trunc( v × 10^log10( 1 / tolerance ) + ½ tolerance ×
 /// that )` per component ) share one index; the result is indexed, in first-
-/// occurrence order. Float32 attributes and morph attributes.
+/// occurrence order, every attribute and morph attribute remapped
+/// ( remapAttribute's raw copy ) to the first source vertex of each index.
+/// Float32 attributes and morph attributes.
 pub fn merge_vertices(geometry: &BufferGeometry, tolerance: f64) -> Result<BufferGeometry> {
     let tolerance = tolerance.max(f64::EPSILON);
     let positions = geometry
@@ -18,24 +20,16 @@ pub fn merge_vertices(geometry: &BufferGeometry, tolerance: f64) -> Result<Buffe
         .index
         .as_ref()
         .map_or(positions.count(), |i| i.len());
-    let f32s = |a: &Attribute| match a {
-        Attribute::F32(a) => Ok((a.array().to_vec(), a.item_size(), a.normalized)),
-        _ => Err(Error::Invalid("mergeVertices supports Float32 attributes")),
-    };
+    fn f32s(a: &Attribute) -> Result<(&[f32], usize, bool)> {
+        match a {
+            Attribute::F32(a) => Ok((a.array(), a.item_size(), a.normalized)),
+            _ => Err(Error::Invalid("mergeVertices supports Float32 attributes")),
+        }
+    }
     let names: Vec<String> = geometry.attributes.keys().cloned().collect();
     let sources = names
         .iter()
         .map(|n| f32s(&geometry.attributes[n]))
-        .collect::<Result<Vec<_>>>()?;
-    let morphs = names
-        .iter()
-        .map(|n| {
-            geometry
-                .morph_attributes
-                .get(n)
-                .map(|list| list.iter().map(f32s).collect::<Result<Vec<_>>>())
-                .transpose()
-        })
         .collect::<Result<Vec<_>>>()?;
     let half = tolerance * 0.5;
     let exponent = crate::js_math::log10(1.0 / tolerance);
@@ -51,11 +45,7 @@ pub fn merge_vertices(geometry: &BufferGeometry, tolerance: f64) -> Result<Buffe
         }
     };
     let mut map: HashMap<Vec<u64>, u32> = HashMap::new();
-    let mut out: Vec<Vec<f32>> = vec![vec![]; names.len()];
-    let mut out_morphs: Vec<Vec<Vec<f32>>> = morphs
-        .iter()
-        .map(|m| m.as_ref().map_or(vec![], |l| vec![vec![]; l.len()]))
-        .collect();
+    let mut source_indices = vec![];
     let mut indices = Vec::with_capacity(count);
     let mut next = 0u32;
     for i in 0..count {
@@ -73,44 +63,32 @@ pub fn merge_vertices(geometry: &BufferGeometry, tolerance: f64) -> Result<Buffe
             indices.push(id);
             continue;
         }
-        for (a, (data, size, _)) in sources.iter().enumerate() {
-            for k in 0..*size {
-                out[a].push(data.get(index * size + k).copied().unwrap_or(f32::NAN));
-            }
-            if let Some(list) = &morphs[a] {
-                for (m, (data, size, _)) in list.iter().enumerate() {
-                    for k in 0..*size {
-                        out_morphs[a][m].push(data.get(index * size + k).copied().unwrap_or(0.0));
-                    }
-                }
-            }
-        }
+        source_indices.push(index);
         map.insert(hash, next);
         indices.push(next);
         next += 1;
     }
-    let mut result = geometry.clone();
-    for (a, name) in names.iter().enumerate() {
-        let (_, size, normalized) = &sources[a];
-        result.set_attribute(
-            name,
-            Attribute::F32(BufferAttribute::new(
-                std::mem::take(&mut out[a]),
-                *size,
-                *normalized,
-            )?),
-        );
-        if let Some(list) = &morphs[a] {
-            let mut attributes = vec![];
-            for (m, (_, size, normalized)) in list.iter().enumerate() {
-                attributes.push(Attribute::F32(BufferAttribute::new(
-                    std::mem::take(&mut out_morphs[a][m]),
-                    *size,
-                    *normalized,
-                )?));
+    // remapAttribute: the source's raw entries in source-index order, NaN
+    // past its end ( a Float32Array of undefined ).
+    let remap = |a: &Attribute| -> Result<Attribute> {
+        let (data, size, normalized) = f32s(a)?;
+        let mut array = Vec::with_capacity(source_indices.len() * size);
+        for &index in &source_indices {
+            for k in 0..size {
+                array.push(data.get(index * size + k).copied().unwrap_or(f32::NAN));
             }
-            result.morph_attributes.insert(name.clone(), attributes);
         }
+        Ok(Attribute::F32(BufferAttribute::new(
+            array, size, normalized,
+        )?))
+    };
+    let mut result = geometry.clone();
+    for name in &names {
+        result.set_attribute(name, remap(&geometry.attributes[name])?);
+    }
+    for (name, list) in &geometry.morph_attributes {
+        let remapped = list.iter().map(remap).collect::<Result<Vec<_>>>()?;
+        result.morph_attributes.insert(name.clone(), remapped);
     }
     result.set_index(Some(indices));
     Ok(result)
