@@ -4,7 +4,7 @@
 //! perspective shadow camera) and projects either a procedural caustic
 //! (animated Worley noise), the Sintel video or colors.png through its
 //! shadow matrix, clipped by the box attenuation of ProjectorLightNode.
-//! Every stage runs the WGSL three.js r186 generates for the page (in
+//! Every stage runs the WGSL three.js r187 generates for the page (in
 //! `lights_projector/`); uniform structs are filled from the field order of
 //! the generated WGSL.
 use super::controls_attributes::{Controls, camera_state};
