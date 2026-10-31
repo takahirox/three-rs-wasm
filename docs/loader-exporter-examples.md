@@ -14,7 +14,7 @@ Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 | `misc_controls_arcball` | 431 | `arcball.rs` | ArcballControls around the Cerberus OBJ with its gizmos, animations, limits and clipboard state over the page's gradient |
 | `webgpu_video_frame` | 432 | `video_frame.rs` | sintel.mp4 demuxed in Rust into a WebCodecs VideoDecoder, each VideoFrame copied into the plane's texture |
 | `misc_exporter_gcode` | 433 | `exporter_gcode.rs` | The Z-up print bed with the selected primitive placed on the XY plane |
-| `webgl_loader_svg` | 434 | `svg_loader.rs` | SVGLoader's walk on the browser's DOMParser for the 35 files, with fills, strokes, gradients and render order |
+| `webgl_loader_svg` | 434 | `svg_loader.rs` | SVGLoader's walk on the browser's DOMParser for the 38 files, with fills, strokes, gradients and render order |
 | `webgl_loader_fbx` | 435 | `fbx_loader.rs` | The 14 FBX models as FBXLoader leaves them, their clips and morphs, under the directional light's PCF shadow |
 | `games_fps` | 436 | `games_fps.rs` | The Octree world, the capsule player and a hundred spheres in five physics substeps per frame, with VSM shadows |
 | `webgl_random_uv` | 437 | `random_uv.rs` | The Draco ShaderBall2 with textureNoTile and the dissolve as TSL surface graphs, VSM shadows on a ShadowMaterial ground |

@@ -8954,7 +8954,7 @@
 				},
 				"classes": "lil-gui allow-touch-styles root autoPlace",
 				"extras": [],
-				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-1\">SVG File</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-1\"><option>Tiger</option><option>Joins and caps</option><option>Hexagon</option><option>Energy</option><option>Test 1</option><option>Test 2</option><option>Test 3</option><option>Test 4</option><option>Test 5</option><option>Test 6</option><option>Test 7</option><option>Test 8</option><option>Test 9</option><option>Units</option><option>Ordering</option><option>Defs</option><option>Defs2</option><option>Defs3</option><option>Defs4</option><option>Defs5</option><option>Style CSS inside defs</option><option>Styled Paths</option><option>Multiple CSS classes</option><option>Zero Radius</option><option>Styles in svg tag</option><option>Round join</option><option>Ellipse Transformations</option><option>singlePointTest</option><option>singlePointTest2</option><option>singlePointTest3</option><option>emptyPath</option><option>emoji</option><option>blueprint</option><option>wideStroke</option><option>letter</option></select><div class=\"display\">Tiger</div></div></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-2\">Draw strokes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-2\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-3\">Draw fill shapes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-3\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-4\">Wireframe strokes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-4\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-5\">Wireframe fill shapes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-5\"></label></div></div></div>",
+				"dom": "<div class=\"lil-gui allow-touch-styles root autoPlace\"><div class=\"title\" role=\"button\" aria-expanded=\"true\" tabindex=\"0\">Controls</div><div class=\"children\"><div class=\"controller option\"><div class=\"name\" id=\"lil-gui-name-1\">SVG File</div><div class=\"widget\"><select aria-labelledby=\"lil-gui-name-1\"><option>Tiger</option><option>Joins and caps</option><option>Hexagon</option><option>Energy</option><option>Test 1</option><option>Test 2</option><option>Test 3</option><option>Test 4</option><option>Test 5</option><option>Test 6</option><option>Test 7</option><option>Test 8</option><option>Test 9</option><option>Units</option><option>Ordering</option><option>Defs</option><option>Defs2</option><option>Defs3</option><option>Defs4</option><option>Defs5</option><option>Style CSS inside defs</option><option>Styled Paths</option><option>Multiple CSS classes</option><option>Zero Radius</option><option>Styles in svg tag</option><option>Round join</option><option>Ellipse Transformations</option><option>singlePointTest</option><option>singlePointTest2</option><option>singlePointTest3</option><option>emptyPath</option><option>emoji</option><option>blueprint</option><option>wideStroke</option><option>letter</option><option>closePathInitialPoint</option><option>closePathOpenSubpath</option><option>useHref</option></select><div class=\"display\">Tiger</div></div></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-2\">Draw strokes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-2\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-3\">Draw fill shapes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-3\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-4\">Wireframe strokes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-4\"></label></div><div class=\"controller boolean\"><div class=\"name\" id=\"lil-gui-name-5\">Wireframe fill shapes</div><label class=\"widget\"><input type=\"checkbox\" aria-labelledby=\"lil-gui-name-5\"></label></div></div></div>",
 				"children": [
 					{
 						"kind": "controller",
@@ -9003,7 +9003,10 @@
 							"models/svg/emoji.svg",
 							"models/svg/blueprint.svg",
 							"models/svg/tests/wideStroke.svg",
-							"models/svg/tests/letter.svg"
+							"models/svg/tests/letter.svg",
+							"models/svg/tests/closePathInitialPoint.svg",
+							"models/svg/tests/closePathOpenSubpath.svg",
+							"models/svg/tests/useHref.svg"
 						],
 						"names": [
 							"Tiger",
@@ -9040,7 +9043,10 @@
 							"emoji",
 							"blueprint",
 							"wideStroke",
-							"letter"
+							"letter",
+							"closePathInitialPoint",
+							"closePathOpenSubpath",
+							"useHref"
 						]
 					},
 					{
@@ -10477,14 +10483,14 @@
 						"classes": "controller option",
 						"style": null,
 						"values": [
-							"https://cdn.needle.tools/static/hdris/ballroom_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/brown_photostudio_02_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/cape_hill_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/cannon_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/metro_noord_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/the_sky_is_on_fire_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/studio_small_09_2k.pmrem.ktx2",
-							"https://cdn.needle.tools/static/hdris/wide_street_01_2k.pmrem.ktx2"
+							"ballroom",
+							"brown_photostudio_02",
+							"cape_hill",
+							"cannon",
+							"metro_noord",
+							"the_sky_is_on_fire",
+							"studio_small_09",
+							"wide_street_01"
 						],
 						"names": [
 							"ballroom",
@@ -10569,7 +10575,7 @@
 				"end": true,
 				"update": false,
 				"place": {
-					"parent": "div",
+					"parent": "#container",
 					"style": "position: fixed; top: 0px; left: 0px; cursor: pointer; opacity: 0.9; z-index: 10000;",
 					"display": "block",
 					"rect": [

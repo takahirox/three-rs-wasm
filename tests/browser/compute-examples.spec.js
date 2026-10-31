@@ -54,7 +54,9 @@ const cases={
  webgpu_custom_fog:{antialias:true,limits:[.006,.2],times:[0,1,2],parameters:[[0,20,20],[1,200,200],[2,-10,-10],[3,80,80],[4,.003,.003],[5,200,200],[6,400,400]],restore:[[0,11,11],[1,150,150],[2,-20,-20],[3,55,55],[4,.0012,.0012],[5,300,300],[6,620,620]],at:2,drag:[[256,256],[300,280]]},
  // The water's flow follows the example clock (a fixture patch). After a resize r186 copied
  // the transmission source at the new size from a target still at the old size, failing
- // validation; r187 resizes without the error, so the resize is compared.
+ // validation; r187 resizes without the error, so the resize is compared. The first capture is
+ // the page's second frame ( its first draws only the output quad ), whose reflector reads its
+ // new target's identity world matrix, faces away and leaves the water without a reflection.
  webgpu_water:{times:[0,1,2.5],parameters:[[1,5,5],[2,-.5,-.5],[3,.3,.3]],restore:[[1,2,2]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // The splats are depth-sorted on the GPU when the view turns; the sources load on selection.
  webgpu_gaussian_splat:{times:[0,1],parameters:[],at:1,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true,

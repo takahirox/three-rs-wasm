@@ -1,4 +1,4 @@
-//! webgl_loader_svg: SVGLoader ( r187 ) on the page's 35 SVG files. The
+//! webgl_loader_svg: SVGLoader ( r187 ) on the page's 38 SVG files. The
 //! document is parsed by the browser's DOMParser, as the loader parses it,
 //! and the loader's walk is ported: presentation attributes, the browser's
 //! inline style declarations and <style> rules ( read through their CSSOM
@@ -24,7 +24,7 @@ use std::f64::consts::PI;
 use std::sync::Arc;
 use wasm_bindgen::{JsCast, JsValue};
 
-const FILES: [&str; 35] = [
+const FILES: [&str; 38] = [
     "tiger.svg",
     "lineJoinsAndCaps.svg",
     "hexagon.svg",
@@ -60,6 +60,9 @@ const FILES: [&str; 35] = [
     "blueprint.svg",
     "tests/wideStroke.svg",
     "tests/letter.svg",
+    "tests/closePathInitialPoint.svg",
+    "tests/closePathOpenSubpath.svg",
+    "tests/useHref.svg",
 ];
 const EPSILON: f64 = f64::EPSILON;
 
@@ -1999,7 +2002,7 @@ pub(super) struct Demo {
     strokes_wireframe: bool,
     fills_wireframe: bool,
     group: Option<Object3D>,
-    /// The 35 files' text, fetched with the page.
+    /// The 38 files' text, fetched with the page.
     texts: Vec<String>,
     dirty: bool,
 }

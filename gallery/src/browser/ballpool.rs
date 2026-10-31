@@ -523,8 +523,9 @@ pub(super) struct Demo {
     light_target: V3,
     /// A frame was requested; other redraws present the last frame again.
     pending: bool,
-    /// The loading frame has rendered: the fixture restarts frameId after it.
-    loaded: bool,
+    /// NodeFrame.frameId: r187's animation loop counts frame 1 as the first
+    /// render() starts it ( the page's first frame ) and one more before
+    /// each later animate().
     frame_id: usize,
     jitter: usize,
     /// The frame that builds TRAA's output node renders unjittered.
@@ -682,7 +683,6 @@ impl Demo {
             light,
             light_target: light,
             pending: true,
-            loaded: false,
             frame_id: 0,
             jitter: 0,
             built: false,
@@ -1409,9 +1409,7 @@ impl Demo {
             r.queue.submit([encoder.finish()]);
             return Ok(true);
         }
-        if std::mem::replace(&mut self.loaded, true) {
-            self.frame_id += 1;
-        }
+        self.frame_id += 1;
         self.animate(r);
         let t = self
             .targets
@@ -1511,10 +1509,8 @@ impl Demo {
             "renderStruct",
             &[("nodeUniform1".into(), vec![0.5])],
         )?;
-        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
-        // update ), then the fixture's restarted count from 1. The history
-        // keeps the loading frame, so its slices count too.
-        let frame_id = self.frame_id.max(1);
+        // The history keeps the first frame, so its slices count too.
+        let frame_id = self.frame_id;
         let (direction, step_offset) = (
             TEMPORAL_ROTATIONS[frame_id % 6] / 360.,
             SPATIAL_OFFSETS[frame_id % 4],

@@ -45,12 +45,12 @@ const OUTPUT_FS: &str = include_str!("hdr/output_fs.wgsl");
 const SSS_OUTPUT_VS: &str = include_str!("deferred/forward_output_vs.wgsl");
 /// The SSS shader's rand( uv + frameId ) seed as r187 bakes it: SSSNode
 /// assigns frame.frameId over its uniform, so each (re)build of the node
-/// inlines the frameId of that frame ( 0 without temporal filtering ).
+/// inlines the frameId of that frame ( 0 without temporal filtering ). The
+/// captured module holds the seed of the frame it was captured at; each
+/// build replaces it with its own.
 const SSS_SEED: &str = "vec2<f32>( 12001.0 )";
 /// SSSNode's per-frame ray offsets.
 const SPATIAL_OFFSETS: [f64; 4] = [0., 0.5, 0.25, 0.75];
-/// The fixture restarts frameId at 12000 after loading.
-const FRAME_ID_START: usize = 12000;
 /// TAAUtils' computeHaltonOffsets( 32 ): bases 2 and 3 from index 1.
 fn halton(index: usize) -> [f64; 2] {
     let h = |mut index: usize, base: usize| {
@@ -177,7 +177,9 @@ pub(super) struct Demo {
     /// temporal filtering.
     params: [f64; 6],
     pending: bool,
-    loaded: bool,
+    /// NodeFrame.frameId: r187's animation loop counts frame 1 as the first
+    /// render() starts it ( the page's first frame ) and one more before
+    /// each later animate().
     frame_id: usize,
     jitter: usize,
     built: bool,
@@ -432,7 +434,6 @@ impl Demo {
             params: [0., 1., 0.2, 0.5, 0.01, 1.],
             // The page renders its first frame on loading.
             pending: true,
-            loaded: false,
             frame_id: 0,
             jitter: 0,
             built: false,
@@ -742,17 +743,9 @@ impl Demo {
             r.queue.submit([encoder.finish()]);
             return Ok(true);
         }
-        let loading = !std::mem::replace(&mut self.loaded, true);
-        if !loading {
-            self.frame_id += 1;
-        }
-        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
-        // update ), then the fixture's restarted count.
-        let frame_id = if loading {
-            1
-        } else {
-            FRAME_ID_START + self.frame_id
-        };
+        self.frame_id += 1;
+        let frame_id = self.frame_id;
+        let loading = frame_id == 1;
         let output = self.output_index();
         let mode = self.params[0].round() as usize;
         let traa_on = output == 0;

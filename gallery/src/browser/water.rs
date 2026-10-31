@@ -188,6 +188,19 @@ pub(super) struct Demo {
     last: f64,
     /// WaterNode's flowConfig: the two offsets and the half cycle.
     flow: [f64; 3],
+    /// Whether the page's first frame was rendered: RenderPipeline's first
+    /// render draws its output quad before the scene pass has run, so it
+    /// shows the unrendered targets ( black ).
+    started: bool,
+    /// Whether the water was drawn before: WaterNode's setup adds the
+    /// reflector's target to the water while the first frame that draws the
+    /// water builds its material, so that frame's reflector reads the
+    /// target's world matrix before any update ( the identity: a plane
+    /// through the origin facing +z ).
+    reflector_placed: bool,
+    /// ReflectorNode.hasOutput: whether the reflection target holds a render
+    /// ( a reflector facing away clears it once ).
+    reflection_output: bool,
     /// color ( hex ), scale and the flow direction.
     color: u32,
     scale: f64,
@@ -451,6 +464,9 @@ impl Demo {
             time: 0.,
             last: 0.,
             flow: [0., HALF_CYCLE, 0.],
+            started: false,
+            reflector_placed: false,
+            reflection_output: false,
             color: 0x99e0ff,
             scale: 2.,
             direction: [1., 1.],
@@ -1125,6 +1141,18 @@ impl Demo {
         self.controls.frame_update(s, c)?;
         let delta = self.time - self.last;
         self.last = self.time;
+        // RenderPipeline's first render: the output quad over the pass
+        // targets no pass has rendered yet; the water node does not update.
+        if !std::mem::replace(&mut self.started, true) {
+            let t = self
+                .targets
+                .as_ref()
+                .ok_or(Error::Invalid("water targets"))?;
+            let mut encoder = r.device.create_command_encoder(&Default::default());
+            self.present(&mut encoder, t);
+            r.queue.submit([encoder.finish()]);
+            return Ok(true);
+        }
         self.update_flow(delta);
         s.update()?;
         let t = self
@@ -1135,11 +1163,16 @@ impl Demo {
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
         let camera_position = world.w_axis.truncate();
         // ReflectorNode: the virtual camera mirrored in the water plane and
-        // its oblique near plane.
-        let normal = Vector3::Y;
-        let plane_point = Vector3::new(0., WATER_Y, -2.);
+        // its oblique near plane. The first frame that draws the water
+        // mirrors in the target's world matrix before its first update ( the
+        // identity ).
+        let (normal, plane_point) = if self.reflector_placed {
+            (Vector3::Y, Vector3::new(0., WATER_Y, -2.))
+        } else {
+            (Vector3::Z, Vector3::ZERO)
+        };
         let reflect = |v: Vector3| v - normal * (2. * v.dot(normal));
-        let reflected = (plane_point - camera_position).dot(normal) <= 0.;
+        let facing_away = (plane_point - camera_position).dot(normal) > 0.;
         let mirror_view = -reflect(plane_point - camera_position) + plane_point;
         let rotation = Matrix4::from_mat3(glam::DMat3::from_mat4(world));
         let look_at = rotation.transform_vector3(Vector3::new(0., 0., -1.)) + camera_position;
@@ -1414,9 +1447,23 @@ impl Demo {
             &t.transmission,
             &t.transmission_levels,
         );
-        if self.water.visible(&frustum, model) {
-            // The reflector renders when the camera is above the water.
-            if reflected {
+        let water_visible = self.water.visible(&frustum, model);
+        if water_visible {
+            // The reflector renders unless it faces away from the camera;
+            // facing away, it clears a target holding a render ( to the
+            // renderer's clear color ) and otherwise leaves it as it is.
+            if facing_away {
+                if self.reflection_output {
+                    encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                        label: Some("water reflection clear"),
+                        color_attachments: &[attachment(
+                            &t.reflection_view,
+                            wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
+                        )],
+                        ..Default::default()
+                    });
+                }
+            } else {
                 let reflection_pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
                     let (color, depth) = if clear {
                         (wgpu::LoadOp::Clear(black), wgpu::LoadOp::Clear(1.))
@@ -1516,6 +1563,10 @@ impl Demo {
         }
         self.present(&mut encoder, t);
         r.queue.submit([encoder.finish()]);
+        if water_visible {
+            self.reflector_placed = true;
+            self.reflection_output = !facing_away;
+        }
         Ok(true)
     }
     pub fn output(&self) -> Option<&RenderTarget> {

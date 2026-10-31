@@ -181,9 +181,9 @@ pub(super) struct Demo {
     params: [f64; 12],
     /// A frame was requested; other redraws present the last frame again.
     pending: bool,
-    /// The loading frame has rendered: the fixture restarts frameId after it.
-    loaded: bool,
-    /// NodeFrame.frameId over requested frames.
+    /// NodeFrame.frameId: r187's animation loop counts frame 1 as the first
+    /// render() starts it ( the page's first frame ) and one more before
+    /// each later animate().
     frame_id: usize,
     jitter: usize,
     /// The TRAA output node has been built: the frame that builds it renders
@@ -441,7 +441,6 @@ impl Demo {
             // The page renders its first frame on loading: it builds the TRAA
             // output node ( unjittered ) and starts the history.
             pending: true,
-            loaded: false,
             frame_id: 0,
             jitter: 0,
             built: false,
@@ -771,9 +770,7 @@ impl Demo {
             r.queue.submit([encoder.finish()]);
             return Ok(true);
         }
-        if std::mem::replace(&mut self.loaded, true) {
-            self.frame_id += 1;
-        }
+        self.frame_id += 1;
         s.update()?;
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
@@ -904,9 +901,7 @@ impl Demo {
             screen_space,
             temporal,
         ] = self.params;
-        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
-        // update ), then the fixture's restarted count from 1.
-        let frame_id = self.frame_id.max(1);
+        let frame_id = self.frame_id;
         let (direction, offset) = if temporal > 0.5 {
             (
                 TEMPORAL_ROTATIONS[frame_id % 6] / 360.,
