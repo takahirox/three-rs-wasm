@@ -227,8 +227,9 @@ including on native Metal. Draw and deformation buffer initialization uses queue
 uploads, avoiding detached Wasm views during mapped copies as memory grows.
 
 `reference/three-js/tsl-particles.html` executes the pinned official scripts with
-seeded initialization and explicit time. Each upstream RangeNode has its own
-seed; only initial random data changes. Per-frame sprite rotation is set to the
+seeded initialization and explicit time. r187's RangeNode needs no seeding: it
+hashes the instance index on the GPU with the object's id and the node's salt,
+and the ports do the same ( `tsl::range` ). Per-frame sprite rotation is set to the
 corresponding 60 Hz pose for comparison. An opacity=1 node marks the height-fog
 material dynamic because the r186 observer does not detect scene-level fog-node
 uniform changes at a frozen camera pose. The shader's fog expression is retained.
@@ -299,8 +300,8 @@ The new APIs are reusable independently of the browser scenes:
   scene uses one resident vertex and one instanced draw, not triangle expansion.
   `GpuBuffer::zeroed` allocates simulation storage without a CPU zero array.
 
-The official source fixture retains shader expressions and uses seeded RangeNode
-initialization, explicit time and captured GUI controls. Integer `instanceIndex`
+The official source fixture retains shader expressions ( r187's RangeNode hashes
+the instance index with the object's id, as `tsl::range` does ), explicit time and captured GUI controls. Integer `instanceIndex`
 modulo/division intentionally follows the generated official WGSL, including
 truncation of sqrt(200000) to 447 for the particle grid. Pointer impulses dispatch
 on input, before the next simulation step. In `still=1`, `gallery_time` advances
@@ -533,8 +534,9 @@ then upsamples and sharpens at display resolution. The Bilinear control uses the
 same source scene. EASU/RCAS also have a same-input comparison against the official
 HDR textures, separating kernel accuracy from scene rasterization differences.
 
-The original-script fixture fixes time (including implicit `oscSine` time), seeds
-RangeNode initialization independently, and captures GUI controls. Soft-particle
+The original-script fixture fixes time (including implicit `oscSine` time) and
+captures GUI controls; r187's RangeNode hashes the instance index with the
+object's id, as the port's `tsl::range` does. Soft-particle
 uniform controls use render-group refresh so parameter edits at a fixed test time
 reach the GPU. Pipeline/target warm-up uses fixed poses; the FSR1 comparison advances its
 animated glTF once and rewinds to zero before measuring, so the reference
