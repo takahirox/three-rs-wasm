@@ -498,7 +498,7 @@ pub(super) fn parse_amf(data: &[u8]) -> Result<Vec<Vec<AmfVolume>>> {
 
 /// UTIF.decode, decodeImage and toRGBA8 for the first image: uncompressed, LZW
 /// and new-style JPEG strips, the horizontal predictor, and palette or RGB color.
-pub(super) fn decode_tiff(data: &[u8]) -> Result<(u32, u32, Vec<u8>)> {
+pub(in crate::browser) fn decode_tiff(data: &[u8]) -> Result<(u32, u32, Vec<u8>)> {
     let le = data.get(..2) == Some(b"II");
     let rd = |o: usize, n: usize| -> Result<u64> {
         let b = data.get(o..o + n).ok_or_else(|| bad("TIFF: truncated"))?;

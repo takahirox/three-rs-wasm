@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -26,11 +29,9 @@ var<uniform> render : renderStruct;
 
 // vars
 var<private> nodeVar0 : vec4<f32>;
-var<private> nodeVar1 : vec4<f32>;
-var<private> nodeVar2 : vec4<f32>;
 
 // codes
-fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn4 ( color : vec4<f32> ) -> vec4<f32> {
 
 	var nodeVar0 : vec4<f32>;
 
@@ -51,7 +52,7 @@ fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
 }
 
 
-fn linearToneMapping ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
+fn fn36 ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
 
 	
 
@@ -61,7 +62,7 @@ fn linearToneMapping ( color : vec3<f32>, exposure : f32 ) -> vec3<f32> {
 }
 
 
-fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
+fn fn2 ( color : vec3<f32> ) -> vec3<f32> {
 
 	
 
@@ -71,7 +72,7 @@ fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
 }
 
 
-fn fn0 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn3 ( color : vec4<f32> ) -> vec4<f32> {
 
 	
 
@@ -90,12 +91,12 @@ fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, ( fragCoord.xy / render.nodeUniform1 ) );
-	nodeVar1 = fn1( vec4<f32>( nodeVar0.xyz, clamp( nodeVar0.w, 0.0, 1.0 ) ) );
-	nodeVar2 = vec4<f32>( linearToneMapping( nodeVar1.xyz, render.nodeUniform2 ), nodeVar1.w );
+	let nodeConst0 = fn4( vec4<f32>( nodeVar0.xyz, clamp( nodeVar0.w, 0.0, 1.0 ) ) );
+	let nodeConst1 = vec4<f32>( fn36( nodeConst0.xyz, render.nodeUniform2 ), nodeConst0.w );
 
 	// result
 
-	output.color = fn0( vec4<f32>( sRGBTransferOETF( nodeVar2.xyz ), nodeVar2.w ) );
+	output.color = fn3( vec4<f32>( fn2( nodeConst1.xyz ), nodeConst1.w ) );
 
 	return output;
 

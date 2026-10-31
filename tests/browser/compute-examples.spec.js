@@ -95,7 +95,8 @@ const cases={
   script:[['down',0,256,330,null],['run',2,2,1/60,null],['move',290,340,null],['run',2,2,1/60,null],['move',320,350,null],['run',2,2,1/60,'last'],['up',0,320,350,null],['run',6,2,1/60,'last']],drag:[[256,256],[300,280]],wheel:[256,256,-200]},
  // TSL time animates the Phong and basic graphs; the orbit controls are damped.
  webgpu_tsl_graph:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
- webgpu_loader_materialx:{antialias:true,times:[0,1,2.5],parameters:[[0,false,0],[1,false,0],[0,true,1],[1,true,1]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
+ // The Geometry selector shows the materials on the UV planes, then the ShaderBalls again.
+ webgpu_loader_materialx:{antialias:true,times:[0,1,2.5],parameters:[[1,false,0],[2,false,0],[1,true,1],[2,true,1],[0,'UV Plane',1],[0,'Shader Ball',0]],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // A resolution change rebakes the grid; with the probes shown the rebake also captures the
  // old helper's spheres, black over the disposed atlas, as the original does. Each rebake
  // allocates a new grid (as LightProbeGrid does): the residency cycle leaves the parameters out.

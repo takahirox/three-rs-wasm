@@ -13,23 +13,25 @@ until every ported example matches r187 again; it is removed when done.
   MaterialX addons in the order their imports give ( `tools/tsl/module_order.py`
   writes `.cache/tslsrc/addon_order.txt` ). The runtime gained `WeakRef`,
   `FinalizationRegistry`, `trimStart` and `trimEnd`.
+- MaterialX: `three_tsl::materialx_page` follows the r187 page and builds its
+  shaders with three's modules in the build's order ( `order::init_bundled`,
+  `tools/tsl/module_order.py` ), as Fn layouts are named by a counter;
+  `tsl/tests/materialx/` holds the page's 182 shaders ( UV plane and back
+  sides included ). The gallery port draws the new documents, the UV plane and
+  its selector, r187's two transmission copies ( back and front side ) and
+  its cube PMREM ( `loader_materialx/pmrem.rs` ); it matches the page in
+  `tests/browser/compute-examples.spec.js` ( no pixel over the bound ).
 
 ## To do
 
 1. **TSL corpus.** Regenerate `tests/tsl/corpus.json` and `golden.json.gz` on
    r187 ( `node tools/tsl/golden.mjs --probe`, alone: it times out when other
    browsers share the GPU ), then `scripts/check-tsl`.
-2. **MaterialX.** The page changed ( four more documents: EXR, TIFF, HDR
-   emission, displacement; a UV plane and a geometry selector;
-   `compileAsync` before `scene.add` ). `three_tsl::materialx_page` follows the
-   page, then `tsl/tests/materialx/` is replaced by the r187 page's shaders
-   ( `tools/compat/capture_wgsl.mjs` reproduces the r186 fixtures exactly ).
-   With the r186 page order, 58 of 74 shaders already match r187; the rest
-   differ only in function ids, which follow node creation order.
 3. **PMREM.** r187 replaces the CubeUV atlas with cube render targets
    ( `PMREMGenerator`, `PMREMNode`, `PMREMUtils`; WebGL's `PMREMGenerator`
-   too ). The gallery's PMREM and every port that samples it move to the
-   r187 layout: 19 WebGPU shader sets with `getUV`/`getFace`/`roughnessToMip`,
+   too ). `gallery/src/browser/loader_materialx/pmrem.rs` already ports
+   `fromEquirectangular` with r187's WGSL. The gallery's PMREM and every
+   port that samples it move to the r187 layout: 19 WebGPU shader sets with `getUV`/`getFace`/`roughnessToMip`,
    and the WebGL ports' hand-written CubeUV sampling.
 4. **Generated WGSL.** Every WebGPU port runs the WGSL its page generates;
    r187 changes it for every page captured so far. For each port, capture the
