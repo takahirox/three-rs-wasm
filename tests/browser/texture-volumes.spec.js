@@ -7,10 +7,9 @@ const view='canvas';
 // Scripted input: [action, ...arguments, capture time or null]. Drags are [x0,y0,x1,y1,button].
 const cases={
  // The horses gallop and run by the example's Timer; FirstPersonControls turn while dragging.
- // The SunLight's PCF edges differ as in webgl_loader_md2_control ( collada-3mf.spec.js ).
- // At 1280 × 720 one horse at the near cascade's boundary falls inside the port's cascade
- // frustum and outside WebGL's: the port draws it into that cascade once more ( portDraws ).
- webgl_shadowmap_performance:{portDraws:[[2952,1]],limits:[.035,.7],antialias:true,times:[0,.5,1,2.5],parameters:[],at:2.5},
+ // The directional light's 2048 × 1024 PCF edges differ as in webgl_loader_md2_control
+ // ( collada-3mf.spec.js ).
+ webgl_shadowmap_performance:{limits:[.035,.7],antialias:true,times:[0,.5,1,2.5],parameters:[],at:2.5},
  // The bike's animation follows the example's Timer; the orbit is damped. With MSAA the thin
  // frame's edges resolve differently ( msaaLimits ).
  misc_exporter_usdz:{antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},

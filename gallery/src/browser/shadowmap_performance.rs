@@ -1,7 +1,7 @@
 //! webgl_shadowmap_performance: 601 galloping horses ( the Horse glTF's
 //! morph animation in 25 AnimationObjectGroups ), the extruded "THREE.JS"
-//! text and two blocks on the ground, under an ambient light and the
-//! SunLight's PCF cascades, in linear fog, with FirstPersonControls. Each
+//! text and two blocks on the ground, under an ambient light and a
+//! directional light's 2048 × 1024 PCF shadow map, in linear fog, with FirstPersonControls. Each
 //! frame the mixer advances the groups' actions by the timer, the horses run
 //! along x ( wrapping to a seeded random start ) and the controls move the
 //! camera, as the page does, on the engine's renderer. Each horse is its own
@@ -127,16 +127,23 @@ impl Demo {
             color: Color::WHITE,
             intensity: 1.,
         }));
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // A directional light with a 2048 × 1024 PCF map over ±2000, near
+        // 1200, far 2500, bias 0.0001.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 3.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
+        let n = s.get_mut(light)?;
         n.position = Vector3::new(0., 1500., 1000.);
         n.cast_shadow = true;
         n.shadow = crate::shadow::Shadow {
-            far: 3000.,
-            normal_bias: 1.,
+            map_size: Some(2048),
+            map_height: Some(1024),
+            extent: 2000.,
+            near: 1200.,
+            far: 2500.,
+            bias: 0.0001,
             ..Default::default()
         };
         // The ground and the two blocks share the plane's Phong material.
