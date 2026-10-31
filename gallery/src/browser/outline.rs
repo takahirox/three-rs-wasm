@@ -1,5 +1,5 @@
 //! webgpu_postprocessing_outline: the OBJ tree, 20 Lambert spheres, the floor
-//! and the torus under a shadowing SunLight, with OutlineNode around the
+//! and the torus under a shadowing DirectionalLight, with OutlineNode around the
 //! object under the pointer: the non-selected depth pass, the selected mask
 //! with its depth test, the half-resolution downsample and edge detection,
 //! the half- and quarter-resolution separable blurs and the composite, added
@@ -123,15 +123,17 @@ impl Demo {
             color: Color::from_hex(0xaaaaaa),
             intensity: 0.6,
         }));
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::from_hex(0xddffdd),
             intensity: 2.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
+        let n = s.get_mut(light)?;
         n.position = Vector3::new(5., 5., 5.);
         n.cast_shadow = true;
         n.shadow = crate::shadow::Shadow {
             map_size: Some(2048),
+            extent: 10.,
             far: 25.,
             ..Default::default()
         };

@@ -15606,7 +15606,7 @@
         "source": "gallery/src/browser/clipping_stencil.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "ClippingGroupの3平面によるトーラスノットのクリッピング、平面ごとのステンシルビット反転と断面キャップ、平面追従のキャップとPlaneHelper、クリップされたSunLightの影を受けるShadowNodeMaterialの地面、OrbitControls、GUI（平面の定数・反転・ヘルパー表示・アニメーション）をRustで再現。renderOrderの1.1などは10倍の整数順で保持。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ClippingGroupの3平面によるトーラスノットのクリッピング、平面ごとのステンシルビット反転と断面キャップ、平面追従のキャップとPlaneHelper、クリップされたDirectionalLightの影を受けるShadowNodeMaterialの地面、OrbitControls、GUI（平面の定数・反転・ヘルパー表示・アニメーション）をRustで再現。renderOrderの1.1などは10倍の整数順で保持。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -25328,7 +25328,7 @@
         "source": "gallery/src/browser/outline.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "OBJの木、20個の球、床、トーラスとSunLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "OBJの木、20個の球、床、トーラスとDirectionalLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

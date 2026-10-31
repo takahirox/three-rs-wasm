@@ -1,6 +1,6 @@
 //! webgpu_clipping_stencil: a torus knot clipped by three planes, capped
 //! where the stencil bit of each plane marks the exposed interior, over a
-//! ShadowNodeMaterial ground receiving the clipped SunLight shadow.
+//! ShadowNodeMaterial ground receiving the clipped DirectionalLight shadow.
 use super::controls_attributes::{CameraState, Controls, camera_state};
 use crate::attribute::BufferAttribute;
 use crate::shader::ShaderProgram;
@@ -68,16 +68,17 @@ impl Demo {
             color: Color::WHITE,
             intensity: 1.5,
         }));
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 3.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
+        let n = s.get_mut(light)?;
         n.position = Vector3::new(5., 10., 7.5);
         n.cast_shadow = true;
         n.shadow = crate::shadow::Shadow {
-            map_size: Some(2048),
-            far: 15.,
+            map_size: Some(1024),
+            extent: 2.,
             ..Default::default()
         };
         let planes = [Vector3::NEG_X, Vector3::NEG_Y, Vector3::NEG_Z].map(|normal| Plane {

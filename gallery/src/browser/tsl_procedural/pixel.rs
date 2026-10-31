@@ -40,15 +40,17 @@ impl Pixel {
             color: Color::from_hex(0x757f8e),
             intensity: 3.,
         }));
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // DirectionalLight: a 2048² map, the default shadow camera.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::from_hex(0xfffecd),
             intensity: 1.5,
+            target: Vector3::ZERO,
         }));
         {
-            let n = s.get_mut(sun)?;
+            let n = s.get_mut(light)?;
             n.position = Vector3::splat(100.);
             n.cast_shadow = true;
-            n.shadow.far = 10.;
+            n.shadow.map_size = Some(2048);
             n.shadow.filter = crate::shadow::ShadowFilter::Basic;
         }
         let spot = s.insert(NodeKind::Light(Light::Spot {

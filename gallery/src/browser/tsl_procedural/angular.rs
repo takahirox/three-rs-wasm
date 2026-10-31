@@ -28,7 +28,7 @@ impl Angular {
             1.8,
         );
         s.tone_mapping = ToneMapping::Aces;
-        s.shadow_map_size = 4096;
+        s.shadow_map_size = 2048;
         // UltraHDRLoader on the page's texture, at load.
         s.environment = Some(Arc::new(
             super::super::ultra_hdr::ultra_hdr(
@@ -38,15 +38,20 @@ impl Angular {
             .await?,
         ));
         s.background_environment = true;
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // DirectionalLight: a 2048² map, its shadow camera ±8 from 0.1 to 30.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 4.,
+            target: Vector3::ZERO,
         }));
         {
-            let n = s.get_mut(sun)?;
+            let n = s.get_mut(light)?;
             n.position = Vector3::new(6.25, 3., 4.);
             n.cast_shadow = true;
-            n.shadow.far = 20.;
+            n.shadow.map_size = Some(2048);
+            n.shadow.near = 0.1;
+            n.shadow.far = 30.;
+            n.shadow.extent = 8.;
             n.shadow.normal_bias = 0.05;
         }
         let mask=WgslFn::new("angular_mask","fn angular_mask(p:vec3<f32>,start:f32,arc:f32)->bool{let a=atan2(p.y,p.x)-start;let angle=a-6.283185307179586*floor(a/6.283185307179586);return !(angle>0.0 && angle<arc);}",&[Type::Vec3,Type::Float,Type::Float],Type::Bool).unwrap().call(&[position_local(),uniform(0,Type::Float),uniform(1,Type::Float)]);

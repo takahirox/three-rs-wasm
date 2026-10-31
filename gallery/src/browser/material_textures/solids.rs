@@ -125,15 +125,19 @@ impl Demo {
             n.shadow.map_size = Some(2048);
             n.shadow.radius = 4.;
         }
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // DirectionalLight: a 1024² map, its shadow camera ±1 from 1 to 10.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::from_hex(0x55505a),
             intensity: 3.,
+            target: Vector3::ZERO,
         }));
         {
-            let n = s.get_mut(sun)?;
+            let n = s.get_mut(light)?;
             n.position = Vector3::new(0., 3., 0.);
             n.cast_shadow = true;
+            n.shadow.near = 1.;
             n.shadow.far = 10.;
+            n.shadow.extent = 1.;
             n.shadow.map_size = Some(1024);
         }
         let mut m = MeshPhongMaterial {
