@@ -22863,7 +22863,7 @@
         "source": "gallery/src/browser/tsl_extended.rs",
         "test": "tests/browser/tsl-extended.spec.js",
         "limitations": [
-          "単一GPUデバイス、40シーンのviewport/scissor描画。画面外は描画せず、部分表示はカメラのview offsetで切り取る。"
+          "単一GPUデバイス、40シーンのviewport/scissor描画。全体が画面に収まらない要素は描画しない。"
         ]
       },
       "imports": [

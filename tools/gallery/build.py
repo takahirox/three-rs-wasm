@@ -419,7 +419,7 @@ PORTS = {
  'webgpu_occlusion': {'example':89,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。']},
  'webgpu_instance_uniform': {'example':90,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['共有ノードプログラムとオブジェクトごとのuniform、ネイティブGPUキューブマップ。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。']},
  'webgpu_postprocessing_dof': {'example':91,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPU上の近景・遠景CoC、64/16タップのボケと合成。CoCは同じ画素数・精度のRG16Fに格納。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。']},
- 'webgpu_multiple_elements': {'example':92,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['単一GPUデバイス、40シーンのviewport/scissor描画。画面外は描画せず、部分表示はカメラのview offsetで切り取る。']},
+ 'webgpu_multiple_elements': {'example':92,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['単一GPUデバイス、40シーンのviewport/scissor描画。全体が画面に収まらない要素は描画しない。']},
  'webgpu_multiple_canvas': {'example':93,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['40個のWebGPU CanvasTargetが1個のGPUデバイスを共有。独立したOrbit操作。']},
  'webgpu_struct_drawindirect': {'example':94,'source':'gallery/src/browser/tsl_extended.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['GPU構造体のatomicStoreで間接描画コマンドを更新。頂点変形・色計算もGPUで実行。']},
  'webgpu_materials_cubemap_mipmaps': {'example':96,'source':'gallery/src/browser/tsl_extended/cube.rs','test':'tests/browser/tsl-extended.spec.js','limitations':['Rust TSLでキューブマップ反射。GPU生成mipmapと公式の手動mipmapを比較。']},

@@ -438,7 +438,7 @@ See [performance acceptance and current audit](performance-parity.md). The count
 | webgpu_occlusion | `tests/browser/tsl-extended.spec.js` | GPUオクルージョンクエリの非同期結果をTSLの色uniformに反映。 |
 | webgpu_instance_uniform | `tests/browser/tsl-extended.spec.js` | 共有ノードプログラムとオブジェクトごとのuniform、ネイティブGPUキューブマップ。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。 |
 | webgpu_postprocessing_dof | `tests/browser/tsl-extended.spec.js` | GPU上の近景・遠景CoC、64/16タップのボケと合成。CoCは同じ画素数・精度のRG16Fに格納。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。 |
-| webgpu_multiple_elements | `tests/browser/tsl-extended.spec.js` | 単一GPUデバイス、40シーンのviewport/scissor描画。画面外は描画せず、部分表示はカメラのview offsetで切り取る。 |
+| webgpu_multiple_elements | `tests/browser/tsl-extended.spec.js` | 単一GPUデバイス、40シーンのviewport/scissor描画。全体が画面に収まらない要素は描画しない。 |
 | webgpu_multiple_canvas | `tests/browser/tsl-extended.spec.js` | 40個のWebGPU CanvasTargetが1個のGPUデバイスを共有。独立したOrbit操作。 |
 | webgpu_struct_drawindirect | `tests/browser/tsl-extended.spec.js` | GPU構造体のatomicStoreで間接描画コマンドを更新。頂点変形・色計算もGPUで実行。 |
 | webgpu_materials_cubemap_mipmaps | `tests/browser/tsl-extended.spec.js` | Rust TSLでキューブマップ反射。GPU生成mipmapと公式の手動mipmapを比較。 |
