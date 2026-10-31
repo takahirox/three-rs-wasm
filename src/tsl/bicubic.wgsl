@@ -1,4 +1,4 @@
-// Mipped B-spline filtering adapted from Three.js r186 TextureBicubic.js (MIT).
+// Mipped B-spline filtering adapted from Three.js r187 TextureBicubic.js (MIT).
 fn tsl_bicubic_weights(a:vec2<f32>)->mat4x2<f32> {
     return mat4x2((a*(a*(-a+3.0)-3.0)+1.0)/6.0,
         (a*a*(3.0*a-6.0)+4.0)/6.0,

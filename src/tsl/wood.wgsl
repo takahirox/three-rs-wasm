@@ -1,4 +1,4 @@
-// Adapted from Three.js r186 WoodNodeMaterial.js (MIT).
+// Adapted from Three.js r187 WoodNodeMaterial.js (MIT).
 
     fn wood_voronoi(x: vec3<f32>) -> f32
     {

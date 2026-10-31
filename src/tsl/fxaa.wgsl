@@ -1,4 +1,4 @@
-// Three.js r186 FXAANode (MIT). Preserve early exit and bounded adaptive search.
+// Three.js r187 FXAANode (MIT). Preserve early exit and bounded adaptive search.
 fn tsl_fxaa_sample(t:texture_2d<f32>,s:sampler,uv:vec2<f32>)->vec4<f32>{
     return textureSampleLevel(t,s,uv,0.0);
 }

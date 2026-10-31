@@ -1,4 +1,4 @@
-// r186 getAlphaHashThreshold, adapted from Wyman 2017 hashed alpha testing.
+// r187 getAlphaHashThreshold, adapted from Wyman 2017 hashed alpha testing.
 fn alpha_hash2(v:vec2<f32>)->f32{return fract(1.0e4*sin(17.0*v.x+0.1*v.y)*(0.1+abs(sin(13.0*v.y+v.x))));}
 fn alpha_hash3(v:vec3<f32>)->f32{return alpha_hash2(vec2(alpha_hash2(v.xy),v.z));}
 fn tsl_alpha_hash(opacity:f32,position:vec3<f32>,enabled:bool)->f32{

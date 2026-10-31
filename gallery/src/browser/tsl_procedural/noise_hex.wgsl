@@ -1,4 +1,4 @@
-// r186 MaterialXHextile.js checkerboard composition (Three.js MIT).
+// r187 MaterialXHextile.js checkerboard composition (Three.js MIT).
 fn hex_hash(p:vec2<f32>)->vec2<f32>{
  let a=fract(vec3(p.x,p.y,p.x)*vec3(0.1031,0.103,0.0973));let b=a+dot(a,a.yzx+33.33);return fract((b.xx+b.yz)*b.zy);
 }

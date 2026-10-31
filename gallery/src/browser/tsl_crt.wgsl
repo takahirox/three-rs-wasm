@@ -1,4 +1,4 @@
-// Three.js r186 webgpu_tsl_interoperability (MIT), CRT by Xor.
+// Three.js r187 webgpu_tsl_interoperability (MIT), CRT by Xor.
 fn crtFragment(
 						vUv: vec2f,
 						tex: texture_2d<f32>,

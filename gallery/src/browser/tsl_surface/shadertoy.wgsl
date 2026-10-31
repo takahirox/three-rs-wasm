@@ -1,7 +1,7 @@
-// Fixed shaders from Three.js r186 webgpu_shadertoy.html.
+// Fixed shaders from Three.js r187 webgpu_shadertoy.html.
 // Water: jackdavenport, https://www.shadertoy.com/view/Mt2SzR
 // Fire: trinketMage, https://www.shadertoy.com/view/3tcBzH
-// The two fixed shaders in Three.js r186 webgpu_shadertoy.html.
+// The two fixed shaders in Three.js r187 webgpu_shadertoy.html.
 // Water: https://www.shadertoy.com/view/Mt2SzR. Fire: pinned example's second shader.
 fn water_noise(p:vec2<f32>)->f32{return fract(sin(p.x+p.y*10000.0)*10000.0);}
 fn water_smooth(p:vec2<f32>)->f32{

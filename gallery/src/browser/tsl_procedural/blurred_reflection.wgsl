@@ -1,4 +1,4 @@
-// r186 hashBlur with a sample callback masking reflected RGB by its depth.
+// r187 hashBlur with a sample callback masking reflected RGB by its depth.
 fn reflection_depth(depth:texture_depth_2d,uv:vec2<f32>)->f32{
  let size=vec2<i32>(textureDimensions(depth));return textureLoad(depth,clamp(vec2<i32>(floor(uv*vec2<f32>(size))),vec2(0),size-1),0);
 }

@@ -1,4 +1,4 @@
-// Three.js r186 TRAANode.js / TAAUtils.js, MIT (LICENSE-THREE).
+// Three.js r187 TRAANode.js / TAAUtils.js, MIT (LICENSE-THREE).
 struct Parameters {
  previous_to_view:mat4x4<f32>, previous_projection_inverse:mat4x4<f32>,
  camera:vec4<f32>, settings:vec4<f32>, jitter:vec4<f32>,

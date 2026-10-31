@@ -1,4 +1,4 @@
-// r186 hashBlur, 32 samples, straight alpha. Preserve scalar operation grouping.
+// r187 hashBlur, 32 samples, straight alpha. Preserve scalar operation grouping.
 fn retro_mod(x:f32,y:f32)->f32{return x-y*floor(x/y);}
 fn retro_hash_blur(t:texture_2d<f32>,s:sampler,uv:vec2<f32>,amount:f32)->vec3<f32>{
  var color=vec4(0.0);

@@ -1,4 +1,4 @@
-// Three.js r186 webgpu_tsl_vfx_flames. Textures are resident; distortion is per fragment.
+// Three.js r187 webgpu_tsl_vfx_flames. Textures are resident; distortion is per fragment.
 fn flame(uv:vec2<f32>,t:f32,kind:f32,cell:texture_2d<f32>,cellSampler:sampler,perlin:texture_2d<f32>,perlinSampler:sampler,gradient:texture_2d<f32>,gradientSampler:sampler)->vec4<f32>{
  let delta=uv-0.5;let delta2=dot(delta,delta);
  var p=(uv+delta*(delta2*delta2*10.0))*0.6+0.2;

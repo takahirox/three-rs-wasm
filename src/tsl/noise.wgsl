@@ -1,4 +1,4 @@
-// MaterialX scalar 3D Perlin noise, ported from Three.js r186 (MIT).
+// MaterialX scalar 3D Perlin noise, ported from Three.js r187 (MIT).
 fn tsl_mx_rot(x:u32,k:u32)->u32 {return (x<<k)|(x>>(32u-k));}
 fn tsl_mx_hash(p:vec3<i32>)->u32 {
  let seed=0xdeadbeefu+12u+13u;

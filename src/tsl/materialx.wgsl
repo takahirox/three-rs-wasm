@@ -1,4 +1,4 @@
-// MaterialX noise adapted from Three.js r186 MaterialXNoise.js.
+// MaterialX noise adapted from Three.js r187 MaterialXNoise.js.
 // Modified: native WGSL implementation with shared 2D/3D kernels.
 // MaterialX is Apache-2.0; see LICENSE-MATERIALX. Three.js is MIT.
 fn mxn_rot(x:u32,k:u32)->u32 {return (x<<k)|(x>>(32u-k));}

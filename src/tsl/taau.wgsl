@@ -1,4 +1,4 @@
-// Three.js r186 TAAUNode.js, MIT (LICENSE-THREE).
+// Three.js r187 TAAUNode.js, MIT (LICENSE-THREE).
 @fragment fn fs_main(input:Varying)->@location(0) vec4<f32>{
  let size=vec2<f32>(textureDimensions(beauty));let input_position=input.uv*size;let texel=round(input_position-(vec2(0.5)+params.jitter.xy));
  var closest=2.0;var farthest=-1.0;var coordinate=vec2<i32>(0);
@@ -29,7 +29,7 @@
  let current_luma=dot(current.rgb,vec3(0.2126,0.7152,0.0722));let mean_luma=dot(mean.rgb,vec3(0.2126,0.7152,0.0722));
  let thin=smoothstep(0.0,0.2,abs(current_luma-mean_luma)/mean_luma);
  let can_lock=all(history_uv>=vec2(0.0))&&all(history_uv<=vec2(1.0))&&abs(closest-previous_z)<=params.settings.x;
- // r186 seeds history.lock to zero but copies only history.color afterwards.
+ // r187 seeds history.lock to zero but copies only history.color afterwards.
  // Its otherwise-unused lock attachment therefore contributes exactly zero.
  let lock=clamp(select(0.0,thin,can_lock),0.0,1.0);
  let locked=mix(clipped,old,lock);let weight=select(1.0,clamp(0.025+speed,0.0,1.0),valid);

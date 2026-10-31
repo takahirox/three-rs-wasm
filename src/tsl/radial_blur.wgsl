@@ -1,4 +1,4 @@
-// Three.js r186 radialBlur (MIT), straight-alpha path.
+// Three.js r187 radialBlur (MIT), straight-alpha path.
 fn tsl_radial_blur(tex:texture_2d<f32>,s:sampler,uv:vec2<f32>,size:vec2<f32>,options:vec4<f32>)->vec4<f32>{
     let count=clamp(i32(options.z),1,64);
     let base=textureSampleLevel(tex,s,uv,0.0);

@@ -88,7 +88,7 @@ fn extension_sample(index:u32,surface:VertexOut)->vec4<f32> {
     if sampling.y<0.5 {return extension_level(index,uv,i32(floor(mip+0.5)),linear);}
     let low=floor(mip);return mix(extension_level(index,uv,i32(low),linear),extension_level(index,uv,i32(ceil(mip)),linear),mip-low);
 }
-// Thin-film model ported from Three.js r186 (MIT), Belcour/Barla 2017.
+// Thin-film model ported from Three.js r187 (MIT), Belcour/Barla 2017.
 fn sensitivity(opd:f32,shift:vec3<f32>)->vec3<f32> {
     let phase=6.28318530718*opd*1e-9;
     let value=vec3(5.4856e-13,4.4201e-13,5.2481e-13);

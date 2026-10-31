@@ -1,4 +1,4 @@
-// r186 FSR1Node: EASU's 12-tap edge kernel and RCAS's 5-tap cross.
+// r187 FSR1Node: EASU's 12-tap edge kernel and RCAS's 5-tap cross.
 fn fsr_edge(w:f32,a:f32,b:f32,c:f32,d:f32,e:f32)->vec3<f32>{
  let x=d-b;let sx=clamp(abs(x)/max(max(abs(d-c),abs(c-b)),1.0/65536.0),0.0,1.0);
  let y=e-a;let sy=clamp(abs(y)/max(max(abs(e-c),abs(c-a)),1.0/65536.0),0.0,1.0);
