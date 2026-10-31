@@ -8,6 +8,10 @@ export default defineConfig({...base,
   testDir: './tests/pages',
   // Lets CI shard the per-example tests of the single spec file.
   fullyParallel: true,
+  // The software GPU leaves the runner's cores idle between a test's steps:
+  // two browsers per shard run a shard 1.4× faster. With four, scenes that
+  // compile many pipelines missed their 90-second frame deadlines.
+  workers: 2,
   use: {...base.use, baseURL: 'http://127.0.0.1:28180'},
   webServer: {
     command: 'python3 -m http.server 28180 --bind 127.0.0.1 --directory .cache/pages',

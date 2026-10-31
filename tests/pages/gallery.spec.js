@@ -10,7 +10,7 @@ const catalog = JSON.parse(readFileSync('web/examples/catalog.json'));
 // --shard splits the list into runs of consecutive examples, whose costs differ
 // by half. The site's own tests run in the first shard.
 const SITE_TESTS = ['site entry', 'official-style example URLs'];
-const shardOf = (() => {
+const [shardOf, longestFirst] = (() => {
   const [index, count] = (process.env.GALLERY_SHARD ?? '1/1').split('/').map(Number);
   const recorded = existsSync('tests/pages/durations.json') ? JSON.parse(readFileSync('tests/pages/durations.json')) : {};
   const known = Object.values(recorded).sort((a, b) => a - b);
@@ -26,7 +26,7 @@ const shardOf = (() => {
     load[least] += duration(id);
     shard.set(id, least + 1);
   }
-  return name => shard.get(name) === index;
+  return [name => shard.get(name) === index, ids];
 })();
 
 if (shardOf('site entry')) test('site entry opens the gallery under the project prefix', async ({page}) => {
@@ -53,7 +53,9 @@ if (shardOf('official-style example URLs')) test('official-style example URLs', 
   await expect(page.locator('#diagnostic a[href="webgpu_loader_gltf.html"]')).toBeVisible();
 });
 
-for (const entry of catalog.examples.filter(e => e.port && shardOf(e.id))) {
+// Longest first, so the shard's workers finish together.
+const ports = new Map(catalog.examples.filter(e => e.port).map(e => [e.id, e]));
+for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
   test(`published gallery: ${entry.id}`, async ({page}) => {
     // The city bakes 60 probe-cube faces per frame beside its 4096² shadow and 4×
     // MSAA scene: on the software GPU its first frames take minutes. Sponza

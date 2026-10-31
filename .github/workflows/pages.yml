@@ -70,7 +70,8 @@ jobs:
 
   # The published-gallery check opens every ported example on a software GPU
   # ( SwiftShader ), so it runs in shards against the uploaded site, balanced by
-  # the examples' recorded durations ( tests/pages/gallery.spec.js ).
+  # the examples' recorded durations, two browsers to a shard
+  # ( tests/pages/gallery.spec.js ).
   check:
     needs: build
     runs-on: ubuntu-24.04
