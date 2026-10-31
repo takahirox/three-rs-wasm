@@ -1,7 +1,10 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
 
 
 // structs
@@ -26,11 +29,9 @@ var<private> nodeVar0 : vec4<f32>;
 var<private> nodeVar1 : f32;
 var<private> nodeVar2 : vec4<f32>;
 var<private> nodeVar3 : vec3<f32>;
-var<private> nodeVar4 : vec4<f32>;
-var<private> nodeVar5 : vec4<f32>;
 
 // codes
-fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn4 ( color : vec4<f32> ) -> vec4<f32> {
 
 	var nodeVar0 : vec4<f32>;
 
@@ -51,7 +52,7 @@ fn fn1 ( color : vec4<f32> ) -> vec4<f32> {
 }
 
 
-fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
+fn fn2 ( color : vec3<f32> ) -> vec3<f32> {
 
 	
 
@@ -61,7 +62,7 @@ fn sRGBTransferOETF ( color : vec3<f32> ) -> vec3<f32> {
 }
 
 
-fn fn0 ( color : vec4<f32> ) -> vec4<f32> {
+fn fn3 ( color : vec4<f32> ) -> vec4<f32> {
 
 	
 
@@ -80,15 +81,17 @@ fn main( @location( 0 ) nodeVarying0 : vec2<f32> ) -> OutputStruct {
 	// code
 
 	nodeVar0 = textureSample( nodeUniform0, nodeUniform0_sampler, nodeVarying0 );
+	let nodeConst0 = nodeVar0;
 	nodeVar1 = textureSample( nodeUniform1, nodeUniform1_sampler, nodeVarying0 ).x;
+	let nodeConst1 = nodeVar1;
 	nodeVar2 = textureSample( nodeUniform2, nodeUniform2_sampler, nodeVarying0 );
 	nodeVar3 = textureSample( nodeUniform3, nodeUniform3_sampler, nodeVarying0 ).xyz;
-	nodeVar4 = vec4<f32>( ( ( nodeVar0.xyz * vec3<f32>( nodeVar1 ) ) + ( nodeVar2.xyz * nodeVar3 ) ), nodeVar0.w );
-	nodeVar5 = fn1( vec4<f32>( nodeVar4.xyz, clamp( nodeVar4.w, 0.0, 1.0 ) ) );
+	let nodeConst2 = vec4<f32>( ( ( nodeConst0.xyz * vec3<f32>( nodeConst1 ) ) + ( nodeVar2.xyz * nodeVar3 ) ), nodeConst0.w );
+	let nodeConst3 = fn4( vec4<f32>( nodeConst2.xyz, clamp( nodeConst2.w, 0.0, 1.0 ) ) );
 
 	// result
 
-	output.color = fn0( vec4<f32>( sRGBTransferOETF( nodeVar5.xyz ), nodeVar5.w ) );
+	output.color = fn3( vec4<f32>( fn2( nodeConst3.xyz ), nodeConst3.w ) );
 
 	return output;
 

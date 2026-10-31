@@ -364,7 +364,9 @@ impl Demo {
         )?;
         // The CubeCamera's 256² half-float target ( generateMipmaps ) and its depth.
         let cube_texture = cube_texture(r, "cubemap target", CUBE, levels);
-        let cube_faces = (0..6).map(|face| face_view(&cube_texture, face, 0)).collect();
+        let cube_faces = (0..6)
+            .map(|face| face_view(&cube_texture, face, 0))
+            .collect();
         let cube_mipmaps = CubeMipmaps::new(r, &cube_texture);
         let cube = cube_view(&cube_texture, None);
         let cube_depth = target(r, (CUBE, CUBE), DEPTH, 1);

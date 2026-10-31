@@ -394,8 +394,9 @@ impl Demo {
         // scene.background and scene.environment: the equirect as a cube
         // ( CubeMapNode ) and its PMREM.
         // UltraHDRLoader: half float, flipped, mipmapped on the GPU.
-        let sky = super::ultra_hdr::ultra_hdr(&fetch("environments/moonless_golf_2k.hdr.jpg").await?)
-            .await?;
+        let sky =
+            super::ultra_hdr::ultra_hdr(&fetch("environments/moonless_golf_2k.hdr.jpg").await?)
+                .await?;
         let row = sky.width as usize * 4;
         let texels: Vec<half::f16> = sky.rgba.chunks(row).rev().flatten().copied().collect();
         let mut sky_mipmaps = Mipmaps::new(r);

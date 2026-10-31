@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -9,17 +9,17 @@
 // uniforms
 @binding( 6 ) @group( 1 ) var nodeUniform2 : texture_2d_array<f32>;
 
-struct NodeBuffer_4359Struct {
+struct nodeUniform1Struct {
 	value : array< vec4<f32>, 2 >
 };
 @binding( 5 ) @group( 1 )
-var<uniform> NodeBuffer_4359 : NodeBuffer_4359Struct;
+var<uniform> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_4547Struct {
+struct nodeUniform4Struct {
 	value : array< mat4x4<f32>, 67 >
 };
 @binding( 7 ) @group( 1 )
-var<uniform> NodeBuffer_4547 : NodeBuffer_4547Struct;
+var<uniform> nodeUniform4 : nodeUniform4Struct;
 
 struct objectStruct {
 	nodeUniform0 : f32,
@@ -67,14 +67,9 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> nodeVar0 : f32;
 var<private> nodeVar1 : f32;
-var<private> nodeVar2 : i32;
-var<private> nodeVar3 : i32;
-var<private> nodeVar4 : vec2<i32>;
-var<private> nodeVar5 : vec4<f32>;
-var<private> nodeVar6 : vec4<f32>;
+var<private> nodeVar2 : vec4<f32>;
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar174 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -100,16 +95,16 @@ fn main( @builtin( vertex_index ) vertexIndex : u32,
 	for ( var i : i32 = 0; i < 2; i ++ ) {
 
 		nodeVar0 = 0.0;
-		nodeVar1 = NodeBuffer_4359.value[ i ].x;
+		nodeVar1 = nodeUniform1.value[ i ].x;
 		nodeVar0 = nodeVar1;
 
 		if ( ( nodeVar0 != 0.0 ) ) {
 
-			nodeVar2 = ( ( i32( vertexIndex ) * 1 ) + 0 );
-			nodeVar3 = ( nodeVar2 / 84 );
-			nodeVar4 = vec2<i32>( ( nodeVar2 - ( nodeVar3 * 84 ) ), nodeVar3 );
-			nodeVar5 = textureLoad( nodeUniform2, nodeVar4, i, u32( 0u ) );
-			positionLocal = ( positionLocal + ( nodeVar5.xyz * vec3<f32>( nodeVar0 ) ) );
+			let nodeConst0 = ( ( i32( vertexIndex ) * 1 ) + 0 );
+			let nodeConst1 = ( nodeConst0 / 84 );
+			let nodeConst2 = vec2<i32>( ( nodeConst0 - ( nodeConst1 * 84 ) ), nodeConst1 );
+			nodeVar2 = textureLoad( nodeUniform2, nodeConst2, i, u32( 0u ) );
+			positionLocal = ( positionLocal + ( nodeVar2 * vec4<f32>( nodeVar0 ) ).xyz );
 			
 
 		}
@@ -117,17 +112,17 @@ fn main( @builtin( vertex_index ) vertexIndex : u32,
 
 	}
 
-	nodeVar6 = ( object.nodeUniform5 * vec4<f32>( positionLocal, 1.0 ) );
-	positionLocal = ( object.nodeUniform3 * ( ( ( ( ( skinWeight.x * NodeBuffer_4547.value[ skinIndex.x ] ) * nodeVar6 ) + ( ( skinWeight.y * NodeBuffer_4547.value[ skinIndex.y ] ) * nodeVar6 ) ) + ( ( skinWeight.z * NodeBuffer_4547.value[ skinIndex.z ] ) * nodeVar6 ) ) + ( ( skinWeight.w * NodeBuffer_4547.value[ skinIndex.w ] ) * nodeVar6 ) ) ).xyz;
+	let nodeConst3 = ( object.nodeUniform5 * vec4<f32>( positionLocal, 1.0 ) );
+	positionLocal = ( object.nodeUniform3 * ( ( ( ( ( skinWeight.x * nodeUniform4.value[ skinIndex.x ] ) * nodeConst3 ) + ( ( skinWeight.y * nodeUniform4.value[ skinIndex.y ] ) * nodeConst3 ) ) + ( ( skinWeight.z * nodeUniform4.value[ skinIndex.z ] ) * nodeConst3 ) ) + ( ( skinWeight.w * nodeUniform4.value[ skinIndex.w ] ) * nodeConst3 ) ) ).xyz;
 	normalLocal = normal;
-	normalLocal = ( mat3x3<f32>( ( ( object.nodeUniform3 * ( ( ( skinWeight.x * NodeBuffer_4547.value[ skinIndex.x ] + skinWeight.y * NodeBuffer_4547.value[ skinIndex.y ] ) + skinWeight.z * NodeBuffer_4547.value[ skinIndex.z ] ) + skinWeight.w * NodeBuffer_4547.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 0 ].xyz, ( ( object.nodeUniform3 * ( ( ( skinWeight.x * NodeBuffer_4547.value[ skinIndex.x ] + skinWeight.y * NodeBuffer_4547.value[ skinIndex.y ] ) + skinWeight.z * NodeBuffer_4547.value[ skinIndex.z ] ) + skinWeight.w * NodeBuffer_4547.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 1 ].xyz, ( ( object.nodeUniform3 * ( ( ( skinWeight.x * NodeBuffer_4547.value[ skinIndex.x ] + skinWeight.y * NodeBuffer_4547.value[ skinIndex.y ] ) + skinWeight.z * NodeBuffer_4547.value[ skinIndex.z ] ) + skinWeight.w * NodeBuffer_4547.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 2 ].xyz ) * normalLocal );
+	normalLocal = ( mat3x3<f32>( ( ( object.nodeUniform3 * ( ( ( skinWeight.x * nodeUniform4.value[ skinIndex.x ] + skinWeight.y * nodeUniform4.value[ skinIndex.y ] ) + skinWeight.z * nodeUniform4.value[ skinIndex.z ] ) + skinWeight.w * nodeUniform4.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 0 ].xyz, ( ( object.nodeUniform3 * ( ( ( skinWeight.x * nodeUniform4.value[ skinIndex.x ] + skinWeight.y * nodeUniform4.value[ skinIndex.y ] ) + skinWeight.z * nodeUniform4.value[ skinIndex.z ] ) + skinWeight.w * nodeUniform4.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 1 ].xyz, ( ( object.nodeUniform3 * ( ( ( skinWeight.x * nodeUniform4.value[ skinIndex.x ] + skinWeight.y * nodeUniform4.value[ skinIndex.y ] ) + skinWeight.z * nodeUniform4.value[ skinIndex.z ] ) + skinWeight.w * nodeUniform4.value[ skinIndex.w ] ) ) * object.nodeUniform5 )[ 2 ].xyz ) * normalLocal );
 	varyings.nodeVarying6 = uv;
 	varyings.v_normalViewGeometry = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform13 * normalLocal ), 0.0 ) ).xyz );
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform17 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
-	VERTEX_nodeVar174 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar174;
+	let VERTEX_nodeConst29 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst29;
 
 	// result
 

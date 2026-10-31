@@ -6,11 +6,11 @@
 //! clip is baked once on the CPU, as the page
 //! does, with retargeting's simulation of three.js's matrix semantics. Every
 //! skinned mesh ( the avatar's ten, the character's two ) is skinned on the
-//! GPU from its skeleton's bone matrices; the opaque meshes draw in r186's
+//! GPU from its skeleton's bone matrices; the opaque meshes draw in r187's
 //! order ( their bounding-sphere centers' clip depth ) after the frustum test
 //! with the spheres SkinnedMesh computes at the first culling; the reflector
 //! renders the mirrored view into the target the floor samples. Every stage
-//! runs the WGSL three.js r186 generates for the page ( in
+//! runs the WGSL three.js r187 generates for the page ( in
 //! `retargeting_readyplayer/`; the background vertex and output modules are
 //! the skinning_instances and compute_cloth ones, byte-identical ).
 use super::controls_attributes::{Controls, camera_state};
@@ -1004,10 +1004,11 @@ impl Demo {
                         if name == "object" {
                             return Some(mesh.object.as_entire_binding());
                         }
-                        if name.starts_with("NodeBuffer_") {
-                            // The bone matrices or the morph influences, by type.
-                            let decl = format!("struct {name}Struct {{");
-                            let vs = mesh.shaders.0;
+                        // The uniform buffers r187 names by node ( `nodeUniform1` ):
+                        // the bone matrices or the morph influences, by type.
+                        let decl = format!("struct {name}Struct {{");
+                        let vs = mesh.shaders.0;
+                        if vs.contains(&decl) {
                             let bones = vs.find(&decl).is_some_and(|at| {
                                 let rest = &vs[at..];
                                 rest[..rest.find("};").unwrap_or(rest.len())].contains("mat4x4")
@@ -1378,7 +1379,7 @@ impl Demo {
             "objectStruct",
             &[("nodeUniform5", m4(Matrix4::IDENTITY))],
         )?;
-        // Frustum culling with the first-render spheres, then r186's opaque
+        // Frustum culling with the first-render spheres, then r187's opaque
         // order: the geometry sphere centers' clip-space z, ties by creation.
         let order = |p: Matrix4, v: Matrix4| -> Result<Vec<usize>> {
             let frustum = Frustum::from_projection(p * v);

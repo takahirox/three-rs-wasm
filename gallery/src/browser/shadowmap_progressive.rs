@@ -10,7 +10,7 @@
 //! ambient occlusion ); and the main pass draws the ground and model with the
 //! lightmap under the linear fog, the gizmos over them ( scene meshes ) and
 //! the output pass. potpack's layout of the two uv boxes is computed at load,
-//! as addObjectsToLightMap() does. Every stage runs the WGSL three.js r186
+//! as addObjectsToLightMap() does. Every stage runs the WGSL three.js r187
 //! generates for the page ( in `shadowmap_progressive/` ); the debug lightmap
 //! plane is not reproduced.
 use super::controls_attributes::{Controls, camera_state, viewport_css};
@@ -418,10 +418,7 @@ impl Demo {
         let lightmap_render = Uniforms::new(r, "lightmap", &[LIGHTMAP.0, LIGHTMAP.1])?;
         let blur = Uniforms::new(r, "blurring plane", &[BLUR.0, BLUR.1])?;
         let identity3 = m3(Matrix4::IDENTITY);
-        let names: Vec<String> = (1..=8).map(|i| format!("nodeUniform{i}")).collect();
-        let values: Vec<(&str, &[f64])> =
-            names.iter().map(|n| (n.as_str(), &identity3[..])).collect();
-        blur.write(r, "objectStruct", &values)?;
+        blur.write(r, "objectStruct", &[("nodeUniform1", &identity3[..])])?;
         let tex = wgpu::BindingResource::TextureView;
         let sampler = wgpu::BindingResource::Sampler;
         // Per light: each object's shadow-pass groups ( the light's render

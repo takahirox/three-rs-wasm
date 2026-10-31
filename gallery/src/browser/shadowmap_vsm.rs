@@ -4,7 +4,7 @@
 //! Each frame renders both depth maps, the VSM vertical pass (mean and
 //! deviation of the depths along a column) and horizontal pass, then the
 //! multisampled scene pass (front to back, frustum culled) and the sRGB output
-//! pass. Every stage runs the WGSL three.js r186 generates for the page (in
+//! pass. Every stage runs the WGSL three.js r187 generates for the page (in
 //! `shadowmap_vsm/`).
 use super::controls_attributes::{Controls, camera_state};
 use crate::{
@@ -696,11 +696,11 @@ impl Demo {
             .f(152, 2.)
             .v3(160, linear(0xff8888).map(|v| v * 400.))
             .v3(176, linear(0x8888ff).map(|v| v * 3.))
-            .p3(192, view.transform_point3(spot))
-            .p3(208, spot)
-            .p3(224, Vector3::ZERO)
-            .p3(240, dir)
-            .p3(256, Vector3::ZERO);
+            .p3(192, spot)
+            .p3(208, Vector3::ZERO)
+            .p3(224, dir)
+            .p3(240, Vector3::ZERO)
+            .p3(256, view.transform_point3(spot));
         for (i, (base, bias_value)) in [(272, -0.002), (352, -0.0005)].into_iter().enumerate() {
             let (p, v) = shadow_cameras[i];
             layout = layout

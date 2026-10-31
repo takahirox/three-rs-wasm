@@ -8,7 +8,7 @@
 //! ( color × AO + diffuse × GI ) renders to a texture TRAA jitters, reprojects
 //! and blends; the output encodes sRGB. The AO, GI and direct views and the
 //! composite without temporal filtering replace the output node. Every stage
-//! runs the WGSL three.js r186 generates for the page (in `ssgi/`; the
+//! runs the WGSL three.js r187 generates for the page (in `ssgi/`; the
 //! point shadow is the godrays modules, TRAA the volume_traa ones and the
 //! output the hdr ones, which are byte-identical).
 use super::controls_attributes::{Controls, camera_state};
@@ -43,12 +43,12 @@ const OUTPUT_VS: &str = include_str!("hdr/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("hdr/output_fs.wgsl");
 /// PointShadowNode's WebGPU cube faces: directions and ups.
 const FACES: [([f64; 3], [f64; 3]); 6] = [
-    ([1., 0., 0.], [0., -1., 0.]),
-    ([-1., 0., 0.], [0., -1., 0.]),
-    ([0., -1., 0.], [0., 0., -1.]),
-    ([0., 1., 0.], [0., 0., 1.]),
-    ([0., 0., 1.], [0., -1., 0.]),
-    ([0., 0., -1.], [0., -1., 0.]),
+    ([-1., 0., 0.], [0., 1., 0.]),
+    ([1., 0., 0.], [0., 1., 0.]),
+    ([0., 1., 0.], [0., 0., -1.]),
+    ([0., -1., 0.], [0., 0., 1.]),
+    ([0., 0., 1.], [0., 1., 0.]),
+    ([0., 0., -1.], [0., 1., 0.]),
 ];
 /// SSGINode's per-frame slice rotations and step offsets.
 const TEMPORAL_ROTATIONS: [f64; 6] = [60., 300., 180., 240., 120., 0.];
@@ -203,6 +203,8 @@ pub(super) struct Demo {
     quad_uv: wgpu::Buffer,
     placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
+    /// The depth texture's ( nearest ) sampler SSGINode gathers with.
+    nearest: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
@@ -480,6 +482,7 @@ impl Demo {
                 min_filter: wgpu::FilterMode::Linear,
                 ..Default::default()
             }),
+            nearest: r.device.create_sampler(&wgpu::SamplerDescriptor::default()),
             compare: r.device.create_sampler(&wgpu::SamplerDescriptor {
                 mag_filter: wgpu::FilterMode::Linear,
                 min_filter: wgpu::FilterMode::Linear,
@@ -628,12 +631,13 @@ impl Demo {
                 r,
                 ssgi_pipeline.get_bind_group_layout(0),
                 &[
-                    (0, tex(&depth_target.1)),
-                    (1, self.ssgi_object.as_entire_binding()),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&scene[2].1)),
-                    (4, sampler(&self.linear)),
-                    (5, tex(&scene[0].1)),
+                    (0, self.ssgi_object.as_entire_binding()),
+                    (1, sampler(&self.nearest)),
+                    (2, tex(&depth_target.1)),
+                    (3, sampler(&self.linear)),
+                    (4, tex(&scene[2].1)),
+                    (5, sampler(&self.linear)),
+                    (6, tex(&scene[0].1)),
                 ],
             )],
         );
@@ -819,25 +823,32 @@ impl Demo {
             wgsl!("physical_fs"),
             "renderStruct",
             &[
-                ("nodeUniform30", m4(motion.projection)),
+                ("nodeUniform31", m4(projection)),
+                ("nodeUniform33", m4(motion.projection)),
+                ("nodeUniform34", m4(motion.view)),
                 ("cameraProjectionMatrix", m4(jittered)),
                 ("cameraViewMatrix", m4(view)),
                 ("nodeUniform14", vec![100.; 3]),
-                ("nodeUniform25", vec![100.]),
-                ("nodeUniform26", vec![2.]),
-                ("nodeUniform27", ambient.clone()),
+                ("nodeUniform28", vec![100.]),
+                ("nodeUniform29", vec![2.]),
+                ("nodeUniform30", ambient.clone()),
                 (
                     "nodeUniform13",
                     view.transform_point3(light).to_array().to_vec(),
                 ),
                 ("nodeUniform15", m4(Matrix4::from_translation(-light))),
+                // The shadow camera's near, far and bias, read twice ( the
+                // fragment's depth and PointShadowFilter's samples ).
                 ("nodeUniform19", vec![0.5]),
                 ("nodeUniform18", vec![100.]),
                 ("nodeUniform17", vec![0.]),
                 ("nodeUniform20", vec![0.]),
-                ("nodeUniform22", vec![1.]),
-                ("nodeUniform23", vec![SHADOW as f64; 2]),
-                ("nodeUniform24", vec![1.]),
+                ("nodeUniform21", vec![1.]),
+                ("nodeUniform22", vec![SHADOW as f64; 2]),
+                ("nodeUniform23", vec![100.]),
+                ("nodeUniform24", vec![0.5]),
+                ("nodeUniform25", vec![0.]),
+                ("nodeUniform27", vec![1.]),
             ],
         )?;
         write(
@@ -845,7 +856,9 @@ impl Demo {
             wgsl!("basic_fs"),
             "renderStruct",
             &[
+                ("nodeUniform5", m4(projection)),
                 ("nodeUniform8", m4(motion.projection)),
+                ("nodeUniform9", m4(motion.view)),
                 ("cameraProjectionMatrix", m4(jittered)),
                 ("cameraViewMatrix", m4(view)),
                 ("nodeUniform2", ambient),
@@ -861,9 +874,7 @@ impl Demo {
                         ("nodeUniform0", m.color.to_vec()),
                         ("nodeUniform1", vec![1.]),
                         ("nodeUniform4", m3(m.model.inverse().transpose())),
-                        ("nodeUniform5", m4(projection)),
                         ("nodeUniform7", m4(m.model)),
-                        ("nodeUniform9", m4(motion.view)),
                         ("nodeUniform10", m4(m.model)),
                         ("nodeUniform12", m4(m.model)),
                     ],
@@ -885,10 +896,8 @@ impl Demo {
                         ("nodeUniform9", vec![0.; 3]),
                         ("nodeUniform10", vec![1.]),
                         ("nodeUniform12", m4(m.model)),
-                        ("nodeUniform28", m4(projection)),
-                        ("nodeUniform29", m4(m.model)),
-                        ("nodeUniform31", m4(motion.view)),
                         ("nodeUniform32", m4(m.model)),
+                        ("nodeUniform35", m4(m.model)),
                     ],
                 )?;
             }
@@ -924,26 +933,28 @@ impl Demo {
             wgsl!("ssgi_fs"),
             "objectStruct",
             &[
-                ("nodeUniform1", m4(jittered.inverse())),
-                ("nodeUniform3", vec![slices.round()]),
-                ("nodeUniform4", vec![steps.round()]),
-                ("nodeUniform5", vec![ao_intensity]),
-                ("nodeUniform6", vec![gi_intensity]),
-                ("nodeUniform7", vec![radius]),
-                ("nodeUniform8", vec![screen_space.round()]),
-                ("nodeUniform9", vec![t.width as f64, t.height as f64]),
+                // SSGINode's resolution scale ( 1: full resolution ).
+                ("nodeUniform0", vec![1.]),
+                ("nodeUniform2", m4(jittered.inverse())),
+                ("nodeUniform4", vec![slices.round()]),
+                ("nodeUniform5", vec![steps.round()]),
+                ("nodeUniform6", vec![ao_intensity]),
+                ("nodeUniform7", vec![gi_intensity]),
+                ("nodeUniform8", vec![radius]),
+                ("nodeUniform9", vec![screen_space.round()]),
+                ("nodeUniform10", vec![t.width as f64, t.height as f64]),
                 (
-                    "nodeUniform10",
+                    "nodeUniform11",
                     vec![t.height as f64 / ((fov.to_radians() * 0.5).tan() * 2.) * 0.5],
                 ),
-                ("nodeUniform11", vec![direction]),
-                ("nodeUniform12", vec![exp_factor]),
-                ("nodeUniform13", vec![thickness]),
-                ("nodeUniform14", vec![backface]),
-                ("nodeUniform15", vec![offset]),
-                ("nodeUniform16", vec![linear_thickness.round()]),
-                ("nodeUniform17", vec![100.]),
-                ("nodeUniform19", vec![1.]),
+                ("nodeUniform12", vec![direction]),
+                ("nodeUniform13", vec![exp_factor]),
+                ("nodeUniform14", vec![thickness]),
+                ("nodeUniform15", vec![backface]),
+                ("nodeUniform16", vec![offset]),
+                ("nodeUniform17", vec![linear_thickness.round()]),
+                ("nodeUniform18", vec![100.]),
+                ("nodeUniform20", vec![1.]),
             ],
         )?;
         // TRAANode.updateBefore: the previous camera matrices ( identity before

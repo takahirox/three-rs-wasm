@@ -13,10 +13,10 @@
 //! regenerating ( PMREMNode does each frame for a CubeCamera's target )
 //! allocates nothing.
 mod room;
-pub(super) use room::room_environment;
 use super::gltf_viewer::fetch;
 use super::lights_projector::{m3, m4, pack};
 use crate::{Error, Result, geometry::BoxGeometry, math::*, renderer::Renderer};
+pub(super) use room::room_environment;
 use wgpu::util::DeviceExt;
 
 pub(super) const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
@@ -240,7 +240,10 @@ impl CubeMipmaps {
                         (2, no_flip.as_entire_binding()),
                     ],
                 );
-                (group, (0..6).map(|f| face_view(texture, f, level)).collect())
+                (
+                    group,
+                    (0..6).map(|f| face_view(texture, f, level)).collect(),
+                )
             })
             .collect();
         Self { pipeline, levels }
@@ -635,7 +638,10 @@ impl Pmrem {
             "objectStruct",
             &[
                 ("nodeUniform0", &m4(Matrix4::IDENTITY)),
-                ("nodeUniform1", &[sigma.min(std::f64::consts::PI) / 2f64.sqrt()]),
+                (
+                    "nodeUniform1",
+                    &[sigma.min(std::f64::consts::PI) / 2f64.sqrt()],
+                ),
                 ("nodeUniform4", &m3(Matrix4::IDENTITY)),
             ],
         )?;

@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,17 +13,17 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_1007Struct {
+struct nodeUniform0Struct {
 	value : array< atomic<u32> >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read_write> NodeBuffer_1007 : NodeBuffer_1007Struct;
+var<storage, read_write> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_1008Struct {
+struct nodeUniform1Struct {
 	value : array< atomic<u32> >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read_write> NodeBuffer_1008 : NodeBuffer_1008Struct;
+var<storage, read_write> nodeUniform1 : nodeUniform1Struct;
 
 struct objectStruct {
 	nodeUniform2 : u32
@@ -63,9 +63,9 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 
 	for ( var bin : u32 = 0u; bin < 4096u; bin ++ ) {
 
-		let nodeConst0 = atomicLoad( &NodeBuffer_1007.value[ bin ] );
+		let nodeConst0 = atomicLoad( &nodeUniform0.value[ bin ] );
 		count = nodeConst0;
-		atomicStore( &NodeBuffer_1008.value[ bin ], sum );
+		atomicStore( &nodeUniform1.value[ bin ], sum );
 		sum = ( sum + count );
 
 	}

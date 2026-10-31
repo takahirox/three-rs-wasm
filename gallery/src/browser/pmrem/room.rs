@@ -182,7 +182,8 @@ pub(in super::super) fn room_environment(r: &Renderer, sigma: f64) -> Result<Pmr
     // The room and the panels read normal at 0 and position at 1, the boxes
     // position at 0, normal at 1 and the instance matrix at 2 to 5.
     let (first, second) = (attribute(0), attribute(1));
-    let matrix = wgpu::vertex_attr_array![2 => Float32x4, 3 => Float32x4, 4 => Float32x4, 5 => Float32x4];
+    let matrix =
+        wgpu::vertex_attr_array![2 => Float32x4, 3 => Float32x4, 4 => Float32x4, 5 => Float32x4];
     let instanced = wgpu::VertexBufferLayout {
         array_stride: 64,
         step_mode: wgpu::VertexStepMode::Instance,
@@ -343,15 +344,30 @@ pub(in super::super) fn room_environment(r: &Renderer, sigma: f64) -> Result<Pmr
         };
         let room_camera = camera(
             ROOM_FS,
-            ["nodeUniform10", "nodeUniform11", "nodeUniform12", "nodeUniform13"],
+            [
+                "nodeUniform10",
+                "nodeUniform11",
+                "nodeUniform12",
+                "nodeUniform13",
+            ],
         )?;
         let boxes_camera = camera(
             BOXES_FS,
-            ["nodeUniform14", "nodeUniform15", "nodeUniform16", "nodeUniform17"],
+            [
+                "nodeUniform14",
+                "nodeUniform15",
+                "nodeUniform16",
+                "nodeUniform17",
+            ],
         )?;
         let light_camera = camera(
             LIGHT_FS,
-            ["nodeUniform6", "nodeUniform8", "nodeUniform9", "nodeUniform10"],
+            [
+                "nodeUniform6",
+                "nodeUniform8",
+                "nodeUniform9",
+                "nodeUniform10",
+            ],
         )?;
         let group = |p: &wgpu::RenderPipeline, buffer: &wgpu::Buffer| {
             bind(

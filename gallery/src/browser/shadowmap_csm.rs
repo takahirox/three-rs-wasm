@@ -6,7 +6,7 @@
 //! texels, as the addon computes them on the CPU each frame. The receivers
 //! pick their cascade by orthographic depth. The CSMHelper (frustum, cascade
 //! boxes, planes and shadow bounds) and the orthographic camera are
-//! available. Every stage runs the WGSL three.js r186 generates for the page
+//! available. Every stage runs the WGSL three.js r187 generates for the page
 //! (in `shadowmap_csm/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::lights_projector::{m3, m4, pack};
@@ -164,7 +164,9 @@ struct Targets {
     resolve: Option<wgpu::TextureView>,
     depth: wgpu::TextureView,
     screen: RenderTarget,
-    phong: (wgpu::RenderPipeline, wgpu::BindGroup, Vec<wgpu::BindGroup>),
+    /// The phong pipeline for the perspective and the orthographic camera
+    /// ( r187 builds the material per camera type ).
+    phong: [(wgpu::RenderPipeline, wgpu::BindGroup, Vec<wgpu::BindGroup>); 2],
     lines: (wgpu::RenderPipeline, wgpu::BindGroup, Vec<wgpu::BindGroup>),
     /// Back then front faces.
     planes: [(wgpu::RenderPipeline, wgpu::BindGroup, Vec<wgpu::BindGroup>); 2],
@@ -651,36 +653,35 @@ impl Demo {
                 })
         };
         let opaque = (false, false, false);
-        let phong = pipeline(
-            "csm phong",
-            wgsl!("phong_vs"),
-            wgsl!("phong_fs"),
-            &buffers,
-            HALF,
-            true,
-            opaque,
-        );
-        let phong_render = bind(
-            r,
-            phong.get_bind_group_layout(0),
-            &[
-                (0, self.phong_render.as_entire_binding()),
-                (1, self.cascades.as_entire_binding()),
-            ],
-        );
         let compare = wgpu::BindingResource::Sampler(&self.compare);
-        let phong_objects = self
-            .shapes
-            .iter()
-            .map(|shape| {
-                let mut entries = vec![(0, shape.phong.as_entire_binding())];
-                for (i, (_, depth)) in self.shadow_maps.iter().enumerate() {
-                    entries.push((1 + 2 * i as u32, compare.clone()));
-                    entries.push((2 + 2 * i as u32, wgpu::BindingResource::TextureView(depth)));
-                }
-                bind(r, phong.get_bind_group_layout(1), &entries)
-            })
-            .collect();
+        let phong = [
+            (wgsl!("phong_vs"), wgsl!("phong_fs")),
+            (wgsl!("phong_ortho_vs"), wgsl!("phong_ortho_fs")),
+        ]
+        .map(|(vs, fs)| {
+            let phong = pipeline("csm phong", vs, fs, &buffers, HALF, true, opaque);
+            let phong_render = bind(
+                r,
+                phong.get_bind_group_layout(0),
+                &[
+                    (0, self.phong_render.as_entire_binding()),
+                    (1, self.cascades.as_entire_binding()),
+                ],
+            );
+            let phong_objects = self
+                .shapes
+                .iter()
+                .map(|shape| {
+                    let mut entries = vec![(0, shape.phong.as_entire_binding())];
+                    for (i, (_, depth)) in self.shadow_maps.iter().enumerate() {
+                        entries.push((1 + 2 * i as u32, compare.clone()));
+                        entries.push((2 + 2 * i as u32, wgpu::BindingResource::TextureView(depth)));
+                    }
+                    bind(r, phong.get_bind_group_layout(1), &entries)
+                })
+                .collect();
+            (phong, phong_render, phong_objects)
+        });
         let lines = pipeline(
             "csm helper lines",
             wgsl!("line_vs"),
@@ -793,7 +794,7 @@ impl Demo {
             resolve,
             depth,
             screen,
-            phong: (phong, phong_render, phong_objects),
+            phong,
             lines: (lines, lines_render, line_objects),
             planes,
             output: (output, output_binds),
@@ -849,19 +850,24 @@ impl Demo {
         let linear = |hex: u32| Color::from_hex(hex).0.to_array().to_vec();
         let scale = |v: Vec<f64>, k: f64| v.iter().map(|x| x * k).collect::<Vec<_>>();
         let additional = Vector3::new(-1., -1., -1.).normalize() * -200.;
+        let light_name = |n: usize| format!("nodeUniform{}", if ortho { n - 1 } else { n });
+        let phong_fs = if ortho {
+            wgsl!("phong_ortho_fs")
+        } else {
+            wgsl!("phong_fs")
+        };
         let mut values: Vec<(String, Vec<f64>)> = vec![
             ("cameraProjectionMatrix".into(), m4(projection)),
             ("cameraViewMatrix".into(), m4(view)),
             ("nodeUniform6".into(), vec![1.5; 3]),
             ("nodeUniform12".into(), scale(linear(0x000020), 1.5)),
-            ("nodeUniform16".into(), vec![3.; 3]),
+            // The CSM light's color, position and target ( one lower in the
+            // orthographic camera's module ).
+            (light_name(16), vec![3.; 3]),
             ("nodeUniform10".into(), additional.to_array().to_vec()),
             ("nodeUniform11".into(), vec![0.; 3]),
-            (
-                "nodeUniform14".into(),
-                self.light_position().to_array().to_vec(),
-            ),
-            ("nodeUniform15".into(), vec![0.; 3]),
+            (light_name(14), self.light_position().to_array().to_vec()),
+            (light_name(15), vec![0.; 3]),
             ("shadowFar".into(), vec![self.params[2].min(far)]),
             ("nodeUniform18".into(), vec![near]),
         ];
@@ -884,7 +890,7 @@ impl Demo {
         r.queue.write_buffer(
             &self.phong_render,
             0,
-            &pack(wgsl!("phong_fs"), "renderStruct", &values)?,
+            &pack(phong_fs, "renderStruct", &values)?,
         );
         let ranges: Vec<f32> = csm
             .ranges
@@ -906,7 +912,7 @@ impl Demo {
                 &shape.phong,
                 0,
                 &pack(
-                    wgsl!("phong_fs"),
+                    phong_fs,
                     "objectStruct",
                     &[
                         ("nodeUniform0", &linear(shape.color)),
@@ -915,7 +921,14 @@ impl Demo {
                         ("nodeUniform3", &linear(0x111111)),
                         ("nodeUniform5", &[1.]),
                         ("nodeUniform8", &m3(shape.model.inverse().transpose())),
-                        ("nodeUniform13", &m4(shape.model)),
+                        (
+                            if ortho {
+                                "nodeUniform16"
+                            } else {
+                                "nodeUniform13"
+                            },
+                            &m4(shape.model),
+                        ),
                     ],
                 )?,
             );
@@ -1152,9 +1165,10 @@ impl Demo {
             for (_, _, draw) in &draws {
                 match draw {
                     Draw::Shape(i) => {
-                        pass.set_pipeline(&t.phong.0);
-                        pass.set_bind_group(0, &t.phong.1, &[]);
-                        pass.set_bind_group(1, &t.phong.2[*i], &[]);
+                        let phong = &t.phong[usize::from(self.params[0] > 0.5)];
+                        pass.set_pipeline(&phong.0);
+                        pass.set_bind_group(0, &phong.1, &[]);
+                        pass.set_bind_group(1, &phong.2[*i], &[]);
                         draw_geometry(&mut pass, &self.geometries[self.shapes[*i].geometry], true);
                     }
                     Draw::Line(object, geometry) => {

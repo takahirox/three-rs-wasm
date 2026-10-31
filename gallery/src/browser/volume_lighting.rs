@@ -29,17 +29,6 @@ macro_rules! wgsl {
         include_str!(concat!("volume_lighting/", $name, ".wgsl"))
     };
 }
-/// r186 PointShadowNode's WebGPU cube faces: directions and ups ( the
-/// shaders sample the cube with ( x, -y, z ) ); `Shadows::new` keeps them for
-/// volume_traa's r186 shaders.
-pub(super) const FACES: [([f64; 3], [f64; 3]); 6] = [
-    ([1., 0., 0.], [0., -1., 0.]),
-    ([-1., 0., 0.], [0., -1., 0.]),
-    ([0., -1., 0.], [0., 0., -1.]),
-    ([0., 1., 0.], [0., 0., 1.]),
-    ([0., 0., 1.], [0., -1., 0.]),
-    ([0., 0., -1.], [0., -1., 0.]),
-];
 /// r187 PointShadowNode's WebGPU cube faces, CubeCamera's orientation ( the
 /// shaders sample the cube with ( -x, y, z ) ).
 pub(super) const CUBE_CAMERA_FACES: [([f64; 3], [f64; 3]); 6] = [
@@ -302,12 +291,8 @@ pub(super) struct Shadows {
     faces: &'static [([f64; 3], [f64; 3]); 6],
 }
 impl Shadows {
-    /// The shadows with r186's cube faces.
-    pub(super) fn new(r: &Renderer) -> Self {
-        Self::with_faces(r, &FACES)
-    }
-    /// The shadows with the given cube faces ( `FACES` for r186's shaders,
-    /// `CUBE_CAMERA_FACES` for r187's ).
+    /// The shadows with the given cube faces ( `CUBE_CAMERA_FACES` for r187's
+    /// shaders ).
     pub(super) fn with_faces(r: &Renderer, faces: &'static [([f64; 3], [f64; 3]); 6]) -> Self {
         let shadow_pipeline = shadow_pipeline(r);
         let shadow_render = |label| {

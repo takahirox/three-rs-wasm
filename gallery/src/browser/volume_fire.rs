@@ -990,7 +990,12 @@ impl Demo {
                 sized(r, "denoise", wgsl!("blur_v_fs"), "objectStruct")?,
             ],
             high_object: sized(r, "bloom high pass", wgsl!("high_fs"), "objectStruct")?,
-            high_render: sized(r, "bloom high pass render", wgsl!("high_fs"), "renderStruct")?,
+            high_render: sized(
+                r,
+                "bloom high pass render",
+                wgsl!("high_fs"),
+                "renderStruct",
+            )?,
             composite_object: sized(r, "bloom composite", wgsl!("composite_fs"), "objectStruct")?,
             tints: init(
                 "bloom tints",
@@ -1703,7 +1708,10 @@ impl Demo {
             &self.output_render,
             wgsl!("output_fs"),
             "renderStruct",
-            &[("nodeUniform2", vec![p.saturation]), ("nodeUniform4", vec![2.])],
+            &[
+                ("nodeUniform2", vec![p.saturation]),
+                ("nodeUniform4", vec![2.]),
+            ],
         )?;
         let dye = self.parity;
         let mut encoder = r.device.create_command_encoder(&Default::default());

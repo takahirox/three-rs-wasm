@@ -1,7 +1,11 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // global
 diagnostic( off, derivative_uniformity );
+
+
+// directives
+
 
 // structs
 
@@ -37,6 +41,7 @@ var<private> nodeVar2 : vec2<f32>;
 
 // codes
 
+
 @fragment
 fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 
@@ -48,6 +53,7 @@ fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 
 	for ( var i : i32 = 0; i < i32( render.nodeUniform0 ); i ++ ) {
 
+
 		if ( ( render.nodeUniform0 <= 1.0 ) ) {
 
 			nodeVar0 = 0.0;
@@ -57,6 +63,7 @@ fn main( @builtin( position ) fragCoord : vec4<f32> ) -> OutputStruct {
 			nodeVar0 = -1.0;
 
 		}
+
 
 		if ( ( render.nodeUniform0 <= 1.0 ) ) {
 

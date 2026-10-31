@@ -5,7 +5,7 @@
 //! `morphTexture.needsUpdate` do), and the vertex stage blends the 15
 //! resident morph targets. A SunLight casts two shadow cascades fitted around
 //! the view into one atlas; the ground blends them, under a hemisphere light
-//! and fog, while the camera circles. Every stage runs the WGSL three.js r186
+//! and fog, while the camera circles. Every stage runs the WGSL three.js r187
 //! generates for the page (in `instancing_morph/`).
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};
@@ -121,6 +121,32 @@ struct Targets {
     horse: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
     ground: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
     output: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+}
+/// The horses' vertex buffers: positions, the instance matrices ( four
+/// instanced vec4 columns, as r187's InstanceNode reads them past the uniform
+/// buffer limit ) and the instance colors.
+fn horse_layouts() -> [wgpu::VertexBufferLayout<'static>; 3] {
+    const POSITION: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![0 => Float32x3];
+    const MATRIX: [wgpu::VertexAttribute; 4] =
+        wgpu::vertex_attr_array![1 => Float32x4, 2 => Float32x4, 3 => Float32x4, 4 => Float32x4];
+    const COLOR: [wgpu::VertexAttribute; 1] = wgpu::vertex_attr_array![5 => Float32x3];
+    [
+        wgpu::VertexBufferLayout {
+            array_stride: 12,
+            step_mode: wgpu::VertexStepMode::Vertex,
+            attributes: &POSITION,
+        },
+        wgpu::VertexBufferLayout {
+            array_stride: 64,
+            step_mode: wgpu::VertexStepMode::Instance,
+            attributes: &MATRIX,
+        },
+        wgpu::VertexBufferLayout {
+            array_stride: 12,
+            step_mode: wgpu::VertexStepMode::Instance,
+            attributes: &COLOR,
+        },
+    ]
 }
 pub(super) struct Demo {
     time: f64,
@@ -308,22 +334,7 @@ impl Demo {
                 source: wgpu::ShaderSource::Wgsl(source.into()),
             })
         };
-        let horse_buffers = [
-            wgpu::vertex_attr_array![0 => Float32x3],
-            wgpu::vertex_attr_array![1 => Float32x3],
-        ];
-        let layouts = [
-            wgpu::VertexBufferLayout {
-                array_stride: 12,
-                step_mode: wgpu::VertexStepMode::Vertex,
-                attributes: &horse_buffers[0],
-            },
-            wgpu::VertexBufferLayout {
-                array_stride: 12,
-                step_mode: wgpu::VertexStepMode::Instance,
-                attributes: &horse_buffers[1],
-            },
-        ];
+        let layouts = horse_layouts();
         let shadow_pipeline = r
             .device
             .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
@@ -358,11 +369,7 @@ impl Demo {
                 multiview: None,
                 cache: None,
             });
-        let instances = init(
-            "horse instances",
-            bytemuck::cast_slice(&matrices),
-            wgpu::BufferUsages::UNIFORM,
-        );
+        let instances = init("horse instances", bytemuck::cast_slice(&matrices), vertex);
         let shadow_object = uniform(r, "horse shadow object", 80);
         let shadow_renders: Vec<wgpu::Buffer> = (0..CASCADES)
             .map(|_| uniform(r, "sun cascade camera", 128))
@@ -384,7 +391,6 @@ impl Demo {
                             (0, shadow_object.as_entire_binding()),
                             (1, wgpu::BindingResource::TextureView(&influences_view)),
                             (2, wgpu::BindingResource::TextureView(&targets_view)),
-                            (3, instances.as_entire_binding()),
                         ],
                     ),
                 ]
@@ -698,7 +704,7 @@ impl Demo {
             "horses",
             wgsl!("horse_vs"),
             wgsl!("horse_fs"),
-            &[layout(0, vertex), layout(1, wgpu::VertexStepMode::Instance)],
+            &horse_layouts(),
             HALF,
             true,
         );
@@ -719,7 +725,6 @@ impl Demo {
                     (2, tex(&r.dfg)),
                     (3, tex(&influences)),
                     (4, tex(&self.targets_view)),
-                    (5, self.instances.as_entire_binding()),
                 ],
             ),
         ];
@@ -855,14 +860,14 @@ impl Demo {
         let horse_values: Vec<(&str, Vec<f64>)> = vec![
             ("cameraProjectionMatrix", m4(projection)),
             ("cameraViewMatrix", m4(view)),
-            ("nodeUniform15", sun.clone()),
-            ("nodeUniform16", vec![1.; 3]),
-            ("nodeUniform17", third(0x669933)),
-            ("nodeUniform18", third(0x99ddff)),
-            ("nodeUniform19", vec![0., 1., 0.]),
-            ("nodeUniform20", sky.clone()),
-            ("nodeUniform21", vec![5000.]),
-            ("nodeUniform22", vec![10000.]),
+            ("nodeUniform18", sun.clone()),
+            ("nodeUniform19", vec![1.; 3]),
+            ("nodeUniform20", third(0x669933)),
+            ("nodeUniform21", third(0x99ddff)),
+            ("nodeUniform22", vec![0., 1., 0.]),
+            ("nodeUniform23", sky.clone()),
+            ("nodeUniform24", vec![5000.]),
+            ("nodeUniform25", vec![10000.]),
         ];
         let write = |buffer: &wgpu::Buffer,
                      source: &str,
@@ -887,12 +892,12 @@ impl Demo {
             "objectStruct",
             &[
                 ("nodeUniform0", vec![1.]),
-                ("nodeUniform5", white.clone()),
-                ("nodeUniform6", vec![1.]),
-                ("nodeUniform7", vec![0.]),
-                ("nodeUniform8", vec![1.]),
-                ("nodeUniform10", vec![1.]),
-                ("nodeUniform13", m4(Matrix4::IDENTITY)),
+                ("nodeUniform8", white.clone()),
+                ("nodeUniform9", vec![1.]),
+                ("nodeUniform10", vec![0.]),
+                ("nodeUniform11", vec![1.]),
+                ("nodeUniform13", vec![1.]),
+                ("nodeUniform16", m4(Matrix4::IDENTITY)),
             ],
         )?;
         write(
@@ -901,8 +906,8 @@ impl Demo {
             "objectStruct",
             &[
                 ("nodeUniform0", vec![1.]),
-                ("nodeUniform5", vec![1.]),
-                ("nodeUniform8", m4(Matrix4::IDENTITY)),
+                ("nodeUniform8", vec![1.]),
+                ("nodeUniform11", m4(Matrix4::IDENTITY)),
             ],
         )?;
         // SunShadowNode walks the cascades back to front: the first uniforms
@@ -921,15 +926,14 @@ impl Demo {
             ("nodeUniform20", cascades[0].data.to_vec()),
             ("nodeUniform21", m4(cascades[0].matrix)),
             ("nodeUniform22", vec![0.]),
+            // r187 shares the cascades' radius and map size ( 18, 19 ).
             ("nodeUniform23", vec![1.]),
-            ("nodeUniform24", vec![(TILE * 2) as f64, TILE as f64]),
-            ("nodeUniform25", vec![1.]),
-            ("nodeUniform26", third(0x669933)),
-            ("nodeUniform27", third(0x99ddff)),
-            ("nodeUniform28", vec![0., 1., 0.]),
-            ("nodeUniform29", sky),
-            ("nodeUniform30", vec![5000.]),
-            ("nodeUniform31", vec![10000.]),
+            ("nodeUniform24", third(0x669933)),
+            ("nodeUniform25", third(0x99ddff)),
+            ("nodeUniform26", vec![0., 1., 0.]),
+            ("nodeUniform27", sky),
+            ("nodeUniform28", vec![5000.]),
+            ("nodeUniform29", vec![10000.]),
         ];
         write(
             &self.ground_render,
@@ -1006,7 +1010,8 @@ impl Demo {
             pass.set_bind_group(0, &self.shadow_binds[i][0], &[]);
             pass.set_bind_group(1, &self.shadow_binds[i][1], &[]);
             pass.set_vertex_buffer(0, self.positions.slice(..));
-            pass.set_vertex_buffer(1, self.colors.slice(..));
+            pass.set_vertex_buffer(1, self.instances.slice(..));
+            pass.set_vertex_buffer(2, self.colors.slice(..));
             pass.set_index_buffer(self.index.slice(..), wgpu::IndexFormat::Uint32);
             pass.draw_indexed(0..self.count, 0, 0..COUNT as u32);
         }
@@ -1042,7 +1047,8 @@ impl Demo {
             pass.set_bind_group(0, &t.horse.1[0], &[]);
             pass.set_bind_group(1, &t.horse.1[1], &[]);
             pass.set_vertex_buffer(0, self.positions.slice(..));
-            pass.set_vertex_buffer(1, self.colors.slice(..));
+            pass.set_vertex_buffer(1, self.instances.slice(..));
+            pass.set_vertex_buffer(2, self.colors.slice(..));
             pass.set_index_buffer(self.index.slice(..), wgpu::IndexFormat::Uint32);
             pass.draw_indexed(0..self.count, 0, 0..COUNT as u32);
             pass.set_pipeline(&t.ground.0);

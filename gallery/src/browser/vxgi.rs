@@ -540,11 +540,8 @@ pub(super) fn fill_interior(
     };
     let inv = 2. / voxel_size;
     let min = bounds_min.to_array();
-    let (columns_y, columns_z, length) = (
-        grid[1] as i64 * 2,
-        grid[2] as i64 * 2,
-        grid[0] as i64 * 2,
-    );
+    let (columns_y, columns_z, length) =
+        (grid[1] as i64 * 2, grid[2] as i64 * 2, grid[0] as i64 * 2);
     let p = |i: u32| {
         let i = i as usize * 3;
         let w = apply(
@@ -616,7 +613,15 @@ pub(super) fn solid_voxels(
     let mut target = vec![0u8; voxels.div_ceil(4) * 4];
     for (positions, index, model) in meshes {
         if is_closed(positions, index) && faces_outwards(positions, index) {
-            fill_interior(positions, index, model, bounds_min, voxel_size, grid, &mut target);
+            fill_interior(
+                positions,
+                index,
+                model,
+                bounds_min,
+                voxel_size,
+                grid,
+                &mut target,
+            );
         }
     }
     target
@@ -917,7 +922,8 @@ impl Volume {
                 objects.push(object);
             }
         }
-        let bounce_objects = [0, 1].map(|_| uniform(r, "vxgi bounce", wgsl!("bounce_cs"), "objectStruct"));
+        let bounce_objects =
+            [0, 1].map(|_| uniform(r, "vxgi bounce", wgsl!("bounce_cs"), "objectStruct"));
         let [b0, b1] = bounce_objects;
         let bounce_objects = [b0?, b1?];
         let opacity = view(&opacity_texture);

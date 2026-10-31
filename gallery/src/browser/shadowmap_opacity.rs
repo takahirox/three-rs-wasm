@@ -6,7 +6,7 @@
 //! frame draws the backdrop, copies the resolved frame into a mipmapped
 //! texture, draws the dragons refracting it through their volumes, and
 //! applies AgX tone mapping (exposure 1.5). Every stage runs the WGSL
-//! three.js r186 generates for the page (in `shadowmap_opacity/`).
+//! three.js r187 generates for the page (in `shadowmap_opacity/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};

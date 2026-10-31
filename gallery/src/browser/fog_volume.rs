@@ -810,8 +810,18 @@ impl Demo {
             format,
             None,
         );
-        let gauss = screen("fog output", (wgsl!("gauss_vs"), wgsl!("gauss_fs")), format, None);
-        let raw = screen("fog output", (wgsl!("raw_vs"), wgsl!("raw_fs")), format, None);
+        let gauss = screen(
+            "fog output",
+            (wgsl!("gauss_vs"), wgsl!("gauss_fs")),
+            format,
+            None,
+        );
+        let raw = screen(
+            "fog output",
+            (wgsl!("raw_vs"), wgsl!("raw_fs")),
+            format,
+            None,
+        );
         let outputs = [
             two(
                 &jbu,

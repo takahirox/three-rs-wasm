@@ -1157,8 +1157,7 @@ impl Demo {
             -near / (far - near),
             1.,
         ]);
-        let shadow_view =
-            Matrix4::look_at_rh(Vector3::from_array(SUN), Vector3::ZERO, Vector3::Y);
+        let shadow_view = Matrix4::look_at_rh(Vector3::from_array(SUN), Vector3::ZERO, Vector3::Y);
         let bias = Matrix4::from_cols_array(&[
             0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
         ]);

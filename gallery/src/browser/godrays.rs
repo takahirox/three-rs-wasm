@@ -521,13 +521,7 @@ impl Demo {
                 true,
                 back,
             ),
-            (
-                Kind::Base,
-                wgsl!("base_vs"),
-                wgsl!("base_fs"),
-                true,
-                None,
-            ),
+            (Kind::Base, wgsl!("base_vs"), wgsl!("base_fs"), true, None),
             (
                 Kind::Sphere,
                 wgsl!("backdrop_vs"),
@@ -756,7 +750,12 @@ impl Demo {
             "renderStruct",
             &standard,
         )?;
-        write(&self.base_render, wgsl!("base_fs"), "renderStruct", &standard)?;
+        write(
+            &self.base_render,
+            wgsl!("base_fs"),
+            "renderStruct",
+            &standard,
+        )?;
         write(
             &self.basic_render,
             wgsl!("backdrop_fs"),
