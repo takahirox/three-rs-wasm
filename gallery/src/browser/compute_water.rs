@@ -559,7 +559,6 @@ impl Demo {
             attributes: &attrs[i],
         };
         let two = [layout(0, 12), layout(1, 12)];
-        let three = [layout(0, 12), layout(1, 12), layout(2, 8)];
         let matrix = wgpu::vertex_attr_array![3 => Float32x4, 4 => Float32x4, 5 => Float32x4, 6 => Float32x4];
         let ducks = [
             layout(0, 12),

@@ -28,8 +28,6 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const SHADOW: u32 = 4096;
-/// The r186 cube-UV texel sizes at lodMax 8.
-pub(super) const TEXEL: [f64; 2] = [1. / 768., 1. / 1024.];
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("custom_fog/", $name, ".wgsl"))

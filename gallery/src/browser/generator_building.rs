@@ -686,7 +686,7 @@ impl Demo {
         let (camera, world) = s.camera(c)?;
         let (projection, view) = (camera.projection_matrix()?, world.inverse());
         let position = world.w_axis.truncate();
-        let (sun, light_color) = self.sun();
+        let (_, light_color) = self.sun();
         let (light, light_target, shadow_view, shadow_projection) = self.shadow_camera();
         let bias = Matrix4::from_cols_array(&[
             0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,

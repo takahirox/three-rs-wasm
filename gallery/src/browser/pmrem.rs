@@ -443,7 +443,6 @@ pub(super) struct Pmrem {
     /// The face size and the last level ( PMREMNode's maxLod ).
     pub size: u32,
     pub max_lod: u32,
-    pub texture: wgpu::Texture,
     /// Every level, as materials sample it.
     pub view: wgpu::TextureView,
     source: wgpu::Texture,
@@ -546,7 +545,6 @@ impl Pmrem {
             source_faces: (0..6).map(|f| face_view(&source, f, 0)).collect(),
             source_mipmaps: CubeMipmaps::new(r, &source),
             box_mesh: BoxMesh::new(r)?,
-            texture,
             source,
             ggx,
             integration,
@@ -555,11 +553,8 @@ impl Pmrem {
             trilinear,
         })
     }
-    /// The source target ( its level 0's faces are what fromScene's
-    /// CubeCamera renders into, `size`² each ).
-    pub(super) fn source_texture(&self) -> &wgpu::Texture {
-        &self.source
-    }
+    /// Level 0's faces of the source target: what fromScene's CubeCamera
+    /// renders into, `size`² each.
     pub(super) fn source_faces(&self) -> &[wgpu::TextureView] {
         &self.source_faces
     }
