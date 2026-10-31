@@ -5,7 +5,7 @@
 //! post-processing switch adds OutlineNode around the current sphere: the
 //! non-selected depth, the selected mask, the half-resolution downsample and
 //! edge detection, the half- and quarter-resolution blurs and the composite,
-//! added to the scene. Every stage runs the WGSL three.js r186 generates for
+//! added to the scene. Every stage runs the WGSL three.js r187 generates for
 //! the page (in `memory_outline/`).
 use super::lights_projector::{m3, m4, pack};
 use super::shadowmap_csm::look_rotation;
@@ -360,7 +360,7 @@ impl Demo {
                 sized(r, "outline blur", wgsl!("blur_fs"), "objectStruct")?,
                 sized(r, "outline blur", wgsl!("blur_fs"), "objectStruct")?,
             ],
-            edge_object: uniform(r, "edge object", 192),
+            edge_object: sized(r, "edge object", wgsl!("edge_fs"), "objectStruct")?,
             composite_object: uniform(r, "composite object", 144),
             quad: init(
                 "quad",
@@ -807,8 +807,8 @@ impl Demo {
                 ..out.options.clone()
             },
         )?;
-        // The blur direction of each pass (x, y, x, y) with identity uv
-        // transforms around it.
+        // The blur direction of each pass (x, y, x, y) with an identity uv
+        // transform.
         for (i, object) in self.blur_objects.iter().enumerate() {
             let direction = if i % 2 == 0 { [1., 0.] } else { [0., 1.] };
             r.queue.write_buffer(
@@ -820,8 +820,6 @@ impl Demo {
                     &[
                         ("nodeUniform2", &m3(Matrix4::IDENTITY)),
                         ("nodeUniform3", &direction),
-                        ("nodeUniform4", &m3(Matrix4::IDENTITY)),
-                        ("nodeUniform5", &m3(Matrix4::IDENTITY)),
                     ],
                 )?,
             );
@@ -832,12 +830,7 @@ impl Demo {
             &pack(
                 wgsl!("edge_fs"),
                 "objectStruct",
-                &[
-                    ("nodeUniform1", &m3(Matrix4::IDENTITY)),
-                    ("nodeUniform2", &m3(Matrix4::IDENTITY)),
-                    ("nodeUniform3", &m3(Matrix4::IDENTITY)),
-                    ("nodeUniform4", &m3(Matrix4::IDENTITY)),
-                ],
+                &[("nodeUniform1", &m3(Matrix4::IDENTITY))],
             )?,
         );
         r.queue.write_buffer(
