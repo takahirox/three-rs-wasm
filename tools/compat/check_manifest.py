@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the frozen r186 compatibility manifest and generated inventory."""
+"""Validate the frozen r187 compatibility manifest and generated inventory."""
 from __future__ import annotations
 
 import argparse

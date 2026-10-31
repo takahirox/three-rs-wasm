@@ -1,6 +1,7 @@
 import {registerHooks} from 'node:module';
 import {writeFile} from 'node:fs/promises';
-// Camera-only oracle from pinned Three.js r186 (148ef33e). No rasterization.
+// Camera-only oracle from pinned Three.js r187 (7e89746a). No rasterization. The
+// fixture keeps its r186 name; r187 writes the same file byte for byte.
 const root=new URL('../../.cache/three-r187/',import.meta.url).href;
 registerHooks({resolve(s,c,next){if(s==='three')return {url:root+'src/Three.Core.js',shortCircuit:true};return next(s,c);}});
 const T=await import(root+'src/Three.Core.js');const {SunLight}=await import(root+'examples/jsm/lights/SunLight.js');

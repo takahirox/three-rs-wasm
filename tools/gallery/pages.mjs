@@ -210,7 +210,8 @@ function uiRecords() {
 	};
 }
 
-// The page's part of the listing of r186's own assets ( web/examples/upstream.js ):
+// The page's part of the listing of three.js's own assets that load from r186's
+// commit ( web/examples/upstream.js; jsDelivr refuses r187's ):
 // the files its example loads ( tools/gallery/upstream-pages.json ), with the
 // listing's base, which the published site sets ( tools/build_site.py ).
 function upstreamAssets() {

@@ -1,4 +1,4 @@
-// Oracle for the VRMLLoader port: the pinned r186 VRMLLoader's parse of every
+// Oracle for the VRMLLoader port: the pinned r187 VRMLLoader's parse of every
 // VRML asset webgl_loader_vrml loads, in the canonical form with full buffers
 // ( tools/core/vrml-canonical.mjs ), written to .cache/vrml-oracle. Never
 // loaded by the app; tests/vrml.rs compares the Rust parse against it.

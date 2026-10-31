@@ -1,5 +1,5 @@
 // webgpu_tsl_editor: the page's Monaco editors, lil-gui options and preview,
-// as the original builds them. THREE is the three-tsl crate ( three r186's
+// as the original builds them. THREE is the three-tsl crate ( three r187's
 // node system, renderers and core transpiled to Rust ): the user's TSL runs
 // as the original runs it ( an AsyncFunction with THREE, `three/tsl` through
 // the gallery's import map ), and the shaders, errors and preview come from

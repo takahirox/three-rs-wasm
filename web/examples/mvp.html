@@ -52,7 +52,8 @@ label{display:block;margin:20px 0}input[type=range]{display:block;width:100%;acc
 </div>
 </main>
 <script type="module">
-// r186 assets load from the three.js repository on the published site ( upstream.js ).
+// three.js's assets load from the three.js repository at r186's commit on the published
+// site ( upstream.js; jsDelivr refuses r187's commit, whose files are the same ).
 await import('./upstream.js');
 const canvas=document.querySelector('canvas');
 const status=document.querySelector('#status');
@@ -69,7 +70,7 @@ if(example===1){
 }
 if(example===2){
   document.querySelector('#title').textContent='公式example · Geometry / Cube';
-  document.querySelector('#description').textContent='Three.js公式の木箱デモをRustに移植。公式r186のテクスチャ、視野角70°のカメラ、X・Y軸の回転を再現しています。';
+  document.querySelector('#description').textContent='Three.js公式の木箱デモをRustに移植。公式r187のテクスチャ、視野角70°のカメラ、X・Y軸の回転を再現しています。';
   document.querySelector('.hint').textContent='木箱をクリックすると停止します。背景をクリックすると回転を再開します。';
   document.querySelector('.detail').innerHTML='元のWebGL描画をWebGPUへ移植しています。このデモでは512×512、アンチエイリアス・ミップマップなしで表示します。<br><br><a href="https://threejs.org/examples/#webgl_geometry_cube" target="_blank" rel="noreferrer">公式example ↗</a>';
   rebuild.hidden=true;

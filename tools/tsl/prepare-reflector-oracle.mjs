@@ -12,4 +12,5 @@ for(const targets of [[floor,wall],[wall,floor]]){
  for(const target of targets){const node=reflector({target}).reflector;node.updateBefore({scene,camera:c,renderer,material:{visible:true}});c=output;row.push({matrix:c.matrixWorld.toArray(),projection:c.projectionMatrix.toArray()});}
  results.push(row);
 }
+// The fixture keeps its r186 name; r187 writes the same file byte for byte.
 await writeFile(new URL('../../tests/fixtures/reflector-cameras-r186.json',import.meta.url),JSON.stringify(results,null,2)+'\n');

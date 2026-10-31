@@ -7,7 +7,7 @@ export async function prepareAudio(loading) {
  const decoded=await context.decodeAudioData(encoded);
  const wave=new Float32Array(decoded.length+200000);wave.set(decoded.getChannelData(0));
  window.galleryAudioSource=wave;
- // Pinned r186 divides by the channel count. Preserve its playback rate.
+ // Pinned r187 divides by the channel count. Preserve its playback rate.
  window.galleryAudioRate=decoded.sampleRate/decoded.numberOfChannels;
  await context.close();
 }

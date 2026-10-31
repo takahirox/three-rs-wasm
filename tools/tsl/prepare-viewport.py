@@ -1,4 +1,4 @@
-"""Copy original r186 assets used by viewport TSL examples, without conversions."""
+"""Copy original r187 assets used by viewport TSL examples, without conversions."""
 from pathlib import Path
 import tarfile
 ROOT=Path(__file__).resolve().parents[2]

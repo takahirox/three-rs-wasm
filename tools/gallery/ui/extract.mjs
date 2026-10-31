@@ -1,4 +1,4 @@
-// Records the UI the pinned r186 examples build: their lil-gui panels, the
+// Records the UI the pinned r187 examples build: their lil-gui panels, the
 // WebGPU Inspector's parameter groups and profiler state, and stats.js. Each
 // example runs as published ( .cache/three-r187/examples/<id>.html ) with
 // three's build entries served from src/, while its UI libraries are wrapped

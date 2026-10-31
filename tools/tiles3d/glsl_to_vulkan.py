@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rewrites a WebGL2 program three.js r186 compiles ( a vertex and a fragment
+"""Rewrites a WebGL2 program three.js compiles ( a vertex and a fragment
 shader as the reference page passes them to shaderSource ) into a pair of
 Vulkan-style GLSL 450 shaders that naga's GLSL frontend reads, without
 changing any expression:

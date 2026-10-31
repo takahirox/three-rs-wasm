@@ -18,7 +18,7 @@ def main():
     required = [build / name for name in ("three_rs_wasm.js", "three_rs_wasm_bg.wasm", "parts.json")]
     if not all(path.is_file() for path in required):
         raise SystemExit("Build web/build with scripts/build-gallery first")
-    # webgpu_tsl_editor's own Wasm: the three-tsl crate ( three r186 transpiled to Rust ).
+    # webgpu_tsl_editor's own Wasm: the three-tsl crate ( three r187 transpiled to Rust ).
     if not all((build / "tsl" / name).is_file() for name in ("three_tsl.js", "three_tsl_bg.wasm")):
         raise SystemExit("Build web/build/tsl with wasm-pack ( tsl/, --profile web ) first")
     bundle = sorted(path for path in build.rglob("*") if path.is_file())

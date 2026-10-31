@@ -4,7 +4,7 @@
 const queued = [];
 let receive = message => queued.push(message);
 self.onmessage = message => receive(message);
-// The worker loads the matcap, an r186 asset, as the page does.
+// The worker loads the matcap, a three.js asset ( from r186's commit, as upstream.js loads them ), as the page does.
 await import('./upstream.js');
 const params = new URL(location.href).searchParams;
 const runtime = params.get('v') ?? '';

@@ -1,4 +1,9 @@
-// Diagnose the pinned r186 TAAU projection override without modifying its shaders.
+// Diagnose r186's TAAU projection override without modifying its shaders: the
+// current velocity carried the camera jitter, the previous one did not
+// ( docs/taau-r186-velocity.json, threeRevision r186's commit ). The reference page
+// now runs r187, whose VelocityNode reads the override each frame into its
+// currentProjectionMatrix uniform: both clips are unjittered and the assertion
+// below, r186's, is not expected to hold there ( not re-run on r187 ).
 import assert from 'node:assert/strict';
 import{chromium}from'@playwright/test';import{writeFileSync}from'node:fs';
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||(process.platform==='darwin'?'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome':undefined),args:['--enable-unsafe-webgpu','--use-angle=default']});const page=await browser.newPage({viewport:{width:512,height:512}});

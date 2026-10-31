@@ -1,4 +1,4 @@
-// Oracle for the FBXLoader port: the pinned r186 FBXLoader's parse of every
+// Oracle for the FBXLoader port: the pinned r187 FBXLoader's parse of every
 // FBX model the examples load, written to .cache/fbx-oracle. Never loaded by
 // the app; tests/fbx.rs compares the Rust parse against it.
 import {readFile,writeFile,mkdir} from 'node:fs/promises';

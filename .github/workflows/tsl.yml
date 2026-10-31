@@ -33,7 +33,7 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: wasm-pack@0.14.0
-      - name: Check every corpus program against the r186 goldens
+      - name: Check every corpus program against the r187 goldens
         run: |
           npm ci --ignore-scripts
           ./scripts/check-tsl

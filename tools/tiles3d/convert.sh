@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Regenerates src/browser/tiles3d/wgsl/*.wgsl from the GLSL three.js r186 compiles for
-# webgl_loader_3dtiles ( captured from the reference page's shaderSource calls,
+# Regenerates src/browser/tiles3d/wgsl/*.wgsl from the GLSL three.js compiles for
+# webgl_loader_3dtiles ( captured on r186 from the reference page's shaderSource calls,
 # src/browser/tiles3d/glsl/, listed in programs.txt ): glsl_to_vulkan.py, then naga's
 # GLSL frontend and WGSL backend ( tools/tiles3d/naga-tool ), then
 # tools/tiles3d/wgsl_fixup.py. Every program but the canvas output renders

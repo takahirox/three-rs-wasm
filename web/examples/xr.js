@@ -1,5 +1,5 @@
 // webgpu_xr_cubes / webgpu_xr_rollercoaster / webgpu_xr_shadows: the page's
-// side of three r186's XRManager on a WebGPU backend, without the examples'
+// side of three r187's XRManager on a WebGPU backend, without the examples'
 // WebGL fallback. The XRButton ( cubes ) or VRButton requests an immersive
 // session with the 'webgpu' feature; the session's XRGPUBinding projection
 // layer is created on the app's GPUDevice, and every session frame hands the
