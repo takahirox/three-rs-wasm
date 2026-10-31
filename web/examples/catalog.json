@@ -9658,7 +9658,7 @@
         "source": "gallery/src/browser/raycaster_bvh.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されなかった。r187ではObject3D.intersectsFrustumがtrueを返すため、displayHelperを有効にするとBVHHelperがhelperDepthまで描画されるが、移植は未対応（描画しない）。性能の完全な同等性は未保証。"
+          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。BVHHelperはr187と同様に描画する（r187ではObject3D.intersectsFrustumがtrueを返すため、Object3Dを継承するBVHRootHelperはカリングされない）。displayHelperを有効にするとhelperDepthまでのBVHの箱をインデックス付きLineSegments（getBVHBoundPositions/getBVHBoundIndices）として描き、helper.update()のたびに一つのGPU常駐ジオメトリへ書き込み直し、毎フレームはバニーの行列に追従するだけで再アップロードしない。半透明描画の順序はWebGLRendererと同じく各ジオメトリのバウンディングスフィア中心の深度で決める。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
