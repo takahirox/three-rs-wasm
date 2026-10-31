@@ -383,23 +383,21 @@ impl Demo {
         n.visible = false;
         n.frustum_culled = false;
         // The receivers: MeshLambertMaterial whose spotlight color takes the map
-        // at lightProjectionUV, as SpotLightNode does. With the shadow on, the
-        // r186 WebGPU reference leaves no spotlight outside the projected map
-        // as a shadow of 0 there, weighted by the shadow intensity (measured: lit
-        // without the map or without the shadow).
+        // at lightProjectionUV, as SpotLightNode does; outside the projected
+        // map ( and the shadow frustum ) the light keeps its color.
         let hook = |view: &wgpu::TextureView, sampler: &wgpu::Sampler| {
             let view = view.clone();
             let sampler = sampler.clone();
             async move {
                 let node = WgslFn::new(
                     "spot_map",
-                    "fn spot_map(index:u32,color:vec3<f32>,world:vec3<f32>,m0:vec4<f32>,m1:vec4<f32>,m2:vec4<f32>,m3:vec4<f32>,outside:f32)->vec3<f32>{
+                    "fn spot_map(index:u32,color:vec3<f32>,world:vec3<f32>,m0:vec4<f32>,m1:vec4<f32>,m2:vec4<f32>,m3:vec4<f32>)->vec3<f32>{
  if index!=1u {return color;}
  let c=mat4x4(m0,m1,m2,m3)*vec4(world,1.0);let uvw=c.xyz/c.w;
  if all(abs(uvw*2.0-1.0)<vec3(1.0)) {return color*textureSampleLevel(tsl_texture_0,tsl_sampler_0,vec2(uvw.x,1.0-uvw.y),0.0).rgb;}
- return color*outside;
+ return color;
 }",
-                    &[Type::Uint, Type::Vec3, Type::Vec3, Type::Vec4, Type::Vec4, Type::Vec4, Type::Vec4, Type::Float],
+                    &[Type::Uint, Type::Vec3, Type::Vec3, Type::Vec4, Type::Vec4, Type::Vec4, Type::Vec4],
                     Type::Vec3,
                 )?
                 .call(&[
@@ -410,7 +408,6 @@ impl Demo {
                     uniform(1, Type::Vec4),
                     uniform(2, Type::Vec4),
                     uniform(3, Type::Vec4),
-                    uniform(4, Type::Vec4).x(),
                 ]);
                 let program = SurfaceNodes {
                     light_color: Some(node),
@@ -867,7 +864,6 @@ impl Demo {
                 for (i, column) in columns.chunks(4).enumerate() {
                     properties.vertex_uniforms[i] = std::array::from_fn(|j| column[j] as f32);
                 }
-                properties.vertex_uniforms[4] = [(1. - p[8]) as f32, 0., 0., 0.];
             }
         }
         // spotLight.map: none or one of the three textures.
