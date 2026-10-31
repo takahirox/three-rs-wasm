@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -11,21 +11,16 @@
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
 	cameraViewMatrix : mat4x4<f32>,
-	nodeUniform12 : vec3<f32>,
+	cameraWorldMatrix : mat4x4<f32>,
+	nodeUniform13 : vec3<f32>,
 	nodeUniform11 : vec3<f32>,
-	nodeUniform15 : mat4x4<f32>,
-	nodeUniform14 : vec4<f32>,
-	nodeUniform21 : mat4x4<f32>,
-	nodeUniform20 : vec4<f32>,
-	nodeUniform13 : f32,
+	nodeUniform12 : vec3<f32>,
+	nodeUniform14 : mat4x4<f32>,
+	nodeUniform15 : f32,
 	nodeUniform16 : f32,
 	nodeUniform18 : f32,
 	nodeUniform19 : vec2<f32>,
-	nodeUniform22 : f32,
-	nodeUniform23 : f32,
-	nodeUniform24 : vec2<f32>,
-	nodeUniform25 : f32,
-	cameraWorldMatrix : mat4x4<f32>
+	nodeUniform20 : f32
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -39,11 +34,9 @@ struct objectStruct {
 	nodeUniform6 : vec3<f32>,
 	nodeUniform7 : f32,
 	nodeUniform9 : mat4x4<f32>,
-	nodeUniform26 : f32,
-	nodeUniform27 : mat4x4<f32>,
-	nodeUniform29 : f32,
-	nodeUniform30 : f32,
-	nodeUniform32 : f32
+	nodeUniform22 : mat4x4<f32>,
+	nodeUniform24 : f32,
+	nodeUniform25 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -63,7 +56,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar210 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> VERTEX_v_modelViewProjection : vec4<f32>;
@@ -87,8 +79,8 @@ fn main( @location( 0 ) normal : vec3<f32>,
 	varyings.nodeVarying7 = uv;
 	varyings.v_positionViewDirection = ( - varyings.v_positionView );
 	varyings.v_positionWorld = ( object.nodeUniform9 * vec4<f32>( positionLocal, 1.0 ) ).xyz;
-	VERTEX_nodeVar210 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar210;
+	let VERTEX_nodeConst38 = ( render.cameraProjectionMatrix * vec4<f32>( varyings.v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst38;
 
 	// result
 

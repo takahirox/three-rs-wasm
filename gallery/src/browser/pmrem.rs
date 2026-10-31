@@ -12,6 +12,8 @@
 //! on the GPU. The targets, the passes and their uniforms are built once, so
 //! regenerating ( PMREMNode does each frame for a CubeCamera's target )
 //! allocates nothing.
+mod room;
+pub(super) use room::room_environment;
 use super::gltf_viewer::fetch;
 use super::lights_projector::{m3, m4, pack};
 use crate::{Error, Result, geometry::BoxGeometry, math::*, renderer::Renderer};
