@@ -1,4 +1,4 @@
-// The port's headless WebGL 2 backend: r186's WebGLBackend ( transpiled
+// The port's headless WebGL 2 backend: the pinned release's WebGLBackend ( transpiled
 // beside this as WebGLBackend.original.js ) with the reference context's
 // extensions and parameters ( tests/tsl/device.json, Chrome on macOS ) and
 // the methods that issue GL work left empty. init() keeps the original's
@@ -90,6 +90,7 @@ class WebGLBackend extends WebGLBackendBase {
 	destroyProgram() {}
 	createRenderPipeline() {}
 	createComputePipeline() {}
+	destroyPipeline() {}
 	createBindings() {}
 	updateBindings() {}
 	updateBinding() {}
@@ -99,6 +100,7 @@ class WebGLBackend extends WebGLBackendBase {
 	createIndirectStorageAttribute() {}
 	updateAttribute() {}
 	destroyAttribute() {}
+	deleteVertexState() {}
 	createSampler() {}
 	updateSampler() {}
 	destroySampler() {}

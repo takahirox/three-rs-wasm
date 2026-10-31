@@ -1,4 +1,4 @@
-// A WebGPU device that records nothing: r186's WebGPUBackend runs on it
+// A WebGPU device that records nothing: the pinned release's WebGPUBackend runs on it
 // unchanged. It reports the reference adapter's features and limits
 // ( tests/tsl/device.json ) and returns inert objects. Its methods throw the
 // exceptions the browser's WebIDL bindings throw synchronously for the

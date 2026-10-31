@@ -1,4 +1,4 @@
-// The port's WebGPU backend: r186's WebGPUBackend ( transpiled beside this
+// The port's WebGPU backend: the pinned release's WebGPUBackend ( transpiled beside this
 // as WebGPUBackend.original.js ), unchanged. It runs on a device and a canvas
 // context that record nothing ( HeadlessGPU.js ). When the page provides a
 // real device ( __tslRealDevice, the editor's preview ), it renders through
