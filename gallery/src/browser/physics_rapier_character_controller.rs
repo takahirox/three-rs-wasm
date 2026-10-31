@@ -196,14 +196,11 @@ impl Demo {
         let dt = p.integration_parameters.dt;
         let mut events = vec![];
         let mut queries = p.query_pipeline_mut(filter);
-        let result = self.controller.move_shape(
-            dt,
-            &queries.as_ref(),
-            &*shape,
-            &pose,
-            desired,
-            |event| events.push(event),
-        );
+        let result =
+            self.controller
+                .move_shape(dt, &queries.as_ref(), &*shape, &pose, desired, |event| {
+                    events.push(event)
+                });
         self.controller.solve_character_collision_impulses(
             dt,
             &mut queries,

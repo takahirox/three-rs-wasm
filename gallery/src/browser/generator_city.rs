@@ -516,9 +516,7 @@ fn capture_projection() -> M4 {
         -CUBE_FAR / (CUBE_FAR - CUBE_NEAR),
         -CUBE_FAR * CUBE_NEAR / (CUBE_FAR - CUBE_NEAR),
     );
-    [
-        x, 0., 0., 0., 0., x, 0., 0., 0., 0., c, -1., 0., 0., d, 0.,
-    ]
+    [x, 0., 0., 0., 0., x, 0., 0., 0., 0., c, -1., 0., 0., d, 0.]
 }
 /// A capture sub-camera at `p` looking along a face: camera.up = FACE_UP,
 /// lookAt( p + FACE_FORWARD ), its world matrix ( Matrix4.lookAt's basis,
@@ -982,9 +980,8 @@ fn kinds() -> Result<HashMap<K, Kind>> {
         K::Curb,
         kind(shader(wgsl!("curb_vs"), wgsl!("curb_fs"))?, None),
     );
-    let pair = |vs, fs, svs, sfs| -> Result<Kind> {
-        Ok(kind(shader(vs, fs)?, Some(shader(svs, sfs)?)))
-    };
+    let pair =
+        |vs, fs, svs, sfs| -> Result<Kind> { Ok(kind(shader(vs, fs)?, Some(shader(svs, sfs)?))) };
     // The streetlight's and the signal's shadow vertex stages are the same
     // module.
     k.insert(
@@ -1086,10 +1083,7 @@ fn vertex_buffers(attrs: &[Attr]) -> Vec<Vec<&Attr>> {
     for a in attrs {
         match matrix_column(&a.name) {
             Some(column) if column > 0 => {
-                if let Some(matrix) = out
-                    .iter_mut()
-                    .find(|b| matrix_column(&b[0].name).is_some())
-                {
+                if let Some(matrix) = out.iter_mut().find(|b| matrix_column(&b[0].name).is_some()) {
                     matrix.push(a);
                 }
             }
@@ -1441,13 +1435,7 @@ impl Demo {
             );
             let index_groups = indices
                 .iter()
-                .map(|b| {
-                    bind(
-                        r,
-                        p.get_bind_group_layout(1),
-                        &[(0, b.as_entire_binding())],
-                    )
-                })
+                .map(|b| bind(r, p.get_bind_group_layout(1), &[(0, b.as_entire_binding())]))
                 .collect();
             let group = bind(r, p.get_bind_group_layout(2), entries);
             CaptureDraw {
@@ -1480,7 +1468,10 @@ impl Demo {
             &entries,
             false,
         );
-        let proxy_shader = &kinds.get(&K::Proxy).ok_or(Error::Invalid("city proxy"))?.main;
+        let proxy_shader = &kinds
+            .get(&K::Proxy)
+            .ok_or(Error::Invalid("city proxy"))?
+            .main;
         let buffers = structs(PROBE_PROXY)?;
         let entries = object_entries(proxy_shader, &buffers.1, None, &res)?;
         let proxy = capture_draw(
@@ -1529,14 +1520,27 @@ impl Demo {
             false,
         ));
         let identity3 = vec![1., 0., 0., 0., 1., 0., 0., 0., 1.];
-        let sh_pipeline = raw_pipeline(r, "city probe SH", QUAD_VS, SH_FS, &[], FLOAT, 1, None, false);
+        let sh_pipeline = raw_pipeline(
+            r,
+            "city probe SH",
+            QUAD_VS,
+            SH_FS,
+            &[],
+            FLOAT,
+            1,
+            None,
+            false,
+        );
         let sh_object = uniform(r, "city SH object", SH_FS, "objectStruct")?;
         write_static(
             r,
             &sh_object,
             SH_FS,
             "objectStruct",
-            &[("nodeUniform0", vec![1.]), ("nodeUniform3", identity3.clone())],
+            &[
+                ("nodeUniform0", vec![1.]),
+                ("nodeUniform3", identity3.clone()),
+            ],
         )?;
         let sh = (
             sh_pipeline.clone(),
@@ -1735,13 +1739,7 @@ impl Demo {
         Ok(b)
     }
     /// An item's object struct for a material stage, written once.
-    fn object_buffer(
-        &self,
-        r: &Renderer,
-        item: &Item,
-        k: K,
-        stage: u8,
-    ) -> Result<wgpu::Buffer> {
+    fn object_buffer(&self, r: &Renderer, item: &Item, k: K, stage: u8) -> Result<wgpu::Buffer> {
         let s = self.stage(k, stage)?;
         let source = if s.fs.contains("struct objectStruct {") {
             s.fs
@@ -2000,10 +1998,7 @@ impl Demo {
         for (i, item) in items.iter().enumerate() {
             objects.insert((i, MAIN), self.object_buffer(r, item, item.kind, MAIN)?);
             if item.cast {
-                objects.insert(
-                    (i, SHADOW),
-                    self.object_buffer(r, item, item.kind, SHADOW)?,
-                );
+                objects.insert((i, SHADOW), self.object_buffer(r, item, item.kind, SHADOW)?);
             }
         }
         let proxy_item = Item {
@@ -2289,10 +2284,7 @@ impl Demo {
             .unwrap_or_default();
         let mut draws = vec![];
         for (i, k) in items {
-            draws.push((
-                i,
-                self.item_draw(r, (i, MAIN), k, MAIN, samples)?,
-            ));
+            draws.push((i, self.item_draw(r, (i, MAIN), k, MAIN, samples)?));
         }
         let sky = two_groups(
             r,

@@ -483,8 +483,8 @@ impl Demo {
         // The page's environmentIntensity is 3.14, not π.
         #[allow(clippy::approx_constant)]
         let params = [
-            0., 0.25, 0., 3., 0., 0.4, 1., 0.1, 3.14, 0.3, 1., 0.75, 20., 0.3, 5., 1.5, 0.725,
-            0.5, 16., 0.25, 1., 1., SUN[0], SUN[1], SUN[2], 20.,
+            0., 0.25, 0., 3., 0., 0.4, 1., 0.1, 3.14, 0.3, 1., 0.75, 20., 0.3, 5., 1.5, 0.725, 0.5,
+            16., 0.25, 1., 1., SUN[0], SUN[1], SUN[2], 20.,
         ];
         Ok(Self {
             controls,
@@ -1028,7 +1028,12 @@ impl Demo {
             ("cameraWorldMatrix", m4(world)),
         ];
         write(&self.model_render, MODEL.1, "renderStruct", &camera_values)?;
-        write(&self.single_render, SINGLE.1, "renderStruct", &camera_values)?;
+        write(
+            &self.single_render,
+            SINGLE.1,
+            "renderStruct",
+            &camera_values,
+        )?;
         for m in &self.meshes {
             let material = &self.materials[m.material];
             write(

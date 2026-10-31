@@ -1122,7 +1122,8 @@ impl Demo {
                     entries.push((2, tex(&self.floor_map)));
                     binding = 3;
                 }
-                for (resource, filter) in [(&r.dfg, &self.linear), (&self.environment, &self.trilinear)]
+                for (resource, filter) in
+                    [(&r.dfg, &self.linear), (&self.environment, &self.trilinear)]
                 {
                     entries.push((binding, sampler(filter)));
                     entries.push((binding + 1, tex(resource)));
@@ -1485,7 +1486,10 @@ impl Demo {
                 ("nodeUniform6", vec![offset]),
                 ("nodeUniform7", vec![direction]),
                 ("nodeUniform9", id3.clone()),
-                ("nodeUniform10", vec![ao.1.size.0 as f64, ao.1.size.1 as f64]),
+                (
+                    "nodeUniform10",
+                    vec![ao.1.size.0 as f64, ao.1.size.1 as f64],
+                ),
                 ("nodeUniform11", vec![self.params[5]]),
                 ("nodeUniform12", vec![self.params[4]]),
             ],

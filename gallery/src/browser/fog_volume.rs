@@ -20,10 +20,6 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const RED: wgpu::TextureFormat = wgpu::TextureFormat::R8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
-/// The SunLight addon's shadow map size and cascade count ( a 2 × 1 atlas ),
-/// for the ports that fit its cascades ( `cascades` ).
-const MAP: u32 = 2048;
-const CASCADES: usize = 2;
 /// The page's directional light shadow: mapSize 1024, an orthographic camera
 /// of ±3 from near 1 to far 25.
 const SHADOW_MAP: u32 = 1024;
@@ -36,10 +32,6 @@ macro_rules! wgsl {
     };
 }
 const BLUR_VS: &str = include_str!("fog_scattering/blur_vs.wgsl");
-/// Math.round: halves round up.
-fn js_round(x: f64) -> f64 {
-    (x + 0.5).floor()
-}
 /// Matrix4.lookAt( eye, target, up ) ( rotation only ).
 fn look_at(eye: Vector3, target: Vector3, up: Vector3) -> Matrix4 {
     let mut z = eye - target;
@@ -60,16 +52,6 @@ fn look_at(eye: Vector3, target: Vector3, up: Vector3) -> Matrix4 {
     x = x.normalize();
     let y = z.cross(x);
     Matrix4::from_cols(x.extend(0.), y.extend(0.), z.extend(0.), Vector4::W)
-}
-/// One fitted cascade: its camera's view and projection, its shadow matrix
-/// in the atlas, its ( begin, end, fade start ) data and its viewport.
-#[derive(Clone, Copy)]
-pub(super) struct Cascade {
-    pub view: Matrix4,
-    pub projection: Matrix4,
-    pub matrix: Matrix4,
-    pub data: [f64; 4],
-    pub viewport: [f32; 4],
 }
 /// DirectionalLightShadow.updateMatrices for the page's light ( aimed at the
 /// origin ): the shadow camera's view and projection ( WebGPU depth ) and the
@@ -102,162 +84,6 @@ fn light_shadow() -> (Matrix4, Matrix4, Matrix4) {
         0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
     ]);
     (view, projection, bias * projection * view)
-}
-/// SunLightShadow.updateMatrices: practical split cascades fitted to the view
-/// frustum, as bounding spheres snapped to the texel grid.
-pub(super) fn cascades(
-    light: Vector3,
-    camera_world: Matrix4,
-    projection: Matrix4,
-    near: f64,
-    far: f64,
-    shadow_far: f64,
-) -> [Cascade; CASCADES] {
-    cascades_sized(
-        light,
-        camera_world,
-        projection,
-        (near, far, shadow_far),
-        MAP,
-    )
-}
-/// `cascades` for a `map`² shadow map per cascade.
-pub(super) fn cascades_sized(
-    light: Vector3,
-    camera_world: Matrix4,
-    projection: Matrix4,
-    (near, far, shadow_far): (f64, f64, f64),
-    map: u32,
-) -> [Cascade; CASCADES] {
-    let shadow_near = 0.5f64;
-    let inset = 0.25f64.min((1f64.ceil() + 1.) / map as f64);
-    let resolution_x = map as f64 * (1. - 2. * inset);
-    let resolution = resolution_x;
-    let camera_far = (near + 1e-6).max(shadow_far.min(far));
-    let mut splits = [0.; CASCADES + 1];
-    splits[0] = near;
-    for (i, split) in splits.iter_mut().enumerate().take(CASCADES).skip(1) {
-        let amount = i as f64 / CASCADES as f64;
-        let uniform = near + (camera_far - near) * amount;
-        let logarithmic = near * (camera_far / near).powf(amount);
-        *split = (uniform + logarithmic) * 0.5;
-    }
-    splits[CASCADES] = camera_far;
-    let direction = (-light).normalize();
-    let mut up = Vector3::Y;
-    if up.dot(direction).abs() > 0.99 {
-        up = Vector3::Z;
-    }
-    let orientation = look_at(Vector3::ZERO, direction, up);
-    let view_to_light = orientation.transpose() * camera_world;
-    let inverse_projection = projection.inverse();
-    let mut near_corners = [Vector3::ZERO; 4];
-    let mut far_corners = [Vector3::ZERO; 4];
-    let mut global_max_z = f64::NEG_INFINITY;
-    for i in 0..4 {
-        let x = if i == 0 || i == 1 { 1. } else { -1. };
-        let y = if i == 0 || i == 3 { 1. } else { -1. };
-        let n = inverse_projection.project_point3(Vector3::new(x, y, 0.));
-        let f = n * (camera_far / near);
-        near_corners[i] = view_to_light.transform_point3(n);
-        far_corners[i] = view_to_light.transform_point3(f);
-        global_max_z = global_max_z.max(near_corners[i].z).max(far_corners[i].z);
-    }
-    global_max_z += camera_far;
-    let mut data = [[0.; 4]; CASCADES];
-    std::array::from_fn(|i| {
-        let cascade_near = if i == 0 { splits[0] } else { data[i - 1][2] };
-        let cascade_far = splits[i + 1];
-        let fade_start = cascade_far - 0.1 * (cascade_far - splits[i]);
-        data[i] = [
-            if i == 0 { -1e10 } else { cascade_near },
-            cascade_far,
-            fade_start,
-            0.,
-        ];
-        let near_alpha = (cascade_near - near) / (camera_far - near);
-        let far_alpha = (cascade_far - near) / (camera_far - near);
-        let mut corners = [Vector3::ZERO; 8];
-        let mut center = Vector3::ZERO;
-        for j in 0..4 {
-            corners[j * 2] = near_corners[j].lerp(far_corners[j], near_alpha);
-            corners[j * 2 + 1] = near_corners[j].lerp(far_corners[j], far_alpha);
-            center += corners[j * 2];
-            center += corners[j * 2 + 1];
-        }
-        center *= 1. / 8.;
-        let (mut radius_sq, mut min_z) = (0f64, f64::INFINITY);
-        for c in corners {
-            radius_sq = radius_sq.max(c.distance_squared(center));
-            min_z = min_z.min(c.z);
-        }
-        let mut radius = radius_sq.sqrt();
-        if resolution > 1. {
-            radius /= 1. - 1. / resolution;
-            let texel = 2. * radius / resolution_x;
-            center.x = js_round(center.x / texel) * texel;
-            center.y = js_round(center.y / texel) * texel;
-        }
-        center.z = global_max_z + shadow_near;
-        let position = orientation.transform_vector3(center);
-        let rotation = Quaternion::from_mat4(&orientation);
-        let world = Matrix4::from_rotation_translation(rotation, position);
-        let cascade_far_plane = global_max_z - min_z + 2. * shadow_near;
-        // makeOrthographic( −r, r, r, −r, near, far ) in WebGPU depth.
-        let p = 1. / (cascade_far_plane - shadow_near);
-        let projection = Matrix4::from_cols_array(&[
-            1. / radius,
-            0.,
-            0.,
-            0.,
-            0.,
-            1. / radius,
-            0.,
-            0.,
-            0.,
-            0.,
-            -p,
-            0.,
-            0.,
-            0.,
-            -shadow_near * p,
-            1.,
-        ]);
-        let view = world.inverse();
-        let viewport = [i as f64 + inset, inset, 1. - 2. * inset, 1. - 2. * inset];
-        let (scale_x, scale_y) = (viewport[2] / 2., viewport[3]);
-        let (offset_x, offset_y) = (viewport[0] / 2., viewport[1]);
-        let bias = Matrix4::from_cols_array(&[
-            0.5 * scale_x,
-            0.,
-            0.,
-            0.,
-            0.,
-            0.5 * scale_y,
-            0.,
-            0.,
-            0.,
-            0.,
-            1.,
-            0.,
-            0.5 * scale_x + offset_x,
-            0.5 * scale_y + offset_y,
-            0.,
-            1.,
-        ]);
-        Cascade {
-            view,
-            projection,
-            matrix: bias * projection * view,
-            data: data[i],
-            viewport: [
-                (viewport[0] * map as f64) as f32,
-                (viewport[1] * map as f64) as f32,
-                (viewport[2] * map as f64) as f32,
-                (viewport[3] * map as f64) as f32,
-            ],
-        }
-    })
 }
 /// createNoise3DTexture( 96 ): two tri-noise octaves per voxel, floored to bytes.
 fn noise_texture() -> Vec<u8> {
