@@ -3948,7 +3948,7 @@
         "source": "gallery/src/browser/tiles3d.rs",
         "test": "tests/browser/tiles3d.spec.js",
         "limitations": [
-          "Cesium ion経由のGoogle Photorealistic 3D Tiles（東京）を3d-tiles-renderer 0.4.27で配信し、@takramの大気と体積雲で照らす構成をRustで再現。r186の原本はエフェクトにシーン深度が渡らず黒画面になるため、比較ページはthree.js devの修正（WebGLOutputの深度テクスチャとEffectPassAdapter）を適用し、ポートは修正済みのページを再現する。最適化トラバーサル、エラー・LRU優先度、LRUキャッシュ、ダウンロード・パース・processNodeのキュー、CesiumIonAuthからGoogleへの引き渡し、UpdateOnChange、TilesFadePlugin、TileCreasedNormalsPlugin（30°、CPU）をf64で移植し、ツリー位置で比較したタイルの使用・可視・アクティブは参照と一致する。描画はページからthree.js r186がコンパイルするGLSLをWGSLに変換して実行する: Brunetonの事前計算（float32、加算ブレンドは和のパスで代替）、HalfFloat出力と深度テクスチャへのタイル（フェードのBayerディザ、フラスタムカリング、ジオメトリは初表示時に一度だけ転送）、NormalPass、CloudsEffect（2段のカスケード影と時間解決、1/4解像度の雲のジッター・再投影・時間アップスケール）、AerialPerspectiveEffect（空・太陽光・天空光）、LensFlare、SMAA、ディザリング、AgX（露出10）。太陽方向はastronomy-engineのVSOP87地球・歳差・章動・恒星時を移植し、時刻スライダーに対応。GlobeControls（ドラッグで地球を回転、右・Shiftドラッグで注視点回転とピボットリング、ホイールでポインター方向へズーム、減衰、near/far）とタイルへのレイキャストを移植。比較テストは雲の流れを両ページで止めて行う。WebGL専用の例のため、雲のSTBN・Bayerジッター位相とタイル縁の差を許容誤差として記録。ギャラリーのポインター入力は1本のマウスのみのため、2本指のタッチ操作には届かない。雲のテクスチャの読み込み中は描画しない。性能の完全な同等性は未保証。"
+          "Cesium ion経由のGoogle Photorealistic 3D Tiles（東京）を3d-tiles-renderer 0.4.27で配信し、@takramの大気と体積雲で照らす構成をRustで再現。r186の原本はエフェクトにシーン深度が渡らず黒画面になったが、r187で修正された（WebGLOutputの深度テクスチャとEffectPassAdapter）。比較ページはr187の原本を実行し、ポートはそれを再現する。最適化トラバーサル、エラー・LRU優先度、LRUキャッシュ、ダウンロード・パース・processNodeのキュー、CesiumIonAuthからGoogleへの引き渡し、UpdateOnChange、TilesFadePlugin、TileCreasedNormalsPlugin（30°、CPU）をf64で移植し、ツリー位置で比較したタイルの使用・可視・アクティブは参照と一致する。描画はページからthree.jsがコンパイルするGLSL（r186で取得）をWGSLに変換して実行する: Brunetonの事前計算（float32、加算ブレンドは和のパスで代替）、HalfFloat出力と深度テクスチャへのタイル（フェードのBayerディザ、フラスタムカリング、ジオメトリは初表示時に一度だけ転送）、NormalPass、CloudsEffect（2段のカスケード影と時間解決、1/4解像度の雲のジッター・再投影・時間アップスケール）、AerialPerspectiveEffect（空・太陽光・天空光）、LensFlare、SMAA、ディザリング、AgX（露出10）。太陽方向はastronomy-engineのVSOP87地球・歳差・章動・恒星時を移植し、時刻スライダーに対応。GlobeControls（ドラッグで地球を回転、右・Shiftドラッグで注視点回転とピボットリング、ホイールでポインター方向へズーム、減衰、near/far）とタイルへのレイキャストを移植。比較テストは雲の流れを両ページで止めて行う。WebGL専用の例のため、雲のSTBN・Bayerジッター位相とタイル縁の差を許容誤差として記録。ギャラリーのポインター入力は1本のマウスのみのため、2本指のタッチ操作には届かない。雲のテクスチャの読み込み中は描画しない。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -5849,7 +5849,7 @@
         "source": "gallery/src/browser/svg_loader.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "SVGLoader（r186）をブラウザのDOMParserでの解析の上にRustで移植（属性/インラインstyle/CSSOM経由の<style>規則、入れ子とuseの変換と楕円弧の変換、パスコマンドと数値解析、rect/polygon/polyline/circle/ellipse/line、単位、線形/放射グラデーションのキャンバステクスチャ）。各パスをShapePath.toShapes（fill-rule）とShapeGeometryの塗り、pointsToStrokeの結合部と端点の線メッシュにして、ページ同様にrenderOrder順で35個のSVGを表示。ファイルや設定の変更時にCPUで構築。性能の完全な同等性は未保証。"
+          "SVGLoader（r187）をブラウザのDOMParserでの解析の上にRustで移植（属性/インラインstyle/CSSOM経由の<style>規則、入れ子とuseの変換と楕円弧の変換、パスコマンドと数値解析、rect/polygon/polyline/circle/ellipse/line、単位、線形/放射グラデーションのキャンバステクスチャ）。各パスをShapePath.toShapes（fill-rule）とShapeGeometryの塗り、pointsToStrokeの結合部と端点の線メッシュにして、ページ同様にrenderOrder順で35個のSVGを表示。ファイルや設定の変更時にCPUで構築。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -9658,7 +9658,7 @@
         "source": "gallery/src/browser/raycaster_bvh.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されない（displayHelper/helperDepthは画面に影響しない）ので、移植も描画しない。性能の完全な同等性は未保証。"
+          "three-mesh-bvh（v0.9.10）のMeshBVH構築（CENTER分割、maxLeafSize 10、Float32の境界、インデックスのHoare分割）、最初の交差/全交差のレイキャストをRustで再現し、FBXLoaderのRust移植で読み込み時に解析したスタンフォードバニーに対して最大3000本のレイをページ同様にCPUで毎フレーム投射し、原点/交点の球のInstancedMeshと半透明のレイ線分を更新。ページは描画フレームごとにレイとバニーの回転を進めるため、移植は例の時計の60 Hzごとに同じフレーム更新を進める。useBVHを切ると全三角形を走査。r186ではBVHRootHelperがObject3Dを継承し、Object3D.intersectsFrustumがundefinedを返すため常に視錐台カリングされ、BVHHelperは描画されなかった。r187ではObject3D.intersectsFrustumがtrueを返すため、displayHelperを有効にするとBVHHelperがhelperDepthまで描画されるが、移植は未対応（描画しない）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -13251,7 +13251,7 @@
         "source": "gallery/src/browser/birds_gltf.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "64×64のGPUComputationRendererで群れる4,096羽の鳥を、ページのシード付き乱数が選ぶParrotのglTFとしてモーフアニメーションで羽ばたかせる構成をRustで再現。毎フレーム、速度変数（分離・整列・結合、ポインタの捕食者からの逃避、中心への引力）と位置変数を前フレームのテクスチャから浮動小数点のレンダーターゲット対の他方へ描き（アドオンと同じ）、ページのGLSLを同じ式とループ順のWGSLへ移植した。ページは読み込み時にモーフを毎秒60行の浮動小数点テクスチャへ焼き、鳥ごとに複製した1つのジオメトリ（各頂点に鳥の参照テクセルとシード）を作るが、移植では同じテクスチャを焼き、頂点ごと（位置・色・番号）と鳥ごと（参照とシード、ページと同じ値）の属性でインスタンス描画する。マテリアルはMeshStandardMaterial（頂点色、フラット、粗さ1）とページのonBeforeCompileの頂点段で、半球光・平行光源・線形フォグの下、WebGLRendererの物理シェーディング（r186のDFG LUT、多重散乱補償、sRGB変換後のフォグ）をWGSLへ移植した。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
+          "64×64のGPUComputationRendererで群れる4,096羽の鳥を、ページのシード付き乱数が選ぶParrotのglTFとしてモーフアニメーションで羽ばたかせる構成をRustで再現。毎フレーム、速度変数（分離・整列・結合、ポインタの捕食者からの逃避、中心への引力）と位置変数を前フレームのテクスチャから浮動小数点のレンダーターゲット対の他方へ描き（アドオンと同じ）、ページのGLSLを同じ式とループ順のWGSLへ移植した。ページは読み込み時にモーフを毎秒60行の浮動小数点テクスチャへ焼き、鳥ごとに複製した1つのジオメトリ（各頂点に鳥の参照テクセルとシード）を作るが、移植では同じテクスチャを焼き、頂点ごと（位置・色・番号）と鳥ごと（参照とシード、ページと同じ値）の属性でインスタンス描画する。マテリアルはMeshStandardMaterial（頂点色、フラット、粗さ1）とページのonBeforeCompileの頂点段で、半球光・平行光源・線形フォグの下、WebGLRendererの物理シェーディング（r187のDFG LUT、多重散乱補償、sRGB変換後のフォグ）をWGSLへ移植した。WebGLのみの例のため、ラスタライズの差による許容誤差を記録する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -13773,7 +13773,7 @@
         "source": "gallery/src/browser/shadowmap_pcss.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "フォグの中で弾む20個のランダム色のPhongの球、柱、広い地面を、環境光とBasicShadowMapの平行光源で照らす構成をRustで再現。ページはPCSSの関数をshadowmap_pars_fragmentへ差し込むが、getShadowの呼び出しを置き換える2つ目の置換文字列がr186のチャンク（`if ( frustumTest ) {`の後に空行がある）と一致しないため、原作はBasicShadowMapの単純な比較で影を描く。本移植も同じくBasicShadowMapで描く。影カメラのCameraHelperは、ページが更新せずにfarを変えるため、構築時の射影（far 500）のまま描く。WebGLのみのシーンのため、WebGPUとの差はMSAAの解決とラスタライズの範囲に限って許容する。性能の完全な同等性は未保証。"
+          "フォグの中で弾む20個のランダム色のPhongの球、柱、広い地面を、環境光とBasicShadowMapの平行光源で照らす構成をRustで再現。ページはPCSSの関数をshadowmap_pars_fragmentへ差し込むが、getShadowの呼び出しを置き換える2つ目の置換文字列がr187のチャンク（`if ( frustumTest ) {`の後に空行がある）と一致しないため、原作はBasicShadowMapの単純な比較で影を描く。本移植も同じくBasicShadowMapで描く。影カメラのCameraHelperは、ページが更新せずにfarを変えるため、構築時の射影（far 500）のまま描く。WebGLのみのシーンのため、WebGPUとの差はMSAAの解決とラスタライズの範囲に限って許容する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -14643,7 +14643,7 @@
         "source": "gallery/src/browser/picking_buffers.rs",
         "test": "tests/browser/picking-buffers.spec.js",
         "limitations": [
-          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれない（原作の不具合）が、本移植は描画する。性能の完全な同等性は未保証。"
+          "webgl_instancing_performanceと同じINSTANCED・MERGED・NAIVEの3方式とcount（変更ごとに再構築）に、WebGLNodesHandlerのMeshPhongNodeMaterial（ワールド座標とTSLのtimeによるsinのcolorNode）、環境光と平行光源、autoRotateSpeed 0.5を加えた構成をRustで再現。colorNodeは本クレートのPhongの拡散色フック（shade）としてWGSLで評価し、timeはマテリアルのuniformで毎フレーム更新する。原作ではWebGLNodesHandlerの出力ノードとWebGLRendererの両方がsRGB変換をかけるため、ライティング後の色が二重にsRGB符号化される。本移植も出力フックで同じ変換を再現する。r186のWebGLNodesHandlerでは、clean()後に作り直したInstancedMeshが何も描かれなかった（原作の不具合。r187では未再確認）が、本移植は描画する。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -14737,7 +14737,7 @@
         "source": "gallery/src/browser/retargeting.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "MichelleのSambaDanceをSkeletonUtils.retargetClipでSoldierへリターゲットし、両者を光速風の背景の下、反射する床（reflector）の上で踊らせる構成をRustで再現。リターゲットしたクリップはページと同じく読み込み時に一度CPUで焼き込む（ソースのポーズをフレームごとにサンプリングし、ターゲットのスケルトンをバインドポーズに戻して、対応するボーンにソースのワールド回転（ページのローカルオフセット込み）と腰の拡大した位置を与える。ローダーが古いまま残したワールド行列を含め、three.jsの行列の扱いに従う）。両キャラクターはミキサーのボーン行列でGPUスキニングし、reflectorが鏡像の視点をターゲットへ描いて床がそれを読む。4× MSAAとNeutralトーンマッピングを通す。各段はページからthree.js r186が生成するWGSL（retargeting/）を実行する。スケルトンヘルパーの表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「show helpers」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
+          "MichelleのSambaDanceをSkeletonUtils.retargetClipでSoldierへリターゲットし、両者を光速風の背景の下、反射する床（reflector）の上で踊らせる構成をRustで再現。リターゲットしたクリップはページと同じく読み込み時に一度CPUで焼き込む（ソースのポーズをフレームごとにサンプリングし、ターゲットのスケルトンをバインドポーズに戻して、対応するボーンにソースのワールド回転（ページのローカルオフセット込み）と腰の拡大した位置を与える。ローダーが古いまま残したワールド行列を含め、three.jsの行列の扱いに従う）。両キャラクターはミキサーのボーン行列でGPUスキニングし、reflectorが鏡像の視点をターゲットへ描いて床がそれを読む。4× MSAAとNeutralトーンマッピングを通す。各段はページからthree.js r187が生成するWGSL（retargeting/）を実行する。スケルトンヘルパーの表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「show helpers」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -14831,7 +14831,7 @@
         "source": "gallery/src/browser/retargeting_readyplayer.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "mixamo.fbxのダンスをSkeletonUtils.retargetClipでreadyplayer.meのアバターへリターゲットし、半球ライトと2つの平行光源の下、反射床の上で両方を踊らせる構成をRustで再現。FBXは元のmixamo.fbxを読み込み時にFBXLoaderのRust移植で解析し（ローダーが残すワールド行列を含む）、リターゲット後のクリップはページと同じく読み込み時に一度CPUで焼く（three.jsの行列の扱いを再現するretargetingのシミュレーション）。アバター10個とキャラクター2個のスキンメッシュはボーン行列でGPUスキニングし、初回カリング時のスキン境界球での視錐台判定と、r186の不透明物の順序（境界球中心のクリップ空間z）で描く。リフレクターは鏡映ビューを床が参照するターゲットへ描く。各段はページからthree.js r186が生成するWGSL（retargeting_readyplayer/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "mixamo.fbxのダンスをSkeletonUtils.retargetClipでreadyplayer.meのアバターへリターゲットし、半球ライトと2つの平行光源の下、反射床の上で両方を踊らせる構成をRustで再現。FBXは元のmixamo.fbxを読み込み時にFBXLoaderのRust移植で解析し（ローダーが残すワールド行列を含む）、リターゲット後のクリップはページと同じく読み込み時に一度CPUで焼く（three.jsの行列の扱いを再現するretargetingのシミュレーション）。アバター10個とキャラクター2個のスキンメッシュはボーン行列でGPUスキニングし、初回カリング時のスキン境界球での視錐台判定と、r187の不透明物の順序（境界球中心のクリップ空間z）で描く。リフレクターは鏡映ビューを床が参照するターゲットへ描く。各段はページからthree.js r187が生成するWGSL（retargeting_readyplayer/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -15058,7 +15058,7 @@
         "source": "gallery/src/browser/backdrop_water.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "氷の柱の上で踊るスキニングされたMichelleと浮かぶ100個の氷の球を、背後のシーンを屈折・着色する水面（backdropノード）の下に置く構成をRustで再現。シーンパスはグラデーション背景、三平面マッピングの氷、太陽の影を落とすMichelle（ミキサーのボーン行列によるGPUスキニング）、ボロノイのコースティクスが動く柱を描き、フレームバッファの色と深度をコピーして半透明の水面（ボロノイの波紋、深度による屈折）に渡す。深度で強さが変わるガウスぼかしと水中の色調・ビネットで出力する。オービットは自動回転する。アニメーションはAnimationMixerと同じくCPUでサンプリングする。床の位置に対応。各段はページからthree.js r186が生成するWGSL（backdrop_water/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "氷の柱の上で踊るスキニングされたMichelleと浮かぶ100個の氷の球を、背後のシーンを屈折・着色する水面（backdropノード）の下に置く構成をRustで再現。シーンパスはグラデーション背景、三平面マッピングの氷、太陽の影を落とすMichelle（ミキサーのボーン行列によるGPUスキニング）、ボロノイのコースティクスが動く柱を描き、フレームバッファの色と深度をコピーして半透明の水面（ボロノイの波紋、深度による屈折）に渡す。深度で強さが変わるガウスぼかしと水中の色調・ビネットで出力する。オービットは自動回転する。アニメーションはAnimationMixerと同じくCPUでサンプリングする。床の位置に対応。各段はページからthree.js r187が生成するWGSL（backdrop_water/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -17423,7 +17423,7 @@
         "source": "gallery/src/browser/fog_scattering.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "TreeGeneratorの枯れ木の林をFogExp2の霧に置き、霧の散乱をポストで近似する構成をRustで再現。シーンパスを半解像度でぼかし（GaussianBlurNode、sigma 4、方向は散乱係数倍）、パスのビュー深度による密度フォグ係数でシャープな色に混ぜる。10種の木はページと同じくCPUで一度だけ生成し（mulberry32の乱数とthree.jsのVector3・Quaternionの演算順を再現）、シード付きの配置でインスタンス描画し、2本の手前の幹と黒い地面とともに4× MSAAで描く。FirstPersonControlsでカメラを動かす。霧の密度（far面の更新を含む）、散乱係数、散乱の有無に対応。各段はページからthree.js r186が生成するWGSL（fog_scattering/、インスタンス数はメッシュごと）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "TreeGeneratorの枯れ木の林をFogExp2の霧に置き、霧の散乱をポストで近似する構成をRustで再現。シーンパスを半解像度でぼかし（GaussianBlurNode、sigma 4、方向は散乱係数倍）、パスのビュー深度による密度フォグ係数でシャープな色に混ぜる。10種の木はページと同じくCPUで一度だけ生成し（mulberry32の乱数とthree.jsのVector3・Quaternionの演算順を再現）、シード付きの配置でインスタンス描画し、2本の手前の幹と黒い地面とともに4× MSAAで描く。FirstPersonControlsでカメラを動かす。霧の密度（far面の更新を含む）、散乱係数、散乱の有無に対応。各段はページからthree.js r187が生成するWGSL（fog_scattering/、インスタンス数はメッシュごと）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -17788,7 +17788,7 @@
         "source": "gallery/src/browser/gaussian_splat.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ライオン（SPZ v3）、ムカデ（SPLAT）、トマト（SPZ v4、zstd）のガウシアンスプラットをRustで再現。ローダーはページと同じく読み込み時に一度CPUで復号し、中心・共分散・色・球面調和係数をGPUへ載せる。視線方向がしきい値を超えて回るとGPUの4096ビンのカウンティングソート（リセット、ヒストグラム、プレフィックス、スキャッター）で奥行き順を作り、カメラが動くと球面調和の色をコンピュートで更新し、ソート順を読むインスタンス化した四角形で描く。各段はページからthree.js r186が生成するWGSL（gaussian_splat/）を実行する。クリックしたスプラットのマーカー表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ライオン（SPZ v3）、ムカデ（SPLAT）、トマト（SPZ v4、zstd）のガウシアンスプラットをRustで再現。ローダーはページと同じく読み込み時に一度CPUで復号し、中心・共分散・色・球面調和係数をGPUへ載せる。視線方向がしきい値を超えて回るとGPUの4096ビンのカウンティングソート（リセット、ヒストグラム、プレフィックス、スキャッター）で奥行き順を作り、カメラが動くと球面調和の色をコンピュートで更新し、ソート順を読むインスタンス化した四角形で描く。各段はページからthree.js r187が生成するWGSL（gaussian_splat/）を実行する。クリックしたスプラットのマーカー表示は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -18089,7 +18089,7 @@
         "source": "gallery/src/browser/hdr.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ポインタに追従するHDRブラシ（強度4、硬さと半径による放射状フォールオフ）を白背景の正射影ピクセル空間パスへ加算で描き、AfterImageNode（減衰した前フレームを0.1超の部分だけ残し、明るい方を採る）を通して拡張sRGB出力にする構成をRustで再現。各段はページからthree.js r186が生成するWGSL（hdr/）を実行する。元は半精度の拡張レンジキャンバスに表示し、標準ディスプレイでは表示範囲にクランプされる。ポートは8ビット出力で同じくクランプする（HDRディスプレイでの1超の表示は再現しない）。残像は要求フレームで進む。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ポインタに追従するHDRブラシ（強度4、硬さと半径による放射状フォールオフ）を白背景の正射影ピクセル空間パスへ加算で描き、AfterImageNode（減衰した前フレームを0.1超の部分だけ残し、明るい方を採る）を通して拡張sRGB出力にする構成をRustで再現。各段はページからthree.js r187が生成するWGSL（hdr/）を実行する。元は半精度の拡張レンジキャンバスに表示し、標準ディスプレイでは表示範囲にクランプされる。ポートは8ビット出力で同じくクランプする（HDRディスプレイでの1超の表示は再現しない）。残像は要求フレームで進む。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -18474,7 +18474,7 @@
         "source": "gallery/src/browser/instancing_morph.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "32×32に並ぶ1,024頭のインスタンス化した馬が、それぞれの時間差で走る構成をRustで再現。原作と同じく毎フレーム、各インスタンスについて馬のモーフ重みトラックをCPUで評価してインスタンスごとの影響度テクスチャへ書き込み（setMorphAtとmorphTexture.needsUpdate）、頂点段で常駐する15個のモーフターゲットを合成する。SunLightは視錐台に合わせた2つのカスケードを1枚のアトラスに描き、地面は両者をフェードで混ぜて受ける。半球光、フォグ、周回するカメラ付き。各段はページからthree.js r186が生成するWGSL（instancing_morph/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "32×32に並ぶ1,024頭のインスタンス化した馬が、それぞれの時間差で走る構成をRustで再現。原作と同じく毎フレーム、各インスタンスについて馬のモーフ重みトラックをCPUで評価してインスタンスごとの影響度テクスチャへ書き込み（setMorphAtとmorphTexture.needsUpdate）、頂点段で常駐する15個のモーフターゲットを合成する。SunLightは視錐台に合わせた2つのカスケードを1枚のアトラスに描き、地面は両者をフェードで混ぜて受ける。半球光、フォグ、周回するカメラ付き。各段はページからthree.js r187が生成するWGSL（instancing_morph/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -18725,7 +18725,7 @@
         "source": "gallery/src/browser/lights_probes.rs",
         "test": "tests/browser/lights-probes.spec.js",
         "limitations": [
-          "LightProbeGenerator.fromCubeTexture（CPUでSH係数を計算）、LightProbeの照度、キューブ環境マップの球、LightProbeHelperをRustで再現。r186はライト強度の変更をメッシュの次回リフレッシュまで反映しないため、比較では参照側を強制リフレッシュ（移植版は即時反映）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "LightProbeGenerator.fromCubeTexture（CPUでSH係数を計算）、LightProbeの照度、キューブ環境マップの球、LightProbeHelperをRustで再現。r186はライト強度の変更をメッシュの次回リフレッシュまで反映しなかったが、r187はプローブの係数を毎回の描画で更新するため即時に反映する（移植版も即時反映。比較の参照側は強制リフレッシュを残すが結果は変わらない）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -19293,7 +19293,7 @@
         "source": "gallery/src/browser/lights_dynamic.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "50種の乱数PBRマテリアルを使う100個の形状と中央の金属球、床を、アンビエントライトと周回する点光源（MeshBasicMaterialの目印付き）で照らす構成をRustで再現。dynamicモードではDynamicLightingアドオンと同じく点光源を最大16個のユニフォーム配列にまとめ（超過分はアドオン同様に無視）、光源の追加・削除でシェーダーを再コンパイルしない。シーンパスはMSAA、前から後ろへの並び替えと視錐台カリング付きで、続いてsRGB出力パス。各段はページからthree.js r186が生成するWGSL（lights_dynamic/）を実行する。dynamicモードを切るとthree.jsは光源ごとのコードを持つ既定のライティングで光源数の変化ごとに再コンパイルするが、本移植は同じ計算の光源ループを全光源が入る大きさの配列で再構築して代用する。点光源数の表示は未実装。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「point lights」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
+          "50種の乱数PBRマテリアルを使う100個の形状と中央の金属球、床を、アンビエントライトと周回する点光源（MeshBasicMaterialの目印付き）で照らす構成をRustで再現。dynamicモードではDynamicLightingアドオンと同じく点光源を最大16個のユニフォーム配列にまとめ（超過分はアドオン同様に無視）、光源の追加・削除でシェーダーを再コンパイルしない。シーンパスはMSAA、前から後ろへの並び替えと視錐台カリング付きで、続いてsRGB出力パス。各段はページからthree.js r187が生成するWGSL（lights_dynamic/）を実行する。dynamicモードを切るとthree.jsは光源ごとのコードを持つ既定のライティングで光源数の変化ごとに再コンパイルするが、本移植は同じ計算の光源ループを全光源が入る大きさの配列で再構築して代用する。点光源数の表示は未実装。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「point lights」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -19684,7 +19684,7 @@
         "source": "gallery/src/browser/lights_projector.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Lambertの床に立つLucy像を、周回するProjectorLight（半球光の補助、SpotLightHelper、ACES出力付き）で照らす構成をRustで再現。プロジェクターは1024²の深度マップによるPCFシャドウを落とし、手続き的なコースティクス（時間で動くWorleyノイズ）、Sintelの動画、colors.pngのいずれかを影行列で投影し、ProjectorLightNodeの箱型減衰で切り取る。各段はページからthree.js r186が生成するWGSL（lights_projector/）を実行し、ユニフォーム構造体は生成WGSLのフィールド順から詰める。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして深度パスを省く（結果は同じ）。動画モードは参照側のヘッドレス環境で再生されないため画像比較の対象外。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "Lambertの床に立つLucy像を、周回するProjectorLight（半球光の補助、SpotLightHelper、ACES出力付き）で照らす構成をRustで再現。プロジェクターは1024²の深度マップによるPCFシャドウを落とし、手続き的なコースティクス（時間で動くWorleyノイズ）、Sintelの動画、colors.pngのいずれかを影行列で投影し、ProjectorLightNodeの箱型減衰で切り取る。各段はページからthree.js r187が生成するWGSL（lights_projector/）を実行し、ユニフォーム構造体は生成WGSLのフィールド順から詰める。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして深度パスを省く（結果は同じ）。動画モードは参照側のヘッドレス環境で再生されないため画像比較の対象外。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -20220,7 +20220,7 @@
         "source": "gallery/src/browser/tsl_primitives.rs",
         "test": "tests/browser/tsl-primitives.spec.js",
         "limitations": [
-          "公式r186のdash offset更新不備は修正して比較。",
+          "公式r187のdash offset更新不備は修正して比較。",
           "性能の完全な同等性は未保証。"
         ]
       },
@@ -20750,7 +20750,7 @@
         "source": "gallery/src/browser/tsl_primitives.rs",
         "test": "tests/browser/tsl-primitives.spec.js",
         "limitations": [
-          "r186公式のLoop出力が黒になる挙動を維持。汎用Loopノードは未対応。",
+          "r187公式のLoop出力が黒になる挙動を維持。汎用Loopノードは未対応。",
           "Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
@@ -25825,7 +25825,7 @@
         "source": "gallery/src/browser/ssgi.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "点光源の影付きコーネルボックス（赤と緑の壁、白い床・奥壁・天井と2つの箱、白い円柱）にSSGINodeのスクリーンスペースAOと1バウンスの間接光をかけ、TRAAで解決する構成をRustで再現。シーンパスは色、拡散色、パックしたビュー法線、速度をMRTに書き、SSGIパス（2スライス、8ステップ、frameIdに従うスライス回転とステップオフセット）がAO（r8unorm）とGI（rg11b10ufloat）を書く。合成（色×AO＋拡散色×GI）をTRAAがジッター、再投影、ブレンドし、sRGBで出力する。AO、GI、直接光の表示と時間フィルタなしの合成、各パラメータに対応。各段はページからthree.js r186が生成するWGSL（ssgi/）を実行する。TRAAは要求フレームで進む。ページはsetPixelRatioを呼ばないため常に画素比1で描く。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "点光源の影付きコーネルボックス（赤と緑の壁、白い床・奥壁・天井と2つの箱、白い円柱）にSSGINodeのスクリーンスペースAOと1バウンスの間接光をかけ、TRAAで解決する構成をRustで再現。シーンパスは色、拡散色、パックしたビュー法線、速度をMRTに書き、SSGIパス（2スライス、8ステップ、frameIdに従うスライス回転とステップオフセット）がAO（r8unorm）とGI（rg11b10ufloat）を書く。合成（色×AO＋拡散色×GI）をTRAAがジッター、再投影、ブレンドし、sRGBで出力する。AO、GI、直接光の表示と時間フィルタなしの合成、各パラメータに対応。各段はページからthree.js r187が生成するWGSL（ssgi/）を実行する。TRAAは要求フレームで進む。ページはsetPixelRatioを呼ばないため常に画素比1で描く。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -27157,7 +27157,7 @@
         "source": "gallery/src/browser/sculpt.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Sculptorアドオンによる動的トポロジのスカルプトを、IcosahedronGeometry( 1, 50 )の球（MeshStandardMaterial）、2つの平行光と環境光、減衰付きOrbitControls、ブラシカーソル（リングと点）とともにRustで再現。ストロークはアドオンと同じくCPUで処理し（頂点の溶接、面のオクツリー、分割と間引き、9種のツールをsculpt/sculptor.rsに移植し、アドオンの出力とビット単位で一致）、変更頂点はアドオンの更新範囲どおりに位置と法線を部分書き込みし、トポロジ変更時はインデックスを書き直し、アドオンが配列を再確保したときだけバッファを作り直す。各段はページからthree.js r186が生成するWGSL（sculpt/）を実行する。wireframe表示とGLBの書き出しは再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「wireframe」・「export」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
+          "Sculptorアドオンによる動的トポロジのスカルプトを、IcosahedronGeometry( 1, 50 )の球（MeshStandardMaterial）、2つの平行光と環境光、減衰付きOrbitControls、ブラシカーソル（リングと点）とともにRustで再現。ストロークはアドオンと同じくCPUで処理し（頂点の溶接、面のオクツリー、分割と間引き、9種のツールをsculpt/sculptor.rsに移植し、アドオンの出力とビット単位で一致）、変更頂点はアドオンの更新範囲どおりに位置と法線を部分書き込みし、トポロジ変更時はインデックスを書き直し、アドオンが配列を再確保したときだけバッファを作り直す。各段はページからthree.js r187が生成するWGSL（sculpt/）を実行する。wireframe表示とGLBの書き出しは再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「wireframe」・「export」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -27578,7 +27578,7 @@
         "source": "gallery/src/browser/shadowmap_csm.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "床の上に並ぶ2列40本ずつのPhongの箱を、アンビエントライト、暗い青の平行光源、CSMShadowNodeの影を持つ白い平行光源で照らす構成をRustで再現。視錐台を4つのカスケード（uniform・logarithmic・practical）に分け、各カスケードに2048²の正射影の影カメラを置いてスライスに合わせて大きさを決め、影のテクセルに合わせてずらす計算を、アドオンと同じく毎フレームCPUで行う。受け側は正射影深度でカスケードを選ぶ。CSMHelper（視錐台、カスケードの箱と面、影の範囲）と正射影カメラにも対応。ページと同じくピクセル比1で描く。各段はページからthree.js r186が生成するWGSL（shadowmap_csm/）を実行する。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして影パスを省く（結果は同じ）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "床の上に並ぶ2列40本ずつのPhongの箱を、アンビエントライト、暗い青の平行光源、CSMShadowNodeの影を持つ白い平行光源で照らす構成をRustで再現。視錐台を4つのカスケード（uniform・logarithmic・practical）に分け、各カスケードに2048²の正射影の影カメラを置いてスライスに合わせて大きさを決め、影のテクセルに合わせてずらす計算を、アドオンと同じく毎フレームCPUで行う。受け側は正射影深度でカスケードを選ぶ。CSMHelper（視錐台、カスケードの箱と面、影の範囲）と正射影カメラにも対応。ページと同じくピクセル比1で描く。各段はページからthree.js r187が生成するWGSL（shadowmap_csm/）を実行する。shadowsをオフにしたときthree.jsは影のないシェーダーへ再コンパイルするが、本移植は影の強さを0にして影パスを省く（結果は同じ）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -27647,7 +27647,7 @@
         "source": "gallery/src/browser/shadowmap_opacity.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "DragonAttenuation.glbの透過する2体のドラゴン（KHR_materials_volumeの厚みマップと黄色・赤の減衰色）と布の背景を、アンビエントライトと平行光源で照らす構成をRustで再現。影は深度に加えて投影側の色も記録し（shadowMap.transmitted）、ドラゴンは色付きの影を落とす。影は原作と同じく一度だけ描く（autoUpdateオフ）。毎フレーム、背景を描いてから解決済みのフレームをミップマップ付きテクスチャへコピーして縮小を生成し、ドラゴンがそれを体積越しに屈折させて描き、AgXトーンマッピング（露出1.5）をかける。各段とミップ生成はページからthree.js r186が生成するWGSL（shadowmap_opacity/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "DragonAttenuation.glbの透過する2体のドラゴン（KHR_materials_volumeの厚みマップと黄色・赤の減衰色）と布の背景を、アンビエントライトと平行光源で照らす構成をRustで再現。影は深度に加えて投影側の色も記録し（shadowMap.transmitted）、ドラゴンは色付きの影を落とす。影は原作と同じく一度だけ描く（autoUpdateオフ）。毎フレーム、背景を描いてから解決済みのフレームをミップマップ付きテクスチャへコピーして縮小を生成し、ドラゴンがそれを体積越しに屈折させて描き、AgXトーンマッピング（露出1.5）をかける。各段とミップ生成はページからthree.js r187が生成するWGSL（shadowmap_opacity/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -27811,7 +27811,7 @@
         "source": "gallery/src/browser/shadowmap_progressive.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ProgressiveLightMapGPUが、ランダムに置いた4つの平行光源の柔らかい影を、地面とShadowmappableMeshのモデルにまたがる1024²の浮動小数点ライトマップへ毎フレーム蓄積する構成をRustで再現。読み込み時にpotpackで2つのUV箱を1枚のライトマップに詰め（addObjectsToLightMapと同じ）、毎フレーム、OrbitControls（減衰付き）の更新、4枚のシャドウマップ、継ぎ目をぼかす平面と両オブジェクトの第2UVでのピンポン描画（ブレンド幅で前回と混ぜる）、フィクスチャの乱数による光源の移動（光源の原点寄り、または半球上の環境遮蔽用）、ライトマップと線形フォグでの地面とモデルの描画、2つのTransformControls（光源の原点とモデル）のギズモ、出力パスを実行する。各段はページからthree.js r186が生成するWGSL（shadowmap_progressive/）を実行する。ライトマップのデバッグ表示は未移植。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ProgressiveLightMapGPUが、ランダムに置いた4つの平行光源の柔らかい影を、地面とShadowmappableMeshのモデルにまたがる1024²の浮動小数点ライトマップへ毎フレーム蓄積する構成をRustで再現。読み込み時にpotpackで2つのUV箱を1枚のライトマップに詰め（addObjectsToLightMapと同じ）、毎フレーム、OrbitControls（減衰付き）の更新、4枚のシャドウマップ、継ぎ目をぼかす平面と両オブジェクトの第2UVでのピンポン描画（ブレンド幅で前回と混ぜる）、フィクスチャの乱数による光源の移動（光源の原点寄り、または半球上の環境遮蔽用）、ライトマップと線形フォグでの地面とモデルの描画、2つのTransformControls（光源の原点とモデル）のギズモ、出力パスを実行する。各段はページからthree.js r187が生成するWGSL（shadowmap_progressive/）を実行する。ライトマップのデバッグ表示は未移植。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -27907,7 +27907,7 @@
         "source": "gallery/src/browser/shadowmap_vsm.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "回転するトーラスノットと4本の柱、地面（すべてPhong）を、アンビエントライト、影を落とすスポットライト、グループごと回る平行光源で照らし、VSMシャドウと線形フォグで描く構成をRustで再現。毎フレーム2つの深度マップ、VSMの縦パス（列方向の深度の平均と標準偏差）と横パス、MSAAのシーンパス（前から後ろへの並び替えと視錐台カリング付き）、sRGB出力パスの順に描く。各段はページからthree.js r186が生成するWGSL（shadowmap_vsm/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "回転するトーラスノットと4本の柱、地面（すべてPhong）を、アンビエントライト、影を落とすスポットライト、グループごと回る平行光源で照らし、VSMシャドウと線形フォグで描く構成をRustで再現。毎フレーム2つの深度マップ、VSMの縦パス（列方向の深度の平均と標準偏差）と横パス、MSAAのシーンパス（前から後ろへの並び替えと視錐台カリング付き）、sRGB出力パスの順に描く。各段はページからthree.js r187が生成するWGSL（shadowmap_vsm/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -28261,7 +28261,7 @@
         "source": "gallery/src/browser/sky_water.rs",
         "test": "tests/browser/sky-water.spec.js",
         "limitations": [
-          "SkyMesh（Preetham大気散乱とr186の雲層）とCubeCameraによる毎フレームの6面キャプチャ、反射球、ACESトーンマッピングをRustで再現。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "SkyMesh（Preetham大気散乱とr187の雲層）とCubeCameraによる毎フレームの6面キャプチャ、反射球、ACESトーンマッピングをRustで再現。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -29060,7 +29060,7 @@
         "source": "tsl/src/three/order.rs",
         "test": "tests/browser/tsl-editor.spec.js",
         "limitations": [
-          "TSLエディタを再現。three.js r186のノードシステム全体（src/nodes、WGSL/GLSLノードビルダー、materials/nodes、renderers/common/nodes）とレンダラー、THREEの全モジュール（587）を、JavaScriptの意味論をRustで再現したオブジェクトモデル（tsl/src/rt）上のRustへ変換（tools/tsl/transpile.mjs）。ユーザーのTSLはオリジナルと同じくAsyncFunctionで実行し、THREEとthree/tslは移植版。生成されるWGSL・GLSL・例外・コンソールは、4,177本のコーパス（全TSL関数の呼び出しパターンと手書きのプログラム）でオリジナルと1文字単位で一致（tools/tsl/check.mjs）。プレビューは移植版のWebGPURendererがブラウザのGPUDeviceで描画（同期実行のため非同期パイプライン生成は即時に結果を返す）。Monaco・lil-guiはオリジナルと同じCDN。性能の完全な同等性は未保証。"
+          "TSLエディタを再現。three.js r187のノードシステム全体（src/nodes、WGSL/GLSLノードビルダー、materials/nodes、renderers/common/nodes）とレンダラー、THREEの全モジュール（592）を、JavaScriptの意味論をRustで再現したオブジェクトモデル（tsl/src/rt）上のRustへ変換（tools/tsl/transpile.mjs）。ユーザーのTSLはオリジナルと同じくAsyncFunctionで実行し、THREEとthree/tslは移植版。生成されるWGSL・GLSL・例外・コンソールは、4,217本のコーパス（全TSL関数の呼び出しパターンと手書きのプログラム）でオリジナルと1文字単位で一致（tools/tsl/check.mjs）。プレビューは移植版のWebGPURendererがブラウザのGPUDeviceで描画（同期実行のため非同期パイプライン生成は即時に結果を返す）。Monaco・lil-guiはオリジナルと同じCDN。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -29717,7 +29717,7 @@
         "source": "gallery/src/browser/linked_particles.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "ポインターへ向けて毎フレーム5個生まれ、フラクタルノイズの乱流で動き、全粒子を走査して最も近い2つの生存粒子へ加算リボンで結ばれる8,192個の短命な粒子を、色相が巡る加算スプライトとして、周回する点光源に照らされたフラットシェーディングの金属イコサヘドロン、BloomNode、ACESトーンマッピング、自動回転のOrbitControlsとともにRustで再現。各段はページのTSLからthree.js r186が生成するWGSL（linked_particles/）を、スプライトとリボンが頂点属性として読む常駐ストレージバッファ上で実行する。粒子の更新パスは原作と同じく他の粒子の位置を書き込み中に読むため、原作自身も実行ごとにわずかに異なる。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ポインターへ向けて毎フレーム5個生まれ、フラクタルノイズの乱流で動き、全粒子を走査して最も近い2つの生存粒子へ加算リボンで結ばれる8,192個の短命な粒子を、色相が巡る加算スプライトとして、周回する点光源に照らされたフラットシェーディングの金属イコサヘドロン、BloomNode、ACESトーンマッピング、自動回転のOrbitControlsとともにRustで再現。各段はページのTSLからthree.js r186が生成したWGSL（linked_particles/、r187では未再取得）を、スプライトとリボンが頂点属性として読む常駐ストレージバッファ上で実行する。粒子の更新パスは原作と同じく他の粒子の位置を書き込み中に読むため、原作自身も実行ごとにわずかに異なる。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -30760,7 +30760,7 @@
         "source": "gallery/src/browser/volume_rectarea.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "チェッカー状のラフネスを持つ床の上の白いトーラスノットを、赤・緑・青の3枚の回転するRectAreaLight（発光する表面パネルと暗い裏面パネル付き）で照らし、50×40×50のフォグの箱で囲む構成をRustで再現。面光源はLTCテーブル（RectAreaLightTexturesLib）で評価する。シーンパスの後、VolumeNodeMaterialが1/4解像度で箱をレイマーチし、3つの面光源と128³のImprovedNoiseの煙テクスチャを、Bayerテクスチャでディザしながらシーンの深度まで積算する。2パスのガウシアンブラーでノイズを除き、出力でシーンに加えてNeutralToneMapping（露出2）をかける。各段はページからthree.js r186が生成するWGSL（volume_rectarea/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "チェッカー状のラフネスを持つ床の上の白いトーラスノットを、赤・緑・青の3枚の回転するRectAreaLight（発光する表面パネルと暗い裏面パネル付き）で照らし、50×40×50のフォグの箱で囲む構成をRustで再現。面光源はLTCテーブル（RectAreaLightTexturesLib）で評価する。シーンパスの後、VolumeNodeMaterialが1/4解像度で箱をレイマーチし、3つの面光源と128³のImprovedNoiseの煙テクスチャを、Bayerテクスチャでディザしながらシーンの深度まで積算する。2パスのガウシアンブラーでノイズを除き、出力でシーンに加えてNeutralToneMapping（露出2）をかける。各段はページからthree.js r187が生成するWGSL（volume_rectarea/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -30878,7 +30878,7 @@
         "source": "gallery/src/browser/volume_traa.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "webgpu_volume_lightingと同じティーポット、床、点光源、スポットライトの構成で、フォグの箱をシーンパスの中で全解像度のまま加算描画し、TRAAで解決する構成をRustで再現。不透明物の深度プリパスがボリュームの遮蔽を与え、シーンパスは色と速度（MRT）を書き、ボリュームはフレームごとのHaltonオフセットで回転させたinterleaved gradient noiseでレイの開始位置をずらす。TRAANodeは32サンプルのHalton列でカメラをジッターし、速度で履歴を再投影し、前フレームの深度で隠れていた履歴を棄却し、フリッカー低減付きで混ぜる（原作と同じく最初の2回の解決は1×1の仮の深度を読む）。出力はNeutralToneMapping（露出2）。各段はページからthree.js r186が生成するWGSL（volume_traa/）を実行する。ページと同じくピクセル比1で描く。volumetric intensityはページでも描画に接続されていないため効果がない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "webgpu_volume_lightingと同じティーポット、床、点光源、スポットライトの構成で、フォグの箱をシーンパスの中で全解像度のまま加算描画し、TRAAで解決する構成をRustで再現。不透明物の深度プリパスがボリュームの遮蔽を与え、シーンパスは色と速度（MRT）を書き、ボリュームはフレームごとのHaltonオフセットで回転させたinterleaved gradient noiseでレイの開始位置をずらす。TRAANodeは32サンプルのHalton列でカメラをジッターし、速度で履歴を再投影し、前フレームの深度で隠れていた履歴を棄却し、フリッカー低減付きで混ぜる（r187の原作と同じく、前フレームの深度には最初から履歴の深度テクスチャを読む）。出力はNeutralToneMapping（露出2）。各段はページからthree.js r187が生成するWGSL（volume_traa/）を実行する。ページと同じくピクセル比1で描く。volumetric intensityはページでも描画に接続されていないため効果がない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31203,7 +31203,7 @@
         "source": "gallery/src/browser/water.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。元のr186はリサイズ後に透過のコピーで検証エラーになるため、比較はリサイズを除く。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。r186の原本はリサイズ後に透過のコピーで検証エラーになったため、比較はリサイズを除く（r187では未再確認）。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -35053,7 +35053,7 @@
         "source": "gallery/src/browser/lights_probes.rs",
         "test": "tests/browser/lights-probes.spec.js",
         "limitations": [
-          "FlyControls（ポインタ位置によるヨー・ピッチ、キー移動・ロール）、法線・スペキュラーマップ付きの地球と雲・月、星のPoints（r186のWebGPUと同じネイティブ1ピクセル点）、FogExp2、FilmNodeのグレインをRustで再現。性能の完全な同等性は未保証。"
+          "FlyControls（ポインタ位置によるヨー・ピッチ、キー移動・ロール）、法線・スペキュラーマップ付きの地球と雲・月、星のPoints（r187のWebGPUと同じネイティブ1ピクセル点）、FogExp2、FilmNodeのグレインをRustで再現。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
