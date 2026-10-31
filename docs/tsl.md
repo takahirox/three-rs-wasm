@@ -163,7 +163,7 @@ are linear data. External transition mask UVs account for TextureLoader's
 upload orientation. `SsaaPass` supports perspective cameras, view offsets and
 color-only RGBA16Float accumulation; it restores the original camera view even
 on an error. MRT/depth propagation and orthographic SSAA are not implemented.
-`MeshStandardMaterial.energy_conservation` enables r186 WebGPU punctual-light
+`MeshStandardMaterial.energy_conservation` enables r187 WebGPU punctual-light
 Fresnel attenuation and multiple-scattering compensation, plus ambient/hemisphere
 diffuse energy attenuation. The previous lighting remains the default for existing
 ports; the three new Standard-material scenes enable the option. Rect-area light
@@ -230,7 +230,7 @@ uploads, avoiding detached Wasm views during mapped copies as memory grows.
 seeded initialization and explicit time. Each upstream RangeNode has its own
 seed; only initial random data changes. Per-frame sprite rotation is set to the
 corresponding 60 Hz pose for comparison. An opacity=1 node marks the height-fog
-material dynamic because the r186 observer does not detect scene-level fog-node
+material dynamic because the r187 observer does not detect scene-level fog-node
 uniform changes at a frozen camera pose. The shader's fog expression is retained.
 UI changes and time seeking are applied together so each history sequence has the
 same number of rendered frames. Pointer/Orbit comparisons settle damping before
@@ -257,7 +257,7 @@ Raw measurements, resource counts and local PNG pair locations:
 
 ## Five storage and instancing examples
 
-The next five ports use the pinned r186 WebGPU originals:
+The next five ports use the pinned r187 WebGPU originals:
 
 | Gallery example | Workload and behavior |
 | --- | --- |
@@ -399,7 +399,7 @@ Inspector presentation remains adapted, and entries remain marked partial ports.
 
 ## Path instances, image filters, 3D LUT and parallax
 
-Runtime IDs 98–102 add the r186 WebGPU examples `instance_path`,
+Runtime IDs 98–102 add the r187 WebGPU examples `instance_path`,
 `postprocessing_sobel`, `postprocessing_smaa`, `postprocessing_3dlut` and
 `parallax_uv`. The original controls, assets, camera interaction and animation
 are ported through Rust/Wasm; Three.js is used only by the independent reference
@@ -412,7 +412,7 @@ fixtures and offline path preparation.
   strips; its effect uses a native GPU 3D texture and trilinear sampling.
   Linear-to-sRGB conversion can be fused into the same grading pass.
 - `surface::parallax_uv` uses geometry tangents; `parallax_uv_frame` matches
-  r186's shared derivative/normal-map context for geometry without tangents.
+  r187's shared derivative/normal-map context for geometry without tangents.
   `blend_overlay` supplies the ice surface's linear-color overlay operation.
 - `EnvironmentMap::from_scene` captures six views and prefilters their HDR
   PMREM cube entirely on the GPU. Capture runs when the environment is created
@@ -455,7 +455,7 @@ sRGB conversion; clamping happens only at final display output.
 
 The original-script fixture preserves the official `time` node's render-group
 update frequency. For Cubemap Adjustments it also places scene-node controls
-in that group: r186's `NodeMaterialObserver.containsNode` inspects material
+in that group: r187's `NodeMaterialObserver.containsNode` inspects material
 properties but misses `scene.environmentNode`, leaving those controls stale
 on stationary meshes. This fixture correction changes uniform refresh only,
 not shader expressions, textures or PMREM generation. Other adaptations seed
@@ -551,7 +551,7 @@ remain unclaimed.
 
 Runtime IDs 118–122 port `webgpu_materials_sss`, `webgpu_materials_toon`,
 `webgpu_skinning_instancing`, `webgpu_oit`, and
-`webgpu_materials_envmaps_groundprojected` from the pinned r186 scripts.
+`webgpu_materials_envmaps_groundprojected` from the pinned r187 scripts.
 
 - `SurfaceNodes` thickness inputs extend physical direct lighting with the
   original inexpensive SSS term. The bunny keeps its original thickness texture;
@@ -596,7 +596,7 @@ recorded rather than treated as timing parity; static geometry remains resident.
 
 ## Materials, contact shadows and instanced lines
 
-The next five pinned r186 ports are `webgpu_materials`, `webgpu_sandbox`,
+The next five pinned r187 ports are `webgpu_materials`, `webgpu_sandbox`,
 `webgpu_shadow_contact`, `webgpu_lines_fat`, and `webgpu_lines_fat_wireframe`.
 They add local/view normal accessors, projected local position, fragment depth,
 node-driven alpha testing and sRGB-to-linear conversion. The sandbox retains
@@ -621,7 +621,7 @@ time, UI capture and layout. No screenshot is used as rendered scene content.
 
 ## Procedural materials, planar reflection and compute skinning
 
-The procedural examples translate pinned r186 node graphs into GPU WGSL.
+The procedural examples translate pinned r187 node graphs into GPU WGSL.
 `tsl::materialx` provides separate 2D/3D Perlin, cell, Worley and fractal
 kernels; native tests compare their output against saved official GPU samples.
 `tsl::wood::WoodNodes` uses the official presets and shader equations. The
@@ -638,8 +638,8 @@ resident GPU storage. Per-frame CPU work uploads bone palettes; it does not
 skin vertices. Morph-target meshes are rejected explicitly by this API.
 
 `Light::Sun` fits two stabilized shadow cascades to the view camera, with the
-r186 practical split, overlap fade and five-sample PCF. Directional and spot
-shadows also use the r186 Vogel PCF; basic nearest depth comparison is optional. A shadow node graph can
+r187 practical split, overlap fade and five-sample PCF. Directional and spot
+shadows also use the r187 Vogel PCF; basic nearest depth comparison is optional. A shadow node graph can
 provide GPU displacement and a binary fragment mask via
 `tsl::surface::shadow_program`. `shadow_program_with_storage` also accepts
 read-only GPU storage, including per-instance displacement shared with a color
@@ -667,7 +667,7 @@ only in that graph. The scene’s separate ambient term is unaffected.
 `build_with_texture_types` binds explicitly typed surface inputs, including raw
 GPU depth attachments. `depth_effect_with_textures` combines depth with sampled
 color/normal attachments for fullscreen effects; `tsl::pixelation` uses these
-inputs to implement the r186 depth and normal outline rules.
+inputs to implement the r187 depth and normal outline rules.
 Orthographic shading and `position_view_direction()` use parallel view rays.
 
 `BufferCompute::with_textures` reads sampled 2D GPU textures while updating
@@ -681,7 +681,7 @@ work, as in the original; its small spectrum texture is updated for visualizatio
 `surface::transform_normal_to_view(local_normal)` to include the inverse-transpose
 model transform and camera view; this also supports nonuniform model scale.
 `MeshPhysicalMaterial::retroreflectivity` blends direct GGX reflection toward the
-light source using r186's reflected view direction, including anisotropic GGX and
+light source using r187's reflected view direction, including anisotropic GGX and
 the corresponding diffuse Fresnel energy. It defaults to zero; indirect lighting
 is unchanged, matching the official material.
 
@@ -693,23 +693,26 @@ the GPU. Call its update once per animation frame; custom displacement requires
 its own previous parameters. These are not CPU skinning or vertex-readback APIs.
 
 `tsl::temporal::TemporalAA` owns linear RGBA16F resolve/history textures and a
-previous Depth32Float buffer. It implements r186 TRAA variance clipping, depth
+previous Depth32Float buffer. It implements r187 TRAA variance clipping, depth
 reprojection, subpixel correction, luminance weighting and the 32-step Halton
 sequence. `TemporalAA::upscaling` adds TAAU's nine-tap Gaussian reconstruction and
 separate input/output resolutions; use `set_output_size` before applying it.
 The caller supplies an MRT containing beauty and NDC velocity. MSAA, logarithmic
 and reversed depth are outside this API's scope. RCAS sharpening reuses
-`tsl::fsr1::rcas`; `display::motion_blur` preserves r186's 17/16 default sample gain.
+`tsl::fsr1::rcas`; `display::motion_blur` preserves r187's 17/16 default sample gain.
 
-The pinned TAAU example has two relevant upstream behaviors. VelocityNode compiles
-before the unjittered projection override is installed, so its current clip uses
-camera jitter while its previous clip uses the unjittered projection. The example
-adapter preserves this behavior; ordinary MotionVectors callers can supply fully
-unjittered matrices. Also, TAAU seeds a second history attachment for feature locks,
-but only copies the resolve's color attachment back afterwards. That lock input
-stays zero; this port omits its unused texture, preserving the shader result.
+The TAAU example has two relevant upstream behaviors. In r186, VelocityNode
+compiled before the unjittered projection override was installed, so its current
+clip used camera jitter while its previous clip used the unjittered projection.
+r187's VelocityNode fills a current-projection uniform each frame from the
+override, so both clips are unjittered there. The example adapter still
+preserves r186's jittered current clip ( an open gap ); ordinary MotionVectors
+callers can supply fully unjittered matrices. Also, TAAU seeds a second history
+attachment for feature locks, but only copies the resolve's color attachment
+back afterwards ( in r187 too ). That lock input stays zero; this port omits its
+unused texture, preserving the shader result.
 
-The TAAU example also constructs SharpenNode with the number `0.2`. r186 turns
+The TAAU example also constructs SharpenNode with the number `0.2`. r187 turns
 that into a ConstNode; the GUI changes its value without invalidating the
 compiled material, leaving sharpening at 0.2. The adapter retains this behavior,
 while the reusable RCAS API still accepts dynamic uniform nodes.

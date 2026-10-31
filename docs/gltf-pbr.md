@@ -57,7 +57,7 @@ cached environment. Pipeline caches are bounded by render configurations.
 ## Reference and HDR provenance
 
 `tests/gltf-pbr/manifest.json` was committed before broad rendering work. It fixes
-r186, original source asset hashes, eight camera/exposure/orientation settings,
+the pinned commit ( now r187's ), original source asset hashes, eight camera/exposure/orientation settings,
 256x256 output, four samples, ACES/sRGB and the image comparison tolerance.
 The reference keeps GLTFLoader's original materials and decodes the original
 UltraHDR with the pinned UltraHDRLoader. Earlier base-color comparison pages

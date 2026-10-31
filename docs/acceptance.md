@@ -1,6 +1,6 @@
 # MVP scope and review
 
-The source of truth remains Issues #1 and #2 and the unchanged r186 compatibility
+The source of truth remains Issues #1 and #2 and the unchanged r187 compatibility
 and exclusion manifests. `implementation.json` records Rust mappings and evidence
 for 350 unique required APIs; the inventory contains 394 entries when distinct
 accessor forms, exclusions and deferred items are counted.
@@ -8,7 +8,7 @@ accessor forms, exclusions and deferred items are counted.
 | Acceptance requirement | Executable evidence |
 |---|---|
 | Core accounting | Pinned source extraction, manifest consistency, implementation mappings |
-| Behavioral compatibility | Live r186 differential probe: transforms, attach, bounds, typed attributes, all six Euler orders, primitives, cameras, color and ray intersections |
+| Behavioral compatibility | Live r187 differential probe: transforms, attach, bounds, typed attributes, all six Euler orders, primitives, cameras, color and ray intersections |
 | Rust browser applications | Frozen 3-application, 27-capability manifest; animation, pointer selection, visibility timing and scene/resource rebuild assertions |
 | Migration | Basic cube and lit textured hierarchy, rendered by both implementations and compared at fixed image tolerances |
 | Resource lifecycle | 1,000 scene create/drop cycles; generational handle rejection; shared-resource release; 50 GPU render/target cycles with active allocation counters |
@@ -23,9 +23,9 @@ Implementation review found and corrected:
   method body, omitting RenderTarget fields. Private implementation methods are
   filtered according to the existing inventory rule; no exclusions were added.
 - Integer attributes needed JavaScript wrapping/rounding behavior; half floats
-  needed r186 truncation, overflow clamping and normalized conversion.
+  needed r187 truncation, overflow clamping and normalized conversion.
 - Euler orders other than XYZ needed axis reordering when calling glam.
-- r186 world updates respect dirty and force flags. Graph update/disposal now use
+- r187 world updates respect dirty and force flags. Graph update/disposal now use
   iteration so deep hierarchies do not exhaust the call stack.
 - Interleaved geometry clones must preserve internal aliasing while separating
   their storage from the original geometry.
@@ -47,7 +47,7 @@ advanced loaders, shadows or other deferred subsystems.
 The renderer currently supports up to eight nonambient lights per scene and
 returns an error above that limit. Line width follows WebGPU's one-pixel line
 primitives. Depth/stencil resolve flags are retained as configuration, matching
-the r186 WebGPU backend's use of attachment store semantics rather than WebGL
+the r187 WebGPU backend's use of attachment store semantics rather than WebGL
 depth resolves. General Three.js JavaScript source/drop-in compatibility is not
 claimed. The scene's serializable model has an output API, not an advanced loader.
 

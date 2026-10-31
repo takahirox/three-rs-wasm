@@ -1,6 +1,6 @@
 # Clearcoat, fly controls, point-light shadows, light probe and tone mapping
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/lights_probes.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
@@ -18,7 +18,7 @@ Their WebGL counterparts are excluded as equivalents of these WebGPU ports:
 - `webgl_lightprobe`;
 - `webgl_tonemapping`.
 
-In r186, `misc_controls_fly` itself renders with WebGPURenderer.
+In r187, `misc_controls_fly` itself renders with WebGPURenderer.
 
 ## Port notes
 
@@ -35,17 +35,18 @@ In r186, `misc_controls_fly` itself renders with WebGPURenderer.
 
 - **Controls.** FlyControls' move state follows pointer offset and keys. Each
   step moves the camera by a third of the distance to the nearer surface.
-- **Stars.** r186's WebGPU Points draw PointsMaterial as native one-pixel
+- **Stars.** r187's WebGPU Points draw PointsMaterial as native one-pixel
   points (`point-list`), whatever its size. The port does the same.
 - **Film.** FilmNode's grain uses TSL's `rand` on the example clock.
 
 ### Point-light shadows
 
-- **Filtering.** r186's `getPointShadow` PCF is ported:
+- **Filtering.** r187's `getPointShadow` PCF is ported:
   - five Vogel-disk taps rotated by interleaved gradient noise;
   - offsets in the tangent frame of the light-to-fragment direction,
     `radius / mapSize` apart;
-  - each tap looked up in its own cube face against the fragment's face depth.
+  - each tap looked up in its own cube face against the depth, on that face,
+    of the point at the fragment's light distance in the tap's direction.
 
   The shared point-shadow shader now uses this filter in place of offsets in
   one face's UV.
@@ -62,12 +63,13 @@ In r186, `misc_controls_fly` itself renders with WebGPURenderer.
 - **Lighting.** The sphere's irradiance adds `getShIrradianceAt( normal )` ×
   intensity. LightProbeHelper draws the unscaled coefficients.
 - **Background.** The raw cube, as a camera-centered 32 × 32 sphere at the far
-  plane, as r186 draws `scene.background`.
-- **Intensity refresh.** r186's NodeMaterialObserver does not track light
-  intensities. The original therefore shows a light-probe or directional
-  intensity change only at the mesh's next refresh. The port applies such
-  changes at once. The reference fixture forces the refresh by disposing the
-  materials after each parameter change.
+  plane, as r187 draws `scene.background`.
+- **Intensity refresh.** r186's NodeMaterialObserver did not track light
+  intensities, so the original showed a light-probe intensity change only at
+  the mesh's next refresh. r187 keeps the probe's coefficients in the render
+  group's uniforms, which it updates every frame. The port applies such
+  changes at once. The reference fixture still forces a refresh by disposing
+  the materials after each parameter change.
 
 ### Tone mapping
 
@@ -118,7 +120,7 @@ Two scoped bounds apply:
   - the point lights' per-face culled shadow casters.
 
   The only exception is the tone-mapping background. The port draws it with a
-  fullscreen triangle, while r186 uses a 5,952-index sphere.
+  fullscreen triangle, while r187 uses a 5,952-index sphere.
 - **Uploads.** No scene uploads geometry or texture data by writes after a
   warm pass.
 - **Warmed cycles.** Warmed cycles of time, input and resize create no GPU

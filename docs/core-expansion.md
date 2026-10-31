@@ -23,7 +23,7 @@ platform integrations, not part of this Core implementation sequence.
 ## Evidence and reproduction
 
 `scripts/check-core` runs native semantic/GPU tests, native/Wasm clippy, builds the
-Wasm demo and compares materials against pinned original Three.js r186. Animation
+Wasm demo and compares materials against pinned original Three.js r187. Animation
 comparison covers world-space vertices of all 14 RobotExpressive clips. Browser
 tests exercise switching clips and reject requests for Three.js/GLTFLoader scripts.
 `scripts/check-gltf-pbr` and `scripts/check-gallery` cover existing behavior.

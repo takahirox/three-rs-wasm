@@ -1,14 +1,14 @@
 # TSL node system port
 
 `webgpu_tsl_editor` runs any TSL the user writes. It shows the WGSL or GLSL
-three.js r186 generates for it and renders a preview. Reproducing it means
+three.js r187 generates for it and renders a preview. Reproducing it means
 porting three's node system together with what that system depends on. The
 port is the `three-tsl` crate (`tsl/`). It covers:
 
 - `src/nodes`, the WebGPU and WebGL fallback node builders;
 - `materials/nodes` and `renderers/common/nodes`;
 - the renderer and the core classes;
-- every module of `Three.WebGPU.js`: 587 in total.
+- every module of `Three.WebGPU.js`: 592 in total.
 
 It is accepted only when every corpus program matches its golden character
 for character. A subset was rejected.
@@ -60,7 +60,7 @@ python3 tools/tsl/gen_mods.py
 `tools/tsl/overrides/` replaces two modules. The originals stay transpiled
 beside them as `*.original.js`:
 
-- **`renderers/webgpu/WebGPUBackend.js`** runs r186's backend unchanged on
+- **`renderers/webgpu/WebGPUBackend.js`** runs r187's backend unchanged on
   `HeadlessGPU.js`, a device and canvas context that record nothing. They
   report the reference adapter's features, limits, WGSL language features
   and flag namespaces (`tests/tsl/device.json`, Chrome on macOS). Their
@@ -68,7 +68,7 @@ beside them as `*.original.js`:
   synchronously (`createBuffer`, `dispatchWorkgroups`), so a frame aborts
   where the original's does. When the page provides a real `GPUDevice`, the
   backend renders through it instead (the editor's preview).
-- **`renderers/webgl-fallback/WebGLBackend.js`** keeps r186's extension and
+- **`renderers/webgl-fallback/WebGLBackend.js`** keeps r187's extension and
   parameter queries on a headless context with the reference context's
   answers, or on the browser's WebGL 2 context in the editor. It issues no
   GL work: the editor only reads the GLSL text from that renderer.
@@ -95,14 +95,14 @@ thenable). The preview animates on the browser's frames.
 
 ## Verification
 
-- **`tests/tsl/corpus.json`:** 4,177 programs, each chunk one editor session.
+- **`tests/tsl/corpus.json`:** 4,217 programs, each chunk one editor session.
   - The editor's default program.
   - Every `three/tsl` export, called as a value or with nine argument
     patterns.
   - 29 hand-written programs: Fn layouts, control flow, structs, arrays,
     uniforms, textures, noise, color, tone mapping, transforms, packing,
     maps and errors.
-- **`tests/tsl/golden.json.gz`:** r186's output for each program. It is
+- **`tests/tsl/golden.json.gz`:** r187's output for each program. It is
   recorded by `node tools/tsl/golden.mjs` from
   `reference/three-js/tsl-corpus.html` and holds:
   - the WGSL with sRGB output, the GLSL ES 3.0 and the WGSL with linear
@@ -111,7 +111,7 @@ thenable). The preview animates on the browser's frames.
   - the console of the build and of its frame.
 - **`scripts/check-tsl`** runs on CI (`.github/workflows/tsl.yml`). It runs
   the crate's tests, then replays the corpus in Node.js
-  (`tools/tsl/check.mjs`). All 4,177 programs match.
+  (`tools/tsl/check.mjs`). All 4,217 programs match.
 - **`tests/browser/tsl-editor.spec.js`** opens the gallery page and the
   original page on the pinned sources (`reference/three-js/tsl-editor.html`),
   both with a frozen clock. They are driven by the same edits and option

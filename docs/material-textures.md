@@ -1,6 +1,6 @@
 # Material and texture examples
 
-Five pinned r186 WebGPU examples run through the Rust/Wasm renderer:
+Five pinned r187 WebGPU examples run through the Rust/Wasm renderer:
 
 | Official example | Implementation |
 | --- | --- |
@@ -25,7 +25,7 @@ coordinates. `Scene::clipping_shadows` controls global planes in shadow passes;
 material `clip_shadows` independently controls local planes. This scene adapter
 does not claim a general hierarchical `ClippingGroup` API.
 
-The manual painting follows r186 WebGPU behavior: `LinearFilter` samples the
+The manual painting follows r187 WebGPU behavior: `LinearFilter` samples the
 generated mip chain, while `NearestFilter` compiles to a level-zero texture load.
 This differs from interpreting the HTML's labels as a promise to disable all
 mips. The final 1×1 manually supplied mip preserves Canvas 2D fractional coverage.

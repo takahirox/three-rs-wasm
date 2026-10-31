@@ -1,6 +1,6 @@
 # Compute reduce and MaterialX loader
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -37,11 +37,11 @@ backend does not map it, so `vendor/wgpu` adds the mapping
 
 ## MaterialX loader ( 451 )
 
-The page's MaterialXLoader is ported: r186's
+The page's MaterialXLoader is ported: r187's
 `examples/jsm/loaders/MaterialXLoader.js`, `loaders/materialx/` and
 `libs/fflate.module.js` are transpiled to Rust in the three-tsl crate
 ( `tsl/src/three/addons/` ), on its JavaScript object model, with a Rust
-DOMParser ( `tsl/src/dom.rs` ). At load, the page fetches the 36 documents
+DOMParser ( `tsl/src/dom.rs` ). At load, the page fetches the 40 documents
 and hands them to three-tsl's Wasm ( `web/build/tsl`, the `materialx_shaders`
 export ). There `tsl/src/materialx_page.rs` builds the page's scene
 ( renderer, tone mapping, environment, the TSL grid ground ), parses each
@@ -56,8 +56,8 @@ handler stands in for the texture loader. The page decodes the images
 itself.
 
 `tsl/tests/materialx.rs` checks the ported loader natively. The ground's
-and all 36 materials' WGSL must equal, character for character, what
-three.js r186 generates for the original page ( `tsl/tests/materialx/` ).
+and all 40 materials' WGSL must equal, character for character, what
+three.js r187 generates for the original page ( `tsl/tests/materialx/` ).
 Each material's bindings and render kind must equal the original's.
 
 The object uniforms are recognized from how each generated shader uses its
@@ -106,7 +106,7 @@ drags and zoom.
 - **MaterialX loader**: the page loads grid.png once per document, as nine
   textures. The port shares one texture. The loader runs in three-tsl's
   Wasm module, which the page downloads in addition to its own; the
-  PMREM, mipmap and output passes run the WGSL r186 generates for them.
+  PMREM, mipmap and output passes run the WGSL r187 generates for them.
 - The Inspector's panels are not ported.
 
 ## Sponza

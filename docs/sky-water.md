@@ -1,6 +1,6 @@
 # Sky, sun light, pointer-lock walk, video panorama and ocean
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/sky_water.rs`, with SkyMesh in
 `gallery/src/browser/sky_water/sky.rs`.
 
@@ -22,7 +22,7 @@ the original WebGL renderer.
 
 ### SkyMesh
 
-- **Shader.** The Preetham scattering and r186's cloud layer are ported
+- **Shader.** The Preetham scattering and r187's cloud layer are ported
   to WGSL:
   - the sinless gradient hash;
   - quintic gradient noise and four-octave fbm;

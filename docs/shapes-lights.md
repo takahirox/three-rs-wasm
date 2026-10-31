@@ -1,6 +1,6 @@
 # Cube-mapped heads, STL, extruded shapes, spot lights and the hemisphere light
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/shapes_lights.rs`, with STLLoader, Earcut and
 ExtrudeGeometry in `gallery/src/browser/shapes_lights/formats.rs`. The curve's
 arc-length sampling and Frenet frames are in `src/curve.rs`.
@@ -81,7 +81,7 @@ inventory, so each is compared against the original WebGL renderer.
 ### Hemisphere light
 
 - **Flamingo.** The glTF morph animation plays with `setDuration( 1 )`. Its
-  Standard materials use r186's energy-conserving lighting, as WebGL applies
+  Standard materials use r187's energy-conserving lighting, as WebGL applies
   it.
 - **Helpers.** The helpers follow their constructors:
   - `HemisphereLightHelper`: the rotated octahedron, sky- and ground-colored

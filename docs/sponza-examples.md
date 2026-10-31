@@ -1,6 +1,6 @@
 # Sponza examples
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 Both pages load Sponza from glTF-Sample-Assets
 (`https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/`)
@@ -114,7 +114,7 @@ Sponza is lit by a shadowed DirectionalLight ( 0xfff2dc, intensity 100,
 2048² map ) and a 0.5 AmbientLight under SkyMesh, with FirstPersonControls.
 The page leaves the pixel ratio at 1, and so does the gallery.
 VXGINode traces voxel cones for AO and indirect light, and TRAA resolves
-the cones' noise. Every stage runs the WGSL that r186 generates for the page
+the cones' noise. Every stage runs the WGSL that r187 generates for the page
 ( `gallery/src/browser/vxgi_sponza/` ):
 
 - **Collection.** VXGIVolume's scene collector runs once on the CPU, as the

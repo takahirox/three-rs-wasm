@@ -2,7 +2,7 @@
 
 A ported example's page shows its original's UI: stats.js, its lil-gui
 panels, the WebGPU Inspector and its page chrome. Each is built with the
-original's own library and from what the pinned r186 page itself builds.
+original's own library and from what the pinned r187 page itself builds.
 
 ## What is recorded
 
@@ -43,8 +43,9 @@ page as JSON (`#gallery-ui`).
 
 ## The gallery side (`web/examples/ui/`)
 
-Each library is the r186 package's, loaded from jsDelivr. They are identical
-to the pinned copies.
+Each library is still the r186 package's ( `three@0.186.0`, loaded from
+jsDelivr ). stats.js and lil-gui are identical to r187's copies; r187 changed
+the Inspector ( `examples/jsm/inspector/` ), so the pages show r186's.
 
 **stats.js**
 - It is created as the original created it, with the original's style
@@ -71,7 +72,8 @@ to the pinned copies.
   rebuilt with the recorded calls. The page's import map points `three`,
   `three/webgpu` and `three/tsl` at `ui/three/shim.js`, so no three.js
   renderer loads. The shim provides r186's `constants.js` and
-  `EventDispatcher.js`, unchanged, and InspectorBase; the Inspector's
+  `EventDispatcher.js`, unchanged, and InspectorBase, matching the r186
+  Inspector it serves; the Inspector's
   rendering features get inert stand-ins.
 - The Inspector reads a renderer facade:
   - **Frames:** each port frame is one render ("Scene"), timed on the CPU

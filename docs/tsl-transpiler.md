@@ -1,12 +1,12 @@
 # TSL transpiler
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 `webgpu_tsl_transpiler` ( gallery example 483 ) converts GLSL into TSL or
 WGSL as the user types. `src/transpiler/` ports the classes the page uses
 from `examples/jsm/transpiler/`:
 
-| r186 | Rust |
+| r187 | Rust |
 | --- | --- |
 | `GLSLDecoder` ( preprocessor, tokenizer, parser ) | `preprocess.rs`, `decoder.rs` |
 | `AST.js` | `ast.rs`: the nodes in an arena, with their parents and linker records |
@@ -30,8 +30,8 @@ The port reproduces what the JS implementation's output depends on:
   `$&` patterns of `replace()`. Error positions count columns in UTF-16
   units.
 - **Encoder output.**
-  - The `import` list in TSL holds only names that r186's `three/tsl`
-    exports. `tsl_names.txt` lists the 682 exports, taken from the pinned
+  - The `import` list in TSL holds only names that r187's `three/tsl`
+    exports. `tsl_names.txt` lists the 687 exports, taken from the pinned
     build.
   - Where the original prints `undefined` or `null` in a template, the port
     prints the same text.
@@ -51,12 +51,12 @@ not need WebGPU.
 
 ## Comparison
 
-`tests/browser/tsl-transpiler.spec.js` runs the r186 transpiler and the
+`tests/browser/tsl-transpiler.spec.js` runs the r187 transpiler and the
 port in one page, over both encoders.
 
-The 287 inputs are:
+The 286 inputs are:
 - the page's GLSL;
-- every string in r186's `ShaderChunk`;
+- every string in r187's `ShaderChunk`;
 - every vertex and fragment shader in `examples/jsm/shaders/`;
 - the cases in `tests/browser/transpiler-cases.json`. These cover textures,
   qualifiers, overloads, switch, loops, macros and malformed statements.

@@ -1,6 +1,6 @@
 # Transform controls, curve modifiers, the CCD IK arm and the glTF normal-map export
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/transform_controls.rs` (TransformControls) and
 `gallery/src/browser/transform_curves.rs`; the normal-map export in
 `gallery/src/browser/gltf_normals.rs`.
@@ -84,13 +84,13 @@ the same batch, is documented in [controls-attributes.md](controls-attributes.md
 - **Bounding spheres.** `updateIK()`'s `computeBoundingSphere()` is kept: it
   recomputes each skinned mesh's culling sphere on the CPU, as the original
   does.
-- **Lighting.** The glTF standard materials use r186 physical lighting, whose
+- **Lighting.** The glTF standard materials use r187 physical lighting, whose
   ambient diffuse is attenuated by specular multiple scattering.
 
 ### glTF normal-map export
 
 - **Scene.** The two planes share one PlaneGeometry. The DirectX map is
-  rendered with `normalScale.y` negated, and the standard materials use r186
+  rendered with `normalScale.y` negated, and the standard materials use r187
   physical lighting.
 - **GLTFExporter.** The Export button writes the GLB that
   `GLTFExporter.parse( [ mesh1, mesh2 ], { binary: true } )` writes:

@@ -1,6 +1,6 @@
 # TSL graph, compute water, SSGI, SSS, SSR, fog scattering, backdrop water, volumetric fog, skinning instances and retargeting
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -23,7 +23,7 @@ All ten are WebGPU examples compared against the WebGPU renderer
 ### Generated WGSL
 
 As in [compute-examples.md](compute-examples.md), each port runs the WGSL
-three.js r186 generates for its page, captured from `createShaderModule` on
+three.js r187 generates for its page, captured from `createShaderModule` on
 the reference page with the pipelines, bind groups, passes and uniform
 writes. Uniform structs are packed by name from each module's own struct.
 The modules run unchanged with automatic layouts, except that the water and

@@ -1,6 +1,6 @@
 # WebXR on WebGPU
 
-This port covers three of r186's WebXR examples:
+This port covers three of r187's WebXR examples:
 
 - `webgpu_xr_cubes` (498);
 - `webgpu_xr_rollercoaster` (499);
@@ -41,8 +41,10 @@ onAnimationFrame.**
 
 - The view cameras get their transforms and projections as given, under the
   user camera's parent, with three's layer masks.
-- The union camera is setProjectionFromUnion, with three's GL-convention
-  arithmetic.
+- The union camera is r186's setProjectionFromUnion, with three's
+  GL-convention arithmetic. r187's XRManager no longer has it: it copies the
+  left view's projection to the XR camera, with no union frustum or offset.
+  The port keeps r186's union ( an open gap ).
 - updateUserCamera, and the fov and zoom restore at the end of a session.
 - WebXRController's target-ray and grip spaces: matrices, visibility and
   selection state.
@@ -97,7 +99,7 @@ reference page substitutes for `Math.random` in the example and in
 ## Verification
 
 `tests/browser/webxr-gpu.spec.js` runs each example twice on
-`tests/browser/fake-xr.js`: once as the pinned r186 page
+`tests/browser/fake-xr.js`: once as the pinned r187 page
 (`reference/three-js/webxr-gpu.html`) and once as the port.
 
 The fake device:

@@ -1,6 +1,6 @@
 # Mapped spotlight, multiple clones, skinning blends and the walking soldier
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/spot_skinning.rs`, with Three.js AnimationMixer
 semantics in `gallery/src/browser/three_mixer.rs`.
 
@@ -27,7 +27,7 @@ WebGL renderer.
     spotlight shadow camera's fov is 2 × angle × focus, over near 2 and
     far 10.
   - **Sampling.** Samples use explicit level 0; the maps have no mipmaps.
-- **Outside the map.** With the shadow on, the r186 WebGPU reference leaves no
+- **Outside the map.** With the shadow on, the r187 WebGPU reference leaves no
   spotlight outside the projected map. The measured result is dark there, and
   lit with no map or with the shadow off. Weighted by the shadow intensity,
   the port reproduces this.

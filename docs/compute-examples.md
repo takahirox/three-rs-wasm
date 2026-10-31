@@ -1,6 +1,6 @@
 # Compute, clustered and dynamic lighting, projectors, VSM, transmitted shadows and caustics
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/compute_birds.rs`, `sort_bitonic.rs`,
 `attractors.rs`, `linked_particles.rs`, `lights_clustered.rs`,
 `lights_dynamic.rs`, `shadowmap_vsm.rs`, `lights_projector.rs`,
@@ -27,7 +27,7 @@ WebGL twins of the birds and the VSM shadows are listed as equivalents only.
 
 ### Generated WGSL
 
-The WGSL three.js r186 generates for each page was captured from
+The WGSL three.js r187 generates for each page was captured from
 `createShaderModule` on the reference page, with the pipeline states, draw
 order and pass structure.
 

@@ -1,6 +1,6 @@
 # Instanced and sprite picking, orientation, atlas and canvas-texture examples
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/interactive_objects.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
@@ -26,7 +26,7 @@ inventory, so each is compared against the original WebGL renderer.
   OrbitControls does. Damped scenes also update once per frame. Keyboard
   controls are not ported.
 - **Orientation.** `Matrix4.lookAt`, `setFromRotationMatrix`, `angleTo` and the
-  r186 `slerp` are reproduced in f64. Targets follow `setTimeout( 2000 )` on the
+  r187 `slerp` are reproduced in f64. Targets follow `setTimeout( 2000 )` on the
   example clock, and the rotation step uses the Timer delta between frames.
 - **Output encoding.** WebGL writes `MeshNormalMaterial` output without sRGB
   encoding, so this scene renders raw display values. Its translucent wireframe

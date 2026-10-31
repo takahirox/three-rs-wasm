@@ -1,6 +1,6 @@
 # OffscreenCanvas worker, volume fire, batched LOD BVH, LDraw and CSG
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -11,7 +11,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | `webgl_geometry_csg` | 448 | `geometry_csg.rs`, `csg_eval.rs` | three-bvh-csg's subtraction, intersection or addition of two turning brushes on the CPU each frame |
 
 `webgpu_volume_fire` is compared against the WebGPU renderer
-(`tests/browser/compute-examples.spec.js`). The other four have no r186 WebGPU
+(`tests/browser/compute-examples.spec.js`). The other four have no r187 WebGPU
 counterpart and are compared against WebGLRenderer
 (`tests/browser/texture-volumes.spec.js`).
 
@@ -57,7 +57,7 @@ Each frame then draws:
 - the half-resolution ray-marched volume and its Gaussian denoise;
 - BloomNode and the ACES output.
 
-Every stage runs the WGSL r186 generates for the page. The floor's material
+Every stage runs the WGSL r187 generates for the page. The floor's material
 is static, so three writes its object uniforms ( the fire light's inputs ) at
 its first render only. The port keeps them, as the page does.
 
@@ -88,7 +88,7 @@ knot and LOD's visible instances with one instanced draw, where WebGL issues
 one multi-draw entry per instance. The draw order is grouped by LOD as a
 result.
 
-MapControls grab the ground under the pointer, as r186's do. Hover ray casts
+MapControls grab the ground under the pointer, as r187's do. Hover ray casts
 test the instance boxes and the knots' LOD 0 triangles ( three-mesh-bvh's
 first hit, front faces ) on the CPU. They use the camera before the same
 move's pan, as the page's document listener runs before MapControls'.

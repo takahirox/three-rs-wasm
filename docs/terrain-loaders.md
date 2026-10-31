@@ -1,6 +1,6 @@
 # Noise terrain, GCode, VOX and OBJ/MTL loaders
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/terrain_loaders.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |
@@ -60,7 +60,7 @@ inventory, so each is compared against the original WebGL renderer.
   palette colors in linear space, and `computeVertexNormals`. The example's
   `scene.children[ 0 ]` is the transformed shape mesh.
 - **Lighting.** The hemisphere light sits at `Object3D.DEFAULT_UP`.
-  `MeshStandardMaterial` uses r186's energy-conserving physical shading, which
+  `MeshStandardMaterial` uses r187's energy-conserving physical shading, which
   the WebGL renderer also applies: indirect diffuse is scaled by the remaining
   single- and multi-scattering energy.
 

@@ -1,6 +1,6 @@
 # Protoplanet, retro, dynamic cubemap, deferred, cloth, volume caustics, HDR, fluid and light probes
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -23,7 +23,7 @@ compared against WebGLRenderer (`texture-volumes.spec.js`).
 
 ### Generated WGSL (385–393)
 
-As in [compute-examples.md](compute-examples.md), the WGSL three.js r186
+As in [compute-examples.md](compute-examples.md), the WGSL three.js r187
 generates for each page was captured from `createShaderModule` on the
 reference page, with the pipelines, bind groups, passes and uniform writes.
 The modules run unchanged with automatic layouts, except that the cloth and

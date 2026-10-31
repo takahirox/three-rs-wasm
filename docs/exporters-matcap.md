@@ -1,6 +1,6 @@
 # STL, PLY and OBJ exporters, the matcap head and physically based lights
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/exporters_matcap.rs`, with the exporters in
 `gallery/src/browser/exporters_matcap/formats.rs`. The EXR decoder is in
 `gallery/src/browser/refraction_loaders/formats.rs`.

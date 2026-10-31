@@ -1,6 +1,6 @@
 # Gaussian splats, water, custom fog, VXGI, GTAO, shadow-map array, building generator, loft geometry and sculpting
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`. The
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`. The
 batch's `webgpu_compute_rasterizer` port (410) left the gallery with r187,
 which removed the example.
 
@@ -24,7 +24,7 @@ All nine are WebGPU examples compared against the WebGPU renderer
 ### Generated WGSL
 
 As in [compute-examples.md](compute-examples.md), each port runs the WGSL
-three.js r186 generates for its page, captured from `createShaderModule` on
+three.js r187 generates for its page, captured from `createShaderModule` on
 the reference page with the pipelines, bind groups, passes and uniform
 writes. Uniform structs are packed by name from each module's own struct. The
 modules run unchanged with automatic layouts, except that the compute kernels
@@ -48,9 +48,9 @@ clicked splat is not reproduced.
   drives NodeFrame's update by the example clock and stops the renderer's own
   loop, so no display frame takes a step.
 - **Floors.** Each floor has its own object uniforms, as the page's meshes do.
-- **Resize.** After a resize r186 copies the transmission source at the new
-  size from a target still at the old size and fails validation. The
-  comparison leaves the resize out.
+- **Resize.** After a resize r186 copied the transmission source at the new
+  size from a target still at the old size and failed validation ( not
+  re-checked on r187 ). The comparison leaves the resize out.
 
 ### Custom fog (406)
 
@@ -82,7 +82,7 @@ shader constant) and the transparent mesh are not reproduced.
 ### Shadow-map array (409)
 
 Each layer of the depth array draws only the casters with its own tile
-camera, as r186's per-layer render bundles do. The batched trees are sorted
+camera, as r187's per-layer render bundles do. The batched trees are sorted
 front to back on the CPU into the indirect texture per camera, as BatchedMesh
 does. The tile helpers and the camera helper follow one frame behind, since
 the page updates them after rendering.

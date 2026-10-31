@@ -300,7 +300,7 @@ budget for materials that do not use them.
 
 ## TSL materials and transparency batch
 
-The five r186 ports added at runtime IDs 118–122 pass fixed-time image comparisons
+The five r187 ports added at runtime IDs 118–122 pass fixed-time image comparisons
 at DPR 1 and 2, including controls, camera input and resize. Native tests verify
 back-lit SSS and weighted OIT draw-order reversal with shared opaque depth.
 All five retain warmed GPU resources and static geometry during animation.
@@ -339,7 +339,7 @@ are retained in the report rather than interpreted as timing equivalence.
 
 ### Procedural materials, GPU particles and temporal rendering (IDs 128–147)
 
-Twenty additional r186 examples use Rust TSL graphs and resident WebGPU resources.
+Twenty additional r187 examples use Rust TSL graphs and resident WebGPU resources.
 The batch covers Portal, MaterialX noise, rough/blurred/recursive reflections,
 compute skinning points, procedural wood/terrain/angular slicing, MRT readback,
 shadow maps, tree reflection, compute audio, pixelation, snow, rain,
@@ -379,8 +379,10 @@ recorded rather than treated as timing or memory equivalence. These entries rema
 partial ports; no measured CPU/GPU frame-time parity is claimed.
 
 Core temporal APIs accept explicit current/previous transforms. The gallery
-adapter preserves r186 TAAU's jittered current velocity, unused zero lock history,
-and constant sharpness behavior; see `tsl.md` and `taau-r186-velocity.json`.
+adapter still preserves r186 TAAU's jittered current velocity, which r187's
+VelocityNode no longer has ( an open gap ), and TAAU's unused zero lock history
+and constant sharpness, which r187 keeps; see `tsl.md` and r186's recording
+`taau-r186-velocity.json`.
 
 ### Material groups, clipping and texture operations
 
@@ -664,9 +666,9 @@ The [clearcoat, fly-controls, point-light-shadow, light-probe and tone-mapping
 ports](lights-probes.md) match the original draws, except the tone-mapping
 background's fullscreen triangle.
 
-- **Backgrounds.** Raw cube backgrounds are drawn as r186's 32 × 32 background
+- **Backgrounds.** Raw cube backgrounds are drawn as r187's 32 × 32 background
   sphere.
-- **Points.** The fly stars are native one-pixel points, as r186's WebGPU
+- **Points.** The fly stars are native one-pixel points, as r187's WebGPU
   Points draw them.
 - **Shadows.** Point-light casters are culled per cube face.
 - **Light probe.** The SH coefficients are computed once on the CPU, as
@@ -1051,7 +1053,7 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 - **GPU state.**
   - The towers, sidewalks and furniture are resident after a build. Each
     tower is one draw; each furniture generator is one instanced draw with
-    its matrices in a uniform array, as r186's InstanceNode keeps them.
+    its matrices in a uniform array, as r187's InstanceNode keeps them.
   - The probe bake runs on the GPU: per probe the six 16² captures and the
     SH projection, then the rows' repack into the atlas. The bounce pass
     snapshots the atlas with a texture copy.

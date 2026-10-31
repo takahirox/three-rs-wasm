@@ -1,6 +1,6 @@
 # Collada animation, 3MF, MD2 characters, the raycaster helper and Web Audio
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 The Collada scenes are in `gallery/src/browser/refraction_loaders/collada_anim.rs`,
 with the loader extensions in `gallery/src/browser/refraction_loaders/formats.rs`.
 The 3MF scenes are in `gallery/src/browser/threemf.rs`, the raycaster helper in

@@ -1,6 +1,6 @@
 # Cube refraction, PLY, KMZ, Collada and EXR
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/refraction_loaders.rs`, with the file formats in
 `gallery/src/browser/refraction_loaders/formats.rs`. The zip and XML readers are shared
 with [helpers-formats.md](helpers-formats.md).
@@ -42,7 +42,7 @@ inventory, so each is compared against the original WebGL renderer.
 
 - **Setup.** The PLY scene's two directional lights keep the example's
   settings: 2 × 2 orthographic shadow cameras from 1 to 4, 1024-texel maps,
-  bias −0.001. They filter with r186's PCF: five Vogel-disk taps rotated by
+  bias −0.001. They filter with r187's PCF: five Vogel-disk taps rotated by
   interleaved gradient noise.
 - **Noise.** WebGL seeds that noise with `gl_FragCoord`, whose rows count from
   the bottom. WebGPU's fragment coordinates count from the top, so the rotation

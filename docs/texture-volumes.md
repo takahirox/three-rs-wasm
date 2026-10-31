@@ -1,6 +1,6 @@
 # Texture arrays, volumes, environments, stereo, compressed textures, channels, clipping, post passes, depth buffers and memory tests
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/texture_volumes.rs`; the NRRD slices are in
 `gallery/src/browser/texture_volumes/slices.rs` and the array examples in
 `gallery/src/browser/texture_volumes/arrays.rs`. The EXR environment is in

@@ -1,6 +1,6 @@
 # SVGRenderer
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 `src/svg.rs` is the Rust SVGRenderer and SVGObject of
 `examples/jsm/renderers/SVGRenderer.js`, together with the Projector it draws
@@ -60,7 +60,7 @@ element lies over the gallery's canvas and carries the pointer.
 
 svg_sandbox's per-frame turn of the triangle field and its controls run as
 60 fps steps, as the fixture runs them. OrbitControls' pointer and wheel
-handlers call `update()`, as in r186. Each update keeps the camera's previous
+handlers call `update()`, as in r187. Each update keeps the camera's previous
 rotation in its world matrix until the next render, because three.js's
 `lookAt` updates the world matrix before turning the camera. The SVGObjects
 show that lag for one frame.

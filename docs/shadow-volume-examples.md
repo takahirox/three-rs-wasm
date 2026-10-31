@@ -1,6 +1,6 @@
 # Cascaded shadows, instanced morphs, volumetric lighting, god rays, test memory, PCSS, TSL instancing and the Draco exporter
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -24,7 +24,7 @@ misc example (`exporters-matcap.spec.js`).
 
 ### Generated WGSL (374–380)
 
-As in [compute-examples.md](compute-examples.md), the WGSL three.js r186
+As in [compute-examples.md](compute-examples.md), the WGSL three.js r187
 generates for each page was captured from `createShaderModule` on the
 reference page, with the pipelines, bind groups, passes and uniform writes.
 The modules run unchanged with automatic layouts. Uniform structs are packed
@@ -70,26 +70,28 @@ modules by 379.
   previous depth is the history's depth texture from the first resolve: the
   restart's resolve reads it freshly sized ( zero ), later ones the previous
   frame's pre-pass depth.
-- **Start-up frames.** In r186 the first resolve renders into TRAANode's
-  targets before they take the drawing-buffer size: the original shows one
-  flat 1 × 1 frame and starts from a different history. The port starts from
-  the beauty buffer, as TRAANode intends. The histories converge (under 0.5%
-  of pixels by frame 41), so each capture renders 60 frames.
+- **Start-up frames.** In r186 the first resolve rendered into TRAANode's
+  targets before they took the drawing-buffer size: the original showed one
+  flat 1 × 1 frame and started from a different history ( not re-measured
+  on r187, whose TRAANode no longer re-initializes its targets on a
+  restart ). The port starts from the beauty buffer, as TRAANode intends.
+  The histories converge (under 0.5% of pixels by frame 41), so each capture
+  renders 60 frames.
 - **Frames.** Only requested frames (a seek or animate()) advance TRAA,
   the jitter and the dither offsets; other redraws present the last frame
   again.
 
 ### Rect-area volumes (379)
 
-The LTC tables are the crate's r186 RectAreaLightTexturesLib data, as two
-layers of one 64 × 64 texture (32-bit float where filterable, else half
+The LTC tables are the crate's RectAreaLightTexturesLib data ( r186's,
+unchanged in r187 ), as two layers of one 64 × 64 texture (32-bit float where filterable, else half
 float).
 
 ### PCSS (381)
 
 The page splices its PCSS functions into `shadowmap_pars_fragment`, but its
 second replacement (the call inside getShadow) looks for
-`if ( frustumTest ) {` directly followed by the depth read, while r186's chunk
+`if ( frustumTest ) {` directly followed by the depth read, while r187's chunk
 has a blank line between them. The replacement does not apply and the
 original draws the plain BasicShadowMap comparison, so the port does too. The
 CameraHelper keeps the projection it was built with (far 500), since the page
@@ -103,8 +105,10 @@ changes `far` without updating it.
   WebGLRenderer program converts again. The original's lit colors are
   therefore sRGB-encoded twice, and the port's output hook does the same.
 - **Instanced rebuilds.** In r186, an InstancedMesh rebuilt after `clean()`
-  draws nothing under WebGLNodesHandler. The port draws it. The test changes
-  the method and count only through the merged and naive builds.
+  drew nothing under WebGLNodesHandler ( not re-checked on r187, whose
+  handler names buffer uniform groups per shader stage ). The port draws it.
+  The test changes the method and count only through the merged and naive
+  builds.
 - **Fixture.** The fixture times WebGLNodesHandler's NodeFrame on the example
   clock.
 

@@ -8,7 +8,7 @@
 | `webgl_geometry_text_shapes` | Filled and outlined Helvetiker text, orbit/pan/zoom |
 | `webgl_geometry_text_stroke` | Filled and stroked English/Hebrew/Chinese text with M PLUS Rounded 1c, orbit/pan/zoom |
 
-Only the Furnace example has an official WebGPU version in pinned r186. The
+Only the Furnace example has an official WebGPU version in pinned r187. The
 other four are compared against the original WebGL renderer. Their output uses
 sRGB-before-blending and sRGB-before-MSAA-resolve to match the original path.
 Furnace retains linear HDR rendering. Static furnace/text scenes redraw only

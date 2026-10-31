@@ -1,6 +1,6 @@
 # Buffer geometry particles and selective drawing
 
-Five pinned r186 scenes are now in the Rust/WebGPU gallery:
+Five pinned r187 scenes are now in the Rust/WebGPU gallery:
 
 | Official example | Runtime | Retained workload |
 | --- | --- | --- |

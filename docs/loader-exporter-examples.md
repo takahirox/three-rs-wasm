@@ -1,6 +1,6 @@
 # USDZ exporter, shadow-map performance, GTAO, subdivision, BVH raycasting, spline editor, glTF exporter, arcball, video frame, G-code exporter, SVG, FBX, FPS game, random UV, transmission alpha, webcam, 3DM, IFC, watch and Lottie
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 | Official example | Runtime ID | Source | Retained workload and behavior |
 | --- | ---: | --- | --- |
@@ -26,7 +26,7 @@ Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
 | `webgl_loader_texture_lottie` | 443 | `lottie.rs` | The Lottie logo animation drawn on a canvas each frame and uploaded as a rounded box's map |
 
 `webgpu_video_frame` is compared against the WebGPU renderer
-(`tests/browser/compute-examples.spec.js`). The other nineteen have no r186
+(`tests/browser/compute-examples.spec.js`). The other nineteen have no r187
 WebGPU counterpart: the misc pages, games_fps and the WebGL-only examples are
 compared against WebGLRenderer (`tests/browser/texture-volumes.spec.js`).
 `webgl_tsl_skinning`, `webgl_tsl_shadowmap` and `webgl_tsl_clearcoat` were

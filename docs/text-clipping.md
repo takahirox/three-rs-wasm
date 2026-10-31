@@ -1,6 +1,6 @@
 # Advanced clipping, spline tubes, 3D text, TrueType text, tessellated text and text lines
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
 The scenes are implemented in `gallery/src/browser/text_clipping.rs`, and the
 CurveExtras curves and TubeGeometry are in `gallery/src/browser/text_clipping/tube.rs`.
@@ -34,7 +34,7 @@ inventory, so each is compared against the original WebGL renderer.
   - newlines moving down by the line height.
 - **Curves.** `CurvePath.getPoints` samples lines once and curves
   `curveSegments` times, skipping repeated points.
-- **Shapes.** `ShapePath.toShapes` is r186's version:
+- **Shapes.** `ShapePath.toShapes` is r187's version ( unchanged from r186 ):
   - subpaths sorted by area;
   - nesting found by containment tests on interior points;
   - outer shapes and holes assigned by non-zero winding.

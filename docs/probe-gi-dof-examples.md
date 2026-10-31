@@ -1,6 +1,6 @@
 # Progressive shadow map, Ready Player Me retargeting, SSR denoise, simple GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`. The
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`. The
 batch's `webgpu_compute_rasterizer_ibl` port (414) left the gallery with r187,
 which removed the example.
 
@@ -18,14 +18,14 @@ which removed the example.
 
 The three WebGPU examples are compared against the WebGPU renderer
 (`tests/browser/compute-examples.spec.js`). The six WebGL examples have no
-WebGPU counterpart in r186 and are compared against WebGLRenderer
+WebGPU counterpart in r187 and are compared against WebGLRenderer
 (`tests/browser/texture-volumes.spec.js`).
 
 ## Port notes
 
 ### Generated WGSL and WebGL programs
 
-The WebGPU ports run the WGSL three.js r186 generates for each page, as in
+The WebGPU ports run the WGSL three.js r187 generates for each page, as in
 [compute-examples.md](compute-examples.md). A new helper (`wgsl_bind.rs`)
 binds those modules by the names three.js gives their resources. It skips
 declarations no entry point uses, such as the samplers three.js declares beside
@@ -131,7 +131,8 @@ management leaves alone.
   texture and draws one bird instanced, with the per-vertex and per-bird
   values the page stores. Its vertex stage samples the textures with nearest
   filtering at the same coordinates.
-- **Shading.** MeshStandardMaterial's physical shading uses the r186 DFG LUT.
+- **Shading.** MeshStandardMaterial's physical shading uses the r187 DFG LUT
+  ( unchanged from r186 ).
   WebGL applies the fog after the sRGB conversion, with the fog color in the
   output color space.
 
@@ -162,12 +163,13 @@ JavaScript value shapes and three.js's math. The result is one mesh and its
 MeshPhysicalMaterial with the archive's base color image; the model's program
 is specialized for that material, and the port checks its parameters at load.
 `tests/usd.rs` and `tests/browser/usd-loader.spec.js` compare the parse with
-the pinned loader (natively, and bit for bit in the browser). WebGLRenderer prefilters the HDR into a PMREM cubeUV
-texture for both the environment and the blurred background. The port runs
-r186's PMREM generator as the WebGPU renderer generates it, which uses the same
-algorithm and layout. WebGPU stores the texture with the opposite vertical
-orientation, and the port's lookups account for it. The HDR is sampled without
-mipmaps, as HDRLoader's texture has none.
+the pinned loader (natively, and bit for bit in the browser). WebGLRenderer
+prefilters the HDR into a PMREM cube ( r187's
+`PMREMGenerator.fromEquirectangular` ) for both the environment and the
+blurred background; the port runs the engine's port of it
+( `EnvironmentMap::prefilter` ). The background is the PMREM's level for the
+blurriness along each pixel's view ray. The HDR is sampled without mipmaps,
+as HDRLoader's texture has none.
 
 ## Comparison
 

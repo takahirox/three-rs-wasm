@@ -7,18 +7,17 @@ volumetric clouds, under GlobeControls. `gallery/src/browser/tiles3d.rs` and
 
 ## The reference page
 
-On r186 the original page is broken. Its renderer.setEffects path never hands
-the effects the scene depth, so CloudsMaterial fails to compile
-( `readDepthValue` ) and the canvas stays black, also on threejs.org.
-three.js dev fixes this:
+On r186 the original page was broken: its renderer.setEffects path never
+handed the effects the scene depth, so CloudsMaterial failed to compile
+( `readDepthValue` ) and the canvas stayed black. r187 fixes this:
 
-- WebGLOutput gains a depth texture ( needsDepthTexture );
-- the page's EffectPassAdapter passes that depth texture to the effects.
+- WebGLOutput allocates a scene depth texture for effects that set
+  `needsDepthTexture`;
+- the page's EffectPassAdapter initializes each pass, reports whether it
+  needs depth and passes the depth texture to it.
 
-The comparison page ( `reference/three-js/texture-volumes.html` ) applies
-upstream's adapter to the example source. The tests serve upstream's
-WebGLOutput ( `reference/three-js/patches/WebGLOutput.js` ) in place of
-r186's. The port reproduces the fixed page.
+The comparison page ( `reference/three-js/texture-volumes.html` ) runs r187's
+page, and the port reproduces it.
 
 ## Cesium ion key
 

@@ -1,6 +1,6 @@
 # Raw shader and raycast selection examples
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 Implemented in `gallery/src/browser/interactive_shaders.rs`.
 
 | Official example | Runtime ID | Retained workload and behavior |

@@ -14,7 +14,7 @@
 - Judge equivalence by scene content and purpose, not just names. Reviewed
   pairs live in `WEBGPU_EQUIVALENTS` in `tools/gallery/build.py`.
 
-## Current gallery cleanup (pinned r186)
+## Current gallery cleanup (pinned r187)
 
 | Removed WebGL listing | Preferred official example | State |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ WebGL examples; those WebGL entries are excluded from the port inventory.
 
 ## Retroreflective Materials: stochastic reflection
 
-The r186 WebGPU scene uses 32 pseudorandom `hashBlur` samples. At DPR 2, changing
+The r187 WebGPU scene uses 32 pseudorandom `hashBlur` samples. At DPR 2, changing
 only the original shader's two reflection UV components by one Float32 ULP
 produces up to 0.524% pixels differing by more than 6/255. The port's measured
 maximum is 0.824%; its 3×3 averaged comparison remains below 0.087%. This is a
@@ -190,9 +190,10 @@ batch ([lights-probes.md](lights-probes.md)) lists `webgpu_clearcoat`,
 `webgpu_shadowmap_pointlight`, `webgpu_lightprobe` and `webgpu_tonemapping`.
 It excludes `webgl_materials_physical_clearcoat`, `webgl_shadowmap_pointlight`,
 `webgl_lightprobe` and `webgl_tonemapping`. `misc_controls_fly` renders with
-WebGPURenderer in r186. Only the fly planet's non-MSAA cloud rim and 4× MSAA
+WebGPURenderer in r187. Only the fly planet's non-MSAA cloud rim and 4× MSAA
 resolves use scoped bounds. The light-probe reference is refreshed after each
-intensity change, since r186 defers it to the mesh's next refresh.
+intensity change, since r186 deferred it to the mesh's next refresh ( r187
+updates the probe's uniforms every frame ).
 
 The EXR, KTX2, video-cube, async-compilation and object-space normal batch
 ([exporters-video.md](exporters-video.md)) lists `webgpu_materials_video` and
@@ -318,11 +319,12 @@ TSL-instancing and Draco-exporter batch
 WebGPU examples against the WebGPU renderer, running the WGSL three.js
 generates for each page. `webgl_shadowmap_pcss` and `webgl_tsl_instancing`
 have no WebGPU counterpart and are compared against WebGLRenderer, with scoped
-MSAA bounds. Where r186 itself misbehaves the port follows the original's
+MSAA bounds. Where r187 itself misbehaves the port follows the original's
 visible result and documents it: the PCSS replacement that never applies, the
-doubly sRGB-encoded TSL instancing output. The exceptions are TRAA's 1 × 1
-start-up frame and the TSL InstancedMesh that draws nothing after a rebuild,
-which the port does not reproduce and the tests avoid.
+doubly sRGB-encoded TSL instancing output. The exceptions, seen on r186 and
+not re-checked on r187, are TRAA's 1 × 1 start-up frame and the TSL
+InstancedMesh that draws nothing after a rebuild, which the port does not
+reproduce and the tests avoid.
 
 The protoplanet, retro, dynamic-cubemap, deferred, cloth, volume-caustics,
 HDR, fluid and light-probe batch
@@ -332,7 +334,7 @@ each page. `webgl_gpgpu_protoplanet` has no WebGPU counterpart and is compared
 against WebGLRenderer at the default thresholds. Without MSAA the retro,
 cubemap, cloth and light-probe scenes match exactly in every state. With 4×
 MSAA their edges differ for a reason not identified, and the bounds for that
-are scoped to the MSAA captures. Where r186 behaves unexpectedly the port
+are scoped to the MSAA captures. Where r187 behaves unexpectedly the port
 follows the original's visible result: the light-probe rebake that captures
 the old helpers as black spheres. The HDR page's values above 1 are compared
 only as a standard display clamps them.
@@ -344,7 +346,7 @@ examples against the WebGPU renderer, running the WGSL three.js generates for
 each page. Seven match exactly in every state with and without MSAA, and the
 skinning instances are within 0.2% of pixels. The TSL graph and compute water
 scenes match exactly without MSAA, and only their 4× MSAA edges use scoped
-bounds. Where r186 behaves unexpectedly the port follows the original's
+bounds. Where r187 behaves unexpectedly the port follows the original's
 visible result: SSSNode's frame ID baked into each build of its shader, the
 velocity pre-pass that keeps its first frame's camera matrices, the
 auto-rotation step each OrbitControls.update() call takes, and the world
@@ -358,17 +360,17 @@ examples against the WebGPU renderer, running the WGSL three.js generates for
 each page. The CPU generators the pages call (terrain and forest, the
 skyscraper, the loft sections and the Sculptor addon) are ported to match the
 original's output bit for bit. The sculpting scene matches exactly in every
-state. Custom fog's first frame uses bounds scoped to that capture. Where r186
-behaves unexpectedly the port follows the original's visible result or leaves
-the state out: the water page's transmission copy fails validation after a
-resize, so that resize is not compared.
+state. Custom fog's first frame uses bounds scoped to that capture. Where the
+original behaves unexpectedly the port follows its visible result or leaves
+the state out: on r186 the water page's transmission copy failed validation
+after a resize, so that resize is not compared.
 
 The progressive shadow map, Ready Player Me retargeting, SSR denoise, simple
 GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ batch
 ([probe-gi-dof-examples.md](probe-gi-dof-examples.md)) ports three WebGPU
 examples and six WebGL-only ones. The WebGPU three run the
 WGSL three.js generates for each page and are compared against the WebGPU
-renderer. The six WebGL scenes have no r186 WebGPU counterpart. They run WGSL
+renderer. The six WebGL scenes have no r187 WebGPU counterpart. They run WGSL
 translations of the GLSL WebGLRenderer builds and are compared against
 WebGLRenderer. Their backend tolerances are scoped to two causes:
 
@@ -385,7 +387,7 @@ raycasting, spline editor, glTF exporter, arcball, video frame, G-code
 exporter, SVG, FBX, FPS game, random UV, transmission alpha, webcam, 3DM, IFC,
 watch and Lottie batch ([loader-exporter-examples.md](loader-exporter-examples.md))
 ports one WebGPU example, compared against the WebGPU renderer, and nineteen
-pages without an r186 WebGPU counterpart, compared against WebGLRenderer.
+pages without an r187 WebGPU counterpart, compared against WebGLRenderer.
 `webgl_tsl_skinning`, `webgl_tsl_shadowmap` and `webgl_tsl_clearcoat` are
 excluded: they render the scenes of the listed `webgpu_skinning`,
 `webgpu_shadowmap` and `webgpu_clearcoat`.
@@ -402,7 +404,7 @@ Backend tolerances are scoped in the spec to these causes:
 The OffscreenCanvas worker, volume fire, batched LOD BVH, LDraw and CSG batch
 ([offscreen-fire-batch-ldraw-csg-examples.md](offscreen-fire-batch-ldraw-csg-examples.md))
 ports one WebGPU example, compared against the WebGPU renderer, and four pages
-without an r186 WebGPU counterpart, compared against WebGLRenderer. Their
+without an r187 WebGPU counterpart, compared against WebGLRenderer. Their
 tolerances are scoped to two causes:
 
 - the volume fire emission's voxel write race, which makes the original differ
@@ -431,11 +433,10 @@ and glue, so it cannot be linked into this crate's wasm. The port calls it
 through JavaScript, as AmmoPhysics.js does, and builds the scene in Rust
 ( `gallery/src/browser/ammo.rs`, `gallery/src/browser/jolt.rs` ).
 
-`webgl_loader_3dtiles` is broken on r186 ( its effects get no scene depth ).
-Its comparison page applies three.js dev's fix: WebGLOutput's depth texture
-and the page's updated EffectPassAdapter. The port reproduces the fixed page,
-and its Cesium ion key is in the public source, as the original's is
-([tiles3d.md](tiles3d.md)).
+`webgl_loader_3dtiles` was broken on r186 ( its effects got no scene depth );
+r187's WebGLOutput depth texture and the page's updated EffectPassAdapter fix
+it. The port reproduces r187's page, and its Cesium ion key is in the public
+source, as the original's is ([tiles3d.md](tiles3d.md)).
 
 `webgl_morphtargets_webcam` runs MediaPipe's FaceLandmarker in the page's
 JavaScript, as the original does, and the scene in Rust. Its comparison
@@ -446,11 +447,11 @@ scripts the landmarker's results and the webcam
 as the page does. Once the LODs settle, every mesh's geometry and texture levels
 must equal the original's ([progressive-lod.md](progressive-lod.md)).
 
-`webgpu_tsl_transpiler` runs the r186 transpiler's port in Rust behind the
+`webgpu_tsl_transpiler` runs the r187 transpiler's port in Rust behind the
 page's own Monaco editors, and its output must match the original's text
 exactly ([tsl-transpiler.md](tsl-transpiler.md)).
 
-WebGL pages whose same-named r186 WebGPU example is a different scene
+WebGL pages whose same-named r187 WebGPU example is a different scene
 ([webgl-only-examples.md](webgl-only-examples.md)) are ported as WebGL-only
 examples and compared against WebGLRenderer. Their tolerances cover 4× MSAA
 lines and edges, and two unresolved differences listed there ( the 3D LUT

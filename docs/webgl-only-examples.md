@@ -1,8 +1,8 @@
 # WebGL pages without a WebGPU counterpart
 
-Pinned Three.js r186: `148ef33ecb6d2502ff796d4554abd1549c95d519`.
+Pinned Three.js r187: `7e89746a687bb88271253698fa108b1dd59825d0`.
 
-The r186 WebGPU examples with these names show different scenes, so these
+The r187 WebGPU examples with these names show different scenes, so these
 WebGL pages are ported as WebGL-only examples. Each is compared against
 WebGLRenderer (`tests/browser/texture-volumes.spec.js`).
 
@@ -33,7 +33,8 @@ time, and so do their ports ( see "Assets loaded from Needle" below ).
 
 - **Rectangular shadow maps** ( `Shadow::map_height` ): a directional or spot
   light's map can be narrower than its atlas layer in y, with the PCF radius
-  in its x texels on both axes, as r186's.
+  in the map's texels on each axis, as r187's ( r186 used the x texel on
+  both axes ).
 - **Reversed-depth shadow comparison** ( `Shadow::reversed_depth` ): receivers
   beyond the shadow camera's far plane read shadowed, as WebGLRenderer's
   `reversedDepthBuffer` compares them.
@@ -132,8 +133,10 @@ scene of the same spheres.
 
 The page asks for `reversedDepthBuffer`. Its PCF map is compared
 greater-equal against a depth cleared to 0, so receivers beyond the shadow
-camera's far plane read shadowed, and the bias moves toward the light. r186's
-PCF radius uses the map's x texel on both axes. The engine's shadow atlas
+camera's far plane read shadowed. r187 subtracts the bias from the reversed
+depth, so it acts as on a forward depth ( r186 added it, moving it toward the
+light ). r187's PCF radius is in the map's texels on each axis ( r186 used
+the x texel on both ). The engine's shadow atlas
 gains rectangular maps ( `Shadow::map_height` ) and that reversed-depth
 comparison ( `Shadow::reversed_depth` ).
 
