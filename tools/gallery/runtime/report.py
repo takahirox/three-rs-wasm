@@ -25,7 +25,7 @@ def sanitize(value):
 
 def validate(report):
     expected = {e['id']: e for e in catalog['examples']}
-    assert len(report['examples']) == len(expected) == 607
+    assert len(report['examples']) == len(expected) == 621
     assert {r['id'] for r in report['examples']} == expected.keys()
     for row in report['examples']:
         entry = expected[row['id']]
@@ -43,7 +43,7 @@ def validate(report):
 if '--check' in sys.argv:
     report = json.loads(OUTPUT.read_text())
     validate(report)
-    print('All 607 recorded runtime outcomes match the pinned catalog')
+    print('All 621 recorded runtime outcomes match the pinned catalog')
     sys.exit(0)
 
 rows = []
@@ -78,7 +78,7 @@ validate(report)
 OUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 blockers = collections.Counter(b for r in rows for b in set(r.get('browser', {}).get('blockers', [])))
 lines = ['# All-example runtime reproduction attempts', '', report['method'], '',
-         f'**These are attempts, not 605 completed ports.** The gallery contains {sum(bool(e.get("port")) for e in catalog["examples"])} partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.', '',
+         f'**These are attempts, not {sum(r["outcome"] != "excluded" for r in rows)} completed ports.** The gallery contains {sum(bool(e.get("port")) for e in catalog["examples"])} partial behavioral ports. Captured frame renders are diagnostic artifacts and are not listed as working examples.', '',
          '| Outcome | Examples |', '| --- | ---: |']
 lines += [f'| {k} | {v} |' for k, v in report['counts'].items()]
 lines += ['', '## Limits', ''] + [f'- {v}' for v in report['limits']]

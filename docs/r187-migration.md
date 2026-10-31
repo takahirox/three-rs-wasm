@@ -94,10 +94,8 @@ until every ported example matches r187 again; it is removed when done.
    KHR_materials_diffuse_roughness ( diffuseRoughness and BRDF_EON in the
    engine ) with r187's new webgpu_loader_gltf_diffuse_roughness. KTX2Loader
    cube maps and the background-only PMREM came with the engine's PMREM.
-5. **Runtime results.** `docs/gallery-runtime-results.*` record the r186
-   pages' runtime outcomes ( 607 examples ); r187 lists 621. Rerun
-   `tools/gallery/runtime/run.mjs` on r187 and update `report.py`'s count;
-   until then `report.py --check` fails.
+5. **Runtime results.** `docs/gallery-runtime-results.*` record r187's 621
+   examples ( 578 run: 36 captured scenes, 32 rendered by the Rust probe ).
 6. **Text.** Limitations, docs and `web/THIRD_PARTY.md` name r187. The
    r186 mentions left are the jsDelivr asset pin ( r187's commit is refused ),
    byte-identical fixtures named after r186, contrasts between the releases
