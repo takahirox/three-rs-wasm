@@ -17,6 +17,8 @@ use std::f64::consts::PI;
 use std::sync::Arc;
 
 const ASSETS: &str = "assets";
+/// webgl_animation_walk's light position in followGroup.
+const WALK_LIGHT: Vector3 = Vector3::new(-2., 5., -3.);
 fn vec3s(data: Vec<f32>) -> Result<Attribute> {
     Ok(Attribute::F32(BufferAttribute::new(data, 3, false)?))
 }
@@ -139,9 +141,10 @@ fn find(s: &Scene, handles: &[Object3D], name: &str) -> Result<Object3D> {
     }
     Err(Error::Invalid("named glTF node"))
 }
-/// The shared scene of the Soldier examples: hemisphere and sun lights and the
-/// shadow-receiving ground.
-fn soldier_stage(s: &mut Scene, sun: Vector3, ground: f64) -> Result<()> {
+/// The shared scene of the Soldier examples: hemisphere and directional lights
+/// and the shadow-receiving ground. The light's shadow camera spans ±`extent`
+/// from near 0.1 to far 40 on the default 512² map.
+fn soldier_stage(s: &mut Scene, sun: Vector3, extent: f64, ground: f64) -> Result<()> {
     s.background = Color::from_hex(0xa0a0a0);
     s.fog = Some(Fog::Linear {
         color: Color::from_hex(0xa0a0a0),
@@ -154,17 +157,19 @@ fn soldier_stage(s: &mut Scene, sun: Vector3, ground: f64) -> Result<()> {
         intensity: 3.,
     }));
     s.get_mut(hemi)?.position = Vector3::new(0., 20., 0.);
-    let light = s.insert(NodeKind::Light(Light::Sun {
+    let light = s.insert(NodeKind::Light(Light::Directional {
         color: Color::WHITE,
         intensity: 3.,
+        target: Vector3::ZERO,
     }));
     let n = s.get_mut(light)?;
     n.position = sun;
     n.cast_shadow = true;
-    // SunLightShadow: a 1024² map; camera.far = 20.
     n.shadow = crate::shadow::Shadow {
-        map_size: Some(1024),
-        far: 20.,
+        map_size: Some(512),
+        extent,
+        near: 0.1,
+        far: 40.,
         ..Default::default()
     };
     let mut m = MeshPhongMaterial::default();
@@ -230,6 +235,8 @@ struct Additive {
 /// webgl_animation_walk.
 struct Walk {
     group: Object3D,
+    /// The directional light in followGroup.
+    light: Object3D,
     floor: Object3D,
     helper: SkeletonHelper,
     mixer: ThreeMixer,
@@ -475,7 +482,7 @@ impl Demo {
     }
     async fn multiple_scene(&mut self, s: &mut Scene, c: Object3D) -> Result<()> {
         s.look_at(c, Vector3::new(0., 1., 0.))?;
-        soldier_stage(s, Vector3::new(-3., 10., -10.), 200.)?;
+        soldier_stage(s, Vector3::new(-3., 10., -10.), 4., 200.)?;
         let path = format!("{ASSETS}/spot-skinning/Soldier.glb");
         let mut default = vec![];
         let mut shared = vec![];
@@ -521,7 +528,7 @@ impl Demo {
     }
     async fn blending_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
         s.look_at(c, Vector3::new(0., 1., 0.))?;
-        soldier_stage(s, Vector3::new(-3., 10., -10.), 100.)?;
+        soldier_stage(s, Vector3::new(-3., 10., -10.), 2., 100.)?;
         let m = model(s, &format!("{ASSETS}/spot-skinning/Soldier.glb")).await?;
         for &h in &m.instance.meshes {
             s.get_mut(h)?.cast_shadow = true;
@@ -547,7 +554,7 @@ impl Demo {
         Ok(())
     }
     async fn additive_scene(&mut self, s: &mut Scene, c: Object3D, r: &Renderer) -> Result<()> {
-        soldier_stage(s, Vector3::new(3., 10., 10.), 100.)?;
+        soldier_stage(s, Vector3::new(3., 10., 10.), 2., 100.)?;
         let m = model(s, &format!("{ASSETS}/tsl-procedural/Xbot.glb")).await?;
         for &h in &m.instance.meshes {
             s.get_mut(h)?.cast_shadow = true;
@@ -600,16 +607,22 @@ impl Demo {
         s.tone_mapping = ToneMapping::Aces;
         s.exposure = 0.5;
         let group = s.insert(NodeKind::Group);
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // followGroup's directional light: its shadow camera spans ±2 from
+        // near 3 to far 8 on a 1024² map, and the light and its target move
+        // with the character.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 5.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
-        n.position = Vector3::new(-2., 5., -3.);
+        let n = s.get_mut(light)?;
+        n.position = WALK_LIGHT;
         n.cast_shadow = true;
         n.shadow = crate::shadow::Shadow {
             map_size: Some(1024),
-            far: 20.,
+            extent: 2.,
+            near: 3.,
+            far: 8.,
             ..Default::default()
         };
         let mut controls = Controls::new(Some(0.05), (0., f64::INFINITY), PI / 2. - 0.05, true);
@@ -739,6 +752,7 @@ impl Demo {
         mixer.play(s, idle)?;
         self.walk = Some(Walk {
             group,
+            light,
             floor,
             helper,
             mixer,
@@ -971,6 +985,12 @@ impl Demo {
                 n.quaternion = slerp(q, rotate, t);
             }
             controls.set_target(k.position + Vector3::Y);
+            // followGroup.position.copy( position ).
+            let n = s.get_mut(k.light)?;
+            n.position = k.position + WALK_LIGHT;
+            if let NodeKind::Light(Light::Directional { target, .. }) = &mut n.kind {
+                *target = k.position;
+            }
             let floor = s.get_mut(k.floor)?;
             let (dx, dz) = (
                 k.position.x - floor.position.x,
