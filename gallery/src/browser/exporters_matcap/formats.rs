@@ -132,7 +132,8 @@ fn to_srgb(c: f64) -> f64 {
     if c < 0.0031308 {
         c * 12.92
     } else {
-        1.055 * c.powf(0.41666) - 0.055
+        // Math.pow: the PLY floats carry its last bits.
+        1.055 * js_sys::Math::pow(c, 0.41666) - 0.055
     }
 }
 fn triangles(item: &Item) -> Vec<[usize; 3]> {
@@ -191,7 +192,9 @@ pub(super) fn stl(items: &[Item], binary: bool) -> Vec<u8> {
 }
 
 /// PLYExporter.parse( object, onDone, { binary, littleEndian } ) for Float32
-/// positions, normals and uvs and normalized Uint8 colors.
+/// positions, normals and uvs and normalized Uint8 or Float32 colors: each a
+/// 'float' property ( getPlyType reads normalized attributes as float ), the
+/// colors sRGB floats, white for meshes without them.
 pub(super) fn ply(items: &[Item], binary: bool, little: bool) -> Vec<u8> {
     let vertex_count: usize = items.iter().map(|i| i.positions.len() / 3).sum();
     let face_count: usize = items.iter().map(|i| triangles(i).len()).sum();
@@ -217,7 +220,7 @@ pub(super) fn ply(items: &[Item], binary: bool, little: bool) -> Vec<u8> {
         header += "property float s\nproperty float t\n";
     }
     if colors {
-        header += "property uchar red\nproperty uchar green\nproperty uchar blue\n";
+        header += "property float red\nproperty float green\nproperty float blue\n";
     }
     header +=
         &format!("element face {face_count}\nproperty list uchar int vertex_index\nend_header\n");
@@ -257,11 +260,11 @@ pub(super) fn ply(items: &[Item], binary: bool, little: bool) -> Vec<u8> {
             }
             if colors {
                 let c = match item.colors {
-                    Some(c) => [0, 1, 2].map(|k| (to_srgb(c.get(i * 3 + k)) * 255.).round() as u8),
-                    None => [255; 3],
+                    Some(c) => [0, 1, 2].map(|k| to_srgb(c.get(i * 3 + k))),
+                    None => [1.; 3],
                 };
-                line += &format!(" {} {} {}", c[0], c[1], c[2]);
-                vertices.extend(c);
+                line += &format!(" {}", c.map(js_number).join(" "));
+                c.iter().for_each(|&c| float(&mut vertices, c));
             }
             vertex_text += &line;
             vertex_text.push('\n');
@@ -300,9 +303,8 @@ pub(super) fn obj(items: &[Item]) -> Vec<u8> {
         for i in 0..count {
             let p = apply4(&item.world, vertex(item.positions, i));
             out += &format!("v {}", p.map(js_number).join(" "));
-            if item.points
-                && let Some(c) = item.colors
-            {
+            // Mesh and point vertex colors, in sRGB.
+            if let Some(c) = item.colors {
                 let rgb = [0, 1, 2].map(|k| to_srgb(c.get(i * 3 + k)));
                 out += &format!(" {}", rgb.map(js_number).join(" "));
             }
