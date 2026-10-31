@@ -4,17 +4,18 @@
 //! azimuth, inside the page's custom fog node: a triNoise3D band settling
 //! into the valley plus a distance haze. The generators run once on the
 //! CPU, as the page's do; the SkyMesh is captured by a cube camera into the
-//! PMREM ( fromScene ) when the sun moves; the 4096² shadow renders once
-//! and again only when the sun moves or the terrain is regenerated, as the
-//! page's on-demand shadow does. FirstPersonControls walk the camera and
-//! the forest's distance cull follows it. Every stage runs the WGSL three.js
-//! r186 generates for the page (in `custom_fog/`; the PMREM blur, the
-//! background vertex stage and the output are the retro, backdrop_water
-//! and cubemap_dynamic modules, byte-identical).
+//! PMREM ( fromScene, pmrem.rs ) when the sun moves; the 4096² shadow
+//! renders once and again only when the sun moves or the terrain is
+//! regenerated, as the page's on-demand shadow does. FirstPersonControls
+//! walk the camera and the forest's distance cull follows it. Every stage
+//! runs the WGSL three.js r187 generates for the page (in `custom_fog/`; the
+//! background vertex stage and the output are the backdrop_water and
+//! cubemap_dynamic modules, byte-identical).
 mod generators;
 use super::deferred::{Draw, culled_pipeline, set};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind};
+use super::pmrem::{Pmrem, face_cameras};
+use super::pmrem_cube_uv::bind;
 use super::retro::uniform;
 use super::trackball_sprites::FirstPerson;
 use crate::{
@@ -27,7 +28,7 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const SHADOW: u32 = 4096;
-/// The cube-UV texel sizes at lodMax 8.
+/// The r186 cube-UV texel sizes at lodMax 8.
 pub(super) const TEXEL: [f64; 2] = [1. / 768., 1. / 1024.];
 macro_rules! wgsl {
     ($name:literal) => {
@@ -37,7 +38,7 @@ macro_rules! wgsl {
 const BACKGROUND_VS: &str = include_str!("backdrop_water/background_vs.wgsl");
 const OUTPUT_VS: &str = include_str!("cubemap_dynamic/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("cubemap_dynamic/output_fs.wgsl");
-/// The cube camera's six view matrices, in fromScene's face order.
+/// The r186 cube camera's six view matrices, in its fromScene's face order.
 pub(super) const FACE_VIEWS: [[f64; 16]; 6] = [
     [
         0., 0., -1., 0., 0., 1., 0., 0., 1., 0., 0., 0., 0., 0., 0., 1.,
@@ -58,7 +59,7 @@ pub(super) const FACE_VIEWS: [[f64; 16]; 6] = [
         1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
     ],
 ];
-/// The cube camera's projection ( fov 90, near 0.1, far 100 ).
+/// The r186 cube camera's projection ( fov 90, near 0.1, far 100 ).
 pub(super) const FACE_PROJECTION: [f64; 16] = [
     1.,
     0.,
@@ -185,7 +186,6 @@ pub(super) struct Demo {
     sky_box: Buffers,
     pmrem: Pmrem,
     pmrem_depth: wgpu::TextureView,
-    box_draw: Draw,
     sky_draws: Vec<Draw>,
     sky_renders: Vec<wgpu::Buffer>,
     sky_object: wgpu::Buffer,
@@ -207,6 +207,8 @@ pub(super) struct Demo {
     output_object: wgpu::Buffer,
     output_quad: wgpu::Buffer,
     linear: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
 }
@@ -364,74 +366,11 @@ impl Demo {
         let shadow_color = texture(SHADOW, BYTE, attach);
         let shadow_depth = texture(SHADOW, DEPTH, attach | wgpu::TextureUsages::TEXTURE_BINDING);
         // PMREMGenerator.fromScene( envScene, 0, 0.1, 100 ): the cube camera's
-        // faces into level 0 of the cubeUV target, then the GGX levels.
-        let pmrem = Pmrem::new(r, &linear, 8, GGX_8)?;
-        let pmrem_depth = r
-            .device
-            .create_texture(&wgpu::TextureDescriptor {
-                label: Some("PMREM depth"),
-                size: wgpu::Extent3d {
-                    width: 768,
-                    height: 1024,
-                    depth_or_array_layers: 1,
-                },
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: wgpu::TextureDimension::D2,
-                format: DEPTH,
-                usage: attach,
-                view_formats: &[],
-            })
-            .create_view(&Default::default());
+        // faces into level 0 of the source target, then the PMREM's levels.
+        let pmrem = Pmrem::new(r, 256)?;
+        let pmrem_depth = texture(pmrem.size, DEPTH, attach);
         let position_only = [wgpu::vertex_attr_array![0 => Float32x3].to_vec()];
         let box_layouts = layouts(&position_only, &[(12, false)]);
-        let box_render = uniform(r, "PMREM box", wgsl!("box_vs"), "renderStruct")?;
-        let box_object = uniform(r, "PMREM box", wgsl!("box_fs"), "objectStruct")?;
-        let box_pipeline = pipeline(
-            r,
-            "PMREM box",
-            (wgsl!("box_vs"), wgsl!("box_fs")),
-            &box_layouts,
-            HALF,
-            1,
-            (wgpu::CompareFunction::Always, false),
-            true,
-        );
-        let box_draw = two_groups(
-            r,
-            box_pipeline,
-            &box_render,
-            &[(0, box_object.as_entire_binding())],
-        );
-        let write = |buffer: &wgpu::Buffer,
-                     source: &str,
-                     name: &str,
-                     values: &[(&str, Vec<f64>)]|
-         -> Result<()> {
-            let values: Vec<(&str, &[f64])> = values.iter().map(|(n, v)| (*n, &v[..])).collect();
-            r.queue
-                .write_buffer(buffer, 0, &pack(source, name, &values)?);
-            Ok(())
-        };
-        write(
-            &box_render,
-            wgsl!("box_vs"),
-            "renderStruct",
-            &[
-                ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                ("cameraViewMatrix", m4(Matrix4::IDENTITY)),
-            ],
-        )?;
-        write(
-            &box_object,
-            wgsl!("box_fs"),
-            "objectStruct",
-            &[
-                ("nodeUniform0", vec![0.; 3]),
-                ("nodeUniform1", vec![1.]),
-                ("nodeUniform4", m4(Matrix4::IDENTITY)),
-            ],
-        )?;
         let sky_object = uniform(r, "sky", wgsl!("sky_fs"), "objectStruct")?;
         let sky_pipeline = pipeline(
             r,
@@ -529,7 +468,6 @@ impl Demo {
             sky_box,
             pmrem,
             pmrem_depth,
-            box_draw,
             sky_draws,
             sky_renders,
             sky_object,
@@ -557,6 +495,12 @@ impl Demo {
                     usage: wgpu::BufferUsages::VERTEX,
                 }),
             linear,
+            trilinear: r.device.create_sampler(&wgpu::SamplerDescriptor {
+                mag_filter: wgpu::FilterMode::Linear,
+                min_filter: wgpu::FilterMode::Linear,
+                mipmap_filter: wgpu::FilterMode::Linear,
+                ..Default::default()
+            }),
             compare,
             targets: None,
         };
@@ -630,7 +574,7 @@ impl Demo {
                     (2, tex(&r.dfg)),
                     (3, sampler(&self.compare)),
                     (4, tex(&self.shadow_depth)),
-                    (5, sampler(&self.linear)),
+                    (5, sampler(&self.trilinear)),
                     (6, tex(&self.pmrem.view)),
                 ]
             };
@@ -777,73 +721,48 @@ impl Demo {
                 ("nodeUniform14", vec![0.005]),
             ],
         )?;
-        for (render, view) in self.sky_renders.iter().zip(FACE_VIEWS) {
+        // CubeCamera( 0.1, 100 ) at the origin; the cleared faces take the
+        // renderer's clear color ( black ) as the scene's background.
+        let cameras = face_cameras(0.1, 100., Vector3::ZERO);
+        for (render, (projection, view, _)) in self.sky_renders.iter().zip(&cameras) {
             write(
                 render,
                 wgsl!("sky_fs"),
                 "renderStruct",
                 &[
                     ("nodeUniform7", vec![time]),
-                    ("cameraProjectionMatrix", FACE_PROJECTION.to_vec()),
-                    ("cameraViewMatrix", view.to_vec()),
+                    ("cameraProjectionMatrix", m4(*projection)),
+                    ("cameraViewMatrix", m4(*view)),
                     ("cameraPosition", vec![0.; 3]),
                 ],
             )?;
         }
-        let pass = |encoder: &mut wgpu::CommandEncoder, clear: bool| {
-            encoder
-                .begin_render_pass(&wgpu::RenderPassDescriptor {
-                    label: Some("PMREM fromScene"),
-                    color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                        view: &self.pmrem.view,
-                        depth_slice: None,
-                        resolve_target: None,
-                        ops: wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        },
-                    })],
-                    depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
-                        view: &self.pmrem_depth,
-                        depth_ops: Some(wgpu::Operations {
-                            load: if clear {
-                                wgpu::LoadOp::Clear(1.)
-                            } else {
-                                wgpu::LoadOp::Load
-                            },
-                            store: wgpu::StoreOp::Store,
-                        }),
-                        stencil_ops: None,
+        for (face, draw) in self.pmrem.source_faces().iter().zip(&self.sky_draws) {
+            let mut p = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("PMREM fromScene"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: face,
+                    depth_slice: None,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        store: wgpu::StoreOp::Store,
+                    },
+                })],
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
+                    view: &self.pmrem_depth,
+                    depth_ops: Some(wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(1.),
+                        store: wgpu::StoreOp::Discard,
                     }),
-                    ..Default::default()
-                })
-                .forget_lifetime()
-        };
-        drop(pass(encoder, true));
-        {
-            let mut p = pass(encoder, false);
-            p.set_viewport(0., 0., 768., 1024., 0., 1.);
-            set(&mut p, &self.box_draw);
-            self.sky_box.draw(&mut p, 1);
-        }
-        for (i, draw) in self.sky_draws.iter().enumerate() {
-            let mut p = pass(encoder, false);
-            p.set_viewport(
-                (i % 3) as f32 * 256.,
-                (i / 3) as f32 * 256.,
-                256.,
-                256.,
-                0.,
-                1.,
-            );
+                    stencil_ops: None,
+                }),
+                ..Default::default()
+            });
             set(&mut p, draw);
             self.sky_box.draw(&mut p, 1);
         }
-        self.pmrem.encode_levels(encoder);
+        self.pmrem.encode_from_scene(encoder);
         Ok(())
     }
     pub fn render(
@@ -1044,6 +963,34 @@ impl Demo {
                 (names[8], vec![1.]),
             ]
         };
+        // scene.environmentIntensity ( the object's ), then the fog's
+        // uniforms ( the render group's: fogTop, time, fogBase and haze ).
+        let max_lod = self.pmrem.max_lod as f64;
+        let fog = |names: [&'static str; 5]| {
+            (
+                vec![
+                    (names[1], vec![fog_top]),
+                    (names[2], vec![self.time]),
+                    (names[3], vec![fog_base]),
+                    (names[4], vec![haze]),
+                ],
+                (names[0], vec![0.16]),
+            )
+        };
+        let (terrain_fog, terrain_intensity) = fog([
+            "nodeUniform26",
+            "nodeUniform27",
+            "nodeUniform28",
+            "nodeUniform29",
+            "nodeUniform30",
+        ]);
+        let (forest_fog, forest_intensity) = fog([
+            "nodeUniform32",
+            "nodeUniform33",
+            "nodeUniform34",
+            "nodeUniform35",
+            "nodeUniform36",
+        ]);
         let mut terrain_render = camera_values.clone();
         terrain_render.extend(light_values([
             "nodeUniform14",
@@ -1058,21 +1005,13 @@ impl Demo {
         ]));
         terrain_render.push(("cameraPosition", camera_position.clone()));
         terrain_render.push(("cameraWorldMatrix", m4(world)));
+        terrain_render.extend(terrain_fog);
         write(
             &self.terrain_render,
             wgsl!("terrain_fs"),
             "renderStruct",
             &terrain_render,
         )?;
-        let fog = |names: [&'static str; 5]| {
-            vec![
-                (names[0], vec![0.16]),
-                (names[1], vec![fog_top]),
-                (names[2], vec![self.time]),
-                (names[3], vec![fog_base]),
-                (names[4], vec![haze]),
-            ]
-        };
         let mut terrain_object = vec![
             ("nodeUniform0", id4.clone()),
             ("nodeUniform1", vec![min_y]),
@@ -1082,18 +1021,10 @@ impl Demo {
             ("nodeUniform8", vec![0.]),
             ("nodeUniform9", vec![0.; 3]),
             ("nodeUniform10", vec![1.]),
-            ("nodeUniform22", vec![8.]),
             ("nodeUniform23", id4.clone()),
-            ("nodeUniform25", vec![TEXEL[0]]),
-            ("nodeUniform26", vec![TEXEL[1]]),
+            ("nodeUniform25", vec![max_lod]),
         ];
-        terrain_object.extend(fog([
-            "nodeUniform28",
-            "nodeUniform29",
-            "nodeUniform30",
-            "nodeUniform31",
-            "nodeUniform32",
-        ]));
+        terrain_object.push(terrain_intensity);
         write(
             &self.terrain_object,
             wgsl!("terrain_fs"),
@@ -1113,6 +1044,7 @@ impl Demo {
             "nodeUniform27",
         ]));
         forest_render.push(("cameraWorldMatrix", m4(world)));
+        forest_render.extend(forest_fog);
         write(
             &self.forest_render,
             wgsl!("forest_fs"),
@@ -1131,18 +1063,10 @@ impl Demo {
             ("nodeUniform13", id3.clone()),
             ("nodeUniform14", vec![0.; 3]),
             ("nodeUniform15", vec![1.]),
-            ("nodeUniform28", vec![8.]),
             ("nodeUniform29", id4.clone()),
-            ("nodeUniform31", vec![TEXEL[0]]),
-            ("nodeUniform32", vec![TEXEL[1]]),
+            ("nodeUniform31", vec![max_lod]),
         ];
-        forest_object.extend(fog([
-            "nodeUniform34",
-            "nodeUniform35",
-            "nodeUniform36",
-            "nodeUniform37",
-            "nodeUniform38",
-        ]));
+        forest_object.push(forest_intensity);
         write(
             &self.forest_object,
             wgsl!("forest_fs"),
