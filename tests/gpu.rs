@@ -35,6 +35,59 @@ fn cached_culling_bounds_follow_geometry_and_world_transform_changes() {
     assert_eq!(renderer.transfer_counts(), resident);
 }
 
+/// An attribute rewritten each frame uploads alone, as WebGL's bufferSubData
+/// of that attribute does: neither the unchanged attributes nor the index
+/// are written again.
+#[test]
+fn rewritten_attributes_upload_without_the_unchanged_ones() {
+    let renderer = pollster::block_on(Renderer::new()).unwrap();
+    let target = RenderTarget::new(&renderer.device, 16, 16).unwrap();
+    let mut scene = Scene::new();
+    let camera = scene.insert(NodeKind::Camera(Camera::Perspective(
+        PerspectiveCamera::default(),
+    )));
+    scene.get_mut(camera).unwrap().position.z = 2.0;
+    // Position, normal and uv over 9 vertices, 24 16-bit indices.
+    let geometry = PlaneGeometry::build(2.0, 2.0, 2, 2).unwrap();
+    let mesh = scene.insert(NodeKind::Mesh(Mesh::new(
+        Arc::new(geometry),
+        Arc::new(Material::default()),
+    )));
+    let shift = |scene: &mut Scene, dx: f32| {
+        if let NodeKind::Mesh(m) = &mut scene.get_mut(mesh).unwrap().kind
+            && let Some(Attribute::F32(p)) = Arc::make_mut(&mut m.geometry)
+                .attributes
+                .get_mut("position")
+        {
+            for x in p.array_mut().iter_mut().step_by(3) {
+                *x += dx;
+            }
+        }
+    };
+    let center = |scene: &mut Scene| {
+        renderer.render(scene, camera, &target).unwrap();
+        renderer.read_rgba(&target).unwrap()[(8 * 16 + 8) * 4]
+    };
+    assert_eq!(center(&mut scene), 255);
+    // The first rewrite moves position to its own buffer, writing the rest once
+    // ( the plane stays in view, half of it off the center ).
+    shift(&mut scene, 1.5);
+    assert_eq!(center(&mut scene), 0);
+    let (uploads, bytes, ..) = renderer.transfer_counts();
+    for (dx, expected) in [(-1.5, 255), (1.5, 0), (-1.5, 255)] {
+        let (before_uploads, before, ..) = renderer.transfer_counts();
+        shift(&mut scene, dx);
+        assert_eq!(center(&mut scene), expected);
+        let (after_uploads, after, ..) = renderer.transfer_counts();
+        assert_eq!(
+            (after_uploads - before_uploads, after - before),
+            (1, 9 * 12)
+        );
+    }
+    let (end_uploads, end, ..) = renderer.transfer_counts();
+    assert_eq!((end_uploads - uploads, end - bytes), (3, 3 * 9 * 12));
+}
+
 #[test]
 fn webgpu_renders_basic_mesh_and_recreates_targets() {
     let renderer =

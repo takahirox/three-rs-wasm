@@ -39,9 +39,10 @@ struct PipelineKey {
     attachment_formats: Vec<wgpu::TextureFormat>,
     mirrored: bool,
     logarithmic_depth: bool,
-    /// The geometry's vertex layout ( `geometry_gpu::Field` bits ), and for
-    /// line strips the index format.
+    /// The geometry's vertex layout ( `geometry_gpu::Field` bits, those of
+    /// its dynamic buffer apart ), and for line strips the index format.
     attributes: u8,
+    dynamic_attributes: u8,
     strip_index_format: Option<wgpu::IndexFormat>,
 }
 
@@ -243,8 +244,11 @@ type DrawSlots = HashMap<(Object3D, usize, bool), crate::draw_gpu::Slot>;
 struct DrawGeometry<'a> {
     key: (Object3D, usize, bool),
     vertices: wgpu::Buffer,
-    /// `geometry_gpu::Field` bits of `vertices`, and the index format.
+    dynamic_vertices: Option<wgpu::Buffer>,
+    /// `geometry_gpu::Field` bits of `vertices` and `dynamic_vertices`, those
+    /// of `dynamic_vertices`, and the index format.
     attributes: u8,
+    dynamic_attributes: u8,
     index_format: wgpu::IndexFormat,
     deformation: crate::deformation_gpu::Bindings,
     instances: &'a [Instance],
@@ -260,6 +264,7 @@ struct Draw {
     pipeline: wgpu::RenderPipeline,
     back_pipeline: Option<wgpu::RenderPipeline>,
     vertices: wgpu::Buffer,
+    dynamic_vertices: Option<wgpu::Buffer>,
     index_format: wgpu::IndexFormat,
     bind_group: wgpu::BindGroup,
     range: std::ops::Range<u32>,
@@ -2153,7 +2158,9 @@ impl Renderer {
                     DrawGeometry {
                         key: (h, group_index, opaque_only),
                         vertices: gpu_geometry.vertices,
+                        dynamic_vertices: gpu_geometry.dynamic,
                         attributes: gpu_geometry.attributes,
+                        dynamic_attributes: gpu_geometry.dynamic_attributes,
                         index_format: gpu_geometry.index_format,
                         deformation: self.deformation.borrow_mut().get(
                             &self.device,
@@ -2474,6 +2481,9 @@ impl Renderer {
                         pass.set_bind_group(1, bindings, &[]);
                     }
                     pass.set_vertex_buffer(0, draw.vertices.slice(..));
+                    if let Some(dynamic) = &draw.dynamic_vertices {
+                        pass.set_vertex_buffer(2, dynamic.slice(..));
+                    }
                     pass.set_vertex_buffer(1, draw.instance_buffer.slice(..));
                     if let Some(indices) = &draw.indices {
                         pass.set_index_buffer(indices.slice(..), draw.index_format);
@@ -2527,7 +2537,9 @@ impl Renderer {
         let DrawGeometry {
             key,
             vertices,
+            dynamic_vertices,
             attributes,
+            dynamic_attributes,
             index_format,
             deformation,
             instances,
@@ -2803,12 +2815,17 @@ impl Renderer {
                 && glam::Mat4::from_cols_array(&uniforms.model).determinant() < 0.0,
             logarithmic_depth: custom.is_none() && uniforms.output[3] > 0.0,
             attributes,
+            dynamic_attributes,
             strip_index_format: (topology == wgpu::PrimitiveTopology::LineStrip)
                 .then_some(index_format),
         };
         let mut pipelines = self.pipelines.borrow_mut();
         let create_pipeline = |key: &PipelineKey| {
-            let packed = crate::geometry_gpu::vertex_attributes(key.attributes, VERTEX_INPUTS);
+            let layouts = crate::geometry_gpu::VertexLayouts::new(
+                key.attributes,
+                key.dynamic_attributes,
+                VERTEX_INPUTS,
+            );
             let entry = crate::geometry_gpu::entry_point(key.attributes, VERTEX_INPUTS);
             let layout = self
                 .device
@@ -2830,14 +2847,7 @@ impl Renderer {
                             constants: &[("INSTANCED", if key.instanced { 1.0 } else { 0.0 })],
                             ..Default::default()
                         },
-                        buffers: &[
-                            wgpu::VertexBufferLayout {
-                                array_stride: crate::geometry_gpu::packed_stride(key.attributes),
-                                step_mode: wgpu::VertexStepMode::Vertex,
-                                attributes: &packed,
-                            },
-                            instance_layout(key.instanced),
-                        ],
+                        buffers: &layouts.buffers(instance_layout(key.instanced)),
                     },
                     fragment: Some(wgpu::FragmentState {
                         module: shader,
@@ -2947,6 +2957,7 @@ impl Renderer {
             pipeline,
             back_pipeline,
             vertices: vertex_buffer,
+            dynamic_vertices,
             index_format,
             bind_group,
             range: 0..0,

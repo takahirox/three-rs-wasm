@@ -871,12 +871,17 @@ impl ShadowRenderer {
             pass.set_viewport(v.x as f32, v.y as f32, v.z as f32, v.w as f32, 0., 1.);
             for (gpu, instances, bindings, range, count, side, program) in &draws {
                 let pipelines = program.as_ref().map_or(&self.pipelines, |p| &p.pipelines);
-                pass.set_pipeline(&pipelines.get(*side, gpu.attributes, gpu.index_format));
+                pass.set_pipeline(&pipelines.get(
+                    *side,
+                    gpu.attributes,
+                    gpu.dynamic_attributes,
+                    gpu.index_format,
+                ));
                 pass.set_bind_group(0, bindings, &[]);
                 if let Some(program) = program {
                     pass.set_bind_group(1, &program.bindings, &[]);
                 }
-                pass.set_vertex_buffer(0, gpu.vertices.slice(..));
+                gpu.bind(&mut pass);
                 pass.set_vertex_buffer(1, instances.slice(..));
                 if let Some(indices) = &gpu.indices {
                     pass.set_index_buffer(indices.slice(..), gpu.index_format);
@@ -1103,7 +1108,8 @@ pub(crate) const SHADOW_INPUTS: &[(crate::geometry_gpu::Field, u32)] = &[
 /// variant ( 0–2: instanced front / back / double-sided culling; 3–5: the
 /// same uninstanced; 6–7: LineSegments, instanced or not, which the depth
 /// material inherits from `wireframe`; 8–9: Line strips ), geometry vertex
-/// layout ( `geometry_gpu::Field` bits ) and, for strips, index format.
+/// layout ( `geometry_gpu::Field` bits, and those of its dynamic buffer ) and,
+/// for strips, index format.
 #[derive(Debug)]
 pub(crate) struct DepthPipelines {
     device: wgpu::Device,
@@ -1112,9 +1118,9 @@ pub(crate) struct DepthPipelines {
     // A Mutex, not a RefCell: materials holding a ShadowProgram stay Send + Sync.
     cache: std::sync::Mutex<DepthPipelineCache>,
 }
-/// ( variant, vertex attributes, strip index format ) → pipeline.
+/// ( variant, vertex attributes, dynamic ones, strip index format ) → pipeline.
 type DepthPipelineCache =
-    std::collections::HashMap<(usize, u8, Option<wgpu::IndexFormat>), wgpu::RenderPipeline>;
+    std::collections::HashMap<(usize, u8, u8, Option<wgpu::IndexFormat>), wgpu::RenderPipeline>;
 impl DepthPipelines {
     fn new(
         device: &wgpu::Device,
@@ -1132,24 +1138,26 @@ impl DepthPipelines {
         &self,
         i: usize,
         attributes: u8,
+        dynamic: u8,
         index_format: wgpu::IndexFormat,
     ) -> wgpu::RenderPipeline {
         let strip = i >= 8;
-        let key = (i, attributes, strip.then_some(index_format));
+        let key = (i, attributes, dynamic, strip.then_some(index_format));
         self.cache
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .entry(key)
-            .or_insert_with(|| self.create(i, attributes, key.2))
+            .or_insert_with(|| self.create(i, attributes, dynamic, key.3))
             .clone()
     }
     fn create(
         &self,
         i: usize,
         attributes: u8,
+        dynamic: u8,
         strip_index_format: Option<wgpu::IndexFormat>,
     ) -> wgpu::RenderPipeline {
-        use crate::geometry_gpu::{entry_point, packed_stride, vertex_attributes};
+        use crate::geometry_gpu::{VertexLayouts, entry_point};
         let lines = i >= 6;
         let strip = i >= 8;
         let instanced = if lines { i == 6 || i == 8 } else { i < 3 };
@@ -1158,7 +1166,7 @@ impl DepthPipelines {
         } else {
             [Some(wgpu::Face::Back), Some(wgpu::Face::Front), None][i % 3]
         };
-        let packed = vertex_attributes(attributes, SHADOW_INPUTS);
+        let layouts = VertexLayouts::new(attributes, dynamic, SHADOW_INPUTS);
         let entry = entry_point(attributes, SHADOW_INPUTS);
         self.device
             .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
@@ -1171,14 +1179,7 @@ impl DepthPipelines {
                         constants: &[("INSTANCED", if instanced { 1.0 } else { 0.0 })],
                         ..Default::default()
                     },
-                    buffers: &[
-                        wgpu::VertexBufferLayout {
-                            array_stride: packed_stride(attributes),
-                            step_mode: wgpu::VertexStepMode::Vertex,
-                            attributes: &packed,
-                        },
-                        crate::renderer::instance_layout(instanced),
-                    ],
+                    buffers: &layouts.buffers(crate::renderer::instance_layout(instanced)),
                 },
                 fragment: Some(wgpu::FragmentState {
                     module: &self.shader,
