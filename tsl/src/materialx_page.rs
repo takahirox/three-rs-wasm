@@ -2,12 +2,17 @@
 //! scene ( the white background, the san_giuseppe_bridge environment, the
 //! LinearToneMapping renderer at exposure 0.5 ), the TSL ground grid, and
 //! each MaterialX document through the transpiled MaterialXLoader with the
-//! page's options, its material on the ShaderBall's non-indexed meshes. The
-//! renderer runs headless; the WGSL is `renderer.debug.getShaderAsync`'s.
-//! Images are not loaded ( the shaders do not depend on them ): a loading
-//! manager handler stands for the document's texture loader and hands each
-//! texture a placeholder image naming its URI, so the page knows which
-//! image each of the material's texture bindings samples.
+//! page's options, its material on the ShaderBall's non-indexed meshes ( and
+//! the hidden UV plane ), compiled with `compileAsync` before the model joins
+//! the scene. The renderer runs headless; the WGSL is the compiled render
+//! objects' ( as `renderer.debug.getShaderAsync` finds them ). three's
+//! modules evaluate in the order of the build the page loads
+//! ( `init_three_bundled` ), which names the shaders' layout Fns.
+//! Images are not loaded ( the shaders do not depend on their texels ): a
+//! loading manager handler stands for the document's texture loader and the
+//! page's EXR, TIFF and HDR handlers, and hands each texture a placeholder
+//! naming its URI ( an image, or the DataTexture the format's loader makes ),
+//! so the page knows which image each of the material's bindings samples.
 use crate::reg::*;
 use crate::rt::*;
 
@@ -39,18 +44,25 @@ pub struct Binding {
     pub wrap: (u32, u32),
 }
 
-/// A material's shaders, whether it is transparent and its textures.
+/// A material's shaders, whether it is transparent and its textures; for a
+/// transparent double-sided material ( transmission ), the front side's,
+/// and its back side's vertex and fragment shaders in `back` ( the renderer
+/// draws the back faces first ).
 pub struct Shaders {
     pub vertex: String,
     pub fragment: String,
     pub transparent: bool,
     pub textures: Vec<Binding>,
+    pub back: Option<(String, String)>,
 }
 
 /// The ground grid's shaders and each document's.
 pub struct PageShaders {
     pub grid: Shaders,
     pub materials: Vec<Result<Shaders, String>>,
+    /// Per document, its material's shaders on the UV plane ( the page's
+    /// 'UV Plane' geometry, built when the planes show ).
+    pub planes: Vec<Result<Shaders, String>>,
 }
 
 fn element(name: &str) -> Val {
@@ -99,13 +111,14 @@ thread_local! {
     static READY: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
 
-/// Evaluate the modules once ( three's, then the addons ).
+/// Evaluate the modules once ( three's as the page's build evaluates them,
+/// then the addons ).
 pub fn init() -> R<()> {
     if READY.with(|r| r.replace(true)) {
         return Ok(());
     }
     install_host();
-    crate::init_three()?;
+    crate::init_three_bundled()?;
     crate::init_addons()
 }
 
@@ -192,13 +205,13 @@ fn shaders_of(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val, transparent
         fragment: display(&get(&raw, "fragmentShader")?),
         transparent,
         textures: vec![],
+        back: None,
     })
 }
 
-/// The object group's texture bindings of `mesh`'s render object, found as
-/// `getShaderAsync` finds it.
-fn textures(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Vec<Binding>> {
-    let three = three();
+/// The node builder state of `mesh`'s render object for the pass `pass`
+/// ( undefined: the default one ), found as `getShaderAsync` finds it.
+fn builder_state(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val, pass: Val) -> R<Val> {
     let frame_buffer = get(renderer, "needsFrameBufferTarget")?.truthy() && get(renderer, "_renderTarget")?.is_null();
     let render_target = if frame_buffer {
         m(renderer, "_getFrameBufferTarget", &[])?
@@ -207,23 +220,66 @@ fn textures(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Vec<Bind
         if t.truthy() { t } else { get(renderer, "_outputRenderTarget")? }
     };
     let render_list = m(&get(renderer, "_renderLists")?, "get", &[scene.clone(), camera.clone(), get(renderer, "lighting")?])?;
-    let render_context = m(&get(renderer, "_renderContexts")?, "get", &[render_target, get(renderer, "_mrt")?])?;
-    let material = get(mesh, "material")?;
+    let render_context = m(
+        &get(renderer, "_renderContexts")?,
+        "get",
+        &[render_target, get(renderer, "_mrt")?, num(0.0), camera.clone()],
+    )?;
     let render_object = m(
         &get(renderer, "_objects")?,
         "get",
         &[
             mesh.clone(),
-            material,
+            get(mesh, "material")?,
             scene.clone(),
             camera.clone(),
             get(&render_list, "lightsNode")?,
             render_context.clone(),
             get(&render_context, "clippingContext")?,
+            pass,
         ],
     )?;
-    let state = m(&render_object, "getNodeBuilderState", &[])?;
-    let groups = get(&state, "bindings")?;
+    m(&render_object, "getNodeBuilderState", &[])
+}
+
+/// A compiled material's shaders on `mesh`: a transparent double-sided
+/// material's front-side pass, with its back-side pass ( `compileAsync`
+/// builds both, as the renderer draws them ), otherwise its one pass.
+fn compiled_shaders(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Shaders> {
+    let three = three();
+    let material = get(mesh, "material")?;
+    let transparent = get(&material, "transparent")?.truthy();
+    let double_side = get(&three, "DoubleSide")?;
+    let double = transparent && get(&material, "side")?.strict_eq(&double_side) && !get(&material, "forceSinglePass")?.truthy();
+    let stages = |state: &Val| -> R<(String, String)> {
+        Ok((display(&get(state, "vertexShader")?), display(&get(state, "fragmentShader")?)))
+    };
+    let mut back = None;
+    if double {
+        set(&material, "side", get(&three, "BackSide")?)?;
+        let state = builder_state(renderer, scene, camera, mesh, s("backSide"));
+        set(&material, "side", get(&three, "FrontSide")?)?;
+        let state = state?;
+        back = Some((stages(&state)?, textures(&state)?));
+    }
+    let state = builder_state(renderer, scene, camera, mesh, Val::Undef);
+    if double {
+        set(&material, "side", double_side)?;
+    }
+    let state = state?;
+    let ((vertex, fragment), textures) = (stages(&state)?, textures(&state)?);
+    let back = match back {
+        Some((shaders, back_textures)) if back_textures == textures => Some(shaders),
+        Some(_) => return Err(type_error("the back side's texture bindings differ")),
+        None => None,
+    };
+    Ok(Shaders { vertex, fragment, transparent, textures, back })
+}
+
+/// The object group's texture bindings of a node builder state.
+fn textures(state: &Val) -> R<Vec<Binding>> {
+    let three = three();
+    let groups = get(state, "bindings")?;
     let mut out = vec![];
     for g in 0..to_number(&get(&groups, "length")?) as usize {
         let group = get_index(&groups, g)?;
@@ -260,6 +316,37 @@ fn textures(renderer: &Val, scene: &Val, camera: &Val, mesh: &Val) -> R<Vec<Bind
     Ok(out)
 }
 
+/// What the page's EXRLoader, HDRLoader and TIFFLoader hand MaterialXLoader
+/// for `uri` ( lower-cased in `lower` ): a DataTexture as DataTextureLoader
+/// configures it from the loader's texture data, one texel here.
+fn data_texture(lower: &str, uri: Val) -> R<Val> {
+    let three = three();
+    let tiff = lower.ends_with(".tif") || lower.ends_with(".tiff");
+    let texture = if tiff {
+        // TIFFLoader: RGBA8, flipY, linear with mipmaps.
+        new("DataTexture", &[typed(TypedKind::Uint8, vec![0.0; 4]), num(1.0), num(1.0)])?
+    } else {
+        // EXRLoader and HDRLoader: half-float RGBA, linear, no mipmaps.
+        let t = new(
+            "DataTexture",
+            &[typed(TypedKind::Uint16, vec![0.0; 4]), num(1.0), num(1.0), get(&three, "RGBAFormat")?, get(&three, "HalfFloatType")?],
+        )?;
+        set(&t, "colorSpace", get(&three, "LinearSRGBColorSpace")?)?;
+        set(&t, "generateMipmaps", Val::Bool(false))?;
+        t
+    };
+    set(&texture, "wrapS", get(&three, "ClampToEdgeWrapping")?)?;
+    set(&texture, "wrapT", get(&three, "ClampToEdgeWrapping")?)?;
+    set(&texture, "magFilter", get(&three, "LinearFilter")?)?;
+    let min = if tiff { "LinearMipmapLinearFilter" } else { "LinearFilter" };
+    set(&texture, "minFilter", get(&three, min)?)?;
+    // EXRLoader keeps its rows bottom-first; HDRLoader and TIFFLoader flip.
+    set(&texture, "flipY", Val::Bool(!lower.ends_with(".exr")))?;
+    set(&texture, "needsUpdate", Val::Bool(true))?;
+    set(&get(&texture, "image")?, "materialxURI", uri)?;
+    Ok(texture)
+}
+
 /// The page's shaders for `documents` ( in its order ) on a `width` ×
 /// `height` canvas.
 pub fn page_shaders(documents: &[Document], width: f64, height: f64) -> R<PageShaders> {
@@ -271,6 +358,9 @@ pub fn page_shaders(documents: &[Document], width: f64, height: f64) -> R<PageSh
     set(&renderer, "toneMapping", get(&three, "LinearToneMapping")?)?;
     set(&renderer, "toneMappingExposure", num(0.5))?;
     let camera = new("PerspectiveCamera", &[num(45.0), num(width / height), num(0.25), num(200.0)])?;
+    // camera.position.set( 10, 10, 20 ), toward the OrbitControls' target.
+    m(&get(&camera, "position")?, "set", &[num(10.0), num(10.0), num(20.0)])?;
+    m(&camera, "lookAt", &[num(0.0), num(0.0), num(0.0)])?;
     let scene = new("Scene", &[])?;
     set(&scene, "background", new("Color", &[num(0xffffff as f64)])?)?;
     let ground = new("Mesh", &[new("CircleGeometry", &[num(40.0)])?, ground_material()?])?;
@@ -311,19 +401,29 @@ pub fn page_shaders(documents: &[Document], width: f64, height: f64) -> R<PageSh
     let loader_ns = module_namespace("../examples/jsm/loaders/MaterialXLoader.js");
     let validation = module_namespace("../examples/jsm/loaders/materialx/MaterialXInterfaceValidation.js");
     let validator = call(&get(&validation, "createStrictInterfaceValidator")?, &Val::Undef, &[])?;
-    // The texture loader's stand-in: the image's URI on a placeholder.
+    // The page's loaders for <image> files: TextureLoader's image, and the
+    // DefaultLoadingManager handlers it adds for .exr, .tif( f ) and .hdr,
+    // whose DataTextures MaterialXLoader clones. Each stand-in names the URI
+    // on its image ( the texture's data is not loaded ).
     let handler = object(&[(
         "load",
         func("load", 4, |_t, a| {
-            let image = object(&[("width", num(1.0)), ("height", num(1.0)), ("materialxURI", arg(a, 0))]);
-            call(&arg(a, 1), &Val::Undef, &[image])?;
+            let uri = arg(a, 0);
+            let lower = display(&uri).to_lowercase();
+            let loaded = if [".exr", ".hdr", ".tif", ".tiff"].iter().any(|e| lower.ends_with(e)) {
+                data_texture(&lower, uri)?
+            } else {
+                object(&[("width", num(1.0)), ("height", num(1.0)), ("materialxURI", uri)])
+            };
+            call(&arg(a, 1), &Val::Undef, &[loaded])?;
             Ok(Val::Undef)
         }),
     )]);
     let handler_pattern = construct(&global("RegExp"), &[s("")])?;
     let mut materials = vec![];
+    let mut models = vec![];
     for d in documents {
-        let one = || -> R<Shaders> {
+        let one = || -> R<(Shaders, [Val; 3])> {
             let loader = construct(&get(&loader_ns, "MaterialXLoader")?, &[])?;
             m(&get(&loader, "manager")?, "addHandler", &[handler_pattern.clone(), handler.clone()])?;
             let loader = m(&loader, "setPath", &[s(&d.path)])?;
@@ -332,27 +432,60 @@ pub fn page_shaders(documents: &[Document], width: f64, height: f64) -> R<PageSh
                 ("interfaceValidator", validator.clone()),
                 ("throwOnErrors", Val::Bool(false)),
             ]);
-            let result = m(&loader, "parse", &[s(&d.text), options])?;
+            let result = m(&loader, "parse", &[s(&d.text), options]);
+            m(&get(&loader, "manager")?, "removeHandler", &[handler_pattern.clone()])?;
             // Object.values( materials ).pop()
-            let all = get(&result, "materials")?;
+            let all = get(&result?, "materials")?;
             let names = keys(&all);
             let material = match names.last() {
                 Some(n) => get(&all, n)?,
                 None => return Err(type_error("no material")),
             };
             let transparent = get(&material, "transparent")?.truthy();
-            let mesh = new("Mesh", &[geometry.clone(), material])?;
-            m(&scene, "add", &[mesh.clone()])?;
-            let shaders = shaders_of(&renderer, &scene, &camera, &mesh, transparent)
-                .and_then(|mut sh| {
-                    sh.textures = textures(&renderer, &scene, &camera, &mesh)?;
-                    Ok(sh)
-                });
-            m(&scene, "remove", &[mesh])?;
-            m(&get(&loader, "manager")?, "removeHandler", &[handler_pattern.clone()])?;
-            shaders
+            // The ShaderBall's clone: its calibration and preview meshes, and
+            // the hidden UV plane, all with the material.
+            let model = new("Group", &[])?;
+            let calibration = new("Mesh", &[geometry.clone(), material.clone()])?;
+            let preview = new("Mesh", &[geometry.clone(), material.clone()])?;
+            let plane = new("Mesh", &[new("PlaneGeometry", &[num(2.0), num(2.0)])?, material])?;
+            set(&get(&plane, "rotation")?, "x", num(-std::f64::consts::PI / 2.0))?;
+            set(&get(&plane, "position")?, "y", num(0.05))?;
+            set(&plane, "visible", Val::Bool(false))?;
+            for mesh in [&calibration, &preview, &plane] {
+                m(&model, "add", &[mesh.clone()])?;
+            }
+            if transparent {
+                set(&calibration, "renderOrder", num(1.0))?;
+                set(&preview, "renderOrder", num(2.0))?;
+            }
+            // await renderer.compileAsync( model, camera, scene ); scene.add( model );
+            await_val(m(&renderer, "compileAsync", &[model.clone(), camera.clone(), scene.clone()])?)?;
+            m(&scene, "add", &[model])?;
+            Ok((compiled_shaders(&renderer, &scene, &camera, &calibration)?, [calibration, preview, plane]))
         };
-        materials.push(one().map_err(|e| error_message(&e.0)));
+        match one() {
+            Ok((shaders, meshes)) => {
+                materials.push(Ok(shaders));
+                models.push(Some(meshes));
+            }
+            Err(e) => {
+                materials.push(Err(error_message(&e.0)));
+                models.push(None);
+            }
+        }
     }
-    Ok(PageShaders { grid, materials })
+    // The Geometry selector's 'UV Plane': the planes show instead of the
+    // ShaderBall's meshes, and the next frame builds their render objects.
+    let mut planes = vec![];
+    for meshes in &models {
+        let plane = || -> R<Shaders> {
+            let [calibration, preview, plane] = meshes.as_ref().ok_or_else(|| type_error("no material"))?;
+            set(calibration, "visible", Val::Bool(false))?;
+            set(preview, "visible", Val::Bool(false))?;
+            set(plane, "visible", Val::Bool(true))?;
+            compiled_shaders(&renderer, &scene, &camera, plane)
+        };
+        planes.push(plane().map_err(|e| error_message(&e.0)));
+    }
+    Ok(PageShaders { grid, materials, planes })
 }

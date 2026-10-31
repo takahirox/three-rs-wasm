@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -31,11 +31,9 @@ struct objectStruct {
 	nodeUniform10 : f32,
 	nodeUniform13 : mat4x4<f32>,
 	nodeUniform15 : mat4x4<f32>,
-	nodeUniform19 : f32,
 	nodeUniform20 : mat4x4<f32>,
 	nodeUniform22 : f32,
-	nodeUniform23 : f32,
-	nodeUniform25 : f32
+	nodeUniform23 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -53,7 +51,6 @@ var<private> varyings : VaryingsStruct;
 // vars
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar187 : vec4<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
 var<private> positionLocal : vec3<f32>;
@@ -76,8 +73,8 @@ fn main( @location( 0 ) normal : vec3<f32>,
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform13 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
-	VERTEX_nodeVar187 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar187;
+	let VERTEX_nodeConst37 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst37;
 
 	// result
 

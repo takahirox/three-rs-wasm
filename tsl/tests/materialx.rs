@@ -1,7 +1,10 @@
 //! The transpiled MaterialXLoader natively, as webgpu_loader_materialx runs
 //! it ( three_tsl::materialx_page ): the ground grid's and each document's
-//! WGSL and texture bindings against what three.js r186 builds for the
-//! original page ( tests/materialx/: its `getShaderAsync` output ).
+//! WGSL and texture bindings against what the pinned three.js ( r187 ) builds
+//! for the original page ( tests/materialx/: the shaders the page compiles in
+//! Chrome, tools/compat/capture_wgsl.mjs, then with its Geometry selector on
+//! 'UV Plane'; the materials on the plane as `<name>_plane_*`, a transmissive
+//! material's back side as `…_back_*` ).
 use three_tsl::materialx_page::{page_shaders, Document, Shaders, Source};
 
 const SAMPLES: [&str; 12] = [
@@ -18,7 +21,7 @@ const SAMPLES: [&str; 12] = [
     "velvet",
     "wood_tiled",
 ];
-const LOCAL: [&str; 24] = [
+const LOCAL: [&str; 28] = [
     "standard_surface_heightnormal",
     "standard_surface_conditional_if_float",
     "standard_surface_image_transform",
@@ -33,6 +36,9 @@ const LOCAL: [&str; 24] = [
     "standard_surface_ior_test",
     "standard_surface_combined_test",
     "standard_surface_texture_opacity_test",
+    "standard_surface_image_exr_test",
+    "standard_surface_image_tiff_test",
+    "standard_surface_image_hdr_emission_test",
     "standard_surface_transmission_test",
     "standard_surface_transmission_only_test",
     "standard_surface_transmission_rough",
@@ -43,14 +49,15 @@ const LOCAL: [&str; 24] = [
     "open_pbr_surface_velvet",
     "open_pbr_surface_pearl",
     "open_pbr_surface_honey",
+    "displacement",
 ];
 
 /// Per document, how the gallery renders it ( Opaque, Transparent or
 /// Transmissive ) and its object group's texture bindings: an image's file
 /// name, the DFG LUT, the PMREM or the transmission texture.
-const BINDINGS: [&str; 36] = [
+const BINDINGS: [&str; 40] = [
     "brass_tiled Opaque 1:brass_color.jpg 4:brass_roughness.jpg 6:dfg 8:pmrem",
-    "brick_procedural Opaque 1:brick_base_gray.jpg 3:brick_variation_mask.jpg 5:brick_dirt_mask.jpg 7:brick_mask.jpg 10:brick_roughness.jpg 12:dfg 14:brick_normal.jpg 16:pmrem",
+    "brick_procedural Opaque 1:brick_base_gray.jpg 4:brick_variation_mask.jpg 6:brick_dirt_mask.jpg 8:brick_mask.jpg 10:brick_roughness.jpg 12:dfg 14:brick_normal.jpg 16:pmrem",
     "carpaint Opaque 2:dfg 4:pmrem",
     "chrome Opaque 2:dfg 4:pmrem",
     "copper Opaque 2:dfg 4:pmrem",
@@ -75,6 +82,9 @@ const BINDINGS: [&str; 36] = [
     "ior_test Opaque 2:dfg 4:pmrem",
     "combined_test Transparent 2:dfg 4:pmrem",
     "texture_opacity_test Transparent 1:grid.png 4:dfg 6:pmrem",
+    "image_exr_test Opaque 1:memorial.exr 4:dfg 6:pmrem",
+    "image_tiff_test Opaque 1:crate_uncompressed.tif 4:dfg 6:pmrem",
+    "image_hdr_emission_test Opaque 2:memorial.hdr 4:dfg 6:pmrem",
     "transmission_test Transmissive 2:dfg 4:transmission 6:pmrem",
     "transmission_only_test Transmissive 2:dfg 4:transmission 6:pmrem",
     "transmission_rough Transmissive 2:dfg 4:transmission 6:pmrem",
@@ -85,10 +95,11 @@ const BINDINGS: [&str; 36] = [
     "open_pbr_velvet Opaque 2:dfg 4:pmrem",
     "open_pbr_pearl Opaque 2:dfg 4:pmrem",
     "open_pbr_honey Transmissive 2:dfg 4:transmission 6:pmrem",
+    "displacement Opaque 1:brick_diffuse.jpg 4:brick_roughness.jpg 6:dfg 8:pmrem 10:brick_bump.jpg",
 ];
 
 #[test]
-fn materialx_shaders_match_r186() {
+fn materialx_shaders_match_the_page() {
     // The node system recurses deeply in an unoptimized build.
     std::thread::Builder::new()
         .stack_size(1 << 30)
@@ -147,7 +158,9 @@ fn run() {
     }
     let page = page_shaders(&documents, 640.0, 400.0).unwrap();
     let mut failures = vec![];
+    let compared = std::cell::RefCell::new(vec![]);
     let compare = |failures: &mut Vec<String>, name: &str, stage: &str, got: &str| {
+        compared.borrow_mut().push(format!("{name}_{stage}.wgsl"));
         let want = std::fs::read_to_string(format!("tests/materialx/{name}_{stage}.wgsl")).unwrap_or_default();
         if got != want {
             let at = got.chars().zip(want.chars()).position(|(a, b)| a != b).unwrap_or(got.len().min(want.len()));
@@ -164,12 +177,43 @@ fn run() {
             Ok(s) => {
                 compare(&mut failures, name, "vs", &s.vertex);
                 compare(&mut failures, name, "fs", &s.fragment);
+                // The renderer draws a transmissive material's back side first.
+                let transmissive = s.textures.iter().any(|b| b.source == Source::Transmission);
+                if transmissive != s.back.is_some() {
+                    failures.push(format!("{name}: a back-side pass {}", if transmissive { "missing" } else { "unexpected" }));
+                }
+                if let Some((vertex, fragment)) = &s.back {
+                    compare(&mut failures, &format!("{name}_back"), "vs", vertex);
+                    compare(&mut failures, &format!("{name}_back"), "fs", fragment);
+                }
                 let got = describe(name, s);
                 if !BINDINGS.contains(&got.as_str()) {
                     failures.push(format!("bindings {got}"));
                 }
             }
             Err(e) => failures.push(format!("{name}: {e}")),
+        }
+    }
+    // The same materials on the UV plane ( the Geometry selector's other choice ).
+    for (name, shaders) in names.iter().zip(&page.planes) {
+        match shaders {
+            Ok(s) => {
+                let name = format!("{name}_plane");
+                compare(&mut failures, &name, "vs", &s.vertex);
+                compare(&mut failures, &name, "fs", &s.fragment);
+                if let Some((vertex, fragment)) = &s.back {
+                    compare(&mut failures, &format!("{name}_back"), "vs", vertex);
+                    compare(&mut failures, &format!("{name}_back"), "fs", fragment);
+                }
+            }
+            Err(e) => failures.push(format!("{name} on the plane: {e}")),
+        }
+    }
+    // Every fixture is the page's.
+    for entry in std::fs::read_dir("tests/materialx").unwrap() {
+        let file = entry.unwrap().file_name().into_string().unwrap();
+        if !compared.borrow().contains(&file) {
+            failures.push(format!("{file}: not built"));
         }
     }
     assert!(failures.is_empty(), "{} failures:\n{}", failures.len(), failures.join("\n"));

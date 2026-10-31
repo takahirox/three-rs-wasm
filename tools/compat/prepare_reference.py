@@ -11,7 +11,8 @@ baseline=json.loads((ROOT/'compat/three-r187/api.json').read_text())['baseline']
 commit=baseline['upstream_commit']
 destination=ROOT/'.cache/three-r187'
 stamp=destination/'.revision'
-extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js')
+# The build the examples load, whose module order tools/tsl/module_order.py follows.
+extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoader.js','examples/jsm/utils/BufferGeometryUtils.js','examples/jsm/utils/SkeletonUtils.js','build/three.core.js','build/three.tsl.js','build/three.webgpu.js')
 # The addons and the example assets the loader and geometry oracles
 # ( tools/core/*-oracle.mjs ) run on.
 prefixes=('examples/jsm/','examples/fonts/','examples/models/fbx/','examples/models/vrml/','examples/models/usdz/')
