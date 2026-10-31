@@ -31030,7 +31030,7 @@
         "source": "gallery/src/browser/vxgi.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "SSGIの例と同じコーネルボックスに、VXGINodeのボクセルコーントレースによるAOと間接光、TRAAを組み合わせてRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割）、GPUで72×56×72の不透明度ボリュームとミップにボクセル化し、点光源をキューブシャドウ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描く。各段はページからthree.js r186が生成するWGSL（vxgi/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "SSGIの例と同じコーネルボックスに、VXGINodeのボクセルコーントレースによるAOと間接光、TRAAを組み合わせてRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割し、閉じた外向きの不透明メッシュの内部を埋めるボクセルも一度だけ求める）、GPUで72×56×72の不透明度ボリュームとミップにボクセル化し、点光源をキューブシャドウ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描く。各段はページからthree.js r187が生成するWGSL（vxgi/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -31119,7 +31119,7 @@
         "source": "gallery/src/browser/vxgi_sponza.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、影付きの平行光源と環境光・SkyMeshの下で、VXGINodeのボクセルコーントレースによるAOと間接光、TRAA、FirstPersonControlsとともにRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割し、アルベドは各テクスチャの64²縮小から重心で取る）、GPUで144×64×96の不透明度ボリュームとミップにボクセル化し、平行光源をシャドウマップ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、シャドウ、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描き、出力（Combined・Direct・AO・GI）と時間フィルタの切替も再現する。各段はページからthree.js r186が生成するWGSL（vxgi_sponza/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。オリジナルのボクセル化は各ボクセルの三角形IDを順序なく上書きするため、オリジナル自身も実行ごとにGIが変わる（比較テストは両側で最大IDを残す形に揃えて照合）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、影付きの平行光源と環境光・SkyMeshの下で、VXGINodeのボクセルコーントレースによるAOと間接光、TRAA、FirstPersonControlsとともにRustで再現。VXGIVolumeと同じくシーンの三角形をCPUで一度集め（サブボクセルの辺長まで分割し、アルベドは各テクスチャの64²縮小から重心で取る。閉じた外向きの不透明メッシュの内部を埋めるボクセルも一度だけ求める）、GPUで144×64×96の不透明度ボリュームとミップにボクセル化し、平行光源をシャドウマップ経由で注入して反射させた放射輝度ボリュームは、光源や注入設定が変わったときだけ更新する。毎フレーム、シャドウ、プリパス（法線と速度）、コーントレース（AOとGI、frameIdで回転）、シーンパス、TRAA、出力の順に描き、出力（Combined・Direct・AO・GI）と時間フィルタの切替も再現する。各段はページからthree.js r187が生成するWGSL（vxgi_sponza/）を実行する。ボクセル表示（voxel view）と方向付き放射輝度（directional radiance）は再現しない。オリジナルのボクセル化は各ボクセルの三角形IDを順序なく上書きするため、オリジナル自身も実行ごとにGIが変わる（比較テストは両側で最大IDを残す形に揃えて照合）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
