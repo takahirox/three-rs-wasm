@@ -40,8 +40,9 @@ const cases={
  // one frame behind, as the page updates them after rendering. BatchedMesh rewrites its
  // indirect texture each frame, as the original does.
  webgpu_shadowmap_array:{textureStream:true,antialias:true,times:[0,1,2.5],parameters:[],at:2.5,drag:[[256,256],[300,280]],wheel:[256,256,-200]},
- // GTAO turns its slices by frameId, which the fixture restarts after loading; TRAA accumulates
- // over 60 frames per capture. The orbit is damped.
+ // GTAO turns its slices by frameId, which counts the page's frames on both sides ( the fixture
+ // stops r187's own animation loop as it starts, so no display frame ticks it while the bust
+ // loads ); TRAA accumulates over 60 frames per capture. The orbit is damped.
  webgpu_postprocessing_ao:{frames:60,times:[0],parameters:[[3,.6,.6],[4,.5,.5],[5,1.5,1.5],[1,1,1],[6,false,0],[6,true,1],[13,true,1],[13,false,0]],restore:[[3,.4,.4],[4,.8,.8],[5,1,1],[1,.5,.5]],at:0,drag:[[256,256],[300,280]],wheel:[256,256,-200],settle:true},
  // The volume is voxelized once and lit when the injection settings change; the cones turn by
  // frameId, which the fixture restarts after loading. TRAA accumulates over 60 frames per capture.

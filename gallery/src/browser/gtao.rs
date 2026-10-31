@@ -401,6 +401,9 @@ pub(super) struct Demo {
     params: [f64; 14],
     pending: bool,
     loaded: bool,
+    /// NodeFrame.frameId: r187's animation loop counts frame 1 as it starts
+    /// ( the PMREM's fromScene renders in it ) and one more before each
+    /// animate(), so the first frame the page renders is frame 2.
     frame_id: usize,
     jitter: usize,
     built: bool,
@@ -909,7 +912,7 @@ impl Demo {
             ],
             pending: true,
             loaded: false,
-            frame_id: 0,
+            frame_id: 2,
             jitter: 0,
             built: false,
             resolves: 0,
