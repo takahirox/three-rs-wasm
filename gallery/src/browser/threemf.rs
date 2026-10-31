@@ -829,15 +829,21 @@ impl Demo {
             intensity: 3.,
         }));
         s.get_mut(hemi)?.position = Vector3::new(0., 100., 0.);
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // A directional light; its shadow camera spans x ±25, y −25…50, near
+        // 0.1, far 200, on a 1024² map.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 3.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
+        let n = s.get_mut(light)?;
         n.position = Vector3::new(0., 40., 50.);
         n.cast_shadow = true;
         n.shadow = crate::shadow::Shadow {
-            far: 100.,
+            map_size: Some(1024),
+            bounds: Some([-25., 25., 50., -25.]),
+            near: 0.1,
+            far: 200.,
             ..Default::default()
         };
         let items = load(&format!("{ASSETS}/threemf/truck.3mf")).await?;

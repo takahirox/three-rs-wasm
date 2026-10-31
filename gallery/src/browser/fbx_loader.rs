@@ -4,7 +4,7 @@
 //! skinned meshes' bones and bind matrices, the ambient light one model
 //! carries, and the keyframe clips. The selected model is scaled as the page
 //! scales it, its first clip plays on an AnimationMixer by the Timer, and it
-//! casts and receives the SunLight's cascaded shadows over the Phong ground
+//! casts and receives the directional light's PCF shadows over the Phong ground
 //! and translucent grid in linear fog, with damped OrbitControls ( no zoom
 //! or pan ) and a hemisphere light. A model loads when chosen, as the page
 //! loads it. The page's GUI builds a clip list and per-mesh morph sliders
@@ -294,13 +294,21 @@ impl Demo {
             intensity: 5.,
         }));
         s.get_mut(hemi)?.position = Vector3::new(0., 200., 0.);
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // A directional light; its shadow camera spans x ±120, y −100…180 on
+        // the default 512² map ( near 0.5, far 500 ).
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 5.,
+            target: Vector3::ZERO,
         }));
-        let n = s.get_mut(sun)?;
+        let n = s.get_mut(light)?;
         n.position = Vector3::new(0., 200., 100.);
         n.cast_shadow = true;
+        n.shadow = crate::shadow::Shadow {
+            map_size: Some(512),
+            bounds: Some([-120., 120., 180., -100.]),
+            ..Default::default()
+        };
         let mut ground_geometry = PlaneGeometry::build(2000., 2000., 1, 1)?;
         ground_geometry.rotate_x(-PI / 2.)?;
         let mut ground_material = MeshPhongMaterial::default();
