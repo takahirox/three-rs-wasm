@@ -5,7 +5,7 @@
 //! from the cylinder ) with an orange core inside, under a hemisphere light
 //! and a PCF-shadowed directional light over a shadow-only plane. The result's
 //! geometry is rewritten into the same resident buffers each frame; the
-//! wireframe mesh shares it ( without the result's transform, as on the page ).
+//! wireframe mesh shares it and copies its transform.
 use super::controls_attributes::{Controls, camera_state};
 use super::csg_eval::{self, Brush, Builder, M4, Source};
 use crate::{
@@ -293,7 +293,9 @@ impl Demo {
         g.set_draw_range(0, Some(count));
         let geometry = Arc::new(g);
         m.geometry = geometry.clone();
+        // The wireframe copies the result's position, quaternion and scale.
         let n = s.get_mut(self.lines)?;
+        (n.position, n.quaternion, n.scale) = (position, quaternion, scale);
         n.visible = self.wireframe;
         if let NodeKind::Mesh(m) = &mut n.kind {
             m.geometry = geometry;
