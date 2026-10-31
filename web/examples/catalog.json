@@ -17138,7 +17138,7 @@
         "source": "gallery/src/browser/cubemap_dynamic.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "pisaHDRの空を256²のCubeCameraで毎フレーム6面描画し（球は非表示）、PMREMNodeがそのキューブから鏡面球の環境（cubeUVとGGX 10段）を毎フレーム再生成する構成をRustで再現。箱とトーラスノットは空のPMREM（初回のみ生成）で照らし、4×MSAAのシーンをACESの出力パスに通す。各段はページからthree.js r186が生成するWGSL（cubemap_dynamic/）を実行する。毎フレームの回転と自動回転は60fps換算のステップとして時計に従う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "pisaHDRの空を256²のCubeCameraで毎フレーム6面描画してミップマップを作り（球は非表示）、PMREMNodeがそのキューブから鏡面球の環境（fromCubemap：ソースのキューブとミップ、GGX 3段と積分 3段のキューブPMREM）を毎フレーム再生成する構成をRustで再現。箱とトーラスノットは空のPMREM（初回のみ生成）で照らし、4×MSAAのシーンをACESの出力パスに通す。各段はページからthree.js r187が生成するWGSL（cubemap_dynamic/、PMREMはpmrem/）を実行する。毎フレームの回転と自動回転は60fps換算のステップとして時計に従う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

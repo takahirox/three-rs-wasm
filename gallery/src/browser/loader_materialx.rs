@@ -17,7 +17,7 @@
 //! sides' mipmapped transmission texture, draws the transmissive objects'
 //! back sides, then the transparent list back to front, copying the frame
 //! into the front sides' texture before its first transmissive object, and
-//! the LinearToneMapping output ( exposure 0.5 ). The PMREM ( pmrem.rs ) and
+//! the LinearToneMapping output ( exposure 0.5 ). The PMREM ( ../pmrem.rs ) and
 //! output stages run the WGSL r187 generates for them.
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, culled_pipeline, set};
@@ -43,7 +43,7 @@ const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const OUTPUT_VS: &str = include_str!("loader_materialx/output_vs.wgsl");
 const OUTPUT_FS: &str = include_str!("loader_materialx/output_fs.wgsl");
-mod pmrem;
+use super::pmrem;
 /// How the material renders: opaque, transparent ( front faces ) or
 /// transmissive ( double-sided, transparent ).
 #[derive(Clone, Copy, PartialEq)]
@@ -583,7 +583,7 @@ pub(super) struct Demo {
     balls: Vec<Ball>,
     images: Vec<wgpu::TextureView>,
     ground: (wgpu::Buffer, wgpu::Buffer, u32, wgpu::Buffer),
-    pmrem: pmrem::CubePmrem,
+    pmrem: pmrem::Pmrem,
     /// One render struct per distinct layout: its source and buffer.
     renders: Vec<(String, wgpu::Buffer)>,
     ground_render: wgpu::Buffer,

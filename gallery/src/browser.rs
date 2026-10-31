@@ -294,6 +294,8 @@ mod physics_rapier_vehicle_controller;
 mod picking;
 #[cfg(feature = "picking_buffers")]
 mod picking_buffers;
+#[cfg(feature = "pmrem")]
+mod pmrem;
 #[cfg(feature = "pmrem_cube_uv")]
 mod pmrem_cube_uv;
 #[cfg(feature = "pmrem_equirectangular")]

@@ -1,15 +1,16 @@
 //! webgpu_cubemap_dynamic: a mirror sphere reflecting a 256² CubeCamera
 //! render of the pisaHDR sky, an orbiting textured box and an orbiting
 //! textured torus knot. Each frame the CubeCamera renders its six faces with
-//! the sphere hidden, PMREMNode regenerates the sphere's environment from
-//! the cube (the cubeUV pass and ten GGX levels), and the scene renders with
-//! 4× MSAA before the ACES output pass. The box and the torus light from the
-//! sky's PMREM, generated once. Every stage runs the WGSL three.js r186
-//! generates for the page (in `cubemap_dynamic/`).
+//! the sphere hidden and generates its mipmaps, PMREMNode regenerates the
+//! sphere's environment from the cube ( PMREMGenerator.fromCubemap, pmrem.rs ),
+//! and the scene renders with 4× MSAA before the ACES output pass. The box
+//! and the torus light from the sky's PMREM, generated once. Every stage runs
+//! the WGSL three.js r187 generates for the page (in `cubemap_dynamic/`).
 use super::controls_attributes::{Controls, camera_state};
 use super::gltf_viewer::{decode_texture_image, fetch};
 use super::lights_projector::{m3, m4, pack};
-use super::pmrem_cube_uv::{GGX_8, Pmrem, bind, flat_camera, raw_pipeline, source_pipeline};
+use super::pmrem::{CubeMipmaps, Pmrem, Source, cube_texture, cube_view, face_view};
+use super::pmrem_cube_uv::{bind, raw_pipeline};
 use super::retro::{mipmapped, target, uniform};
 use super::shadowmap_opacity::Mipmaps;
 use super::trackball_sprites::parse_rgbe;
@@ -174,14 +175,16 @@ pub(super) struct Demo {
     objects: [Mesh; 2],
     sphere: Mesh,
     output_quad: wgpu::Buffer,
-    /// The CubeCamera's target, its faces and depth.
+    /// The CubeCamera's target, its faces, its mipmaps and depth.
     cube_faces: Vec<wgpu::TextureView>,
+    cube_mipmaps: CubeMipmaps,
     cube_depth: wgpu::TextureView,
     /// The face passes' draws: per face, the background and the two objects.
     face_draws: Vec<(Draw, [Draw; 2])>,
-    /// The sky's PMREM and the dynamic one, with its source pass.
+    /// The sky's PMREM and the dynamic one, with its source ( the cubemap
+    /// material over the CubeCamera's target ).
     dynamic: Pmrem,
-    dynamic_source: Draw,
+    dynamic_source: Source,
     sky_pmrem: Pmrem,
     sky: wgpu::TextureView,
     map: wgpu::TextureView,
@@ -279,21 +282,10 @@ impl Demo {
         let mut controls = Controls::new(None, (0., f64::INFINITY), PI, true);
         controls.auto_rotate = Some(2.);
         controls.update(s, c)?;
-        // HDRCubeTextureLoader: six half-float faces, no mipmaps, not flipped.
-        let sky_texture = r.device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("pisaHDR"),
-            size: wgpu::Extent3d {
-                width: CUBE,
-                height: CUBE,
-                depth_or_array_layers: 6,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: HALF,
-            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
-            view_formats: &[],
-        });
+        // HDRCubeTextureLoader: six half-float faces, not flipped, mipmapped
+        // ( LinearMipmapLinearFilter ).
+        let levels = CUBE.ilog2() + 1;
+        let sky_texture = cube_texture(r, "pisaHDR", CUBE, levels);
         for (layer, face) in ["px", "nx", "py", "ny", "pz", "nz"].iter().enumerate() {
             let (width, height, texels) = parse_rgbe(
                 &fetch(&format!(
@@ -328,13 +320,7 @@ impl Demo {
                 },
             );
         }
-        let cube_view = |t: &wgpu::Texture| {
-            t.create_view(&wgpu::TextureViewDescriptor {
-                dimension: Some(wgpu::TextureViewDimension::Cube),
-                ..Default::default()
-            })
-        };
-        let sky = cube_view(&sky_texture);
+        let sky = cube_view(&sky_texture, None);
         // uv_grid_opengl.jpg: flipped, mipmapped, no color space.
         let image = decode_texture_image(
             &fetch("assets/environment-materials/textures/uv_grid_opengl.jpg").await?,
@@ -376,32 +362,11 @@ impl Demo {
             &IcosahedronGeometry::build(15., 8)?,
             &["normal", "position"],
         )?;
-        // The CubeCamera's 256² half-float target ( one level ) and its depth.
-        let cube_texture = r.device.create_texture(&wgpu::TextureDescriptor {
-            label: Some("cubemap target"),
-            size: wgpu::Extent3d {
-                width: CUBE,
-                height: CUBE,
-                depth_or_array_layers: 6,
-            },
-            mip_level_count: 1,
-            sample_count: 1,
-            dimension: wgpu::TextureDimension::D2,
-            format: HALF,
-            usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
-            view_formats: &[],
-        });
-        let cube_faces = (0..6)
-            .map(|layer| {
-                cube_texture.create_view(&wgpu::TextureViewDescriptor {
-                    dimension: Some(wgpu::TextureViewDimension::D2),
-                    base_array_layer: layer,
-                    array_layer_count: Some(1),
-                    ..Default::default()
-                })
-            })
-            .collect();
-        let cube = cube_view(&cube_texture);
+        // The CubeCamera's 256² half-float target ( generateMipmaps ) and its depth.
+        let cube_texture = cube_texture(r, "cubemap target", CUBE, levels);
+        let cube_faces = (0..6).map(|face| face_view(&cube_texture, face, 0)).collect();
+        let cube_mipmaps = CubeMipmaps::new(r, &cube_texture);
+        let cube = cube_view(&cube_texture, None);
         let cube_depth = target(r, (CUBE, CUBE), DEPTH, 1);
         let init = |label, data: &[u8], usage| {
             r.device
@@ -411,51 +376,16 @@ impl Demo {
                     usage,
                 })
         };
-        // PMREMGenerator.fromCubemap for the sky ( once ) and the CubeCamera's target ( each frame ).
-        let source = source_pipeline(
-            r,
-            "cubemap PMREM",
-            wgsl!("pmrem_cube_vs"),
-            wgsl!("pmrem_cube_fs"),
-        );
-        let source_object = init(
-            "cubemap PMREM",
-            &pack(
-                wgsl!("pmrem_cube_fs"),
-                "objectStruct",
-                &[
-                    ("nodeUniform1", &m4(Matrix4::IDENTITY)),
-                    ("nodeUniform4", &m4(Matrix4::IDENTITY)),
-                ],
-            )?,
-            wgpu::BufferUsages::UNIFORM,
-        );
-        let source_camera = flat_camera(r, wgsl!("pmrem_cube_vs"))?;
-        let source_groups = |texture: &wgpu::TextureView| {
-            vec![
-                bind(
-                    r,
-                    source.get_bind_group_layout(0),
-                    &[(0, source_camera.as_entire_binding())],
-                ),
-                bind(
-                    r,
-                    source.get_bind_group_layout(1),
-                    &[
-                        (0, wgpu::BindingResource::Sampler(&linear)),
-                        (1, wgpu::BindingResource::TextureView(texture)),
-                        (2, source_object.as_entire_binding()),
-                    ],
-                ),
-            ]
-        };
-        let sky_pmrem = Pmrem::new(r, &clamp, 8, GGX_8)?;
-        let groups = source_groups(&sky);
+        // PMREMGenerator.fromCubemap for the sky ( once, after its mipmaps )
+        // and for the CubeCamera's target ( each frame ).
+        let sky_pmrem = Pmrem::new(r, CUBE)?;
+        let sky_source = sky_pmrem.cubemap_source(r, &sky, &linear)?;
         let mut encoder = r.device.create_command_encoder(&Default::default());
-        sky_pmrem.encode(&mut encoder, &source, [&groups[0], &groups[1]]);
+        CubeMipmaps::new(r, &sky_texture).encode(&mut encoder);
+        sky_pmrem.encode_from_texture(&mut encoder, &sky_source);
         r.queue.submit([encoder.finish()]);
-        let dynamic = Pmrem::new(r, &clamp, 8, GGX_8)?;
-        let dynamic_source = (source.clone(), source_groups(&cube));
+        let dynamic = Pmrem::new(r, CUBE)?;
+        let dynamic_source = dynamic.cubemap_source(r, &cube, &linear)?;
         let render = |label, source| uniform(r, label, source, "renderStruct");
         let background_renders = (0..7)
             .map(|_| render("cubemap background render", wgsl!("background_fs")))
@@ -480,6 +410,7 @@ impl Demo {
                 wgpu::BufferUsages::VERTEX,
             ),
             cube_faces,
+            cube_mipmaps,
             cube_depth,
             face_draws: vec![],
             dynamic,
@@ -554,7 +485,7 @@ impl Demo {
                     (2, wgpu::BindingResource::TextureView(&self.map)),
                     (3, wgpu::BindingResource::Sampler(&self.clamp)),
                     (4, wgpu::BindingResource::TextureView(&r.dfg)),
-                    (5, wgpu::BindingResource::Sampler(&self.clamp)),
+                    (5, wgpu::BindingResource::Sampler(&self.linear)),
                     (6, wgpu::BindingResource::TextureView(&self.sky_pmrem.view)),
                 ],
             ),
@@ -605,7 +536,7 @@ impl Demo {
                     (0, self.mirror_object.as_entire_binding()),
                     (1, wgpu::BindingResource::Sampler(&self.clamp)),
                     (2, wgpu::BindingResource::TextureView(&r.dfg)),
-                    (3, wgpu::BindingResource::Sampler(&self.clamp)),
+                    (3, wgpu::BindingResource::Sampler(&self.linear)),
                     (4, wgpu::BindingResource::TextureView(&self.dynamic.view)),
                 ],
             ),
@@ -740,13 +671,11 @@ impl Demo {
                     ("nodeUniform8", vec![0.; 3]),
                     ("nodeUniform9", vec![1.]),
                     ("nodeUniform11", m4(*model)),
-                    ("nodeUniform12", vec![8.]),
                     ("nodeUniform13", m4(Matrix4::IDENTITY)),
-                    ("nodeUniform15", vec![1. / 768.]),
-                    ("nodeUniform16", vec![1. / 1024.]),
+                    ("nodeUniform15", vec![self.sky_pmrem.max_lod as f64]),
                     // The box lights from scene.environment, the torus from its envMap.
                     (
-                        "nodeUniform18",
+                        "nodeUniform16",
                         vec![if i == 0 { environment } else { env_map }],
                     ),
                 ],
@@ -765,11 +694,9 @@ impl Demo {
                 ("nodeUniform6", vec![0.; 3]),
                 ("nodeUniform7", vec![1.]),
                 ("nodeUniform9", m4(Matrix4::IDENTITY)),
-                ("nodeUniform10", vec![8.]),
                 ("nodeUniform11", m4(Matrix4::IDENTITY)),
-                ("nodeUniform13", vec![1. / 768.]),
-                ("nodeUniform14", vec![1. / 1024.]),
-                ("nodeUniform16", vec![1.]),
+                ("nodeUniform13", vec![self.dynamic.max_lod as f64]),
+                ("nodeUniform14", vec![1.]),
             ],
         )?;
         write(
@@ -777,10 +704,9 @@ impl Demo {
             wgsl!("background_fs"),
             "objectStruct",
             &[
-                ("nodeUniform1", m4(Matrix4::IDENTITY)),
-                ("nodeUniform4", identity3),
-                ("nodeUniform7", vec![1.]),
-                ("nodeUniform9", m4(Matrix4::IDENTITY)),
+                ("nodeUniform3", identity3),
+                ("nodeUniform6", vec![1.]),
+                ("nodeUniform8", m4(Matrix4::IDENTITY)),
             ],
         )?;
         // The six face cameras, then the main camera.
@@ -797,9 +723,9 @@ impl Demo {
             ];
             let mut values = camera.clone();
             values.extend([
-                ("nodeUniform5", vec![0.]),
-                ("nodeUniform6", vec![1.]),
-                ("nodeUniform2", m4(Matrix4::IDENTITY)),
+                ("nodeUniform4", vec![0.]),
+                ("nodeUniform5", vec![1.]),
+                ("nodeUniform1", m4(Matrix4::IDENTITY)),
             ]);
             write(
                 &self.background_renders[i],
@@ -911,10 +837,11 @@ impl Demo {
                 self.objects[i].draw(&mut pass);
             }
         }
-        // PMREMNode: the sphere's environment from the new cube.
-        let (source, groups) = &self.dynamic_source;
+        // The target's mipmaps, then PMREMNode: the sphere's environment
+        // from the new cube.
+        self.cube_mipmaps.encode(&mut encoder);
         self.dynamic
-            .encode(&mut encoder, source, [&groups[0], &groups[1]]);
+            .encode_from_texture(&mut encoder, &self.dynamic_source);
         {
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("cubemap scene"),
