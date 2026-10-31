@@ -111,11 +111,13 @@ until every ported example matches r187 again; it is removed when done.
      and TAAU overrides before the pipeline, so its current clip is
      unjittered; `tsl_procedural/taau.rs` and
      `tools/tsl/check-taau-velocity.mjs` keep r186's jittered velocity.
-   - webgl_raycaster_bvh: r187's `intersectsFrustum` returns true, so the
-     page draws BVHHelper; the port does not.
-   - WebXR: r187 removed `setProjectionFromUnion` ( cameraXR copies the left
-     view's projection ); `src/xr.rs` builds r186's union camera.
-   - `web/examples/ui/ui.js` loads `three@0.186.0` ( the Inspector ) and
-     `ui/three/constants.js` is r186's.
-   - Not re-checked on r187: webgpu_water's resize validation error,
-     WebGLNodesHandler's InstancedMesh rebuild.
+   - Done: webgl_raycaster_bvh draws r187's BVHHelper; the XR camera takes
+     the left view's matrix and projection; the gallery serves r187's
+     Inspector, lil-gui and stats.js ( `three@0.187.0` ); webgpu_water and
+     webgl_tsl_instancing's InstancedMesh rebuild are compared on r187.
+   - webgpu_water's first capture ( t = 0 ) differs by 16.5 % ( dark
+     distortion patches ); later states match.
+   - `tools/gallery/ui/specs.json`'s lil-gui / stats records of
+     webgl_gpgpu_birds_gltf, webgl_loader_svg ( three new options ),
+     webgl_materials_envmaps_fasthdr and webgl_postprocessing_dof2 still come
+     from r186's pages.
