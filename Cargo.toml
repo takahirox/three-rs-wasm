@@ -30,8 +30,8 @@ wgpu = { version = "26.0.1", default-features = false, features = ["std", "parki
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "hdr", "webp"] }
 web-time = "1"
 uuid = { version = "1", features = ["v4", "js", "serde"] }
-# The engine of rapier.js 0.17.3 ( @dimforge/rapier3d-compat ), which RapierPhysics.js loads.
-rapier3d = { version = "=0.26.1", default-features = false, features = ["dim3", "f32", "debug-render"] }
+# The engine of rapier.js 0.21.0 ( @dimforge/rapier3d-compat ), which RapierPhysics.js loads.
+rapier3d = { version = "=0.36.0", default-features = false, features = ["dim3", "f32", "std", "debug-render"] }
 
 [features]
 # KTX2 / Basis Universal transcoding ( KTX2Loader, KHR_texture_basisu ). The

@@ -129,8 +129,8 @@ if(id==='webgl_postprocessing_ssao'){const pass=await patchAddon('SSAOPass.js',c
 source='globalThis.fixtureRandom=fixtureRandom;\n'+source.replace("'three/addons/postprocessing/SSAOPass.js'","'"+pass+"'");}
 if(id==='webgl_effects_ascii')source=source.replace('controls.update();',steps+'controls.update();');
 // The Rapier pages: setInterval on the example clock ( an integer delay, as WebIDL's long; due
-// timers run in the order they were last scheduled ), RapierPhysics.js importing the same
-// rapier3d-compat 0.17.3 from jsdelivr with its Timer on that clock, and the first capture
+// timers run in the order they were last scheduled ), RapierPhysics.js importing its
+// rapier3d-compat 0.21.0 from jsdelivr with its Timer on that clock, and the first capture
 // waiting for initPhysics().
 window.fixtureInterval=(fn,ms)=>{ms=Math.max(0,Math.trunc(ms));const timer={at:(window.fixtureNow??0)+ms,fn:()=>{timer.at=window.fixtureNow+ms;fixtureTimers.push(timer);fn();}};fixtureTimers.push(timer);return timer;};
 // The ammo.js pages: AmmoPhysics.js's setInterval and performance.now() on the example clock,
@@ -161,7 +161,7 @@ code=code.replace('setInterval( step, 1000 / frameRate );','window.fixtureInterv
 const physics=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
 source='window.fixtureAwait=new Promise(r=>window.fixturePhysics=r);\n'+source.replace("'three/addons/physics/AmmoPhysics.js'","'"+physics+"'").replace('setInterval( () => {','window.fixtureInterval( () => {').replace('physics.addScene( scene );','physics.addScene( scene );setTimeout(window.fixturePhysics);');}
 if(id.startsWith('physics_rapier_')){const base=location.origin+'/.cache/three-r187/examples/jsm/physics/';let code=await(await fetch(base+'RapierPhysics.js')).text();
-code=code.replace("'https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.17.3'","'https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat@0.17.3/rapier.es.js'").replace('setInterval( step, 1000 / frameRate );','window.fixtureInterval( step, 1000 / frameRate );').replace('const timer = new Timer();','const timer = new Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureNow );');
+code=code.replace('setInterval( step, 1000 / frameRate );','window.fixtureInterval( step, 1000 / frameRate );').replace('const timer = new Timer();','const timer = new Timer(); timer._startTime = 0;').replace('timer.update();','timer.update( window.fixtureNow );');
 const physics=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
 source='window.fixtureAwait=new Promise(r=>window.fixturePhysics=r);\n'+source.replace("'three/addons/physics/RapierPhysics.js'","'"+physics+"'").replace('setInterval( addBody, 1000 );','window.fixtureInterval( addBody, 1000 );setTimeout(window.fixturePhysics);').replace('setInterval( () => {','window.fixtureInterval( () => {');
 // The terrain, character and vehicle pages are ready once initPhysics() has added their bodies.

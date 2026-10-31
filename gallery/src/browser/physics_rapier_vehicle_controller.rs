@@ -9,7 +9,7 @@ use super::rapier_common::{Helper, Interval, StepTimer, next_due};
 use crate::physics::{PhysicsBody, PhysicsShape, RapierPhysics};
 use crate::{Result, camera::*, geometry::*, material::*, math::*, renderer::*, scene::*};
 use rapier3d::control::{DynamicRayCastVehicleController, WheelTuning};
-use rapier3d::prelude::{Point, QueryFilter, QueryFilterFlags, RigidBodyHandle, Rotation, Vector};
+use rapier3d::prelude::{QueryFilter, QueryFilterFlags, RigidBodyHandle, Rotation, Vector};
 use std::f64::consts::PI;
 use std::sync::Arc;
 
@@ -141,7 +141,7 @@ impl Demo {
         for (x, z) in [(-1., -1.5), (1., -1.5), (-1., 1.5), (1., 1.5)] {
             // addWheel(): rest length 0.8, radius 0.3, the default tuning.
             let wheel = vehicle.add_wheel(
-                Point::new(x as f32, 0., z as f32),
+                Vector::new(x as f32, 0., z as f32),
                 Vector::new(0., -1., 0.),
                 Vector::new(-1., 0., 0.),
                 0.8,
@@ -185,9 +185,9 @@ impl Demo {
         if m.reset {
             let body = &mut p.bodies[self.chassis];
             body.set_translation(Vector::new(0., 1., 0.), true);
-            body.set_rotation(Rotation::identity(), true);
-            body.set_linvel(Vector::zeros(), true);
-            body.set_angvel(Vector::zeros(), true);
+            body.set_rotation(Rotation::IDENTITY, true);
+            body.set_linvel(Vector::ZERO, true);
+            body.set_angvel(Vector::ZERO, true);
             m.accelerate = 0.;
             m.brake_force = 0.;
             return;
@@ -262,13 +262,8 @@ impl Demo {
             exclude_rigid_body: Some(self.chassis),
             predicate: None,
         };
-        self.vehicle.update_vehicle(
-            (1. / 60.) as f32,
-            &mut p.bodies,
-            &p.colliders,
-            &p.query_pipeline,
-            filter,
-        );
+        self.vehicle
+            .update_vehicle((1. / 60.) as f32, p.query_pipeline_mut(filter));
         self.update_wheels(s)?;
         let target = s.get(self.car)?.position;
         self.controls.set_target(target);

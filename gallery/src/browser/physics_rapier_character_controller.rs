@@ -155,7 +155,7 @@ impl Demo {
             snap_to_ground: None,
             ..Default::default()
         };
-        let p2 = rapier3d::prelude::Point::from(Vector::y() * 0.5);
+        let p2 = Vector::Y * 0.5;
         let collider = physics.insert_collider(
             RapierPhysics::default_collider(SharedShape::capsule(-p2, p2, 0.3))
                 .translation(Vector::new(0., 0.8, 0.)),
@@ -184,6 +184,8 @@ impl Demo {
         let Some(collider) = p.colliders.get(self.collider) else {
             return Ok(());
         };
+        let pose = *collider.position();
+        let shape = collider.shared_shape().clone();
         let filter = QueryFilter {
             flags: QueryFilterFlags::empty(),
             groups: None,
@@ -193,30 +195,25 @@ impl Demo {
         };
         let dt = p.integration_parameters.dt;
         let mut events = vec![];
+        let mut queries = p.query_pipeline_mut(filter);
         let result = self.controller.move_shape(
             dt,
-            &p.bodies,
-            &p.colliders,
-            &p.query_pipeline,
-            collider.shape(),
-            collider.position(),
+            &queries.as_ref(),
+            &*shape,
+            &pose,
             desired,
-            filter,
             |event| events.push(event),
         );
         self.controller.solve_character_collision_impulses(
             dt,
-            &mut p.bodies,
-            &p.colliders,
-            &p.query_pipeline,
-            collider.shape(),
+            &mut queries,
+            &*shape,
             3.,
             events.iter(),
-            filter,
         );
         // The page adds the movement to the translation in doubles; the
         // collider takes them as floats, the mesh as they are.
-        let t = collider.translation();
+        let t = pose.translation;
         let m = result.translation;
         let position = Vector3::new(
             f64::from(t.x) + f64::from(m.x),

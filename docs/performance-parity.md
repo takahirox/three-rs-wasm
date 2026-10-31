@@ -1096,7 +1096,7 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
 
 ### Rapier physics
 
-- **CPU work as in the original.** rapier3d 0.26.1 steps in wasm on the
+- **CPU work as in the original.** rapier3d 0.36.0 steps in wasm on the
   page's 16 ms interval, and each step writes the bodies' poses to the meshes
   or instance matrices. The controllers and the per-frame wake-ups run per
   rendered frame.

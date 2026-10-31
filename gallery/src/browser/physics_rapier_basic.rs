@@ -1,6 +1,6 @@
 //! physics_rapier_basic: a 10 × 10 floor, and every second a box, a sphere
 //! or a rounded box with a random color dropped from 6–9 m, simulated by
-//! RapierPhysics ( rapier3d 0.26.1, the crate of rapier.js 0.17.3 ) on its
+//! RapierPhysics ( rapier3d 0.36.0, the crate of rapier.js 0.21.0 ) on its
 //! 16 ms interval, with RapierHelper's collider outlines, a 1024² PCF shadow
 //! map and damped OrbitControls. Meshes that fall below −10 are removed from
 //! the scene and the world in animate().

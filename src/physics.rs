@@ -1,15 +1,12 @@
 //! RapierPhysics.js ( `examples/jsm/physics` ) on the engine of rapier.js
-//! 0.17.3: `@dimforge/rapier3d-compat` is rapier3d 0.26.1 built to wasm, and
+//! 0.21.0: `@dimforge/rapier3d-compat` is rapier3d 0.36.0 built to wasm, and
 //! this module drives the same crate. Bodies, colliders and steps go through
 //! the builders and calls of rapier.js's bindings, with ColliderDesc's and
 //! RigidBodyDesc's defaults, so a world given the same inputs takes the same
 //! steps.
 //!
-//! The narrow phase reports new contact pairs in the order of a foldhash map
-//! whose seed comes from memory addresses ( stack, statics, the heap ). The
-//! order of a pair's constraints can then differ from rapier.js's once
-//! bodies pile up, and the trajectories part from there: rapier.js itself
-//! gives different results for the same world run twice in one page.
+//! rapier3d 0.36 keys its contact maps with foldhash's fixed seed, so the
+//! order of contacts, and the trajectories, follow rapier.js's.
 use crate::math::{Quaternion, Vector3};
 use crate::scene::{NodeKind, Object3D, Scene};
 use crate::{Error, Result};
@@ -80,11 +77,11 @@ impl PhysicsShape {
             }
             // RawShape.capsule: the segment along y.
             Self::Capsule { radius, height } => {
-                let p2 = Point::from(Vector::y() * (height / 2.) as f32);
+                let p2 = Vector::Y * (height / 2.) as f32;
                 SharedShape::capsule(-p2, p2, *radius as f32)
             }
             Self::TriMesh { vertices, indices } => SharedShape::trimesh_with_flags(
-                vertices.chunks(3).map(Point::from_slice).collect(),
+                vertices.chunks(3).map(Vector::from_slice).collect(),
                 indices.chunks(3).map(|v| [v[0], v[1], v[2]]).collect(),
                 TriMeshFlags::empty(),
             )
@@ -102,7 +99,7 @@ pub enum PhysicsBody {
 
 /// The world, its pipelines and the meshes it moves.
 pub struct RapierPhysics {
-    pub gravity: Vector<Real>,
+    pub gravity: Vector,
     pub integration_parameters: IntegrationParameters,
     pub pipeline: PhysicsPipeline,
     pub islands: IslandManager,
@@ -110,11 +107,12 @@ pub struct RapierPhysics {
     pub narrow_phase: NarrowPhase,
     pub bodies: RigidBodySet,
     pub colliders: ColliderSet,
+    /// World.softBodies: rapier.js's World passes its ( here empty ) set to
+    /// each step.
+    pub soft_bodies: SoftBodySet,
     pub impulse_joints: ImpulseJointSet,
     pub multibody_joints: MultibodyJointSet,
     pub ccd_solver: CCDSolver,
-    /// World.queryPipeline: updated after each step, as World.step updates it.
-    pub query_pipeline: QueryPipeline,
     pub debug_render: DebugRenderPipeline,
     /// The meshes with mass, in the order they were added.
     meshes: Vec<(Object3D, PhysicsBody)>,
@@ -131,10 +129,11 @@ fn collider_builder(shape: SharedShape) -> ColliderBuilder {
     let groups = InteractionGroups::new(
         Group::from_bits_retain(0xffff),
         Group::from_bits_retain(0xffff),
+        InteractionTestMode::And,
     );
     ColliderBuilder::new(shape)
         .enabled(true)
-        .position(Isometry::identity())
+        .position(Pose::IDENTITY)
         .friction(0.5)
         .restitution(0.)
         .collision_groups(groups)
@@ -155,21 +154,21 @@ pub fn rigid_body_builder(
     position: Vector3,
     rotation: Quaternion,
 ) -> RigidBodyBuilder {
-    let translation = vector![position.x as f32, position.y as f32, position.z as f32];
-    let rotation = Rotation::new_unchecked(nalgebra::Quaternion::new(
-        rotation.w as f32,
+    // RawRotation.new: Rotation::from_xyzw, without normalizing.
+    let rotation = Rotation::from_xyzw(
         rotation.x as f32,
         rotation.y as f32,
         rotation.z as f32,
-    ));
+        rotation.w as f32,
+    );
     RigidBodyBuilder::new(body_type)
         .enabled(true)
-        .position(Isometry::from_parts(translation.into(), rotation))
+        .pose(Pose::from_parts(vector(position), rotation))
         .gravity_scale(1.)
         .enabled_translations(true, true, true)
         .enabled_rotations(true, true, true)
-        .linvel(Vector::zeros())
-        .angvel(Vector::zeros())
+        .linvel(Vector::ZERO)
+        .angvel(Vector::ZERO)
         .linear_damping(0.)
         .angular_damping(0.)
         .can_sleep(true)
@@ -177,12 +176,13 @@ pub fn rigid_body_builder(
         .ccd_enabled(false)
         .dominance_group(0)
         .additional_solver_iterations(0)
+        .additional_pgs_iterations(0)
         .soft_ccd_prediction(0.)
         .additional_mass_properties(MassProperties::with_principal_inertia_frame(
-            Point::origin(),
+            Vector::ZERO,
             0.,
-            Vector::zeros(),
-            Rotation::identity(),
+            Vector::ZERO,
+            Rotation::IDENTITY,
         ))
 }
 
@@ -193,23 +193,23 @@ pub fn body_pose(body: &RigidBody) -> (Vector3, Quaternion) {
     (
         Vector3::new(f64::from(t.x), f64::from(t.y), f64::from(t.z)),
         Quaternion::from_xyzw(
-            f64::from(r.i),
-            f64::from(r.j),
-            f64::from(r.k),
+            f64::from(r.x),
+            f64::from(r.y),
+            f64::from(r.z),
             f64::from(r.w),
         ),
     )
 }
 
-fn vector(v: Vector3) -> Vector<Real> {
-    vector![v.x as f32, v.y as f32, v.z as f32]
+fn vector(v: Vector3) -> Vector {
+    Vector::new(v.x as f32, v.y as f32, v.z as f32)
 }
 
 impl RapierPhysics {
     /// `new RAPIER.World( { x: 0, y: -9.81, z: 0 } )`.
     pub fn new() -> Self {
         Self {
-            gravity: vector![0., -9.81, 0.],
+            gravity: Vector::new(0., -9.81, 0.),
             integration_parameters: IntegrationParameters::default(),
             pipeline: PhysicsPipeline::new(),
             islands: IslandManager::new(),
@@ -217,10 +217,10 @@ impl RapierPhysics {
             narrow_phase: NarrowPhase::new(),
             bodies: RigidBodySet::new(),
             colliders: ColliderSet::new(),
+            soft_bodies: SoftBodySet::new(),
             impulse_joints: ImpulseJointSet::new(),
             multibody_joints: MultibodyJointSet::new(),
             ccd_solver: CCDSolver::new(),
-            query_pipeline: QueryPipeline::new(),
             debug_render: DebugRenderPipeline::default(),
             meshes: vec![],
         }
@@ -322,6 +322,7 @@ impl RapierPhysics {
                 &mut self.colliders,
                 &mut self.impulse_joints,
                 &mut self.multibody_joints,
+                &mut self.soft_bodies,
                 true,
             );
         }
@@ -340,8 +341,8 @@ impl RapierPhysics {
     /// translation, without waking the body.
     pub fn set_mesh_position(&mut self, mesh: Object3D, position: Vector3, index: usize) {
         if let Some(b) = self.body(mesh, index).and_then(|h| self.bodies.get_mut(h)) {
-            b.set_angvel(Vector::zeros(), false);
-            b.set_linvel(Vector::zeros(), false);
+            b.set_angvel(Vector::ZERO, false);
+            b.set_linvel(Vector::ZERO, false);
             b.set_translation(vector(position), false);
         }
     }
@@ -371,7 +372,8 @@ impl RapierPhysics {
         if heights.len() != (width + 1) * (depth + 1) {
             return Err(Error::Invalid("heightfield size"));
         }
-        let heights = nalgebra::DMatrix::from_vec(width + 1, depth + 1, heights);
+        // RawShape.heightfield( nrows, ncols, … ): column-major.
+        let heights = rapier3d::parry::utils::Array2::new(width + 1, depth + 1, heights);
         let shape =
             SharedShape::heightfield_with_flags(heights, vector(scale), HeightFieldFlags::empty());
         Ok(self
@@ -381,11 +383,12 @@ impl RapierPhysics {
             )
             .0)
     }
-    /// `world.timestep = delta; world.step()`, then the query pipeline's update.
+    /// `world.timestep = delta; world.step()`. Scene queries read the broad
+    /// phase's tree, which the step keeps, as rapier.js's queries do.
     pub fn world_step(&mut self, delta: f64) {
         self.integration_parameters.dt = delta as f32;
         self.pipeline.step(
-            &self.gravity,
+            self.gravity,
             &self.integration_parameters,
             &mut self.islands,
             &mut self.broad_phase,
@@ -394,17 +397,27 @@ impl RapierPhysics {
             &mut self.colliders,
             &mut self.impulse_joints,
             &mut self.multibody_joints,
+            &mut self.soft_bodies,
             &mut self.ccd_solver,
-            None,
             &(),
             &(),
         );
-        self.query_pipeline.update(&self.colliders);
     }
-    /// step(): the world step, then each mesh with mass takes its body's
-    /// pose ( an instanced mesh, its instances' matrices ).
+    /// The scene queries of the controllers' bindings:
+    /// `broadPhase.as_query_pipeline_mut( narrowPhase.query_dispatcher(), … )`.
+    pub fn query_pipeline_mut<'a>(&'a mut self, filter: QueryFilter<'a>) -> QueryPipelineMut<'a> {
+        self.broad_phase.as_query_pipeline_mut(
+            self.narrow_phase.query_dispatcher(),
+            &mut self.bodies,
+            &mut self.colliders,
+            filter,
+        )
+    }
+    /// step(): `world.timestep = Math.min( timer.getDelta(), 1 / 30 )`, the
+    /// world step, then each mesh with mass takes its body's pose ( an
+    /// instanced mesh, its instances' matrices ).
     pub fn step(&mut self, s: &mut Scene, delta: f64) -> Result<()> {
-        self.world_step(delta);
+        self.world_step(delta.min(1. / 30.));
         for (mesh, body) in &self.meshes {
             match body {
                 PhysicsBody::Single(h) => {
@@ -440,6 +453,7 @@ impl RapierPhysics {
             &self.impulse_joints,
             &self.multibody_joints,
             &self.narrow_phase,
+            &self.soft_bodies,
         );
     }
 }
@@ -452,12 +466,12 @@ impl DebugRenderBackend for Lines<'_> {
     fn draw_line(
         &mut self,
         _object: DebugRenderObject,
-        a: Point<Real>,
-        b: Point<Real>,
+        a: Vector,
+        b: Vector,
         color: [f32; 4],
     ) {
-        self.vertices.extend_from_slice(a.coords.as_slice());
-        self.vertices.extend_from_slice(b.coords.as_slice());
+        self.vertices.extend_from_slice(&a.to_array());
+        self.vertices.extend_from_slice(&b.to_array());
         let [r, g, b] = hsl_to_rgb(color[0], color[1], color[2]);
         self.colors
             .extend_from_slice(&[r, g, b, color[3], r, g, b, color[3]]);

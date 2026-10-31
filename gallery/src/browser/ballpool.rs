@@ -442,10 +442,15 @@ struct Pool {
     wall_bodies: Vec<RigidBodyHandle>,
     bodies: Vec<RigidBodyHandle>,
     walls: Vec<Wall>,
-    /// The instance matrices ( instanceMatrix.array ) and the ones the last
-    /// scene pass drew.
+    /// The instance matrices ( instanceMatrix.array ), its version ( each
+    /// step sets needsUpdate ) and the version in the current buffer.
     matrices: Vec<f32>,
-    previous: Option<Vec<f32>>,
+    version: u64,
+    uploaded: u64,
+    /// The previous matrices InstanceNode copies after drawing, with the
+    /// version they copied, and the version in the previous buffer.
+    previous: Option<(Vec<f32>, u64)>,
+    previous_uploaded: Option<u64>,
     colors: wgpu::Buffer,
     current_buffer: wgpu::Buffer,
     previous_buffer: wgpu::Buffer,
@@ -726,6 +731,7 @@ impl Demo {
                     &mut p.colliders,
                     &mut p.impulse_joints,
                     &mut p.multibody_joints,
+                    &mut p.soft_bodies,
                     true,
                 );
             }
@@ -1023,7 +1029,10 @@ impl Demo {
             bodies,
             walls: meshes,
             matrices,
+            version: 0,
+            uploaded: 0,
             previous: None,
+            previous_uploaded: None,
             colors,
             current_buffer,
             previous_buffer,
@@ -1302,9 +1311,9 @@ impl Demo {
             let m = compose(
                 V3::new(f64::from(t.x), f64::from(t.y), f64::from(t.z)),
                 (
-                    f64::from(q.i),
-                    f64::from(q.j),
-                    f64::from(q.k),
+                    f64::from(q.x),
+                    f64::from(q.y),
+                    f64::from(q.z),
                     f64::from(q.w),
                 ),
             );
@@ -1312,6 +1321,7 @@ impl Demo {
                 pool.matrices[i * 16 + k] = *v as f32;
             }
         }
+        pool.version += 1;
         pool.bounds = bounding_sphere(&pool.matrices, self.sphere.sphere);
     }
 
@@ -1339,19 +1349,31 @@ impl Demo {
             self.push();
         }
         let Some(pool) = &mut self.pool else { return };
-        r.queue.write_buffer(
-            &pool.current_buffer,
-            0,
-            bytemuck::cast_slice(&pool.matrices),
-        );
-        // The previous matrices: the array the last scene pass drew, or
-        // this frame's for a new mesh.
-        let previous = pool
+        // The attributes upload when their version changed: the matrices
+        // after a step, the previous ones after a frame that drew new
+        // matrices ( a new mesh's are a clone of its matrices ).
+        if pool.uploaded != pool.version {
+            r.queue.write_buffer(
+                &pool.current_buffer,
+                0,
+                bytemuck::cast_slice(&pool.matrices),
+            );
+            pool.uploaded = pool.version;
+        }
+        let (previous, version) = pool
             .previous
-            .replace(pool.matrices.clone())
-            .unwrap_or_else(|| pool.matrices.clone());
-        r.queue
-            .write_buffer(&pool.previous_buffer, 0, bytemuck::cast_slice(&previous));
+            .take()
+            .unwrap_or_else(|| (pool.matrices.clone(), pool.version));
+        if pool.previous_uploaded != Some(version) {
+            r.queue
+                .write_buffer(&pool.previous_buffer, 0, bytemuck::cast_slice(&previous));
+            pool.previous_uploaded = Some(version);
+        }
+        // InstanceNode's after-object update: the drawn matrices and their
+        // version become the previous ones.
+        let mut previous = previous;
+        previous.copy_from_slice(&pool.matrices);
+        pool.previous = Some((previous, pool.version));
         // InstancedMesh.computeBoundingSphere on the first frustum test.
         if pool.bounds.is_none() {
             pool.bounds = bounding_sphere(&pool.matrices, self.sphere.sphere);
@@ -1489,9 +1511,13 @@ impl Demo {
             "renderStruct",
             &[("nodeUniform1".into(), vec![0.5])],
         )?;
+        // NodeFrame.frameId: 1 on the loading frame ( the renderer's first
+        // update ), then the fixture's restarted count from 1. The history
+        // keeps the loading frame, so its slices count too.
+        let frame_id = self.frame_id.max(1);
         let (direction, step_offset) = (
-            TEMPORAL_ROTATIONS[self.frame_id % 6] / 360.,
-            SPATIAL_OFFSETS[self.frame_id % 4],
+            TEMPORAL_ROTATIONS[frame_id % 6] / 360.,
+            SPATIAL_OFFSETS[frame_id % 4],
         );
         // SSGINode: resolutionScale 1 ( the depth is loaded, not gathered ),
         // then its r186 uniforms.
@@ -1644,17 +1670,10 @@ impl Demo {
             height: t.height,
             depth_or_array_layers: 1,
         };
-        // TRAANode sizes and restarts its history from the composite's render
-        // target before the resolve renders that target ( convertToTexture
-        // updates when it is sampled ). Its first frame reads it at 1 × 1, so
-        // the second restarts again, from the first frame's composite.
-        if self.resolves == 1 {
-            encoder.copy_texture_to_texture(
-                t.composite.0.as_image_copy(),
-                t.history.as_image_copy(),
-                full,
-            );
-        }
+        // r187's TRAANode builds its beauty ( convertToTexture ) before itself,
+        // so the composite renders first. When the history's size differs
+        // from the composite's ( the first frame and each resize ) TRAA
+        // restarts its history from that frame's composite.
         quad(
             &mut encoder,
             &[color(&t.composite.1, wgpu::Color::BLACK)],
@@ -1667,13 +1686,13 @@ impl Demo {
                 full,
             );
         }
-        // The first two resolves read TRAANode's 1 × 1 placeholder depth
-        // ( the far plane: the first frame's history does not match the
-        // drawing buffer, so it keeps no depth ); later ones the previous frame's.
+        // The previous depth is the history's depth texture: the restart's
+        // resolve reads it freshly sized ( zero ), later ones the previous
+        // frame's depth.
         let (pipeline, groups) = &t.traa;
         let draw = (
             pipeline.clone(),
-            vec![groups[usize::from(self.resolves >= 2)].clone()],
+            vec![groups[usize::from(self.resolves >= 1)].clone()],
         );
         quad(
             &mut encoder,
