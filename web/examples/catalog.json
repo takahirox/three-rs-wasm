@@ -18991,7 +18991,7 @@
         "source": "gallery/src/browser/lightprobes_sponza.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、影付きのSunLight・SkyMesh・ACESの下でFirstPersonControlsとともに描き、10×7×7のLightProbeGrid（エンジン機能として移植、src/light_probe_grid.rs）を1フレーム4プローブずつ2パスでGPUベイクして拡散GIを加えるシーンを再現。GUIのGI・光源・影・プローブ数・バウンス・プローブ表示に対応。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「log」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
+          "Sponza（glTF-Sample-Assets。ライセンス上再配布できないため、オリジナルと同じく実行時にGitHubから読み込む）を、2カスケードの影付きSunLight・SkyMesh・ACESの下でFirstPersonControlsとともに描き、10×7×7のLightProbeGridをr187と同じくGPUでベイク（1フレーム16プローブ、セル中心のプローブを8個ずつArrayCameraの48サブカメラでキャプチャ、立体角SH射影、範囲ごとのリパック、影付きSunLightはキャスター全体を覆う2048²の影のベイク用平行光源に置換、直接光とバウンスの2パス）して拡散GIを加える。ページと同じくMeshletDrawingPipeline（meshlet.rsに移植）で描画し、各ジオメトリはthree同梱のmeshoptimizer（meshopt_clusterizer/simplifier）で64三角形のクラスタと6段のLODに読み込み後1投影1ジオメトリずつ処理（処理前のオブジェクトは通常描画）。メインビューと影の2カスケード（ベイク中はベイク光源の影も）は毎フレームGPUのコンピュートパスでオブジェクトとクラスタをカリング（視錐台・LOD選択・法線コーン、メインビューは前フレームの可視クラスタの深度から作る階層深度によるオクルージョンカリング。30投影ごとにカウンタを待たずに読み戻し、カリング率30%未満の間は直前3投影の計測以外は省略）、マテリアルごとに可視クラスタを1回のdrawIndirectで頂点プル描画する（バッファはカウンタに合わせて伸縮）。両面のアルファテスト素材・空・プローブ表示・ベイクのキャプチャは通常描画（オリジナルと同じ）。GUIのPipeline（Meshlet・Default）、GI、光源、影、プローブ数、バウンス、プローブ表示に対応。各段はページからthree.js r187が生成するWGSL（lightprobes_sponza/、meshlet/、lightprobes_complex/ ほか）を実行する。MeshletDrawingPipelineのうちこのページが使わない機能（LODオブジェクト、InstancedMesh、positionNode、far material、静的BundleGroup、深度プリパス、デバッグ表示）は未移植。バッチ表はオリジナルが毎投影書き込むのに対し、変化時のみアップロード。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。GUIの「Log Camera」はRust版では未対応（無効表示）。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

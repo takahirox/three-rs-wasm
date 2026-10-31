@@ -994,6 +994,16 @@ example assets and derived bakes, distributed alongside `LICENSE-THREE`:
 - The batched LOD page ports @three.ez/simplify-geometry 0.0.1's LOD
   builder (MIT, Andrea Gargaro) and loads meshoptimizer 1.1.1 (MIT, Arseny
   Kapoulkine) from jsDelivr at run time, the version the page loads.
+
+The light probe Sponza port ports MIT-licensed three.js r187 code
+( MeshletDrawingPipeline, MeshletGeometryUtils and the page ) and runs the
+WGSL three.js r187 generates for the page ( `src/browser/lightprobes_sponza/`
+and `src/browser/meshlet/` ), with only unused subgroup directives removed.
+It adds three.js r187's `examples/jsm/libs/` builds of meshoptimizer 1.1
+(MIT, Arseny Kapoulkine), unchanged and distributed alongside
+`LICENSE-THREE`, which MeshletGeometryUtils loads to build the meshlets at
+load: `web/examples/assets/meshopt/meshopt_simplifier.module.js` and
+`meshopt_clusterizer.module.js`.
 - `gallery/assets/ldraw/`: the page's seventeen packed models from
   `models/ldraw/officialLibrary/models/`, unchanged. They pack parts of the
   LDraw.org Parts Library, redistributable under the Creative Commons
