@@ -1,5 +1,5 @@
 //! The transpiled WebGPURenderer on the headless device, natively: init, one
-//! frame of the editor's scene, and as many nodes as r186 creates by then.
+//! frame of the editor's scene, and as many nodes as the pinned release creates by then.
 use three_tsl::reg::*;
 use three_tsl::rt::*;
 
@@ -44,6 +44,6 @@ fn editor_scene_renders_headless() {
     set(&get(&get(&gl, "debug").unwrap(), "diagnostics").unwrap(), "keywords", Val::Bool(true)).unwrap();
     await_val(m(&renderer, "init", &[]).unwrap()).unwrap();
     m(&renderer, "render", &[scene, camera]).unwrap();
-    // reference/three-js/tsl-corpus.html after its first frame: the next node id is 1136.
-    assert_eq!(display(&get(&new("Node", &[]), "id").unwrap()), "1136");
+    // reference/three-js/tsl-corpus.html after its first frame: the next node id is 968 ( r187 ).
+    assert_eq!(display(&get(&new("Node", &[]), "id").unwrap()), "968");
 }
