@@ -41,16 +41,16 @@ onAnimationFrame.**
 
 - The view cameras get their transforms and projections as given, under the
   user camera's parent, with three's layer masks.
-- The union camera is r186's setProjectionFromUnion, with three's
-  GL-convention arithmetic. r187's XRManager no longer has it: it copies the
-  left view's projection to the XR camera, with no union frustum or offset.
-  The port keeps r186's union ( an open gap ).
+- The XR camera is r187's: its matrix and projection are the left view's
+  ( r187 removed r186's setProjectionFromUnion, so there is no union frustum
+  or offset ). `xr::tests::xr_camera_is_the_first_view` checks it and the
+  user camera that follows it.
 - updateUserCamera, and the fov and zoom restore at the end of a session.
 - WebXRController's target-ray and grip spaces: matrices, visibility and
   selection state.
 - The render loop over views: one pass per view into its layer of the
   session's texture, multisampled and resolved there. Shadows update once per
-  frame. Sorting uses the union camera, as three's renderer sorts once for an
+  frame. Sorting uses the XR camera, as three's renderer sorts once for an
   ArrayCamera; each view culls with its own frustum.
 
 **`gallery/src/browser/xr_app.rs`: the three scenes, ported from the originals.**
@@ -80,7 +80,7 @@ motion-controllers 1.0.**
 
 - `RenderTarget` allows multisampled layer arrays, through one-layer MSAA
   attachments, as WebGPUBackend's external XR textures do.
-- `Renderer::array_camera_view_projection` sorts with the union camera.
+- `Renderer::array_camera_view_projection` sorts with the XR camera.
 - `Renderer::blit_encoded` is the output pass into a non-sRGB view.
 - `Renderer::viewport_transmission` follows WebGPURenderer for transmission:
   - the opaque pass is snapshotted from an 8-bit target too;

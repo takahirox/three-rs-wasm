@@ -198,7 +198,8 @@ pub struct Renderer {
     /// WebGPURenderer( { logarithmicDepthBuffer } ): built-in materials seen
     /// through a perspective camera write a logarithmic fragment depth.
     pub logarithmic_depth: std::cell::Cell<bool>,
-    /// An XR ArrayCamera's view-projection ( its union camera ): when set, a
+    /// An XR ArrayCamera's view-projection ( r187's cameraXR, the first
+    /// view's matrix and projection ): when set, a
     /// render sorts with it instead of the render camera's, as three's
     /// renderer sorts once for every sub-camera of an ArrayCamera. Culling
     /// stays per view: three draws what any view's frustum holds.
