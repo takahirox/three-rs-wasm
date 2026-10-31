@@ -1,4 +1,4 @@
-//! USDLoader ( examples/jsm/loaders/USDLoader.js, r186 ) and its parsers and
+//! USDLoader ( examples/jsm/loaders/USDLoader.js, r187 ) and its parsers and
 //! composer ( examples/jsm/loaders/usd/ ): USDZ packages, USDA text and USDC
 //! crate layers into the loader's scene — transforms from xformOps, meshes
 //! and skinned meshes with GeomSubset groups, UsdPreviewSurface and OpenPBR

@@ -95,6 +95,15 @@ def Xform "Root"
         float3 xformOp:translate:pivot = (1, 1, 0)
     }
 
+    custom string notes = "paths like /World/* stay"
+
+    def Xform "Kept"
+    {
+    }
+
+    /* a block comment
+       def Xform "Hidden" { } */
+
     def Camera "Cam"
     {
         float focalLength = 35
@@ -394,6 +403,7 @@ def Xform "Mover"
         12: (0, 90, 0),
     }
     float3 xformOp:scale.timeSamples = {
+        -6: (0.5, 0.5, 0.5),
         6: (1, 1, 1),
         18: (2, 2, 2),
     }
