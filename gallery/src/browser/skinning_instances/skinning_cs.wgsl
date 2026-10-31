@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -13,47 +13,47 @@ var<private> instanceIndex : u32;
 
 // uniforms
 
-struct NodeBuffer_7764Struct {
+struct nodeUniform0Struct {
 	value : array< vec4<f32> >
 };
 @binding( 0 ) @group( 0 )
-var<storage, read_write> NodeBuffer_7764 : NodeBuffer_7764Struct;
+var<storage, read_write> nodeUniform0 : nodeUniform0Struct;
 
-struct NodeBuffer_7757Struct {
+struct nodeUniform1Struct {
 	value : array< mat4x4<f32> >
 };
 @binding( 1 ) @group( 0 )
-var<storage, read> NodeBuffer_7757 : NodeBuffer_7757Struct;
+var<storage, read> nodeUniform1 : nodeUniform1Struct;
 
-struct NodeBuffer_7758Struct {
+struct nodeUniform3Struct {
 	value : array< mat4x4<f32> >
 };
 @binding( 3 ) @group( 0 )
-var<storage, read> NodeBuffer_7758 : NodeBuffer_7758Struct;
+var<storage, read> nodeUniform3 : nodeUniform3Struct;
 
-struct NodeBuffer_7760Struct {
+struct nodeUniform4Struct {
 	value : array< vec4<u32> >
 };
 @binding( 4 ) @group( 0 )
-var<storage, read> NodeBuffer_7760 : NodeBuffer_7760Struct;
+var<storage, read> nodeUniform4 : nodeUniform4Struct;
 
-struct NodeBuffer_7761Struct {
+struct nodeUniform5Struct {
 	value : array< vec4<f32> >
 };
 @binding( 5 ) @group( 0 )
-var<storage, read> NodeBuffer_7761 : NodeBuffer_7761Struct;
+var<storage, read> nodeUniform5 : nodeUniform5Struct;
 
-struct NodeBuffer_7759Struct {
+struct nodeUniform7Struct {
 	value : array< vec4<f32> >
 };
 @binding( 6 ) @group( 0 )
-var<storage, read> NodeBuffer_7759 : NodeBuffer_7759Struct;
+var<storage, read> nodeUniform7 : nodeUniform7Struct;
 
-struct NodeBuffer_7756Struct {
+struct nodeUniform8Struct {
 	value : array< f32 >
 };
 @binding( 7 ) @group( 0 )
-var<storage, read> NodeBuffer_7756 : NodeBuffer_7756Struct;
+var<storage, read> nodeUniform8 : nodeUniform8Struct;
 
 struct objectStruct {
 	nodeUniform2 : mat4x4<f32>,
@@ -64,12 +64,7 @@ struct objectStruct {
 var<uniform> object : objectStruct;
 
 // vars
-var<private> nodeVar0 : u32;
-var<private> nodeVar1 : u32;
-var<private> nodeVar2 : u32;
-var<private> nodeVar3 : u32;
-var<private> nodeVar4 : u32;
-var<private> nodeVar5 : vec4<f32>;
+
 
 // codes
 
@@ -116,14 +111,14 @@ fn main( @builtin( global_invocation_id ) globalId : vec3<u32>,
 	// flow -> Compute Instanced Skinning
 	if ( instanceIndex >= object.nodeUniform9 ) { return; }
 
-	nodeVar0 = ( instanceIndex * 2u );
-	nodeVar1 = ( instanceIndex / 16340u );
-	nodeVar2 = ( nodeVar1 * 65u );
-	nodeVar3 = ( instanceIndex % 16340u );
-	nodeVar4 = ( nodeVar3 * 3u );
-	nodeVar5 = ( object.nodeUniform6 * vec4<f32>( ( NodeBuffer_7759.value[ nodeVar4 ].xyz + ( NodeBuffer_7759.value[ ( nodeVar4 + 2u ) ].xyz * vec3<f32>( NodeBuffer_7756.value[ nodeVar1 ] ) ) ), 1.0 ) );
-	NodeBuffer_7764.value[ nodeVar0 ] = vec4<f32>( ( NodeBuffer_7757.value[ nodeVar1 ] * vec4<f32>( ( object.nodeUniform2 * ( ( ( ( ( NodeBuffer_7761.value[ nodeVar3 ].x * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].x ) ] ) * nodeVar5 ) + ( ( NodeBuffer_7761.value[ nodeVar3 ].y * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].y ) ] ) * nodeVar5 ) ) + ( ( NodeBuffer_7761.value[ nodeVar3 ].z * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].z ) ] ) * nodeVar5 ) ) + ( ( NodeBuffer_7761.value[ nodeVar3 ].w * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].w ) ] ) * nodeVar5 ) ) ).xyz, 1.0 ) ).xyz, 1.0 );
-	NodeBuffer_7764.value[ ( nodeVar0 + 1u ) ] = vec4<f32>( normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( NodeBuffer_7757.value[ nodeVar1 ][ 0 ].xyz, NodeBuffer_7757.value[ nodeVar1 ][ 1 ].xyz, NodeBuffer_7757.value[ nodeVar1 ][ 2 ].xyz ) ) ) * ( mat3x3<f32>( ( ( object.nodeUniform2 * ( ( ( NodeBuffer_7761.value[ nodeVar3 ].x * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].x ) ] + NodeBuffer_7761.value[ nodeVar3 ].y * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].y ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].z * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].z ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].w * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].w ) ] ) ) * object.nodeUniform6 )[ 0 ].xyz, ( ( object.nodeUniform2 * ( ( ( NodeBuffer_7761.value[ nodeVar3 ].x * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].x ) ] + NodeBuffer_7761.value[ nodeVar3 ].y * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].y ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].z * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].z ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].w * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].w ) ] ) ) * object.nodeUniform6 )[ 1 ].xyz, ( ( object.nodeUniform2 * ( ( ( NodeBuffer_7761.value[ nodeVar3 ].x * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].x ) ] + NodeBuffer_7761.value[ nodeVar3 ].y * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].y ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].z * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].z ) ] ) + NodeBuffer_7761.value[ nodeVar3 ].w * NodeBuffer_7758.value[ ( nodeVar2 + NodeBuffer_7760.value[ nodeVar3 ].w ) ] ) ) * object.nodeUniform6 )[ 2 ].xyz ) * NodeBuffer_7759.value[ ( nodeVar4 + 1u ) ].xyz ) ) ), 0.0 );
+	let nodeConst0 = ( instanceIndex * 2u );
+	let nodeConst1 = ( instanceIndex / 16340u );
+	let nodeConst2 = ( nodeConst1 * 65u );
+	let nodeConst3 = ( instanceIndex % 16340u );
+	let nodeConst4 = ( nodeConst3 * 3u );
+	let nodeConst5 = ( object.nodeUniform6 * vec4<f32>( ( nodeUniform7.value[ nodeConst4 ].xyz + ( nodeUniform7.value[ ( nodeConst4 + 2u ) ].xyz * vec3<f32>( nodeUniform8.value[ nodeConst1 ] ) ) ), 1.0 ) );
+	nodeUniform0.value[ nodeConst0 ] = vec4<f32>( ( nodeUniform1.value[ nodeConst1 ] * vec4<f32>( ( object.nodeUniform2 * ( ( ( ( ( nodeUniform5.value[ nodeConst3 ].x * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].x ) ] ) * nodeConst5 ) + ( ( nodeUniform5.value[ nodeConst3 ].y * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].y ) ] ) * nodeConst5 ) ) + ( ( nodeUniform5.value[ nodeConst3 ].z * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].z ) ] ) * nodeConst5 ) ) + ( ( nodeUniform5.value[ nodeConst3 ].w * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].w ) ] ) * nodeConst5 ) ) ).xyz, 1.0 ) ).xyz, 1.0 );
+	nodeUniform0.value[ ( nodeConst0 + 1u ) ] = vec4<f32>( normalize( ( transpose( tsl_inverse_mat3( mat3x3<f32>( nodeUniform1.value[ nodeConst1 ][ 0 ].xyz, nodeUniform1.value[ nodeConst1 ][ 1 ].xyz, nodeUniform1.value[ nodeConst1 ][ 2 ].xyz ) ) ) * ( mat3x3<f32>( ( ( object.nodeUniform2 * ( ( ( nodeUniform5.value[ nodeConst3 ].x * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].x ) ] + nodeUniform5.value[ nodeConst3 ].y * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].y ) ] ) + nodeUniform5.value[ nodeConst3 ].z * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].z ) ] ) + nodeUniform5.value[ nodeConst3 ].w * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].w ) ] ) ) * object.nodeUniform6 )[ 0 ].xyz, ( ( object.nodeUniform2 * ( ( ( nodeUniform5.value[ nodeConst3 ].x * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].x ) ] + nodeUniform5.value[ nodeConst3 ].y * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].y ) ] ) + nodeUniform5.value[ nodeConst3 ].z * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].z ) ] ) + nodeUniform5.value[ nodeConst3 ].w * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].w ) ] ) ) * object.nodeUniform6 )[ 1 ].xyz, ( ( object.nodeUniform2 * ( ( ( nodeUniform5.value[ nodeConst3 ].x * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].x ) ] + nodeUniform5.value[ nodeConst3 ].y * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].y ) ] ) + nodeUniform5.value[ nodeConst3 ].z * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].z ) ] ) + nodeUniform5.value[ nodeConst3 ].w * nodeUniform3.value[ ( nodeConst2 + nodeUniform4.value[ nodeConst3 ].w ) ] ) ) * object.nodeUniform6 )[ 2 ].xyz ) * nodeUniform7.value[ ( nodeConst4 + 1u ) ].xyz ) ) ), 0.0 );
 
 	
 

@@ -1,12 +1,13 @@
 //! webgpu_postprocessing_ssr: the steampunk_camera.glb model over a metallic
-//! floor, lit by the RoomEnvironment PMREM, with SSRNode's screen-space
+//! floor, lit by RoomEnvironment's PMREM ( fromScene with sigma 0.04,
+//! pmrem.rs ), with SSRNode's screen-space
 //! reflections added to the beauty pass and SMAA on the result. The scene
 //! pass writes color, packed view normals and metalness / roughness; the SSR
 //! pass marches each reflective pixel's ray through the depth; a blur chain
 //! of five mips widens it by roughness; the composite adds it to the color;
 //! SMAA's edge, weight and blend passes antialias it; the output applies
 //! ACES. Without SSR the output reads the scene color. Every stage runs the
-//! WGSL three.js r186 generates for the page (in `ssr/`; the quad vertex
+//! WGSL three.js r187 generates for the page (in `ssr/`; the quad vertex
 //! modules are the hdr and volume_traa ones, byte-identical). The blur
 //! quality and binary refinement are build-time constants: their variants
 //! are the page's shaders for each value.
@@ -14,6 +15,7 @@ use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::{fetch, load_asset};
 use super::lights_projector::{m3, m4, pack};
+use super::pmrem::room_environment;
 use super::pmrem_cube_uv::bind;
 use super::retro::{mipmapped, uniform};
 use super::shadowmap_opacity::Mipmaps;
@@ -40,7 +42,7 @@ const MODEL: (&str, &str) = (wgsl!("model_vs"), wgsl!("model_fs"));
 const LENS: (&str, &str) = (wgsl!("model_vs"), wgsl!("lens_fs"));
 const FLOOR: (&str, &str) = (wgsl!("floor_vs"), wgsl!("floor_fs"));
 const BACKGROUND: (&str, &str) = (wgsl!("background_vs"), wgsl!("background_fs"));
-/// The blur kernel's loop bounds as r186 inlines blurQuality.
+/// The blur kernel's loop bounds as r187 inlines blurQuality.
 const BLUR_LOOP: [&str; 2] = [
     "for ( var i : i32 = i32( ( - 1.0 ) ); i <= 1; i ++ )",
     "for ( var j : i32 = i32( ( - 1.0 ) ); j <= 1; j ++ )",
@@ -146,6 +148,8 @@ pub(super) struct Demo {
     background_render: wgpu::Buffer,
     background_object: wgpu::Buffer,
     pmrem: wgpu::TextureView,
+    /// The PMREM's last level ( PMREMNode's maxLod ).
+    max_lod: f64,
     smaa_textures: [wgpu::TextureView; 2],
     model_render: wgpu::Buffer,
     floor_render: wgpu::Buffer,
@@ -325,15 +329,9 @@ impl Demo {
             "ssr background",
             &["normal", "position"],
         )?;
-        // RoomEnvironment through PMREMGenerator.fromScene( sigma 0.04 ):
-        // the resident cube-UV atlas ( lodMax 8, 768 × 1024 ).
-        let room = super::room_environment::environment(r)?;
-        let pmrem = room
-            .gpu
-            .as_ref()
-            .ok_or(Error::Invalid("room environment"))?
-            .view
-            .clone();
+        // scene.environment = fromScene( new RoomEnvironment(), 0.04 ).
+        let room = room_environment(r, 0.04)?;
+        let (pmrem, max_lod) = (room.view, room.max_lod as f64);
         let mut smaa = vec![];
         for name in ["smaa-area.png", "smaa-search.png"] {
             let image = crate::material::Texture::from_image(
@@ -384,6 +382,7 @@ impl Demo {
             background_render: uniform(r, "ssr background", BACKGROUND.0, "renderStruct")?,
             background_object: uniform(r, "ssr background", BACKGROUND.0, "objectStruct")?,
             pmrem,
+            max_lod,
             smaa_textures: [area, search],
             model_render: uniform(r, "ssr model render", MODEL.1, "renderStruct")?,
             floor_render: uniform(r, "ssr floor render", FLOOR.1, "renderStruct")?,
@@ -578,7 +577,7 @@ impl Demo {
                                 (6, tex(&r.dfg)),
                                 (7, sampler(&self.repeat)),
                                 (8, tex(&p.maps[2])),
-                                (9, sampler(&self.clamp)),
+                                (9, sampler(&self.mip_linear)),
                                 (10, tex(&self.pmrem)),
                             ],
                         ),
@@ -602,7 +601,7 @@ impl Demo {
                         (0, self.floor_object.as_entire_binding()),
                         (1, sampler(&self.clamp)),
                         (2, tex(&r.dfg)),
-                        (3, sampler(&self.clamp)),
+                        (3, sampler(&self.mip_linear)),
                         (4, tex(&self.pmrem)),
                     ],
                 ),
@@ -861,14 +860,13 @@ impl Demo {
         )?;
         write(&self.model_render, MODEL.1, "renderStruct", &camera_values)?;
         write(&self.floor_render, FLOOR.1, "renderStruct", &camera_values)?;
-        // The PMREM's lodMax and texel size and the environment's rotation
-        // and intensity.
-        let environment = |values: &mut Vec<(&str, Vec<f64>)>, names: [&'static str; 4]| {
+        // The environment's rotation, maxLod and intensity.
+        let max_lod = self.max_lod;
+        let environment = |values: &mut Vec<(&str, Vec<f64>)>, names: [&'static str; 3]| {
             values.extend([
-                (names[0], vec![8.]),
-                (names[1], vec![1. / 768.]),
-                (names[2], vec![1. / 1024.]),
-                (names[3], vec![1.25]),
+                (names[0], m4(Matrix4::IDENTITY)),
+                (names[1], vec![max_lod]),
+                (names[2], vec![1.25]),
             ]);
         };
         let model = Matrix4::from_translation(Vector3::new(0., 0.1, 0.));
@@ -889,16 +887,10 @@ impl Demo {
                 ("nodeUniform16", m4(model)),
                 ("nodeUniform18", identity3.clone()),
                 ("nodeUniform19", vec![1., 1.]),
-                ("nodeUniform21", m4(Matrix4::IDENTITY)),
             ];
             environment(
                 &mut values,
-                [
-                    "nodeUniform20",
-                    "nodeUniform23",
-                    "nodeUniform24",
-                    "nodeUniform26",
-                ],
+                ["nodeUniform21", "nodeUniform23", "nodeUniform24"],
             );
             write(&p.object, MODEL.1, "objectStruct", &values)?;
         }
@@ -913,16 +905,10 @@ impl Demo {
             ("nodeUniform6", vec![0.; 3]),
             ("nodeUniform7", vec![1.]),
             ("nodeUniform9", m4(floor_model)),
-            ("nodeUniform11", m4(Matrix4::IDENTITY)),
         ];
         environment(
             &mut floor_values,
-            [
-                "nodeUniform10",
-                "nodeUniform13",
-                "nodeUniform14",
-                "nodeUniform16",
-            ],
+            ["nodeUniform11", "nodeUniform13", "nodeUniform14"],
         );
         write(&self.floor_object, FLOOR.1, "objectStruct", &floor_values)?;
         let texel = vec![1. / t.width as f64, 1. / t.height as f64];
@@ -968,18 +954,17 @@ impl Demo {
                 "objectStruct",
                 &[("nodeUniform1", texel.clone())],
             )?;
-            let mut weights = vec![
-                ("nodeUniform2", texel.clone()),
-                ("nodeUniform4", texel.clone()),
-            ];
-            for n in [1, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19] {
-                weights.push((NAMES[n], identity3.clone()));
-            }
             write(
                 &self.weights_object,
                 wgsl!("weights_fs"),
                 "objectStruct",
-                &weights,
+                &[
+                    ("nodeUniform1", identity3.clone()),
+                    ("nodeUniform2", texel.clone()),
+                    ("nodeUniform3", texel.clone()),
+                    ("nodeUniform5", identity3.clone()),
+                    ("nodeUniform7", identity3.clone()),
+                ],
             )?;
             write(
                 &self.blend_object,
@@ -987,10 +972,8 @@ impl Demo {
                 "objectStruct",
                 &[
                     ("nodeUniform1", identity3.clone()),
-                    ("nodeUniform2", identity3.clone()),
-                    ("nodeUniform3", texel.clone()),
-                    ("nodeUniform4", identity3.clone()),
-                    ("nodeUniform6", texel.clone()),
+                    ("nodeUniform2", texel.clone()),
+                    ("nodeUniform4", texel.clone()),
                 ],
             )?;
         }
@@ -1156,28 +1139,6 @@ impl Demo {
         self.pending = true;
     }
 }
-const NAMES: [&str; 20] = [
-    "nodeUniform0",
-    "nodeUniform1",
-    "nodeUniform2",
-    "nodeUniform3",
-    "nodeUniform4",
-    "nodeUniform5",
-    "nodeUniform6",
-    "nodeUniform7",
-    "nodeUniform8",
-    "nodeUniform9",
-    "nodeUniform10",
-    "nodeUniform11",
-    "nodeUniform12",
-    "nodeUniform13",
-    "nodeUniform14",
-    "nodeUniform15",
-    "nodeUniform16",
-    "nodeUniform17",
-    "nodeUniform18",
-    "nodeUniform19",
-];
 
 #[allow(unused_variables)]
 impl super::example::Example for Demo {

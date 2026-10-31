@@ -1,20 +1,22 @@
 //! webgpu_postprocessing_ao: a small gallery ( checkerboard floor, two
 //! walls, pedestals, columns, a torus knot, a lathed vase, an armchair of
 //! rounded boxes, a side table, a rug, extruded picture frames and the Draco
-//! tennyson bust ) under three spot lights and the RoomEnvironment PMREM,
+//! tennyson bust ) under three spot lights and RoomEnvironment's PMREM
+//! ( fromScene with sigma 0.04, pmrem.rs ),
 //! with GTAONode's ambient occlusion feeding the materials' ambient term
 //! and TRAA resolving its temporal noise. The pre-pass writes packed normals
 //! and velocity; GTAO traces at half resolution ( its slice rotation and
 //! step offset following frameId ) over a 5 × 5 magic-square noise; the
 //! scene pass reads the AO; TRAA ( without subpixel correction ) jitters,
 //! reprojects and blends; the output tone maps ( Neutral ) and encodes
-//! sRGB. Every stage runs the WGSL three.js r186 generates for the page (in
+//! sRGB. Every stage runs the WGSL three.js r187 generates for the page (in
 //! `gtao/`; the output is the volume_traa module and the AO-only vertex
 //! stage the lightprobes one, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};
+use super::pmrem::room_environment;
 use super::pmrem_cube_uv::bind;
 use super::retro::{mipmapped_raw, uniform};
 use super::shadowmap_opacity::Mipmaps;
@@ -388,7 +390,7 @@ struct Targets {
     prepass_draws: Vec<Draw>,
     /// The GTAO draw and its target per visited resolution scale.
     ao: Vec<(f64, AoTarget, Draw)>,
-    traa: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
+    traa: (wgpu::RenderPipeline, wgpu::BindGroup),
     output: Draw,
 }
 pub(super) struct Demo {
@@ -409,6 +411,8 @@ pub(super) struct Demo {
     floor_map: wgpu::TextureView,
     noise: wgpu::TextureView,
     environment: wgpu::TextureView,
+    /// The PMREM's last level ( PMREMNode's maxLod ).
+    max_lod: f64,
     /// Pre-pass and scene render uniforms for the plain and mapped materials.
     renders: [[wgpu::Buffer; 2]; 2],
     gtao_object: wgpu::Buffer,
@@ -416,10 +420,11 @@ pub(super) struct Demo {
     output_render: wgpu::Buffer,
     ao_only_render: wgpu::Buffer,
     quad_uv: wgpu::Buffer,
-    placeholder: wgpu::TextureView,
     linear: wgpu::Sampler,
     nearest: wgpu::Sampler,
     repeat: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     targets: Option<Targets>,
 }
 /// The pre-pass and scene shaders of the plain and mapped materials.
@@ -879,21 +884,9 @@ impl Demo {
                 &magic_square_noise(),
             )
             .create_view(&Default::default());
-        let room = super::room_environment::environment(r)?;
-        let environment = room
-            .gpu
-            .as_ref()
-            .ok_or(Error::Invalid("room environment"))?
-            .view
-            .clone();
-        let placeholder = view(&texture(r, (1, 1), DEPTH));
-        let mut encoder = r.device.create_command_encoder(&Default::default());
-        encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("gtao placeholder"),
-            depth_stencil_attachment: depth(&placeholder),
-            ..Default::default()
-        });
-        r.queue.submit([encoder.finish()]);
+        // scene.environment = fromScene( new RoomEnvironment(), 0.04 ).
+        let room = room_environment(r, 0.04)?;
+        let (environment, max_lod) = (room.view, room.max_lod as f64);
         let sampler = |address, mag, mipmap| {
             r.device.create_sampler(&wgpu::SamplerDescriptor {
                 address_mode_u: address,
@@ -926,6 +919,7 @@ impl Demo {
             floor_map,
             noise,
             environment,
+            max_lod,
             renders: [[a?, b?], [c2?, d?]],
             gtao_object: uniform(r, "gtao", wgsl!("gtao_fs"), "objectStruct")?,
             traa_object: uniform(r, "gtao traa", wgsl!("traa_fs"), "objectStruct")?,
@@ -936,10 +930,10 @@ impl Demo {
                 bytemuck::cast_slice(&[0f32, -1., 0., 1., 2., 1.]),
                 wgpu::BufferUsages::VERTEX,
             ),
-            placeholder,
             linear: sampler(ClampToEdge, Linear, Nearest),
             nearest: sampler(ClampToEdge, Nearest, Nearest),
             repeat: sampler(Repeat, Linear, Linear),
+            trilinear: sampler(ClampToEdge, Linear, Linear),
             targets: None,
         })
     }
@@ -1010,8 +1004,12 @@ impl Demo {
                     entries.push((2, tex(&self.floor_map)));
                     binding = 3;
                 }
-                for resource in [&ao, &r.dfg, &self.environment] {
-                    entries.push((binding, sampler(&self.linear)));
+                for (resource, filter) in [
+                    (&ao, &self.linear),
+                    (&r.dfg, &self.linear),
+                    (&self.environment, &self.trilinear),
+                ] {
+                    entries.push((binding, sampler(filter)));
                     entries.push((binding + 1, tex(resource)));
                     binding += 2;
                 }
@@ -1124,8 +1122,9 @@ impl Demo {
                     entries.push((2, tex(&self.floor_map)));
                     binding = 3;
                 }
-                for resource in [&r.dfg, &self.environment] {
-                    entries.push((binding, sampler(&self.linear)));
+                for (resource, filter) in [(&r.dfg, &self.linear), (&self.environment, &self.trilinear)]
+                {
+                    entries.push((binding, sampler(filter)));
                     entries.push((binding + 1, tex(resource)));
                     binding += 2;
                 }
@@ -1162,22 +1161,22 @@ impl Demo {
         let traa_pipeline = screen_pass("gtao traa", wgsl!("traa_vs"), wgsl!("traa_fs"), &[HALF]);
         let history_view = view(&history);
         let history_depth_view = view(&history_depth);
-        let traa_groups = [&self.placeholder, &history_depth_view].map(|previous| {
-            bind(
-                r,
-                traa_pipeline.get_bind_group_layout(0),
-                &[
-                    (1, tex(&prepass[1].1)),
-                    (2, sampler(&self.linear)),
-                    (3, tex(&scene.1)),
-                    (4, tex(&prepass_depth.1)),
-                    (5, self.traa_object.as_entire_binding()),
-                    (6, tex(previous)),
-                    (7, sampler(&self.linear)),
-                    (8, tex(&history_view)),
-                ],
-            )
-        });
+        // TRAANode's previous depth is its history target's depth texture
+        // from the start ( zeros until the first copy ).
+        let traa_group = bind(
+            r,
+            traa_pipeline.get_bind_group_layout(0),
+            &[
+                (1, tex(&prepass[1].1)),
+                (2, sampler(&self.linear)),
+                (3, tex(&scene.1)),
+                (4, tex(&prepass_depth.1)),
+                (5, self.traa_object.as_entire_binding()),
+                (6, tex(&history_depth_view)),
+                (7, sampler(&self.linear)),
+                (8, tex(&history_view)),
+            ],
+        );
         let output_pipeline =
             screen_pass("gtao output", OUTPUT_VS, OUTPUT_FS, &[out.options.format]);
         let output = (
@@ -1219,7 +1218,7 @@ impl Demo {
             screen,
             prepass_draws,
             ao: vec![],
-            traa: (traa_pipeline, traa_groups),
+            traa: (traa_pipeline, traa_group),
             output,
         });
         Ok(())
@@ -1366,10 +1365,12 @@ impl Demo {
                     values.push((places[i][2].clone(), target.to_vec()));
                 }
                 if pass == 0 {
-                    values.push((
-                        format!("nodeUniform{}", [44, 46][kind]),
-                        m4(motion.projection),
-                    ));
+                    // The velocity's current projection, then the previous
+                    // projection and view.
+                    let at = [40, 42][kind];
+                    values.push((format!("nodeUniform{at}"), m4(projection)));
+                    values.push((format!("nodeUniform{}", at + 2), m4(motion.projection)));
+                    values.push((format!("nodeUniform{}", at + 3), m4(motion.view)));
                 } else {
                     values.push((format!("nodeUniform{}", [3, 5][kind]), size.clone()));
                 }
@@ -1402,19 +1403,17 @@ impl Demo {
                         (["nodeUniform8", "nodeUniform10"][normal_at], vec![0.; 3]),
                         (["nodeUniform9", "nodeUniform11"][normal_at], vec![1.]),
                         (["nodeUniform11", "nodeUniform13"][model_at], m4(m.model)),
-                        (["nodeUniform37", "nodeUniform39"][env], vec![8.]),
+                        // The environment's rotation, maxLod and intensity.
                         (["nodeUniform38", "nodeUniform40"][env], id4.clone()),
-                        (["nodeUniform40", "nodeUniform42"][env], vec![1. / 768.]),
-                        (["nodeUniform41", "nodeUniform43"][env], vec![1. / 1024.]),
-                        (["nodeUniform43", "nodeUniform45"][env], vec![0.3]),
+                        (["nodeUniform40", "nodeUniform42"][env], vec![self.max_lod]),
+                        (["nodeUniform41", "nodeUniform43"][env], vec![0.3]),
                     ]
                 };
+                // The model and previous model matrices.
                 let mut pre = common(0, 0, 0, 0);
                 pre.extend([
-                    ("nodeUniform44", m4(projection)),
-                    ("nodeUniform45", m4(m.model)),
-                    ("nodeUniform47", m4(motion.view)),
-                    ("nodeUniform48", m4(m.model)),
+                    ("nodeUniform43", m4(m.model)),
+                    ("nodeUniform46", m4(m.model)),
                 ]);
                 write(&m.objects[0], SHADERS[0][1].1, "objectStruct", &pre)?;
                 write(
@@ -1437,15 +1436,11 @@ impl Demo {
                         ("nodeUniform6", vec![0.; 3]),
                         ("nodeUniform7", vec![1.]),
                         ("nodeUniform9", m4(m.model)),
-                        ("nodeUniform35", vec![8.]),
                         ("nodeUniform36", id4.clone()),
-                        ("nodeUniform38", vec![1. / 768.]),
-                        ("nodeUniform39", vec![1. / 1024.]),
-                        ("nodeUniform41", vec![0.3]),
-                        ("nodeUniform42", m4(projection)),
-                        ("nodeUniform43", m4(m.model)),
-                        ("nodeUniform45", m4(motion.view)),
-                        ("nodeUniform46", m4(m.model)),
+                        ("nodeUniform38", vec![self.max_lod]),
+                        ("nodeUniform39", vec![0.3]),
+                        ("nodeUniform41", m4(m.model)),
+                        ("nodeUniform44", m4(m.model)),
                     ],
                 )?;
                 write(
@@ -1461,11 +1456,9 @@ impl Demo {
                         ("nodeUniform8", vec![0.; 3]),
                         ("nodeUniform9", vec![1.]),
                         ("nodeUniform11", m4(m.model)),
-                        ("nodeUniform37", vec![8.]),
                         ("nodeUniform38", id4.clone()),
-                        ("nodeUniform40", vec![1. / 768.]),
-                        ("nodeUniform41", vec![1. / 1024.]),
-                        ("nodeUniform43", vec![0.3]),
+                        ("nodeUniform40", vec![self.max_lod]),
+                        ("nodeUniform41", vec![0.3]),
                     ],
                 )?;
             }
@@ -1489,10 +1482,10 @@ impl Demo {
                 ("nodeUniform2", m4(jittered.inverse())),
                 ("nodeUniform4", vec![self.params[3]]),
                 ("nodeUniform5", m4(jittered)),
-                ("nodeUniform6", vec![direction]),
-                ("nodeUniform8", id3.clone()),
-                ("nodeUniform9", vec![ao.1.size.0 as f64, ao.1.size.1 as f64]),
-                ("nodeUniform10", vec![offset]),
+                ("nodeUniform6", vec![offset]),
+                ("nodeUniform7", vec![direction]),
+                ("nodeUniform9", id3.clone()),
+                ("nodeUniform10", vec![ao.1.size.0 as f64, ao.1.size.1 as f64]),
                 ("nodeUniform11", vec![self.params[5]]),
                 ("nodeUniform12", vec![self.params[4]]),
             ],
@@ -1602,7 +1595,7 @@ impl Demo {
                     full,
                 );
             }
-            let (pipeline, groups) = &t.traa;
+            let (pipeline, group) = &t.traa;
             {
                 let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                     label: Some("gtao traa"),
@@ -1610,7 +1603,7 @@ impl Demo {
                     ..Default::default()
                 });
                 pass.set_pipeline(pipeline);
-                pass.set_bind_group(0, &groups[usize::from(self.resolves >= 2)], &[]);
+                pass.set_bind_group(0, group, &[]);
                 pass.set_vertex_buffer(0, self.quad_uv.slice(..));
                 pass.draw(0..3, 0..1);
             }

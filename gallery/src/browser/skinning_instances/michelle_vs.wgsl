@@ -1,4 +1,4 @@
-// Three.js r186 - Node System
+// Three.js r187 - Node System
 
 // directives
 
@@ -8,24 +8,25 @@
 
 // uniforms
 
-struct NodeBuffer_7764Struct {
+struct nodeUniform0Struct {
 	value : array< vec4<f32> >
 };
 @binding( 11 ) @group( 1 )
-var<storage, read> NodeBuffer_7764 : NodeBuffer_7764Struct;
+var<storage, read> nodeUniform0 : nodeUniform0Struct;
 
 struct renderStruct {
 	cameraProjectionMatrix : mat4x4<f32>,
 	cameraViewMatrix : mat4x4<f32>,
+	cameraWorldMatrix : mat4x4<f32>,
 	nodeUniform22 : vec3<f32>,
 	nodeUniform24 : vec3<f32>,
 	nodeUniform21 : vec3<f32>,
-	nodeUniform26 : vec3<f32>,
-	nodeUniform29 : vec3<f32>,
-	nodeUniform25 : vec3<f32>,
 	nodeUniform27 : vec3<f32>,
+	nodeUniform30 : vec3<f32>,
+	nodeUniform25 : vec3<f32>,
+	nodeUniform26 : vec3<f32>,
 	nodeUniform28 : vec3<f32>,
-	cameraWorldMatrix : mat4x4<f32>
+	nodeUniform29 : vec3<f32>
 };
 @binding( 0 ) @group( 0 )
 var<uniform> render : renderStruct;
@@ -46,11 +47,9 @@ struct objectStruct {
 	nodeUniform17 : vec3<f32>,
 	nodeUniform18 : f32,
 	nodeUniform20 : mat4x4<f32>,
-	nodeUniform30 : f32,
-	nodeUniform31 : mat4x4<f32>,
-	nodeUniform33 : f32,
+	nodeUniform32 : mat4x4<f32>,
 	nodeUniform34 : f32,
-	nodeUniform36 : f32
+	nodeUniform35 : f32
 };
 @binding( 0 ) @group( 1 )
 var<uniform> object : objectStruct;
@@ -67,10 +66,8 @@ struct VaryingsStruct {
 var<private> varyings : VaryingsStruct;
 
 // vars
-var<private> nodeVar0 : u32;
 var<private> normalLocal : vec3<f32>;
 var<private> modelViewMatrix : mat4x4<f32>;
-var<private> VERTEX_nodeVar208 : vec4<f32>;
 var<private> positionLocal : vec3<f32>;
 var<private> v_modelViewProjection : vec4<f32>;
 var<private> v_positionView : vec3<f32>;
@@ -90,17 +87,17 @@ fn main( @builtin( instance_index ) instanceIndex : u32,
 	// code
 
 	positionLocal = position;
-	nodeVar0 = ( ( ( instanceIndex * 16340u ) + vertexIndex ) * 2u );
-	positionLocal = NodeBuffer_7764.value[ nodeVar0 ].xyz;
+	let nodeConst0 = ( ( ( instanceIndex * 16340u ) + vertexIndex ) * 2u );
+	positionLocal = nodeUniform0.value[ nodeConst0 ].xyz;
 	varyings.nodeVarying7 = uv;
 	normalLocal = normal;
 	varyings.v_normalViewGeometry = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform11 * normalLocal ), 0.0 ) ).xyz );
-	varyings.nodeVarying4 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform11 * NodeBuffer_7764.value[ ( nodeVar0 + 1u ) ].xyz ), 0.0 ) ).xyz );
+	varyings.nodeVarying4 = normalize( ( render.cameraViewMatrix * vec4<f32>( ( object.nodeUniform11 * nodeUniform0.value[ ( nodeConst0 + 1u ) ].xyz ), 0.0 ) ).xyz );
 	modelViewMatrix = ( render.cameraViewMatrix * object.nodeUniform20 );
 	v_positionView = ( modelViewMatrix * vec4<f32>( positionLocal, 1.0 ) ).xyz;
 	varyings.v_positionViewDirection = ( - v_positionView );
-	VERTEX_nodeVar208 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
-	VERTEX_v_modelViewProjection = VERTEX_nodeVar208;
+	let VERTEX_nodeConst32 = ( render.cameraProjectionMatrix * vec4<f32>( v_positionView, 1.0 ) );
+	VERTEX_v_modelViewProjection = VERTEX_nodeConst32;
 
 	// result
 

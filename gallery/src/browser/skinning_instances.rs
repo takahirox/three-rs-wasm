@@ -5,17 +5,18 @@
 //! are rescaled, and the skeleton's bone matrices and the instance's foot-
 //! grounded matrix are stored; a compute kernel then skins every instance's
 //! vertices ( with the belly morph ) into a storage buffer the vertex stage
-//! reads. A hemisphere light, the SunLight addon's two fitted cascades ( cast
-//! onto a shadow-catcher ground ), a rim light and the RoomEnvironment PMREM
-//! light them over a screen-space gradient, with 4× MSAA and Neutral tone
-//! mapping. Every stage runs the WGSL three.js r186 generates for the page (in
-//! `skinning_instances/`, the compute kernel without its unused subgroup
-//! built-in; the output is the compute_cloth modules, byte-identical).
+//! reads. A hemisphere light, a DirectionalLight with a 2048² shadow ( cast
+//! onto a shadow-catcher ground ), a rim light and RoomEnvironment's PMREM
+//! ( fromScene with sigma 0.04, pmrem.rs ) light them over a screen-space
+//! gradient, with 4× MSAA and Neutral tone mapping. Every stage runs the WGSL
+//! three.js r187 generates for the page (in `skinning_instances/`, the compute
+//! kernel without its unused subgroup built-in; the output is the
+//! compute_cloth modules, byte-identical).
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, sampled_pipeline, set};
-use super::fog_volume::{Cascade, cascades};
 use super::gltf_viewer::load_asset;
 use super::lights_projector::{m3, m4, pack};
+use super::pmrem::room_environment;
 use super::pmrem_cube_uv::bind;
 use super::retro::{mipmapped, uniform};
 use super::shadowmap_opacity::Mipmaps;
@@ -29,8 +30,12 @@ const BYTE: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
 const SRGB: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8UnormSrgb;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 const INSTANCES: usize = 30;
+/// The light's shadow.mapSize.
 const MAP: u32 = 2048;
+/// The light's position ( it shines towards its target at the origin ).
 const SUN: [f64; 3] = [-4., 10., 8.];
+/// The shadow camera: OrthographicCamera( -5, 5, 5, -5, 0.1, 30 ).
+const SHADOW_CAMERA: (f64, f64, f64) = (5., 0.1, 30.);
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("skinning_instances/", $name, ".wgsl"))
@@ -105,8 +110,8 @@ pub(super) struct Demo {
     skinning: (wgpu::ComputePipeline, wgpu::BindGroup),
     compute_object: wgpu::Buffer,
     shadow: (wgpu::TextureView, wgpu::TextureView),
-    shadow_draws: [Draw; 2],
-    shadow_renders: [wgpu::Buffer; 2],
+    shadow_draw: Draw,
+    shadow_render: wgpu::Buffer,
     shadow_object: wgpu::Buffer,
     michelle_render: wgpu::Buffer,
     michelle_object: wgpu::Buffer,
@@ -119,8 +124,12 @@ pub(super) struct Demo {
     maps: [wgpu::TextureView; 3],
     vertices: wgpu::Buffer,
     pmrem: wgpu::TextureView,
+    /// The PMREM's last level ( PMREMNode's maxLod ).
+    max_lod: f64,
     quad_uv: wgpu::Buffer,
     clamp: wgpu::Sampler,
+    /// The PMREM's LinearMipmapLinearFilter.
+    trilinear: wgpu::Sampler,
     repeat: wgpu::Sampler,
     compare: wgpu::Sampler,
     targets: Option<Targets>,
@@ -322,12 +331,9 @@ impl Demo {
         let belly: Vec<f32> = variations.iter().map(|v| v.body[3] as f32).collect();
         s.update()?;
         let ground_foot = foot(s, feet, skinned)?;
-        let pmrem = super::room_environment::environment(r)?
-            .gpu
-            .as_ref()
-            .ok_or(Error::Invalid("room environment"))?
-            .view
-            .clone();
+        // scene.environment = fromScene( new RoomEnvironment(), 0.04 ).
+        let environment = room_environment(r, 0.04)?;
+        let (pmrem, max_lod) = (environment.view, environment.max_lod as f64);
         let bone_buffer = r.device.create_buffer(&wgpu::BufferDescriptor {
             label: Some("Michelle bone matrices"),
             size: (INSTANCES * bones.len() * 64) as u64,
@@ -466,10 +472,7 @@ impl Demo {
                 })
                 .create_view(&Default::default())
         };
-        let shadow = (
-            texture((MAP * 2, MAP), BYTE),
-            texture((MAP * 2, MAP), DEPTH),
-        );
+        let shadow = (texture((MAP, MAP), BYTE), texture((MAP, MAP), DEPTH));
         let repeat = r.device.create_sampler(&wgpu::SamplerDescriptor {
             address_mode_u: wgpu::AddressMode::Repeat,
             address_mode_v: wgpu::AddressMode::Repeat,
@@ -481,6 +484,12 @@ impl Demo {
         let clamp = r.device.create_sampler(&wgpu::SamplerDescriptor {
             mag_filter: wgpu::FilterMode::Linear,
             min_filter: wgpu::FilterMode::Linear,
+            ..Default::default()
+        });
+        let trilinear = r.device.create_sampler(&wgpu::SamplerDescriptor {
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::FilterMode::Linear,
             ..Default::default()
         });
         let compare = r.device.create_sampler(&wgpu::SamplerDescriptor {
@@ -506,33 +515,28 @@ impl Demo {
             BYTE,
             1,
         );
-        let shadow_renders = [
-            uniform(r, "skinning shadow", wgsl!("shadow_vs"), "renderStruct")?,
-            uniform(r, "skinning shadow", wgsl!("shadow_vs"), "renderStruct")?,
-        ];
+        let shadow_render = uniform(r, "skinning shadow", wgsl!("shadow_vs"), "renderStruct")?;
         let shadow_object = uniform(r, "skinning shadow", wgsl!("shadow_vs"), "objectStruct")?;
-        let shadow_draws = shadow_renders.each_ref().map(|render| {
-            (
-                shadow_pipeline.clone(),
-                vec![
-                    bind(
-                        r,
-                        shadow_pipeline.get_bind_group_layout(0),
-                        &[(0, render.as_entire_binding())],
-                    ),
-                    bind(
-                        r,
-                        shadow_pipeline.get_bind_group_layout(1),
-                        &[
-                            (0, wgpu::BindingResource::Sampler(&repeat)),
-                            (1, wgpu::BindingResource::TextureView(&maps[0])),
-                            (2, shadow_object.as_entire_binding()),
-                            (3, vertices.as_entire_binding()),
-                        ],
-                    ),
-                ],
-            )
-        });
+        let shadow_draw = (
+            shadow_pipeline.clone(),
+            vec![
+                bind(
+                    r,
+                    shadow_pipeline.get_bind_group_layout(0),
+                    &[(0, shadow_render.as_entire_binding())],
+                ),
+                bind(
+                    r,
+                    shadow_pipeline.get_bind_group_layout(1),
+                    &[
+                        (0, wgpu::BindingResource::Sampler(&repeat)),
+                        (1, wgpu::BindingResource::TextureView(&maps[0])),
+                        (2, shadow_object.as_entire_binding()),
+                        (3, vertices.as_entire_binding()),
+                    ],
+                ),
+            ],
+        );
         Ok(Self {
             controls,
             time: 0.,
@@ -554,8 +558,8 @@ impl Demo {
             skinning: (pipeline, skinning_group),
             compute_object,
             shadow,
-            shadow_draws,
-            shadow_renders,
+            shadow_draw,
+            shadow_render,
             shadow_object,
             michelle_render: uniform(r, "skinning Michelle", wgsl!("michelle_fs"), "renderStruct")?,
             michelle_object: uniform(r, "skinning Michelle", wgsl!("michelle_fs"), "objectStruct")?,
@@ -578,6 +582,7 @@ impl Demo {
             maps,
             vertices,
             pmrem,
+            max_lod,
             // QuadMesh's triangle ( positions ) for the output pass.
             quad_uv: init(
                 "skinning quad",
@@ -585,6 +590,7 @@ impl Demo {
                 vertex,
             ),
             clamp,
+            trilinear,
             repeat,
             compare,
             targets: None,
@@ -702,7 +708,7 @@ impl Demo {
                 (6, tex(&self.maps[2])),
                 (7, sampler(&self.clamp)),
                 (8, tex(&r.dfg)),
-                (9, sampler(&self.clamp)),
+                (9, sampler(&self.trilinear)),
                 (10, tex(&self.pmrem)),
                 (11, self.vertices.as_entire_binding()),
             ],
@@ -905,19 +911,39 @@ impl Demo {
                 ),
             ],
         )?;
-        let cascades: [Cascade; 2] =
-            cascades(Vector3::from_array(SUN), world, projection, 0.01, 60., 30.);
-        for (i, cascade) in cascades.iter().enumerate() {
-            write(
-                &self.shadow_renders[i],
-                wgsl!("shadow_vs"),
-                "renderStruct",
-                &[
-                    ("cameraProjectionMatrix", m4(cascade.projection)),
-                    ("cameraViewMatrix", m4(cascade.view)),
-                ],
-            )?;
-        }
+        // The light's shadow camera looks from the light at its target.
+        let (half, near, far) = SHADOW_CAMERA;
+        let shadow_projection = Matrix4::from_cols_array(&[
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            1. / half,
+            0.,
+            0.,
+            0.,
+            0.,
+            -1. / (far - near),
+            0.,
+            0.,
+            0.,
+            -near / (far - near),
+            1.,
+        ]);
+        let shadow_view = Matrix4::look_at_rh(Vector3::from_array(SUN), Vector3::ZERO, Vector3::Y);
+        let bias = Matrix4::from_cols_array(&[
+            0.5, 0., 0., 0., 0., 0.5, 0., 0., 0., 0., 1., 0., 0.5, 0.5, 0., 1.,
+        ]);
+        write(
+            &self.shadow_render,
+            wgsl!("shadow_vs"),
+            "renderStruct",
+            &[
+                ("cameraProjectionMatrix", m4(shadow_projection)),
+                ("cameraViewMatrix", m4(shadow_view)),
+            ],
+        )?;
         let identity3 = m3(Matrix4::IDENTITY);
         write(
             &self.shadow_object,
@@ -936,15 +962,17 @@ impl Demo {
         let (sky, ground_color) = (linear(0xffffff, 1.2), linear(0x939b9e, 1.2));
         let mut michelle_values = camera_values.clone();
         michelle_values.extend([
+            ("cameraWorldMatrix", m4(world)),
             ("nodeUniform22", sky.clone()),
             ("nodeUniform24", vec![0., 1., 0.]),
             ("nodeUniform21", ground_color.clone()),
-            ("nodeUniform26", linear(0xfffbf4, 2.8)),
-            ("nodeUniform29", linear(0xe8f4ff, 0.85)),
+            ("nodeUniform27", linear(0xfffbf4, 2.8)),
+            ("nodeUniform30", linear(0xe8f4ff, 0.85)),
+            // Each light's position and its target's.
             ("nodeUniform25", SUN.to_vec()),
-            ("nodeUniform27", vec![7., 5., -5.]),
-            ("nodeUniform28", vec![0.; 3]),
-            ("cameraWorldMatrix", m4(world)),
+            ("nodeUniform26", vec![0.; 3]),
+            ("nodeUniform28", vec![7., 5., -5.]),
+            ("nodeUniform29", vec![0.; 3]),
         ]);
         write(
             &self.michelle_render,
@@ -972,11 +1000,10 @@ impl Demo {
                 ("nodeUniform17", vec![0.; 3]),
                 ("nodeUniform18", vec![1.]),
                 ("nodeUniform20", m4(parent_world)),
-                ("nodeUniform30", vec![8.]),
-                ("nodeUniform31", m4(Matrix4::IDENTITY)),
-                ("nodeUniform33", vec![1. / 768.]),
-                ("nodeUniform34", vec![1. / 1024.]),
-                ("nodeUniform36", vec![1.]),
+                // The environment's rotation, maxLod and intensity.
+                ("nodeUniform32", m4(Matrix4::IDENTITY)),
+                ("nodeUniform34", vec![self.max_lod]),
+                ("nodeUniform35", vec![1.]),
             ],
         )?;
         let mut background_values = vec![("nodeUniform1", vec![1.])];
@@ -997,24 +1024,19 @@ impl Demo {
                 ("nodeUniform5", m4(Matrix4::IDENTITY)),
             ],
         )?;
-        let size = vec![(MAP * 2) as f64, MAP as f64];
+        // The shadow's matrix, normal bias, bias, radius, map size and
+        // intensity.
         let mut ground_values = camera_values.clone();
         ground_values.extend([
             ("nodeUniform3", sky),
             ("nodeUniform7", vec![0., 1., 0.]),
             ("nodeUniform2", ground_color),
-            ("nodeUniform11", m4(cascades[1].matrix)),
-            ("nodeUniform10", cascades[1].data.to_vec()),
-            ("nodeUniform17", m4(cascades[0].matrix)),
-            ("nodeUniform16", cascades[0].data.to_vec()),
-            ("nodeUniform9", vec![0.]),
-            ("nodeUniform12", vec![0.]),
-            ("nodeUniform14", vec![1.]),
-            ("nodeUniform15", size.clone()),
-            ("nodeUniform18", vec![0.]),
-            ("nodeUniform19", vec![1.]),
-            ("nodeUniform20", size),
-            ("nodeUniform21", vec![1.]),
+            ("nodeUniform9", m4(bias * shadow_projection * shadow_view)),
+            ("nodeUniform10", vec![0.]),
+            ("nodeUniform11", vec![0.]),
+            ("nodeUniform13", vec![1.]),
+            ("nodeUniform14", vec![MAP as f64; 2]),
+            ("nodeUniform15", vec![1.]),
         ]);
         write(
             &self.ground_render,
@@ -1064,8 +1086,7 @@ impl Demo {
             pass.set_bind_group(0, &self.skinning.1, &[]);
             pass.dispatch_workgroups((INSTANCES as u32 * self.vertex_count).div_ceil(64), 1, 1);
         }
-        for (i, cascade) in cascades.iter().enumerate() {
-            let clear = i == 0;
+        {
             let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("skinning shadow"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
@@ -1073,31 +1094,21 @@ impl Demo {
                     depth_slice: None,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: if clear {
-                            wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
                         store: wgpu::StoreOp::Store,
                     },
                 })],
                 depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
                     view: &self.shadow.1,
                     depth_ops: Some(wgpu::Operations {
-                        load: if clear {
-                            wgpu::LoadOp::Clear(1.)
-                        } else {
-                            wgpu::LoadOp::Load
-                        },
+                        load: wgpu::LoadOp::Clear(1.),
                         store: wgpu::StoreOp::Store,
                     }),
                     stencil_ops: None,
                 }),
                 ..Default::default()
             });
-            let [x, y, w, h] = cascade.viewport;
-            pass.set_viewport(x, y, w, h, 0., 1.);
-            set(&mut pass, &self.shadow_draws[i]);
+            set(&mut pass, &self.shadow_draw);
             pass.set_vertex_buffer(0, self.michelle.0.slice(..));
             pass.set_vertex_buffer(1, self.michelle.1.slice(..));
             pass.set_index_buffer(self.michelle.2.slice(..), wgpu::IndexFormat::Uint32);
