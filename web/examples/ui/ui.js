@@ -402,6 +402,9 @@ export async function installInspector( spec, binder, canvas ) {
 	renderer.inspector = inspector;
 	inspector.setRenderer( renderer );
 	const objects = new Map();
+	// The folders and editors by title and name, for the extras ( extras/ ).
+	inspector.galleryFolders = new Map();
+	inspector.galleryEditors = new Map();
 	const build = ( group, nodes, title = null ) => {
 
 		for ( const node of nodes ) {
@@ -409,6 +412,7 @@ export async function installInspector( spec, binder, canvas ) {
 			if ( node.kind === 'folder' ) {
 
 				const folder = group.addFolder( node.title );
+				inspector.galleryFolders.set( node.title, folder );
 				build( folder, node.children, node.title );
 				for ( const call of node.calls ?? [] ) folder[ call ]();
 				continue;
@@ -423,6 +427,7 @@ export async function installInspector( spec, binder, canvas ) {
 			const method = { slider: 'addSlider', number: 'addNumber', boolean: 'addBoolean', select: 'addSelect', color: 'addColor', string: 'addString', button: 'addButton' }[ node.type ];
 			const editor = group[ method ]( object, node.property, ...params );
 			if ( node.name !== node.property ) editor.name( node.name );
+			inspector.galleryEditors.set( node.name, editor );
 			if ( apply && node.type !== 'button' ) editor.addEventListener( 'change', ( { value } ) => apply( value ) );
 			if ( node.hidden ) editor.dispatchEvent( { type: 'hide' } );
 			if ( ! apply ) editor.__subItem?.domElement?.setAttribute( 'data-unbound', '' );
@@ -529,10 +534,10 @@ export async function installUi( app, settings ) {
 	const binder = bindings( controls, app, settings, aliases );
 	const stats = await installStats( spec.stats );
 	const guis = await installGuis( spec.guis, binder );
-	if ( extras ) ( await import( `./extras/${ extras }.js` ) ).default( guis );
 	const canvas = document.querySelector( 'canvas' );
 	const inspectors = [];
 	for ( const i of spec.inspectors ) inspectors.push( await installInspector( i, binder, canvas ) );
+	if ( extras ) ( await import( `./extras/${ extras }.js` ) ).default( guis, inspectors );
 	window.galleryInspectors = inspectors;
 	const bound = new Set( [ ...controls.keys() ].filter( i => ! binder.free( i ) ) );
 	if ( settings && ( guis.length || inspectors.length ) ) {

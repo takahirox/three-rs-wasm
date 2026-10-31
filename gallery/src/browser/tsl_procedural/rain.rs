@@ -89,9 +89,10 @@ impl Rain {
         }
         let bindings = buffers.iter().map(|b| (b, Type::Vec4)).collect::<Vec<_>>();
         let mut seed = 186u32;
+        // uint( Math.random() * 0xFFFFFF ): r187's uint constants truncate.
         let mut random = || {
             seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
-            ((seed as f64 / 4294967296.) * 0xffffff as f64).round() as u32
+            ((seed as f64 / 4294967296.) * 0xffffff as f64).trunc() as u32
         };
         let sy = random();
         let sz = random();

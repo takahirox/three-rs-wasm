@@ -35,15 +35,20 @@ impl Terrain {
         s.background_blur = 0.5;
         s.tone_mapping = ToneMapping::Aces;
         s.shadow_map_size = 1024;
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // DirectionalLight: a 1024² map, its shadow camera ±8 from 0.1 to 30.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::WHITE,
             intensity: 2.,
+            target: Vector3::ZERO,
         }));
         {
-            let n = s.get_mut(sun)?;
+            let n = s.get_mut(light)?;
             n.position = Vector3::new(6.25, 3., 4.);
             n.cast_shadow = true;
+            n.shadow.map_size = Some(1024);
+            n.shadow.near = 0.1;
             n.shadow.far = 30.;
+            n.shadow.extent = 8.;
             n.shadow.normal_bias = 0.05;
         }
         let kernel = WgslFn::new(

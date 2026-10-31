@@ -216,11 +216,12 @@ impl Elements {
         for ((scene, camera, object, viewer), rect) in self.scenes.iter_mut().zip(&self.rectangles)
         {
             let [left, top, width, height] = *rect;
-            let x = left.max(0.0);
-            let y = top.max(0.0);
-            let right = (left + width).min(target.width as f64);
-            let bottom = (top + height).min(target.height as f64);
-            if right <= x || bottom <= y {
+            // An element not fully in view is skipped.
+            if left < 0.0
+                || top < 0.0
+                || left + width > target.width as f64
+                || top + height > target.height as f64
+            {
                 continue;
             }
             viewer.update(scene, *camera)?;
@@ -228,17 +229,9 @@ impl Elements {
             {
                 camera.near = 1.0;
                 camera.far = 10.0;
-                camera.view = Some(ViewOffset {
-                    full_width: width,
-                    full_height: height,
-                    offset_x: x - left,
-                    offset_y: y - top,
-                    width: right - x,
-                    height: bottom - y,
-                });
             }
             scene.get_mut(*object)?.quaternion = Quaternion::from_rotation_y(time);
-            self.target.viewport = [x as u32, y as u32, (right - x) as u32, (bottom - y) as u32];
+            self.target.viewport = [left as u32, top as u32, width as u32, height as u32];
             self.target.scissor = Some(self.target.viewport);
             r.render(scene, *camera, &self.target)?;
         }

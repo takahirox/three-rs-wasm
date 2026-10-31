@@ -8748,7 +8748,7 @@
 						"style": null,
 						"min": 0.001,
 						"max": 0.01,
-						"step": 0.000009,
+						"step": 9e-06,
 						"decimals": {
 							"undefined": true
 						},
@@ -18087,7 +18087,7 @@
 						"style": null,
 						"min": 0.001,
 						"max": 0.02,
-						"step": 0.000019,
+						"step": 1.9e-05,
 						"decimals": {
 							"undefined": true
 						},
@@ -31092,14 +31092,32 @@
 								]
 							},
 							{
+								"kind": "controller",
+								"type": "select",
+								"object": 2,
+								"property": "lensEffect",
+								"name": "lens effect",
+								"value": "flares",
+								"params": [
+									[
+										"flares",
+										"dirt"
+									]
+								],
+								"listen": false,
+								"hidden": false
+							},
+							{
 								"kind": "folder",
 								"title": "lensflare",
-								"calls": [],
+								"calls": [
+									"show"
+								],
 								"children": [
 									{
 										"kind": "controller",
 										"type": "slider",
-										"object": 2,
+										"object": 3,
 										"property": "value",
 										"name": "threshold",
 										"value": 0.5,
@@ -31113,7 +31131,7 @@
 									{
 										"kind": "controller",
 										"type": "slider",
-										"object": 3,
+										"object": 4,
 										"property": "value",
 										"name": "attenuation",
 										"value": 25,
@@ -31127,7 +31145,7 @@
 									{
 										"kind": "controller",
 										"type": "slider",
-										"object": 4,
+										"object": 5,
 										"property": "value",
 										"name": "spacing",
 										"value": 0.25,
@@ -31142,13 +31160,36 @@
 							},
 							{
 								"kind": "folder",
+								"title": "lens dirt",
+								"calls": [
+									"hide"
+								],
+								"children": [
+									{
+										"kind": "controller",
+										"type": "slider",
+										"object": 6,
+										"property": "value",
+										"name": "intensity",
+										"value": 3,
+										"params": [
+											0,
+											10
+										],
+										"listen": false,
+										"hidden": false
+									}
+								]
+							},
+							{
+								"kind": "folder",
 								"title": "tone mapping",
 								"calls": [],
 								"children": [
 									{
 										"kind": "controller",
 										"type": "slider",
-										"object": 5,
+										"object": 7,
 										"property": "toneMappingExposure",
 										"name": "exposure",
 										"value": 1,
@@ -31418,7 +31459,7 @@
 								"kind": "controller",
 								"type": "slider",
 								"object": 0,
-								"property": "value",
+								"property": "pixelSize",
 								"name": "Pixel Size",
 								"value": 6,
 								"params": [

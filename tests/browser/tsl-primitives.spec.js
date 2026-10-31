@@ -91,7 +91,11 @@ test('TSL primitives GPU workload and resident attributes',async({page},info)=>{
   expect.soft(pair.rust.passes,kind).toBeLessThanOrEqual(pair.reference.passes);
   expect.soft(pair.rust.indirect,kind).toBe(pair.reference.indirect);
   expect.soft(pair.rust.dispatches,kind).toEqual(pair.reference.dispatches);
-  expect.soft(pair.rust.attributeBytes,kind).toBe(0);
+  if(kind==='sandbox'){
+   // r187's morph box: only its one morph weight is uploaded ( three writes the
+   // influences to a uniform ); positions, colors and morph targets stay resident.
+   expect.soft(pair.rust.attributeWrites,kind).toEqual([{label:'skin/morph input',size:4,bytes:4}]);
+  }else expect.soft(pair.rust.attributeBytes,kind).toBe(0);
  }
  writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(reports,null,2));
 });

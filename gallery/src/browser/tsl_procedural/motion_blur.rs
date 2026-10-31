@@ -39,15 +39,20 @@ impl MotionBlur {
             far: 25.,
         });
         s.shadow_map_size = 1024;
-        let sun = s.insert(NodeKind::Light(Light::Sun {
+        // DirectionalLight: a 1024² map, its shadow camera ±2 from 0.1 to 10.
+        let light = s.insert(NodeKind::Light(Light::Directional {
             color: Color::from_hex(0xffe499),
             intensity: 5.,
+            target: Vector3::ZERO,
         }));
         {
-            let n = s.get_mut(sun)?;
+            let n = s.get_mut(light)?;
             n.position = Vector3::new(4., 4., 2.);
             n.cast_shadow = true;
+            n.shadow.map_size = Some(1024);
+            n.shadow.near = 0.1;
             n.shadow.far = 10.;
+            n.shadow.extent = 2.;
         }
         for (sky, ground, intensity) in [(0x74ccf4, 0, 1.), (0x333366, 0x74ccf4, 5.)] {
             let h = s.insert(NodeKind::Light(Light::Hemisphere {

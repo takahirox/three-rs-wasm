@@ -43,6 +43,7 @@ pub(super) struct Demo {
     viewer: OrbitViewer,
     objects: Vec<Object3D>,
     rotations: Vec<Vector3>,
+    morph: Option<Object3D>,
     lines: Option<lines::Lines>,
     contact: Option<contact::Contact>,
     orbit_delta: Vector2,
@@ -99,6 +100,7 @@ impl Demo {
             viewer,
             objects: vec![],
             rotations: vec![],
+            morph: None,
             lines: None,
             contact: None,
             orbit_delta: Vector2::ZERO,
@@ -195,6 +197,9 @@ impl Demo {
                     }
                 }
             }
+        }
+        if let Some(h) = self.morph {
+            s.get_mut(h)?.morph_weights = vec![(self.time * 2.).sin() * 0.5 + 0.5];
         }
         if let Some(lines) = &mut self.lines {
             lines.update(s, &self.params)?;

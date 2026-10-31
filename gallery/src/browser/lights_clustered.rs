@@ -6,8 +6,9 @@
 //! logarithmic depth slices, and the materials loop over their cluster's
 //! lights. The scene pass is followed by renderOutput (NeutralToneMapping,
 //! with the optional cluster heat map) and FXAA. Every stage runs the WGSL
-//! three.js r186 generates for the page (in `lights_clustered/`), with the
-//! tile grid set for the drawing-buffer size.
+//! three.js r187 generates for the page (in `lights_clustered/`): the tile
+//! grid is a uniform, so a resize keeps the pipelines, and the light index
+//! storage is only replaced when it has to grow.
 use super::controls_attributes::{Controls, camera_state};
 use super::interactive_scenes::hsl;
 use crate::{
@@ -26,6 +27,9 @@ const MAX_LIGHTS: usize = 1024;
 const TILE: u32 = 32;
 const SLICES: u32 = 24;
 const CHUNKS: u64 = 16;
+/// The light texture's rows: position and distance, color and decay, spot
+/// direction and cone, bounding sphere.
+const ROWS: u32 = 4;
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth24Plus;
 macro_rules! wgsl {
@@ -96,7 +100,17 @@ fn bind(
             .collect::<Vec<_>>(),
     })
 }
-/// Pipelines, targets and bind groups for one drawing-buffer size.
+/// The pipelines, built once for the output format: the shaders do not
+/// depend on the drawing-buffer size.
+struct Pipelines {
+    format: wgpu::TextureFormat,
+    clusters: wgpu::ComputePipeline,
+    phong: wgpu::RenderPipeline,
+    spheres: wgpu::RenderPipeline,
+    output: wgpu::RenderPipeline,
+    fxaa: wgpu::RenderPipeline,
+}
+/// Targets and bind groups for one drawing-buffer size.
 struct Targets {
     width: u32,
     height: u32,
@@ -106,11 +120,11 @@ struct Targets {
     depth: wgpu::TextureView,
     toned: wgpu::TextureView,
     screen: RenderTarget,
-    clusters: (wgpu::ComputePipeline, [wgpu::BindGroup; 2]),
-    phong: (wgpu::RenderPipeline, wgpu::BindGroup, Vec<wgpu::BindGroup>),
-    spheres: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
-    output: (wgpu::RenderPipeline, [wgpu::BindGroup; 2]),
-    fxaa: (wgpu::RenderPipeline, wgpu::BindGroup),
+    clusters: [wgpu::BindGroup; 2],
+    phong: (wgpu::BindGroup, Vec<wgpu::BindGroup>),
+    spheres: [wgpu::BindGroup; 2],
+    output: [wgpu::BindGroup; 2],
+    fxaa: wgpu::BindGroup,
 }
 pub(super) struct Demo {
     controls: Controls,
@@ -120,7 +134,10 @@ pub(super) struct Demo {
     time: f64,
     lights: wgpu::Texture,
     ranges: wgpu::Texture,
+    /// ClusteredLightsNode's lightIndexes: 16 ivec4 chunks per cluster,
+    /// allocated with headroom and replaced only when the grid outgrows it.
     light_indexes: Option<wgpu::Buffer>,
+    pipelines: Option<Pipelines>,
     render_uniforms: wgpu::Buffer,
     cluster_render: wgpu::Buffer,
     cluster_object: wgpu::Buffer,
@@ -249,17 +266,24 @@ impl Demo {
             controls,
             params: [1., 1., 0., 20.],
             time: 0.,
-            lights: texture("clustered lights", MAX_LIGHTS as u32, 2),
+            lights: texture("clustered lights", MAX_LIGHTS as u32, ROWS),
             ranges: texture("clustered slices", SLICES, 1),
             light_indexes: None,
+            pipelines: None,
             render_uniforms: uniform(r, "clustered render", 208),
             cluster_render: uniform(r, "clusters render", 144),
             cluster_object: uniform(r, "clusters object", 16),
-            phong_objects: (0..5).map(|_| uniform(r, "phong object", 176)).collect(),
+            phong_objects: (0..5).map(|_| uniform(r, "phong object", 192)).collect(),
             sphere_object: uniform(r, "spheres object", 80),
-            instances: uniform(r, "sphere matrices", (GRID * GRID * 64) as u64),
+            // InstancedMesh's instanceMatrix: a per-instance vertex attribute.
+            instances: r.device.create_buffer(&wgpu::BufferDescriptor {
+                label: Some("sphere matrices"),
+                size: (GRID * GRID * 64) as u64,
+                usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+                mapped_at_creation: false,
+            }),
             output_render: uniform(r, "output render", 96),
-            output_object: uniform(r, "output object", 32),
+            output_object: uniform(r, "output object", 16),
             fxaa_steps: uniform(r, "fxaa steps", 96),
             fxaa_size: uniform(r, "fxaa size", 16),
             meshes,
@@ -303,65 +327,18 @@ impl Demo {
         self.wave();
         self.controls.frame_update(s, c)
     }
-    fn resize(&mut self, r: &Renderer, out: &RenderTarget) -> Result<()> {
-        let (width, height) = (out.width, out.height);
-        // ClusteredLightsNode.create: tiles over the size fitted to 32 pixels.
-        let fit = |v: u32| v.div_ceil(TILE) * TILE;
-        let (nx, ny) = (fit(width) / TILE, fit(height) / TILE);
-        let clusters = nx * ny * SLICES;
-        let grid = |source: &str| {
-            source
-                .replace("NXY_u", &format!("{}u", nx * ny))
-                .replace("NX_u", &format!("{nx}u"))
-                .replace("NY_u", &format!("{ny}u"))
-                .replace("NXY_", &format!("{}", nx * ny))
-                .replace("NX_", &format!("{nx}"))
-                .replace("X_STEP", &format!("{:?}", 2. / nx as f64))
-                .replace("Y_STEP", &format!("{:?}", 2. / ny as f64))
-        };
+    /// The pipelines, once per output format.
+    fn pipelines(&mut self, r: &Renderer, format: wgpu::TextureFormat) {
+        if self.pipelines.as_ref().is_some_and(|p| p.format == format) {
+            return;
+        }
         let module = |label, source: &str| {
             r.device.create_shader_module(wgpu::ShaderModuleDescriptor {
                 label: Some(label),
-                source: wgpu::ShaderSource::Wgsl(grid(source).into()),
+                source: wgpu::ShaderSource::Wgsl(source.into()),
             })
         };
-        let indexes = r.device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("light indexes"),
-            size: clusters as u64 * CHUNKS * 16,
-            usage: wgpu::BufferUsages::STORAGE,
-            mapped_at_creation: false,
-        });
-        let view = |t: &wgpu::Texture| t.create_view(&Default::default());
-        let (lights, ranges) = (view(&self.lights), view(&self.ranges));
-        let texture = |format, sampled: bool| {
-            r.device
-                .create_texture(&wgpu::TextureDescriptor {
-                    label: Some("clustered target"),
-                    size: wgpu::Extent3d {
-                        width,
-                        height,
-                        depth_or_array_layers: 1,
-                    },
-                    mip_level_count: 1,
-                    sample_count: 1,
-                    dimension: wgpu::TextureDimension::D2,
-                    format,
-                    usage: wgpu::TextureUsages::RENDER_ATTACHMENT
-                        | if sampled {
-                            wgpu::TextureUsages::TEXTURE_BINDING
-                        } else {
-                            wgpu::TextureUsages::empty()
-                        },
-                    view_formats: &[],
-                })
-                .create_view(&Default::default())
-        };
-        let (color, depth, toned) = (
-            texture(HALF, true),
-            texture(DEPTH, false),
-            texture(HALF, true),
-        );
-        let compute = r
+        let clusters = r
             .device
             .create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
                 label: Some("clusters"),
@@ -371,47 +348,31 @@ impl Demo {
                 compilation_options: Default::default(),
                 cache: None,
             });
-        Layout::new(16)
-            .i(0, clusters as i32)
-            .write(r, &self.cluster_object);
-        let clusters_binds = [
-            bind(
-                r,
-                compute.get_bind_group_layout(0),
-                &[(0, self.cluster_render.as_entire_binding())],
-            ),
-            bind(
-                r,
-                compute.get_bind_group_layout(1),
-                &[
-                    (0, indexes.as_entire_binding()),
-                    (1, wgpu::BindingResource::TextureView(&ranges)),
-                    (2, wgpu::BindingResource::TextureView(&lights)),
-                    (3, self.cluster_object.as_entire_binding()),
-                ],
-            ),
+        let attribute = |shader_location, format, offset| wgpu::VertexAttribute {
+            format,
+            offset,
+            shader_location,
+        };
+        let float3 = wgpu::VertexFormat::Float32x3;
+        let float4 = wgpu::VertexFormat::Float32x4;
+        let position = [attribute(0, float3, 0)];
+        let normal = [attribute(1, float3, 0)];
+        // instanceMatrix's four columns and instanceColor.
+        let matrix = [
+            attribute(2, float4, 0),
+            attribute(3, float4, 16),
+            attribute(4, float4, 32),
+            attribute(5, float4, 48),
         ];
-        let attributes: Vec<[wgpu::VertexAttribute; 1]> = [
-            (0, wgpu::VertexFormat::Float32x3),
-            (1, wgpu::VertexFormat::Float32x3),
-            (2, wgpu::VertexFormat::Float32x3),
-            (0, wgpu::VertexFormat::Float32x2),
-        ]
-        .iter()
-        .map(|&(shader_location, format)| {
-            [wgpu::VertexAttribute {
-                format,
-                offset: 0,
-                shader_location,
-            }]
-        })
-        .collect();
-        let layout = |i: usize, stride, step| wgpu::VertexBufferLayout {
+        let color = [attribute(6, float3, 0)];
+        let uv = [attribute(0, wgpu::VertexFormat::Float32x2, 0)];
+        let layout = |attributes, stride, step_mode| wgpu::VertexBufferLayout {
             array_stride: stride,
-            step_mode: step,
-            attributes: &attributes[i],
+            step_mode,
+            attributes,
         };
         let vertex = wgpu::VertexStepMode::Vertex;
+        let instance = wgpu::VertexStepMode::Instance;
         let pipeline = |label,
                         vs: &str,
                         fs: &str,
@@ -451,17 +412,132 @@ impl Demo {
                 })
         };
         let half_target = wgpu::ColorTargetState::from(HALF);
-        let phong_pipeline = pipeline(
+        let phong = pipeline(
             "phong",
             wgsl!("phong_vs"),
             wgsl!("phong_fs"),
-            &[layout(0, 12, vertex), layout(1, 12, vertex)],
+            &[layout(&position, 12, vertex), layout(&normal, 12, vertex)],
             half_target.clone(),
             true,
         );
+        let spheres = pipeline(
+            "spheres",
+            wgsl!("spheres_vs"),
+            wgsl!("spheres_fs"),
+            &[
+                layout(&position, 12, vertex),
+                layout(&normal, 12, vertex),
+                layout(&matrix, 64, instance),
+                layout(&color, 12, instance),
+            ],
+            half_target.clone(),
+            true,
+        );
+        let output = pipeline(
+            "render output",
+            wgsl!("output_vs"),
+            wgsl!("output_fs"),
+            &[layout(&uv, 8, vertex)],
+            half_target,
+            false,
+        );
+        let fxaa = pipeline(
+            "fxaa",
+            wgsl!("fxaa_vs"),
+            wgsl!("fxaa_fs"),
+            &[layout(&uv, 8, vertex)],
+            format.into(),
+            false,
+        );
+        self.pipelines = Some(Pipelines {
+            format,
+            clusters,
+            phong,
+            spheres,
+            output,
+            fxaa,
+        });
+    }
+    fn resize(&mut self, r: &Renderer, out: &RenderTarget) -> Result<()> {
+        let (width, height) = (out.width, out.height);
+        self.pipelines(r, out.options.format);
+        let pipelines = self.pipelines.as_ref().unwrap();
+        // ClusteredLightsNode._resize: tiles over the size fitted to 32 pixels.
+        let fit = |v: u32| v.div_ceil(TILE) * TILE;
+        let (nx, ny) = (fit(width) / TILE, fit(height) / TILE);
+        let clusters = nx * ny * SLICES;
+        // _create: the storage grows geometrically ( 1.5 × the first grid,
+        // then doubling ), so most resizes keep it.
+        let required = clusters as u64 * CHUNKS * 16;
+        let previous = self.light_indexes.as_ref().map_or(0, |b| b.size());
+        if previous < required {
+            let size = if previous == 0 {
+                (clusters as u64 * CHUNKS).div_ceil(2) * 3 * 16
+            } else {
+                required.max(previous * 2)
+            };
+            self.light_indexes = Some(r.device.create_buffer(&wgpu::BufferDescriptor {
+                label: Some("light indexes"),
+                size,
+                usage: wgpu::BufferUsages::STORAGE,
+                mapped_at_creation: false,
+            }));
+        }
+        let indexes = self.light_indexes.as_ref().unwrap();
+        let view = |t: &wgpu::Texture| t.create_view(&Default::default());
+        let (lights, ranges) = (view(&self.lights), view(&self.ranges));
+        let texture = |format, sampled: bool| {
+            r.device
+                .create_texture(&wgpu::TextureDescriptor {
+                    label: Some("clustered target"),
+                    size: wgpu::Extent3d {
+                        width,
+                        height,
+                        depth_or_array_layers: 1,
+                    },
+                    mip_level_count: 1,
+                    sample_count: 1,
+                    dimension: wgpu::TextureDimension::D2,
+                    format,
+                    usage: wgpu::TextureUsages::RENDER_ATTACHMENT
+                        | if sampled {
+                            wgpu::TextureUsages::TEXTURE_BINDING
+                        } else {
+                            wgpu::TextureUsages::empty()
+                        },
+                    view_formats: &[],
+                })
+                .create_view(&Default::default())
+        };
+        let (color, depth, toned) = (
+            texture(HALF, true),
+            texture(DEPTH, false),
+            texture(HALF, true),
+        );
+        // The grid dimensions and the compute count.
+        let mut object = Layout::new(16).f(0, nx as f64).f(4, ny as f64);
+        object.0[8..12].copy_from_slice(&clusters.to_le_bytes());
+        object.write(r, &self.cluster_object);
+        let clusters_binds = [
+            bind(
+                r,
+                pipelines.clusters.get_bind_group_layout(0),
+                &[(0, self.cluster_render.as_entire_binding())],
+            ),
+            bind(
+                r,
+                pipelines.clusters.get_bind_group_layout(1),
+                &[
+                    (0, wgpu::BindingResource::TextureView(&ranges)),
+                    (1, self.cluster_object.as_entire_binding()),
+                    (2, wgpu::BindingResource::TextureView(&lights)),
+                    (3, indexes.as_entire_binding()),
+                ],
+            ),
+        ];
         let phong_render = bind(
             r,
-            phong_pipeline.get_bind_group_layout(0),
+            pipelines.phong.get_bind_group_layout(0),
             &[(0, self.render_uniforms.as_entire_binding())],
         );
         let phong_objects = self
@@ -470,7 +546,7 @@ impl Demo {
             .map(|object| {
                 bind(
                     r,
-                    phong_pipeline.get_bind_group_layout(1),
+                    pipelines.phong.get_bind_group_layout(1),
                     &[
                         (0, object.as_entire_binding()),
                         (1, indexes.as_entire_binding()),
@@ -479,53 +555,32 @@ impl Demo {
                 )
             })
             .collect();
-        let spheres_pipeline = pipeline(
-            "spheres",
-            wgsl!("spheres_vs"),
-            wgsl!("spheres_fs"),
-            &[
-                layout(0, 12, vertex),
-                layout(1, 12, vertex),
-                layout(2, 12, wgpu::VertexStepMode::Instance),
-            ],
-            half_target.clone(),
-            true,
-        );
         let spheres_binds = [
             bind(
                 r,
-                spheres_pipeline.get_bind_group_layout(0),
+                pipelines.spheres.get_bind_group_layout(0),
                 &[(0, self.render_uniforms.as_entire_binding())],
             ),
             bind(
                 r,
-                spheres_pipeline.get_bind_group_layout(1),
+                pipelines.spheres.get_bind_group_layout(1),
                 &[
                     (0, self.sphere_object.as_entire_binding()),
                     (1, indexes.as_entire_binding()),
                     (2, wgpu::BindingResource::TextureView(&lights)),
-                    (3, self.instances.as_entire_binding()),
                 ],
             ),
         ];
         let sampler = wgpu::BindingResource::Sampler(&self.sampler);
-        let output_pipeline = pipeline(
-            "render output",
-            wgsl!("output_vs"),
-            wgsl!("output_fs"),
-            &[layout(3, 8, vertex)],
-            half_target,
-            false,
-        );
         let output_binds = [
             bind(
                 r,
-                output_pipeline.get_bind_group_layout(0),
+                pipelines.output.get_bind_group_layout(0),
                 &[(0, self.output_render.as_entire_binding())],
             ),
             bind(
                 r,
-                output_pipeline.get_bind_group_layout(1),
+                pipelines.output.get_bind_group_layout(1),
                 &[
                     (0, sampler.clone()),
                     (1, wgpu::BindingResource::TextureView(&color)),
@@ -534,22 +589,14 @@ impl Demo {
                 ],
             ),
         ];
-        let fxaa_pipeline = pipeline(
-            "fxaa",
-            wgsl!("fxaa_vs"),
-            wgsl!("fxaa_fs"),
-            &[layout(3, 8, vertex)],
-            out.options.format.into(),
-            false,
-        );
         let fxaa_bind = bind(
             r,
-            fxaa_pipeline.get_bind_group_layout(0),
+            pipelines.fxaa.get_bind_group_layout(0),
             &[
                 (0, sampler.clone()),
                 (1, wgpu::BindingResource::TextureView(&toned)),
-                (2, self.fxaa_steps.as_entire_binding()),
-                (3, self.fxaa_size.as_entire_binding()),
+                (2, self.fxaa_size.as_entire_binding()),
+                (3, self.fxaa_steps.as_entire_binding()),
             ],
         );
         Layout::new(16)
@@ -566,7 +613,6 @@ impl Demo {
                 ..out.options.clone()
             },
         )?;
-        self.light_indexes = Some(indexes);
         self.targets = Some(Targets {
             width,
             height,
@@ -576,11 +622,11 @@ impl Demo {
             depth,
             toned,
             screen,
-            clusters: (compute, clusters_binds),
-            phong: (phong_pipeline, phong_render, phong_objects),
-            spheres: (spheres_pipeline, spheres_binds),
-            output: (output_pipeline, output_binds),
-            fxaa: (fxaa_pipeline, fxaa_bind),
+            clusters: clusters_binds,
+            phong: (phong_render, phong_objects),
+            spheres: spheres_binds,
+            output: output_binds,
+            fxaa: fxaa_bind,
         });
         Ok(())
     }
@@ -600,17 +646,21 @@ impl Demo {
                 .partial_cmp(&0.)
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
-        let mut data = vec![0f32; MAX_LIGHTS * 8];
+        let mut data = vec![0f32; MAX_LIGHTS * 4 * ROWS as usize];
         let line = MAX_LIGHTS * 4;
         for (i, &k) in order.iter().enumerate() {
             let b = &self.balls[k];
-            data[i * 4..i * 4 + 4].copy_from_slice(&[b.x as f32, b.y as f32, b.z as f32, 9.]);
-            data[line + i * 4..line + i * 4 + 4].copy_from_slice(&[
+            let row = |n: usize| n * line + i * 4..n * line + i * 4 + 4;
+            data[row(0)].copy_from_slice(&[b.x as f32, b.y as f32, b.z as f32, 9.]);
+            data[row(1)].copy_from_slice(&[
                 (b.color[0] * intensity) as f32,
                 (b.color[1] * intensity) as f32,
                 (b.color[2] * intensity) as f32,
                 2.,
             ]);
+            // A point light: no spot cone ( attenuation 1 ), bounded by its distance.
+            data[row(2)].copy_from_slice(&[0., 0., 0., -1.]);
+            data[row(3)].copy_from_slice(&[b.x as f32, b.y as f32, b.z as f32, 9.]);
         }
         r.queue.write_texture(
             self.lights.as_image_copy(),
@@ -618,7 +668,7 @@ impl Demo {
             wgpu::TexelCopyBufferLayout {
                 offset: 0,
                 bytes_per_row: Some(MAX_LIGHTS as u32 * 16),
-                rows_per_image: Some(2),
+                rows_per_image: Some(ROWS),
             },
             self.lights.size(),
         );
@@ -685,6 +735,7 @@ impl Demo {
             .m4(80, projection)
             .m4(144, view)
             .write(r, &self.render_uniforms);
+        let grid = self.targets.as_ref().map_or((1, 1), |t| t.grid);
         // The floor, then the four big spheres: MeshPhongNodeMaterial with
         // specular 0x111111 and shininess 80.
         let bigs = [(-9., -9.), (9., -9.), (-9., 9.), (9., 9.)];
@@ -699,19 +750,23 @@ impl Demo {
                     Matrix4::from_translation(Vector3::new(x, BIG_RADIUS, z)),
                 )
             };
-            Layout::new(176)
+            Layout::new(192)
                 .v3(0, color.0.to_array())
                 .f(12, 1.)
                 .f(16, 80.)
                 .v3(32, specular)
                 .v3(48, [0.; 3])
                 .f(60, 1.)
-                .m4(64, model)
-                .m3(128)
+                .f(64, grid.0 as f64)
+                .f(68, grid.1 as f64)
+                .m4(80, model)
+                .m3(144)
                 .write(r, object);
         }
         Layout::new(80)
             .f(0, 1.)
+            .f(8, grid.0 as f64)
+            .f(12, grid.1 as f64)
             .m4(16, Matrix4::IDENTITY)
             .write(r, &self.sphere_object);
         let matrices: Vec<f32> = self
@@ -729,24 +784,28 @@ impl Demo {
             .targets
             .as_ref()
             .ok_or(Error::Invalid("clustered targets"))?;
+        let pipelines = self
+            .pipelines
+            .as_ref()
+            .ok_or(Error::Invalid("clustered pipelines"))?;
         Layout::new(96)
             .f(0, near)
             .f(4, far)
             .m4(16, projection.inverse())
             .f(80, 1.)
             .write(r, &self.output_render);
-        Layout::new(32)
-            .i(0, self.params[3].round() as i32)
-            .f(8, t.grid.0 as f64)
-            .f(12, t.grid.1 as f64)
-            .f(16, self.params[2])
+        Layout::new(16)
+            .f(0, t.grid.0 as f64)
+            .f(4, t.grid.1 as f64)
+            .i(8, self.params[3].round() as i32)
+            .f(12, self.params[2])
             .write(r, &self.output_object);
         let mut encoder = r.device.create_command_encoder(&Default::default());
         {
             let mut pass = encoder.begin_compute_pass(&Default::default());
-            pass.set_pipeline(&t.clusters.0);
-            pass.set_bind_group(0, &t.clusters.1[0], &[]);
-            pass.set_bind_group(1, &t.clusters.1[1], &[]);
+            pass.set_pipeline(&pipelines.clusters);
+            pass.set_bind_group(0, &t.clusters[0], &[]);
+            pass.set_bind_group(1, &t.clusters[1], &[]);
             pass.dispatch_workgroups((t.grid.0 * t.grid.1 * SLICES).div_ceil(64), 1, 1);
         }
         {
@@ -756,8 +815,10 @@ impl Demo {
                     view: &t.color,
                     depth_slice: None,
                     resolve_target: None,
+                    // WebGPURenderer( { alpha: true } ): cleared to transparent
+                    // black, so the heat map's mix leaves the sky translucent.
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
                         store: wgpu::StoreOp::Store,
                     },
                 })],
@@ -771,9 +832,9 @@ impl Demo {
                 }),
                 ..Default::default()
             });
-            pass.set_pipeline(&t.phong.0);
-            pass.set_bind_group(0, &t.phong.1, &[]);
-            for (i, object) in t.phong.2.iter().enumerate() {
+            pass.set_pipeline(&pipelines.phong);
+            pass.set_bind_group(0, &t.phong.0, &[]);
+            for (i, object) in t.phong.1.iter().enumerate() {
                 let m = &self.meshes[if i == 0 { 0 } else { 1 }];
                 pass.set_bind_group(1, object, &[]);
                 pass.set_vertex_buffer(0, m.0.slice(..));
@@ -782,12 +843,13 @@ impl Demo {
                 pass.draw_indexed(0..m.3, 0, 0..1);
             }
             let m = &self.meshes[2];
-            pass.set_pipeline(&t.spheres.0);
-            pass.set_bind_group(0, &t.spheres.1[0], &[]);
-            pass.set_bind_group(1, &t.spheres.1[1], &[]);
+            pass.set_pipeline(&pipelines.spheres);
+            pass.set_bind_group(0, &t.spheres[0], &[]);
+            pass.set_bind_group(1, &t.spheres[1], &[]);
             pass.set_vertex_buffer(0, m.0.slice(..));
             pass.set_vertex_buffer(1, m.1.slice(..));
-            pass.set_vertex_buffer(2, self.colors.slice(..));
+            pass.set_vertex_buffer(2, self.instances.slice(..));
+            pass.set_vertex_buffer(3, self.colors.slice(..));
             pass.set_index_buffer(m.2.slice(..), wgpu::IndexFormat::Uint32);
             pass.draw_indexed(0..m.3, 0, 0..self.balls.len() as u32);
         }
@@ -814,8 +876,8 @@ impl Demo {
             pass.set_vertex_buffer(0, self.quad_uv.slice(..));
             pass.draw(0..3, 0..1);
         };
-        post(&t.toned, &t.output.0, &[&t.output.1[0], &t.output.1[1]]);
-        post(&t.screen.view, &t.fxaa.0, &[&t.fxaa.1]);
+        post(&t.toned, &pipelines.output, &[&t.output[0], &t.output[1]]);
+        post(&t.screen.view, &pipelines.fxaa, &[&t.fxaa]);
         r.queue.submit([encoder.finish()]);
         Ok(true)
     }

@@ -114,12 +114,13 @@ pub(super) struct Demo {
     output: Option<(wgpu::TextureFormat, wgpu::RenderPipeline)>,
     targets: Option<Targets>,
 }
-/// The page's Math.random() seeds for its hash nodes, as TSL's uint() rounds them.
+/// The page's Math.random() seeds for its hash nodes, as r187's uint()
+/// constants truncate them.
 fn seeds() -> [u32; 6] {
     let mut seed = 186u32;
     [0; 6].map(|_| {
         seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
-        (seed as f64 / 4294967296. * 0xffffff as f64).round() as u32
+        (seed as f64 / 4294967296. * 0xffffff as f64).trunc() as u32
     })
 }
 fn with_seeds(source: &str) -> String {

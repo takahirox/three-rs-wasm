@@ -121,7 +121,7 @@ impl Demo {
         let count = match self.example {
             109 | 110 => 1,
             111 => 4,
-            112 => 6,
+            112 => 8,
             _ => 0,
         };
         if i >= count || !v.is_finite() {
@@ -171,7 +171,7 @@ impl Demo {
         };
         self.focus = self.focus_from.lerp(self.focus_to, t);
         if self.example == 112 {
-            s.exposure = self.params[5] as f64;
+            s.exposure = self.params[7] as f64;
         }
         Ok(())
     }

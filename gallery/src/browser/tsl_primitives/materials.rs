@@ -137,7 +137,7 @@ impl Demo {
             Arc::new(BoxGeometry::build(1., 1., 1.)?),
             Material::Shader(m),
         );
-        s.get_mut(h)?.position.y = 1.;
+        s.get_mut(h)?.position = Vector3::new(-1., 1., 0.);
         self.objects.push(h);
         self.rotations.push(Vector3::ZERO);
         let displace = sample(0, uv()).x() * float(0.25);
@@ -158,7 +158,7 @@ impl Demo {
             Arc::new(SphereGeometry::build(0.5, 64, 64)?),
             Material::Shader(m),
         );
-        s.get_mut(h)?.position = Vector3::new(-2., -1., 0.);
+        s.get_mut(h)?.position = Vector3::new(-3., -1., 0.);
         let data = crate::material::Texture::from_rgba(
             512,
             512,
@@ -177,7 +177,7 @@ impl Demo {
             Arc::new(PlaneGeometry::build(1., 1., 1, 1)?),
             Material::Shader(m),
         );
-        s.get_mut(h)?.position = Vector3::new(0., -1., 0.);
+        s.get_mut(h)?.position = Vector3::new(-1., -1., 0.);
         let t = crate::material::Texture::from_basis_compressed(
             fetch(&format!("{ASSETS}/2d_uastc.ktx2")).await?,
             true,
@@ -198,7 +198,7 @@ impl Demo {
             Arc::new(PlaneGeometry::build(1., 1., 1, 1)?),
             Material::Shader(m),
         );
-        s.get_mut(h)?.position = Vector3::new(-2., 1., 0.);
+        s.get_mut(h)?.position = Vector3::new(-3., 1., 0.);
         self.objects.push(h);
         let mut seed = 186;
         let mut points = vec![];
@@ -214,7 +214,7 @@ impl Demo {
             geometry: Arc::new(g),
             material: Arc::new(Material::Shader(sh)),
         }));
-        s.get_mut(h)?.position = Vector3::new(2., -1., 0.);
+        s.get_mut(h)?.position = Vector3::new(1., -1., 0.);
         let positions = vec![
             -0.5, -0.5, 0., 0.5, -0.5, 0., 0.5, 0.5, 0., -0.5, 0.5, 0., -0.5, -0.5, 0.,
         ];
@@ -228,7 +228,50 @@ impl Demo {
             material: Arc::new(Material::Line(m)),
             segments: false,
         }));
-        s.get_mut(h)?.position = Vector3::new(2., 1., 0.);
+        s.get_mut(h)?.position = Vector3::new(1., 1., 0.);
+        // Morph targets: a box whose vertices move onto a 0.7 sphere while
+        // their color turns from red to blue, on the GPU.
+        let mut g = BoxGeometry::segmented(1., 1., 1., 8, 8, 8)?;
+        let count = g.vertex_count();
+        let base = g
+            .attributes
+            .get("position")
+            .ok_or(Error::Invalid("morph box position"))?;
+        let mut colors = vec![0.; count * 3];
+        let mut positions = vec![0.; count * 3];
+        let mut morph_colors = vec![0.; count * 3];
+        for i in 0..count {
+            let v = Vector3::new(
+                base.get_component(i, 0)?,
+                base.get_component(i, 1)?,
+                base.get_component(i, 2)?,
+            )
+            .normalize()
+                * 0.7;
+            positions[i * 3..i * 3 + 3].copy_from_slice(&[v.x as f32, v.y as f32, v.z as f32]);
+            colors[i * 3] = 1.;
+            morph_colors[i * 3 + 2] = 1.;
+        }
+        attribute(&mut g, "color", colors, 3)?;
+        g.morph_attributes.insert(
+            "position".into(),
+            vec![Attribute::F32(BufferAttribute::new(positions, 3, false)?)],
+        );
+        g.morph_attributes.insert(
+            "color".into(),
+            vec![Attribute::F32(BufferAttribute::new(
+                morph_colors,
+                3,
+                false,
+            )?)],
+        );
+        let mut m = MeshBasicMaterial::default();
+        m.properties.vertex_colors = true;
+        let h = mesh(s, Arc::new(g), Material::Basic(m));
+        let n = s.get_mut(h)?;
+        n.position = Vector3::new(3., 1., 0.);
+        n.morph_weights = vec![0.5];
+        self.morph = Some(h);
         Ok(())
     }
 }

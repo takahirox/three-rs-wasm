@@ -15606,7 +15606,7 @@
         "source": "gallery/src/browser/clipping_stencil.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "ClippingGroupの3平面によるトーラスノットのクリッピング、平面ごとのステンシルビット反転と断面キャップ、平面追従のキャップとPlaneHelper、クリップされたSunLightの影を受けるShadowNodeMaterialの地面、OrbitControls、GUI（平面の定数・反転・ヘルパー表示・アニメーション）をRustで再現。renderOrderの1.1などは10倍の整数順で保持。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "ClippingGroupの3平面によるトーラスノットのクリッピング、平面ごとのステンシルビット反転と断面キャップ、平面追従のキャップとPlaneHelper、クリップされたDirectionalLightの影を受けるShadowNodeMaterialの地面、OrbitControls、GUI（平面の定数・反転・ヘルパー表示・アニメーション）をRustで再現。renderOrderの1.1などは10倍の整数順で保持。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -19081,7 +19081,7 @@
         "source": "gallery/src/browser/lights_clustered.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r186が生成するWGSL（lights_clustered/）を、描画バッファの大きさに合わせたタイル格子で実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "跳ねる球に乗った876個の点光源と4つの大きなPhong球、Phongの床をClusteredLightingで描く構成をRustで再現。毎フレーム、アドオンと同じくCPUで光源をビュー深度で並べてフロートテクスチャと深度スライスごとの範囲に書き込み、コンピュートパスで32ピクセルのタイル×24の対数深度スライスごとに最大64個の光源を割り当て、マテリアルはクラスターの光源だけをループする。続いてrenderOutput（NeutralToneMapping、クラスターのヒートマップ表示）とFXAA。各段はページからthree.js r187が生成するWGSL（lights_clustered/）を実行し、タイル格子の大きさはユニフォームなのでリサイズでパイプラインを作り直さず、光源インデックスのストレージは足りなくなったときだけ余裕を持って作り直す。球のインスタンス行列はr187と同じくインスタンス属性として毎フレーム書き込む。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -21917,7 +21917,7 @@
         "source": "gallery/src/browser/mesh_batch.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "円錐・箱・球のBatchedMesh（既定512個、先頭dynamic個が毎フレーム回転）を、ビュー法線でバッチ色を陰影付けするノードマテリアルで描画。原作のonBeforeRenderと同じく毎フレームCPUで境界球の視錐台判定と深度ソート（スケールした深度の基数ソートまたは既定の比較関数）を行い、可視インスタンスごとに1回のインデックス描画でバッチIDを読む。行列・色・IDはGPUバッファに置き、変更された行列と毎フレームのIDだけをアップロードする。webgpuを切り替えた場合も描画はWebGPUのまま（背景色のみ原作と同じく変わる）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "円錐・箱・球のBatchedMesh（既定512個、先頭dynamic個が毎フレーム回転）を、ビュー法線でバッチ色を陰影付けするノードマテリアルで描画。原作のonBeforeRenderと同じく毎フレームCPUで境界球の視錐台判定と深度ソート（スケールした深度の基数ソートまたは既定の比較関数）を行い、同じジオメトリが続く可視インスタンスをr187と同じく1回のインスタンス描画にまとめ、各インスタンスがバッチIDを読む。行列・色・IDはGPUバッファに置き、変更された行列と毎フレームのIDだけをアップロードする。webgpuを切り替えた場合も描画はWebGPUのまま（背景色のみ原作と同じく変わる）。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [
@@ -22863,7 +22863,7 @@
         "source": "gallery/src/browser/tsl_extended.rs",
         "test": "tests/browser/tsl-extended.spec.js",
         "limitations": [
-          "単一GPUデバイス、40シーンのviewport/scissor描画。画面外は描画せず、部分表示はカメラのview offsetで切り取る。"
+          "単一GPUデバイス、40シーンのviewport/scissor描画。全体が画面に収まらない要素は描画しない。"
         ]
       },
       "imports": [
@@ -24957,6 +24957,7 @@
         "source": "gallery/src/browser/tsl_lighting.rs",
         "test": "tests/browser/tsl-lighting.spec.js",
         "limitations": [
+          "r187のレンズエフェクト切替え（flares／dirt）を再現。dirtはブルームを全解像度のRTTに写し、lensdirt.pngを画面のアスペクトに合わせて出力パスで重ねる。",
           "Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
@@ -25328,7 +25329,7 @@
         "source": "gallery/src/browser/outline.rs",
         "test": "tests/browser/texture-volumes.spec.js",
         "limitations": [
-          "OBJの木、20個の球、床、トーラスとSunLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "OBJの木、20個の球、床、トーラスとDirectionalLightの影、ポインタ位置のレイキャストで選ぶ対象へのOutlineNode（非選択物の深度、深度テスト付きマスク、1/2解像度の縮小とエッジ検出、1/2と1/4解像度の分離ブラー、合成）、エッジの色・強さ・太さ・グロー・パルス、減衰付きOrbitControlsをRustで再現。オーバーライド描画は静止した同じジオメトリを共有するミラーシーンで行う。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

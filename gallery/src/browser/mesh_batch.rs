@@ -4,8 +4,9 @@
 //! normal. As BatchedMesh.onBeforeRender does, each frame culls the
 //! instances' bounding spheres against the frustum and sorts them by depth
 //! (radix sort on the scaled depth, or the default comparator), then issues
-//! one indexed draw per visible instance whose instance index reads the
-//! batch id; matrices, colors and ids live in GPU buffers, the matrices
+//! one instanced indexed draw per run of consecutive instances of the same
+//! geometry ( r187's merged draws ), whose instance index reads the batch
+//! id; matrices, colors and ids live in GPU buffers, the matrices
 //! uploaded when they change and the ids each frame, as the original's
 //! textures are.
 use super::controls_attributes::{Controls, camera_state};
@@ -577,8 +578,15 @@ impl Demo {
             pass.set_bind_group(0, &self.bind, &[]);
             pass.set_vertex_buffer(0, self.vertices.slice(..));
             pass.set_index_buffer(self.indices.slice(..), wgpu::IndexFormat::Uint16);
-            for (i, &(start, count)) in self.draws.iter().enumerate() {
-                pass.draw_indexed(start..start + count, 0, i as u32..i as u32 + 1);
+            // r187's merged draw parameters: consecutive instances of the same
+            // geometry share one instanced draw, its instances reading
+            // consecutive ids.
+            let mut first = 0u32;
+            for run in self.draws.chunk_by(|a, b| a == b) {
+                let (start, count) = run[0];
+                let instances = run.len() as u32;
+                pass.draw_indexed(start..start + count, 0, first..first + instances);
+                first += instances;
             }
         }
         r.queue.submit([encoder.finish()]);
