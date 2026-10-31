@@ -31203,7 +31203,7 @@
         "source": "gallery/src/browser/water.rs",
         "test": "tests/browser/compute-examples.spec.js",
         "limitations": [
-          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。r186の原本はリサイズ後に透過のコピーで検証エラーになったため、比較はリサイズを除く（r187では未再確認）。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
+          "Draco圧縮のpool.glb（壁と、透過・発光する小物）、moonless_golfのUltraHDR空、4枚の床、Water2Mesh（WaterMesh）の水をRustで再現。水は流れる2枚の法線マップでフレネル項を求め、水の前にコピーしたフレームの屈折と、鏡映カメラから描くReflectorNodeの反射を混ぜる。シーンパスは色と発光のMRTを書き、発光をBloomNodeに通して加算し、ACES（露出0.5）とsRGB変換、FXAAで仕上げる。透過する小物は裏面・表面ごとにフレームのコピーとミップマップを作る。r186の原本はリサイズ後に透過のコピーで検証エラーになったが、r187では起きないため、リサイズ後も比較する。環境はUltraHDRの空からのキューブPMREM（fromEquirectangular）。各段はページからthree.js r187が生成するWGSL（water/、PMREMはpmrem/）を実行する。Inspectorはオリジナルと同じUIで、性能タブはRust版の1フレームを1つの描画として表示。性能の完全な同等性は未保証。"
         ]
       },
       "imports": [

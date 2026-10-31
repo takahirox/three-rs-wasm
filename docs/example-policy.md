@@ -362,8 +362,8 @@ skyscraper, the loft sections and the Sculptor addon) are ported to match the
 original's output bit for bit. The sculpting scene matches exactly in every
 state. Custom fog's first frame uses bounds scoped to that capture. Where the
 original behaves unexpectedly the port follows its visible result or leaves
-the state out: on r186 the water page's transmission copy failed validation
-after a resize, so that resize is not compared.
+the state out. On r186 the water page's transmission copy failed validation
+after a resize; r187's does not, and the resize is compared.
 
 The progressive shadow map, Ready Player Me retargeting, SSR denoise, simple
 GI, DoF 2, subsurface scattering, GPGPU birds, VRML and USDZ batch

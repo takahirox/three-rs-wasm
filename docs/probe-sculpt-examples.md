@@ -133,7 +133,8 @@ and a 640 × 400 resize. The thresholds are the defaults (0.5% of pixels over
 - **Custom fog.** The first frame after loading differs in sparse forest
   pixels (0.35% without and 0.54% with MSAA). Every later state matches
   exactly. The comparison uses 0.6% / 0.2.
-- **Water.** The resize is left out, as above.
+- **Water.** The resize is compared: r186's page failed validation in its
+  transmission copy after a resize, r187's does not.
 
 The largest fractions of differing pixels over all states (DPR 1, with and
 without MSAA) are 0.005% for 404, 0.16% for 405, 0.01% for 407, 0.02% for 408,
