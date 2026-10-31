@@ -379,10 +379,10 @@ recorded rather than treated as timing or memory equivalence. These entries rema
 partial ports; no measured CPU/GPU frame-time parity is claimed.
 
 Core temporal APIs accept explicit current/previous transforms. The gallery
-adapter still preserves r186 TAAU's jittered current velocity, which r187's
-VelocityNode no longer has ( an open gap ), and TAAU's unused zero lock history
-and constant sharpness, which r187 keeps; see `tsl.md` and r186's recording
-`taau-r186-velocity.json`.
+adapter follows r187's VelocityNode under TAAU's projection override ( both
+clips unjittered ) and keeps TAAU's unused zero lock history and constant
+sharpness, as r187 does; see `tsl.md` and the recording
+`taau-r187-velocity.json`.
 
 ### Material groups, clipping and texture operations
 

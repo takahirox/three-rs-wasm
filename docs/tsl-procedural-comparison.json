@@ -37,7 +37,7 @@
     "Pinned official modules with seeded initial randomness, fixed time and GUI capture.",
     "TRAA/TAAU histories warm 128 stationary frames; align one reference frame with each Rust pointer/resize redraw. No assertion of identical renderer startup history.",
     "Temporal scenes additionally sample frames 1,16,60 during 60-frame animation.",
-    "TAAU matches original jittered current velocity, unused lock attachment and constant sharpness; see tsl.md."
+    "TAAU matches r187's unjittered current and previous velocity clips, unused lock attachment and constant sharpness; see tsl.md."
   ],
   "performanceNotes": [
     "Resident static geometry; only current/previous bone palettes are uploaded for animation.",

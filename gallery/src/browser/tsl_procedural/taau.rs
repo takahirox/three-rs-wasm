@@ -176,14 +176,17 @@ impl Taau {
             jittered.view = Some(self.aa.view_offset(previous_size[0], previous_size[1]));
         }
         let projection = jittered.projection_matrix()?;
-        // r186 TAAU compiled VelocityNode before its projection override was
-        // set: the current clip used the camera jitter, the previous clip was
-        // unjittered ( docs/taau-r186-velocity.json ). The port still keeps that.
-        // r187's VelocityNode reads the override each frame into its
-        // currentProjectionMatrix uniform, so both clips are unjittered there.
-        // MotionVectors itself imposes no jitter and can be used with correctly
-        // unjittered inputs elsewhere.
-        self.motion.update(r, s, c, Some(projection))?;
+        // TAAUNode.setViewOffset() hands VelocityNode the camera's projection
+        // before the jitter ( velocity.setProjectionMatrix ), and r187's
+        // VelocityNode copies it each frame into its currentProjectionMatrix
+        // uniform: the current clip is unjittered, like the previous one, which
+        // is the previous frame's current ( docs/taau-r187-velocity.json ).
+        let unjittered = PerspectiveCamera {
+            view: None,
+            ..jittered.clone()
+        }
+        .projection_matrix()?;
+        self.motion.update(r, s, c, Some(unjittered))?;
         let world = s.get(c)?.matrix_world;
         if let NodeKind::Camera(Camera::Perspective(camera)) = &mut s.get_mut(c)?.kind {
             camera.view = jittered.view;
