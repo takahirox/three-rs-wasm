@@ -1,17 +1,15 @@
-//! webgpu_lightprobes and webgpu_lightprobes_complex: rooms lit by
-//! shadow-casting point lights, with diffuse GI from LightProbeGrid volumes
-//! baked on the GPU. The Cornell box has one light and one 6×6×6 grid; the
-//! complex scene two rooms joined by a doorway, a warm and a cool light and
-//! two grids that fade past their bounds (falloff 1). Each grid bakes per
-//! probe a 32² HalfFloat CubeCamera capture of the scene (no GI, as the grids
-//! are out of the scene while baking), the 512-direction Fibonacci SH
-//! projection into a row of the 9×N float batch target, and then the seven
-//! repack passes into its padded RGBA16F 3D atlas. The scene renders with
-//! 4× MSAA through the lit materials sampling the atlases, then the ACES
-//! output pass. Every stage runs the WGSL three.js r186 generates for the
-//! pages (in `lightprobes/` and `lightprobes_complex/`; the point-shadow pass
-//! is the godrays one and the output pass the cubemap_dynamic one, which are
-//! byte-identical).
+//! webgpu_lightprobes: a Cornell box lit by a shadow-casting point light,
+//! with diffuse GI from a LightProbeGrid volume baked on the GPU. The grid
+//! bakes per probe a 32² HalfFloat CubeCamera capture of the scene (no GI,
+//! as the grid is out of the scene while baking), the 512-direction
+//! Fibonacci SH projection into a row of the 9×N float batch target, and
+//! then the seven repack passes into its padded RGBA16F 3D atlas. The scene
+//! renders with 4× MSAA through the lit material sampling the atlas, then
+//! the ACES output pass. Every stage runs the WGSL three.js r186 generates
+//! for the page (in `lightprobes/`; the point-shadow pass is the godrays one
+//! and the output pass the cubemap_dynamic one, which are byte-identical).
+//! webgpu_lightprobes_complex's program is here too: its scene is
+//! `lightprobes_complex/rooms.rs`.
 use super::controls_attributes::{Controls, camera_state};
 use super::deferred::{Draw, set};
 use super::lights_projector::{m3, m4, pack};
@@ -22,6 +20,8 @@ use crate::{
 };
 use std::f64::consts::PI;
 use wgpu::util::DeviceExt;
+#[path = "lightprobes_complex/rooms.rs"]
+mod rooms;
 
 const HALF: wgpu::TextureFormat = wgpu::TextureFormat::Rgba16Float;
 const FLOAT: wgpu::TextureFormat = wgpu::TextureFormat::Rgba32Float;
@@ -39,11 +39,6 @@ const BACKGROUND: f64 = 0.005605391621829108;
 macro_rules! wgsl {
     ($name:literal) => {
         include_str!(concat!("lightprobes/", $name, ".wgsl"))
-    };
-}
-macro_rules! complex {
-    ($name:literal) => {
-        include_str!(concat!("lightprobes_complex/", $name, ".wgsl"))
     };
 }
 const SHADOW_VS: &str = include_str!("godrays/shadow_vs.wgsl");
@@ -68,15 +63,12 @@ const FACES: [([f64; 3], [f64; 3]); 6] = [
     ([0., 0., 1.], [0., -1., 0.]),
     ([0., 0., -1.], [0., -1., 0.]),
 ];
-/// The lit materials' variants: front side receiving shadows, front side
-/// without them (receiveShadow false) and back side (the complex room shell).
+/// The lit material's variant: front side receiving shadows.
 #[derive(Clone, Copy, PartialEq)]
 enum Kind {
     Shadowed,
-    Plain,
-    Back,
 }
-const KINDS: [Kind; 3] = [Kind::Shadowed, Kind::Plain, Kind::Back];
+const KINDS: [Kind; 1] = [Kind::Shadowed];
 impl Kind {
     fn index(self) -> usize {
         self as usize
@@ -115,23 +107,8 @@ const SHADOWED_LIGHTS: [[&str; 12]; 2] = [
         "nodeUniform33",
     ],
 ];
-/// The same for the variant without shadows: color, distance, decay and view position.
-const PLAIN_LIGHTS: [[&str; 4]; 2] = [
-    [
-        "nodeUniform11",
-        "nodeUniform12",
-        "nodeUniform13",
-        "nodeUniform10",
-    ],
-    [
-        "nodeUniform15",
-        "nodeUniform16",
-        "nodeUniform17",
-        "nodeUniform14",
-    ],
-];
-/// Per grid, the GI object uniforms: bounds max and min, resolution,
-/// intensity and falloff (the Cornell box's grid has none).
+/// The grid's GI object uniforms: bounds max and min, resolution,
+/// intensity and falloff (none).
 const BOX_GRID: [[&str; 5]; 1] = [[
     "nodeUniform25",
     "nodeUniform26",
@@ -139,38 +116,6 @@ const BOX_GRID: [[&str; 5]; 1] = [[
     "nodeUniform28",
     "",
 ]];
-const COMPLEX_GRIDS: [[&str; 5]; 2] = [
-    [
-        "nodeUniform38",
-        "nodeUniform39",
-        "nodeUniform40",
-        "nodeUniform41",
-        "nodeUniform42",
-    ],
-    [
-        "nodeUniform44",
-        "nodeUniform45",
-        "nodeUniform46",
-        "nodeUniform47",
-        "nodeUniform48",
-    ],
-];
-const COMPLEX_PLAIN_GRIDS: [[&str; 5]; 2] = [
-    [
-        "nodeUniform20",
-        "nodeUniform21",
-        "nodeUniform22",
-        "nodeUniform23",
-        "nodeUniform24",
-    ],
-    [
-        "nodeUniform26",
-        "nodeUniform27",
-        "nodeUniform28",
-        "nodeUniform29",
-        "nodeUniform30",
-    ],
-];
 /// A shadow-casting PointLight: position, color, intensity and its shadow's
 /// bias, normalBias and radius.
 struct PointShadowLight {
@@ -219,50 +164,25 @@ const fn standard(color: u32) -> Material {
 /// WGSL per material variant ( bake / GI-off vertex and fragment, GI vertex
 /// and fragment ).
 struct Setup {
-    complex: bool,
     camera_z: f64,
     lights: Vec<PointShadowLight>,
     volumes: Vec<Volume>,
     meshes: Vec<(BufferGeometry, Matrix4, Material, Kind, bool)>,
 }
 impl Setup {
-    fn shaders(&self, kind: Kind) -> [&'static str; 4] {
-        match (self.complex, kind) {
-            (false, _) => [
-                wgsl!("standard_vs"),
-                wgsl!("standard_fs"),
-                wgsl!("gi_vs"),
-                wgsl!("gi_fs"),
-            ],
-            (true, Kind::Shadowed) => [
-                complex!("shadowed_vs"),
-                complex!("shadowed_fs"),
-                complex!("gi_vs"),
-                complex!("gi_fs"),
-            ],
-            (true, Kind::Plain) => [
-                complex!("plain_vs"),
-                complex!("plain_fs"),
-                complex!("gi_plain_vs"),
-                complex!("gi_plain_fs"),
-            ],
-            (true, Kind::Back) => [
-                complex!("back_vs"),
-                complex!("back_fs"),
-                complex!("gi_vs"),
-                complex!("gi_back_fs"),
-            ],
-        }
+    fn shaders(&self, _kind: Kind) -> [&'static str; 4] {
+        [
+            wgsl!("standard_vs"),
+            wgsl!("standard_fs"),
+            wgsl!("gi_vs"),
+            wgsl!("gi_fs"),
+        ]
     }
-    fn grid_names(&self, kind: Kind) -> &'static [[&'static str; 5]] {
-        match (self.complex, kind) {
-            (false, _) => &BOX_GRID,
-            (true, Kind::Plain) => &COMPLEX_PLAIN_GRIDS,
-            _ => &COMPLEX_GRIDS,
-        }
+    fn grid_names(&self, _kind: Kind) -> &'static [[&'static str; 5]] {
+        &BOX_GRID
     }
     /// The lights' render uniforms for a variant and camera view.
-    fn light_uniforms(&self, kind: Kind, view: Matrix4) -> Vec<(&'static str, Vec<f64>)> {
+    fn light_uniforms(&self, _kind: Kind, view: Matrix4) -> Vec<(&'static str, Vec<f64>)> {
         let mut values = vec![];
         for (i, l) in self.lights.iter().enumerate() {
             let color = Color::from_hex(l.color)
@@ -271,31 +191,21 @@ impl Setup {
                 .map(|v| v * l.intensity)
                 .to_vec();
             let position = view.transform_point3(l.position).to_array().to_vec();
-            if kind == Kind::Plain {
-                let n = PLAIN_LIGHTS[i];
-                values.extend([
-                    (n[0], color),
-                    (n[1], vec![0.]),
-                    (n[2], vec![2.]),
-                    (n[3], position),
-                ]);
-            } else {
-                let n = SHADOWED_LIGHTS[i];
-                values.extend([
-                    (n[0], color),
-                    (n[1], vec![0.]),
-                    (n[2], vec![2.]),
-                    (n[3], position),
-                    (n[4], m4(Matrix4::from_translation(-l.position))),
-                    (n[5], vec![l.normal_bias]),
-                    (n[6], vec![1.]),
-                    (n[7], vec![SHADOW_NEAR]),
-                    (n[8], vec![SHADOW_FAR]),
-                    (n[9], vec![l.bias]),
-                    (n[10], vec![l.radius]),
-                    (n[11], vec![SHADOW as f64; 2]),
-                ]);
-            }
+            let n = SHADOWED_LIGHTS[i];
+            values.extend([
+                (n[0], color),
+                (n[1], vec![0.]),
+                (n[2], vec![2.]),
+                (n[3], position),
+                (n[4], m4(Matrix4::from_translation(-l.position))),
+                (n[5], vec![l.normal_bias]),
+                (n[6], vec![1.]),
+                (n[7], vec![SHADOW_NEAR]),
+                (n[8], vec![SHADOW_FAR]),
+                (n[9], vec![l.bias]),
+                (n[10], vec![l.radius]),
+                (n[11], vec![SHADOW as f64; 2]),
+            ]);
         }
         values
     }
@@ -310,7 +220,6 @@ fn cornell() -> Result<Setup> {
     let side = || PlaneGeometry::build(6., 5., 1, 1);
     let lit = Kind::Shadowed;
     Ok(Setup {
-        complex: false,
         camera_z: 8.,
         lights: vec![PointShadowLight {
             position: Vector3::new(0., 4.5, 0.),
@@ -366,170 +275,6 @@ fn cornell() -> Result<Setup> {
                 true,
             ),
         ],
-    })
-}
-/// The two rooms of webgpu_lightprobes_complex.
-fn rooms() -> Result<Setup> {
-    let white = standard(0xeeeeee);
-    let divider = standard(0xcccccc);
-    let wood = standard(0x886644);
-    let t = |x, y, z| Matrix4::from_translation(Vector3::new(x, y, z));
-    let ry = Matrix4::from_rotation_y;
-    let (lit, plain) = (Kind::Shadowed, Kind::Plain);
-    let gap = 1.25;
-    let column = || CylinderGeometry::build(0.3, 0.3, 4., 16, 1, false, 0., 2. * PI);
-    let mut meshes = vec![
-        (
-            BoxGeometry::build(16., 5., 8.)?,
-            t(0., 2.5, 0.),
-            standard(0xcccccc),
-            Kind::Back,
-            false,
-        ),
-        (
-            PlaneGeometry::build(8., 5., 1, 1)?,
-            t(-7.99, 2.5, 0.) * ry(PI / 2.),
-            standard(0xdd2200),
-            plain,
-            false,
-        ),
-        (
-            PlaneGeometry::build(8., 5., 1, 1)?,
-            t(7.99, 2.5, 0.) * ry(-PI / 2.),
-            standard(0x0044ff),
-            plain,
-            false,
-        ),
-        (
-            BoxGeometry::build(0.3, 5., 4. - gap)?,
-            t(0., 2.5, -(gap + (4. - gap) / 2.)),
-            divider,
-            lit,
-            true,
-        ),
-        (
-            BoxGeometry::build(0.3, 5., 4. - gap)?,
-            t(0., 2.5, gap + (4. - gap) / 2.),
-            divider,
-            lit,
-            true,
-        ),
-        (
-            BoxGeometry::build(0.3, 1.2, gap * 2.)?,
-            t(0., 4.4, 0.),
-            divider,
-            lit,
-            true,
-        ),
-    ];
-    for x in [-6., -2.] {
-        for z in [-2.5, 2.5] {
-            meshes.push((column()?, t(x, 2., z), white, lit, true));
-        }
-    }
-    meshes.push((
-        BoxGeometry::build(2.4, 0.12, 1.4)?,
-        t(-4., 1., 0.),
-        wood,
-        lit,
-        true,
-    ));
-    for x in [-5.05, -2.95] {
-        for z in [-0.55, 0.55] {
-            meshes.push((
-                BoxGeometry::build(0.1, 1., 0.1)?,
-                t(x, 0.5, z),
-                wood,
-                plain,
-                true,
-            ));
-        }
-    }
-    meshes.extend([
-        (
-            SphereGeometry::build(0.35, 32, 32)?,
-            t(-4., 1.41, 0.),
-            Material {
-                color: 0xffd700,
-                roughness: 0.4,
-                metalness: 0.3,
-            },
-            lit,
-            true,
-        ),
-        (
-            BoxGeometry::build(1.5, 0.5, 1.)?,
-            t(-7., 0.25, 0.),
-            white,
-            lit,
-            true,
-        ),
-        (
-            BoxGeometry::build(1., 1., 1.)?,
-            t(-7., 0.5, 0.),
-            white,
-            lit,
-            true,
-        ),
-        (
-            BoxGeometry::build(0.5, 1.5, 1.)?,
-            t(-7., 0.75, 0.),
-            white,
-            lit,
-            true,
-        ),
-    ]);
-    for x in [2., 6.] {
-        for z in [-2.5, 2.5] {
-            meshes.push((column()?, t(x, 2., z), white, lit, true));
-        }
-    }
-    meshes.extend([
-        (
-            BoxGeometry::build(0.8, 1.2, 0.8)?,
-            t(4., 0.6, 0.),
-            white,
-            lit,
-            true,
-        ),
-        (
-            TorusKnotGeometry::build(0.3, 0.1, 64, 16, 2, 3)?,
-            t(4., 1.65, 0.),
-            Material {
-                color: 0xff44aa,
-                roughness: 0.5,
-                metalness: 0.2,
-            },
-            lit,
-            true,
-        ),
-        (
-            CylinderGeometry::build(0., 0.4, 2.5, 5, 1, false, 0., 2. * PI)?,
-            t(6.5, 1.25, -1.5),
-            white,
-            lit,
-            true,
-        ),
-    ]);
-    let light = |x, color| PointShadowLight {
-        position: Vector3::new(x, 4.5, 0.),
-        color,
-        intensity: 30.,
-        bias: -0.002,
-        normal_bias: 0.,
-        radius: 12.,
-    };
-    let volume = |x| Volume {
-        center: Vector3::new(x, 2.45, 0.),
-        size: Vector3::new(7.8, 4.7, 7.6),
-        falloff: 1.,
-    };
-    Ok(Setup {
-        complex: true,
-        camera_z: 16.,
-        lights: vec![light(-4., 0xffaa44), light(4., 0x88bbff)],
-        volumes: vec![volume(-3.9), volume(3.9)],
-        meshes,
     })
 }
 /// CubeCamera( near, far )'s WebGPU projection and its six face rotations, in layer order.
@@ -859,8 +604,8 @@ fn helper_uniforms(res: u32) -> Vec<(&'static str, Vec<f64>)> {
     ]
 }
 impl Demo {
-    pub async fn create(s: &mut Scene, c: Object3D, id: u32, r: &Renderer) -> Result<Self> {
-        let setup = if id == 393 { rooms()? } else { cornell()? };
+    pub async fn create(s: &mut Scene, c: Object3D, r: &Renderer) -> Result<Self> {
+        let setup = cornell()?;
         let aspect = match s.camera(c)?.0 {
             Camera::Perspective(p) => p.aspect,
             _ => 1.,
@@ -1081,7 +826,7 @@ impl Demo {
             .map(|&kind| {
                 meshes.iter().any(|m| m.kind == kind).then(|| {
                     let [vs, fs, ..] = setup.shaders(kind);
-                    lit_pipeline(r, "lightprobes bake", (vs, fs), 1, kind == Kind::Back)
+                    lit_pipeline(r, "lightprobes bake", (vs, fs), 1, false)
                 })
             })
             .collect();
@@ -1090,11 +835,7 @@ impl Demo {
             let pipeline = bake_pipelines[m.kind.index()]
                 .as_ref()
                 .ok_or(Error::Invalid("lightprobes bake pipeline"))?;
-            let shadowed: &[wgpu::TextureView] = if m.kind == Kind::Plain {
-                &[]
-            } else {
-                &shadow_cubes
-            };
+            let shadowed: &[wgpu::TextureView] = &shadow_cubes;
             let object = bind(
                 r,
                 pipeline.get_bind_group_layout(1),
@@ -1595,14 +1336,8 @@ impl Demo {
             pipelines.push(self.meshes.iter().any(|m| m.kind == kind).then(|| {
                 let [vs, fs, gi_vs, gi_fs] = self.setup.shaders(kind);
                 (
-                    lit_pipeline(
-                        r,
-                        "lightprobes GI",
-                        (gi_vs, gi_fs),
-                        samples,
-                        kind == Kind::Back,
-                    ),
-                    lit_pipeline(r, "lightprobes", (vs, fs), samples, kind == Kind::Back),
+                    lit_pipeline(r, "lightprobes GI", (gi_vs, gi_fs), samples, false),
+                    lit_pipeline(r, "lightprobes", (vs, fs), samples, false),
                 )
             }));
         }
@@ -1612,11 +1347,7 @@ impl Demo {
             let (gi_pipeline, standard_pipeline) = pipelines[m.kind.index()]
                 .as_ref()
                 .ok_or(Error::Invalid("lightprobes pipeline"))?;
-            let shadowed: &[wgpu::TextureView] = if m.kind == Kind::Plain {
-                &[]
-            } else {
-                &shadow_cubes
-            };
+            let shadowed: &[wgpu::TextureView] = &shadow_cubes;
             let samplers = (&self.linear, &self.compare);
             gi.push((
                 gi_pipeline.clone(),
@@ -2030,7 +1761,7 @@ pub async fn webgpu_lightprobes(
                 super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
                 0.1,
                 100.,
-                Box::new(Demo::create(scene, camera, 392, renderer).await?),
+                Box::new(Demo::create(scene, camera, renderer).await?),
             ))
         },
     )
@@ -2048,7 +1779,7 @@ pub async fn webgpu_lightprobes_complex(
         canvas,
         animate,
         super::PageOptions {
-            samples: 1,
+            samples: 4,
             encode_srgb: true,
             format: super::TargetFormat::Canvas,
             raw_output: true,
@@ -2060,7 +1791,7 @@ pub async fn webgpu_lightprobes_complex(
                 super::gltf_viewer::OrbitViewer::from_camera(crate::math::Vector3::ZERO, 1.),
                 0.1,
                 100.,
-                Box::new(Demo::create(scene, camera, 393, renderer).await?),
+                Box::new(rooms::Demo::create(scene, camera, renderer).await?),
             ))
         },
     )
