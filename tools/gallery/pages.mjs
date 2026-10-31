@@ -239,7 +239,7 @@ function importmap(id) {
 		'three/tsl': id === 'webgpu_tsl_editor' ? './tsl-module.js' : shim,
 		'three': shim,
 		'three/webgpu': shim,
-		'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/',
+		'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/',
 	}});
 }
 
