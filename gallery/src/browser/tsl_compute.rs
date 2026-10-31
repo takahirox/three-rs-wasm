@@ -31,19 +31,6 @@ fn rand(seed: &mut u32) -> f64 {
     *seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
     *seed as f64 / 4294967296.0
 }
-fn range(
-    r: &Renderer,
-    count: usize,
-    seed: u32,
-    low: [f64; 4],
-    high: [f64; 4],
-) -> Result<GpuBuffer> {
-    let mut seed = seed;
-    let data: Vec<[f32; 4]> = (0..count)
-        .map(|_| std::array::from_fn(|i| (low[i] + (high[i] - low[i]) * rand(&mut seed)) as f32))
-        .collect();
-    GpuBuffer::new(r, bytemuck::cast_slice(&data), BufferAccess::Read)
-}
 fn store(binding: usize, value: Node) -> BufferStore {
     BufferStore {
         binding,
@@ -201,55 +188,51 @@ impl Demo {
     }
     async fn particles(&mut self, scene: &mut Scene, r: &Renderer) -> Result<()> {
         self.params[1][0] = 0.2;
-        let buffers = [
-            range(r, 2000, 186, [0.1; 4], [1.0; 4])?,
-            range(r, 2000, 187, [-2.0, 3.0, -2.0, 0.0], [2.0, 5.0, 2.0, 0.0])?,
-            range(r, 2000, 188, [0.3; 4], [2.0; 4])?,
-            range(r, 2000, 189, [0.1; 4], [4.0; 4])?,
-            range(r, 1000, 190, [-1.0, 1.0, -1.0, 0.0], [1.0, 2.0, 1.0, 0.0])?,
-        ];
         let mut image = decode_image(&fetch("assets/smoke1.png").await?).await?;
         image.srgb = false;
         image.mipmap_filter = Some(Filter::Linear);
         let tex = r.upload_texture(&Arc::new(image))?;
-        let life_range = instanced_attribute(0).x();
-        let scaled = (scalar(0) + f(5.0)) * scalar(1);
-        let lifetime = (scaled.clone() * life_range.clone()).modulo(f(1.0));
-        let life = lifetime.clone() / life_range;
-        let angle = scaled * instanced_attribute(3).x();
-        let p = uv() - f(0.5);
-        let coord = vec2(
-            angle.cos() * p.x() - angle.sin() * p.y(),
-            angle.sin() * p.x() + angle.cos() * p.y(),
-        ) + f(0.5);
-        let sample = tsl::Texture::External(0).sample(vec2(coord.x(), f(1.0) - coord.y()));
-        let opacity = sample.swizzle("w") * (f(1.0) - life.clone());
-        let smoke = mix(
-            rgb(0x2c1501),
-            rgb(0x222222),
-            (position_local().y() * f(3.0)).clamp(f(0.0), f(1.0)),
-        );
-        let color = mix(rgb(0xf27d0c), smoke, (life * f(2.5)).clamp(f(0.0), f(1.0)))
-            * (f(1.0) - position_local().y()).max(f(0.2));
+        // r187's range() nodes hash the instance index with the object's id: the smoke
+        // is Object3D 9 and the fire 10 on the page; lifeRange, offsetRange, scaleRange,
+        // rotateRange and the fire's offset are range nodes 0 to 4. The smoke and the
+        // fire share the page's nodes, so each object reads its own values.
+        let nodes = |object: u32, fire: bool| {
+            let life_range = range(object, 0, [0.1; 4], [1.0; 4]).x();
+            let scaled = (scalar(0) + f(5.0)) * scalar(1);
+            let lifetime = (scaled.clone() * life_range.clone()).modulo(f(1.0));
+            let life = lifetime.clone() / life_range;
+            let angle = scaled * range(object, 3, [0.1; 4], [4.0; 4]).x();
+            let p = uv() - f(0.5);
+            let coord = vec2(
+                angle.cos() * p.x() - angle.sin() * p.y(),
+                angle.sin() * p.x() + angle.cos() * p.y(),
+            ) + f(0.5);
+            let sample = tsl::Texture::External(0).sample(vec2(coord.x(), f(1.0) - coord.y()));
+            let opacity = sample.swizzle("w") * (f(1.0) - life.clone());
+            let smoke = mix(
+                rgb(0x2c1501),
+                rgb(0x222222),
+                (position_local().y() * f(3.0)).clamp(f(0.0), f(1.0)),
+            );
+            let color = mix(rgb(0xf27d0c), smoke, (life * f(2.5)).clamp(f(0.0), f(1.0)))
+                * (f(1.0) - position_local().y()).max(f(0.2));
+            let offset = if fire {
+                range(object, 4, [-1.0, 1.0, -1.0, 0.0], [1.0, 2.0, 1.0, 0.0])
+            } else {
+                range(object, 1, [-2.0, 3.0, -2.0, 0.0], [2.0, 5.0, 2.0, 0.0])
+            };
+            let scale = range(object, 2, [0.3; 4], [2.0; 4]).x();
+            (lifetime, opacity, color, offset.rgb(), scale)
+        };
         for fire in [false, true] {
+            let (lifetime, opacity, color, offset, scale) = nodes(if fire { 10 } else { 9 }, fire);
             let mut sprite = SpriteNodeMaterial::new(vec4(
-                if fire { rgb(0xb72f17) } else { color.clone() },
-                opacity.clone() * f(if fire { 0.5 } else { 1.0 }),
+                if fire { rgb(0xb72f17) } else { color },
+                opacity * f(if fire { 0.5 } else { 1.0 }),
             ));
-            sprite.position = instanced_attribute(1).rgb() * lifetime.clone();
-            sprite.scale = instanced_attribute(2).x() * lifetime.clone().max(f(0.3));
-            let mut m = sprite
-                .build(
-                    r,
-                    &[
-                        &buffers[0],
-                        &buffers[if fire { 4 } else { 1 }],
-                        &buffers[2],
-                        &buffers[3],
-                    ],
-                    &[(&tex.view, &tex.sampler)],
-                )
-                .await?;
+            sprite.position = offset * lifetime.clone();
+            sprite.scale = scale * lifetime.max(f(0.3));
+            let mut m = sprite.build(r, &[], &[(&tex.view, &tex.sampler)]).await?;
             m.properties.depth_write = false;
             if fire {
                 m.properties.blending = Some(wgpu::BlendState {
@@ -318,13 +301,14 @@ impl Demo {
         ));
         g.compute_vertex_normals()?;
         g.scale(Vector3::splat(0.5))?;
-        let colors = range(r, 1000, 186, [0.0, 0.0, 0.0, 1.0], [1.0; 4])?;
+        // r187's range(): the colors hash the instance index with the InstancedMesh's id
+        // ( Object3D 13 on the page ) and range node 0's salt.
+        let colors = range(13, 0, [0.0, 0.0, 0.0, 1.0], [1.0; 4]).rgb();
         let osc =
             ((scalar(0) * f(0.1) + f(0.75)) * f(std::f32::consts::TAU)).sin() * f(0.5) + f(0.5);
-        let m =
-            NodeMaterial::new(mix(normal_world(), instanced_attribute(0).rgb(), osc).max(f(0.0)))
-                .build_with_storage(r, &[(&colors, Type::Vec4)], &[])
-                .await?;
+        let m = NodeMaterial::new(mix(normal_world(), colors, osc).max(f(0.0)))
+            .build_with_storage(r, &[], &[])
+            .await?;
         let h = mesh(scene, g, m);
         scene.get_mut(h)?.instances = vec![
             Instance {

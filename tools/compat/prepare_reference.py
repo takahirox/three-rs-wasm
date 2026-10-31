@@ -19,6 +19,9 @@ extras=('examples/jsm/loaders/UltraHDRLoader.js','examples/jsm/loaders/GLTFLoade
 prefixes=('examples/jsm/','examples/fonts/','examples/models/fbx/','examples/models/vrml/','examples/models/usdz/','examples/materialx/')
 materialx_textures=tuple(f'examples/textures/{name}' for name in ('memorial.exr','memorial.hdr','tiff/crate_uncompressed.tif','brick_diffuse.jpg','brick_roughness.jpg','brick_bump.jpg','equirectangular/san_giuseppe_bridge_2k.hdr'))+('examples/models/gltf/ShaderBall.glb',)
 extras+=materialx_textures
+# The examples' stylesheet, which the CSS-only pages' and the HTML texture page's
+# references load ( reference/three-js/texture-volumes.html ).
+extras+=('examples/main.css',)
 markers=('examples/jsm/loaders/VRMLLoader.js','examples/models/vrml/house.wrl','examples/models/usdz/saeukkang.usdz','examples/materialx/displacement.mtlx')
 if stamp.exists() and stamp.read_text().strip()==commit and all((destination/p).exists() for p in (*extras,*markers)):
     print('Three.js reference ready:',commit)

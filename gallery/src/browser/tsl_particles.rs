@@ -230,27 +230,15 @@ impl Demo {
             51 => {
                 geometry.instance_count = Some(20000);
                 scene.background = Color::from_hex(0x201919);
-                // Independent seeded range initializations, equivalent to upstream's
-                // once-only per-node random arrays (never regenerated during animation).
-                for index in 0..4 {
-                    let mut seed = 186 + index;
-                    let (low, high) = match index {
-                        2 => (0.0, 3.0),
-                        3 => (-1.0, 1.0),
-                        _ => (0.0, 1.0),
-                    };
-                    let data = (0..20000)
-                        .map(|_| {
-                            std::array::from_fn(|_| (low + (high - low) * rand(&mut seed)) as f32)
-                        })
-                        .collect::<Vec<[f32; 4]>>();
-                    buffers.push(attribute(r, &data)?);
-                }
-                let ratio = instanced_attribute(1).x();
+                // r187's range() nodes, hashed per instance with the InstancedMesh's id
+                // ( Object3D 9 on the page ): the scale, radiusRatio, the branch and the
+                // offset are range nodes 0 to 3.
+                let ranged = |id, low: f32, high: f32| tsl::range(9, id, [low; 4], [high; 4]);
+                let ratio = ranged(1, 0.0, 1.0).x();
                 let radius = ratio.pow(float(1.5)) * float(5.0);
-                let angle = instanced_attribute(2).x().floor() * float(std::f32::consts::TAU / 3.0)
+                let angle = ranged(2, 0.0, 3.0).x().floor() * float(std::f32::consts::TAU / 3.0)
                     + scalar(0) * (float(1.0) - ratio.clone());
-                let offset = instanced_attribute(3).rgb();
+                let offset = tsl::range(9, 3, [-1.0, -1.0, -1.0, 0.0], [1.0, 1.0, 1.0, 0.0]).rgb();
                 let offset = offset.clone() * offset.clone() * offset * ratio.clone() + float(0.2);
                 let position = vec3(angle.cos(), float(0.0), angle.sin()) * radius + offset;
                 let amount = float(1.0) - (float(1.0) - ratio).pow(float(2.0));
@@ -260,7 +248,7 @@ impl Demo {
                     alpha,
                 ));
                 s.position = position;
-                s.scale = instanced_attribute(0).x() * scalar(1);
+                s.scale = ranged(0, 0.0, 1.0).x() * scalar(1);
                 out.params = [0.08, 0xffa575 as f32, 0x311599 as f32, 0.0];
                 s
             }

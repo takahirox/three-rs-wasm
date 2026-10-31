@@ -1400,6 +1400,31 @@ pub fn hash(seed: Node) -> Node {
     WgslFn::new("tsl_hash", "fn tsl_hash(seed:u32)->f32 { let state=seed*747796405u+2891336453u; let word=((state>>((state>>28u)+4u))^state)*277803737u; return f32((word>>22u)^word)*(1.0/4294967296.0); }", &[Type::Uint], Type::Float).unwrap().call(&[seed])
 }
 
+/// Three.js r187's `range( min, max )` ( RangeNode ): a per-instance value between
+/// `min` and `max`, hashed on the GPU from the instance index. The seed is the
+/// object's ( `Math.imul( object.id, 0x9E3779B9 )` ) xor the node's salt
+/// ( `Math.imul( rangeId, 0x85EBCA6B )`, `rangeId` counting the page's range nodes
+/// from 0 in creation order ). The result is the vec4 RangeNode mixes; a float
+/// range reads `.x`, a vector range its leading lanes, as RangeNode's `convert`.
+pub fn range(object_id: u32, range_id: u32, min: [f32; 4], max: [f32; 4]) -> Node {
+    let seed = object_id.wrapping_mul(0x9E37_79B9) ^ range_id.wrapping_mul(0x85EB_CA6B);
+    let index = instance_index() * uint(4) + uint(seed);
+    let random = Node::new(Expr::Vector(
+        Type::Vec4,
+        (0..4)
+            .map(|k| {
+                hash(if k == 0 {
+                    index.clone()
+                } else {
+                    index.clone() + uint(k)
+                })
+            })
+            .collect(),
+    ));
+    let constant = |v: [f32; 4]| Node::new(Expr::Vector(Type::Vec4, v.map(float).to_vec()));
+    mix(constant(min), constant(max), random)
+}
+
 /// Circle opacity with the same derivative smoothing as Three.js shapeCircle.
 /// Enable the material's alpha_to_coverage when `antialias` is true.
 pub fn shape_circle(antialias: bool) -> Node {

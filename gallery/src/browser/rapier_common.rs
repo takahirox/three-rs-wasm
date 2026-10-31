@@ -103,6 +103,13 @@ impl Helper {
             colors: vec![],
         })
     }
+    /// The LineBasicMaterial's Material.id ( `MaterialProperties::id` ).
+    pub fn set_material_id(&self, s: &mut Scene, id: u64) -> Result<()> {
+        if let NodeKind::Line(l) = &mut s.get_mut(self.node)?.kind {
+            Arc::make_mut(&mut l.material).properties_mut().id = id;
+        }
+        Ok(())
+    }
     /// update(): the world's debugRender() as the new attributes.
     pub fn update(&mut self, s: &mut Scene, physics: &mut RapierPhysics) -> Result<()> {
         physics.debug_lines(&mut self.vertices, &mut self.colors);

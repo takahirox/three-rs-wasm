@@ -24,7 +24,7 @@ struct Uniforms {
     color: vec4<f32>, camera: vec4<f32>, material: vec4<f32>, emissive: vec4<f32>, ambient: vec4<f32>, point:vec4<f32>, pbr:vec4<f32>, environment:vec4<f32>, maps:vec4<f32>,
     light_position: array<vec4<f32>,8>, light_color: array<vec4<f32>,8>, light_params: array<vec4<f32>,8>, light_direction:array<vec4<f32>,8>,
     specular:vec4<f32>, flags:vec4<f32>, fog_color:vec4<f32>, fog_params:vec4<f32>,
-    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,probe_grid:array<vec4<f32>,3>,
+    shadow_matrices:array<mat4x4<f32>,48>,shadow_params:array<vec4<f32>,8>,shadow_filters:array<vec4<f32>,8>,shadow_cascades:array<vec4<f32>,16>,custom:array<vec4<f32>,16>,clipping_planes:array<vec4<f32>,16>,clipping_params:vec4<f32>,physical:array<vec4<f32>,4>,uv_transforms:array<vec4<f32>,15>,transmission:array<vec4<f32>,3>,extension_matrices:array<vec4<f32>,36>,extension_sizes:array<vec4<f32>,12>,extension_wraps:array<vec4<f32>,12>,extension_sampling:array<vec4<f32>,12>,coat_normal:vec4<f32>,iridescence:vec4<f32>,line:array<vec4<f32>,2>,output:vec4<f32>,shadow_scales:array<vec4<f32>,8>,probe_grid:array<vec4<f32>,3>,frag_coord:vec4<f32>,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var color_map: texture_2d<f32>;
@@ -201,7 +201,7 @@ fn shadow_visibility(i:u32,position:vec3<f32>,normal:vec3<f32>)->f32 {
         return max(hard,p);
     }
     if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
-    let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
+    let phi=fract(52.9829189*fract(dot(noise_coordinate(),vec2(0.06711056,0.00583715))))*6.28318530718;
     var value=0.0;
     if settings.w>0.5 {
         // r187 getPointShadow: Vogel-disk offsets in the tangent frame of the light-to-fragment
@@ -317,6 +317,12 @@ fn fog_mix(color:vec4<f32>,depth:f32,fog:vec3<f32>)->vec4<f32> {
     return vec4(mix(color.rgb,fog,factor),color.a);
 }
 var<private> fragment_surface:VertexOut;
+// The shadow filters' interleaved gradient noise coordinate: WebGPURenderer's screenCoordinate
+// ( top-left origin ), or WebGLRenderer's gl_FragCoord ( bottom-left ) when u.frag_coord.x is 1.
+fn noise_coordinate()->vec2<f32> {
+    let p=fragment_surface.clip.xy;
+    return select(p,vec2(p.x,u.frag_coord.y-p.y),u.frag_coord.x>0.5);
+}
 var<private> fragment_front:bool;
 var<private> fragment_normal:vec3<f32>;
 var<private> fragment_diffuse:vec4<f32>;
@@ -662,7 +668,7 @@ fn sun_cascade_sample(i:u32,layer:u32,position:vec3<f32>,normal:vec3<f32>,inset:
  uv*=u.shadow_scales[i].xy;
     let size=vec2<f32>(textureDimensions(shadow_atlas));
  if u.shadow_filters[i].y>0.5 {return textureSampleCompareLevel(shadow_atlas,shadow_sampler,shadow_map_uv(i,(floor(uv*size)+0.5)/size),i32(layer),ndc.z+settings.y);}
- let phi=fract(52.9829189*fract(dot(fragment_surface.clip.xy,vec2(0.06711056,0.00583715))))*6.28318530718;
+ let phi=fract(52.9829189*fract(dot(noise_coordinate(),vec2(0.06711056,0.00583715))))*6.28318530718;
  // Original atlas is 2 tiles wide: the scalar filter radius uses its width.
  let scale=u.shadow_filters[i].x/vec2<f32>(textureDimensions(shadow_atlas))*vec2(1.0,0.5);
  var value=0.0;

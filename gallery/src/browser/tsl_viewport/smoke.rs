@@ -1,9 +1,5 @@
 use super::*;
-use crate::{
-    attribute::BufferAttribute,
-    compute::{BufferAccess, GpuBuffer},
-    tsl::sprites::*,
-};
+use crate::{attribute::BufferAttribute, tsl::sprites::*};
 fn lucy(bytes: &[u8]) -> Result<BufferGeometry> {
     let marker = b"end_header\n";
     let offset = bytes
@@ -106,36 +102,15 @@ impl Demo {
         tex.srgb = true;
         tex.mipmap_filter = Some(Filter::Linear);
         let tex = r.upload_texture(&Arc::new(tex))?;
-        let mut buffers = vec![];
-        for (i, (low, high)) in [
-            ([0.1; 4], [1.0; 4]),
-            ([-2.0, 0.0, -2.0, 0.0], [2.0, 7.0, 2.0, 0.0]),
-            ([6.0; 4], [8.0; 4]),
-            ([0.1; 4], [2.0; 4]),
-        ]
-        .into_iter()
-        .enumerate()
-        {
-            let mut seed = 186u32 + i as u32;
-            let data = (0..50)
-                .map(|_| {
-                    std::array::from_fn::<f32, 4, _>(|j| {
-                        seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
-                        (low[j] + (high[j] - low[j]) * (seed as f64 / 4294967296.0)) as f32
-                    })
-                })
-                .collect::<Vec<_>>();
-            buffers.push(GpuBuffer::new(
-                r,
-                bytemuck::cast_slice(&data),
-                BufferAccess::Read,
-            )?);
-        }
-        let life_range = instanced_attribute(0).x();
+        // r187's range() nodes, hashed per instance with the Sprite's id ( Object3D 14 on
+        // the page ): lifeRange, offsetRange, scaleRange and rotateRange are range
+        // nodes 0 to 3.
+        let ranged = |id, low, high| tsl::range(14, id, low, high);
+        let life_range = ranged(0, [0.1; 4], [1.0; 4]).x();
         let scaled = (time() + float(20.0)) * float(0.2);
         let lifetime = (scaled.clone() * life_range.clone()).fract();
         let life = lifetime.clone() / life_range;
-        let rotate = scaled * instanced_attribute(3).x();
+        let rotate = scaled * ranged(3, [0.1; 4], [2.0; 4]).x();
         let p = uv() - float(0.5);
         let coord = vec2(
             rotate.cos() * p.x() - rotate.sin() * p.y(),
@@ -160,15 +135,10 @@ impl Demo {
         );
         let mut sprite =
             SpriteNodeMaterial::new(vec4(color, mix(alpha, soft, uniform(1, Type::Float))));
-        sprite.position = instanced_attribute(1).rgb() * lifetime.clone();
-        sprite.scale = instanced_attribute(2).x() * lifetime.max(float(0.3));
-        let mut m = sprite
-            .build(
-                r,
-                &buffers.iter().collect::<Vec<_>>(),
-                &[(&tex.view, &tex.sampler)],
-            )
-            .await?;
+        sprite.position =
+            ranged(1, [-2.0, 0.0, -2.0, 0.0], [2.0, 7.0, 2.0, 0.0]).rgb() * lifetime.clone();
+        sprite.scale = ranged(2, [6.0; 4], [8.0; 4]).x() * lifetime.max(float(0.3));
+        let mut m = sprite.build(r, &[], &[(&tex.view, &tex.sampler)]).await?;
         m.properties.depth_write = false;
         let mut g = PlaneGeometry::build(1.0, 1.0, 1, 1)?;
         g.instance_count = Some(50);

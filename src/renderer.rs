@@ -133,6 +133,9 @@ struct Uniforms {
     /// The LightProbeGrid: its box min and intensity, max and falloff, and
     /// probe counts with w 1 when a baked grid applies.
     probe_grid: [[f32; 4]; 3],
+    /// The fragment coordinate convention: x 1 for gl_FragCoord ( `Renderer::webgl` ),
+    /// y the drawing buffer's height it flips by.
+    frag_coord: [f32; 4],
 }
 
 pub use crate::render_target::{RenderTarget, RenderTarget3D, RenderTargetOptions};
@@ -208,6 +211,13 @@ pub struct Renderer {
     /// target's output buffer type. False keeps the separate half-float
     /// backdrop pass for 8-bit targets.
     pub viewport_transmission: std::cell::Cell<bool>,
+    /// WebGLRenderer's conventions where WebGPURenderer's differ: painterSortStable
+    /// orders opaque draws of one group and render order by their material's id
+    /// ( `MaterialProperties::id` ) before their depth, and the shadow filters'
+    /// interleaved gradient noise reads gl_FragCoord, whose origin is the
+    /// drawing buffer's bottom left. False follows WebGPURenderer: opaque draws by
+    /// depth, the noise on screenCoordinate ( top left ).
+    pub webgl: std::cell::Cell<bool>,
     /// Exposure and tone mapping of the output a postprocessing chain's last
     /// pass applies when it renders into an encoded target ( RenderPipeline's
     /// renderOutput ), with its uniform binding.
@@ -259,6 +269,7 @@ struct Draw {
     transparent: bool,
     render_order: i32,
     group_order: i32,
+    material_id: u64,
     depth: f64,
 }
 impl Renderer {
@@ -718,6 +729,7 @@ impl Renderer {
             logarithmic_depth: Default::default(),
             array_camera_view_projection: Default::default(),
             viewport_transmission: Default::default(),
+            webgl: Default::default(),
             output_transform: std::cell::Cell::new([1.0, 0.0, 0.0, 0.0]),
             output_binding: Default::default(),
         })
@@ -2083,6 +2095,12 @@ impl Renderer {
                     shadow_cascades: shadows.cascades,
                     shadow_scales: shadows.scales,
                     probe_grid,
+                    frag_coord: [
+                        f32::from(u8::from(self.webgl.get())),
+                        target.height as f32,
+                        0.0,
+                        0.0,
+                    ],
                 };
                 // WebGL keeps the ALPHA_TO_COVERAGE clipping shader without MSAA: edge
                 // fragments with nonzero clip opacity survive. WebGPU outputs clip hard.
@@ -2273,11 +2291,19 @@ impl Renderer {
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
                 label: Some("scene render"),
             });
+        let material_sort = self.webgl.get();
         draws.sort_by(|a, b| {
             a.transparent
                 .cmp(&b.transparent)
                 .then(a.group_order.cmp(&b.group_order))
                 .then(a.render_order.cmp(&b.render_order))
+                .then_with(|| {
+                    if material_sort && !a.transparent {
+                        a.material_id.cmp(&b.material_id)
+                    } else {
+                        std::cmp::Ordering::Equal
+                    }
+                })
                 .then_with(|| {
                     if a.transparent {
                         b.depth.total_cmp(&a.depth)
@@ -2920,6 +2946,7 @@ impl Renderer {
             transparent: properties.transparent,
             render_order: 0,
             group_order: 0,
+            material_id: properties.id,
             depth: 0.0,
         })
     }
