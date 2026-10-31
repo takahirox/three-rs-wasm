@@ -21,6 +21,10 @@ pub struct TemporalAA {
     output_size: Option<[u32; 2]>,
     history_depth: wgpu::Texture,
     seed: Option<crate::postprocessing::Effect>,
+    /// The jitter the next `apply` resolves with in place of the frame's
+    /// Halton offset ( a frame rendered without the view offset ); taken by
+    /// that `apply`.
+    resolve_jitter: Option<[f64; 2]>,
 }
 impl TemporalAA {
     pub async fn new(r: &Renderer) -> Result<Self> {
@@ -174,6 +178,7 @@ impl TemporalAA {
             previous_projection_inverse: Matrix4::IDENTITY,
             initialized: false,
             frame: 0,
+            resolve_jitter: None,
         })
     }
     /// Apply before rendering beauty; retain the unjittered projection for motion.
@@ -196,6 +201,14 @@ impl TemporalAA {
             offset_x: halton(self.frame % 32 + 1, 2) - 0.5,
             offset_y: halton(self.frame % 32 + 1, 3) - 0.5,
         }
+    }
+    /// Resolve the next frame with `jitter` instead of its Halton offset, as
+    /// TAAUNode does on a frame whose render pipeline was rebuilt: its
+    /// OnBeforeRenderPipeline hook has not run, so the input is unjittered
+    /// and the jitter uniform keeps the last offset set, while the index
+    /// still advances.
+    pub fn resolve_next_with(&mut self, jitter: [f64; 2]) {
+        self.resolve_jitter = Some(jitter);
     }
     pub fn output(&self) -> &RenderTarget {
         &self.resolve
@@ -309,8 +322,11 @@ impl TemporalAA {
             0.,
         ]);
         values.extend([0.0005, 0.001, 128., 1.]);
-        let jitter = self.view_offset(input.width, input.height);
-        values.extend([jitter.offset_x as f32, jitter.offset_y as f32, 0., 0.]);
+        let jitter = self.resolve_jitter.take().unwrap_or_else(|| {
+            let j = self.view_offset(input.width, input.height);
+            [j.offset_x, j.offset_y]
+        });
+        values.extend([jitter[0] as f32, jitter[1] as f32, 0., 0.]);
         r.queue
             .write_buffer(&self.uniform, 0, bytemuck::cast_slice(&values));
         if !self.initialized

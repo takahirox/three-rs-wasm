@@ -13,7 +13,11 @@ pub(in crate::browser) struct Taau {
     copy: Effect,
     sharpen: Effect,
     parameters: [f32; 4],
-    started: bool,
+    /// The page's render pipeline is rebuilt for the next frame ( the first
+    /// one, and after updatePipeline: the method or the sharpening changed ).
+    rebuild: bool,
+    /// TAAUNode's _jitterOffset: the last jitter set on the camera.
+    jitter: [f64; 2],
 }
 impl Taau {
     pub async fn create(s: &mut Scene, c: Object3D, r: &Renderer) -> Result<Self> {
@@ -84,7 +88,8 @@ impl Taau {
             )
             .await?,
             parameters: [1., 0.5, 1., 0.2],
-            started: false,
+            rebuild: true,
+            jitter: [0., 0.],
         })
     }
     pub fn seek(&mut self, t: f64) {
@@ -93,6 +98,10 @@ impl Taau {
     pub fn parameter(&mut self, i: usize, v: f32) -> Result<()> {
         if i >= 4 || !v.is_finite() {
             return Err(Error::Invalid("TAAU parameter"));
+        }
+        // updatePipeline(): renderPipeline.needsUpdate.
+        if i == 0 || i == 2 {
+            self.rebuild = true;
         }
         self.parameters[i] = match i {
             0 | 2 => {
@@ -171,19 +180,31 @@ impl Taau {
         };
         let original_aspect = camera.aspect;
         let mut jittered = camera.clone();
-        if self.parameters[0] > 0.5 && self.started {
+        // TAAUNode's OnBeforeRenderPipeline: the jitter of the current index
+        // at the input's size before this frame's resize. A frame whose
+        // pipeline is rebuilt renders before the hook exists: unjittered, its
+        // resolve keeping the last jitter while the index still advances.
+        let taau = self.parameters[0] > 0.5;
+        if taau && self.rebuild {
+            self.aa.resolve_next_with(self.jitter);
+        } else if taau {
+            let view = self.aa.view_offset(previous_size[0], previous_size[1]);
+            self.jitter = [view.offset_x, view.offset_y];
             jittered.aspect = previous_size[0] as f64 / previous_size[1] as f64;
-            jittered.view = Some(self.aa.view_offset(previous_size[0], previous_size[1]));
+            jittered.view = Some(view);
         }
         let projection = jittered.projection_matrix()?;
-        // r186 TAAU compiled VelocityNode before its projection override was
-        // set: the current clip used the camera jitter, the previous clip was
-        // unjittered ( docs/taau-r186-velocity.json ). The port still keeps that.
-        // r187's VelocityNode reads the override each frame into its
-        // currentProjectionMatrix uniform, so both clips are unjittered there.
-        // MotionVectors itself imposes no jitter and can be used with correctly
-        // unjittered inputs elsewhere.
-        self.motion.update(r, s, c, Some(projection))?;
+        // TAAUNode.setViewOffset() hands VelocityNode the camera's projection
+        // before the jitter ( velocity.setProjectionMatrix ), and r187's
+        // VelocityNode copies it each frame into its currentProjectionMatrix
+        // uniform: the current clip is unjittered, like the previous one, which
+        // is the previous frame's current ( docs/taau-r187-velocity.json ).
+        let unjittered = PerspectiveCamera {
+            view: None,
+            ..jittered.clone()
+        }
+        .projection_matrix()?;
+        self.motion.update(r, s, c, Some(unjittered))?;
         let world = s.get(c)?.matrix_world;
         if let NodeKind::Camera(Camera::Perspective(camera)) = &mut s.get_mut(c)?.kind {
             camera.view = jittered.view;
@@ -198,7 +219,7 @@ impl Taau {
         if self.parameters[0] < 0.5 {
             self.copy.apply(r, &self.scene, None, out)?;
         } else {
-            self.started = true;
+            self.rebuild = false;
             self.aa.set_output_size(out.width, out.height)?;
             self.aa
                 .apply(r, &self.scene, world, projection, [0.1, 100.], false)?;

@@ -102,7 +102,9 @@ impl MotionScene {
                     }
                 }
             }
-            item.previous = Some(view_projection * model);
+            // VelocityNode's previous clip: the previous frame's current one
+            // ( its projection override included ).
+            item.previous = Some(current_view_projection * model);
         }
         Ok(())
     }

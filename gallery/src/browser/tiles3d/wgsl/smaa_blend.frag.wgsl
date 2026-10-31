@@ -275,11 +275,11 @@ fn linearToOutputTexel(value_6: vec4<f32>) -> vec4<f32> {
     var value_7: vec4<f32>;
 
     value_7 = value_6;
-    let _e40 = value_7;
-    let _e58 = (_e40.xyz * mat3x3<f32>(vec3<f32>(1f, -0f, -0f), vec3<f32>(-0f, 1f, 0f), vec3<f32>(0f, 0f, 1f)));
-    let _e59 = value_7;
-    let _e65 = LinearTransferOETF(vec4<f32>(_e58.x, _e58.y, _e58.z, _e59.w));
-    return _e65;
+    let _e57 = value_7;
+    let _e59 = (mat3x3<f32>(vec3<f32>(1f, 0f, -0f), vec3<f32>(-0f, 1f, -0f), vec3<f32>(-0f, 0f, 1f)) * _e57.xyz);
+    let _e60 = value_7;
+    let _e66 = LinearTransferOETF(vec4<f32>(_e59.x, _e59.y, _e59.z, _e60.w));
+    return _e66;
 }
 
 fn luminance(rgb: vec3<f32>) -> f32 {

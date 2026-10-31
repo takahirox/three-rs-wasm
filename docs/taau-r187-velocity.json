@@ -1,0 +1,59 @@
+{
+  "threeRevision": "7e89746a687bb88271253698fa108b1dd59825d0",
+  "viewport": [
+    512,
+    512
+  ],
+  "inputResolution": [
+    256,
+    256
+  ],
+  "sampleTexel": [
+    128,
+    128
+  ],
+  "time": 0,
+  "description": "Five consecutive stationary frames after initial render. Current and previous NDC both use the unjittered projection ( VelocityNode's currentProjectionMatrix uniform holds TAAU's override ), so the velocity is zero. Each value is read directly from the original RGBA16F velocity MRT.",
+  "samples": [
+    {
+      "values": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "values": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ]
+}

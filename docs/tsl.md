@@ -703,13 +703,19 @@ The caller supplies an MRT containing beauty and NDC velocity. MSAA, logarithmic
 and reversed depth are outside this API's scope. RCAS sharpening reuses
 `tsl::fsr1::rcas`; `display::motion_blur` preserves r187's 17/16 default sample gain.
 
-The TAAU example has two relevant upstream behaviors. In r186, VelocityNode
-compiled before the unjittered projection override was installed, so its current
-clip used camera jitter while its previous clip used the unjittered projection.
-r187's VelocityNode fills a current-projection uniform each frame from the
-override, so both clips are unjittered there. The example adapter still
-preserves r186's jittered current clip ( an open gap ); ordinary MotionVectors
-callers can supply fully unjittered matrices. Also, TAAU seeds a second history
+The TAAU example has two relevant upstream behaviors. TAAUNode hands
+VelocityNode the camera's unjittered projection before the pipeline renders,
+and r187's VelocityNode fills a current-projection uniform from it each frame,
+so both clips are unjittered ( a stationary view has zero velocity,
+`docs/taau-r187-velocity.json`; r186 compiled the current clip with the
+jittered projection ). The example adapter passes the same unjittered
+projection to MotionVectors for the current clip and keeps it as the next
+frame's previous clip. TAAUNode applies the jitter from an
+OnBeforeRenderPipeline hook its setup registers, so a frame whose render
+pipeline is rebuilt ( the first one, and each updatePipeline: the method or
+the sharpening changed ) renders unjittered while the index advances and the
+resolve keeps the last jitter; the adapter does the same
+( `TemporalAA::resolve_next_with` ). Also, TAAU seeds a second history
 attachment for feature locks, but only copies the resolve's color attachment
 back afterwards ( in r187 too ). That lock input stays zero; this port omits its
 unused texture, preserving the shader result.

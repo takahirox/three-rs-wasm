@@ -324,6 +324,12 @@ float F_Schlick( const in float f0, const in float f90, const in float dotVH ) {
 	varying vec2 vRoughnessMapUv;
 
 #endif
+#ifdef USE_DIFFUSE_ROUGHNESSMAP
+
+	uniform mat3 diffuseRoughnessMapTransform;
+	varying vec2 vDiffuseRoughnessMapUv;
+
+#endif
 #ifdef USE_ANISOTROPYMAP
 
 	uniform mat3 anisotropyMapTransform;
@@ -549,6 +555,11 @@ void main() {
 #ifdef USE_ROUGHNESSMAP
 
 	vRoughnessMapUv = ( roughnessMapTransform * vec3( ROUGHNESSMAP_UV, 1 ) ).xy;
+
+#endif
+#ifdef USE_DIFFUSE_ROUGHNESSMAP
+
+	vDiffuseRoughnessMapUv = ( diffuseRoughnessMapTransform * vec3( DIFFUSE_ROUGHNESSMAP_UV, 1 ) ).xy;
 
 #endif
 #ifdef USE_ANISOTROPYMAP

@@ -4,8 +4,8 @@
 //! search over every particle, per particle, per frame), drawn as additive
 //! hue-cycling sprites inside a flat-shaded metallic icosahedron lit by an
 //! orbiting point light, with BloomNode, ACES tone mapping and auto-rotating
-//! OrbitControls. Every stage runs the WGSL three.js r186 generated for the
-//! page's TSL (in `linked_particles/`, not yet re-captured on r187), over resident storage buffers that
+//! OrbitControls. Every stage runs the WGSL three.js r187 generated for the
+//! page's TSL (in `linked_particles/`), over resident storage buffers that
 //! the sprites and ribbons read as vertex attributes, as in the original.
 use super::controls_attributes::{Controls, camera_state, viewport_css};
 use crate::{
@@ -300,7 +300,7 @@ impl Demo {
             links_render: uniform(r, "links render", 128),
             links: uniform(r, "links", 80),
             high_pass: uniform(r, "high pass", 16),
-            blur: (0..10).map(|_| uniform(r, "blur", 160)).collect(),
+            blur: (0..10).map(|_| uniform(r, "blur", 64)).collect(),
             composite: uniform(r, "composite", 272),
             tints: uniform(r, "tints", 80),
             output: uniform(r, "output", 16),
@@ -535,14 +535,12 @@ impl Demo {
             horizontal.push((texture(w, h, HALF, 1, true), (w, h)));
             vertical.push(texture(w, h, HALF, 1, true));
             for (k, direction) in [(1., 0.), (0., 1.)].into_iter().enumerate() {
-                Layout::new(160)
+                Layout::new(64)
                     .m3(0)
-                    .m3(48)
-                    .f(96, 1. / w as f64)
-                    .f(100, 1. / h as f64)
-                    .f(104, direction.0)
-                    .f(108, direction.1)
-                    .m3(112)
+                    .f(48, 1. / w as f64)
+                    .f(52, 1. / h as f64)
+                    .f(56, direction.0)
+                    .f(60, direction.1)
                     .write(r, &self.uniforms.blur[level * 2 + k]);
             }
             w /= 2;
