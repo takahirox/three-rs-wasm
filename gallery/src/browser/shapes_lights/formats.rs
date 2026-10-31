@@ -35,7 +35,7 @@ pub(super) fn parse_stl(data: &[u8]) -> Result<Stl> {
     if binary {
         let faces = u32_at(80)? as usize;
         let mut header = None;
-        for index in 0..70 {
+        for index in 0..=70 {
             if data[index..index + 4] == *b"COLO"
                 && data[index + 4] == b'R'
                 && data[index + 5] == b'='
