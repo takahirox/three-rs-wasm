@@ -198,6 +198,8 @@ pub(super) struct Demo {
     pending: Vec<usize>,
     viewport: (f64, f64),
     last_pointer: (f64, f64),
+    /// Whether the last pointer input needs a frame ( `draw` ).
+    redraw: bool,
     paste_slot: std::rc::Rc<std::cell::RefCell<Option<String>>>,
     pending_camera: Option<bool>,
     pending_gizmos: Option<bool>,
@@ -389,6 +391,7 @@ impl Demo {
             pending: vec![],
             viewport: (w, h),
             last_pointer: (0., 0.),
+            redraw: true,
             paste_slot: Default::default(),
             pending_camera: None,
             pending_gizmos: None,
@@ -1252,13 +1255,17 @@ impl Demo {
         {
             self.single_pan_move(s, x, y, state_of(op))?;
         }
+        self.track_click(x, y);
+        Ok(())
+    }
+    /// A pointer that moved too far from its press is no longer a tap.
+    fn track_click(&mut self, x: f64, y: f64) {
         if self.down_valid
             && let Some(last) = self.down_events.last()
             && ((x - last.x).powi(2) + (y - last.y).powi(2)).sqrt() * self.dev_px_ratio > 24.
         {
             self.down_valid = false;
         }
-        Ok(())
     }
     fn pointer_up(&mut self, s: &mut Scene, x: f64, y: f64) -> Result<()> {
         if self.cursor {
@@ -1653,9 +1660,18 @@ impl Demo {
     }
     /// Absolute CSS pointer events ( 0 move, 10 + button down, 20 + button
     /// up ) and 30 for the wheel's deltas.
+    /// A move with no button held and no input queued only records the
+    /// pointer: the original listens to pointermove only while a pointer is
+    /// down, and renders only on the controls' change events, so hovering
+    /// draws no frame.
     pub fn draw(&mut self, kind: u32, x: f64, y: f64) {
+        self.redraw = true;
         if kind == 30 {
             self.wheel.push((x, y));
+        } else if kind == 0 && !self.cursor && self.queue.is_empty() {
+            self.last_pointer = (x, y);
+            self.track_click(x, y);
+            self.redraw = false;
         } else {
             self.queue.push((kind, x, y));
         }
@@ -1766,6 +1782,9 @@ impl super::example::Example for Demo {
     fn on_draw(&mut self, kind: u32, x: f64, y: f64) -> Option<crate::Result<()>> {
         self.draw(kind, x, y);
         Some(Ok(()))
+    }
+    fn on_draw_redraws(&self) -> bool {
+        self.redraw
     }
     fn on_seek(&mut self, seconds: f64) {
         self.seek(seconds);

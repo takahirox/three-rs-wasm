@@ -91,6 +91,11 @@ pub(super) trait Example {
     fn on_draw(&mut self, kind: u32, x: f64, y: f64) -> Option<crate::Result<()>> {
         None
     }
+    /// Whether the pointer input `on_draw` just took changes what a frame
+    /// draws: the gallery renders a frame for it only then.
+    fn on_draw_redraws(&self) -> bool {
+        true
+    }
     fn on_seek(&mut self, seconds: f64) {}
     fn on_input(
         &mut self,

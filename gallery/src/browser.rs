@@ -1137,11 +1137,14 @@ impl BrowserApp {
             return Err(JsValue::from_str("drawing coordinates"));
         }
         let mut state = self.state.borrow_mut();
-        state.request_render();
-        state
+        let redraw = state
             .demo
             .draw(kind, x, y)
-            .map_err(|e| JsValue::from_str(&e.to_string()))
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+        if redraw {
+            state.request_render();
+        }
+        Ok(())
     }
     /// Keyboard state for examples that track modifier keys (keyCode, pressed).
     pub fn gallery_key(&self, code: u32, down: bool) {

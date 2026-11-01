@@ -162,10 +162,12 @@ impl Demo {
     pub fn slider(&mut self, x: f64) {
         self.content.on_slider(x);
     }
-    pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<()> {
+    /// The pointer input, and whether it needs a frame.
+    pub fn draw(&mut self, kind: u32, x: f64, y: f64) -> Result<bool> {
         self.content
             .on_draw(kind, x, y)
-            .unwrap_or(Err(crate::Error::Invalid("not a drawing example")))
+            .unwrap_or(Err(crate::Error::Invalid("not a drawing example")))?;
+        Ok(self.content.on_draw_redraws())
     }
     pub fn seek(&mut self, seconds: f64) {
         self.content.on_seek(seconds);
