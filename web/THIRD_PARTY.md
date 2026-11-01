@@ -256,8 +256,7 @@ come from the same pinned archive. `tools/tsl/prepare.py` restores them and
 The height-fog, sprite, instanced-sprite, galaxy and afterimage translations
 follow the same pinned Three.js r187 examples, `SpriteNodeMaterial`, `Fog.js`,
 `RangeNode` and `AfterImageNode` (MIT; see `../LICENSE-THREE`); where they use range(),
-its values are still r186's per-instance Math.random attributes, not r187's
-per-object hash ( `docs/r187-migration.md` ). The galaxy
+its values follow r187's per-object instance hash ( `tsl::range` ). The galaxy
 example credits [Three.js Journey](https://threejs-journey.com/lessons/animated-galaxy).
 
 The following PNG files are copied unchanged from that archive; preparation and
