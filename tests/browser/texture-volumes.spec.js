@@ -392,6 +392,17 @@ if(count>3)work.draws.push({count:a[0]===0?count*6:count,instances:1});return fn
  writeFileSync(info.outputPath('gpu-work.json'),JSON.stringify(report.map(r=>({...r,reference:{...r.reference,draws:tally(r.reference.draws)},rust:{...r.rust,draws:tally(r.rust.draws)}})),null,2));
 });
 
+// ArcballControls listens to pointermove only while a pointer is down and the page renders
+// on its change events: hovering draws no frame ( a hover frame landed between the
+// workload's reset and its read ), while a drag still does.
+test('Arcball controls: hovering renders no frame',async({page})=>{
+ await page.goto('/web/examples/misc_controls_arcball.html?still=1');await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
+ await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');
+ for(const [x,y] of [[200,200],[300,260],[400,300]]){await page.mouse.move(x,y,{steps:4});await page.waitForTimeout(100);}
+ expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
+ await page.mouse.down();await page.mouse.move(330,300,{steps:4});await page.mouse.up();await page.waitForFunction(prev=>document.querySelector('canvas').dataset.frames!==prev,frames);
+});
+
 for(const kind of ['webgl_texture2darray_layerupdate','webgl_texture3d'])test(`Texture arrays and volumes on-demand scene stays idle: ${kind}`,async({page})=>{
  await page.goto(`/web/examples/${kind}.html`);await page.waitForFunction(()=>Number(document.querySelector('canvas')?.dataset.frames)>0);
  await page.waitForTimeout(300);const frames=await page.locator('canvas').getAttribute('data-frames');await page.waitForTimeout(300);expect(await page.locator('canvas').getAttribute('data-frames')).toBe(frames);
