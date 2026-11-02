@@ -53,6 +53,27 @@ if (shardOf('official-style example URLs')) test('official-style example URLs', 
   await expect(page.locator('#diagnostic a[href="webgpu_loader_gltf.html"]')).toBeVisible();
 });
 
+// Waits until the page's first canvas has presented more than `count` frames.
+// The canvas's render error and the page's own failure ( a module or part that
+// did not load: body[data-status=error], tools/gallery/page.html,
+// web/examples/example.js ) fail the test at once, with the requests that failed.
+async function expectFrames(page, viewer, count, timeout, failedRequests) {
+  const deadline = Date.now() + timeout;
+  let state;
+  for (;;) {
+    // The viewer's frame may still be navigating to the example's page.
+    state = await viewer.locator('body').evaluate(body => {
+      const canvas = body.querySelector('canvas');
+      return {frames: Number(canvas?.dataset.frames ?? 0), error: canvas?.dataset.error || (body.dataset.status === 'error' ? body.dataset.error || 'the page failed' : '')};
+    }).catch(() => ({frames: 0, error: ''}));
+    if (state.error || state.frames > count || Date.now() > deadline) break;
+    await page.waitForTimeout(250);
+  }
+  const requests = failedRequests.length ? `; failed requests: ${failedRequests.join(', ')}` : '';
+  expect(state.error, `the page's error${requests}`).toBe('');
+  expect(state.frames, `the frames presented in ${timeout / 1000} s${requests}`).toBeGreaterThan(count);
+}
+
 // Longest first, so the shard's workers finish together.
 const ports = new Map(catalog.examples.filter(e => e.port).map(e => [e.id, e]));
 for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
@@ -69,6 +90,8 @@ for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
     page.on('response', response => {
       if (response.status() >= 400) badResponses.push(response.url());
     });
+    const failedRequests = [];
+    page.on('requestfailed', request => failedRequests.push(`${request.url()} ${request.failure()?.errorText}`));
     page.on('request', request => {
       if (new URL(request.url()).pathname.startsWith('/web/')) escapedAssets.push(request.url());
     });
@@ -100,7 +123,7 @@ for (const entry of longestFirst.filter(shardOf).map(id => ports.get(id))) {
     // These scenes render on demand; the first canvas owns runtime diagnostics
     // even when the example presents through several additional canvases.
     const onDemand = [16, 28, 38, 153, 156, 157, 193, 195, 206, 213, 220, 224, 226, 235, 236, 237, 240, 242, 255, 277, 283, 296, 308, 313, 314, 315, 318, 319].includes(entry.port.example);
-    await expect.poll(async () => Number(await canvas.getAttribute('data-frames')), {timeout: heavy ? 570000 : 90000}).toBeGreaterThan(onDemand ? 0 : 2);
+    await expectFrames(page, viewer, onDemand ? 0 : 2, heavy ? 570000 : 90000, failedRequests);
     await expect(canvas).not.toHaveAttribute('data-error', /.+/);
     if (entry.port.example === 4) {
       await viewer.locator('#model').selectOption('5');

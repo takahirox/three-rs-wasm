@@ -13,8 +13,10 @@ export default defineConfig({...base,
   // compile many pipelines missed their 90-second frame deadlines.
   workers: 2,
   use: {...base.use, baseURL: 'http://127.0.0.1:28180'},
+  // The repository's threaded server: http.server's own backlog of 5 resets the
+  // connections of a page's burst of Wasm part requests, and the page stops.
   webServer: {
-    command: 'python3 -m http.server 28180 --bind 127.0.0.1 --directory .cache/pages',
+    command: 'python3 tools/serve.py 28180 .cache/pages',
     url: 'http://127.0.0.1:28180/three-rs-wasm/',
     reuseExistingServer: false,
   },

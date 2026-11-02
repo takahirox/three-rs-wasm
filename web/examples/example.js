@@ -462,4 +462,10 @@ window.addEventListener('pagehide', () => { closing = true; release(); });
   }
   }
    }
-} catch (error) { app?.free(); app = null; explain(PAGE_ID, String(error), 'error'); }
+} catch (error) {
+ app?.free(); app = null;
+ // Before the diagnostic, which loads its own module and the catalog: a part that
+ // did not load fails the page even when they do not load either.
+ document.body.dataset.status = 'error'; document.body.dataset.error = String(error);
+ explain(PAGE_ID, String(error), 'error');
+}

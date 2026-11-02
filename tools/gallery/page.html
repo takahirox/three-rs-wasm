@@ -6,6 +6,6 @@ html,body{width:100%;height:100%;overflow:hidden}canvas{display:block;width:100%
 </style></head><body>
 <div id="loading" role="status">Loading Rust / WebGPU…</div><canvas hidden aria-label="Rust / WebGPU example"></canvas><div id="settings" hidden></div><main id="diagnostic" hidden></main>
 %PRELUDE%<script type="importmap">%IMPORTMAP%</script>
-%UI%%UPSTREAM%<script type="module">
+%UI%%UPSTREAM%<script type="module" onerror="document.body.dataset.status='error';document.body.dataset.error='a module of the page did not load';document.querySelector('#loading').textContent='読み込みに失敗しました。再読み込みしてください。'">
 %SCRIPT%
 </script></body></html>
