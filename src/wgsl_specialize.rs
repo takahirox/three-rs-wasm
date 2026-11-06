@@ -141,15 +141,15 @@ impl Item {
                 .get(name)
                 .copied()
                 .or_else(|| default.and_then(literal));
-            if let (Some(ty), Some(value)) = (ty, value) {
-                if let Some(written) = write_literal(ty, value) {
-                    item.text = format!("const {name}:{ty}={written};");
-                    item.constant = Some(if ty == "bool" {
-                        Value::Bool(value != 0.0)
-                    } else {
-                        Value::Number(value)
-                    });
-                }
+            if let (Some(ty), Some(value)) = (ty, value)
+                && let Some(written) = write_literal(ty, value)
+            {
+                item.text = format!("const {name}:{ty}={written};");
+                item.constant = Some(if ty == "bool" {
+                    Value::Bool(value != 0.0)
+                } else {
+                    Value::Number(value)
+                });
             }
         }
         item
@@ -537,10 +537,10 @@ impl<'a> Parser<'a> {
         } else if token.starts_with(|c: char| c.is_ascii_digit() || c == '.') {
             literal(token).map_or(Value::Runtime { pure: true }, Value::Number)
         } else if leading_identifier(token).is_some() {
-            if self.peek() == Some("(") {
-                if let Some(value) = self.call(token) {
-                    return value;
-                }
+            if self.peek() == Some("(")
+                && let Some(value) = self.call(token)
+            {
+                return value;
             }
             self.known
                 .get(token)
