@@ -32,6 +32,7 @@ be enforced deterministically in CI. Do not relax visual tolerances to gain spee
 | WebXR views (WebGPU binding) | Each view renders into its layer of the session's projection texture with resident pipelines and bindings; the layer texture is wrapped, not copied. Shadow maps update once per frame for both views. Ten steady session frames create no GPU objects (fake device; see [WebXR on WebGPU](webxr-gpu.md)). Views are drawn in separate passes rather than three's per-layer render bundles. No headset timing measured; no timing parity claim. |
 | WebGL draw conventions | WebGLRenderer orders opaque draws by material id before depth ( painterSortStable ) and rotates PCF taps by `gl_FragCoord` noise ( bottom-left origin ). `Renderer::webgl` follows both; only physics_rapier_basic sets it ( its materials numbered in page order ). Other WebGL ports sort by depth and take top-left noise, which only matters where equal depths meet or in shadow penumbrae. |
 | On-demand rendering | misc_controls_arcball's port renders every animation frame in the gallery, where the page renders only on ArcballControls' `change`. A hover without a button renders nothing, as on the page. |
+| Material shader compilation | Each material pipeline compiles its own vertex and fragment WGSL, as three's NodeBuilder writes a program per material: one vertex entry point, the pipeline's constants in place of the overrides, the branches they decide resolved and the declarations the entry point does not reach left out ( `src/wgsl_specialize.rs` ). The physical features compile only when the material uses them ( useClearcoat, useSheen, … : each factor above 0 ), RectAreaLight code only with such a light. Stages that specialize alike share one module. A custom program's creation validates its WGSL as a module, without building a pipeline. See [Material shader compilation](#material-shader-compilation-2026-11-06). |
 | Rough refraction/postprocessing | Refraction now uses GPU-generated mip chains and IOR-scaled bicubic sampling, validated on Iridescence/Anisotropy/Transmission scenes. Generic postprocessing interfaces still do not establish complete effect parity. See [physical glTF measurements](gltf-physical-worklog.md). |
 
 There is no blanket FPS/performance parity claim for the renderer. The gallery
@@ -1151,3 +1152,42 @@ Warmed cycles create no GPU resources. No GPU timing parity is claimed.
   [ 5, 5, 5 ] on both sides, and frame by frame over the first 160 frames.
 
 Warmed cycles create no GPU resources. No GPU timing parity is claimed.
+
+## Material shader compilation (2026-11-06)
+
+The published-gallery check's slowest examples spent their time compiling
+shaders. Every material pipeline compiled the whole material shader:
+`src/shader.wgsl` with each physical feature behind run-time conditions and
+one vertex entry point per set of attributes ( 128 ), about 130 KB per custom
+program. Each TSL program's creation also built a pipeline only to validate
+it, and waited for it before the next program. The original compiles each
+material's own shaders, and its spheres share their vertex shader.
+
+Now each pipeline stage specializes the source first ( `wgsl_specialize` ),
+the physical features follow MeshPhysicalNodeMaterial's `use*` getters,
+and creation validates a module without a pipeline. Measured on an Apple M-series
+Mac in Chrome, with WebGPU on SwiftShader ( the CI check's adapter ) and on
+Metal, from navigation to the presented frames:
+
+| Example | Build | WGSL compiled | Render pipelines | 10th frame, SwiftShader | 10th frame, Metal |
+| --- | --- | --- | --- | --- | --- |
+| webgpu_materialx_noise | before | 3.06 MB | 52 | 51.8 s | 23.4 s |
+| | now | 1.66 MB ( 0.52 MB without the validation modules ) | 30 | 17.0 s | 7.1 s |
+| | three.js r187 | 0.47 MB | 28 | 12.8 s | 5.1 s |
+| webgpu_materials | before | 2.33 MB | 39 | 26.6 s | |
+| | now | 1.10 MB | 22 | 8.5 s | |
+| | three.js r187 | 0.05 MB | 19 | 5.2 s | |
+| webgpu_materials_retroreflection | before | 0.73 MB | 28 | 13.8 s | |
+| | now | 0.42 MB | 24 | 6.6 s | |
+| | three.js r187 | 0.13 MB | 21 | 5.6 s | |
+
+The first frame of webgpu_materialx_noise now comes at 1.4 s ( 15.4 s before,
+1.3 s in the original ). The rest of its WGSL is the 21 programs' validation
+modules, which the GPU process parses but compiles into no pipeline. Each
+fragment stage is about 22 KB ( the original's about 25 KB ); the 21 spheres
+share one 7.7 KB vertex stage.
+
+webgpu_loader_materialx is unchanged: its shaders are the three-tsl crate's
+NodeBuilder output, already one program per material, and its 101 pipelines
+compile before its first frame ( 9.4 s ), where the original adds each sample
+as its document loads. No timing parity is claimed.

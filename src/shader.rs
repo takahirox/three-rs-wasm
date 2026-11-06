@@ -43,7 +43,9 @@ pub struct ShaderProgram {
     /// The WGSL samples the LightProbeGrid atlas ( `grid_atlas` ), as
     /// LightProbeGridHelper does: its group 0 then binds it.
     pub(crate) grid: bool,
-    pub(crate) module: wgpu::ShaderModule,
+    /// The material shader with the program's code; the renderer compiles each
+    /// pipeline's stages of it.
+    pub(crate) source: String,
     pub(crate) layout: wgpu::BindGroupLayout,
     pub(crate) bindings: wgpu::BindGroup,
     binding_counts: (usize, usize),
@@ -483,13 +485,20 @@ impl ShaderProgram {
             source=source.replace("@fragment fn fs_main(in:VertexOut,@builtin(front_facing) front:bool)->@location(0) vec4<f32>","fn color_main(in:VertexOut,front:bool)->vec4<f32>");
             source.push_str(code);
         }
-        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("custom mesh shader"),
-            source: wgpu::ShaderSource::Wgsl(
-                crate::geometry_gpu::vertex_entry_points(&source, crate::renderer::VERTEX_INPUTS)
-                    .into(),
-            ),
-        });
+        let source =
+            crate::geometry_gpu::vertex_entry_points(&source, crate::renderer::VERTEX_INPUTS);
+        // The WGSL's errors at creation: the declarations a draw of every attribute
+        // reaches, in the build's error scope. Pipelines compile their own stages
+        // on first draw.
+        if validate {
+            let entry = crate::geometry_gpu::entry_point(u8::MAX, crate::renderer::VERTEX_INPUTS);
+            let _ = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+                label: Some("custom mesh shader"),
+                source: wgpu::ShaderSource::Wgsl(
+                    crate::wgsl_specialize::specialize(&source, &[&entry, "fs_main"], &[]).into(),
+                ),
+            });
+        }
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("custom mesh buffers"),
             entries: &buffers
@@ -579,26 +588,15 @@ impl ShaderProgram {
                 )
                 .collect::<Vec<_>>(),
         });
-        // Validate the group layout contract at creation, before render() caches
-        // format-specific variants. This pipeline is deliberately not submitted.
         let viewport = u8::from(wgsl.contains("viewport_read_color"))
             | (u8::from(wgsl.contains("viewport_read_depth")) << 1);
-        if validate {
-            renderer.validate_shader_program(
-                &module,
-                &layout,
-                mrt.map_or(1, |(count, _)| count),
-                viewport != 0,
-                wgsl.contains("grid_atlas"),
-            );
-        }
         Self {
             id: NEXT.fetch_add(1, Ordering::Relaxed),
             custom_environment: wgsl.contains("fn environment_sample("),
             viewport,
             grid: wgsl.contains("grid_atlas"),
             outputs: mrt.map_or(1, |(count, _)| count),
-            module,
+            source,
             layout,
             bindings,
             binding_counts: (buffers.len(), textures.len()),

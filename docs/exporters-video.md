@@ -65,8 +65,8 @@ equivalent and are compared against the original WebGL renderer.
   - the `hash` tints.
 - **Build.** The programs are created between frames, 16 a frame, while the
   sphere animates, as `compileAsync` builds in the background. They skip the
-  creation-time validation pipeline, and their pipelines compile on first
-  draw. The group appears at 1 s, when the original's timer adds it; any
+  creation-time validation of their WGSL, and their pipelines compile on
+  first draw. The group appears at 1 s, when the original's timer adds it; any
   programs still pending are created then.
 - **Sphere.** MeshNormalNodeMaterial takes `directionToColor( normalView )` as
   sRGB.

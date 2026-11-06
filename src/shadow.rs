@@ -230,20 +230,14 @@ impl ShadowRenderer {
         Ok(sphere)
     }
     pub fn new(device: &wgpu::Device) -> Self {
-        let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("shadow depth"),
-            source: wgpu::ShaderSource::Wgsl(
-                crate::geometry_gpu::vertex_entry_points(
-                    concat!(
-                        include_str!("shaders/deformation.wgsl"),
-                        "\n",
-                        include_str!("shaders/shadow.wgsl")
-                    ),
-                    SHADOW_INPUTS,
-                )
-                .into(),
+        let shader = crate::geometry_gpu::vertex_entry_points(
+            concat!(
+                include_str!("shaders/deformation.wgsl"),
+                "\n",
+                include_str!("shaders/shadow.wgsl")
             ),
-        });
+            SHADOW_INPUTS,
+        );
         let mut entries = vec![
             wgpu::BindGroupLayoutEntry {
                 binding: 0,
@@ -282,7 +276,7 @@ impl ShadowRenderer {
             bind_group_layouts: &[&layout],
             push_constant_ranges: &[],
         });
-        let pipelines = DepthPipelines::new(device, pipeline_layout, shader.clone());
+        let pipelines = DepthPipelines::new(device, pipeline_layout, shader);
         let empty = depth_texture(device, 1, 1).create_view(&wgpu::TextureViewDescriptor {
             dimension: Some(wgpu::TextureViewDimension::D2Array),
             ..Default::default()
@@ -1114,25 +1108,41 @@ pub(crate) const SHADOW_INPUTS: &[(crate::geometry_gpu::Field, u32)] = &[
 pub(crate) struct DepthPipelines {
     device: wgpu::Device,
     layout: wgpu::PipelineLayout,
-    shader: wgpu::ShaderModule,
+    /// The depth shader's source; each pipeline compiles its own stages of it
+    /// ( wgsl_specialize ).
+    shader: String,
     // A Mutex, not a RefCell: materials holding a ShadowProgram stay Send + Sync.
     cache: std::sync::Mutex<DepthPipelineCache>,
+    /// The stages' modules by their specialized source.
+    modules: std::sync::Mutex<std::collections::HashMap<String, wgpu::ShaderModule>>,
 }
 /// ( variant, vertex attributes, dynamic ones, strip index format ) → pipeline.
 type DepthPipelineCache =
     std::collections::HashMap<(usize, u8, u8, Option<wgpu::IndexFormat>), wgpu::RenderPipeline>;
 impl DepthPipelines {
-    fn new(
-        device: &wgpu::Device,
-        layout: wgpu::PipelineLayout,
-        shader: wgpu::ShaderModule,
-    ) -> Self {
+    fn new(device: &wgpu::Device, layout: wgpu::PipelineLayout, shader: String) -> Self {
         DepthPipelines {
             device: device.clone(),
             layout,
             shader,
             cache: Default::default(),
+            modules: Default::default(),
         }
+    }
+    fn stage_module(&self, entry: &str, constants: &[(&str, f64)]) -> wgpu::ShaderModule {
+        let code = crate::wgsl_specialize::specialize(&self.shader, &[entry], constants);
+        self.modules
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .entry(code)
+            .or_insert_with_key(|code| {
+                self.device
+                    .create_shader_module(wgpu::ShaderModuleDescriptor {
+                        label: Some("shadow depth stage"),
+                        source: wgpu::ShaderSource::Wgsl(code.as_str().into()),
+                    })
+            })
+            .clone()
     }
     pub(crate) fn get(
         &self,
@@ -1168,21 +1178,20 @@ impl DepthPipelines {
         };
         let layouts = VertexLayouts::new(attributes, dynamic, SHADOW_INPUTS);
         let entry = entry_point(attributes, SHADOW_INPUTS);
+        let vertex = self.stage_module(&entry, &[("INSTANCED", if instanced { 1.0 } else { 0.0 })]);
+        let fragment = self.stage_module("fs_main", &[]);
         self.device
             .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                 label: Some("shadow depth"),
                 layout: Some(&self.layout),
                 vertex: wgpu::VertexState {
-                    module: &self.shader,
+                    module: &vertex,
                     entry_point: Some(&entry),
-                    compilation_options: wgpu::PipelineCompilationOptions {
-                        constants: &[("INSTANCED", if instanced { 1.0 } else { 0.0 })],
-                        ..Default::default()
-                    },
+                    compilation_options: Default::default(),
                     buffers: &layouts.buffers(crate::renderer::instance_layout(instanced)),
                 },
                 fragment: Some(wgpu::FragmentState {
-                    module: &self.shader,
+                    module: &fragment,
                     entry_point: Some("fs_main"),
                     compilation_options: Default::default(),
                     targets: &[],
@@ -1269,10 +1278,14 @@ impl ShadowProgram {
             "var<private> vertex_instance_index:u32;var<private> tsl_vertex_index:u32;struct VertexOut {position:vec3<f32>,local_position:vec3<f32>,uv:vec2<f32>,clip:vec4<f32>,instance_index:u32};",
             hooks
         );
-        let module = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        let source = crate::geometry_gpu::vertex_entry_points(&source, SHADOW_INPUTS);
+        // The WGSL's errors at creation, in the build's error scope: the declarations
+        // a draw of every attribute reaches. Pipelines compile their own stages.
+        let entry = crate::geometry_gpu::entry_point(u8::MAX, SHADOW_INPUTS);
+        let _ = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("TSL shadow"),
             source: wgpu::ShaderSource::Wgsl(
-                crate::geometry_gpu::vertex_entry_points(&source, SHADOW_INPUTS).into(),
+                crate::wgsl_specialize::specialize(&source, &[&entry, "fs_main"], &[]).into(),
             ),
         });
         let resource_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
@@ -1309,7 +1322,7 @@ impl ShadowProgram {
             bind_group_layouts: &[&renderer.shadows.layout, &resource_layout],
             push_constant_ranges: &[],
         });
-        let pipelines = DepthPipelines::new(device, layout, module);
+        let pipelines = DepthPipelines::new(device, layout, source);
         if let Some(error) = device.pop_error_scope().await {
             return Err(Error::Gpu(error.to_string()));
         }

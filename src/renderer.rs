@@ -16,6 +16,9 @@ struct PipelineKey {
     light_types: u32,
     receive_shadow: bool,
     physical: bool,
+    /// The physical features the material uses and whether the lights include
+    /// a RectAreaLight ( `PhysicalFeatures` bits ).
+    features: u16,
     instanced: bool,
     clipping: bool,
     dashed: bool,
@@ -46,6 +49,38 @@ struct PipelineKey {
     strip_index_format: Option<wgpu::IndexFormat>,
 }
 
+// The material shader's feature constants ( src/shader.wgsl ), as a
+// PipelineKey's `features`.
+const CLEARCOAT: u16 = 1;
+const SHEEN: u16 = 2;
+const IRIDESCENCE: u16 = 4;
+const ANISOTROPY: u16 = 8;
+const TRANSMISSION: u16 = 16;
+const DISPERSION: u16 = 32;
+const DIFFUSE_ROUGHNESS: u16 = 64;
+const RETROREFLECTION: u16 = 128;
+const RECT_AREA_LIGHTS: u16 = 256;
+/// The physical features `material` uses, as MeshPhysicalNodeMaterial's
+/// useClearcoat, useSheen, … decide them ( each factor above 0 ): a material
+/// whose factor crosses 0 compiles a new program, as three's does.
+fn physical_features(material: &Material) -> u16 {
+    let Material::Physical(m) = material else {
+        return 0;
+    };
+    [
+        (m.clearcoat, CLEARCOAT),
+        (m.sheen, SHEEN),
+        (m.iridescence, IRIDESCENCE),
+        (m.anisotropy, ANISOTROPY),
+        (m.transmission, TRANSMISSION),
+        (m.dispersion, DISPERSION),
+        (m.diffuse_roughness, DIFFUSE_ROUGHNESS),
+        (m.retroreflectivity, RETROREFLECTION),
+    ]
+    .iter()
+    .filter(|(factor, _)| *factor > 0.0)
+    .fold(0, |bits, (_, bit)| bits | bit)
+}
 /// u.maps.x: 0 without a normal map, 1 for RGB normal maps and 2 for packed
 /// two-channel ones, whose z the shader reconstructs (USE_PACKED_NORMALMAP).
 fn normal_map_kind(map: Option<&Texture>) -> f32 {
@@ -148,7 +183,12 @@ pub struct Renderer {
     layout: wgpu::BindGroupLayout,
     viewport_layout: wgpu::BindGroupLayout,
     custom_layout: wgpu::BindGroupLayout,
-    shader: wgpu::ShaderModule,
+    /// The material shader's source; each pipeline compiles its own stages of it
+    /// ( `stage_module` ).
+    shader: String,
+    /// The pipeline stages' modules by their specialized source: materials whose
+    /// stages specialize alike share them.
+    stage_modules: RefCell<HashMap<String, wgpu::ShaderModule>>,
     pub(crate) shadows: crate::shadow::ShadowRenderer,
     geometry: RefCell<crate::geometry_gpu::Cache>,
     deformation: RefCell<crate::deformation_gpu::Cache>,
@@ -284,31 +324,28 @@ impl Renderer {
     pub fn compute_bounding_sphere(&self, scene: &Scene, mesh: Object3D) -> Result<()> {
         self.shadows.compute_skinned_bounds(scene, mesh).map(|_| ())
     }
-    pub(crate) fn validate_shader_program(
+    /// One pipeline stage of the material shader `source` ( the renderer's or a
+    /// custom program's ): its entry point's declarations, specialized with
+    /// `constants` ( wgsl_specialize ), compiled once for every pipeline whose
+    /// stage specializes alike.
+    fn stage_module(
         &self,
-        module: &wgpu::ShaderModule,
-        extra: &wgpu::BindGroupLayout,
-        outputs: u32,
-        viewport: bool,
-        grid: bool,
-    ) {
-        let layout = self
-            .device
-            .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                label: None,
-                bind_group_layouts: &[
-                    if viewport {
-                        &self.viewport_layout
-                    } else if grid {
-                        &self.layout
-                    } else {
-                        &self.custom_layout
-                    },
-                    extra,
-                ],
-                push_constant_ranges: &[],
-            });
-        let _ = self.device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {label:Some("validate custom mesh shader"),layout:Some(&layout),vertex:wgpu::VertexState {module,entry_point:Some(&crate::geometry_gpu::entry_point(u8::MAX, VERTEX_INPUTS)),compilation_options:Default::default(),buffers:&[wgpu::VertexBufferLayout {array_stride:std::mem::size_of::<Vertex>() as u64,step_mode:wgpu::VertexStepMode::Vertex,attributes:&wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2,3=>Float32x4,4=>Float32x2,5=>Float32x4,11=>Float32x2,12=>Float32x2]},instance_layout(true)]},fragment:Some(wgpu::FragmentState {module,entry_point:Some("fs_main"),compilation_options:Default::default(),targets:&vec![Some(wgpu::ColorTargetState {format:wgpu::TextureFormat::Rgba8Unorm,blend:None,write_mask:wgpu::ColorWrites::ALL});outputs as usize]}),primitive:Default::default(),depth_stencil:None,multisample:Default::default(),multiview:None,cache:None});
+        source: &str,
+        entry: &str,
+        constants: &[(&str, f64)],
+    ) -> wgpu::ShaderModule {
+        let code = crate::wgsl_specialize::specialize(source, &[entry], constants);
+        self.stage_modules
+            .borrow_mut()
+            .entry(code)
+            .or_insert_with_key(|code| {
+                self.device
+                    .create_shader_module(wgpu::ShaderModuleDescriptor {
+                        label: Some("material stage"),
+                        source: wgpu::ShaderSource::Wgsl(code.as_str().into()),
+                    })
+            })
+            .clone()
     }
     /// Upload once and retain a sampled texture for custom material/effect bindings.
     pub fn upload_texture(&self, image: &Arc<crate::material::Texture>) -> Result<GpuTexture> {
@@ -614,33 +651,27 @@ impl Renderer {
             dfg.size(),
         );
         let dfg = dfg.create_view(&Default::default());
-        let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("materials"),
-            source: wgpu::ShaderSource::Wgsl(
-                crate::geometry_gpu::vertex_entry_points(
-                    &format!(
-                        "{}\n{}\n{}\n{}\n{}\n{}\n{}",
-                        include_str!("shaders/envmap.wgsl"),
-                        concat!(
-                            include_str!("shaders/deformation.wgsl"),
-                            "\n",
-                            include_str!("shaders/output.wgsl"),
-                            "\n",
-                            include_str!("shader.wgsl"),
-                            "\n",
-                            include_str!("shaders/probe_grid.wgsl")
-                        ),
-                        crate::shader::DEFAULT_HOOKS,
-                        crate::shader::DEFAULT_OUTPUT,
-                        crate::shader::DEFAULT_PROJECTION,
-                        crate::shader::DEFAULT_SURFACE,
-                        crate::shader::DEFAULT_ENVIRONMENT
-                    ),
-                    VERTEX_INPUTS,
-                )
-                .into(),
+        let shader = crate::geometry_gpu::vertex_entry_points(
+            &format!(
+                "{}\n{}\n{}\n{}\n{}\n{}\n{}",
+                include_str!("shaders/envmap.wgsl"),
+                concat!(
+                    include_str!("shaders/deformation.wgsl"),
+                    "\n",
+                    include_str!("shaders/output.wgsl"),
+                    "\n",
+                    include_str!("shader.wgsl"),
+                    "\n",
+                    include_str!("shaders/probe_grid.wgsl")
+                ),
+                crate::shader::DEFAULT_HOOKS,
+                crate::shader::DEFAULT_OUTPUT,
+                crate::shader::DEFAULT_PROJECTION,
+                crate::shader::DEFAULT_SURFACE,
+                crate::shader::DEFAULT_ENVIRONMENT
             ),
-        });
+            VERTEX_INPUTS,
+        );
         let shadows = crate::shadow::ShadowRenderer::new(&device);
         let ltc = crate::area_light::texture(&device, &queue);
         let ltc_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
@@ -708,6 +739,7 @@ impl Renderer {
             viewport_layout,
             custom_layout,
             shader,
+            stage_modules: RefCell::new(HashMap::new()),
             pipelines: RefCell::new(HashMap::new()),
             textures: RefCell::new(Default::default()),
             white: Arc::new(Texture::from_rgba(1, 1, vec![255; 4], false)?),
@@ -2774,6 +2806,14 @@ impl Renderer {
                 .fold(0, |mask, (i, map)| mask | (u8::from(map.is_some()) << i)),
             receive_shadow: uniforms.flags[1] > 0.5,
             physical: matches!(material, Material::Physical(_)),
+            features: physical_features(material)
+                | if (0..uniforms.material[3] as u32)
+                    .any(|i| uniforms.light_position[i as usize][3] == 4.0)
+                {
+                    RECT_AREA_LIGHTS
+                } else {
+                    0
+                },
             dashed: uniforms.line[1][1] > 0.5,
             clipping: uniforms.clipping.params[0] + uniforms.clipping.params[1] > 0.0,
             attachment_blending: properties.attachment_blending.clone(),
@@ -2835,47 +2875,70 @@ impl Renderer {
                         .map_or_else(|| vec![draw_layout], |p| vec![draw_layout, &p.layout]),
                     push_constant_ranges: &[],
                 });
-            let shader = custom.map_or(&self.shader, |p| &p.module);
+            let shader = custom.map_or(self.shader.as_str(), |p| p.source.as_str());
+            let fragment_entry = if key.logarithmic_depth {
+                "fs_log_depth"
+            } else {
+                "fs_main"
+            };
+            let vertex = self.stage_module(
+                shader,
+                &entry,
+                &[("INSTANCED", if key.instanced { 1.0 } else { 0.0 })],
+            );
+            let fragment = self.stage_module(
+                shader,
+                fragment_entry,
+                &[
+                    ("LIGHT_COUNT", key.light_count as f64),
+                    ("LIGHT_TYPES", key.light_types as f64),
+                    ("COLOR_MAP", f64::from(key.texture_mask & 1 != 0)),
+                    ("MR_MAP", f64::from(key.texture_mask & 2 != 0)),
+                    ("NORMAL_MAP", f64::from(key.texture_mask & 4 != 0)),
+                    ("AO_MAP", f64::from(key.texture_mask & 8 != 0)),
+                    ("EMISSIVE_MAP", f64::from(key.texture_mask & 16 != 0)),
+                    ("RECEIVE_SHADOW", f64::from(key.receive_shadow)),
+                    ("MATERIAL_KIND", key.material_kind as f64),
+                    ("PHYSICAL", if key.physical { 1.0 } else { 0.0 }),
+                    ("EXTENSION_MAP_MASK", key.extension_mask as f64),
+                    ("ENCODE_SRGB", f64::from(key.encode_srgb)),
+                    ("ALPHA_MASK", if key.alpha_mask { 1.0 } else { 0.0 }),
+                    ("CLIPPING", if key.clipping { 1.0 } else { 0.0 }),
+                    ("LINE_DASH", if key.dashed { 1.0 } else { 0.0 }),
+                    ("CLEARCOAT", f64::from(key.features & CLEARCOAT != 0)),
+                    ("SHEEN", f64::from(key.features & SHEEN != 0)),
+                    ("IRIDESCENCE", f64::from(key.features & IRIDESCENCE != 0)),
+                    ("ANISOTROPY", f64::from(key.features & ANISOTROPY != 0)),
+                    ("TRANSMISSION", f64::from(key.features & TRANSMISSION != 0)),
+                    ("DISPERSION", f64::from(key.features & DISPERSION != 0)),
+                    (
+                        "DIFFUSE_ROUGHNESS",
+                        f64::from(key.features & DIFFUSE_ROUGHNESS != 0),
+                    ),
+                    (
+                        "RETROREFLECTION",
+                        f64::from(key.features & RETROREFLECTION != 0),
+                    ),
+                    (
+                        "RECT_AREA_LIGHTS",
+                        f64::from(key.features & RECT_AREA_LIGHTS != 0),
+                    ),
+                ],
+            );
             self.device
                 .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                     label: Some("material pipeline"),
                     layout: Some(&layout),
                     vertex: wgpu::VertexState {
-                        module: shader,
+                        module: &vertex,
                         entry_point: Some(&entry),
-                        compilation_options: wgpu::PipelineCompilationOptions {
-                            constants: &[("INSTANCED", if key.instanced { 1.0 } else { 0.0 })],
-                            ..Default::default()
-                        },
+                        compilation_options: Default::default(),
                         buffers: &layouts.buffers(instance_layout(key.instanced)),
                     },
                     fragment: Some(wgpu::FragmentState {
-                        module: shader,
-                        entry_point: Some(if key.logarithmic_depth {
-                            "fs_log_depth"
-                        } else {
-                            "fs_main"
-                        }),
-                        compilation_options: wgpu::PipelineCompilationOptions {
-                            constants: &[
-                                ("LIGHT_COUNT", key.light_count as f64),
-                                ("LIGHT_TYPES", key.light_types as f64),
-                                ("COLOR_MAP", f64::from(key.texture_mask & 1 != 0)),
-                                ("MR_MAP", f64::from(key.texture_mask & 2 != 0)),
-                                ("NORMAL_MAP", f64::from(key.texture_mask & 4 != 0)),
-                                ("AO_MAP", f64::from(key.texture_mask & 8 != 0)),
-                                ("EMISSIVE_MAP", f64::from(key.texture_mask & 16 != 0)),
-                                ("RECEIVE_SHADOW", f64::from(key.receive_shadow)),
-                                ("MATERIAL_KIND", key.material_kind as f64),
-                                ("PHYSICAL", if key.physical { 1.0 } else { 0.0 }),
-                                ("EXTENSION_MAP_MASK", key.extension_mask as f64),
-                                ("ENCODE_SRGB", f64::from(key.encode_srgb)),
-                                ("ALPHA_MASK", if key.alpha_mask { 1.0 } else { 0.0 }),
-                                ("CLIPPING", if key.clipping { 1.0 } else { 0.0 }),
-                                ("LINE_DASH", if key.dashed { 1.0 } else { 0.0 }),
-                            ],
-                            ..Default::default()
-                        },
+                        module: &fragment,
+                        entry_point: Some(fragment_entry),
+                        compilation_options: Default::default(),
                         targets: &key
                             .attachment_formats
                             .iter()

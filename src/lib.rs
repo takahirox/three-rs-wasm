@@ -93,3 +93,5 @@ mod viewport;
 pub mod sun_shadow;
 
 pub mod readback;
+
+mod wgsl_specialize;
